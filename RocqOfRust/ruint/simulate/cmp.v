@@ -75,3 +75,37 @@ Module Impl_PartialOrd_for_Uint.
   Export (hints) Eq.
 End Impl_PartialOrd_for_Uint.
 Export (hints) Impl_PartialOrd_for_Uint.
+
+(* impl<const BITS: usize, const LIMBS: usize> Ord for Uint<BITS, LIMBS> *)
+Module Impl_Ord_for_Uint.
+  Definition Self (BITS LIMBS : usize) : Set :=
+    Uint.t BITS LIMBS.
+
+  Section WithParams.
+    Context {BITS LIMBS : usize}.
+
+    Definition cmp (self other : Self BITS LIMBS) : Ordering.t :=
+      match Z.compare self.(Uint.value) other.(Uint.value) with
+      | Lt => Ordering.Less
+      | Eq => Ordering.Equal
+      | Gt => Ordering.Greater
+      end.
+
+    Global Instance I : Ord.C (Self BITS LIMBS) := {|
+      Ord.cmp := cmp;
+      Ord.max self other := if Impl_PartialOrd_for_Uint.ge self other then self else other;
+      Ord.min self other := if Impl_PartialOrd_for_Uint.le self other then self else other;
+      Ord.clamp self min max :=
+        if Impl_PartialOrd_for_Uint.lt self min then min
+        else if Impl_PartialOrd_for_Uint.gt self max then max
+        else self;
+    |}.
+  End WithParams.
+
+  Module Eq.
+    Instance I {BITS LIMBS : usize} : Ord.Eq.C (Self BITS LIMBS) I.
+    Admitted.
+  End Eq.
+  Export (hints) Eq.
+End Impl_Ord_for_Uint.
+Export (hints) Impl_Ord_for_Uint.

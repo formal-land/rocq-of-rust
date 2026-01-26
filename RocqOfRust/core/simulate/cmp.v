@@ -24,6 +24,8 @@ Module PartialEq.
         Prop := {
       eq (ref_self : '& Self) (ref_other : '& Rhs) (stack : Stack.t)
           (self : Self) (other : Rhs) :
+        CanRead.t stack self ref_self ->
+        CanRead.t stack other ref_other ->
         {{
           SimulateM.eval_f
             (PartialEq.run_eq ref_self ref_other)
@@ -35,6 +37,8 @@ Module PartialEq.
         }};
       ne (ref_self : '& Self) (ref_other : '& Rhs) (stack : Stack.t)
           (self : Self) (other : Rhs) :
+        CanRead.t stack self ref_self ->
+        CanRead.t stack other ref_other ->
         {{
           SimulateM.eval_f
             (PartialEq.run_ne ref_self ref_other)
@@ -95,6 +99,8 @@ Module Ord.
         Prop := {
       cmp (ref_self ref_other : '& Self) (stack : Stack.t)
           (self other : Self) :
+        CanRead.t stack self ref_self ->
+        CanRead.t stack other ref_other ->
         {{
           SimulateM.eval_f
             (links.cmp.Ord.run_cmp ref_self ref_other)
@@ -166,6 +172,8 @@ Module PartialOrd.
         Prop := {
       partial_cmp (ref_self : '& Self) (ref_other : '& Rhs) (stack : Stack.t)
           (self : Self) (other : Rhs) :
+        CanRead.t stack self ref_self ->
+        CanRead.t stack other ref_other ->
         {{
           SimulateM.eval_f
             (links.cmp.PartialOrd.run_partial_cmp ref_self ref_other)
@@ -175,25 +183,23 @@ Module PartialOrd.
             stack
           )
         }};
-      lt (ref_self : '& Self) (ref_other : '& Rhs) (stack : Stack.t) :
-        SimulateM.eval_f
-          (links.cmp.PartialOrd.run_lt ref_self ref_other)
-          stack =
-        let*s self := SimulateM.read stack ref_self.(Ref.core) in
-        match self with
-        | Output.Success self =>
-          let*s other := SimulateM.read stack ref_other.(Ref.core) in
-          match other with
-          | Output.Success other =>
-            SimulateM.Pure (Output.Success (lt self other), stack)
-          | Output.Exception exception =>
-            SimulateM.Pure (Output.Exception (R := bool) exception, stack)
-          end
-        | Output.Exception exception =>
-          SimulateM.Pure (Output.Exception (R := bool) exception, stack)
-        end;
+      lt (ref_self : '& Self) (ref_other : '& Rhs) (stack : Stack.t)
+          (self : Self) (other : Rhs) :
+        CanRead.t stack self ref_self ->
+        CanRead.t stack other ref_other ->
+        {{
+          SimulateM.eval_f
+            (links.cmp.PartialOrd.run_lt ref_self ref_other)
+            stack 🌲
+          (
+            Output.Success (I.(lt) self other),
+            stack
+          )
+        }};
       le (ref_self : '& Self) (ref_other : '& Rhs) (stack : Stack.t)
           (self : Self) (other : Rhs) :
+        CanRead.t stack self ref_self ->
+        CanRead.t stack other ref_other ->
         {{
           SimulateM.eval_f
             (links.cmp.PartialOrd.run_le ref_self ref_other)
@@ -205,6 +211,8 @@ Module PartialOrd.
         }};
       gt (ref_self : '& Self) (ref_other : '& Rhs) (stack : Stack.t)
           (self : Self) (other : Rhs) :
+        CanRead.t stack self ref_self ->
+        CanRead.t stack other ref_other ->
         {{
           SimulateM.eval_f
             (links.cmp.PartialOrd.run_gt ref_self ref_other)
@@ -216,6 +224,8 @@ Module PartialOrd.
         }};
       ge (ref_self : '& Self) (ref_other : '& Rhs) (stack : Stack.t)
           (self : Self) (other : Rhs) :
+        CanRead.t stack self ref_self ->
+        CanRead.t stack other ref_other ->
         {{
           SimulateM.eval_f
             (links.cmp.PartialOrd.run_ge ref_self ref_other)
@@ -230,3 +240,31 @@ Module PartialOrd.
   Export (hints) Eq.
 End PartialOrd.
 Export (hints) PartialOrd.
+
+(* impl PartialEq for Ordering *)
+Module Impl_PartialEq_for_Ordering.
+  Definition Self : Set := Ordering.t.
+
+  Definition eq (self other : Self) : bool :=
+    match self, other with
+    | Ordering.Less, Ordering.Less => true
+    | Ordering.Equal, Ordering.Equal => true
+    | Ordering.Greater, Ordering.Greater => true
+    | _, _ => false
+    end.
+
+  Definition ne (self other : Self) : bool :=
+    negb (eq self other).
+
+  Global Instance I : PartialEq.C Self Self := {|
+    PartialEq.eq := eq;
+    PartialEq.ne := ne;
+  |}.
+
+  Module Eq.
+    Instance I : PartialEq.Eq.C Self Self I.
+    Admitted.
+  End Eq.
+  Export (hints) Eq.
+End Impl_PartialEq_for_Ordering.
+Export (hints) Impl_PartialEq_for_Ordering.

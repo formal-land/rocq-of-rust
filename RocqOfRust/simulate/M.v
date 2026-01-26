@@ -593,3 +593,16 @@ End RefStub.
 
 (* This makes reasoning about arrays simpler, as now [cbn] works through [Z.to_nat]. *)
 Arguments Pos.to_nat _ /.
+
+(** A convenient predicate to specify read-only functions, when they need to access references. *)
+Module CanRead.
+  Inductive t {A : Set} `{Link A} {pointer_kind : Pointer.Kind.t} (stack : Stack.t) (value : A) :
+      Ref.t pointer_kind A -> Prop :=
+  | Immediate :
+    t stack value (Ref.immediate pointer_kind value)
+  | Mutable
+      (ref_core : Ref.Core.t A)
+      (run : Stack.CanAccess.t stack ref_core) :
+    Stack.CanAccess.read run = Some value ->
+    t stack value {| Ref.core := ref_core |}.
+End CanRead.
