@@ -15,6 +15,23 @@ Require Import ruint.simulate.cmp.
 Require Import ruint.simulate.div.
 Require Import ruint.simulate.mul.
 
+Definition add
+    {WIRE : Set} `{Link WIRE}
+    {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
+    `{!InterpreterTypes.C WIRE_types}
+    (interpreter : Interpreter.t WIRE WIRE_types) :
+    Interpreter.t WIRE WIRE_types :=
+  gas_macro interpreter constants.VERYLOW id (fun interpreter =>
+  popn_top_macro interpreter {| Integer.value := 1 |} id (fun arr top interpreter =>
+    let '{| ArrayPair.x := op1 |} := arr.(array.value) in
+    let op2 := top.(RefStub.projection) interpreter.(Interpreter.stack) in
+    let stack :=
+      top.(RefStub.injection)
+        interpreter.(Interpreter.stack) (Impl_Uint.wrapping_add op1 op2) in
+    interpreter
+      <| Interpreter.stack := stack |>
+  )).
+
 Lemma add_eq
     {WIRE H : Set} `{Link WIRE} `{Link H}
     {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
@@ -34,22 +51,14 @@ Lemma add_eq
     (
       Output.Success tt,
       [
-        gas_macro interpreter constants.VERYLOW id (fun interpreter =>
-        popn_top_macro interpreter {| Integer.value := 1 |} id (fun arr top interpreter =>
-          let '{| ArrayPair.x := op1 |} := arr.(array.value) in
-          let op2 := top.(RefStub.projection) interpreter.(Interpreter.stack) in
-          let stack :=
-            top.(RefStub.injection)
-              interpreter.(Interpreter.stack) (Impl_Uint.wrapping_add op1 op2) in
-          interpreter
-            <| Interpreter.stack := stack |>
-        ));
+        add interpreter;
         _host
       ]%stack
     )
   }}.
 Proof.
   intros.
+  unfold add.
   gas_macro_eq InterpreterTypesEq.
   popn_top_macro_eq InterpreterTypesEq.
   cbn.
@@ -109,6 +118,23 @@ Proof.
   apply Run.Pure.
 Qed.
 
+Definition sub
+    {WIRE : Set} `{Link WIRE}
+    {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
+    `{!InterpreterTypes.C WIRE_types}
+    (interpreter : Interpreter.t WIRE WIRE_types) :
+    Interpreter.t WIRE WIRE_types :=
+  gas_macro interpreter constants.VERYLOW id (fun interpreter =>
+  popn_top_macro interpreter {| Integer.value := 1 |} id (fun arr top interpreter =>
+    let '{| ArrayPair.x := op1 |} := arr.(array.value) in
+    let op2 := top.(RefStub.projection) interpreter.(Interpreter.stack) in
+    let stack :=
+      top.(RefStub.injection)
+        interpreter.(Interpreter.stack) (Impl_Uint.wrapping_sub op1 op2) in
+    interpreter
+      <| Interpreter.stack := stack |>
+  )).
+
 Lemma sub_eq
     {WIRE H : Set} `{Link WIRE} `{Link H}
     {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
@@ -128,22 +154,14 @@ Lemma sub_eq
     (
       Output.Success tt,
       [
-        gas_macro interpreter constants.VERYLOW id (fun interpreter =>
-        popn_top_macro interpreter {| Integer.value := 1 |} id (fun arr top interpreter =>
-          let '{| ArrayPair.x := op1 |} := arr.(array.value) in
-          let op2 := top.(RefStub.projection) interpreter.(Interpreter.stack) in
-          let stack :=
-            top.(RefStub.injection)
-              interpreter.(Interpreter.stack) (Impl_Uint.wrapping_sub op1 op2) in
-          interpreter
-            <| Interpreter.stack := stack |>
-        ));
+        sub interpreter;
         _host
       ]%stack
     )
   }}.
 Proof.
   intros.
+  unfold sub.
   gas_macro_eq InterpreterTypesEq.
   popn_top_macro_eq InterpreterTypesEq.
   cbn.
