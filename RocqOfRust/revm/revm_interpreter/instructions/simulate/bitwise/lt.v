@@ -19,7 +19,7 @@ Require Import ruint.simulate.from.
 Definition op_lt
     {WIRE : Set} `{Link WIRE}
     {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
-    {IInterpreterTypes : InterpreterTypes.C WIRE_types}
+    `{!InterpreterTypes.C WIRE_types}
     (interpreter : Interpreter.t WIRE WIRE_types) :
     Interpreter.t WIRE WIRE_types :=
   gas_macro interpreter constants.VERYLOW id (fun interpreter =>
