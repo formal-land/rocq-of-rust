@@ -1,6 +1,4 @@
-Require Import RocqOfRust.RocqOfRust.
-Require Import RocqOfRust.links.M.
-Require Import RocqOfRust.simulate.M.
+Require Import simulate.RocqOfRust.
 Require Import alloy_primitives.links.aliases.
 Require Import core.links.array.
 Require Import revm.revm_context_interface.links.host.

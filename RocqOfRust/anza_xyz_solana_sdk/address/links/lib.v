@@ -1,5 +1,4 @@
-Require Import RocqOfRust.RocqOfRust.
-Require Import RocqOfRust.links.M.
+Require Import links.RocqOfRust.
 Require Import anza_xyz_solana_sdk.address.lib.
 Require Import core.links.array.
 

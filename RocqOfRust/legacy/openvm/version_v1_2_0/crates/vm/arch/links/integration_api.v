@@ -1,5 +1,4 @@
-Require Import RocqOfRust.RocqOfRust.
-Require Import RocqOfRust.links.M.
+Require Import links.RocqOfRust.
 Require Import openvm.version_v1_2_0.crates.vm.arch.integration_api.
 
 (*

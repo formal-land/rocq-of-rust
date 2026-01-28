@@ -1,6 +1,5 @@
 (* Generated *)
-Require Import RocqOfRust.RocqOfRust.
-Require Import RocqOfRust.links.M.
+Require Import links.RocqOfRust.
 Require Import revm_interpreter.gas.constants.
 
 Instance run_ZERO :

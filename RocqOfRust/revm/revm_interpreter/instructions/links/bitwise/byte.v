@@ -1,5 +1,5 @@
 Require Import RocqOfRust.RocqOfRust.
-Require Import RocqOfRust.links.M.
+Require Import links.RocqOfRust.
 Require Import core.convert.links.num.
 Require Import core.links.cmp.
 Require Import core.links.result.

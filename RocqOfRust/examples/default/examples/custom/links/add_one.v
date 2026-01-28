@@ -1,5 +1,4 @@
-Require Import RocqOfRust.RocqOfRust.
-Require Import RocqOfRust.links.M.
+Require Import links.RocqOfRust.
 Require Import examples.default.examples.custom.add_one.
 
 Instance run_add_one (x : u32) : Run.Trait add_one [] [] [φ x] u32.

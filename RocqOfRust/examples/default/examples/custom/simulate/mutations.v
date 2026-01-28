@@ -1,6 +1,4 @@
-Require Import RocqOfRust.RocqOfRust.
-Require Import RocqOfRust.links.M.
-Require Import RocqOfRust.simulate.M.
+Require Import simulate.RocqOfRust.
 Require Import core.links.option.
 Require Import examples.default.examples.custom.links.mutations.
 

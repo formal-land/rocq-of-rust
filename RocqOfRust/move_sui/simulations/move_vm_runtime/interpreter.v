@@ -1,5 +1,4 @@
-Require Import RocqOfRust.RocqOfRust.
-Require Import RocqOfRust.links.M.
+Require Import links.RocqOfRust.
 Require Import RocqOfRust.simulations.M.
 Require Import RocqOfRust.lib.lib.
 Require Import move_sui.simulations.move_binary_format.errors.

@@ -1,5 +1,4 @@
-Require Import RocqOfRust.RocqOfRust.
-Require Import links.M.
+Require Import links.RocqOfRust.
 
 (* pub const BLOCK_HASH_HISTORY: u64 = 256; *)
 Definition BLOCK_HASH_HISTORY : u64 := {|

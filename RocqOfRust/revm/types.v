@@ -1,6 +1,5 @@
 (* Generated file. Do not edit. *)
-Require Import RocqOfRust.RocqOfRust.
-Require Import links.M.
+Require Import links.RocqOfRust.
 Require Import revm.links.dependencies.
 
 Module Bytecode.

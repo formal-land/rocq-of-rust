@@ -52,8 +52,7 @@ def find_top_level_items_by_kind_in(
 
 def get_header(imports: list[str]) -> str:
     return """(* Generated file. Do not edit. *)
-Require Import RocqOfRust.RocqOfRust.
-Require Import links.M.
+Require Import links.RocqOfRust.
 """ + "".join("Require " + import_ + ".\n" for import_ in imports)
 
 

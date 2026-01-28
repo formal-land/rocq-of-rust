@@ -1,5 +1,4 @@
-Require Import RocqOfRust.RocqOfRust.
-Require Import RocqOfRust.links.M.
+Require Import links.RocqOfRust.
 Require Import alloy_primitives.links.aliases.
 Require Import alloy_primitives.links.common.
 Require Import core.convert.links.mod.

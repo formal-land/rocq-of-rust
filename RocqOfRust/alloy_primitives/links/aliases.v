@@ -1,5 +1,4 @@
-Require Import RocqOfRust.RocqOfRust.
-Require Import RocqOfRust.links.M.
+Require Import links.RocqOfRust.
 Require Import alloy_primitives.bits.links.fixed_FixedBytes.
 Require Import alloy_primitives.signed.links.int.
 Require Import ruint.links.lib.

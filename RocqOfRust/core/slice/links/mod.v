@@ -1,5 +1,4 @@
-Require Import RocqOfRust.RocqOfRust.
-Require Import links.M.
+Require Import links.RocqOfRust.
 Require Import core.links.option.
 Require Import core.slice.mod.
 Require Import core.slice.links.index.

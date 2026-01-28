@@ -1,5 +1,4 @@
-Require Import RocqOfRust.RocqOfRust.
-Require Import RocqOfRust.links.M.
+Require Import links.RocqOfRust.
 Require Import openvm_stack_backend.version_v1_1_0.crates.stark_backend.interaction.mod.
 Require Import plonky3.commit_539bbc84.air.links.air.
 

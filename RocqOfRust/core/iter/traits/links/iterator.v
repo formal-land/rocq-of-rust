@@ -1,5 +1,4 @@
-Require Import RocqOfRust.RocqOfRust.
-Require Import RocqOfRust.links.M.
+Require Import links.RocqOfRust.
 Require Import core.array.links.iter_IntoIter.
 Require Import core.iter.adapters.links.map_Map.
 Require Import core.iter.traits.iterator.

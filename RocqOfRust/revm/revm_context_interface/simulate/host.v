@@ -1,6 +1,4 @@
-Require Import RocqOfRust.RocqOfRust.
-Require Import RocqOfRust.links.M.
-Require Import RocqOfRust.simulate.M.
+Require Import simulate.RocqOfRust.
 Require Import alloy_primitives.bits.links.address.
 Require Import revm.revm_context_interface.links.host.
 Require Import revm.revm_context_interface.links.journaled_state.

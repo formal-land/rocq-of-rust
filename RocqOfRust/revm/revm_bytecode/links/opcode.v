@@ -1,5 +1,4 @@
-Require Import RocqOfRust.RocqOfRust.
-Require Import links.M.
+Require Import links.RocqOfRust.
 Require Import revm.revm_bytecode.opcode.
 
 (* pub struct OpCode(u8); *)
