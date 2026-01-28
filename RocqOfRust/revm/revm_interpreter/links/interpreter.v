@@ -1,5 +1,4 @@
-Require Import RocqOfRust.RocqOfRust.
-Require Import RocqOfRust.links.M.
+Require Import links.RocqOfRust.
 Require Import alloy_primitives.bytes.links.mod.
 Require Import core.links.array.
 Require Import revm_interpreter.interpreter.links.shared_memory.

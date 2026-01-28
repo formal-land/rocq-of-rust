@@ -1,5 +1,4 @@
-Require Import RocqOfRust.RocqOfRust.
-Require Import links.M.
+Require Import links.RocqOfRust.
 Require Import core.ptr.const_ptr.
 
 Module Impl_pointer_const_T.

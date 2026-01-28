@@ -1,5 +1,4 @@
-Require Import RocqOfRust.RocqOfRust.
-Require Import RocqOfRust.links.M.
+Require Import links.RocqOfRust.
 Require Import core.links.cmp.
 Require Import pinocchio.links.pubkey.
 Require Import pinocchio.account_info.

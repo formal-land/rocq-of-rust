@@ -1,5 +1,4 @@
-Require Import RocqOfRust.RocqOfRust.
-Require Import RocqOfRust.links.M.
+Require Import links.RocqOfRust.
 Require Import alloy_primitives.bits.links.fixed.
 Require Import alloy_primitives.bits.address.
 Require Import core.links.array.

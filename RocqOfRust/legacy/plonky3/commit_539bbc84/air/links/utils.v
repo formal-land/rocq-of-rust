@@ -1,5 +1,4 @@
-Require Import RocqOfRust.RocqOfRust.
-Require Import RocqOfRust.links.M.
+Require Import links.RocqOfRust.
 Require Import plonky3.commit_539bbc84.air.utils.
 
 (* 

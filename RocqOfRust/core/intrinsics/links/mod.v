@@ -1,5 +1,4 @@
-Require Import RocqOfRust.RocqOfRust.
-Require Import RocqOfRust.links.M.
+Require Import links.RocqOfRust.
 Require Import core.links.cmpOrdering.
 Require Import core.intrinsics.mod.
 

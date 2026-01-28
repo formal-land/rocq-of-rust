@@ -1,5 +1,4 @@
-Require Import RocqOfRust.RocqOfRust.
-Require Import links.M.
+Require Import links.RocqOfRust.
 Require Import simulate.M.
 Require Import core.num.simulate.mod.
 Require Import revm.revm_interpreter.links.gas.

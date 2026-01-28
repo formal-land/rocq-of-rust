@@ -1,5 +1,4 @@
-Require Import RocqOfRust.RocqOfRust.
-Require Import links.M.
+Require Import links.RocqOfRust.
 Require Import move_sui.translations.move_binary_format.file_format.
 
 Module ModuleHandleIndex.

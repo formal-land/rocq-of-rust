@@ -1,5 +1,4 @@
-Require Import RocqOfRust.RocqOfRust.
-Require Import RocqOfRust.links.M.
+Require Import links.RocqOfRust.
 Require Import RocqOfRust.simulate.M.
 Require Import core.links.cmp.
 Require Import core.simulate.cmp.

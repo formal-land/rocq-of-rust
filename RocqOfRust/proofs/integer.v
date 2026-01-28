@@ -1,6 +1,5 @@
-Require Import RocqOfRust.RocqOfRust.
+Require Import links.RocqOfRust.
 Require Import RocqOfRust.lib.proofs.lib.
-Require Import links.M.
 Require Import simulations_legacy.integer.
 
 Module U64.

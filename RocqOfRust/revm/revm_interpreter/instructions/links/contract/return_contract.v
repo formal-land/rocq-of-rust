@@ -1,5 +1,4 @@
-Require Import RocqOfRust.RocqOfRust.
-Require Import RocqOfRust.links.M.
+Require Import links.RocqOfRust.
 Require Import alloc.links.boxed.
 Require Import alloc.links.slice.
 Require Import alloy_primitives.bits.links.address.

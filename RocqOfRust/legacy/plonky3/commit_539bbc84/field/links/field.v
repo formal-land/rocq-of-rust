@@ -1,5 +1,4 @@
-Require Import RocqOfRust.RocqOfRust.
-Require Import RocqOfRust.links.M.
+Require Import links.RocqOfRust.
 Require Import core.links.array.
 Require Import core.links.clone.
 Require Import core.links.cmp.

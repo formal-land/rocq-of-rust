@@ -1,5 +1,4 @@
-Require Import RocqOfRust.RocqOfRust.
-Require Import RocqOfRust.links.M.
+Require Import links.RocqOfRust.
 
 (* pub struct Request<'a>(Tagged<dyn Erased<'a> + 'a>); *)
 Module Request.

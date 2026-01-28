@@ -1,5 +1,4 @@
-Require Import RocqOfRust.RocqOfRust.
-Require Import RocqOfRust.links.M.
+Require Import links.RocqOfRust.
 
 (* pub struct Map<I, F> { /* private fields */ } *)
 Module Map.

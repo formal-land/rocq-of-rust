@@ -1,5 +1,4 @@
-Require Import RocqOfRust.RocqOfRust.
-Require Import RocqOfRust.links.M.
+Require Import links.RocqOfRust.
 Require Import core.links.array.
 Require Import revm.revm_bytecode.links.opcode.
 Require Import revm.revm_interpreter.instructions.links.arithmetic.

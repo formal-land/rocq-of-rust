@@ -1,5 +1,4 @@
-Require Import RocqOfRust.RocqOfRust.
-Require Import RocqOfRust.links.M.
+Require Import links.RocqOfRust.
 Require Import core.hint.
 
 (* pub const unsafe fn unreachable_unchecked() -> ! *)

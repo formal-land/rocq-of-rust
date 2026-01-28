@@ -1,5 +1,4 @@
-Require Import RocqOfRust.RocqOfRust.
-Require Import RocqOfRust.links.M.
+Require Import links.RocqOfRust.
 Require Import revm.revm_interpreter.links.interpreter_Interpreter.
 Require Import revm.revm_interpreter.links.interpreter_types.
 Require Import revm.revm_interpreter.table.

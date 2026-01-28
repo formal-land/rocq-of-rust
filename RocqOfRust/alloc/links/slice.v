@@ -1,5 +1,4 @@
-Require Import RocqOfRust.RocqOfRust.
-Require Import RocqOfRust.links.M.
+Require Import links.RocqOfRust.
 Require Import alloc.links.alloc.
 Require Import alloc.slice.
 Require Import alloc.vec.links.mod.

@@ -1,5 +1,4 @@
-Require Import RocqOfRust.RocqOfRust.
-Require Import RocqOfRust.links.M.
+Require Import links.RocqOfRust.
 Require Import core.links.cmp.
 Require Import revm.revm_interpreter.instructions.arithmetic.
 Require Import revm.revm_context_interface.links.host.

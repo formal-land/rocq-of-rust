@@ -1,5 +1,4 @@
-Require Import RocqOfRust.RocqOfRust.
-Require Import RocqOfRust.links.M.
+Require Import links.RocqOfRust.
 Require Import core.links.array.
 
 (* pub struct FixedBytes<const N: usize>(pub [u8; N]); *)

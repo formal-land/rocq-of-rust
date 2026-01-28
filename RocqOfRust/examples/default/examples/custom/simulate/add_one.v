@@ -1,5 +1,4 @@
-Require Import RocqOfRust.RocqOfRust.
-Require Import RocqOfRust.links.M.
+Require Import links.RocqOfRust.
 Require Import RocqOfRust.simulate.M.
 Require Import RocqOfRust.lib.simulate.lib.
 Require Import examples.default.examples.custom.links.add_one.

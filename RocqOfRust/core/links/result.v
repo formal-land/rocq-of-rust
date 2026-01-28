@@ -1,5 +1,4 @@
-Require Import RocqOfRust.RocqOfRust.
-Require Import links.M.
+Require Import links.RocqOfRust.
 Require Import core.convert.links.mod_Infaillible.
 Require Import core.ops.links.try_trait.
 Require Import core.ops.links.control_flow.
