@@ -1,6 +1,7 @@
 Require Import RocqOfRust.RocqOfRust.
 Require Import RocqOfRust.links.M.
 Require Import RocqOfRust.simulate.M.
+Require Import RocqOfRust.lib.simulate.lib.
 Require Import core.ops.links.bit.
 Require Import core.ops.simulate.bit.
 Require Import ruint.links.bits.
@@ -130,14 +131,9 @@ Module Impl_Uint.
   Definition Self (BITS LIMBS : usize) : Set :=
     Uint.t BITS LIMBS.
 
-  (* Get byte at index (big-endian, so index 0 is the most significant byte) *)
+  (* Get byte at index (little-endian, so index 0 is the least significant byte) *)
   Definition byte {BITS LIMBS : usize} (self : Self BITS LIMBS) (index : usize) : u8 :=
-    let num_bytes := Z.div BITS.(Integer.value) 8 in
-    if index.(Integer.value) >=? num_bytes then
-      {| Integer.value := 0 |}
-    else
-      let shift_amount := Z.mul (num_bytes - 1 - index.(Integer.value)) 8 in
-      {| Integer.value := Z.land (Z.shiftr self.(Uint.value) shift_amount) 255 |}.
+    (self.(Uint.value) / (256 ^ i[index])) mod 256.
 
   Lemma byte_eq (stack : Stack.t)
       {BITS LIMBS : usize} (ref_self : '& (Self BITS LIMBS)) (index : usize)
