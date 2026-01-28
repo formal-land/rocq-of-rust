@@ -2,9 +2,9 @@ Require Import simulate.RocqOfRust.
 Require Import ruint.links.div.
 
 Module Impl_Uint.
-  Parameter wrapping_div :
-    forall {BITS LIMBS : usize} (x1 x2 : lib.Uint.t BITS LIMBS),
-    lib.Uint.t BITS LIMBS.
+  Definition wrapping_div {BITS LIMBS : usize} (x1 x2 : lib.Uint.t BITS LIMBS) :
+      lib.Uint.t BITS LIMBS :=
+    {| lib.Uint.value := x1.(lib.Uint.value) / x2.(lib.Uint.value) |}.
 
   Lemma wrapping_div_eq
       (stack : Stack.t)

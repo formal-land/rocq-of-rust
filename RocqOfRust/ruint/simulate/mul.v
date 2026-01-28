@@ -2,9 +2,9 @@ Require Import simulate.RocqOfRust.
 Require Import ruint.links.mul.
 
 Module Impl_Uint.
-  Parameter wrapping_mul :
-    forall {BITS LIMBS : usize} (x1 x2 : lib.Uint.t BITS LIMBS),
-    lib.Uint.t BITS LIMBS.
+  Definition wrapping_mul {BITS LIMBS : usize} (x1 x2 : lib.Uint.t BITS LIMBS) :
+      lib.Uint.t BITS LIMBS :=
+    {| lib.Uint.value := (x1.(lib.Uint.value) * x2.(lib.Uint.value)) mod (2 ^ BITS.(Integer.value)) |}.
 
   Lemma wrapping_mul_eq
       (stack : Stack.t)
