@@ -1564,9 +1564,9 @@ Lemma cast_bool_eq (kind_target : IntegerKind.t) (source : bool) :
 Proof.
 Admitted.
 
-(* TODO: define this function *)
-Parameter cast_integer : forall {kind_source} kind_target,
-  Integer.t kind_source -> Integer.t kind_target.
+Definition cast_integer {kind_source : IntegerKind.t} (kind_target : IntegerKind.t)
+    (source : Integer.t kind_source) : Integer.t kind_target :=
+  {| Integer.value := Integer.normalize_wrap kind_target source.(Integer.value) |}.
 
 Lemma cast_integer_eq (kind_source kind_target : IntegerKind.t) (source : Integer.t kind_source) :
   M.cast (Φ (Integer.t kind_target)) (φ source) =

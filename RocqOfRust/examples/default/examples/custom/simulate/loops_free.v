@@ -198,6 +198,7 @@ Lemma min3_eq (a b c : u32) :
 Proof.
   destruct a as [a]; destruct b as [b]; destruct c as [c].
   unfold min3; cbn.
+  apply Run.LetUnfold.
   eapply Run.Call. { apply Run.Pure. } cbn.
   eapply Run.Call. { apply Run.Pure. } cbn.
   destruct (a <? b); cbn.

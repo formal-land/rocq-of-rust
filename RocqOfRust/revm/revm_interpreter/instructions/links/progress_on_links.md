@@ -16,22 +16,6 @@
 - [x] `exp`
 - [x] `signextend`
 
-## Bitwise
-
-- [x] `lt`
-- [x] `gt`
-- [x] `slt`
-- [x] `sgt`
-- [x] `bitwise_eq`
-- [x] `bitwise_is_zero`
-- [x] `bitwise_bitand`
-- [x] `bitwise_bitor`
-- [x] `bitwise_bitxor`
-- [x] `bitwise_not`
-- [x] `bitwise_sar`
-- [x] `bitwise_shl`
-- [x] `bitwise_shr`
-
 ## Block_info
 
 - [x] `chainid`
@@ -149,6 +133,62 @@
 - [ ] `cast_slice_to_u256`
 - [x] `into_address`
 
+## Bitwise/Bitand
+
+- [x] `bitwise_bitand`
+
+## Bitwise/Bitor
+
+- [x] `bitwise_bitor`
+
+## Bitwise/Bitxor
+
+- [x] `bitwise_bitxor`
+
+## Bitwise/Byte
+
+- [x] `byte`
+
+## Bitwise/Eq
+
+- [x] `bitwise_eq`
+
+## Bitwise/Gt
+
+- [x] `gt`
+
+## Bitwise/Iszero
+
+- [x] `bitwise_is_zero`
+
+## Bitwise/Lt
+
+- [x] `lt`
+
+## Bitwise/Not
+
+- [x] `bitwise_not`
+
+## Bitwise/Sar
+
+- [x] `bitwise_sar`
+
+## Bitwise/Sgt
+
+- [x] `sgt`
+
+## Bitwise/Shl
+
+- [x] `bitwise_shl`
+
+## Bitwise/Shr
+
+- [x] `bitwise_shr`
+
+## Bitwise/Slt
+
+- [x] `slt`
+
 ## Contract/Call
 
 - [x] `call`
@@ -203,7 +243,7 @@
 
 ## Summary
 
-- Total: 121
+- Total: 122
 - Admitted: 6
-- Defined: 115
-- Percentage: 95.04%
+- Defined: 116
+- Percentage: 95.08%

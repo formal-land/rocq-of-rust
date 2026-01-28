@@ -50,6 +50,7 @@ Proof.
     cbn ||
     get_can_access ||
     eapply Run.Call ||
+    apply Run.LetUnfold ||
     apply Run.Pure
   ).
 Qed.
@@ -67,6 +68,7 @@ Proof.
     cbn ||
     get_can_access ||
     eapply Run.Call ||
+    apply Run.LetUnfold ||
     apply Run.Pure
   ).
 Qed.

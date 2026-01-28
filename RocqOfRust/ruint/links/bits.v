@@ -21,11 +21,11 @@ Module Impl_Uint.
 
   (* pub const fn byte(&self, index: usize) -> u8 *)
   Instance run_byte
-    (BITS LIMBS BYTES : usize)
-    (x : '& (Self BITS LIMBS)) 
+    (BITS LIMBS : usize)
+    (self : '& (Self BITS LIMBS)) 
     (index : usize) :
     Run.Trait
-      (bits.Impl_ruint_Uint_BITS_LIMBS.byte (φ BITS) (φ LIMBS)) [] [] [ φ x; φ index ]
+      (bits.Impl_ruint_Uint_BITS_LIMBS.byte (φ BITS) (φ LIMBS)) [] [] [ φ self; φ index ]
       u8.
   Admitted.
   Global Opaque run_byte.

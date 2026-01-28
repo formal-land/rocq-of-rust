@@ -3,7 +3,7 @@ Require Import RocqOfRust.links.M.
 Require Import RocqOfRust.simulate.M.
 Require Import RocqOfRust.lib.simulate.lib.
 Require Import revm.revm_context_interface.links.host.
-Require Import revm.revm_interpreter.instructions.simulate.bitwise.
+Require Import revm.revm_interpreter.instructions.simulate.bitwise.lt.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.tests.interpreter.
 Require Import revm.revm_interpreter.tests.interpreter_types.
@@ -18,7 +18,7 @@ Goal
   macros.gas_macro interpreter constants.VERYLOW id (fun interpreter =>
   macros.popn_top_macro interpreter {| Integer.value := 1 |} id (fun arr top interpreter =>
   interpreter)) =
-  bitwise.lt interpreter.
+  op_lt interpreter.
 Proof.
   intros.
   unfold lt.

@@ -1,6 +1,7 @@
 Require Import RocqOfRust.RocqOfRust.
 Require Import RocqOfRust.links.M.
 Require Import RocqOfRust.simulate.M.
+Require Import RocqOfRust.lib.simulate.lib.
 Require Import alloy_primitives.links.aliases.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_types.
@@ -8,6 +9,7 @@ Require Import revm.revm_interpreter.simulate.gas.
 Require Import revm.revm_interpreter.simulate.interpreter_types.
 Require Import revm.revm_specification.links.hardfork.
 Require Import revm.revm_specification.simulate.hardfork.
+Require Import ruint.links.lib.
 
 Definition gas_macro {WIRE K : Set} `{Link WIRE}
     {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
@@ -49,6 +51,7 @@ Definition gas_macro {WIRE K : Set} `{Link WIRE}
 
 Ltac gas_macro_eq InterpreterTypesEq :=
   unfold gas_macro;
+  apply Run.LetUnfold;
   eapply Run.Call; [
     apply InterpreterTypesEq
       .(InterpreterTypes.Eq.LoopControl_for_Control)
@@ -71,11 +74,13 @@ Ltac gas_macro_eq InterpreterTypesEq :=
     eapply Run.Call; [
       apply Run.Pure
     |];
+    apply Run.LetUnfold;
     eapply Run.Call; [
       apply InterpreterTypesEq
         .(InterpreterTypes.Eq.LoopControl_for_Control)
         .(LoopControl.Eq.set_instruction_result)
     |];
+    cbn;
     apply Run.Pure
   ].
 
@@ -113,6 +118,8 @@ Ltac popn_macro_eq InterpreterTypesEq :=
       .(StackTrait.Eq.popn)
   |];
   destruct _.(InterpreterTypes.StackTrait_for_Stack).(StackTrait.popn) as [[|] ?]; cbn; [|
+    apply Run.LetUnfold;
+    cbn;
     eapply Run.Call; [
       apply InterpreterTypesEq
         .(InterpreterTypes.Eq.LoopControl_for_Control)
@@ -169,6 +176,7 @@ Ltac popn_top_macro_eq InterpreterTypesEq :=
   |];
   destruct _.(InterpreterTypes.StackTrait_for_Stack).(StackTrait.popn_top) as [[[? ?]|] ?];
   [|
+    apply Run.LetUnfold;
     eapply Run.Call; [
       apply InterpreterTypesEq
         .(InterpreterTypes.Eq.LoopControl_for_Control)
@@ -209,6 +217,7 @@ Definition check_macro {WIRE K : Set} `{Link WIRE}
 
 Ltac check_macro_eq InterpreterTypesEq :=
   unfold check_macro; cbn;
+  apply Run.LetUnfold;
   eapply Run.Call; [
     apply InterpreterTypesEq
       .(InterpreterTypes.Eq.RuntimeFlag_for_RuntimeFlag)
@@ -228,6 +237,8 @@ Ltac check_macro_eq InterpreterTypesEq :=
   |];
   cbn;
   destruct Impl_SpecId.is_enabled_in; cbn; [|
+    apply Run.LetUnfold;
+    cbn;
     eapply Run.Call; [
       apply InterpreterTypesEq
         .(InterpreterTypes.Eq.LoopControl_for_Control)
@@ -236,3 +247,9 @@ Ltac check_macro_eq InterpreterTypesEq :=
     cbn;
     apply Run.Pure
   ].
+
+Definition as_u64_saturated_macro (v : aliases.U256.t) : u64 :=
+  Z.min v.(Uint.value) (2 ^ 64 - 1).
+
+Definition as_usize_saturated_macro (v : aliases.U256.t) : usize :=
+  Z.min v.(Uint.value) (2 ^ 64 - 1).

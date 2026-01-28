@@ -108,6 +108,7 @@ Module Impl_Gas.
     }
     cbn.
     repeat get_can_access.
+    apply Run.LetUnfold; cbn.
     apply Run.Pure.
   Qed.
 
@@ -176,14 +177,15 @@ Module Impl_Gas.
       apply Impl_u64.overflowing_sub_eq.
     }
     destruct Impl_u64.overflowing_sub as [remaining overflow].
+    apply Run.LetUnfold.
     eapply Run.Call. {
       apply Run.Pure.
     }
-    repeat progress get_can_access.
+    progress repeat (apply Run.LetUnfold || get_can_access).
     eapply Run.Call. {
       apply Run.Pure.
     }
-    destruct (negb overflow); cbn; progress repeat get_can_access.
+    destruct (negb overflow); cbn; progress repeat (apply Run.LetUnfold || get_can_access).
     { apply Run.Pure. }
     { apply Run.Pure. }
     Transparent Impl_u64.overflowing_sub.
