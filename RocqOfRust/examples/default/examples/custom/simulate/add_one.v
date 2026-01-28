@@ -1,6 +1,4 @@
-Require Import links.RocqOfRust.
-Require Import RocqOfRust.simulate.M.
-Require Import RocqOfRust.lib.simulate.lib.
+Require Import simulate.RocqOfRust.
 Require Import examples.default.examples.custom.links.add_one.
 
 Definition add_one (x : u32) : u32 :=

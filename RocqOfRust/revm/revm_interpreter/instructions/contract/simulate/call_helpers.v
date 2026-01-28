@@ -1,5 +1,4 @@
-Require Import links.RocqOfRust.
-Require Import RocqOfRust.simulate.M.
+Require Import simulate.RocqOfRust.
 Require Import alloy_primitives.bytes.links.mod.
 Require Import core.ops.links.range.
 Require Import revm.revm_context_interface.links.journaled_state.

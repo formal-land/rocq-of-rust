@@ -1,6 +1,4 @@
-Require Import links.RocqOfRust.
-Require Import RocqOfRust.simulate.M.
-Require Import RocqOfRust.lib.simulate.lib.
+Require Import simulate.RocqOfRust.
 Require Import core.convert.links.mod.
 Require Import core.convert.simulate.mod.
 Require Import core.links.result.

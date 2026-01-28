@@ -1,5 +1,4 @@
-Require Import links.RocqOfRust.
-Require Import RocqOfRust.simulate.M.
+Require Import simulate.RocqOfRust.
 Require Import revm.revm_specification.links.hardfork.
 
 Module Impl_SpecId.

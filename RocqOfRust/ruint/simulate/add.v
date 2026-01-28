@@ -1,5 +1,4 @@
-Require Import links.RocqOfRust.
-Require Import RocqOfRust.simulate.M.
+Require Import simulate.RocqOfRust.
 Require Import ruint.links.add.
 
 Module Impl_Uint.
