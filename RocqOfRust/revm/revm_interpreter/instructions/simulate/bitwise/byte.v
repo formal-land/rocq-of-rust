@@ -166,10 +166,10 @@ Opaque Z.sub.
     }
     cbn.
     get_can_access.
-    apply Run.PureEq; repeat f_equal.
     destruct op1 as [op1]; cbn in *.
     assert (0 <= op1) by admit.
-    now replace (_ mod _) with (31 - Z.min op1 (2^64 - 1)) by lia.
+    replace (_ mod (2 ^ 64)) with (31 - Z.min op1 (2^64 - 1)) by lia.
+    apply Run.Pure.
   }
   { eapply Run.Call. {
       apply Impl_Uint.ZERO_eq.

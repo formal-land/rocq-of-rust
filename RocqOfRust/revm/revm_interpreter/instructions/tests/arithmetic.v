@@ -1,7 +1,4 @@
-Require Import RocqOfRust.RocqOfRust.
-Require Import RocqOfRust.links.M.
-Require Import RocqOfRust.simulate.M.
-Require Import RocqOfRust.lib.simulate.lib.
+Require Import simulate.RocqOfRust.
 Require Import revm.revm_context_interface.links.host.
 Require Import revm.revm_interpreter.instructions.simulate.arithmetic.
 Require Import revm.revm_interpreter.links.interpreter.

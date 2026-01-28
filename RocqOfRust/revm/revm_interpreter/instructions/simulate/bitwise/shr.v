@@ -18,12 +18,6 @@ Require Import ruint.simulate.bits.
 Require Import ruint.simulate.cmp.
 Require Import ruint.simulate.from.
 
-(* Helper to saturate usize conversion *)
-Definition as_usize_saturated (x : aliases.U256.t) : usize :=
-  if x.(Uint.value) >=? Z.of_nat (Nat.pow 2 64)
-  then {| Integer.value := Z.of_nat (Nat.pow 2 64 - 1) |}
-  else {| Integer.value := x.(Uint.value) |}.
-
 Definition op_shr
     {WIRE : Set} `{Link WIRE}
     {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
@@ -35,7 +29,7 @@ Definition op_shr
   popn_top_macro interpreter {| Integer.value := 1 |} id (fun arr top interpreter =>
     let '{| ArrayPair.x := shift_op |} := arr.(array.value) in
     let op2 := top.(RefStub.projection) interpreter.(Interpreter.stack) in
-    let shift := as_usize_saturated shift_op in
+    let shift := as_usize_saturated_macro shift_op in
     let result :=
       if shift.(Integer.value) <? 256
       then Impl_Shr_for_Uint.shr op2 shift
