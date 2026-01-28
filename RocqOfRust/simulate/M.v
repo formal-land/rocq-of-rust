@@ -281,6 +281,9 @@ Module SimulateM.
       (stack : Stack.t)
       (ref_core : Ref.Core.t B)
       (k : Stack.CanAccess.t stack ref_core -> t A)
+  | Let {B : Set}
+      (e : t B)
+      (k : B -> t A)
   | Call {B : Set} `{Link B}
       {f : list Value.t -> M} {args : list Value.t}
       (stack_in : Stack.t)
@@ -289,6 +292,7 @@ Module SimulateM.
   | Impossible {T : Set} (payload : T).
   Arguments Pure {_}.
   Arguments GetCanAccess {_ _ _}.
+  Arguments Let {_ _}.
   Arguments Call {_ _ _ _ _}.
   Arguments Impossible {_ _}.
 
@@ -297,6 +301,7 @@ Module SimulateM.
     | Pure value => e2 value
     | GetCanAccess Stack ref_core k =>
       GetCanAccess Stack ref_core (fun can_access => let_ (k can_access) e2)
+    | Let e k => Let e (fun value => let_ (k value) e2)
     | Call stack_in run_f k => Call stack_in run_f (fun output_stack => let_ (k output_stack) e2)
     | Impossible payload => Impossible payload
     end.
@@ -373,7 +378,7 @@ Module SimulateM.
     }
     { (* LetAlloc *)
       exact (
-        let_ (eval _ _ e stack) (fun '(output, stack) =>
+        Let (eval _ _ e stack) (fun '(output, stack) =>
         match output with
         | Output.Success value =>
           let ref_core :=
@@ -454,6 +459,18 @@ Module Run.
       (H_access : Stack.CanAccess.t stack ref_core)
     (H_k : {{ k H_access 🌲 value }}) :
     {{ SimulateM.GetCanAccess stack ref_core k 🌲 value }}
+  | LetUnfold {B : Set}
+      (e : SimulateM.t B)
+      (k : B -> SimulateM.t A) :
+    {{ SimulateM.let_ e k 🌲 value }} ->
+    {{ SimulateM.Let e k 🌲 value }}
+  | Let {B : Set}
+      (e : SimulateM.t B)
+      (k : B -> SimulateM.t A)
+      (result : B) :
+    {{ e 🌲 result }} ->
+    {{ k result 🌲 value }} ->
+    {{ SimulateM.Let e k 🌲 value }}
   | Call {B : Set} `{Link B}
       {f : list Value.t -> M} {args : list Value.t}
       (stack_in : Stack.t)
@@ -593,3 +610,16 @@ End RefStub.
 
 (* This makes reasoning about arrays simpler, as now [cbn] works through [Z.to_nat]. *)
 Arguments Pos.to_nat _ /.
+
+(** A convenient predicate to specify read-only functions, when they need to access references. *)
+Module CanRead.
+  Inductive t {A : Set} `{Link A} {pointer_kind : Pointer.Kind.t} (stack : Stack.t) (value : A) :
+      Ref.t pointer_kind A -> Prop :=
+  | Immediate :
+    t stack value (Ref.immediate pointer_kind value)
+  | Mutable
+      (ref_core : Ref.Core.t A)
+      (run : Stack.CanAccess.t stack ref_core) :
+    Stack.CanAccess.read run = Some value ->
+    t stack value {| Ref.core := ref_core |}.
+End CanRead.

@@ -124,15 +124,19 @@ Lemma static_call_eq
   }}.
 Proof.
   intros.
-  unfold static_call; cbn.
+  with_strategy transparent [run_static_call] unfold static_call, run_static_call; cbn.
   check_macro_eq InterpreterTypesEq.
   popn_macro_eq InterpreterTypesEq.
+  cbn.
+  apply Run.LetUnfold.
   eapply Run.Call. {
     apply Impl_From_U256_for_FixedBytes_32.from_eq.
   }
   eapply Run.Call. {
     apply Impl_Address.from_word_eq.
   }
+  cbn.
+  apply Run.LetUnfold.
   eapply Run.Call. {
     apply TryFrom_Uint_for_u64.try_from_eq.
   }
@@ -153,16 +157,17 @@ Proof.
   eapply Run.Call. {
     apply HostEq.
   }
-  destruct _.(Host.load_account_delegated) as [[load|] ?host]. 2: {
+  cbn.
+  apply Run.LetUnfold.
+  destruct _.(Host.load_account_delegated) as [[load|] ?host]; cbn. 2: {
+    apply Run.LetUnfold.
     eapply Run.Call. {
       apply InterpreterTypesEq.
     }
+    cbn.
     apply Run.Pure.
   }
-  cbn.
-  get_can_access.
-  get_can_access.
-  get_can_access.
+  progress repeat (apply Run.LetUnfold || get_can_access).
   eapply Run.Call. {
     apply call_helpers.calc_call_gas_eq.
   }
@@ -173,6 +178,7 @@ Proof.
     apply Run.Pure.
   }
   cbn.
+  apply Run.LetUnfold.
   get_can_access.
   eapply Run.Call. {
     apply InterpreterTypesEq.
@@ -193,4 +199,4 @@ Proof.
   }
   cbn.
   apply Run.PureEq; repeat f_equal.
-Defined.
+Qed.

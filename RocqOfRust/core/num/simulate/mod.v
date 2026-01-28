@@ -46,3 +46,31 @@ Module Impl_u64.
   Proof.
   Admitted.
 End Impl_u64.
+Export (hints) Impl_u64.
+
+Module Impl_usize.
+  Definition Self : Set := usize.
+
+  Definition MIN : Self := {| Integer.value := 0 |}.
+
+  Lemma min_eq (stack : Stack.t) :
+    {{
+      SimulateM.eval_f (Impl_usize.run_min) stack 🌲
+      (Output.Success (Ref.immediate Pointer.Kind.Raw MIN), stack)
+    }}.
+  Proof.
+    apply Run.Pure.
+  Qed.
+
+  Definition MAX : Self := {| Integer.value := 2 ^ 64 - 1 |}.
+
+  Lemma max_eq (stack : Stack.t) :
+    {{
+      SimulateM.eval_f (Impl_usize.run_max) stack 🌲
+      (Output.Success (Ref.immediate Pointer.Kind.Raw MAX), stack)
+    }}.
+  Proof.
+    repeat (eapply Run.Call || apply Run.Pure).
+  Qed.
+End Impl_usize.
+Export (hints) Impl_usize.

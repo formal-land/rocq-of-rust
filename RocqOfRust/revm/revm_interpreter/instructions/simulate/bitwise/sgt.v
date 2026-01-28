@@ -3,21 +3,21 @@ Require Import RocqOfRust.links.M.
 Require Import RocqOfRust.simulate.M.
 Require Import RocqOfRust.lib.simulate.lib.
 Require Import core.links.array.
+Require Import core.links.cmp.
 Require Import core.simulate.cmp.
 Require Import revm.revm_context_interface.links.host.
 Require Import revm.revm_interpreter.gas.simulate.constants.
-Require Import revm.revm_interpreter.instructions.links.bitwise.
+Require Import revm.revm_interpreter.instructions.links.bitwise.sgt.
+Require Import revm.revm_interpreter.instructions.simulate.i256.
 Require Import revm.revm_interpreter.instructions.simulate.macros.
-Require Import revm.revm_interpreter.links.gas.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_types.
-Require Import revm.revm_interpreter.simulate.gas.
 Require Import revm.revm_interpreter.simulate.interpreter_types.
 Require Import ruint.links.lib.
 Require Import ruint.simulate.cmp.
 Require Import ruint.simulate.from.
 
-Definition lt
+Definition op_sgt
     {WIRE : Set} `{Link WIRE}
     {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
     {IInterpreterTypes : InterpreterTypes.C WIRE_types}
@@ -28,10 +28,10 @@ Definition lt
     let '{| ArrayPair.x := op1 |} := arr.(array.value) in
     let op2 := top.(RefStub.projection) interpreter.(Interpreter.stack) in
     let result :=
-      if PartialOrd.lt op1 op2 then
-        {| Uint.value := 1 |}
-      else
-        {| Uint.value := 0 |} in
+      match i256_cmp op1 op2 with
+      | Ordering.Greater => {| Uint.value := 1 |}
+      | _ => {| Uint.value := 0 |}
+      end in
     let stack :=
       top.(RefStub.injection)
         interpreter.(Interpreter.stack) result in
@@ -39,7 +39,7 @@ Definition lt
       <| Interpreter.stack := stack |>
   )).
 
-Lemma lt_eq
+Lemma op_sgt_eq
     {WIRE H : Set} `{Link WIRE} `{Link H}
     {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
     {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
@@ -53,26 +53,29 @@ Lemma lt_eq
   let ref_host : '&mut H := make_ref 1 in
   {{
     SimulateM.eval_f
-      (run_lt run_InterpreterTypes_for_WIRE ref_interpreter ref_host)
+      (run_sgt run_InterpreterTypes_for_WIRE ref_interpreter ref_host)
       ([interpreter; _host]%stack) 🌲
     (
       Output.Success tt,
       [
-        lt interpreter;
+        op_sgt interpreter;
         _host
       ]%stack
     )
   }}.
 Proof.
   intros.
-  unfold lt.
+  unfold op_sgt.
   gas_macro_eq InterpreterTypesEq.
   popn_top_macro_eq InterpreterTypesEq.
   cbn.
+  apply Run.LetUnfold.
   eapply Run.Call. {
-    setoid_rewrite (Impl_PartialOrd_for_Uint.Eq.I).(PartialOrd.Eq.lt).
-    get_can_access.
-    apply Run.Pure.
+    apply i256_cmp_eq; repeat unshelve econstructor.
+  }
+  cbn.
+  eapply Run.Call. {
+    apply PartialEq.Eq.eq; repeat unshelve econstructor.
   }
   cbn.
   eapply Run.Call. {
@@ -84,4 +87,5 @@ Proof.
   get_can_access.
   cbn.
   apply Run.PureEq; repeat f_equal.
+  now destruct i256_cmp.
 Qed.

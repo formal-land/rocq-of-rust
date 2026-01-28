@@ -54,6 +54,8 @@ Proof.
   intros.
   gas_macro_eq InterpreterTypesEq.
   popn_top_macro_eq InterpreterTypesEq.
+  cbn.
+  apply Run.LetUnfold.
   get_can_access.
   eapply Run.Call. {
     apply Impl_Uint.wrapping_add_eq.
@@ -99,6 +101,8 @@ Proof.
   intros.
   gas_macro_eq InterpreterTypesEq.
   popn_top_macro_eq InterpreterTypesEq.
+  cbn.
+  apply Run.LetUnfold.
   get_can_access.
   eapply Run.Call. {
     apply Impl_Uint.wrapping_mul_eq.
@@ -144,6 +148,8 @@ Proof.
   intros.
   gas_macro_eq InterpreterTypesEq.
   popn_top_macro_eq InterpreterTypesEq.
+  cbn.
+  apply Run.LetUnfold.
   get_can_access.
   eapply Run.Call. {
     apply Impl_Uint.wrapping_sub_eq.
@@ -216,7 +222,8 @@ Proof.
   cbn.
   destruct Impl_Uint.is_zero; cbn.
   { apply Run.Pure. }
-  { progress repeat get_can_access.
+  { apply Run.LetUnfold.
+    progress repeat get_can_access.
     eapply Run.Call; cbn. {
       apply Impl_Uint.wrapping_div_eq.
     }

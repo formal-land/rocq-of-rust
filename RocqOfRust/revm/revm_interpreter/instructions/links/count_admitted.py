@@ -49,6 +49,7 @@ def count_in_folder(folder: str):
                         print(f"- {emoji} `{instance_name}`")
 
 count_in_folder(".")
+count_in_folder("bitwise")
 count_in_folder("contract")
 
 print()
