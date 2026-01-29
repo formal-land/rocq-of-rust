@@ -51,7 +51,7 @@ Definition WIRE_types : InterpreterTypes.Types.t := {|
   InterpreterTypes.Types.Input := unit;
   InterpreterTypes.Types.SubRoutineStack := unit;
   InterpreterTypes.Types.Control := Control.t;
-  InterpreterTypes.Types.RuntimeFlag := unit;
+  InterpreterTypes.Types.RuntimeFlag := SpecId.t;
   InterpreterTypes.Types.Extend := unit;
 |}.
 
@@ -243,8 +243,19 @@ End LoopControl.
 Export (hints) LoopControl.
 
 Module RuntimeFlag.
-  Instance I : RuntimeFlag.C WIRE_types.(InterpreterTypes.Types.RuntimeFlag).
-  Admitted.
+  Definition Self : Set := SpecId.t.
+
+  Parameter is_static : Self -> bool.
+  Parameter is_eof : Self -> bool.
+  Parameter is_eof_init : Self -> bool.
+  Definition spec_id (self : Self) : SpecId.t := self.
+
+  Instance I : RuntimeFlag.C WIRE_types.(InterpreterTypes.Types.RuntimeFlag) := {
+    RuntimeFlag.is_static := is_static;
+    RuntimeFlag.is_eof := is_eof;
+    RuntimeFlag.is_eof_init := is_eof_init;
+    RuntimeFlag.spec_id := spec_id;
+  }.
 End RuntimeFlag.
 Export (hints) RuntimeFlag.
 
