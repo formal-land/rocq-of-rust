@@ -125,76 +125,38 @@ Proof.
   with_strategy transparent [run_static_call] unfold static_call, run_static_call; cbn.
   check_macro_eq InterpreterTypesEq.
   popn_macro_eq InterpreterTypesEq.
-  cbn.
-  apply Run.LetUnfold.
-  eapply Run.Call. {
-    apply Impl_From_U256_for_FixedBytes_32.from_eq.
+  l. {
+    cw Impl_From_U256_for_FixedBytes_32.from_eq.
+    cw Impl_Address.from_word_eq.
+    p.
   }
-  eapply Run.Call. {
-    apply Impl_Address.from_word_eq.
+  l. {
+    cw TryFrom_Uint_for_u64.try_from_eq.
+    cw Impl_u64.max_eq.
+    cw @Impl_Result_T_E.unwrap_or_eq.
+    p.
   }
-  cbn.
-  apply Run.LetUnfold.
-  eapply Run.Call. {
-    apply TryFrom_Uint_for_u64.try_from_eq.
-  }
-  eapply Run.Call. {
-    apply Impl_u64.max_eq.
-  }
-  eapply Run.Call. {
-    apply Impl_Result_T_E.unwrap_or_eq.
-  }
-  eapply Run.Call. {
-    apply call_helpers.get_memory_input_and_out_ranges_eq.
-  }
-  cbn; fold @SimulateM.let_.
+  r.
+  cw @call_helpers.get_memory_input_and_out_ranges_eq.
   destruct get_memory_input_and_out_ranges as [[[input_data return_memory_offset]|] ?interpreter];
     cbn;
     [| apply Run.Pure].
-  get_can_access.
-  eapply Run.Call. {
-    apply HostEq.
-  }
-  cbn.
-  apply Run.LetUnfold.
+  cw HostEq.
+  lu.
   destruct _.(Host.load_account_delegated) as [[load|] ?host]; cbn. 2: {
-    apply Run.LetUnfold.
-    eapply Run.Call. {
-      apply InterpreterTypesEq.
-    }
-    cbn.
-    apply Run.Pure.
+    lu.
+    cw InterpreterTypesEq.
+    p.
   }
-  progress repeat (apply Run.LetUnfold || get_can_access).
-  eapply Run.Call. {
-    apply call_helpers.calc_call_gas_eq.
-  }
+  lu.
+  cw @call_helpers.calc_call_gas_eq.
   destruct call_helpers.calc_call_gas as [[gas_limit|] ?interpreter]; cbn; [|apply Run.Pure].
   gas_macro_eq InterpreterTypesEq.
-  cbn.
-  eapply Run.Call. {
-    apply Run.Pure.
-  }
-  cbn.
-  apply Run.LetUnfold.
-  get_can_access.
-  eapply Run.Call. {
-    apply InterpreterTypesEq.
-  }
-  cbn.
-  get_can_access.
-  eapply Run.Call. {
-    apply Impl_Uint.ZERO_eq.
-  }
-  cbn.
-  eapply Run.Call. {
-    apply @Impl_Box.new_eq.
-  }
-  cbn.
-  fold @SimulateM.let_.
-  eapply Run.Call. {
-    apply InterpreterTypesEq.
-  }
-  cbn.
-  apply Run.PureEq; repeat f_equal.
+  cp.
+  lu.
+  cw InterpreterTypesEq.
+  cw Impl_Uint.ZERO_eq.
+  cw @Impl_Box.new_eq.
+  cw InterpreterTypesEq.
+  p.
 Qed.

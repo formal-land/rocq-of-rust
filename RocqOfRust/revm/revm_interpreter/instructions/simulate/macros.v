@@ -2,6 +2,8 @@ Require Import simulate.RocqOfRust.
 Require Import alloy_primitives.links.aliases.
 Require Import core.num.simulate.mod.
 Require Import core.simulate.result.
+Require Import revm.revm_interpreter.interpreter.simulate.shared_memory.
+Require Import revm.revm_interpreter.links.instruction_result.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_types.
 Require Import revm.revm_interpreter.simulate.gas.
@@ -254,6 +256,32 @@ Definition as_u64_saturated_macro (v : aliases.U256.t) : u64 :=
 Definition as_usize_saturated_macro (v : aliases.U256.t) : usize :=
   Z.min v.(Uint.value) (2 ^ 64 - 1).
 
+Definition as_usize_or_fail_ret_macro {WIRE K : Set} `{Link WIRE}
+    {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
+    {IInterpreterTypes : InterpreterTypes.C WIRE_types}
+    (interpreter : Interpreter.t WIRE WIRE_types)
+    (v : aliases.U256.t)
+    (reason_opt : option InstructionResult.t)
+    (k_exit : Interpreter.t WIRE WIRE_types -> K)
+    (k : usize -> Interpreter.t WIRE WIRE_types -> K) :
+    K :=
+  if v.(Uint.value) <=? (2 ^ 64 - 1) then
+    k {| Integer.value := v.(Uint.value) |} interpreter
+  else
+    let reason :=
+      match reason_opt with
+      | Some reason => reason
+      | None => instruction_result.InstructionResult.InvalidOperandOOG
+      end in
+    let control :=
+      IInterpreterTypes
+          .(InterpreterTypes.LoopControl_for_Control)
+          .(LoopControl.set_instruction_result)
+        interpreter.(Interpreter.control)
+        reason in
+    let interpreter := interpreter <| Interpreter.control := control |> in
+    k_exit interpreter.
+
 Ltac as_u64_saturated_macro_eq op1 :=
   eapply Run.Call; [
     apply Impl_Uint.as_limbs_eq; repeat unshelve econstructor
@@ -301,3 +329,26 @@ Ltac as_u64_saturated_macro_eq op1 :=
     assert (0 <= op1) by admit;
     lia
   ].
+
+Definition resize_memory_macro {WIRE K : Set} `{Link WIRE}
+    {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
+    {IInterpreterTypes : InterpreterTypes.C WIRE_types}
+    (interpreter : Interpreter.t WIRE WIRE_types)
+    (offset len : usize)
+    (k_exit : Interpreter.t WIRE WIRE_types -> K)
+    (k : Interpreter.t WIRE WIRE_types -> K) :
+    K :=
+  let words_num := num_words (Impl_usize.saturating_add offset len) in
+  let '(resize_ok, memory) :=
+    IInterpreterTypes.(InterpreterTypes.MemoryTrait_for_Memory).(MemoryTrait.resize)
+      interpreter.(Interpreter.memory)
+      {| Integer.value := words_num.(Integer.value) * 32 |} in
+  let interpreter := interpreter <| Interpreter.memory := memory |> in
+  if resize_ok then
+    k interpreter
+  else
+    let control :=
+      IInterpreterTypes.(InterpreterTypes.LoopControl_for_Control).(LoopControl.set_instruction_result)
+        interpreter.(Interpreter.control)
+        instruction_result.InstructionResult.MemoryOOG in
+    k_exit (interpreter <| Interpreter.control := control |>).

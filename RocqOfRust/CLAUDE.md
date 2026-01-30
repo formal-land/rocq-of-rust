@@ -373,11 +373,29 @@ Qed.
 
 ### Key Tactics for Simulate Proofs
 
-1. **`gas_macro_eq H gas set_instruction_result`**: Handles gas recording, creates branches for OutOfGas case
-2. **`popn_top_macro_eq H IInterpreterTypes popn_top set_instruction_result`**: Handles stack pop operations, creates branches for StackUnderflow case
-3. **`get_can_access`**: Handles reference access operations
-4. **`eapply Run.Call. { apply SomeModule.some_eq. }`**: Handles method calls with their corresponding `_eq` lemmas
-5. **`apply Run.Pure`**: Finalizes the proof when no more operations remain
+The convenience tactics are defined in `simulate/M.v`:
+
+1. **`r.`** ("run"): Simplifies and handles reference access. Use this to progress through computation steps.
+2. **`c.`** ("call"): Prepares a function call goal with `Run.Call`.
+3. **`cw f_eq.`** ("call with"): Applies a call with a given equality lemma. Example: `cw Impl_usize.saturating_add_eq.`
+4. **`cp.`** ("call pure"): Handles `SimulateM.Call` wrapping `Run.Pure`. Use when the goal has a `Run.PureSuccess` inside a `SimulateM.Call`.
+5. **`l.`** ("let"): Handles let-binding goals with `Run.Let`.
+6. **`lu.`** ("let unfold"): Handles let-binding by unfolding.
+7. **`p.`** ("pure"): Closes a `SimulateM.Pure` goal with `Run.Pure`.
+8. **`pf.`** ("pure with f_equal"): Closes goal with equality reasoning using `Run.PureEq` and `repeat f_equal`.
+
+**Workflow for writing `_eq` proofs:**
+1. Start with `with_strategy transparent [run_function] unfold run_function.`
+2. Use `r. Show.` to see the current goal
+3. For function calls, use `cw equality_lemma.`
+4. For pure computations wrapped in calls, use `cp.`
+5. For final pure results, use `p.`
+
+**Macro-specific tactics:**
+- **`gas_macro_eq InterpreterTypesEq`**: Handles gas recording, creates branches for OutOfGas case
+- **`popn_macro_eq InterpreterTypesEq`**: Handles stack pop operations
+- **`popn_top_macro_eq InterpreterTypesEq`**: Handles stack pop with top reference
+- **`check_macro_eq InterpreterTypesEq`**: Handles spec ID checking
 
 ### The `_eq` Lemma Pattern
 
@@ -427,3 +445,74 @@ When a proof gets stuck:
 1. **destruct is only for traits**: Only use `destruct` for trait instances, not for regular function instances
 2. **Use Qed for `_eq` lemmas**: The `_eq` lemmas are in Prop, so use `Qed` (not `Defined`)
 3. **Always use -j3**: When compiling with make, always use `make -j3` for parallel compilation
+
+### Simulation File Placement
+
+Simulate files should mirror the Rust source structure. If a function is defined in:
+```
+revm/revm_interpreter/interpreter/shared_memory.rs
+```
+Its simulation should be in:
+```
+revm/revm_interpreter/interpreter/simulate/shared_memory.v
+```
+
+### Creating Macros for Simulation
+
+When creating Coq macros that correspond to Rust macros, follow these patterns:
+
+1. **Use continuation-passing style (CPS)** with `k_exit` (failure continuation) and `k` (success continuation)
+
+2. **For optional parameters** (like `$ret` in Rust macros), use either:
+   - An `option` type where `None` means use default value
+   - A generic type parameter `A` with a `ret : A` parameter
+
+3. **Mirror the Rust macro structure** as closely as possible, including variable names like `words_num`, `offset`, `len`
+
+4. **No comments for simulations** - the description is already in the Rust source code
+
+Example Rust macro:
+```rust
+macro_rules! resize_memory {
+    ($interpreter:expr, $offset:expr, $len:expr) => {
+        $crate::resize_memory!($interpreter, $offset, $len, ())
+    };
+    ($interpreter:expr, $offset:expr, $len:expr, $ret:expr) => {
+        let words_num = $crate::interpreter::num_words($offset.saturating_add($len));
+        // ... rest of macro
+    };
+}
+```
+
+Corresponding Coq simulation:
+```coq
+Definition resize_memory_macro {WIRE K A : Set} `{Link WIRE}
+    {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
+    {IInterpreterTypes : InterpreterTypes.C WIRE_types}
+    (interpreter : Interpreter.t WIRE WIRE_types)
+    (offset len : usize)
+    (ret : A)
+    (k_exit : A -> Interpreter.t WIRE WIRE_types -> K)
+    (k : Interpreter.t WIRE WIRE_types -> K) :
+    K :=
+  let words_num := num_words {| Integer.value := offset.(Integer.value) + len.(Integer.value) |} in
+  (* ... rest of definition *)
+```
+
+### Helper Functions for Macros
+
+When a Rust macro uses helper functions (like `num_words`), define them in the appropriate simulate file:
+
+```coq
+(* In revm/revm_interpreter/interpreter/simulate/shared_memory.v *)
+Definition num_words (len : usize) : usize :=
+  {| Integer.value := (len.(Integer.value) + 31) / 32 |}.
+
+Lemma num_words_eq (len : usize) (stack : Stack.t) :
+  {{
+    SimulateM.eval_f (run_num_words len) stack 🌲
+    (Output.Success (num_words len), stack)
+  }}.
+Proof.
+Admitted.
+```
