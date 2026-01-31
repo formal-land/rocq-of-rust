@@ -21,8 +21,49 @@ Module Impl_MemoryGas.
       (Output.Success new, stack)
     }}.
   Proof.
-    apply Run.Pure.
+    p.
   Qed.
+
+  Definition record_new_len (self : Self) (new_num : usize) : option u64 * Self :=
+    (Some (0 : u64), self).
+
+  Lemma record_new_len_eq
+      {WIRE : Set} `{Link WIRE}
+      {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
+      (interpreter : Interpreter.t WIRE WIRE_types)
+      (gas_stub : RefStub.t WIRE_types.(InterpreterTypes.Types.Control) Gas.t)
+      (new_num : usize)
+      (stack : Stack.t) :
+    let ref_interpreter : '&mut (Interpreter.t WIRE WIRE_types) := make_ref 0 in
+    let ref_control : '&mut _ := {| Ref.core :=
+        SubPointer.Runner.apply
+          ref_interpreter.(Ref.core)
+          Interpreter.SubPointer.get_control
+    |} in
+    let ref_gas : '&mut _ := RefStub.apply ref_control gas_stub in
+    let ref_self := {| Ref.core :=
+        SubPointer.Runner.apply
+          ref_gas.(Ref.core)
+          Gas.SubPointer.get_memory
+    |} in
+    let gas := gas_stub.(RefStub.projection) interpreter.(Interpreter.control) in
+    let memory_gas := gas.(Gas.memory) in
+    let result := record_new_len memory_gas new_num in
+    {{
+      SimulateM.eval_f (Impl_MemoryGas.run_record_new_len ref_self new_num) (interpreter :: stack)%stack 🌲
+      (
+        Output.Success (fst result),
+        (
+          (interpreter <| Interpreter.control :=
+            gas_stub.(RefStub.injection)
+              interpreter.(Interpreter.control)
+              (gas <| Gas.memory := snd result |>)
+          |>) :: stack
+        )%stack
+      )
+    }}.
+  Proof.
+  Admitted.
 End Impl_MemoryGas.
 
 Module Impl_Gas.
@@ -43,83 +84,357 @@ Module Impl_Gas.
       (Output.Success (new limit), []%stack)
     }}.
   Proof.
-    cbn.
-    eapply Run.Call. {
-      apply Impl_MemoryGas.new_eq.
-    }
-    cbn.
-    apply Run.Pure.
+    cw Impl_MemoryGas.new_eq.
+    p.
   Qed.
 
-  (*
-      pub const fn limit(&self) -> u64 {
-          self.limit
-      }
-  *)
+  Definition new_spent (limit : u64) : Self :=
+    {|
+      Gas.limit := limit;
+      Gas.remaining := {| Integer.value := 0 |};
+      Gas.refunded := {| Integer.value := 0 |};
+      Gas.memory := Impl_MemoryGas.new;
+    |}.
+
+  Lemma new_spent_eq (limit : u64) :
+    {{
+      SimulateM.eval_f (Impl_Gas.run_new_spent limit) []%stack 🌲
+      (Output.Success (new_spent limit), []%stack)
+    }}.
+  Proof.
+    cw Impl_MemoryGas.new_eq.
+    p.
+  Qed.
+
   Definition limit (self : Self) : u64 :=
     self.(Gas.limit).
 
-  Lemma limit_eq (self : Self) :
-    let ref_self := {|
-      Ref.core := Ref.Core.Mutable (A := Self) 0%nat [] φ Some (fun _ => Some)
-    |} in
+  Lemma limit_eq (ref_self : '& Self) (self : Self) (stack : Stack.t) :
+      CanRead.t stack self ref_self ->
     {{
-      SimulateM.eval_f (Impl_Gas.run_limit ref_self) [self]%stack 🌲
-      (Output.Success (limit self), [self]%stack)
+      SimulateM.eval_f (Impl_Gas.run_limit ref_self) stack 🌲
+      (Output.Success (limit self), stack)
     }}.
   Proof.
-    with_strategy transparent [Impl_Gas.run_limit] cbn.
-    progress repeat get_can_access.
-    apply Run.Pure.
+  Admitted.
+
+  Definition memory (self : Self) : u64 :=
+    {| Integer.value := 0 |}.
+
+  Lemma memory_eq
+      {WIRE : Set} `{Link WIRE}
+      {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
+      (interpreter : Interpreter.t WIRE WIRE_types)
+      (gas_stub : RefStub.t WIRE_types.(InterpreterTypes.Types.Control) Gas.t)
+      (stack : Stack.t) :
+    let ref_interpreter : '&mut (Interpreter.t WIRE WIRE_types) := make_ref 0 in
+    let ref_control : '&mut _ := {| Ref.core :=
+        SubPointer.Runner.apply
+          ref_interpreter.(Ref.core)
+          Interpreter.SubPointer.get_control
+    |} in
+    let ref_self := RefStub.apply ref_control gas_stub in
+    let self := gas_stub.(RefStub.projection) interpreter.(Interpreter.control) in
+    {{
+      SimulateM.eval_f (Impl_Gas.run_memory ref_self) (interpreter :: stack)%stack 🌲
+      (Output.Success (memory self), interpreter :: stack)%stack
+    }}.
+  Proof.
+    p.
   Qed.
 
-  (*
-      pub fn erase_cost(&mut self, returned: u64) {
-          self.remaining += returned;
-      }
-  *)
+  Definition refunded (self : Self) : i64 :=
+    self.(Gas.refunded).
+
+  Lemma refunded_eq
+      {WIRE : Set} `{Link WIRE}
+      {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
+      (interpreter : Interpreter.t WIRE WIRE_types)
+      (gas_stub : RefStub.t WIRE_types.(InterpreterTypes.Types.Control) Gas.t)
+      (stack : Stack.t) :
+    let ref_interpreter : '&mut (Interpreter.t WIRE WIRE_types) := make_ref 0 in
+    let ref_control : '&mut _ := {| Ref.core :=
+        SubPointer.Runner.apply
+          ref_interpreter.(Ref.core)
+          Interpreter.SubPointer.get_control
+    |} in
+    let ref_self := RefStub.apply ref_control gas_stub in
+    let self := gas_stub.(RefStub.projection) interpreter.(Interpreter.control) in
+    {{
+      SimulateM.eval_f (Impl_Gas.run_refunded ref_self) (interpreter :: stack)%stack 🌲
+      (Output.Success (refunded self), interpreter :: stack)%stack
+    }}.
+  Proof.
+    with_strategy transparent [Impl_Gas.run_refunded] cbn.
+    p.
+  Qed.
+
+  Definition spent (self : Self) : u64 :=
+    self.(Gas.limit) -i self.(Gas.remaining).
+
+  Lemma spent_eq
+      {WIRE : Set} `{Link WIRE}
+      {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
+      (interpreter : Interpreter.t WIRE WIRE_types)
+      (gas_stub : RefStub.t WIRE_types.(InterpreterTypes.Types.Control) Gas.t)
+      (stack : Stack.t) :
+    let ref_interpreter : '&mut (Interpreter.t WIRE WIRE_types) := make_ref 0 in
+    let ref_control : '&mut _ := {| Ref.core :=
+        SubPointer.Runner.apply
+          ref_interpreter.(Ref.core)
+          Interpreter.SubPointer.get_control
+    |} in
+    let ref_self := RefStub.apply ref_control gas_stub in
+    let self := gas_stub.(RefStub.projection) interpreter.(Interpreter.control) in
+    {{
+      SimulateM.eval_f (Impl_Gas.run_spent ref_self) (interpreter :: stack)%stack 🌲
+      (Output.Success (spent self), interpreter :: stack)%stack
+    }}.
+  Proof.
+    with_strategy transparent [Impl_Gas.run_spent] cbn.
+    cp.
+    p.
+  Qed.
+
+  Definition remaining (self : Self) : u64 :=
+    self.(Gas.remaining).
+
+  Lemma remaining_eq
+      {WIRE : Set} `{Link WIRE}
+      {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
+      (interpreter : Interpreter.t WIRE WIRE_types)
+      (gas_stub : RefStub.t WIRE_types.(InterpreterTypes.Types.Control) Gas.t)
+      (stack : Stack.t) :
+    let ref_interpreter : '&mut (Interpreter.t WIRE WIRE_types) := make_ref 0 in
+    let ref_control : '&mut _ := {| Ref.core :=
+        SubPointer.Runner.apply
+          ref_interpreter.(Ref.core)
+          Interpreter.SubPointer.get_control
+    |} in
+    let ref_self := RefStub.apply ref_control gas_stub in
+    let self := gas_stub.(RefStub.projection) interpreter.(Interpreter.control) in
+    {{
+      SimulateM.eval_f (Impl_Gas.run_remaining ref_self) (interpreter :: stack)%stack 🌲
+      (Output.Success (remaining self), interpreter :: stack)%stack
+    }}.
+  Proof.
+    with_strategy transparent [Impl_Gas.run_remaining] cbn.
+    p.
+  Qed.
+
+  Definition remaining_63_of_64_parts (self : Self) : u64 :=
+    self.(Gas.remaining) -i self.(Gas.remaining) /i 64.
+
+  Lemma remaining_63_of_64_parts_eq
+      {WIRE : Set} `{Link WIRE}
+      {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
+      (interpreter : Interpreter.t WIRE WIRE_types)
+      (gas_stub : RefStub.t WIRE_types.(InterpreterTypes.Types.Control) Gas.t)
+      (stack : Stack.t) :
+    let ref_interpreter : '&mut (Interpreter.t WIRE WIRE_types) := make_ref 0 in
+    let ref_control : '&mut _ := {| Ref.core :=
+        SubPointer.Runner.apply
+          ref_interpreter.(Ref.core)
+          Interpreter.SubPointer.get_control
+    |} in
+    let ref_self := RefStub.apply ref_control gas_stub in
+    let self := gas_stub.(RefStub.projection) interpreter.(Interpreter.control) in
+    {{
+      SimulateM.eval_f (Impl_Gas.run_remaining_63_of_64_parts ref_self) (interpreter :: stack)%stack 🌲
+      (Output.Success (remaining_63_of_64_parts self), interpreter :: stack)%stack
+    }}.
+  Proof.
+    with_strategy transparent [Impl_Gas.run_remaining_63_of_64_parts] cbn.
+    cp.
+    cp.
+    p.
+  Qed.
+
   Definition erase_cost (self : Self) (returned : u64) : Self :=
-    {|
-      Gas.limit := self.(Gas.limit);
-      Gas.remaining :=
-        {|
-          Integer.value :=
-            (self.(Gas.remaining).(Integer.value) + returned.(Integer.value)) mod 18446744073709551616
-        |};
-      Gas.refunded := self.(Gas.refunded);
-      Gas.memory := self.(Gas.memory);
-    |}.
+    self <| Gas.remaining := self.(Gas.remaining) +i returned |>.
 
-  Lemma erase_cost_eq (self : Self) (returned : u64) :
-    let ref_self := {|
-      Ref.core := Ref.Core.Mutable (A := Self) 0%nat [] φ Some (fun _ => Some)
+  Lemma erase_cost_eq
+      {WIRE : Set} `{Link WIRE}
+      {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
+      (interpreter : Interpreter.t WIRE WIRE_types)
+      (gas_stub : RefStub.t WIRE_types.(InterpreterTypes.Types.Control) Gas.t)
+      (returned : u64)
+      (stack : Stack.t) :
+    let ref_interpreter : '&mut (Interpreter.t WIRE WIRE_types) := make_ref 0 in
+    let ref_control : '&mut _ := {| Ref.core :=
+        SubPointer.Runner.apply
+          ref_interpreter.(Ref.core)
+          Interpreter.SubPointer.get_control
     |} in
+    let ref_self := RefStub.apply ref_control gas_stub in
+    let self := gas_stub.(RefStub.projection) interpreter.(Interpreter.control) in
+    let result := erase_cost self returned in
     {{
-      SimulateM.eval_f (Impl_Gas.run_erase_cost ref_self returned) [self]%stack 🌲
-      (Output.Success tt, [erase_cost self returned]%stack)
+      SimulateM.eval_f (Impl_Gas.run_erase_cost ref_self returned) (interpreter :: stack)%stack 🌲
+      (Output.Success tt, (
+        (interpreter <| Interpreter.control :=
+          gas_stub.(RefStub.injection) interpreter.(Interpreter.control) (erase_cost self returned)
+        |>) :: stack
+      )%stack
+      )
     }}.
   Proof.
+    apply Run.remove_extra_stack1.
     with_strategy transparent [Impl_Gas.run_erase_cost] cbn.
-    progress repeat get_can_access.
-    eapply Run.Call. {
-      apply Run.Pure.
-    }
-    cbn.
-    repeat get_can_access.
-    apply Run.LetUnfold; cbn.
-    apply Run.Pure.
+    cp. lu. p.
   Qed.
 
-  (*
-      pub fn record_cost(&mut self, cost: u64) -> bool {
-        let (remaining, overflow) = self.remaining.overflowing_sub(cost);
-        let success = !overflow;
-        if success {
-            self.remaining = remaining;
-        }
-        success
-    }
-  *)
+  Definition spend_all (self : Self) : Self :=
+    self <| Gas.remaining := 0 |>.
+
+  Lemma spend_all_eq
+      {WIRE : Set} `{Link WIRE}
+      {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
+      (interpreter : Interpreter.t WIRE WIRE_types)
+      (gas_stub : RefStub.t WIRE_types.(InterpreterTypes.Types.Control) Gas.t)
+      (stack : Stack.t) :
+    let ref_interpreter : '&mut (Interpreter.t WIRE WIRE_types) := make_ref 0 in
+    let ref_control : '&mut _ := {| Ref.core :=
+        SubPointer.Runner.apply
+          ref_interpreter.(Ref.core)
+          Interpreter.SubPointer.get_control
+    |} in
+    let ref_self := RefStub.apply ref_control gas_stub in
+    let self := gas_stub.(RefStub.projection) interpreter.(Interpreter.control) in
+    let result := spend_all self in
+    {{
+      SimulateM.eval_f (Impl_Gas.run_spend_all ref_self) (interpreter :: stack)%stack 🌲
+      (
+        Output.Success tt,
+        (
+          (interpreter <| Interpreter.control :=
+            gas_stub.(RefStub.injection) interpreter.(Interpreter.control) result
+          |>) :: stack
+        )%stack
+      )
+    }}.
+  Proof.
+    apply Run.remove_extra_stack1.
+    with_strategy transparent [Impl_Gas.run_spend_all] cbn.
+    repeat (lu || c || p).
+  Qed.
+
+  Definition record_refund (self : Self) (refund : i64) : Self :=
+    self <| Gas.refunded := self.(Gas.refunded) +i refund |>.
+
+  Lemma record_refund_eq
+      {WIRE : Set} `{Link WIRE}
+      {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
+      (interpreter : Interpreter.t WIRE WIRE_types)
+      (gas_stub : RefStub.t WIRE_types.(InterpreterTypes.Types.Control) Gas.t)
+      (refund : i64)
+      (stack : Stack.t) :
+    let ref_interpreter : '&mut (Interpreter.t WIRE WIRE_types) := make_ref 0 in
+    let ref_control : '&mut _ := {| Ref.core :=
+        SubPointer.Runner.apply
+          ref_interpreter.(Ref.core)
+          Interpreter.SubPointer.get_control
+    |} in
+    let ref_self := RefStub.apply ref_control gas_stub in
+    let self := gas_stub.(RefStub.projection) interpreter.(Interpreter.control) in
+    let result := record_refund self refund in
+    {{
+      SimulateM.eval_f (Impl_Gas.run_record_refund ref_self refund) (interpreter :: stack)%stack 🌲
+      (
+        Output.Success tt,
+        (
+          (interpreter <| Interpreter.control :=
+            gas_stub.(RefStub.injection) interpreter.(Interpreter.control) result
+          |>) :: stack
+        )%stack
+      )
+    }}.
+  Proof.
+    apply Run.remove_extra_stack1.
+    with_strategy transparent [Impl_Gas.run_record_refund] cbn.
+    repeat (lu || c || p).
+  Qed.
+
+  Definition set_final_refund (self : Self) (is_london : bool) : Self :=
+    let max_refund_quotient := if is_london then 5 else 2 in
+    self <| Gas.refunded := Z.min i[refunded self] i[spent self /i max_refund_quotient] |>.
+
+  Lemma set_final_refund_eq
+      {WIRE : Set} `{Link WIRE}
+      {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
+      (interpreter : Interpreter.t WIRE WIRE_types)
+      (gas_stub : RefStub.t WIRE_types.(InterpreterTypes.Types.Control) Gas.t)
+      (is_london : bool)
+      (stack : Stack.t) :
+    let ref_interpreter : '&mut (Interpreter.t WIRE WIRE_types) := make_ref 0 in
+    let ref_control : '&mut _ := {| Ref.core :=
+        SubPointer.Runner.apply
+          ref_interpreter.(Ref.core)
+          Interpreter.SubPointer.get_control
+    |} in
+    let ref_self := RefStub.apply ref_control gas_stub in
+    let self := gas_stub.(RefStub.projection) interpreter.(Interpreter.control) in
+    let result := set_final_refund self is_london in
+    {{
+      SimulateM.eval_f (Impl_Gas.run_set_final_refund ref_self is_london) (interpreter :: stack)%stack 🌲
+      (
+        Output.Success tt,
+        (
+          (interpreter <| Interpreter.control :=
+            gas_stub.(RefStub.injection) interpreter.(Interpreter.control) result
+          |>) :: stack
+        )%stack
+      )
+    }}.
+  Proof.
+    apply Run.remove_extra_stack1.
+    with_strategy transparent [Impl_Gas.run_set_final_refund] cbn.
+    unfold set_final_refund.
+    destruct is_london; repeat (
+      lu ||
+      cp ||
+      cw @refunded_eq ||
+      cw @spent_eq ||
+      p
+    ).
+  Admitted.
+
+  Definition set_refund (self : Self) (refund : i64) : Self :=
+    self <| Gas.refunded := refund |>.
+
+  Lemma set_refund_eq
+      {WIRE : Set} `{Link WIRE}
+      {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
+      (interpreter : Interpreter.t WIRE WIRE_types)
+      (gas_stub : RefStub.t WIRE_types.(InterpreterTypes.Types.Control) Gas.t)
+      (refund : i64)
+      (stack : Stack.t) :
+    let ref_interpreter : '&mut (Interpreter.t WIRE WIRE_types) := make_ref 0 in
+    let ref_control : '&mut _ := {| Ref.core :=
+        SubPointer.Runner.apply
+          ref_interpreter.(Ref.core)
+          Interpreter.SubPointer.get_control
+    |} in
+    let ref_self := RefStub.apply ref_control gas_stub in
+    let gas := gas_stub.(RefStub.projection) interpreter.(Interpreter.control) in
+    let result := set_refund gas refund in
+    {{
+      SimulateM.eval_f (Impl_Gas.run_set_refund ref_self refund) (interpreter :: stack)%stack 🌲
+      (
+        Output.Success tt,
+        (
+          (interpreter <| Interpreter.control :=
+            gas_stub.(RefStub.injection) interpreter.(Interpreter.control) result
+          |>) :: stack
+        )%stack
+      )
+    }}.
+  Proof.
+    apply Run.remove_extra_stack1.
+    with_strategy transparent [Impl_Gas.run_set_refund] cbn.
+    repeat (lu || c || p).
+  Qed.
+
   Definition record_cost (self : Self) (cost : u64) : option Self :=
     let (remaining, overflow) := Impl_u64.overflowing_sub self.(Gas.remaining) cost in
     let success := negb overflow in
@@ -170,22 +485,43 @@ Module Impl_Gas.
       unfold record_cost;
       cbn
     ).
-    progress repeat get_can_access.
-    eapply Run.Call. {
-      apply Impl_u64.overflowing_sub_eq.
-    }
+    cw Impl_u64.overflowing_sub_eq.
     destruct Impl_u64.overflowing_sub as [remaining overflow].
-    apply Run.LetUnfold.
-    eapply Run.Call. {
-      apply Run.Pure.
-    }
-    progress repeat (apply Run.LetUnfold || get_can_access).
-    eapply Run.Call. {
-      apply Run.Pure.
-    }
-    destruct (negb overflow); cbn; progress repeat (apply Run.LetUnfold || get_can_access).
-    { apply Run.Pure. }
-    { apply Run.Pure. }
+    repeat (lu || cp).
+    destruct (negb overflow); cbn; repeat (lu || p).
     Transparent Impl_u64.overflowing_sub.
   Qed.
+
+  Definition record_memory_expansion (self : Self) (new_len : usize) : MemoryExtensionResult.t * Self :=
+    (MemoryExtensionResult.Extended, self).
+
+  Lemma record_memory_expansion_eq
+      {WIRE : Set} `{Link WIRE}
+      {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
+      (interpreter : Interpreter.t WIRE WIRE_types)
+      (gas_stub : RefStub.t WIRE_types.(InterpreterTypes.Types.Control) Gas.t)
+      (new_len : usize)
+      (stack : Stack.t) :
+    let ref_interpreter : '&mut (Interpreter.t WIRE WIRE_types) := make_ref 0 in
+    let ref_control : '&mut _ := {| Ref.core :=
+        SubPointer.Runner.apply
+          ref_interpreter.(Ref.core)
+          Interpreter.SubPointer.get_control
+    |} in
+    let ref_self := RefStub.apply ref_control gas_stub in
+    let gas := gas_stub.(RefStub.projection) interpreter.(Interpreter.control) in
+    let result := record_memory_expansion gas new_len in
+    {{
+      SimulateM.eval_f (Impl_Gas.run_record_memory_expansion ref_self new_len) (interpreter :: stack)%stack 🌲
+      (
+        Output.Success (fst result),
+        (
+          (interpreter <| Interpreter.control :=
+            gas_stub.(RefStub.injection) interpreter.(Interpreter.control) (snd result)
+          |>) :: stack
+        )%stack
+      )
+    }}.
+  Proof.
+  Admitted.
 End Impl_Gas.
