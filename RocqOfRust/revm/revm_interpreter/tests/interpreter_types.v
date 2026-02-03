@@ -5,6 +5,7 @@ Require Import alloy_primitives.bytes.links.mod.
 Require Import alloy_primitives.links.aliases.
 Require Import core.links.array.
 Require Import core.ops.links.range.
+Require Import core.ops.simulate.deref.
 Require Import revm.revm_bytecode.eof.links.types_section.
 Require Import revm.revm_interpreter.links.gas.
 Require Import revm.revm_interpreter.links.instruction_result.
@@ -30,6 +31,82 @@ Module Stack.
 End Stack.
 Export (hints) Stack.
 
+(** Memory represented as a list of bytes *)
+Module Memory.
+  Record t : Set := {
+    value : list u8;
+  }.
+
+  Instance IsLink : Link t.
+  Admitted.
+
+  (** Take n elements from list, padding with zeros if too short *)
+  Fixpoint take_pad (len : nat) (l : list u8) : list u8 :=
+    match len with
+    | O => []
+    | S n =>
+      match l with
+      | [] => (0 : u8) :: take_pad n []
+      | x :: rest => x :: take_pad n rest
+      end
+    end.
+
+  (** Get a slice of memory, returning zeros for out-of-bounds *)
+  Definition slice (self : t) (offset len : usize) : list u8 :=
+    take_pad (Z.to_nat i[len]) (List.skipn (Z.to_nat i[offset]) self.(value)).
+
+  (** Extend list to given length, padding with zeros *)
+  Fixpoint extend_to (l : list u8) (len : nat) : list u8 :=
+    match len with
+    | O => l
+    | S n =>
+      match l with
+      | [] => (0 : u8) :: extend_to (@nil u8) n
+      | x :: rest => x :: extend_to rest n
+      end
+    end.
+
+  (** Set bytes at offset: prefix ++ data ++ suffix *)
+  Definition set_bytes_at (l : list u8) (offset : nat) (data : list u8) : list u8 :=
+    let prefix := take_pad offset l in
+    let suffix := List.skipn (offset + List.length data) l in
+    prefix ++ data ++ suffix.
+
+  Definition set (self : t) (offset : usize) (data : list u8) : t :=
+    {| value := set_bytes_at self.(value) (Z.to_nat i[offset]) data |}.
+
+  Definition set_data (self : t) (memory_offset data_offset len : usize) (data : list u8) : t :=
+    let src := List.skipn (Z.to_nat i[data_offset]) data in
+    let to_copy := List.firstn (Z.to_nat i[len]) src in
+    set self memory_offset to_copy.
+
+  Definition copy (self : t) (dst src len : usize) : t :=
+    let data := slice self src len in
+    set self dst data.
+
+  Definition resize (self : t) (new_size : usize) : t :=
+    {| value := extend_to self.(value) (Z.to_nat i[new_size]) |}.
+
+  Definition size (self : t) : usize :=
+    Z.of_nat (List.length self.(value)).
+End Memory.
+Export (hints) Memory.
+
+(** Synthetic slice type for memory - just a list of bytes *)
+Module MemorySlice.
+  Definition t : Set := list u8.
+
+  (** Deref implementation - identity function *)
+  Instance Deref_I : Deref.C t (list u8) := {|
+    Deref.deref := {|
+      RefStub.path := [];
+      RefStub.projection := fun x => x;
+      RefStub.injection := fun _ y => y;
+    |};
+  |}.
+End MemorySlice.
+Export (hints) MemorySlice.
+
 Module Control.
   Record t : Set := {
     gas : Gas.t;
@@ -43,9 +120,9 @@ Export (hints) Control.
 
 Definition WIRE_types : InterpreterTypes.Types.t := {|
   InterpreterTypes.Types.Stack := Stack.t;
-  InterpreterTypes.Types.Memory := unit;
-  InterpreterTypes.Types.Memory_Synthetic := unit;
-  InterpreterTypes.Types.Memory_Synthetic1 := unit;
+  InterpreterTypes.Types.Memory := Memory.t;
+  InterpreterTypes.Types.Memory_Synthetic := MemorySlice.t;
+  InterpreterTypes.Types.Memory_Synthetic1 := MemorySlice.t;
   InterpreterTypes.Types.Bytecode := unit;
   InterpreterTypes.Types.ReturnData := unit;
   InterpreterTypes.Types.Input := unit;
@@ -260,10 +337,42 @@ End RuntimeFlag.
 Export (hints) RuntimeFlag.
 
 Module MemoryTrait.
-  Instance I : MemoryTrait.C WIRE_types.(InterpreterTypes.Types.Memory)
-    WIRE_types.(InterpreterTypes.Types.Memory_Synthetic)
-    WIRE_types.(InterpreterTypes.Types.Memory_Synthetic1).
-  Admitted.
+  Definition Self : Set := Memory.t.
+  Definition Synthetic : Set := MemorySlice.t.
+  Definition Synthetic1 : Set := MemorySlice.t.
+
+  Definition set_data (self : Self) (memory_offset data_offset len : usize) (data : list u8) : Self :=
+    Memory.set_data self memory_offset data_offset len data.
+
+  Definition set (self : Self) (memory_offset : usize) (data : list u8) : Self :=
+    Memory.set self memory_offset data.
+
+  Definition size (self : Self) : usize :=
+    Memory.size self.
+
+  Definition copy (self : Self) (dst src len : usize) : Self :=
+    Memory.copy self dst src len.
+
+  Definition slice (self : Self) (range : Range.t usize) : Synthetic :=
+    Memory.slice self range.(Range.start) (range.(Range.end_) -i range.(Range.start)).
+
+  Definition slice_len (self : Self) (offset len : usize) : Synthetic1 :=
+    Memory.slice self offset len.
+
+  Definition resize (self : Self) (new_size : usize) : bool * Self :=
+    (true, Memory.resize self new_size).
+
+  Instance I : MemoryTrait.C Self Synthetic Synthetic1 := {|
+    simulate.interpreter_types.MemoryTrait.set_data := set_data;
+    simulate.interpreter_types.MemoryTrait.set := set;
+    simulate.interpreter_types.MemoryTrait.size := size;
+    simulate.interpreter_types.MemoryTrait.copy := copy;
+    simulate.interpreter_types.MemoryTrait.slice := slice;
+    simulate.interpreter_types.MemoryTrait.Deref_for_Synthetic := MemorySlice.Deref_I;
+    simulate.interpreter_types.MemoryTrait.slice_len := slice_len;
+    simulate.interpreter_types.MemoryTrait.Deref_for_Synthetic1 := MemorySlice.Deref_I;
+    simulate.interpreter_types.MemoryTrait.resize := resize;
+  |}.
 End MemoryTrait.
 Export (hints) MemoryTrait.
 

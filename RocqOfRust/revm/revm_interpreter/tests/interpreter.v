@@ -9,7 +9,7 @@ Definition make_interpreter (stack : Stack.t) : Interpreter.t WIRE WIRE_types :=
   Interpreter.bytecode := tt;
   Interpreter.stack := stack;
   Interpreter.return_data := tt;
-  Interpreter.memory := tt;
+  Interpreter.memory := {| Memory.value := [] |};
   Interpreter.input := tt;
   Interpreter.sub_routine := tt;
   Interpreter.control := {|
