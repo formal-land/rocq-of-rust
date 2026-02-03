@@ -95,7 +95,9 @@ End Impl_Default_for_Vec.
 Export (hints) Impl_Default_for_Vec.
 
 Module Impl_Deref_for_Vec.
-  Instance method_deref {T A : Set} `{Link T} `{Link A} : Deref.Method_deref (Vec.t T A) (list T).
+  Instance method_deref {T A : Set} `{Link T} `{Link A} :
+    Deref.Method_deref (Vec.t T A) (list T)
+      (vec.Impl_core_ops_deref_Deref_where_core_alloc_Allocator_A_for_alloc_vec_Vec_T_A.deref (Φ T) (Φ A)).
   Admitted.
 
   Instance run {T A : Set} `{Link T} `{Link A} : Deref.Run (Vec.t T A) (list T) := {}.
@@ -112,7 +114,8 @@ Module Impl_DerefMut_for_Vec.
   Global Opaque run_deref_mut.
 
   Instance method_deref_mut (T A : Set) `{Link T} `{Link A} :
-    DerefMut.Method_deref_mut (Vec.t T A) (list T).
+    DerefMut.Method_deref_mut (Vec.t T A) (list T)
+      (vec.Impl_core_ops_deref_DerefMut_where_core_alloc_Allocator_A_for_alloc_vec_Vec_T_A.deref_mut (Φ T) (Φ A)).
   Proof.
     eexists.
     { constructor.
