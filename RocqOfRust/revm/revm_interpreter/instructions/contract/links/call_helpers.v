@@ -37,7 +37,7 @@ Instance run_resize_memory
 Proof.
   constructor.
   run_symbolic.
-Qed.
+Defined.
 Global Opaque run_resize_memory.
 
 (*

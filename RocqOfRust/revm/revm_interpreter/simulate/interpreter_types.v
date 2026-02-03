@@ -4,6 +4,7 @@ Require Import alloy_primitives.bits.links.fixed.
 Require Import alloy_primitives.bytes.links.mod.
 Require Import alloy_primitives.links.aliases.
 Require Import core.ops.links.range.
+Require Import core.ops.simulate.deref.
 Require Import revm.revm_bytecode.eof.links.types_section.
 Require Import revm.revm_interpreter.links.gas.
 Require Import revm.revm_interpreter.links.instruction_result.
@@ -1100,9 +1101,11 @@ Module MemoryTrait.
     (* fn copy(&mut self, destination: usize, source: usize, len: usize); *)
     copy (self : Self) (destination source len : usize) : Self;
     (* fn slice(&self, range: Range<usize>) -> impl Deref<Target = [u8]> + '_; *)
-    slice (self : Self) (range : range.Range.t usize) : Synthetic;
+    slice (self : Self) (range : Range.t usize) : Synthetic;
+    Deref_for_Synthetic :: Deref.C Synthetic (list u8);
     (* fn slice_len(&self, offset: usize, len: usize) -> impl Deref<Target = [u8]> + '_; *)
     slice_len (self : Self) (offset len : usize) : Synthetic1;
+    Deref_for_Synthetic1 :: Deref.C Synthetic1 (list u8);
     (* fn resize(&mut self, new_size: usize) -> bool; *)
     resize (self : Self) (new_size : usize) : bool * Self;
   }.
@@ -1203,7 +1206,7 @@ Module MemoryTrait.
       slice
         (interpreter : Interpreter.t WIRE WIRE_types)
         (stack : Stack.t)
-        (range : range.Range.t usize) :
+        (range : Range.t usize) :
         let ref_interpreter : '& (Interpreter.t WIRE WIRE_types) := make_ref 0 in
         let ref_self : '& _ := {| Ref.core :=
           SubPointer.Runner.apply
@@ -1219,6 +1222,7 @@ Module MemoryTrait.
             (interpreter :: stack)%stack
           )
         }};
+      Deref_for_Synthetic :: Deref.Eq.t I.(Deref_for_Synthetic);
       slice_len
         (interpreter : Interpreter.t WIRE WIRE_types)
         (stack : Stack.t)
@@ -1238,6 +1242,7 @@ Module MemoryTrait.
             (interpreter :: stack)%stack
           )
         }};
+      Deref_for_Synthetic1 :: Deref.Eq.t I.(Deref_for_Synthetic1);
       resize
         (interpreter : Interpreter.t WIRE WIRE_types)
         (stack_rest : Stack.t)

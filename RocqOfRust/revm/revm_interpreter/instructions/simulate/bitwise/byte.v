@@ -68,7 +68,6 @@ Lemma op_byte_eq
     )
   }}.
 Proof.
-Opaque Z.sub.
   intros.
   unfold op_byte.
   gas_macro_eq InterpreterTypesEq.
@@ -123,5 +122,4 @@ Opaque Z.sub.
   (* Make sure there are no goals left *)
   Unshelve.
   all: easy.
-Transparent Z.sub.
 Admitted.

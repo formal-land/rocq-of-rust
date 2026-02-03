@@ -10,7 +10,9 @@ Require Import core.ops.links.deref.
 
 (* pub struct Bytes(pub bytes::Bytes); *)
 Module Bytes.
-  Parameter t : Set.
+  Record t : Set := {
+    value : list u8;
+  }.
 
   Parameter to_value : t -> Value.t.
 

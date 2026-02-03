@@ -3,6 +3,7 @@ Require Import alloy_primitives.links.aliases.
 Require Import core.num.simulate.mod.
 Require Import core.simulate.result.
 Require Import revm.revm_interpreter.interpreter.simulate.shared_memory.
+Require Import revm.revm_interpreter.links.gas.
 Require Import revm.revm_interpreter.links.instruction_result.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_types.
@@ -339,16 +340,32 @@ Definition resize_memory_macro {WIRE K : Set} `{Link WIRE}
     (k : Interpreter.t WIRE WIRE_types -> K) :
     K :=
   let words_num := num_words (Impl_usize.saturating_add offset len) in
-  let '(resize_ok, memory) :=
-    IInterpreterTypes.(InterpreterTypes.MemoryTrait_for_Memory).(MemoryTrait.resize)
-      interpreter.(Interpreter.memory)
-      {| Integer.value := words_num.(Integer.value) * 32 |} in
-  let interpreter := interpreter <| Interpreter.memory := memory |> in
-  if resize_ok then
+  let ref_gas :=
+    IInterpreterTypes
+      .(InterpreterTypes.LoopControl_for_Control)
+      .(LoopControl.gas) in
+  let gas := ref_gas.(RefStub.projection) interpreter.(Interpreter.control) in
+  let '(extension_result, gas) := Impl_Gas.record_memory_expansion gas words_num in
+  let interpreter :=
+    interpreter <| Interpreter.control :=
+      ref_gas.(RefStub.injection) interpreter.(Interpreter.control) gas
+    |> in
+  match extension_result with
+  | MemoryExtensionResult.Extended =>
+    let '(_, memory) :=
+      IInterpreterTypes.(InterpreterTypes.MemoryTrait_for_Memory).(MemoryTrait.resize)
+        interpreter.(Interpreter.memory) (words_num *i 32) in
+    let interpreter := interpreter <| Interpreter.memory := memory |> in
     k interpreter
-  else
+  | MemoryExtensionResult.OutOfGas =>
     let control :=
-      IInterpreterTypes.(InterpreterTypes.LoopControl_for_Control).(LoopControl.set_instruction_result)
+      IInterpreterTypes
+          .(InterpreterTypes.LoopControl_for_Control)
+          .(LoopControl.set_instruction_result)
         interpreter.(Interpreter.control)
         instruction_result.InstructionResult.MemoryOOG in
-    k_exit (interpreter <| Interpreter.control := control |>).
+    let interpreter := interpreter <| Interpreter.control := control |> in
+    k_exit interpreter
+  | MemoryExtensionResult.Same =>
+    k interpreter
+  end.
