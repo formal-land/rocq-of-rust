@@ -232,9 +232,7 @@ Proof.
   }
   cbn.
   cp.
-  cbn.
   cp.
-  cbn.
   destruct Impl_Uint.is_zero; cbn.
   { p. }
   { lu.

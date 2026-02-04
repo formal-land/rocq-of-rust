@@ -20,11 +20,9 @@ Module Impl_SpecId.
     }}.
   Proof.
     unfold is_enabled_in; cbn.
-    eapply Run.Call. {
-      apply Run.Pure.
-    }
+    cp.
     cbn.
     do 2 rewrite get_discriminant_mod_256_eq.
-    apply Run.Pure.
+    p.
   Qed.
 End Impl_SpecId.

@@ -62,14 +62,7 @@ Proof.
   unfold op_bitxor.
   gas_macro_eq InterpreterTypesEq.
   popn_top_macro_eq InterpreterTypesEq.
-  cbn.
-  apply Run.LetUnfold.
-  get_can_access.
-  eapply Run.Call. {
-    apply BitXor.Eq.bitxor.
-  }
-  cbn.
-  get_can_access.
-  cbn.
-  apply Run.PureEq; repeat f_equal.
+  lu.
+  cw @BitXor.Eq.bitxor.
+  pf.
 Qed.

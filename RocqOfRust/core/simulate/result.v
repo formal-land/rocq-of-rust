@@ -25,6 +25,6 @@ Module Impl_Result_T_E.
     }}.
   Proof.
     with_strategy transparent [run_unwrap_or] cbn.
-    destruct self; cbn; apply Run.Pure.
+    destruct self; p.
   Qed.
 End Impl_Result_T_E.

@@ -63,19 +63,8 @@ Proof.
   unfold op_iszero.
   gas_macro_eq InterpreterTypesEq.
   popn_top_macro_eq InterpreterTypesEq.
-  cbn.
-  apply Run.LetUnfold.
-  eapply Run.Call. {
-    apply Impl_Uint.is_zero_eq; repeat unshelve econstructor.
-  }
-  cbn.
-  eapply Run.Call. {
-    apply Impl_Uint.from_eq.
-    { typeclasses eauto. }
-    { easy. }
-  }
-  cbn.
-  get_can_access.
-  cbn.
-  apply Run.PureEq; repeat f_equal.
+  lu.
+  c. { apply Impl_Uint.is_zero_eq; repeat unshelve econstructor. }
+  c. { apply Impl_Uint.from_eq; [typeclasses eauto | easy]. }
+  pf.
 Qed.

@@ -140,7 +140,6 @@ Proof.
     cw @Impl_Result_T_E.unwrap_or_eq.
     p.
   }
-  r.
   cw @call_helpers.get_memory_input_and_out_ranges_eq.
   destruct get_memory_input_and_out_ranges as [[[input_data return_memory_offset]|] ?interpreter];
     cbn;

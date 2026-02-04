@@ -55,10 +55,8 @@ Module UintTryFrom_T_for_Uint_where_TryFrom.
       )
     }}.
   Proof.
-    eapply Run.Call. {
-      apply H_TryFrom.
-    }
-    apply Run.Pure.
+    c. { apply H_TryFrom. }
+    p.
   Qed.
 
   Instance I {BITS LIMBS : usize} {T : Set} `{Link T}
@@ -115,12 +113,10 @@ Module Impl_Uint.
   Proof.
     with_strategy transparent [Impl_Uint.run_from] cbn.
     unfold from.
-    eapply Run.Call. {
-      apply H_TryFrom.
-    }
+    c. { apply H_TryFrom. }
     cbn.
     destruct (I_TryFrom.(UintTryFrom.uint_try_from) value) as [n|e]; cbn.
-    { apply Run.Pure. }
+    { p. }
     { easy. }
   Qed.
 End Impl_Uint.

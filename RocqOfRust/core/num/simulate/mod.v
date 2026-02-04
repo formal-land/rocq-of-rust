@@ -12,7 +12,7 @@ Module Impl_u64.
       (Output.Success (Ref.immediate Pointer.Kind.Raw MIN), stack)
     }}.
   Proof.
-    apply Run.Pure.
+    p.
   Qed.
 
   Definition MAX : Self := {| Integer.value := 2 ^ 64 - 1 |}.
@@ -78,7 +78,7 @@ Module Impl_usize.
       (Output.Success (Ref.immediate Pointer.Kind.Raw MIN), stack)
     }}.
   Proof.
-    apply Run.Pure.
+    p.
   Qed.
 
   Definition MAX : Self := {| Integer.value := 2 ^ 64 - 1 |}.

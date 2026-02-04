@@ -80,46 +80,21 @@ Proof.
     as_u64_saturated_macro_eq op1.
   }
   cbn.
-  apply Run.LetUnfold.
-  get_can_access.
-  eapply Run.Call. {
-    apply Run.Pure.
-  }
-  cbn.
-  eapply Run.Call. {
-    apply Run.Pure.
-  }
-  cbn.
+  lu.
+  cp.
+  cp.
   destruct (_ <? 32) eqn:H_lt_eq; cbn.
-  { get_can_access.
-    eapply Run.Call. {
-      apply Run.Pure.
-    }
-    cbn.
-    eapply Run.Call. {
-      apply Impl_Uint.byte_eq; repeat unshelve econstructor.
-    }
-    cbn.
-    eapply Run.Call. {
-      apply Impl_Uint.from_eq.
-      { typeclasses eauto. }
-      { easy. }
-    }
-    cbn.
-    get_can_access.
+  { cp.
+    c. { apply Impl_Uint.byte_eq; repeat unshelve econstructor. }
+    c. { apply Impl_Uint.from_eq; [typeclasses eauto | easy]. }
     destruct op1 as [op1]; cbn in *.
     assert (0 <= op1) by admit.
     replace (_ mod (2 ^ 64)) with (31 - Z.min op1 (2^64 - 1)) by lia.
-    apply Run.Pure.
+    p.
   }
-  { eapply Run.Call. {
-      apply Impl_Uint.ZERO_eq.
-    }
-    cbn.
-    get_can_access.
-    apply Run.PureEq; repeat f_equal.
+  { cw Impl_Uint.ZERO_eq.
+    pf.
   }
-  (* Make sure there are no goals left *)
   Unshelve.
   all: easy.
 Admitted.
