@@ -42,6 +42,28 @@ Module Impl_u64.
     }}.
   Proof.
   Admitted.
+
+  Definition saturating_add (self rhs : Self) : Self :=
+    {| Integer.value := Z.min (self.(Integer.value) + rhs.(Integer.value)) MAX.(Integer.value) |}.
+
+  Lemma saturating_add_eq (self rhs : Self) (stack : Stack.t) :
+    {{
+      SimulateM.eval_f (Impl_u64.run_saturating_add self rhs) stack 🌲
+      (Output.Success (saturating_add self rhs), stack)
+    }}.
+  Proof.
+  Admitted.
+
+  Definition saturating_mul (self rhs : Self) : Self :=
+    {| Integer.value := Z.min (self.(Integer.value) * rhs.(Integer.value)) MAX.(Integer.value) |}.
+
+  Lemma saturating_mul_eq (self rhs : Self) (stack : Stack.t) :
+    {{
+      SimulateM.eval_f (Impl_u64.run_saturating_mul self rhs) stack 🌲
+      (Output.Success (saturating_mul self rhs), stack)
+    }}.
+  Proof.
+  Admitted.
 End Impl_u64.
 Export (hints) Impl_u64.
 
@@ -69,5 +91,16 @@ Module Impl_usize.
   Proof.
     repeat (eapply Run.Call || apply Run.Pure).
   Qed.
+
+  Definition saturating_add (self rhs : Self) : Self :=
+    {| Integer.value := Z.min (self.(Integer.value) + rhs.(Integer.value)) MAX.(Integer.value) |}.
+
+  Lemma saturating_add_eq (self rhs : Self) (stack : Stack.t) :
+    {{
+      SimulateM.eval_f (Impl_usize.run_saturating_add self rhs) stack 🌲
+      (Output.Success (saturating_add self rhs), stack)
+    }}.
+  Proof.
+  Admitted.
 End Impl_usize.
 Export (hints) Impl_usize.

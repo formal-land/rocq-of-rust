@@ -68,7 +68,6 @@ Lemma op_byte_eq
     )
   }}.
 Proof.
-Opaque Z.sub.
   intros.
   unfold op_byte.
   gas_macro_eq InterpreterTypesEq.
@@ -78,65 +77,7 @@ Opaque Z.sub.
   | array : array.t aliases.U256.t _ |- _ => destruct array as [[op1 []]]; cbn
   end.
   eapply Run.Let with (result := (Output.Success (as_usize_saturated_macro op1), _)). {
-    eapply Run.Call. {
-      apply Impl_Uint.as_limbs_eq; repeat unshelve econstructor.
-    }
-    repeat (cbn || apply Run.Pure || eapply Run.Call).
-    assert (H_compares :
-        (((op1.(Uint.value) / 2^64) mod 2^64 =? 0) &&
-    ((op1.(Uint.value) / 2^128) mod 2^64 =?
-      0) &&
-    (op1.(Uint.value) / 2^192 =? 0)) = true ->
-      op1.(Uint.value) <= 2 ^ 64 - 1
-    ) by lia.
-    unfold Bool.eqb.
-    destruct (_ && _) eqn:H_and_eq; cbn.
-    { eapply Run.Call. {
-        apply Run.Pure.
-      }
-      cbn.
-      eapply Run.Call. {
-        apply Impl_usize.max_eq.
-      }
-      cbn.
-      eapply Run.Call. {
-        apply Impl_Result_T_E.unwrap_or_eq.
-      }
-      cbn.
-      apply Run.PureEq; repeat f_equal.
-      destruct op1 as [op1]; cbn in *.
-      replace (as_usize_saturated_macro _) with (op1 : usize). 2: {
-        unfold as_usize_saturated_macro; cbn.
-        now rewrite Z.min_l by lia.
-      }
-      unfold M.cast_integer; cbn.
-      f_equal; [hauto lq: on|].
-      lia.
-    }
-    { eapply Run.Call. {
-        apply Impl_u64.max_eq.
-      }
-      cbn.
-      eapply Run.Call. {
-        cbn.
-        apply Run.Pure.
-      }
-      eapply Run.Call. {
-        apply Impl_usize.max_eq.
-      }
-      cbn.
-      eapply Run.Call. {
-        apply Impl_Result_T_E.unwrap_or_eq.
-      }
-      cbn.
-      apply Run.PureEq; repeat f_equal.
-      unfold M.cast_integer, as_usize_saturated_macro; cbn.
-      f_equal; [hauto lq: on|].
-      destruct op1 as [op1]; cbn in *.
-      rewrite Z.min_r; [reflexivity|].
-      assert (0 <= op1) by admit.
-      lia.
-    }
+    as_u64_saturated_macro_eq op1.
   }
   cbn.
   apply Run.LetUnfold.
@@ -181,5 +122,4 @@ Opaque Z.sub.
   (* Make sure there are no goals left *)
   Unshelve.
   all: easy.
-Transparent Z.sub.
 Admitted.

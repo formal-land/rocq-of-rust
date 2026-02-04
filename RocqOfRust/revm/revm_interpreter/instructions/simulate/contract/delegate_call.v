@@ -9,7 +9,7 @@ Require Import revm.revm_context_interface.links.host.
 Require Import revm.revm_context_interface.links.journaled_state.
 Require Import revm.revm_context_interface.simulate.host.
 Require Import revm.revm_interpreter.instructions.contract.simulate.call_helpers.
-Require Import revm.revm_interpreter.instructions.links.contract.static_call.
+Require Import revm.revm_interpreter.instructions.links.contract.delegate_call.
 Require Import revm.revm_interpreter.instructions.simulate.macros.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_types.
@@ -19,7 +19,7 @@ Require Import revm.revm_specification.simulate.hardfork.
 Require Import ruint.simulate.from.
 Require Import ruint.simulate.lib.
 
-Definition static_call
+Definition delegate_call
     {WIRE H : Set} `{Link WIRE} `{Link H}
     {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
     {IInterpreterTypes : InterpreterTypes.C WIRE_types}
@@ -27,7 +27,7 @@ Definition static_call
     (interpreter : Interpreter.t WIRE WIRE_types)
     (host : H) :
     Interpreter.t WIRE WIRE_types * H :=
-  check_macro interpreter SpecId.BYZANTIUM
+  check_macro interpreter SpecId.HOMESTEAD
     (fun interpreter => (interpreter, host)) (fun interpreter =>
   popn_macro interpreter {| Integer.value := 2 |}
     (fun interpreter => (interpreter, host)) (fun arr interpreter =>
@@ -75,15 +75,19 @@ Definition static_call
             {|
               call_inputs.CallInputs.bytecode_address := to;
               call_inputs.CallInputs.caller :=
-                IInterpreterTypes.(InterpreterTypes.InputsTrait_for_Input).(InputTraits.target_address) interpreter.(Interpreter.input);
+                IInterpreterTypes.(InterpreterTypes.InputsTrait_for_Input).(InputTraits.caller_address) interpreter.(Interpreter.input);
               call_inputs.CallInputs.gas_limit := gas_limit;
               call_inputs.CallInputs.input := input;
               call_inputs.CallInputs.is_eof := false;
-              call_inputs.CallInputs.is_static := true;
+              call_inputs.CallInputs.is_static :=
+                IInterpreterTypes.(InterpreterTypes.RuntimeFlag_for_RuntimeFlag).(RuntimeFlag.is_static) interpreter.(Interpreter.runtime_flag);
               call_inputs.CallInputs.return_memory_offset := return_memory_offset;
-              call_inputs.CallInputs.scheme := call_inputs.CallScheme.StaticCall;
-              call_inputs.CallInputs.target_address := to;
-              call_inputs.CallInputs.value := call_inputs.CallValue.Transfer Impl_Uint.ZERO
+              call_inputs.CallInputs.scheme := call_inputs.CallScheme.DelegateCall;
+              call_inputs.CallInputs.target_address :=
+                IInterpreterTypes.(InterpreterTypes.InputsTrait_for_Input).(InputTraits.target_address) interpreter.(Interpreter.input);
+              call_inputs.CallInputs.value :=
+                call_inputs.CallValue.Apparent
+                  (IInterpreterTypes.(InterpreterTypes.InputsTrait_for_Input).(InputTraits.call_value) interpreter.(Interpreter.input))
             |}
       )))
       instruction_result.InstructionResult.CallOrCreate in
@@ -93,7 +97,7 @@ Definition static_call
   (interpreter, host)
   ) end end end)).
 
-Lemma static_call_eq
+Lemma delegate_call_eq
     {WIRE H : Set} `{Link WIRE} `{Link H}
     {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
     {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
@@ -110,19 +114,19 @@ Lemma static_call_eq
   let ref_host := make_ref 1 in
   {{
     SimulateM.eval_f (
-      run_static_call
+      run_delegate_call
         run_InterpreterTypes_for_WIRE run_Host_for_H ref_interpreter ref_host
       )
       [interpreter; host]%stack 🌲
     (
       Output.Success tt,
-      let (interpreter, host) := static_call interpreter host in
+      let (interpreter, host) := delegate_call interpreter host in
       [interpreter; host]%stack
     )
   }}.
 Proof.
   intros.
-  with_strategy transparent [run_static_call] unfold static_call, run_static_call; cbn.
+  with_strategy transparent [run_delegate_call] unfold delegate_call, run_delegate_call; cbn.
   check_macro_eq InterpreterTypesEq.
   popn_macro_eq InterpreterTypesEq.
   l. {
@@ -154,8 +158,10 @@ Proof.
   gas_macro_eq InterpreterTypesEq.
   cp.
   lu.
-  cw InterpreterTypesEq.
-  cw Impl_Uint.ZERO_eq.
+  cw InterpreterTypesEq. (* caller_address *)
+  cw InterpreterTypesEq. (* is_static *)
+  cw InterpreterTypesEq. (* target_address *)
+  cw InterpreterTypesEq. (* call_value *)
   cw @Impl_Box.new_eq.
   cw InterpreterTypesEq.
   p.

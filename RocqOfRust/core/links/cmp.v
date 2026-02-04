@@ -56,6 +56,17 @@ Module Eq.
 End Eq.
 Export (hints) Eq.
 
+Instance run_min_by {T F : Set} `{Link T} `{Link F}
+    `{run_FnOnce_for_F : !FnOnce.Run F ('& T * '& T) Ordering.t}
+    (v1 v2 : T) (compare : F) :
+  Run.Trait cmp.min_by [] [ Φ T; Φ F ] [ φ v1; φ v2; φ compare ] T.
+Proof.
+  constructor.
+  destruct run_FnOnce_for_F.
+  run_symbolic.
+Defined.
+Global Opaque run_min_by.
+
 (*
     pub fn max_by<T, F: FnOnce(&T, &T) -> Ordering>(v1: T, v2: T, compare: F) -> T {
         match compare(&v1, &v2) {
@@ -65,13 +76,14 @@ Export (hints) Eq.
     }
 *)
 Instance run_max_by {T F : Set} `{Link T} `{Link F}
-    `{!FnOnce.Run F ('& T * '& T) Ordering.t}
+    `{run_FnOnce_for_F : !FnOnce.Run F ('& T * '& T) Ordering.t}
     (v1 v2 : T) (compare : F) :
   Run.Trait cmp.max_by [] [ Φ T; Φ F ] [ φ v1; φ v2; φ compare ] T.
 Proof.
   constructor.
+  destruct run_FnOnce_for_F.
   run_symbolic.
-Admitted.
+Defined.
 Global Opaque run_max_by.
 
 (*
@@ -133,7 +145,10 @@ Module Ord.
         `{!Method_cmp Self} :
       Run.Trait (cmp.cmp.Ord.min (Φ Self)) [] [] [ φ self; φ other ] Self.
     Proof.
-    Admitted.
+      constructor.
+      run_symbolic.
+      exact (run_min_by value value0 (Function2.of_run _)).
+    Defined.
     Global Opaque run_min.
 
     Instance run_max {Self : Set} `{Link Self} (self other : Self)

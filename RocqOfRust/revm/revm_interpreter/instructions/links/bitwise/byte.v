@@ -26,10 +26,8 @@ Instance run_byte
     instructions.bitwise.byte [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
     unit.
 Proof.
-Opaque Z.sub.
   constructor.
   destruct Impl_TryFrom_u64_for_usize.run.
   run_symbolic.
-Transparent Z.sub.
 Defined.
 Global Opaque run_byte.

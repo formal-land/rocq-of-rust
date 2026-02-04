@@ -10,7 +10,12 @@ Module ArrayPair.
     xs : B;
   }.
   Arguments t : clear implicits.
+  Arguments Build_t {_ _}.
 End ArrayPair.
+
+(* A notation like lists but with special characters for the enclosing brackets *)
+Notation "⟬ x ; .. ; y ⟭" := (ArrayPair.Build_t x .. (ArrayPair.Build_t y ArrayEmpty.Make) ..).
+Notation "⟬ ⟭" := ArrayEmpty.Make.
 
 Module ArrayPairs.
   Fixpoint t (A : Set) (length : nat) : Set :=
