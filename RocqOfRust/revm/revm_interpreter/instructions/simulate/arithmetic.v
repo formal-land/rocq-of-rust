@@ -61,14 +61,9 @@ Proof.
   unfold add.
   gas_macro_eq InterpreterTypesEq.
   popn_top_macro_eq InterpreterTypesEq.
-  cbn.
-  apply Run.LetUnfold.
-  get_can_access.
-  eapply Run.Call. {
-    apply Impl_Uint.wrapping_add_eq.
-  }
-  get_can_access.
-  apply Run.Pure.
+  lu.
+  cw Impl_Uint.wrapping_add_eq.
+  p.
 Qed.
 
 Definition mul
@@ -117,14 +112,9 @@ Proof.
   unfold mul.
   gas_macro_eq InterpreterTypesEq.
   popn_top_macro_eq InterpreterTypesEq.
-  cbn.
-  apply Run.LetUnfold.
-  get_can_access.
-  eapply Run.Call. {
-    apply Impl_Uint.wrapping_mul_eq.
-  }
-  get_can_access.
-  apply Run.Pure.
+  lu.
+  cw Impl_Uint.wrapping_mul_eq.
+  p.
 Qed.
 
 Definition sub
@@ -173,14 +163,9 @@ Proof.
   unfold sub.
   gas_macro_eq InterpreterTypesEq.
   popn_top_macro_eq InterpreterTypesEq.
-  cbn.
-  apply Run.LetUnfold.
-  get_can_access.
-  eapply Run.Call. {
-    apply Impl_Uint.wrapping_sub_eq.
-  }
-  get_can_access.
-  apply Run.Pure.
+  lu.
+  cw Impl_Uint.wrapping_sub_eq.
+  p.
 Qed.
 
 Definition div
@@ -243,26 +228,17 @@ Proof.
     ).
     cbn.
     get_can_access.
-    apply Run.Pure.
+    p.
   }
   cbn.
-  eapply Run.Call; cbn. {
-    apply Run.Pure.
-  }
+  cp.
   cbn.
-  eapply Run.Call; cbn. {
-    apply Run.Pure.
-  }
+  cp.
   cbn.
   destruct Impl_Uint.is_zero; cbn.
-  { apply Run.Pure. }
-  { apply Run.LetUnfold.
-    progress repeat get_can_access.
-    eapply Run.Call; cbn. {
-      apply Impl_Uint.wrapping_div_eq.
-    }
-    cbn.
-    progress repeat get_can_access.
-    apply Run.Pure.
+  { p. }
+  { lu.
+    cw Impl_Uint.wrapping_div_eq.
+    p.
   }
 Qed.
