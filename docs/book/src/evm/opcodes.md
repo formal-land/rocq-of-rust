@@ -42,49 +42,49 @@ Integer division. Returns 0 if divisor is 0.
 ### SDIV (0x05)
 Stack: [a, b] → [a /ₛ b]
 Gas: 5 (LOW)
-Status: ✓ Verified
+Status: ○ In Progress
 
 Signed integer division.
 
 ### MOD (0x06)
 Stack: [a, b] → [a mod b]
 Gas: 5 (LOW)
-Status: ✓ Verified
+Status: ○ In Progress
 
 Modulo operation. Returns 0 if divisor is 0.
 
 ### SMOD (0x07)
 Stack: [a, b] → [a modₛ b]
 Gas: 5 (LOW)
-Status: ✓ Verified
+Status: ○ In Progress
 
 Signed modulo operation.
 
 ### ADDMOD (0x08)
 Stack: [a, b, N] → [(a + b) mod N]
 Gas: 8 (MID)
-Status: ✓ Verified
+Status: ○ In Progress
 
 Addition modulo N. Returns 0 if N is 0.
 
 ### MULMOD (0x09)
 Stack: [a, b, N] → [(a * b) mod N]
 Gas: 8 (MID)
-Status: ✓ Verified
+Status: ○ In Progress
 
 Multiplication modulo N. Returns 0 if N is 0.
 
 ### EXP (0x0A)
 Stack: [a, b] → [a^b]
 Gas: 10 + 50 * byte_size(b)
-Status: ✓ Verified
+Status: ○ In Progress
 
 Exponentiation modulo 2^256.
 
 ### SIGNEXTEND (0x0B)
 Stack: [b, x] → [sign_extend(x, b)]
 Gas: 5 (LOW)
-Status: ✓ Verified
+Status: ○ In Progress
 
 Sign-extends x from (b+1) bytes.
 
@@ -222,6 +222,13 @@ Status: ○ In Progress
 
 Get current memory size.
 
+### MCOPY (0x5E)
+Stack: [destOffset, offset, length] → []
+Gas: 3 + 3*word_count + memory_expansion
+Status: ○ In Progress
+
+Copy memory regions (EIP-5656).
+
 ---
 
 ## Stack Operations
@@ -232,6 +239,13 @@ Gas: 2 (BASE)
 Status: ○ In Progress
 
 Remove top stack item.
+
+### PUSH0 (0x5F)
+Stack: [] → [0]
+Gas: 2 (BASE)
+Status: ○ In Progress
+
+Push zero onto stack (EIP-3855).
 
 ### PUSH1-PUSH32 (0x60-0x7F)
 Stack: [] → [value]
@@ -254,6 +268,27 @@ Status: ○ In Progress
 
 Swap top with Nth item.
 
+### DUPN (0xE6)
+Stack: [n, a, ...] → [a, n, a, ...]
+Gas: 3 (VERYLOW)
+Status: ○ In Progress
+
+Duplicate Nth stack item (EOF).
+
+### SWAPN (0xE7)
+Stack: [n, a, ..., b] → [b, ..., a]
+Gas: 3 (VERYLOW)
+Status: ○ In Progress
+
+Swap with Nth item (EOF).
+
+### EXCHANGE (0xE8)
+Stack: [n, m, ...] → [...]
+Gas: 3 (VERYLOW)
+Status: ○ In Progress
+
+Exchange two stack items (EOF).
+
 ---
 
 ## Control Flow
@@ -268,37 +303,86 @@ Halt execution.
 ### JUMP (0x56)
 Stack: [dest] → []
 Gas: 8 (MID)
-Status: - Planned
+Status: ○ In Progress
 
 Jump to destination.
 
 ### JUMPI (0x57)
 Stack: [dest, cond] → []
 Gas: 10 (HIGH)
-Status: - Planned
+Status: ○ In Progress
 
 Conditional jump.
+
+### RJUMP (0xE0)
+Stack: [] → []
+Gas: 2 (BASE)
+Status: ○ In Progress
+
+Relative jump (EOF).
+
+### RJUMPI (0xE1)
+Stack: [cond] → []
+Gas: 4
+Status: ○ In Progress
+
+Conditional relative jump (EOF).
+
+### RJUMPV (0xE2)
+Stack: [case] → []
+Gas: 4
+Status: ○ In Progress
+
+Relative jump via table (EOF).
+
+### CALLF (0xE3)
+Stack: [...] → [...]
+Gas: 5
+Status: ○ In Progress
+
+Call function (EOF).
+
+### RETF (0xE4)
+Stack: [...] → [...]
+Gas: 3
+Status: ○ In Progress
+
+Return from function (EOF).
+
+### JUMPF (0xE5)
+Stack: [...] → [...]
+Gas: 5
+Status: ○ In Progress
+
+Jump to function (EOF).
 
 ### JUMPDEST (0x5B)
 Stack: [] → []
 Gas: 1
-Status: - Planned
+Status: ○ In Progress
 
 Mark valid jump destination.
 
 ### PC (0x58)
 Stack: [] → [counter]
 Gas: 2 (BASE)
-Status: - Planned
+Status: ○ In Progress
 
 Get program counter.
 
 ### GAS (0x5A)
 Stack: [] → [gas]
 Gas: 2 (BASE)
-Status: - Planned
+Status: ○ In Progress
 
 Get remaining gas.
+
+### INVALID (0xFE)
+Stack: [] → []
+Gas: All remaining
+Status: ○ In Progress
+
+Invalid instruction.
 
 ---
 
@@ -307,23 +391,344 @@ Get remaining gas.
 ### CALL (0xF1)
 Stack: [gas, addr, value, argsOff, argsLen, retOff, retLen] → [success]
 Gas: Complex formula
-Status: - Planned
+Status: ✓ Verified
 
 Call another contract.
+
+### CALLCODE (0xF2)
+Stack: [gas, addr, value, argsOff, argsLen, retOff, retLen] → [success]
+Gas: Complex formula
+Status: ✓ Verified
+
+Call with caller's context (deprecated).
+
+### DELEGATECALL (0xF4)
+Stack: [gas, addr, argsOff, argsLen, retOff, retLen] → [success]
+Gas: Complex formula
+Status: ✓ Verified
+
+Call with caller's context and value.
+
+### STATICCALL (0xFA)
+Stack: [gas, addr, argsOff, argsLen, retOff, retLen] → [success]
+Gas: Complex formula
+Status: ✓ Verified
+
+Static call (no state modification).
+
+### CREATE (0xF0)
+Stack: [value, offset, length] → [address]
+Gas: 32000 + memory_expansion
+Status: ○ In Progress
+
+Create a new contract.
+
+### CREATE2 (0xF5)
+Stack: [value, offset, length, salt] → [address]
+Gas: 32000 + memory_expansion + hash_cost
+Status: ○ In Progress
+
+Create with deterministic address.
 
 ### RETURN (0xF3)
 Stack: [offset, length] → []
 Gas: 0 + memory_expansion
-Status: - Planned
+Status: ○ In Progress
 
 Return from execution.
 
 ### REVERT (0xFD)
 Stack: [offset, length] → []
 Gas: 0 + memory_expansion
-Status: - Planned
+Status: ○ In Progress
 
 Revert state changes.
+
+### SELFDESTRUCT (0xFF)
+Stack: [address] → []
+Gas: 5000 + transfer_cost
+Status: ○ In Progress
+
+Destroy contract and send funds.
+
+---
+
+## Block Info Operations
+
+### BLOCKHASH (0x40)
+Stack: [blockNumber] → [hash]
+Gas: 20 (BLOCKHASH)
+Status: ○ In Progress
+
+Get hash of recent block.
+
+### COINBASE (0x41)
+Stack: [] → [address]
+Gas: 2 (BASE)
+Status: ○ In Progress
+
+Get block's beneficiary address.
+
+### TIMESTAMP (0x42)
+Stack: [] → [timestamp]
+Gas: 2 (BASE)
+Status: ○ In Progress
+
+Get block's timestamp.
+
+### NUMBER (0x43)
+Stack: [] → [blockNumber]
+Gas: 2 (BASE)
+Status: ○ In Progress
+
+Get current block number.
+
+### PREVRANDAO (0x44)
+Stack: [] → [randomValue]
+Gas: 2 (BASE)
+Status: ○ In Progress
+
+Get previous block's RANDAO value.
+
+### GASLIMIT (0x45)
+Stack: [] → [gasLimit]
+Gas: 2 (BASE)
+Status: ○ In Progress
+
+Get block's gas limit.
+
+### CHAINID (0x46)
+Stack: [] → [chainId]
+Gas: 2 (BASE)
+Status: ○ In Progress
+
+Get chain ID.
+
+### BASEFEE (0x48)
+Stack: [] → [baseFee]
+Gas: 2 (BASE)
+Status: ○ In Progress
+
+Get block's base fee.
+
+### BLOBBASEFEE (0x4A)
+Stack: [] → [blobBaseFee]
+Gas: 2 (BASE)
+Status: ○ In Progress
+
+Get blob base fee (EIP-4844).
+
+---
+
+## Host Operations
+
+### BALANCE (0x31)
+Stack: [address] → [balance]
+Gas: 100-2600 (cold/warm)
+Status: ○ In Progress
+
+Get account balance.
+
+### SELFBALANCE (0x47)
+Stack: [] → [balance]
+Gas: 5 (LOW)
+Status: ○ In Progress
+
+Get current contract's balance.
+
+### EXTCODESIZE (0x3B)
+Stack: [address] → [size]
+Gas: 100-2600 (cold/warm)
+Status: ○ In Progress
+
+Get code size of external account.
+
+### EXTCODECOPY (0x3C)
+Stack: [address, destOffset, offset, length] → []
+Gas: 100-2600 + memory_expansion
+Status: ○ In Progress
+
+Copy external code to memory.
+
+### EXTCODEHASH (0x3F)
+Stack: [address] → [hash]
+Gas: 100-2600 (cold/warm)
+Status: ○ In Progress
+
+Get code hash of external account.
+
+### SLOAD (0x54)
+Stack: [key] → [value]
+Gas: 100-2100 (cold/warm)
+Status: ○ In Progress
+
+Load from storage.
+
+### SSTORE (0x55)
+Stack: [key, value] → []
+Gas: Complex (EIP-2200)
+Status: ○ In Progress
+
+Store to storage.
+
+### TLOAD (0x5C)
+Stack: [key] → [value]
+Gas: 100
+Status: ○ In Progress
+
+Load from transient storage (EIP-1153).
+
+### TSTORE (0x5D)
+Stack: [key, value] → []
+Gas: 100
+Status: ○ In Progress
+
+Store to transient storage (EIP-1153).
+
+### LOG0-LOG4 (0xA0-0xA4)
+Stack: [offset, length, topics...] → []
+Gas: 375 + 8*length + 375*topic_count
+Status: ○ In Progress
+
+Emit log event.
+
+---
+
+## System Operations
+
+### KECCAK256 (0x20)
+Stack: [offset, length] → [hash]
+Gas: 30 + 6*word_count + memory_expansion
+Status: ○ In Progress
+
+Compute Keccak-256 hash.
+
+### ADDRESS (0x30)
+Stack: [] → [address]
+Gas: 2 (BASE)
+Status: ○ In Progress
+
+Get current contract address.
+
+### CALLER (0x33)
+Stack: [] → [address]
+Gas: 2 (BASE)
+Status: ○ In Progress
+
+Get caller address.
+
+### CALLVALUE (0x34)
+Stack: [] → [value]
+Gas: 2 (BASE)
+Status: ○ In Progress
+
+Get deposited value.
+
+### CALLDATALOAD (0x35)
+Stack: [offset] → [data]
+Gas: 3 (VERYLOW)
+Status: ○ In Progress
+
+Load 32 bytes from call data.
+
+### CALLDATASIZE (0x36)
+Stack: [] → [size]
+Gas: 2 (BASE)
+Status: ○ In Progress
+
+Get call data size.
+
+### CALLDATACOPY (0x37)
+Stack: [destOffset, offset, length] → []
+Gas: 3 + 3*word_count + memory_expansion
+Status: ○ In Progress
+
+Copy call data to memory.
+
+### CODESIZE (0x38)
+Stack: [] → [size]
+Gas: 2 (BASE)
+Status: ○ In Progress
+
+Get code size.
+
+### CODECOPY (0x39)
+Stack: [destOffset, offset, length] → []
+Gas: 3 + 3*word_count + memory_expansion
+Status: ○ In Progress
+
+Copy code to memory.
+
+### RETURNDATASIZE (0x3D)
+Stack: [] → [size]
+Gas: 2 (BASE)
+Status: ○ In Progress
+
+Get return data size.
+
+### RETURNDATACOPY (0x3E)
+Stack: [destOffset, offset, length] → []
+Gas: 3 + 3*word_count + memory_expansion
+Status: ○ In Progress
+
+Copy return data to memory.
+
+---
+
+## Transaction Info
+
+### GASPRICE (0x3A)
+Stack: [] → [gasPrice]
+Gas: 2 (BASE)
+Status: ○ In Progress
+
+Get gas price.
+
+### ORIGIN (0x32)
+Stack: [] → [address]
+Gas: 2 (BASE)
+Status: ○ In Progress
+
+Get transaction origin.
+
+### BLOBHASH (0x49)
+Stack: [index] → [hash]
+Gas: 3 (VERYLOW)
+Status: ○ In Progress
+
+Get blob versioned hash (EIP-4844).
+
+---
+
+## Data Operations (EOF)
+
+### DATALOAD (0xD0)
+Stack: [offset] → [data]
+Gas: 4
+Status: ○ In Progress
+
+Load data from data section.
+
+### DATALOADN (0xD1)
+Stack: [] → [data]
+Gas: 3
+Status: ○ In Progress
+
+Load data with immediate offset.
+
+### DATASIZE (0xD2)
+Stack: [] → [size]
+Gas: 2
+Status: ○ In Progress
+
+Get data section size.
+
+### DATACOPY (0xD3)
+Stack: [destOffset, offset, length] → []
+Gas: 3 + 3*word_count + memory_expansion
+Status: ○ In Progress
+
+Copy data section to memory.
 
 ---
 

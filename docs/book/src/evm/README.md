@@ -53,35 +53,75 @@ We verify each opcode through four stages:
 
 Current verification progress on EVM opcodes:
 
-### Verified Opcodes
+**Summary: 121 link instances | 25 simulation files | 3 test files**
 
-The following opcodes have complete Link + Simulate + Test coverage:
+### Fully Verified (Link + Simulate + Tests)
 
-**Bitwise & Comparison:**
-- `LT`, `GT`, `EQ`
+The following 22 opcodes have complete verification coverage:
+
+**Bitwise & Comparison (14 opcodes):**
+- `LT`, `GT`, `EQ`, `ISZERO`
 - `SLT`, `SGT` (signed comparison)
-- `ISZERO`
 - `AND`, `OR`, `XOR`, `NOT`
 - `BYTE`
 - `SHL`, `SHR`, `SAR` (shifts)
 
-**Arithmetic:**
+**Arithmetic (4 opcodes):**
 - `ADD`, `SUB`, `MUL`, `DIV`
-- `SDIV`, `MOD`, `SMOD`
-- `ADDMOD`, `MULMOD`
-- `EXP`, `SIGNEXTEND`
 
-### In Progress
+**Contract (4 opcodes):**
+- `CALL`, `CALLCODE`, `DELEGATECALL`, `STATICCALL`
 
-- Memory operations
-- Stack manipulation (PUSH/DUP/SWAP families)
-- Control flow
+### In Progress (Link Only)
+
+The following categories have link instances but are awaiting simulation/tests:
+
+**Arithmetic (7 more):**
+- `SDIV`, `MOD`, `SMOD`, `ADDMOD`, `MULMOD`, `EXP`, `SIGNEXTEND`
+
+**Contract (9 more):**
+- `CREATE`, `CREATE2`, `EOFCREATE`, `RETURNCONTRACT`
+- `EXTCALL`, `EXTDELEGATECALL`, `EXTSTATICCALL`
+- `RETURNDATALOAD`, `RETURNDATACOPY`
+
+**Memory (5 opcodes):**
+- `MLOAD`, `MSTORE`, `MSTORE8`, `MSIZE`, `MCOPY`
+
+**Stack (8 opcodes):**
+- `POP`, `PUSH0`, `PUSH`
+- `DUP`, `SWAP`, `DUPN`, `SWAPN`, `EXCHANGE`
+
+**Control (17 opcodes):**
+- `JUMP`, `JUMPI`, `RJUMP`, `RJUMPI`, `RJUMPV`
+- `CALLF`, `RETF`, `JUMPF`
+- `RETURN`, `REVERT`, `STOP`, `INVALID`
+- `PC`, `GAS`, `JUMPDEST`, `NOP`
+
+**Block Info (8 opcodes):**
+- `CHAINID`, `COINBASE`, `TIMESTAMP`, `BLOCKNUMBER`
+- `PREVRANDAO`, `GASLIMIT`, `BASEFEE`, `BLOBBASEFEE`
+
+**Host (12 opcodes):**
+- `BALANCE`, `SELFBALANCE`, `EXTCODESIZE`, `EXTCODECOPY`, `EXTCODEHASH`
+- `BLOCKHASH`, `SLOAD`, `SSTORE`, `TLOAD`, `TSTORE`
+- `LOG`, `SELFDESTRUCT`
+
+**System (14 opcodes):**
+- `KECCAK256`, `ADDRESS`, `CALLER`, `CALLVALUE`, `CALLDATALOAD`
+- `CALLDATASIZE`, `CALLDATACOPY`, `CODESIZE`, `CODECOPY`
+- `GASPRICE`, `RETURNDATASIZE`, `ORIGIN`
+- `BLOBHASH`, `MCOPY`
+
+**Data (4 opcodes):**
+- `DATALOAD`, `DATALOADN`, `DATASIZE`, `DATACOPY`
+
+**TX Info (3 opcodes):**
+- `GASPRICE`, `ORIGIN`, `BLOBHASH`
 
 ### Planned
 
-- Contract operations (CALL, CREATE, etc.)
-- Environment opcodes
 - Precompiles
+- Additional EOF opcodes
 
 ## Explore the Code
 

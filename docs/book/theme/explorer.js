@@ -280,6 +280,189 @@ Goal
   let result := op_add interpreter in
   result.(Interpreter.stack).(Stack.value) = [{| Uint.value := 5 |}].
 Proof. timeout 1 vm_compute. reflexivity. Qed.`
+        },
+        sub: {
+            rust: `(* Original Rust from revm *)
+pub fn sub<WIRE: InterpreterTypes, H: Host + ?Sized>(
+    interpreter: &mut Interpreter<WIRE>,
+    _host: &mut H,
+) {
+    gas!(interpreter, gas::VERYLOW);
+    popn_top!([op1], op2, interpreter);
+    *op2 = op1.wrapping_sub(*op2);
+}`,
+            link: `(* Link instance for SUB opcode *)
+Instance run_sub
+    {WIRE H : Set} \`{Link WIRE} \`{Link H}
+    {WIRE_types : InterpreterTypes.Types.t}
+    \`{InterpreterTypes.Types.AreLinks WIRE_types}
+    (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
+    (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+    (_host : '&mut H) :
+  Run.Trait
+    instructions.arithmetic.sub [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
+    unit.
+Proof.
+  constructor.
+  run_symbolic.
+Defined.`,
+            simulate: `(* Simulation for SUB opcode *)
+Definition op_sub
+    {WIRE : Set} \`{Link WIRE}
+    {WIRE_types : InterpreterTypes.Types.t}
+    \`{InterpreterTypes.Types.AreLinks WIRE_types}
+    \`{!InterpreterTypes.C WIRE_types}
+    (interpreter : Interpreter.t WIRE WIRE_types) :
+    Interpreter.t WIRE WIRE_types :=
+  gas_macro interpreter constants.VERYLOW id (fun interpreter =>
+  popn_top_macro interpreter {| Integer.value := 1 |} id (fun arr top interpreter =>
+    let '{| ArrayPair.x := op1 |} := arr.(array.value) in
+    let op2 := top.(RefStub.projection) interpreter.(Interpreter.stack) in
+    let result := {| Uint.value := (op1.(Uint.value) - op2.(Uint.value)) mod 2^256 |} in
+    let stack :=
+      top.(RefStub.injection)
+        interpreter.(Interpreter.stack) result in
+    interpreter <| Interpreter.stack := stack |>
+  )).`,
+            test: `(* Test cases for SUB opcode *)
+
+(** Test that SUB correctly computes 10 - 3 = 7 *)
+Goal
+  let stack := {| Stack.value := [
+    {| Uint.value := 10 |};
+    {| Uint.value := 3 |}
+  ] |} in
+  let interpreter := make_interpreter stack in
+  let result := op_sub interpreter in
+  result.(Interpreter.stack).(Stack.value) = [{| Uint.value := 7 |}].
+Proof. timeout 1 vm_compute. reflexivity. Qed.`
+        },
+        mul: {
+            rust: `(* Original Rust from revm *)
+pub fn mul<WIRE: InterpreterTypes, H: Host + ?Sized>(
+    interpreter: &mut Interpreter<WIRE>,
+    _host: &mut H,
+) {
+    gas!(interpreter, gas::LOW);
+    popn_top!([op1], op2, interpreter);
+    *op2 = op1.wrapping_mul(*op2);
+}`,
+            link: `(* Link instance for MUL opcode *)
+Instance run_mul
+    {WIRE H : Set} \`{Link WIRE} \`{Link H}
+    {WIRE_types : InterpreterTypes.Types.t}
+    \`{InterpreterTypes.Types.AreLinks WIRE_types}
+    (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
+    (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+    (_host : '&mut H) :
+  Run.Trait
+    instructions.arithmetic.mul [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
+    unit.
+Proof.
+  constructor.
+  run_symbolic.
+Defined.`,
+            simulate: `(* Simulation for MUL opcode *)
+Definition op_mul
+    {WIRE : Set} \`{Link WIRE}
+    {WIRE_types : InterpreterTypes.Types.t}
+    \`{InterpreterTypes.Types.AreLinks WIRE_types}
+    \`{!InterpreterTypes.C WIRE_types}
+    (interpreter : Interpreter.t WIRE WIRE_types) :
+    Interpreter.t WIRE WIRE_types :=
+  gas_macro interpreter constants.LOW id (fun interpreter =>
+  popn_top_macro interpreter {| Integer.value := 1 |} id (fun arr top interpreter =>
+    let '{| ArrayPair.x := op1 |} := arr.(array.value) in
+    let op2 := top.(RefStub.projection) interpreter.(Interpreter.stack) in
+    let result := {| Uint.value := (op1.(Uint.value) * op2.(Uint.value)) mod 2^256 |} in
+    let stack :=
+      top.(RefStub.injection)
+        interpreter.(Interpreter.stack) result in
+    interpreter <| Interpreter.stack := stack |>
+  )).`,
+            test: `(* Test cases for MUL opcode *)
+
+(** Test that MUL correctly computes 6 * 7 = 42 *)
+Goal
+  let stack := {| Stack.value := [
+    {| Uint.value := 6 |};
+    {| Uint.value := 7 |}
+  ] |} in
+  let interpreter := make_interpreter stack in
+  let result := op_mul interpreter in
+  result.(Interpreter.stack).(Stack.value) = [{| Uint.value := 42 |}].
+Proof. timeout 1 vm_compute. reflexivity. Qed.`
+        },
+        div: {
+            rust: `(* Original Rust from revm *)
+pub fn div<WIRE: InterpreterTypes, H: Host + ?Sized>(
+    interpreter: &mut Interpreter<WIRE>,
+    _host: &mut H,
+) {
+    gas!(interpreter, gas::LOW);
+    popn_top!([op1], op2, interpreter);
+    *op2 = op1.checked_div(*op2).unwrap_or_default();
+}`,
+            link: `(* Link instance for DIV opcode *)
+Instance run_div
+    {WIRE H : Set} \`{Link WIRE} \`{Link H}
+    {WIRE_types : InterpreterTypes.Types.t}
+    \`{InterpreterTypes.Types.AreLinks WIRE_types}
+    (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
+    (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+    (_host : '&mut H) :
+  Run.Trait
+    instructions.arithmetic.div [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
+    unit.
+Proof.
+  constructor.
+  run_symbolic.
+Defined.`,
+            simulate: `(* Simulation for DIV opcode *)
+Definition op_div
+    {WIRE : Set} \`{Link WIRE}
+    {WIRE_types : InterpreterTypes.Types.t}
+    \`{InterpreterTypes.Types.AreLinks WIRE_types}
+    \`{!InterpreterTypes.C WIRE_types}
+    (interpreter : Interpreter.t WIRE WIRE_types) :
+    Interpreter.t WIRE WIRE_types :=
+  gas_macro interpreter constants.LOW id (fun interpreter =>
+  popn_top_macro interpreter {| Integer.value := 1 |} id (fun arr top interpreter =>
+    let '{| ArrayPair.x := op1 |} := arr.(array.value) in
+    let op2 := top.(RefStub.projection) interpreter.(Interpreter.stack) in
+    let result :=
+      if op2.(Uint.value) =? 0 then
+        {| Uint.value := 0 |}
+      else
+        {| Uint.value := op1.(Uint.value) / op2.(Uint.value) |} in
+    let stack :=
+      top.(RefStub.injection)
+        interpreter.(Interpreter.stack) result in
+    interpreter <| Interpreter.stack := stack |>
+  )).`,
+            test: `(* Test cases for DIV opcode *)
+
+(** Test that DIV correctly computes 20 / 4 = 5 *)
+Goal
+  let stack := {| Stack.value := [
+    {| Uint.value := 20 |};
+    {| Uint.value := 4 |}
+  ] |} in
+  let interpreter := make_interpreter stack in
+  let result := op_div interpreter in
+  result.(Interpreter.stack).(Stack.value) = [{| Uint.value := 5 |}].
+Proof. timeout 1 vm_compute. reflexivity. Qed.
+
+(** Test that DIV returns 0 for division by zero *)
+Goal
+  let stack := {| Stack.value := [
+    {| Uint.value := 10 |};
+    {| Uint.value := 0 |}
+  ] |} in
+  let interpreter := make_interpreter stack in
+  let result := op_div interpreter in
+  result.(Interpreter.stack).(Stack.value) = [{| Uint.value := 0 |}].
+Proof. timeout 1 vm_compute. reflexivity. Qed.`
         }
     },
 
@@ -383,11 +566,14 @@ Proof. timeout 1 vm_compute. reflexivity. Qed.`
                 opcodeName.textContent = this.currentOpcode.toUpperCase();
             }
             if (filePath) {
+                // Determine category based on opcode
+                const arithmeticOpcodes = ['add', 'sub', 'mul', 'div', 'sdiv', 'mod', 'smod', 'addmod', 'mulmod', 'exp', 'signextend'];
+                const category = arithmeticOpcodes.includes(this.currentOpcode) ? 'arithmetic' : 'bitwise';
                 const paths = {
-                    rust: 'bitwise.v (comment)',
-                    link: 'links/bitwise/' + this.currentOpcode + '.v',
-                    simulate: 'simulate/bitwise/' + this.currentOpcode + '.v',
-                    test: 'tests/bitwise.v'
+                    rust: category + '.v (comment)',
+                    link: 'links/' + category + '/' + this.currentOpcode + '.v',
+                    simulate: 'simulate/' + category + '/' + this.currentOpcode + '.v',
+                    test: 'tests/' + category + '.v'
                 };
                 filePath.textContent = paths[this.currentStage] || '';
             }

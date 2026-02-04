@@ -22,7 +22,7 @@ REVM_PATH = Path("RocqOfRust/revm/revm_interpreter/instructions")
 # Opcode categories and their opcodes
 CATEGORIES = {
     "arithmetic": [
-        "add", "mul", "sub", "div", "sdiv", "mod_", "smod",
+        "add", "mul", "sub", "div", "sdiv", "rem", "smod",
         "addmod", "mulmod", "exp", "signextend"
     ],
     "bitwise": [
@@ -30,17 +30,42 @@ CATEGORIES = {
         "bitand", "bitor", "bitxor", "not", "byte",
         "shl", "shr", "sar"
     ],
+    "i256": [
+        "i256_sign", "i256_div", "i256_rem"
+    ],
     "memory": ["mload", "mstore", "mstore8", "msize", "mcopy"],
-    "stack": ["pop", "push", "dup", "swap"],
-    "control": ["jump", "jumpi", "pc", "gas", "jumpdest", "stop", "return_", "revert"],
+    "stack": ["pop", "push0", "push", "dup", "swap", "dupn", "swapn", "exchange"],
+    "control": [
+        "jump", "jumpi", "rjump", "rjumpi", "rjumpv",
+        "callf", "retf", "jumpf",
+        "pc", "gas", "jumpdest", "stop", "return_", "revert",
+        "invalid", "nop"
+    ],
     "contract": [
-        "call", "callcode", "delegatecall", "staticcall",
-        "create", "create2", "selfdestruct",
-        "extcodesize", "extcodecopy", "extcodehash"
+        "call", "call_code", "delegate_call", "static_call",
+        "create", "create2", "eofcreate", "returncontract",
+        "extcall", "extdelegatecall", "extstaticcall",
+        "returndataload", "returndatacopy"
     ],
     "block_info": [
-        "blockhash", "coinbase", "timestamp", "number",
-        "difficulty", "gaslimit", "chainid", "basefee"
+        "chainid", "coinbase", "timestamp", "block_number",
+        "prevrandao", "gaslimit", "basefee", "blobbasefee"
+    ],
+    "host": [
+        "balance", "selfbalance", "extcodesize", "extcodecopy", "extcodehash",
+        "blockhash", "sload", "sstore", "tload", "tstore",
+        "log", "selfdestruct"
+    ],
+    "system": [
+        "keccak256", "address", "caller", "callvalue", "calldataload",
+        "calldatasize", "calldatacopy", "codesize", "codecopy",
+        "gasprice", "returndatasize", "origin", "blobhash"
+    ],
+    "data": [
+        "data_load", "data_loadn", "data_size", "data_copy"
+    ],
+    "tx_info": [
+        "gasprice", "origin", "blob_hash"
     ],
 }
 
