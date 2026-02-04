@@ -369,3 +369,24 @@ Definition resize_memory_macro {WIRE K : Set} `{Link WIRE}
   | MemoryExtensionResult.Same =>
     k interpreter
   end.
+
+Definition push_macro {WIRE K : Set} `{Link WIRE}
+    {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
+    {IInterpreterTypes : InterpreterTypes.C WIRE_types}
+    (interpreter : Interpreter.t WIRE WIRE_types)
+    (value : aliases.U256.t)
+    (k_exit : Interpreter.t WIRE WIRE_types -> K)
+    (k : Interpreter.t WIRE WIRE_types -> K) :
+    K :=
+  let '(success, stack) :=
+    IInterpreterTypes.(InterpreterTypes.StackTrait_for_Stack).(StackTrait.push)
+      interpreter.(Interpreter.stack) value in
+  let interpreter := interpreter <| Interpreter.stack := stack |> in
+  if success then k interpreter
+  else
+    let control :=
+      IInterpreterTypes.(InterpreterTypes.LoopControl_for_Control).(LoopControl.set_instruction_result)
+        interpreter.(Interpreter.control)
+        instruction_result.InstructionResult.StackOverflow in
+    let interpreter := interpreter <| Interpreter.control := control |> in
+    k_exit interpreter.
