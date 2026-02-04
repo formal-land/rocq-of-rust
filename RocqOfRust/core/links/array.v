@@ -48,6 +48,12 @@ Module ArrayPairs.
     | x :: xs => {| ArrayPair.x := x; ArrayPair.xs := of_list xs |}
     end.
 
+  Fixpoint to_list {A : Set} {length : nat} (xs : t A length) : list A :=
+    match length, xs with
+    | O, ArrayEmpty.Make => []
+    | S length, {| ArrayPair.x := x; ArrayPair.xs := xs |} => x :: to_list xs
+    end.
+
   Fixpoint repeat {A : Set} (value : A) (length : nat) : t A length :=
     match length with
     | O => ArrayEmpty.Make

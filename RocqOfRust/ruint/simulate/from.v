@@ -206,15 +206,20 @@ Module TryFrom_Uint_for_u64.
   Definition Self : Set :=
     u64.
 
-  Parameter try_from :
-    forall {BITS LIMBS : usize},
-    Impl_Uint.Self BITS LIMBS ->
-    Result.t Self (FromUintError.t u64).
+  Definition Error : Set :=
+    FromUintError.t u64.
 
-  Lemma try_from_eq (BITS LIMBS : usize) (value : Impl_Uint.Self BITS LIMBS) (stack : Stack.t) :
+  (** We specialize the definition for the case of BITS = 256 and LIMBS = 4. *)
+  Definition try_from (value : Impl_Uint.Self 256 4) : Result.t Self Error :=
+    if value.(Uint.value) <=? 2^64 - 1 then
+      Result.Ok (value.(Uint.value) : u64)
+    else
+      Result.Err (FromUintError.Overflow 256 (value.(Uint.value) mod (2^64): u64) (2^64 - 1)).
+
+  Lemma try_from_eq (value : Impl_Uint.Self 256 4) (stack : Stack.t) :
     {{
       SimulateM.eval_f
-        (TryFrom_Uint_for_u64.run_try_from BITS LIMBS value)
+        (TryFrom_Uint_for_u64.run_try_from 256 4 value)
         stack 🌲
       (
         Output.Success (try_from value),

@@ -646,7 +646,9 @@ pub enum FromUintError<T> {
 }
 *)
 Module FromUintError.
-  Parameter t : forall (T : Set), Set.
+  Inductive t (T : Set) : Set :=
+  | Overflow (size : usize) (value : T) (max : T).
+  Arguments Overflow {T} size value max.
 
   Parameter to_value : forall {T : Set}, t T -> Value.t.
 

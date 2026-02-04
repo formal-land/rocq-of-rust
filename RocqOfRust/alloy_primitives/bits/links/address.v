@@ -5,7 +5,9 @@ Require Import core.links.array.
 Require Import core.links.borrow.
 
 Module Address.
-  Parameter t : Set.
+  Record t : Set := {
+    value : Z;
+  }.
 
   Parameter to_value : t -> Value.t.
 

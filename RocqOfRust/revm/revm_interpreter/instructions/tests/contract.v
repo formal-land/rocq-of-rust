@@ -12,14 +12,14 @@ Require Import ruint.links.lib.
 
 (** Mock Host that returns None - for FatalExternalError path *)
 Module TestHost.
-  Definition t : Set := unit.
+  Inductive t : Set := Make.
 
   Instance IsLink : Link t.
   Admitted.
 
   Definition load_account_delegated (self : t) (address : Address.t) :
       option AccountLoad.t * t :=
-    (None, self).
+    (None, Make).
 
   Instance I : Host.C t := {
     Host.load_account_delegated := load_account_delegated;
@@ -29,7 +29,7 @@ Export (hints) TestHost.
 
 (** Mock Host that returns Some - for success path *)
 Module TestHostWithAccount.
-  Definition t : Set := unit.
+  Inductive t : Set := Make.
 
   Instance IsLink : Link t.
   Admitted.
@@ -47,7 +47,7 @@ Module TestHostWithAccount.
 
   Definition load_account_delegated (self : t) (address : Address.t) :
       option AccountLoad.t * t :=
-    (Some test_account_load, self).
+    (Some test_account_load, Make).
 
   Instance I : Host.C t := {
     Host.load_account_delegated := load_account_delegated;
@@ -61,7 +61,7 @@ Export (hints) TestHostWithAccount.
 Goal
   let stack := {| Stack.value := [] |} in
   let interpreter := make_interpreter stack in
-  let host : TestHost.t := tt in
+  let host : TestHost.t := TestHost.Make in
   let '(result_interpreter, _) := static_call interpreter host in
   result_interpreter.(Interpreter.control).(Control.instruction_result) =
     Some InstructionResult.StackUnderflow.
@@ -77,7 +77,7 @@ Goal
     {| Uint.value := 100 |}
   ] |} in
   let interpreter := make_interpreter stack in
-  let host : TestHost.t := tt in
+  let host : TestHost.t := TestHost.Make in
   let '(result_interpreter, _) := static_call interpreter host in
   result_interpreter.(Interpreter.control).(Control.instruction_result) =
     Some InstructionResult.StackUnderflow.
@@ -97,7 +97,7 @@ Goal
     {| Uint.value := 42 |}     (* to address *)
   ] |} in
   let interpreter := make_interpreter stack in
-  let host : TestHost.t := tt in
+  let host : TestHost.t := TestHost.Make in
   let '(result_interpreter, _) := static_call interpreter host in
   result_interpreter.(Interpreter.control).(Control.instruction_result) =
     Some InstructionResult.StackUnderflow.
@@ -108,11 +108,8 @@ Qed.
 
 (** ** Tests requiring full path (FatalExternalError, CallOrCreate)
     These tests go through get_memory_input_and_out_ranges which involves
-    complex computation. They are commented out because they timeout with
-    "timeout 1 vm_compute". The StackUnderflow tests above provide coverage
-    for the early exit paths. *)
+    complex computation. *)
 
-(*
 (** Test that static_call with 6 elements but no account returns FatalExternalError *)
 Goal
   let stack := {| Stack.value := [
@@ -124,12 +121,11 @@ Goal
     {| Uint.value := 42 |}     (* to address *)
   ] |} in
   let interpreter := make_interpreter stack in
-  let host : TestHost.t := tt in
+  let host : TestHost.t := TestHost.Make in
   let '(result_interpreter, _) := static_call interpreter host in
   result_interpreter.(Interpreter.control).(Control.instruction_result) =
     Some InstructionResult.FatalExternalError.
 Proof.
-  (* TODO: This test times out with vm_compute due to complex computation *)
   timeout 1 vm_compute.
   reflexivity.
 Qed.
@@ -145,13 +141,11 @@ Goal
     {| Uint.value := 42 |}     (* to address *)
   ] |} in
   let interpreter := make_interpreter stack in
-  let host : TestHostWithAccount.t := tt in
+  let host : TestHostWithAccount.t := TestHostWithAccount.Make in
   let '(result_interpreter, _) := static_call interpreter host in
   result_interpreter.(Interpreter.control).(Control.instruction_result) =
     Some InstructionResult.CallOrCreate.
 Proof.
-  (* TODO: This test times out with vm_compute due to complex computation *)
   timeout 1 vm_compute.
   reflexivity.
 Qed.
-*)

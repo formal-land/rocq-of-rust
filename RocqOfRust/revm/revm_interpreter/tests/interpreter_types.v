@@ -111,6 +111,7 @@ Module Control.
   Record t : Set := {
     gas : Gas.t;
     instruction_result : option InstructionResult.t;
+    next_action : option InterpreterAction.t;
   }.
 
   Instance IsLink : Link t.
@@ -294,8 +295,10 @@ Module LoopControl.
       (self : Self)
       (action : InterpreterAction.t)
       (result : InstructionResult.t) :
-      Self.
-  Admitted.
+      Self :=
+    self
+      <| Control.next_action := Some action |>
+      <| Control.instruction_result := Some result |>.
 
   Definition gas : RefStub.t Self Gas.t := {|
     RefStub.path := [];

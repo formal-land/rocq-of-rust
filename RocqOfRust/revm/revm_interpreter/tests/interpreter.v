@@ -23,6 +23,7 @@ Definition make_interpreter (stack : Stack.t) : Interpreter.t WIRE WIRE_types :=
       Gas.remaining := 1000000;
     |};
     Control.instruction_result := None;
+    Control.next_action := None;
   |};
   Interpreter.runtime_flag := SpecId.LATEST;
   Interpreter.extend := tt;
