@@ -78,14 +78,16 @@ Lemma resize_memory_eq
     )
   }}.
 Proof.
-  apply Run.remove_extra_stack1.
+  (* apply Run.remove_extra_stack1.
   with_strategy transparent [run_resize_memory] unfold run_resize_memory; cbn.
   unfold resize_memory.
-  lu. c. {
+  s. {
     apply Impl_Uint.as_limbs_eq; repeat unshelve econstructor.
   }
-  lu. cw Impl_usize.max_eq.
-  repeat cp.
+  s. {
+    apply Impl_usize.max_eq.
+  }
+  s.
   destruct Bool.eqb eqn:?; r. {
     lu. cw InterpreterTypesEq.
     admit.
@@ -123,7 +125,7 @@ Proof.
     cp.
     pf.
     all: admit.
-  }
+  } *)
 Admitted.
 
 Definition get_memory_input_and_out_ranges
@@ -189,13 +191,13 @@ Lemma get_memory_input_and_out_ranges_eq
     )
   }}.
 Proof.
-  apply Run.remove_extra_stack1.
+  (* apply Run.remove_extra_stack1.
   with_strategy transparent [run_get_memory_input_and_out_ranges]
     unfold run_get_memory_input_and_out_ranges, get_memory_input_and_out_ranges;
     cbn.
   popn_macro_eq InterpreterTypesEq.
   lu.
-  cw @resize_memory_eq.
+  cw @resize_memory_eq. *)
 Admitted.
 
 Definition calc_call_gas

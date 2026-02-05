@@ -17,6 +17,7 @@ Require Import ruint.links.lib.
 Require Import ruint.simulate.bits.
 Require Import ruint.simulate.cmp.
 Require Import ruint.simulate.from.
+Require Import ruint.simulate.lib.
 
 Definition op_shl
     {WIRE : Set} `{Link WIRE}
@@ -26,12 +27,12 @@ Definition op_shl
     Interpreter.t WIRE WIRE_types :=
   check_macro interpreter SpecId.CONSTANTINOPLE id (fun interpreter =>
   gas_macro interpreter constants.VERYLOW id (fun interpreter =>
-  popn_top_macro interpreter {| Integer.value := 1 |} id (fun arr top interpreter =>
-    let '{| ArrayPair.x := shift_op |} := arr.(array.value) in
+  popn_top_macro interpreter 1 id (fun arr top interpreter =>
+    let '⟬ shift_op ⟭ := arr.(array.value) in
     let op2 := top.(RefStub.projection) interpreter.(Interpreter.stack) in
     let shift := as_usize_saturated_macro shift_op in
     let result :=
-      if shift.(Integer.value) <? 256
+      if i[shift] <? 256
       then Impl_Shl_for_Uint.shl op2 shift
       else {| Uint.value := 0 |} in
     let stack :=
@@ -68,17 +69,25 @@ Lemma op_shl_eq
 Proof.
   intros.
   unfold op_shl.
-Admitted.
-  (* check_macro_eq InterpreterTypesEq.
+  check_macro_eq InterpreterTypesEq.
   gas_macro_eq InterpreterTypesEq.
   popn_top_macro_eq InterpreterTypesEq.
-  cbn.
-  get_can_access.
-  eapply Run.Call. {
-    apply Shl.Eq.shl.
+  match goal with
+  | array : array.t aliases.U256.t _ |- _ => destruct array as [[op1 []]]; cbn
+  end.
+  eapply Run.Let with (result := (Output.Success (as_usize_saturated_macro op1), _)). {
+    as_usize_saturated_macro_eq.
   }
-  cbn.
-  get_can_access.
-  cbn.
-  apply Run.PureEq; repeat f_equal.
-Qed. *)
+  s.
+  destruct (_ <? 256).
+  { s. {
+      apply Impl_Shl_for_Uint.Eq.I.
+    }
+    s.
+  }
+  { s. {
+      apply Impl_Uint.ZERO_eq.
+    }
+    s.
+  }
+Qed.

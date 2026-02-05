@@ -61,9 +61,10 @@ Proof.
   unfold add.
   gas_macro_eq InterpreterTypesEq.
   popn_top_macro_eq InterpreterTypesEq.
-  lu.
-  cw Impl_Uint.wrapping_add_eq.
-  p.
+  s. {
+    apply Impl_Uint.wrapping_add_eq.
+  }
+  s.
 Qed.
 
 Definition mul
@@ -230,13 +231,9 @@ Proof.
     get_can_access.
     p.
   }
-  cbn.
-  cp.
-  cp.
-  destruct Impl_Uint.is_zero; cbn.
-  { p. }
-  { lu.
-    cw Impl_Uint.wrapping_div_eq.
-    p.
+  s.
+  destruct Impl_Uint.is_zero; s. {
+    apply Impl_Uint.wrapping_div_eq.
   }
+  s.
 Qed.

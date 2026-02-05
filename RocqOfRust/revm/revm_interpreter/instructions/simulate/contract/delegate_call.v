@@ -2,6 +2,7 @@ Require Import simulate.RocqOfRust.
 Require Import alloc.simulate.boxed.
 Require Import alloy_primitives.bits.simulate.address.
 Require Import alloy_primitives.bits.simulate.fixed.
+Require Import alloy_primitives.links.aliases.
 Require Import core.links.array.
 Require Import core.num.simulate.mod.
 Require Import core.simulate.result.
@@ -29,9 +30,9 @@ Definition delegate_call
     Interpreter.t WIRE WIRE_types * H :=
   check_macro interpreter SpecId.HOMESTEAD
     (fun interpreter => (interpreter, host)) (fun interpreter =>
-  popn_macro interpreter {| Integer.value := 2 |}
+  popn_macro interpreter 2
     (fun interpreter => (interpreter, host)) (fun arr interpreter =>
-  let '(_, to, local_gas_limit) := ArrayPairs.to_tuple_rev (arr.(array.value)) in
+  let '⟬ local_gas_limit; to ⟭ := arr.(array.value) in
   let to := Impl_Address.from_word (Impl_From_U256_for_FixedBytes_32.from to) in
 
   let local_gas_limit :=
@@ -129,6 +130,9 @@ Proof.
   with_strategy transparent [run_delegate_call] unfold delegate_call, run_delegate_call; cbn.
   check_macro_eq InterpreterTypesEq.
   popn_macro_eq InterpreterTypesEq.
+  match goal with
+  | array : array.t aliases.U256.t _ |- _ => destruct array as [[local_gas_limit [to []]]]; cbn
+  end.
   l. {
     cw Impl_From_U256_for_FixedBytes_32.from_eq.
     cw Impl_Address.from_word_eq.
@@ -155,9 +159,9 @@ Proof.
   cw @call_helpers.calc_call_gas_eq.
   destruct call_helpers.calc_call_gas as [[gas_limit|] ?interpreter]; cbn; [|apply Run.Pure].
   gas_macro_eq InterpreterTypesEq.
-  cp.
-  lu.
-  cw InterpreterTypesEq. (* caller_address *)
+  s. {
+    apply InterpreterTypesEq.
+  }
   cw InterpreterTypesEq. (* is_static *)
   cw InterpreterTypesEq. (* target_address *)
   cw InterpreterTypesEq. (* call_value *)

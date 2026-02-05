@@ -23,7 +23,7 @@ Definition pop
     Interpreter.t WIRE WIRE_types :=
   gas_macro interpreter constants.BASE id (fun interpreter =>
   popn_macro interpreter {| Integer.value := 1 |} id (fun _arr interpreter =>
-    interpreter
+  interpreter
   )).
 
 Lemma pop_eq
@@ -51,7 +51,12 @@ Lemma pop_eq
     )
   }}.
 Proof.
-Admitted.
+  intros.
+  with_strategy transparent [run_pop] unfold pop, run_pop; cbn.
+  gas_macro_eq InterpreterTypesEq.
+  popn_macro_eq InterpreterTypesEq.
+  s.
+Qed.
 
 Definition push0
     {WIRE : Set} `{Link WIRE}
@@ -61,11 +66,9 @@ Definition push0
     Interpreter.t WIRE WIRE_types :=
   check_macro interpreter SpecId.SHANGHAI id (fun interpreter =>
   gas_macro interpreter constants.BASE id (fun interpreter =>
-    let '(_, stack) :=
-      IInterpreterTypes.(InterpreterTypes.StackTrait_for_Stack).(StackTrait.push)
-        interpreter.(Interpreter.stack) Impl_Uint.ZERO in
-    interpreter <| Interpreter.stack := stack |>
-  )).
+  push_macro interpreter Impl_Uint.ZERO id (fun interpreter =>
+  interpreter
+  ))).
 
 Lemma push0_eq
     {WIRE H : Set} `{Link WIRE} `{Link H}
@@ -92,7 +95,16 @@ Lemma push0_eq
     )
   }}.
 Proof.
-Admitted.
+  intros.
+  with_strategy transparent [run_push0] unfold push0, run_push0; cbn.
+  check_macro_eq InterpreterTypesEq.
+  gas_macro_eq InterpreterTypesEq.
+  s. {
+    apply Impl_Uint.ZERO_eq.
+  }
+  push_macro_eq InterpreterTypesEq.
+  s.
+Qed.
 
 Definition cast_slice_to_u256 (imm : list u8) : aliases.U256.t :=
   {| Uint.value :=
@@ -107,24 +119,21 @@ Definition push
     (interpreter : Interpreter.t WIRE WIRE_types) :
     Interpreter.t WIRE WIRE_types :=
   gas_macro interpreter constants.VERYLOW id (fun interpreter =>
-    let '(_, stack) :=
-      IInterpreterTypes.(InterpreterTypes.StackTrait_for_Stack).(StackTrait.push)
-        interpreter.(Interpreter.stack) Impl_Uint.ZERO in
-    let interpreter := interpreter <| Interpreter.stack := stack |> in
-    popn_top_macro interpreter {| Integer.value := 0 |} id (fun _arr top interpreter =>
-      let slice :=
-        IInterpreterTypes.(InterpreterTypes.Immediates_for_Bytecode).(Immediates.read_slice) N in
-      let imm := slice.(RefStub.projection) interpreter.(Interpreter.bytecode) in
-      let top_value := top.(RefStub.projection) interpreter.(Interpreter.stack) in
-      let new_value := cast_slice_to_u256 imm in
-      let stack := top.(RefStub.injection) interpreter.(Interpreter.stack) new_value in
-      let interpreter := interpreter <| Interpreter.stack := stack |> in
-      let bytecode :=
-        IInterpreterTypes.(InterpreterTypes.Jumps_for_Bytecode).(Jumps.relative_jump)
-          interpreter.(Interpreter.bytecode) {| Integer.value := N.(Integer.value) |} in
-      interpreter <| Interpreter.bytecode := bytecode |>
-    )
-  ).
+  push_macro interpreter Impl_Uint.ZERO id (fun interpreter =>
+  popn_top_macro interpreter {| Integer.value := 0 |} id (fun _arr top interpreter =>
+  push_macro interpreter Impl_Uint.ZERO id (fun interpreter =>
+  let slice :=
+    IInterpreterTypes.(InterpreterTypes.Immediates_for_Bytecode).(Immediates.read_slice) N in
+  let imm := slice.(RefStub.projection) interpreter.(Interpreter.bytecode) in
+  let top_value := top.(RefStub.projection) interpreter.(Interpreter.stack) in
+  let new_value := cast_slice_to_u256 imm in
+  let stack := top.(RefStub.injection) interpreter.(Interpreter.stack) new_value in
+  let interpreter := interpreter <| Interpreter.stack := stack |> in
+  let bytecode :=
+    IInterpreterTypes.(InterpreterTypes.Jumps_for_Bytecode).(Jumps.relative_jump)
+      interpreter.(Interpreter.bytecode) {| Integer.value := N.(Integer.value) |} in
+  interpreter <| Interpreter.bytecode := bytecode |>
+  )))).
 
 Lemma push_eq
     (N : usize)
@@ -152,6 +161,21 @@ Lemma push_eq
     )
   }}.
 Proof.
+  intros.
+  with_strategy transparent [run_push] unfold push, run_push; cbn.
+  gas_macro_eq InterpreterTypesEq.
+  s. {
+    apply Impl_Uint.ZERO_eq.
+  }
+  push_macro_eq InterpreterTypesEq.
+  popn_top_macro_eq InterpreterTypesEq.
+  s. {
+    apply InterpreterTypesEq.
+  }
+  s. {
+    (* cast_slice_to_u256 *)
+    admit.
+  }
 Admitted.
 
 Definition dup
@@ -162,18 +186,18 @@ Definition dup
     (interpreter : Interpreter.t WIRE WIRE_types) :
     Interpreter.t WIRE WIRE_types :=
   gas_macro interpreter constants.VERYLOW id (fun interpreter =>
-    let '(success, stack) :=
-      IInterpreterTypes.(InterpreterTypes.StackTrait_for_Stack).(StackTrait.dup)
-        interpreter.(Interpreter.stack) N in
-    let interpreter := interpreter <| Interpreter.stack := stack |> in
-    if success then
-      interpreter
-    else
-      let control :=
-        IInterpreterTypes.(InterpreterTypes.LoopControl_for_Control).(LoopControl.set_instruction_result)
-          interpreter.(Interpreter.control)
-          instruction_result.InstructionResult.StackOverflow in
-      interpreter <| Interpreter.control := control |>
+  let '(success, stack) :=
+    IInterpreterTypes.(InterpreterTypes.StackTrait_for_Stack).(StackTrait.dup)
+      interpreter.(Interpreter.stack) N in
+  let interpreter := interpreter <| Interpreter.stack := stack |> in
+  if success then
+    interpreter
+  else
+    let control :=
+      IInterpreterTypes.(InterpreterTypes.LoopControl_for_Control).(LoopControl.set_instruction_result)
+        interpreter.(Interpreter.control)
+        instruction_result.InstructionResult.StackOverflow in
+    interpreter <| Interpreter.control := control |>
   ).
 
 Lemma dup_eq
@@ -202,7 +226,18 @@ Lemma dup_eq
     )
   }}.
 Proof.
-Admitted.
+  intros.
+  with_strategy transparent [run_dup] unfold dup, run_dup; cbn.
+  gas_macro_eq InterpreterTypesEq.
+  s. {
+    apply InterpreterTypesEq.
+  }
+  destruct _.(InterpreterTypes.StackTrait_for_Stack).(StackTrait.dup) as [[] ?]; [s|].
+  s. {
+    apply InterpreterTypesEq.
+  }
+  s.
+Qed.
 
 Definition swap
     (N : usize)
@@ -212,18 +247,18 @@ Definition swap
     (interpreter : Interpreter.t WIRE WIRE_types) :
     Interpreter.t WIRE WIRE_types :=
   gas_macro interpreter constants.VERYLOW id (fun interpreter =>
-    let '(success, stack) :=
-      IInterpreterTypes.(InterpreterTypes.StackTrait_for_Stack).(StackTrait.exchange)
-        interpreter.(Interpreter.stack) {| Integer.value := 0 |} N in
-    let interpreter := interpreter <| Interpreter.stack := stack |> in
-    if success then
-      interpreter
-    else
-      let control :=
-        IInterpreterTypes.(InterpreterTypes.LoopControl_for_Control).(LoopControl.set_instruction_result)
-          interpreter.(Interpreter.control)
-          instruction_result.InstructionResult.StackOverflow in
-      interpreter <| Interpreter.control := control |>
+  let '(success, stack) :=
+    IInterpreterTypes.(InterpreterTypes.StackTrait_for_Stack).(StackTrait.exchange)
+      interpreter.(Interpreter.stack) {| Integer.value := 0 |} N in
+  let interpreter := interpreter <| Interpreter.stack := stack |> in
+  if success then
+    interpreter
+  else
+    let control :=
+      IInterpreterTypes.(InterpreterTypes.LoopControl_for_Control).(LoopControl.set_instruction_result)
+        interpreter.(Interpreter.control)
+        instruction_result.InstructionResult.StackOverflow in
+    interpreter <| Interpreter.control := control |>
   ).
 
 Lemma swap_eq
@@ -237,6 +272,7 @@ Lemma swap_eq
       InterpreterTypes.Eq.t WIRE WIRE_types run_InterpreterTypes_for_WIRE IInterpreterTypes)
     (interpreter : Interpreter.t WIRE WIRE_types)
     (_host : H) :
+  i[N] <> 0 ->
   let ref_interpreter : '&mut (Interpreter.t WIRE WIRE_types) := make_ref 0 in
   let ref_host : '&mut H := make_ref 1 in
   {{
@@ -252,199 +288,19 @@ Lemma swap_eq
     )
   }}.
 Proof.
-Admitted.
-
-Definition require_eof_macro {WIRE K : Set} `{Link WIRE}
-    {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
-    {IInterpreterTypes : InterpreterTypes.C WIRE_types}
-    (interpreter : Interpreter.t WIRE WIRE_types)
-    (k_exit : Interpreter.t WIRE WIRE_types -> K)
-    (k : Interpreter.t WIRE WIRE_types -> K) :
-    K :=
-  let is_eof :=
-    IInterpreterTypes.(InterpreterTypes.RuntimeFlag_for_RuntimeFlag).(RuntimeFlag.is_eof)
-      interpreter.(Interpreter.runtime_flag) in
-  if is_eof then
-    k interpreter
-  else
-    let control :=
-      IInterpreterTypes.(InterpreterTypes.LoopControl_for_Control).(LoopControl.set_instruction_result)
-        interpreter.(Interpreter.control)
-        instruction_result.InstructionResult.NotActivated in
-    let interpreter := interpreter <| Interpreter.control := control |> in
-    k_exit interpreter.
-
-Definition dupn
-    {WIRE : Set} `{Link WIRE}
-    {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
-    {IInterpreterTypes : InterpreterTypes.C WIRE_types}
-    (interpreter : Interpreter.t WIRE WIRE_types) :
-    Interpreter.t WIRE WIRE_types :=
-  require_eof_macro interpreter id (fun interpreter =>
-  gas_macro interpreter constants.VERYLOW id (fun interpreter =>
-    let imm :=
-      IInterpreterTypes.(InterpreterTypes.Immediates_for_Bytecode).(Immediates.read_u8)
-        interpreter.(Interpreter.bytecode) in
-    let n := {| Integer.value := imm.(Integer.value) + 1 |} in
-    let '(success, stack) :=
-      IInterpreterTypes.(InterpreterTypes.StackTrait_for_Stack).(StackTrait.dup)
-        interpreter.(Interpreter.stack) n in
-    let interpreter := interpreter <| Interpreter.stack := stack |> in
-    let interpreter :=
-      if success then
-        interpreter
-      else
-        let control :=
-          IInterpreterTypes.(InterpreterTypes.LoopControl_for_Control).(LoopControl.set_instruction_result)
-            interpreter.(Interpreter.control)
-            instruction_result.InstructionResult.StackOverflow in
-        interpreter <| Interpreter.control := control |> in
-    let bytecode :=
-      IInterpreterTypes.(InterpreterTypes.Jumps_for_Bytecode).(Jumps.relative_jump)
-        interpreter.(Interpreter.bytecode) {| Integer.value := 1 |} in
-    interpreter <| Interpreter.bytecode := bytecode |>
-  )).
-
-Lemma dupn_eq
-    {WIRE H : Set} `{Link WIRE} `{Link H}
-    {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
-    {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
-    (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-    (IInterpreterTypes : InterpreterTypes.C WIRE_types)
-    (InterpreterTypesEq :
-      InterpreterTypes.Eq.t WIRE WIRE_types run_InterpreterTypes_for_WIRE IInterpreterTypes)
-    (interpreter : Interpreter.t WIRE WIRE_types)
-    (_host : H) :
-  let ref_interpreter : '&mut (Interpreter.t WIRE WIRE_types) := make_ref 0 in
-  let ref_host : '&mut H := make_ref 1 in
-  {{
-    SimulateM.eval_f
-      (run_dupn run_InterpreterTypes_for_WIRE ref_interpreter ref_host)
-      ([interpreter; _host]%stack) 🌲
-    (
-      Output.Success tt,
-      [
-        dupn interpreter;
-        _host
-      ]%stack
-    )
-  }}.
-Proof.
-Admitted.
-
-Definition swapn
-    {WIRE : Set} `{Link WIRE}
-    {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
-    {IInterpreterTypes : InterpreterTypes.C WIRE_types}
-    (interpreter : Interpreter.t WIRE WIRE_types) :
-    Interpreter.t WIRE WIRE_types :=
-  require_eof_macro interpreter id (fun interpreter =>
-  gas_macro interpreter constants.VERYLOW id (fun interpreter =>
-    let imm :=
-      IInterpreterTypes.(InterpreterTypes.Immediates_for_Bytecode).(Immediates.read_u8)
-        interpreter.(Interpreter.bytecode) in
-    let n := {| Integer.value := imm.(Integer.value) + 1 |} in
-    let '(success, stack) :=
-      IInterpreterTypes.(InterpreterTypes.StackTrait_for_Stack).(StackTrait.exchange)
-        interpreter.(Interpreter.stack) {| Integer.value := 0 |} n in
-    let interpreter := interpreter <| Interpreter.stack := stack |> in
-    let interpreter :=
-      if success then
-        interpreter
-      else
-        let control :=
-          IInterpreterTypes.(InterpreterTypes.LoopControl_for_Control).(LoopControl.set_instruction_result)
-            interpreter.(Interpreter.control)
-            instruction_result.InstructionResult.StackOverflow in
-        interpreter <| Interpreter.control := control |> in
-    let bytecode :=
-      IInterpreterTypes.(InterpreterTypes.Jumps_for_Bytecode).(Jumps.relative_jump)
-        interpreter.(Interpreter.bytecode) {| Integer.value := 1 |} in
-    interpreter <| Interpreter.bytecode := bytecode |>
-  )).
-
-Lemma swapn_eq
-    {WIRE H : Set} `{Link WIRE} `{Link H}
-    {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
-    {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
-    (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-    (IInterpreterTypes : InterpreterTypes.C WIRE_types)
-    (InterpreterTypesEq :
-      InterpreterTypes.Eq.t WIRE WIRE_types run_InterpreterTypes_for_WIRE IInterpreterTypes)
-    (interpreter : Interpreter.t WIRE WIRE_types)
-    (_host : H) :
-  let ref_interpreter : '&mut (Interpreter.t WIRE WIRE_types) := make_ref 0 in
-  let ref_host : '&mut H := make_ref 1 in
-  {{
-    SimulateM.eval_f
-      (run_swapn run_InterpreterTypes_for_WIRE ref_interpreter ref_host)
-      ([interpreter; _host]%stack) 🌲
-    (
-      Output.Success tt,
-      [
-        swapn interpreter;
-        _host
-      ]%stack
-    )
-  }}.
-Proof.
-Admitted.
-
-Definition exchange
-    {WIRE : Set} `{Link WIRE}
-    {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
-    {IInterpreterTypes : InterpreterTypes.C WIRE_types}
-    (interpreter : Interpreter.t WIRE WIRE_types) :
-    Interpreter.t WIRE WIRE_types :=
-  require_eof_macro interpreter id (fun interpreter =>
-  gas_macro interpreter constants.VERYLOW id (fun interpreter =>
-    let imm :=
-      IInterpreterTypes.(InterpreterTypes.Immediates_for_Bytecode).(Immediates.read_u8)
-        interpreter.(Interpreter.bytecode) in
-    let n := {| Integer.value := Z.shiftr imm.(Integer.value) 4 + 1 |} in
-    let m := {| Integer.value := Z.land imm.(Integer.value) 15 + 1 |} in
-    let '(success, stack) :=
-      IInterpreterTypes.(InterpreterTypes.StackTrait_for_Stack).(StackTrait.exchange)
-        interpreter.(Interpreter.stack) n m in
-    let interpreter := interpreter <| Interpreter.stack := stack |> in
-    let interpreter :=
-      if success then
-        interpreter
-      else
-        let control :=
-          IInterpreterTypes.(InterpreterTypes.LoopControl_for_Control).(LoopControl.set_instruction_result)
-            interpreter.(Interpreter.control)
-            instruction_result.InstructionResult.StackOverflow in
-        interpreter <| Interpreter.control := control |> in
-    let bytecode :=
-      IInterpreterTypes.(InterpreterTypes.Jumps_for_Bytecode).(Jumps.relative_jump)
-        interpreter.(Interpreter.bytecode) {| Integer.value := 1 |} in
-    interpreter <| Interpreter.bytecode := bytecode |>
-  )).
-
-Lemma exchange_eq
-    {WIRE H : Set} `{Link WIRE} `{Link H}
-    {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
-    {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
-    (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-    (IInterpreterTypes : InterpreterTypes.C WIRE_types)
-    (InterpreterTypesEq :
-      InterpreterTypes.Eq.t WIRE WIRE_types run_InterpreterTypes_for_WIRE IInterpreterTypes)
-    (interpreter : Interpreter.t WIRE WIRE_types)
-    (_host : H) :
-  let ref_interpreter : '&mut (Interpreter.t WIRE WIRE_types) := make_ref 0 in
-  let ref_host : '&mut H := make_ref 1 in
-  {{
-    SimulateM.eval_f
-      (run_exchange run_InterpreterTypes_for_WIRE ref_interpreter ref_host)
-      ([interpreter; _host]%stack) 🌲
-    (
-      Output.Success tt,
-      [
-        exchange interpreter;
-        _host
-      ]%stack
-    )
-  }}.
-Proof.
-Admitted.
+  intros.
+  with_strategy transparent [run_swap] unfold swap, run_swap; cbn.
+  gas_macro_eq InterpreterTypesEq.
+  s.
+  destruct N as [N].
+  destruct (_ =? _) eqn:? in |- *; [cbn in *; lia |].
+  s. {
+    apply InterpreterTypesEq.
+  }
+  s.
+  destruct _.(InterpreterTypes.StackTrait_for_Stack).(StackTrait.exchange) as [[] ?]; [s|].
+  s. {
+    apply InterpreterTypesEq.
+  }
+  s.
+Qed.

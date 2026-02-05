@@ -12,7 +12,8 @@ Lemma num_words_eq (len : usize) (stack : Stack.t) :
   }}.
 Proof.
   with_strategy transparent [run_num_words] unfold run_num_words.
-  cw Impl_usize.saturating_add_eq.
-  cp.
-  p.
+  s. {
+    apply Impl_usize.saturating_add_eq.
+  }
+  s.
 Qed.

@@ -84,8 +84,7 @@ Module Impl_Gas.
       (Output.Success (new limit), []%stack)
     }}.
   Proof.
-    cw Impl_MemoryGas.new_eq.
-    p.
+    repeat s.
   Qed.
 
   Definition new_spent (limit : u64) : Self :=
@@ -102,8 +101,7 @@ Module Impl_Gas.
       (Output.Success (new_spent limit), []%stack)
     }}.
   Proof.
-    cw Impl_MemoryGas.new_eq.
-    p.
+    repeat s.
   Qed.
 
   Definition limit (self : Self) : u64 :=
@@ -192,8 +190,7 @@ Module Impl_Gas.
     }}.
   Proof.
     with_strategy transparent [Impl_Gas.run_spent] cbn.
-    cp.
-    p.
+    s.
   Qed.
 
   Definition remaining (self : Self) : u64 :=
@@ -245,9 +242,7 @@ Module Impl_Gas.
     }}.
   Proof.
     with_strategy transparent [Impl_Gas.run_remaining_63_of_64_parts] cbn.
-    cp.
-    cp.
-    p.
+    s.
   Qed.
 
   Definition erase_cost (self : Self) (returned : u64) : Self :=
@@ -281,7 +276,7 @@ Module Impl_Gas.
   Proof.
     apply Run.remove_extra_stack1.
     with_strategy transparent [Impl_Gas.run_erase_cost] cbn.
-    cp. lu. p.
+    s.
   Qed.
 
   Definition spend_all (self : Self) : Self :=
@@ -316,7 +311,7 @@ Module Impl_Gas.
   Proof.
     apply Run.remove_extra_stack1.
     with_strategy transparent [Impl_Gas.run_spend_all] cbn.
-    repeat (lu || c || p).
+    s.
   Qed.
 
   Definition record_refund (self : Self) (refund : i64) : Self :=
@@ -352,7 +347,7 @@ Module Impl_Gas.
   Proof.
     apply Run.remove_extra_stack1.
     with_strategy transparent [Impl_Gas.run_record_refund] cbn.
-    repeat (lu || c || p).
+    s.
   Qed.
 
   Definition set_final_refund (self : Self) (is_london : bool) : Self :=
@@ -390,13 +385,10 @@ Module Impl_Gas.
     apply Run.remove_extra_stack1.
     with_strategy transparent [Impl_Gas.run_set_final_refund] cbn.
     unfold set_final_refund.
-    destruct is_london; repeat (
-      lu ||
-      cp ||
-      cw @refunded_eq ||
-      cw @spent_eq ||
-      p
-    ).
+    destruct is_london;
+      (s; [apply refunded_eq |]);
+      (s; [apply spent_eq |]);
+      s.
   Admitted.
 
   Definition set_refund (self : Self) (refund : i64) : Self :=
@@ -432,7 +424,7 @@ Module Impl_Gas.
   Proof.
     apply Run.remove_extra_stack1.
     with_strategy transparent [Impl_Gas.run_set_refund] cbn.
-    repeat (lu || c || p).
+    s.
   Qed.
 
   Definition record_cost (self : Self) (cost : u64) : option Self :=
@@ -487,10 +479,13 @@ Module Impl_Gas.
     ).
     cw Impl_u64.overflowing_sub_eq.
     destruct Impl_u64.overflowing_sub as [remaining overflow].
-    repeat (lu || cp).
+    s.
     destruct (negb overflow); cbn; repeat (lu || p).
     Transparent Impl_u64.overflowing_sub.
   Qed.
+
+  (* Help some proofs later *)
+  Global Opaque record_cost.
 
   Definition record_memory_expansion (self : Self) (new_len : usize) : MemoryExtensionResult.t * Self :=
     (MemoryExtensionResult.Extended, self).

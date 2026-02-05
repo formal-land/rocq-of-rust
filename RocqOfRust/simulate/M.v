@@ -548,13 +548,10 @@ Ltac get_can_access :=
 Ltac r := repeat (cbn || get_can_access).
 
 (** [c] for "call": prepares a function call goal *)
-Ltac c := r; eapply Run.Call.
+Ltac c := r; eapply Run.Call; [cbn; try apply Run.Pure|].
 
 (** [cw] for "call with": applies a call with given equality lemma *)
-Ltac cw f_eq := c; [eapply f_eq; typeclasses eauto |]; r.
-
-(** [cp] for "call pure": handles SimulateM.Call wrapping Run.Pure *)
-Ltac cp := r; eapply Run.Call; [apply Run.Pure |]; r.
+Ltac cw f_eq := c; [eapply f_eq; (try typeclasses eauto); repeat unshelve econstructor |]; r.
 
 (** [l] for "let": handles let-binding goals *)
 Ltac l := r; eapply Run.Let.
@@ -567,6 +564,23 @@ Ltac p := r; apply Run.Pure.
 
 (** [pf] for "pure with f_equal": closes goal with equality reasoning *)
 Ltac pf := r; apply Run.PureEq; repeat f_equal.
+
+Ltac s :=
+  progress (
+    (
+      repeat
+        (
+          r ||
+          apply Run.LetUnfold ||
+          (eapply Run.Call; [apply Run.Pure|])
+        )
+    );
+    (
+      c ||
+      pf ||
+      idtac
+    )
+  ).
 
 Definition make_ref_core {A : Set} `{Link A} (index : nat) : Ref.Core.t A :=
   Ref.Core.Mutable (A := A) index [] φ Some (fun _ => Some).

@@ -20,9 +20,6 @@ Module Impl_SpecId.
     }}.
   Proof.
     unfold is_enabled_in; cbn.
-    cp.
-    cbn.
-    do 2 rewrite get_discriminant_mod_256_eq.
-    p.
+    s; now rewrite get_discriminant_mod_256_eq.
   Qed.
 End Impl_SpecId.
