@@ -327,6 +327,17 @@ Module SimulateM.
       end)
     end.
 
+  Definition write {R : Set} {A : Set} `{Link A}
+      (stack : Stack.t)
+      (ref_core : Ref.Core.t A)
+      (value : A) :
+      t (Output.t R Stack.t) :=
+    GetCanAccess stack ref_core (fun H_can_access =>
+    match Stack.CanAccess.write H_can_access value with
+    | Some stack => Pure (Output.Success stack)
+    | None => Pure (Output.Exception Output.Exception.BreakMatch)
+    end).
+
   Parameter TodoLoop : forall {A : Set}, t A.
 
   Fixpoint eval {R Output : Set}

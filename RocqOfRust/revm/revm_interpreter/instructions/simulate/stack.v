@@ -5,6 +5,7 @@ Require Import revm.revm_context_interface.links.host.
 Require Import revm.revm_interpreter.gas.simulate.constants.
 Require Import revm.revm_interpreter.instructions.links.stack.
 Require Import revm.revm_interpreter.instructions.simulate.macros.
+Require Import revm.revm_interpreter.instructions.simulate.utility.
 Require Import revm.revm_interpreter.links.gas.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_types.
@@ -106,11 +107,6 @@ Proof.
   s.
 Qed.
 
-Definition cast_slice_to_u256 (imm : list u8) : aliases.U256.t :=
-  {| Uint.value :=
-    List.fold_left (fun (acc : Z) (byte : u8) => Z.add (Z.mul acc 256) byte.(Integer.value)) imm 0
-  |}.
-
 Definition push
     (N : usize)
     {WIRE : Set} `{Link WIRE}
@@ -120,8 +116,7 @@ Definition push
     Interpreter.t WIRE WIRE_types :=
   gas_macro interpreter constants.VERYLOW id (fun interpreter =>
   push_macro interpreter Impl_Uint.ZERO id (fun interpreter =>
-  popn_top_macro interpreter {| Integer.value := 0 |} id (fun _arr top interpreter =>
-  push_macro interpreter Impl_Uint.ZERO id (fun interpreter =>
+  popn_top_macro interpreter 0 id (fun _arr top interpreter =>
   let slice :=
     IInterpreterTypes.(InterpreterTypes.Immediates_for_Bytecode).(Immediates.read_slice) N in
   let imm := slice.(RefStub.projection) interpreter.(Interpreter.bytecode) in
@@ -131,9 +126,9 @@ Definition push
   let interpreter := interpreter <| Interpreter.stack := stack |> in
   let bytecode :=
     IInterpreterTypes.(InterpreterTypes.Jumps_for_Bytecode).(Jumps.relative_jump)
-      interpreter.(Interpreter.bytecode) {| Integer.value := N.(Integer.value) |} in
+      interpreter.(Interpreter.bytecode) (M.cast_integer IntegerKind.Isize N) in
   interpreter <| Interpreter.bytecode := bytecode |>
-  )))).
+  ))).
 
 Lemma push_eq
     (N : usize)
@@ -173,10 +168,14 @@ Proof.
     apply InterpreterTypesEq.
   }
   s. {
-    (* cast_slice_to_u256 *)
-    admit.
+    setoid_rewrite cast_slice_to_address_like.
+    s.
   }
-Admitted.
+  s. {
+    apply InterpreterTypesEq.
+  }
+  s.
+Qed.
 
 Definition dup
     (N : usize)
