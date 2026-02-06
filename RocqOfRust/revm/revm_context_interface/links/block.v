@@ -26,8 +26,6 @@ pub trait Block {
 }
 *)
 Module Block. 
-  Parameter t : Set.
-
   Definition trait (Self : Set) `{Link Self} : TraitHeader.t :=
     {|
       TraitHeader.trait_name := "revm_context_interface::block::Block";
@@ -129,9 +127,10 @@ Module BlockGetter.
       H_Block : Link types.(Block);
     }.
 
-    Global Instance IsLinkBlock (types : t) (H : AreLinks types) : Link types.(Block) :=
+    Instance IsLinkBlock (types : t) (H : AreLinks types) : Link types.(Block) :=
       H.(H_Block _).
   End Types.
+  Export (hints) Types.
 
   Definition trait (Self : Set) `{Link Self} : TraitHeader.t :=
     {|

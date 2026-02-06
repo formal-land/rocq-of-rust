@@ -593,6 +593,10 @@ Ltac s :=
     )
   ).
 
+(** An apply of equality lemma, with the common resolutions for the parameters. *)
+Ltac s_apply f_eq :=
+  eapply f_eq; (try typeclasses eauto); repeat unshelve econstructor.
+
 Definition make_ref_core {A : Set} `{Link A} (index : nat) : Ref.Core.t A :=
   Ref.Core.Mutable (A := A) index [] φ Some (fun _ => Some).
 

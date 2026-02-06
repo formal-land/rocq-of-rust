@@ -284,7 +284,7 @@ Definition as_u64_saturated_macro (v : aliases.U256.t) : u64 :=
 Ltac as_u64_saturated_macro_eq :=
   unfold as_u64_saturated_macro;
   s; [
-    apply Impl_Uint.as_limbs_eq; repeat unshelve econstructor
+    s_apply Impl_Uint.as_limbs_eq
   |];
   s;
   destruct (_ && _) in |- *; [
@@ -319,9 +319,11 @@ Definition as_usize_or_fail_ret_macro {WIRE K : Set} `{Link WIRE}
     (k_exit : Interpreter.t WIRE WIRE_types -> K)
     (k : usize -> Interpreter.t WIRE WIRE_types -> K) :
     K :=
-  if v.(Uint.value) <=? (2 ^ 64 - 1) then
-    k {| Integer.value := v.(Uint.value) |} interpreter
-  else
+  let v0 := v.(Uint.value) mod 2^64 in
+  let v1 := (v.(Uint.value) / 2^64) mod 2^64 in
+  let v2 := (v.(Uint.value) / 2^128) mod 2^64 in
+  let v3 := (v.(Uint.value) / 2^192) mod 2^64 in
+  if (v0 >? i[Impl_usize.MAX]) || negb(v1 =? 0) || negb(v2 =? 0) || negb(v3 =? 0) then
     let reason :=
       match reason_opt with
       | Some reason => reason
@@ -334,7 +336,40 @@ Definition as_usize_or_fail_ret_macro {WIRE K : Set} `{Link WIRE}
         interpreter.(Interpreter.control)
         reason in
     let interpreter := interpreter <| Interpreter.control := control |> in
-    k_exit interpreter.
+    k_exit interpreter
+  else
+    k {| Integer.value := v.(Uint.value) |} interpreter.
+
+Ltac as_usize_or_fail_ret_macro_eq InterpreterTypesEq :=
+  unfold as_usize_or_fail_ret_macro;
+  s; [
+    s_apply Impl_Uint.as_limbs_eq
+  |];
+  s; [
+    apply Impl_usize.max_eq
+  |];
+  s;
+  destruct (_ || _); [
+    s; [
+      apply InterpreterTypesEq
+    |];
+    s
+  |].
+
+Definition as_usize_or_fail_macro {WIRE K : Set} `{Link WIRE}
+    {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
+    {IInterpreterTypes : InterpreterTypes.C WIRE_types}
+    (interpreter : Interpreter.t WIRE WIRE_types)
+    (v : aliases.U256.t)
+    (reason_opt : option InstructionResult.t)
+    (k_exit : Interpreter.t WIRE WIRE_types -> K)
+    (k : usize -> Interpreter.t WIRE WIRE_types -> K) :
+    K :=
+  as_usize_or_fail_ret_macro interpreter v reason_opt k_exit k.
+
+Ltac as_usize_or_fail_macro_eq InterpreterTypesEq :=
+  unfold as_usize_or_fail_macro;
+  as_usize_or_fail_ret_macro_eq InterpreterTypesEq.
 
 Definition resize_memory_macro {WIRE K : Set} `{Link WIRE}
     {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
@@ -374,3 +409,21 @@ Definition resize_memory_macro {WIRE K : Set} `{Link WIRE}
   | MemoryExtensionResult.Same =>
     k interpreter
   end.
+
+Ltac resize_memory_macro_eq InterpreterTypesEq :=
+  unfold resize_memory_macro;
+  s; [
+    apply Impl_usize.saturating_add_eq
+  |];
+  s; [
+    apply num_words_eq
+  |];
+  s; [
+    apply InterpreterTypesEq
+  |];
+  s; [
+    apply Impl_Gas.record_memory_expansion_eq
+  |];
+  s; [
+    apply InterpreterTypesEq
+  |].

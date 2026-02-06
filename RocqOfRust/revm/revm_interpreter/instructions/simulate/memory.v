@@ -2,6 +2,7 @@ Require Import simulate.RocqOfRust.
 Require Import alloy_primitives.links.aliases.
 Require Import core.links.array.
 Require Import core.ops.simulate.deref.
+Require Import core.simulate.option.
 Require Import revm.revm_context_interface.links.host.
 Require Import revm.revm_interpreter.gas.simulate.constants.
 Require Import revm.revm_interpreter.instructions.links.memory.
@@ -15,14 +16,8 @@ Require Import revm.revm_interpreter.simulate.interpreter_types.
 Require Import revm.revm_specification.links.hardfork.
 Require Import revm.revm_specification.simulate.hardfork.
 Require Import ruint.links.lib.
-
-Definition u256_to_be_bytes_32 (value : aliases.U256.t) : list u8 :=
-  List.map (fun idx : nat =>
-    {| Integer.value := (value.(Uint.value) / (2 ^ (8 * (31 - Z.of_nat idx)))) mod 256 |})
-    (List.seq 0 32).
-
-Definition u256_from_be_bytes (bytes : list u8) : aliases.U256.t :=
-  {| Uint.value := List.fold_left (fun (acc : Z) (b : u8) => Z.add (Z.mul acc 256) i[b]) bytes 0 |}.
+Require Import ruint.simulate.bytes.
+Require Import ruint.simulate.from.
 
 Definition mload
     {WIRE : Set} `{Link WIRE}
@@ -31,11 +26,11 @@ Definition mload
     (interpreter : Interpreter.t WIRE WIRE_types) :
     Interpreter.t WIRE WIRE_types :=
   gas_macro interpreter constants.VERYLOW id (fun interpreter =>
-  popn_top_macro interpreter {| Integer.value := 0 |} id (fun arr top interpreter =>
-    let offset_u256 := top.(RefStub.projection) interpreter.(Interpreter.stack) in
-    as_usize_or_fail_ret_macro interpreter offset_u256 None id (fun offset interpreter =>
-    resize_memory_macro interpreter offset 32 id (fun interpreter =>
-      let IInterpreterTypes := _ in
+  popn_top_macro interpreter 0 id (fun _ top interpreter =>
+  let top := top.(RefStub.projection) interpreter.(Interpreter.stack) in
+  as_usize_or_fail_macro interpreter top None id (fun offset interpreter =>
+  resize_memory_macro interpreter offset 32 id (fun interpreter =>
+      (* let IInterpreterTypes := _ in
       let memory_synthetic :=
         IInterpreterTypes.(InterpreterTypes.MemoryTrait_for_Memory).(MemoryTrait.slice_len)
           interpreter.(Interpreter.memory) offset 32 in
@@ -44,7 +39,8 @@ Definition mload
       let bytes := deref_stub.(RefStub.projection) memory_synthetic in
       let value := u256_from_be_bytes bytes in
       let stack := top.(RefStub.injection) interpreter.(Interpreter.stack) value in
-      interpreter <| Interpreter.stack := stack |>
+      interpreter <| Interpreter.stack := stack |> *)
+    interpreter
     )))).
 
 Lemma mload_eq
@@ -72,6 +68,26 @@ Lemma mload_eq
     )
   }}.
 Proof.
+  intros.
+  unfold mload.
+  gas_macro_eq InterpreterTypesEq.
+  popn_top_macro_eq InterpreterTypesEq.
+  as_usize_or_fail_macro_eq InterpreterTypesEq.
+  resize_memory_macro_eq InterpreterTypesEq.
+  s. {
+    apply InterpreterTypesEq.
+  }
+  s. {
+    apply InterpreterTypesEq.
+  }
+  s. {
+    s_apply Impl_Uint.try_from_be_slice_eq.
+  }
+  s. {
+    apply Impl_Option.unwrap_eq.
+    admit.
+  }
+  s.
 Admitted.
 
 Definition mstore
@@ -205,7 +221,18 @@ Lemma msize_eq
     )
   }}.
 Proof.
-Admitted.
+  intros.
+  unfold msize.
+  gas_macro_eq InterpreterTypesEq.
+  s. {
+    apply InterpreterTypesEq.
+  }
+  s. {
+    s_apply Impl_Uint.from_eq.
+  }
+  push_macro_eq InterpreterTypesEq.
+  s.
+Qed.
 
 Definition mcopy
     {WIRE : Set} `{Link WIRE}

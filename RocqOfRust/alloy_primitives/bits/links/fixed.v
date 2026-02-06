@@ -41,6 +41,17 @@ Module Impl_From_FixedBytes_32_for_U256.
   Definition Self : Set :=
     aliases.U256.t.
 
+  Instance run_from (value : FixedBytes.t {| Integer.value := 32 |}) :
+    Run.Trait
+      bits.fixed.Impl_core_convert_From_alloy_primitives_bits_fixed_FixedBytes_Usize_32_for_ruint_Uint_Usize_256_Usize_4.from
+      [] [] [ φ value ]
+      Self.
+  Proof.
+    constructor.
+    run_symbolic.
+  Defined.
+  Global Opaque run_from.
+
   Instance method_from : From.Method_from Self (FixedBytes.t {| Integer.value := 32 |}).
   Proof.
     eexists.
@@ -49,11 +60,8 @@ Module Impl_From_FixedBytes_32_for_U256.
       { apply bits.fixed.Impl_core_convert_From_alloy_primitives_bits_fixed_FixedBytes_Usize_32_for_ruint_Uint_Usize_256_Usize_4.Implements. }
       { reflexivity. }
     }
-    { constructor.
-      run_symbolic.
-      all: admit.
-    }
-  Admitted.
+    { typeclasses eauto. }
+  Defined.
 
   Instance run : From.Run Self (FixedBytes.t {| Integer.value := 32 |}) := {}.
 End Impl_From_FixedBytes_32_for_U256.

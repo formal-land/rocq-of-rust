@@ -31,6 +31,14 @@ Export (hints) Default.
 Module Impl_Default_for_unit.
   Definition Self : Set := unit.
 
+  Instance run_default :
+    Run.Trait default.Impl_core_default_Default_for_Tuple_.default [] [] [] Self.
+  Proof.
+    constructor.
+    run_symbolic.
+  Defined.
+  Global Opaque run_default.
+
   Instance method_default : Default.Method_default Self.
   Proof.
     eexists.
@@ -39,16 +47,23 @@ Module Impl_Default_for_unit.
       { apply default.Impl_core_default_Default_for_Tuple_.Implements. }
       { reflexivity. }
     }
-    { constructor.
-      run_symbolic.
-    }
+    { typeclasses eauto. }
   Defined.
 
   Instance run : Default.Run Self := {}.
 End Impl_Default_for_unit.
+Export (hints) Impl_Default_for_unit.
 
 Module Impl_Default_for_bool.
   Definition Self : Set := bool.
+
+  Instance run_default :
+    Run.Trait default.Impl_core_default_Default_for_bool.default [] [] [] Self.
+  Proof.
+    constructor.
+    run_symbolic.
+  Defined.
+  Global Opaque run_default.
 
   Instance method_default : Default.Method_default Self.
   Proof.
@@ -58,9 +73,7 @@ Module Impl_Default_for_bool.
       { apply default.Impl_core_default_Default_for_bool.Implements. }
       { reflexivity. }
     }
-    { constructor.
-      run_symbolic.
-    }
+    { typeclasses eauto. }
   Defined.
 
   Instance run : Default.Run Self := {}.
@@ -92,6 +105,14 @@ Module Impl_Default_for_integer.
     | IntegerKind.Usize => default.Impl_core_default_Default_for_usize.default
     end.
 
+  Instance run_default (kind : IntegerKind.t) :
+    Run.Trait (method_of_ingeter_kind kind) [] [] [] (Self kind).
+  Proof.
+    constructor.
+    destruct kind; run_symbolic.
+  Defined.
+  Global Opaque run_default.
+
   Definition implements_of_integer_kind (kind : IntegerKind.t) :
       IsTraitInstance "core::default::Default"
         []
@@ -121,9 +142,7 @@ Module Impl_Default_for_integer.
       { apply implements_of_integer_kind. }
       { reflexivity. }
     }
-    { constructor.
-      destruct kind; run_symbolic.
-    }
+    { typeclasses eauto. }
   Defined.
 
   Instance run (kind : IntegerKind.t) : Default.Run (Self kind) := {}.

@@ -21,4 +21,17 @@ Module Impl_Address.
       )
     }}.
   Admitted.
+
+  Definition into_word (self : Self) : FixedBytes.t {| Integer.value := 32 |} :=
+    FixedBytes.from_Z self.(Address.value).
+
+  Lemma into_word_eq (ref_self : '& Self) (self : Self) (stack : Stack.t) :
+    CanRead.t stack self ref_self ->
+    {{
+      SimulateM.eval_f
+        (Impl_Address.run_into_word ref_self)
+        stack 🌲
+      (Output.Success (into_word self), stack)
+    }}.
+  Admitted.
 End Impl_Address.
