@@ -1,16 +1,19 @@
 Require Import simulate.RocqOfRust.
+Require Import alloc.links.alloc.
+Require Import core.links.array.
 Require Import alloc.links.raw_vec.
 Require Import alloc.vec.links.mod.
 Require Import alloy_primitives.bytes.links.mod.
 Require Import alloy_primitives.links.aliases.
 Require Import alloy_primitives.log.links.mod.
-Require Import bytes.links.bytes.
 Require Import revm.revm_context_interface.links.host.
+Require Import revm.revm_context_interface.links.journaled_state.
 Require Import revm.revm_context_interface.simulate.host.
 Require Import revm.revm_interpreter.instructions.links.host.log.
 Require Import revm.revm_interpreter.instructions.simulate.macros.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_types.
+Require Import revm.revm_interpreter.simulate.interpreter_types.
 
 Definition log
     (N : usize)
@@ -30,8 +33,8 @@ Definition log
       Vec.buf := {| RawVec.value := [] |};
       Vec.len := 0;
     |} in
-    let data : Bytes.t := {|
-      Bytes.value := {| bytes.Bytes.value := [] |};
+    let data : alloy_primitives.bytes.links.mod.Bytes.t := {|
+      alloy_primitives.bytes.links.mod.Bytes.value := {| bytes.Bytes.value := [] |};
     |} in
     let log' : Log.t LogData.t := {|
       Log.address := target;

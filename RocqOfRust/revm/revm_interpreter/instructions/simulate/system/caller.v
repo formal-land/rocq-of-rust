@@ -5,6 +5,7 @@ Require Import revm.revm_interpreter.instructions.simulate.macros.
 Require Import revm.revm_interpreter.instructions.simulate.utility.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_types.
+Require Import revm.revm_interpreter.simulate.interpreter_types.
 
 Definition caller
     {WIRE : Set} `{Link WIRE}

@@ -383,6 +383,44 @@ Module TryFrom_usize_for_Uint.
 End TryFrom_usize_for_Uint.
 Export (hints) TryFrom_usize_for_Uint.
 
+Module TryFrom_i32_for_Uint.
+  Definition Self (BITS LIMBS : usize) : Set :=
+    Uint.t BITS LIMBS.
+
+  Definition Error (BITS LIMBS : usize) : Set :=
+    ToUintError.t (Self BITS LIMBS).
+
+  Definition try_from {BITS LIMBS : usize} (value : i32) :
+      Result.t (Self BITS LIMBS) (Error BITS LIMBS) :=
+    (* TODO: check if negative *)
+    Result.Ok {| Uint.value := i[value] |}.
+
+  Lemma try_from_eq {BITS LIMBS : usize} (value : i32) (stack : Stack.t) :
+    {{
+      SimulateM.eval_f
+        (TryFrom_i32_for_Uint.run_try_from BITS LIMBS value)
+        stack 🌲
+      (
+      Output.Success (try_from value),
+      stack
+    )
+  }}.
+  Proof.
+  Admitted.
+
+  Instance I (BITS LIMBS : usize) : TryFrom.C (Self BITS LIMBS) i32 (Error BITS LIMBS) := {
+    try_from := try_from;
+  }.
+
+  Module Eq.
+    Instance I {BITS LIMBS : usize} : TryFrom.Eq.C (I BITS LIMBS) := {
+      try_from := try_from_eq;
+    }.
+  End Eq.
+  Export (hints) Eq.
+End TryFrom_i32_for_Uint.
+Export (hints) TryFrom_i32_for_Uint.
+
 Module TryFrom_Uint_for_u64.
   Definition Self : Set :=
     u64.

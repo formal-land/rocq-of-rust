@@ -1,5 +1,34 @@
 Require Import links.RocqOfRust.
-Require Import revm.revm_interpreter.instructions.links.system.common.
+Require Import alloy_primitives.links.aliases.
+Require Import alloy_primitives.bits.links.address.
+Require Import alloy_primitives.bits.links.fixed.
+Require Import alloy_primitives.utils.links.mod.
+Require Import core.array.links.mod.
+Require Import core.convert.links.mod.
+Require Import core.convert.links.num.
+Require Import core.intrinsics.links.mod.
+Require Import core.links.array.
+Require Import core.links.cmp.
+Require Import core.links.option.
+Require Import core.links.panicking.
+Require Import core.links.result.
+Require Import core.ops.links.range.
+Require Import core.num.links.mod.
+Require Import core.ptr.links.const_ptr.
+Require Import core.slice.links.index.
+Require Import core.slice.links.mod.
+Require Import revm.revm_interpreter.gas.links.calc.
+Require Import revm.revm_interpreter.gas.links.constants.
+Require Import revm.revm_interpreter.instructions.system.
+Require Import revm.revm_interpreter.interpreter.links.shared_memory.
+Require Import revm.revm_interpreter.links.gas.
+Require Import revm.revm_interpreter.links.instruction_result.
+Require Import revm.revm_interpreter.links.interpreter.
+Require Import revm.revm_interpreter.links.interpreter_types.
+Require Import revm.revm_primitives.links.lib.
+Require Import revm.revm_specification.links.hardfork.
+Require Import ruint.links.from.
+Require Import ruint.links.lib.
 
 Instance run_calldatasize
   {WIRE H : Set} `{Link WIRE} `{Link H}

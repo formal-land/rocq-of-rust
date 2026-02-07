@@ -4,6 +4,7 @@ Require Import revm.revm_interpreter.instructions.links.system.calldatasize.
 Require Import revm.revm_interpreter.instructions.simulate.macros.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_types.
+Require Import revm.revm_interpreter.simulate.interpreter_types.
 Require Import ruint.links.lib.
 
 Definition calldatasize

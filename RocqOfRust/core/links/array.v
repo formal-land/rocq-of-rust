@@ -331,8 +331,8 @@ End SubPointer.
 
 (** The pointer coercions are intrinsic functions, so we need to admit them here. *)
 Instance run_pointer_coercion_unsize_array_to_slice
-    (T : Set) `{Link T} (N : usize)
-    (pointer_kind : Pointer.Kind.t) :
+    {T : Set} `{Link T} {N : usize}
+    {pointer_kind : Pointer.Kind.t} :
   let Source : Set := Ref.t pointer_kind (array.t T N) in
   let Target : Set := Ref.t pointer_kind (list T) in
   forall (source : Source),

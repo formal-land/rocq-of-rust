@@ -3,6 +3,7 @@ Require Import revm.revm_interpreter.instructions.links.system.codecopy.
 Require Import revm.revm_interpreter.instructions.simulate.macros.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_types.
+Require Import revm.revm_interpreter.simulate.interpreter_types.
 
 Definition codecopy
     {WIRE : Set} `{Link WIRE}

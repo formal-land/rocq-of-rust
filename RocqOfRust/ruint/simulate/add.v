@@ -1,5 +1,7 @@
 Require Import simulate.RocqOfRust.
+Require Import core.ops.simulate.arith.
 Require Import ruint.links.add.
+Require Import ruint.links.lib.
 
 Module Impl_Uint.
   Definition wrapping_add {BITS LIMBS : usize} (x1 x2 : lib.Uint.t BITS LIMBS) :
@@ -14,6 +16,23 @@ Module Impl_Uint.
         stack 🌲
       (
         Output.Success (wrapping_add x1 x2),
+        stack
+      )
+    }}.
+  Admitted.
+
+  Definition wrapping_neg {BITS LIMBS : usize} (x : lib.Uint.t BITS LIMBS) :
+      lib.Uint.t BITS LIMBS :=
+    {| lib.Uint.value := (- x.(lib.Uint.value)) mod (2 ^ BITS.(Integer.value)) |}.
+
+  Lemma wrapping_neg_eq (stack : Stack.t)
+      (BITS LIMBS : usize) (x : lib.Uint.t BITS LIMBS) :
+    {{
+      SimulateM.eval_f
+        (Impl_Uint.run_wrapping_neg BITS LIMBS x)
+        stack 🌲
+      (
+        Output.Success (wrapping_neg x),
         stack
       )
     }}.
@@ -36,3 +55,47 @@ Module Impl_Uint.
     }}.
   Admitted.
 End Impl_Uint.
+
+Module Impl_Add_for_Uint.
+  Definition Self (BITS LIMBS : usize) : Set :=
+    lib.Uint.t BITS LIMBS.
+
+  Definition add {BITS LIMBS : usize}
+      (x y : Self BITS LIMBS) : Self BITS LIMBS :=
+    Impl_Uint.wrapping_add x y.
+
+  Global Instance I {BITS LIMBS : usize} :
+      Add.C (Self BITS LIMBS) (Self BITS LIMBS) (Self BITS LIMBS) := {|
+    Add.add := add;
+  |}.
+
+  Module Eq.
+    Instance I {BITS LIMBS : usize} :
+        Add.Eq.C (Self BITS LIMBS) (Self BITS LIMBS) (Self BITS LIMBS) I.
+    Admitted.
+  End Eq.
+  Export (hints) Eq.
+End Impl_Add_for_Uint.
+Export (hints) Impl_Add_for_Uint.
+
+Module Impl_Sub_for_Uint.
+  Definition Self (BITS LIMBS : usize) : Set :=
+    lib.Uint.t BITS LIMBS.
+
+  Definition sub {BITS LIMBS : usize}
+      (x y : Self BITS LIMBS) : Self BITS LIMBS :=
+    Impl_Uint.wrapping_sub x y.
+
+  Global Instance I {BITS LIMBS : usize} :
+      Sub.C (Self BITS LIMBS) (Self BITS LIMBS) (Self BITS LIMBS) := {|
+    Sub.sub := sub;
+  |}.
+
+  Module Eq.
+    Instance I {BITS LIMBS : usize} :
+        Sub.Eq.C (Self BITS LIMBS) (Self BITS LIMBS) (Self BITS LIMBS) I.
+    Admitted.
+  End Eq.
+  Export (hints) Eq.
+End Impl_Sub_for_Uint.
+Export (hints) Impl_Sub_for_Uint.

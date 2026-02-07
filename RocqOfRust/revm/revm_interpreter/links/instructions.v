@@ -2,7 +2,8 @@ Require Import links.RocqOfRust.
 Require Import core.links.array.
 Require Import revm.revm_bytecode.links.opcode.
 Require Import revm.revm_interpreter.instructions.links.arithmetic.
-Require Import revm.revm_interpreter.instructions.links.control.
+Require Import revm.revm_interpreter.instructions.links.control.stop.
+Require Import revm.revm_interpreter.instructions.links.control.unknown.
 (* NOTE: WARNING: there might be future conflicts between the two `Host`s *)
 Require Import revm.revm_context_interface.links.host.
 Require Import revm.revm_interpreter.instructions.links.host.balance.

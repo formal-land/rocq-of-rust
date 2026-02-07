@@ -5,6 +5,7 @@ Require Import revm.revm_interpreter.instructions.links.system.memory_resize.
 Require Import revm.revm_interpreter.instructions.simulate.macros.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_types.
+Require Import revm.revm_interpreter.simulate.interpreter_types.
 
 Definition memory_resize
     {WIRE : Set} `{Link WIRE}
@@ -22,7 +23,7 @@ Definition memory_resize
   gas_macro interpreter cost
     (fun interpreter => (None, interpreter))
     (fun interpreter =>
-      if len =? 0 then
+      if i[len] =? 0 then
         (None, interpreter)
       else
         as_usize_or_fail_ret_macro interpreter memory_offset None

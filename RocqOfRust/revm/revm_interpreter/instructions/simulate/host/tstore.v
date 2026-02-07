@@ -1,10 +1,14 @@
 Require Import simulate.RocqOfRust.
+Require Import alloy_primitives.links.aliases.
+Require Import core.links.array.
 Require Import revm.revm_context_interface.links.host.
+Require Import revm.revm_context_interface.links.journaled_state.
 Require Import revm.revm_context_interface.simulate.host.
 Require Import revm.revm_interpreter.instructions.links.host.tstore.
 Require Import revm.revm_interpreter.instructions.simulate.macros.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_types.
+Require Import revm.revm_interpreter.simulate.interpreter_types.
 
 Definition tstore
     {WIRE H : Set} `{Link WIRE} `{Link H}

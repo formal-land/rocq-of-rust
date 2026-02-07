@@ -87,6 +87,34 @@ Ltac gas_macro_eq InterpreterTypesEq :=
     apply Run.Pure
   ].
 
+Definition gas_or_fail_macro {WIRE K : Set} `{Link WIRE}
+    {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
+    {IInterpreterTypes : InterpreterTypes.C WIRE_types}
+    (interpreter : Interpreter.t WIRE WIRE_types)
+    (gas_opt : option u64)
+    (k_exit : Interpreter.t WIRE WIRE_types -> K)
+    (k : Interpreter.t WIRE WIRE_types -> K) :
+    K :=
+  match gas_opt with
+  | None =>
+    let control :=
+      IInterpreterTypes
+          .(InterpreterTypes.LoopControl_for_Control)
+          .(LoopControl.set_instruction_result)
+        interpreter.(Interpreter.control)
+        instruction_result.InstructionResult.OutOfGas in
+    let interpreter := interpreter
+      <| Interpreter.control := control |> in
+    k_exit interpreter
+  | Some gas_used =>
+    gas_macro interpreter gas_used k_exit k
+  end.
+
+(* TODO; for now we inline this tactic where it is used *)
+(*
+Ltac gas_or_fail_macro_eq InterpreterTypesEq :=
+*)
+
 Definition popn_macro {WIRE K : Set} `{Link WIRE}
     {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
     {IInterpreterTypes : InterpreterTypes.C WIRE_types}
