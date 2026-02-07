@@ -1,6 +1,7 @@
 Require Import links.RocqOfRust.
 Require Import bytes.bytes.
 Require Import core.ops.links.deref.
+
 (*
 pub struct Bytes {
     ptr: *const u8,
@@ -11,7 +12,9 @@ pub struct Bytes {
 }
 *)
 Module Bytes.
-  Parameter t : Set.
+  Record t : Set := {
+    value : list u8;
+  }.
 
   Parameter to_value : t -> Value.t.
 

@@ -338,7 +338,7 @@ Definition as_usize_or_fail_ret_macro {WIRE K : Set} `{Link WIRE}
     let interpreter := interpreter <| Interpreter.control := control |> in
     k_exit interpreter
   else
-    k {| Integer.value := v.(Uint.value) |} interpreter.
+    k (M.cast_integer IntegerKind.Usize (v0 : u64)) interpreter.
 
 Ltac as_usize_or_fail_ret_macro_eq InterpreterTypesEq :=
   unfold as_usize_or_fail_ret_macro;

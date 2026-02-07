@@ -3,7 +3,10 @@ Require Import alloc.links.alloc.
 Require Import alloc.raw_vec.
 
 Module RawVec.
-  Parameter t : Set -> Set -> Set.
+  Record t {T A : Set} : Set := {
+    value : list T;
+  }.
+  Arguments t : clear implicits.
 
   Parameter to_value : forall {T A : Set}, t T A -> Value.t.
 

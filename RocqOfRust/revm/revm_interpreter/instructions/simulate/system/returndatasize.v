@@ -1,0 +1,45 @@
+Require Import simulate.RocqOfRust.
+Require Import revm.revm_interpreter.instructions.links.system.returndatasize.
+Require Import revm.revm_interpreter.instructions.simulate.macros.
+Require Import revm.revm_interpreter.gas.simulate.constants.
+Require Import revm.revm_interpreter.links.interpreter.
+Require Import revm.revm_interpreter.links.interpreter_types.
+Require Import revm.revm_specification.links.hardfork.
+Require Import ruint.links.lib.
+
+Definition returndatasize
+    {WIRE : Set} `{Link WIRE}
+    {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
+    {IInterpreterTypes : InterpreterTypes.C WIRE_types}
+    (interpreter : Interpreter.t WIRE WIRE_types) :
+    Interpreter.t WIRE WIRE_types :=
+  check_macro interpreter SpecId.BYZANTIUM id (fun interpreter =>
+  gas_macro interpreter constants.BASE id (fun interpreter =>
+  let return_data :=
+    IInterpreterTypes.(InterpreterTypes.ReturnData_for_ReturnData).(ReturnData.buffer)
+      .(RefStub.projection) interpreter.(Interpreter.return_data) in
+  push_macro interpreter
+    {| Uint.value := Z.of_nat (List.length return_data) |}
+    id
+    (fun interpreter => interpreter)
+  )).
+
+Lemma returndatasize_eq
+    {WIRE H : Set} `{Link WIRE} `{Link H}
+    {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
+    (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
+    (interpreter : Interpreter.t WIRE WIRE_types)
+    (host : H) :
+  let ref_interpreter := make_ref 0 in
+  let ref_host := make_ref (A := H) 1 in
+  exists stack' : Stack.t,
+    {{
+      SimulateM.eval_f
+        (run_returndatasize run_InterpreterTypes_for_WIRE ref_interpreter ref_host)
+        [interpreter; host]%stack 🌲
+      (
+        Output.Success tt,
+        stack'
+      )
+    }}.
+Admitted.

@@ -41,6 +41,7 @@ Module Impl_Clone_for_bool.
     constructor.
     run_symbolic.
   Defined.
+  Global Opaque run_clone.
 
   Instance method_clone : Clone.Method_clone bool.
   Proof.

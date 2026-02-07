@@ -24,7 +24,8 @@ Definition static_call
     {WIRE H : Set} `{Link WIRE} `{Link H}
     {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
     {IInterpreterTypes : InterpreterTypes.C WIRE_types}
-    {IHost : Host.C H}
+    {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+    {IHost : Host.C H H_types}
     (interpreter : Interpreter.t WIRE WIRE_types)
     (host : H) :
     Interpreter.t WIRE WIRE_types * H :=
@@ -103,7 +104,7 @@ Lemma static_call_eq
     (IInterpreterTypes : InterpreterTypes.C WIRE_types)
     (InterpreterTypesEq :
       InterpreterTypes.Eq.t WIRE WIRE_types run_InterpreterTypes_for_WIRE IInterpreterTypes)
-    (IHost : Host.C H)
+    (IHost : Host.C H H_types)
     (HostEq : Host.Eq.t IHost)
     (interpreter : Interpreter.t WIRE WIRE_types)
     (host : H) :

@@ -31,3 +31,33 @@ Module Deref.
     }.
   End Eq.
 End Deref.
+
+(*
+pub trait DerefMut: Deref {
+    fn deref_mut(&mut self) -> &mut Self::Target;
+}
+*)
+Module DerefMut.
+  Class C (Self Target : Set) `{Link Self} `{Link Target} : Set := {
+    deref_mut : RefStub.t Self Target;
+  }.
+
+  Module Eq.
+    Class t
+        {Self Target : Set} `{Link Self} `{Link Target}
+        `{!DerefMut.Run Self Target}
+        (I : C Self Target) :
+        Prop := {
+      deref_mut (ref_self : '&mut Self) (stack : Stack.t) :
+        {{
+          SimulateM.eval_f
+            (DerefMut.run_deref_mut ref_self)
+            stack 🌲
+          (
+            Output.Success (RefStub.apply ref_self I.(deref_mut)),
+            stack
+          )
+        }};
+    }.
+  End Eq.
+End DerefMut.

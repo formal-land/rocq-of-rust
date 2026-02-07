@@ -1,0 +1,50 @@
+Require Import simulate.RocqOfRust.
+Require Import revm.revm_context_interface.links.host.
+Require Import revm.revm_context_interface.simulate.host.
+Require Import revm.revm_interpreter.instructions.links.host.tstore.
+Require Import revm.revm_interpreter.instructions.simulate.macros.
+Require Import revm.revm_interpreter.links.interpreter.
+Require Import revm.revm_interpreter.links.interpreter_types.
+
+Definition tstore
+    {WIRE H : Set} `{Link WIRE} `{Link H}
+    {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
+    {IInterpreterTypes : InterpreterTypes.C WIRE_types}
+    {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+    {IHost : Host.C H H_types}
+    (interpreter : Interpreter.t WIRE WIRE_types)
+    (host : H) :
+    Interpreter.t WIRE WIRE_types * H :=
+  popn_macro interpreter 2 (fun interpreter => (interpreter, host)) (fun arr interpreter =>
+    let '{|
+      ArrayPair.x := index;
+      ArrayPair.xs := {| ArrayPair.x := value |}
+    |} := arr.(array.value) in
+    let target :=
+      IInterpreterTypes.(InterpreterTypes.InputsTrait_for_Input).(InputTraits.target_address)
+        interpreter.(Interpreter.input) in
+    let host := IHost.(Host.tstore) host target index value in
+    (interpreter, host)
+  ).
+
+Lemma tstore_eq
+    {WIRE H : Set} `{Link WIRE} `{Link H}
+    {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
+    (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
+    {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+    (run_Host_for_H : Host.Run H H_types)
+    (interpreter : Interpreter.t WIRE WIRE_types)
+    (host : H) :
+  let ref_interpreter := make_ref 0 in
+  let ref_host := make_ref (A := H) 1 in
+  exists stack' : Stack.t,
+    {{
+      SimulateM.eval_f
+        (run_tstore run_InterpreterTypes_for_WIRE run_Host_for_H ref_interpreter ref_host)
+        [interpreter; host]%stack 🌲
+      (
+        Output.Success tt,
+        stack'
+      )
+    }}.
+Admitted.

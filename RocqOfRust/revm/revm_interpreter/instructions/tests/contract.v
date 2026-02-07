@@ -104,34 +104,44 @@ Module TestHost.
       option (StateLoad.t SelfDestructResult.t) * t :=
     (None, Make).
 
-  Instance I : Host.C t := {
-    Host.Cfg_t := t;
-    Host.Block_t := t;
-    Host.H_Cfg_t := IsLink;
-    Host.H_Block_t := IsLink;
-    Host.run_CfgGetter_for_Self := {|
-      Cfg.chain_id := chain_id;
-      Cfg.spec := spec;
-      Cfg.max_code_size := max_code_size;
-      Cfg.is_eip3607_disabled := is_eip3607_disabled;
-      Cfg.is_balance_check_disabled := is_balance_check_disabled;
-      Cfg.is_gas_refund_disabled := is_gas_refund_disabled;
-      Cfg.is_block_gas_limit_disabled := is_block_gas_limit_disabled;
-      Cfg.is_nonce_check_disabled := is_nonce_check_disabled;
-      Cfg.is_base_fee_check_disabled := is_base_fee_check_disabled;
-    |};
-    Host.run_Block_for_Block := {|
-      Block.number := number;
-      Block.beneficiary := beneficiary;
-      Block.timestamp := timestamp;
-      Block.gas_limit := gas_limit;
-      Block.basefee := basefee;
-      Block.difficulty := difficulty;
-      Block.prevrandao := prevrandao;
-      Block.blob_gasprice := blob_gasprice;
-    |};
-    Host.run_CfgGetter_for_Self := {| CfgGetter.cfg := cfg |};
-    Host.run_BlockGetter_for_Self := {| BlockGetter.block := block |};
+  Definition transaction_types : Transaction.Types.t := {|
+    Transaction.Types.TransactionError := t;
+    Transaction.Types.TransactionType := t;
+    Transaction.Types.AccessList := t;
+    Transaction.Types.Legacy := t;
+    Transaction.Types.Eip2930 := t;
+    Transaction.Types.Eip1559 := t;
+    Transaction.Types.Eip4844 := t;
+    Transaction.Types.Eip7702 := t;
+  |}.
+
+  Definition host_types : Host.Types.t := {|
+    Host.Types.Transaction := t;
+    Host.Types.TransactionTypes := transaction_types;
+    Host.Types.Cfg := t;
+    Host.Types.Spec := t;
+    Host.Types.Block := t;
+  |}.
+
+  Instance host_types_are_links : Host.Types.AreLinks host_types.
+  Admitted.
+
+  Instance TransactionGetter_for_t :
+      TransactionGetter.C t t transaction_types.
+  Admitted.
+
+  Instance BlockGetter_for_t :
+      BlockGetter.C t (Host.Types.to_BlockGetter_types host_types).
+  Admitted.
+
+  Instance CfgGetter_for_t :
+      CfgGetter.C t (Host.Types.to_CfgGetter_types host_types).
+  Admitted.
+
+  Instance I : Host.C t host_types := {
+    Host.TransactionGetter_for_Self := TransactionGetter_for_t;
+    Host.BlockGetter_for_Self := BlockGetter_for_t;
+    Host.CfgGetter_for_Self := CfgGetter_for_t;
     Host.load_account_delegated := load_account_delegated;
     Host.block_hash := block_hash;
     Host.balance := balance;
@@ -248,34 +258,44 @@ Module TestHostWithAccount.
       option (StateLoad.t SelfDestructResult.t) * t :=
     (None, Make).
 
-  Instance I : Host.C t := {
-    Host.Cfg_t := t;
-    Host.Block_t := t;
-    Host.H_Cfg_t := IsLink;
-    Host.H_Block_t := IsLink;
-    Host.run_CfgGetter_for_Self := {|
-      Cfg.chain_id := chain_id;
-      Cfg.spec := spec;
-      Cfg.max_code_size := max_code_size;
-      Cfg.is_eip3607_disabled := is_eip3607_disabled;
-      Cfg.is_balance_check_disabled := is_balance_check_disabled;
-      Cfg.is_gas_refund_disabled := is_gas_refund_disabled;
-      Cfg.is_block_gas_limit_disabled := is_block_gas_limit_disabled;
-      Cfg.is_nonce_check_disabled := is_nonce_check_disabled;
-      Cfg.is_base_fee_check_disabled := is_base_fee_check_disabled;
-    |};
-    Host.run_Block_for_Block := {|
-      Block.number := number;
-      Block.beneficiary := beneficiary;
-      Block.timestamp := timestamp;
-      Block.gas_limit := gas_limit;
-      Block.basefee := basefee;
-      Block.difficulty := difficulty;
-      Block.prevrandao := prevrandao;
-      Block.blob_gasprice := blob_gasprice;
-    |};
-    Host.run_CfgGetter_for_Self := {| CfgGetter.cfg := cfg |};
-    Host.run_BlockGetter_for_Self := {| BlockGetter.block := block |};
+  Definition transaction_types : Transaction.Types.t := {|
+    Transaction.Types.TransactionError := t;
+    Transaction.Types.TransactionType := t;
+    Transaction.Types.AccessList := t;
+    Transaction.Types.Legacy := t;
+    Transaction.Types.Eip2930 := t;
+    Transaction.Types.Eip1559 := t;
+    Transaction.Types.Eip4844 := t;
+    Transaction.Types.Eip7702 := t;
+  |}.
+
+  Definition host_types : Host.Types.t := {|
+    Host.Types.Transaction := t;
+    Host.Types.TransactionTypes := transaction_types;
+    Host.Types.Cfg := t;
+    Host.Types.Spec := t;
+    Host.Types.Block := t;
+  |}.
+
+  Instance host_types_are_links : Host.Types.AreLinks host_types.
+  Admitted.
+
+  Instance TransactionGetter_for_t :
+      TransactionGetter.C t t transaction_types.
+  Admitted.
+
+  Instance BlockGetter_for_t :
+      BlockGetter.C t (Host.Types.to_BlockGetter_types host_types).
+  Admitted.
+
+  Instance CfgGetter_for_t :
+      CfgGetter.C t (Host.Types.to_CfgGetter_types host_types).
+  Admitted.
+
+  Instance I : Host.C t host_types := {
+    Host.TransactionGetter_for_Self := TransactionGetter_for_t;
+    Host.BlockGetter_for_Self := BlockGetter_for_t;
+    Host.CfgGetter_for_Self := CfgGetter_for_t;
     Host.load_account_delegated := load_account_delegated;
     Host.block_hash := block_hash;
     Host.balance := balance;
