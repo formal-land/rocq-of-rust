@@ -5,6 +5,7 @@ Require Import core.ops.simulate.deref.
 Require Import core.simulate.option.
 Require Import revm.revm_context_interface.links.host.
 Require Import revm.revm_interpreter.gas.simulate.constants.
+Require Import revm.revm_interpreter.instructions.links.memory.mcopy.
 Require Import revm.revm_interpreter.instructions.simulate.macros.
 Require Import revm.revm_interpreter.interpreter.simulate.shared_memory.
 Require Import revm.revm_interpreter.links.gas.
@@ -18,34 +19,31 @@ Require Import ruint.links.lib.
 Require Import ruint.simulate.bytes.
 Require Import ruint.simulate.from.
 
-Require Import revm.revm_interpreter.instructions.links.memory.mcopy.
-
 Definition mcopy
     {WIRE : Set} `{Link WIRE}
     {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
-    `{!InterpreterTypes.C WIRE_types}
+    `{IInterpreterTypes : !InterpreterTypes.C WIRE_types}
     (interpreter : Interpreter.t WIRE WIRE_types) :
     Interpreter.t WIRE WIRE_types :=
   check_macro interpreter SpecId.CANCUN id (fun interpreter =>
   popn_macro interpreter {| Integer.value := 3 |} id (fun arr interpreter =>
-    let '⟬ dst_u256; src_u256; len_u256 ⟭ := arr.(array.value) in
-    as_usize_or_fail_ret_macro interpreter len_u256 None id (fun len interpreter =>
-      if i[len] =? 0 then
-        interpreter
-      else
-        as_usize_or_fail_ret_macro interpreter dst_u256 None id (fun dst interpreter =>
-        as_usize_or_fail_ret_macro interpreter src_u256 None id (fun src interpreter =>
-          let words_num := num_words len in
-          let copy_cost : u64 := {| Integer.value := i[constants.VERYLOW] + i[words_num] * i[constants.COPY] |} in
-          gas_macro interpreter copy_cost id (fun interpreter =>
-            let max_offset : usize := {| Integer.value := Z.max i[dst] i[src] |} in
-            resize_memory_macro interpreter max_offset len id (fun interpreter =>
-              let IInterpreterTypes := _ in
-              let memory :=
-                IInterpreterTypes.(InterpreterTypes.MemoryTrait_for_Memory).(MemoryTrait.copy)
-                  interpreter.(Interpreter.memory) dst src len in
-              interpreter <| Interpreter.memory := memory |>
-            ))))))).
+  let '⟬ dst_u256; src_u256; len_u256 ⟭ := arr.(array.value) in
+  as_usize_or_fail_ret_macro interpreter len_u256 None id (fun len interpreter =>
+  if i[len] =? 0 then
+    interpreter
+  else
+    as_usize_or_fail_ret_macro interpreter dst_u256 None id (fun dst interpreter =>
+    as_usize_or_fail_ret_macro interpreter src_u256 None id (fun src interpreter =>
+    let words_num := num_words len in
+    let copy_cost : u64 := {| Integer.value := i[constants.VERYLOW] + i[words_num] * i[constants.COPY] |} in
+    gas_macro interpreter copy_cost id (fun interpreter =>
+    let max_offset : usize := {| Integer.value := Z.max i[dst] i[src] |} in
+    resize_memory_macro interpreter max_offset len id (fun interpreter =>
+    let memory :=
+      IInterpreterTypes.(InterpreterTypes.MemoryTrait_for_Memory).(MemoryTrait.copy)
+        interpreter.(Interpreter.memory) dst src len in
+    interpreter <| Interpreter.memory := memory |>
+  ))))))).
 
 Lemma mcopy_eq
     {WIRE H : Set} `{Link WIRE} `{Link H}
@@ -72,4 +70,20 @@ Lemma mcopy_eq
     )
   }}.
 Proof.
+  intros.
+  with_strategy transparent [run_mcopy] unfold mcopy, run_mcopy; cbn.
+  check_macro_eq InterpreterTypesEq.
+  popn_macro_eq InterpreterTypesEq.
+  match goal with
+  | array : array.t aliases.U256.t _ |- _ =>
+    destruct array as [[dst_u256 [src_u256 [len_u256 []]]]]
+  end.
+  as_usize_or_fail_macro_eq InterpreterTypesEq.
+  resize_memory_macro_eq InterpreterTypesEq.
+  s. {
+    apply InterpreterTypesEq.
+  }
+  s. {
+    apply InterpreterTypesEq.
+  }
 Admitted.

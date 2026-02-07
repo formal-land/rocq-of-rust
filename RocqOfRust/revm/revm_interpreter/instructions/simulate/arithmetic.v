@@ -636,8 +636,8 @@ Definition signextend
   let '⟬ ext ⟭ := arr.(array.value) in
   let x := top.(RefStub.projection) interpreter.(Interpreter.stack) in
   if Impl_PartialOrd_for_Uint.lt ext {| Uint.value := 31 |} then
-    let ext_limb0 := ext.(Uint.value) mod 2^64 in
-    let bit_index : usize := {| Integer.value := 8 * ext_limb0 + 7 |} in
+    let ext_limb0 : u64 := ext.(Uint.value) mod 2^64 in
+    let bit_index := M.cast_integer IntegerKind.Usize (8 *i ext_limb0 +i 7) in
     let bit := Impl_Uint.bit x bit_index in
     let mask :=
       Impl_Uint.wrapping_sub
@@ -714,13 +714,21 @@ Proof.
     s_apply @Impl_Uint.from_eq.
   }
   s. {
-    Show.
     apply Impl_Sub_for_Uint.Eq.I.
   }
-  s. {
-    s_apply @Impl_Uint.from_eq.
+  s.
+  destruct Impl_Uint.bit.
+  { s. {
+      apply Impl_Not_for_Uint.Eq.I.
+    }
+    s. {
+      apply Impl_BitOr_for_Uint.Eq.I.
+    }
+    s.
   }
-  s. {
-    s_apply @Impl_Uint.from_eq.
+  { s. {
+      apply Impl_BitAnd_for_Uint.Eq.I.
+    }
+    s.
   }
 Qed.

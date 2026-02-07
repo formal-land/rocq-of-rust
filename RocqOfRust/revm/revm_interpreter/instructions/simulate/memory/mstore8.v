@@ -17,13 +17,14 @@ Require Import revm.revm_interpreter.simulate.interpreter_types.
 Require Import revm.revm_specification.links.hardfork.
 Require Import revm.revm_specification.simulate.hardfork.
 Require Import ruint.links.lib.
+Require Import ruint.simulate.bits.
 Require Import ruint.simulate.bytes.
 Require Import ruint.simulate.from.
 
 Definition mstore8
     {WIRE : Set} `{Link WIRE}
     {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
-    `{!InterpreterTypes.C WIRE_types}
+    `{IInterpreterTypes : !InterpreterTypes.C WIRE_types}
     (interpreter : Interpreter.t WIRE WIRE_types) :
     Interpreter.t WIRE WIRE_types :=
   gas_macro interpreter constants.VERYLOW id (fun interpreter =>
@@ -31,12 +32,12 @@ Definition mstore8
   let '⟬ offset_u256; value ⟭ := arr.(array.value) in
   as_usize_or_fail_ret_macro interpreter offset_u256 None id (fun offset interpreter =>
   resize_memory_macro interpreter offset 1 id (fun interpreter =>
-    let IInterpreterTypes := _ in
-    let byte : u8 := {| Integer.value := value.(Uint.value) mod 256 |} in
-    let memory :=
-      IInterpreterTypes.(InterpreterTypes.MemoryTrait_for_Memory).(MemoryTrait.set)
-        interpreter.(Interpreter.memory) offset [byte] in
-    interpreter <| Interpreter.memory := memory |>
+  let memory :=
+    IInterpreterTypes.(InterpreterTypes.MemoryTrait_for_Memory).(MemoryTrait.set)
+      interpreter.(Interpreter.memory)
+      offset
+      [Impl_Uint.byte value 0] in
+  interpreter <| Interpreter.memory := memory |>
   )))).
 
 Lemma mstore8_eq
@@ -64,4 +65,27 @@ Lemma mstore8_eq
     )
   }}.
 Proof.
-Admitted.
+  intros.
+  with_strategy transparent [run_mstore8] unfold mstore8, run_mstore8; cbn.
+  gas_macro_eq InterpreterTypesEq.
+  popn_macro_eq InterpreterTypesEq.
+  match goal with
+  | array : array.t aliases.U256.t _ |- _ =>
+    destruct array as [[offset [value []]]]
+  end.
+  as_usize_or_fail_macro_eq InterpreterTypesEq.
+  resize_memory_macro_eq InterpreterTypesEq.
+  s. {
+    s_apply Impl_Uint.byte_eq.
+  }
+  s. {
+    set (ref_array := Ref.cast_to _ _).
+    eapply (array.pointer_coercion_unsize_array_to_slice_eq ref_array _);
+      repeat unshelve econstructor.
+  }
+  s. {
+    apply InterpreterTypesEq.
+  }
+  s.
+  now destruct IInterpreterTypes.(InterpreterTypes.MemoryTrait_for_Memory).(MemoryTrait.resize).
+Qed.

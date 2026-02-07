@@ -89,6 +89,5 @@ Module Impl_From_U256_for_FixedBytes_32.
     Qed.
   End Eq.
   Export (hints) Eq.
-  
 End Impl_From_U256_for_FixedBytes_32.
 Export (hints) Impl_From_U256_for_FixedBytes_32.

@@ -27,18 +27,20 @@ Lemma codesize_eq
     {WIRE H : Set} `{Link WIRE} `{Link H}
     {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
     (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
+    (IInterpreterTypes : InterpreterTypes.C WIRE_types)
+    (InterpreterTypesEq :
+      InterpreterTypes.Eq.t WIRE WIRE_types run_InterpreterTypes_for_WIRE IInterpreterTypes)
     (interpreter : Interpreter.t WIRE WIRE_types)
     (host : H) :
   let ref_interpreter := make_ref 0 in
   let ref_host := make_ref (A := H) 1 in
-  exists stack' : Stack.t,
     {{
       SimulateM.eval_f
         (run_codesize run_InterpreterTypes_for_WIRE ref_interpreter ref_host)
         [interpreter; host]%stack 🌲
       (
         Output.Success tt,
-        stack'
+        [codesize interpreter; host]%stack
       )
     }}.
 Admitted.
