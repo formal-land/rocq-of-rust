@@ -351,7 +351,7 @@ Definition as_usize_or_fail_ret_macro {WIRE K : Set} `{Link WIRE}
   let v1 := (v.(Uint.value) / 2^64) mod 2^64 in
   let v2 := (v.(Uint.value) / 2^128) mod 2^64 in
   let v3 := (v.(Uint.value) / 2^192) mod 2^64 in
-  if (v0 >? i[Impl_usize.MAX]) || negb(v1 =? 0) || negb(v2 =? 0) || negb(v3 =? 0) then
+  if (v0 >? i[Impl_usize.MAX]) || negb (v1 =? 0) || negb (v2 =? 0) || negb (v3 =? 0) then
     let reason :=
       match reason_opt with
       | Some reason => reason

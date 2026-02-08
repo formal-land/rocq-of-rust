@@ -3,7 +3,7 @@ Require Import alloy_primitives.bytes.simulate.mod.
 Require Import alloy_primitives.links.aliases.
 Require Import core.links.array.
 Require Import revm.revm_interpreter.gas.simulate.constants.
-Require Import revm.revm_interpreter.instructions.links.control.
+Require Import revm.revm_interpreter.instructions.links.control.stop.
 Require Import revm.revm_interpreter.instructions.simulate.macros.
 Require Import revm.revm_interpreter.links.gas.
 Require Import revm.revm_interpreter.links.instruction_result.

@@ -266,3 +266,27 @@ Module Impl_PartialEq_for_Ordering.
   Export (hints) Eq.
 End Impl_PartialEq_for_Ordering.
 Export (hints) Impl_PartialEq_for_Ordering.
+
+Module Impl_Ord_for_usize.
+  Definition Self : Set := usize.
+
+  Definition cmp (self other : Self) : Ordering.t :=
+    match Z.compare i[self] i[other] with
+    | Lt => Ordering.Less
+    | Eq => Ordering.Equal
+    | Gt => Ordering.Greater
+    end.
+
+  Lemma cmp_eq
+      (ref_self ref_other : '& Self)
+      (stack : Stack.t)
+      (self other : Self) :
+    CanRead.t stack self ref_self ->
+    CanRead.t stack other ref_other ->
+    {{
+      SimulateM.eval_f (Impl_Ord_for_usize.run_cmp ref_self ref_other) stack 🌲
+      (Output.Success (cmp self other), stack)
+    }}.
+  Admitted.
+End Impl_Ord_for_usize.
+Export (hints) Impl_Ord_for_usize.

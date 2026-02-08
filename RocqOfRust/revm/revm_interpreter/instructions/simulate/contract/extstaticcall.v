@@ -3,6 +3,7 @@ Require Import alloc.simulate.boxed.
 Require Import alloy_primitives.bits.links.address.
 Require Import alloy_primitives.bits.simulate.address.
 Require Import alloy_primitives.bytes.simulate.mod.
+Require Import core.ops.links.range.
 Require Import core.ops.simulate.range.
 Require Import revm.revm_context_interface.links.host.
 Require Import revm.revm_context_interface.links.journaled_state.
@@ -70,7 +71,10 @@ Definition extstaticcall
               call_inputs.CallInputs.is_eof := true;
               call_inputs.CallInputs.is_static := true;
               call_inputs.CallInputs.return_memory_offset :=
-                @Range.Build_t usize {| Integer.value := 0 |} {| Integer.value := 0 |};
+                {|
+                  Range.start := (0 : usize);
+                  Range.end_ := (0 : usize)
+                |};
               call_inputs.CallInputs.scheme := call_inputs.CallScheme.ExtStaticCall;
               call_inputs.CallInputs.target_address := target_address;
               call_inputs.CallInputs.value := call_inputs.CallValue.Transfer Impl_Uint.ZERO

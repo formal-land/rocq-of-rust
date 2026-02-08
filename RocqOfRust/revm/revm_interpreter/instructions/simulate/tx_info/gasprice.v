@@ -55,7 +55,7 @@ Lemma gasprice_eq
   let ref_host := make_ref (A := H) 1 in
   {{
     SimulateM.eval_f
-      (run_gasprice run_InterpreterTypes_for_WIRE _ run_Host_for_H ref_interpreter ref_host)
+      (run_gasprice run_InterpreterTypes_for_WIRE run_Host_for_H ref_interpreter ref_host)
       [interpreter; host]%stack 🌲
     (
       Output.Success tt,

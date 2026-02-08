@@ -5,6 +5,7 @@ Require Import alloy_primitives.bits.simulate.address.
 Require Import alloy_primitives.bytes.simulate.mod.
 Require Import alloy_primitives.links.aliases.
 Require Import core.links.array.
+Require Import core.ops.links.range.
 Require Import core.ops.simulate.range.
 Require Import revm.revm_context_interface.links.host.
 Require Import revm.revm_context_interface.links.journaled_state.
@@ -94,7 +95,10 @@ Definition extcall
               call_inputs.CallInputs.is_eof := true;
               call_inputs.CallInputs.is_static := is_static;
               call_inputs.CallInputs.return_memory_offset :=
-                @Range.Build_t usize {| Integer.value := 0 |} {| Integer.value := 0 |};
+                {|
+                  Range.start := (0 : usize);
+                  Range.end_ := (0 : usize)
+                |};
               call_inputs.CallInputs.scheme := call_inputs.CallScheme.ExtCall;
               call_inputs.CallInputs.target_address := target_address;
               call_inputs.CallInputs.value := call_inputs.CallValue.Transfer value

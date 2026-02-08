@@ -3,6 +3,7 @@ Require Import alloc.simulate.boxed.
 Require Import alloy_primitives.bits.links.address.
 Require Import alloy_primitives.bits.simulate.address.
 Require Import alloy_primitives.bytes.simulate.mod.
+Require Import core.ops.links.range.
 Require Import core.ops.simulate.range.
 Require Import revm.revm_context_interface.links.host.
 Require Import revm.revm_context_interface.links.journaled_state.
@@ -71,7 +72,10 @@ Definition extdelegatecall
               call_inputs.CallInputs.is_static :=
                 IInterpreterTypes.(InterpreterTypes.RuntimeFlag_for_RuntimeFlag).(RuntimeFlag.is_static) interpreter.(Interpreter.runtime_flag);
               call_inputs.CallInputs.return_memory_offset :=
-                @Range.Build_t usize {| Integer.value := 0 |} {| Integer.value := 0 |};
+                {|
+                  Range.start := (0 : usize);
+                  Range.end_ := (0 : usize)
+                |};
               call_inputs.CallInputs.scheme := call_inputs.CallScheme.ExtDelegateCall;
               call_inputs.CallInputs.target_address :=
                 IInterpreterTypes.(InterpreterTypes.InputsTrait_for_Input).(InputTraits.target_address) interpreter.(Interpreter.input);
