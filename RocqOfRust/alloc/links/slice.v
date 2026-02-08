@@ -8,7 +8,7 @@ Module Impl_Slice.
     list T.
 
   (* pub fn to_vec(&self) -> Vec<T> *)
-  Instance run_to_vec (T : Set) `{Link T} (self : '& (Self T)) :
+  Instance run_to_vec {T : Set} `{Link T} (self : '& (Self T)) :
     Run.Trait (slice.Impl_slice_T.to_vec (Φ T)) [] [] [φ self] (Vec.t T Global.t).
   Admitted.
   Global Opaque run_to_vec.

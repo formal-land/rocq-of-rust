@@ -68,33 +68,17 @@ Module Transaction.
     }.
 
     Class AreLinks (types : t) : Set := {
-      H_TransactionError : Link types.(TransactionError);
-      H_TransactionType : Link types.(TransactionType);
-      H_AccessList : Link types.(AccessList);
-      H_Legacy : Link types.(Legacy);
-      H_Eip2930 : Link types.(Eip2930);
-      H_Eip1559 : Link types.(Eip1559);
-      H_Eip4844 : Link types.(Eip4844);
-      H_Eip7702 : Link types.(Eip7702);
+      H_TransactionError :: Link types.(TransactionError);
+      H_TransactionType :: Link types.(TransactionType);
+      H_AccessList :: Link types.(AccessList);
+      H_Legacy :: Link types.(Legacy);
+      H_Eip2930 :: Link types.(Eip2930);
+      H_Eip1559 :: Link types.(Eip1559);
+      H_Eip4844 :: Link types.(Eip4844);
+      H_Eip7702 :: Link types.(Eip7702);
     }.
-
-    Global Instance IsLinkTransactionError (types : t) (H : AreLinks types) : Link types.(TransactionError) :=
-      H.(H_TransactionError _).
-    Global Instance IsLinkTransactionType (types : t) (H : AreLinks types) : Link types.(TransactionType) :=
-      H.(H_TransactionType _).
-    Global Instance IsLinkAccessList (types : t) (H : AreLinks types) : Link types.(AccessList) :=
-      H.(H_AccessList _).
-    Global Instance IsLinkLegacy (types : t) (H : AreLinks types) : Link types.(Legacy) :=
-      H.(H_Legacy _).
-    Global Instance IsLinkEip2930 (types : t) (H : AreLinks types) : Link types.(Eip2930) :=
-      H.(H_Eip2930 _).
-    Global Instance IsLinkEip1559 (types : t) (H : AreLinks types) : Link types.(Eip1559) :=
-      H.(H_Eip1559 _).
-    Global Instance IsLinkEip4844 (types : t) (H : AreLinks types) : Link types.(Eip4844) :=
-      H.(H_Eip4844 _).
-    Global Instance IsLinkEip7702 (types : t) (H : AreLinks types) : Link types.(Eip7702) :=
-      H.(H_Eip7702 _).
   End Types.
+  Export (hints) Types.
 
   Class Method_tx_type (Self : Set) `{Link Self} (types : Types.t) `{Types.AreLinks types} : Set := {
     tx_type : PolymorphicFunction.t;

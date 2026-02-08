@@ -11,7 +11,7 @@ Require Import core.ops.links.deref.
 (* pub struct Bytes(pub bytes::Bytes); *)
 Module Bytes.
   Record t : Set := {
-    value : list u8;
+    value : bytes.Bytes.t;
   }.
 
   Parameter to_value : t -> Value.t.
@@ -33,6 +33,13 @@ Module Impl_Clone_for_Bytes.
   Definition Self : Set :=
     Bytes.t.
 
+  Instance run_clone (self : '& Self) :
+    Run.Trait
+      bytes_.Impl_core_clone_Clone_for_alloy_primitives_bytes__Bytes.clone
+      [] [] [φ self] Self.
+  Admitted.
+  Global Opaque run_clone.
+
   Instance method_clone : Clone.Method_clone Self.
   Proof.
     eexists.
@@ -41,8 +48,8 @@ Module Impl_Clone_for_Bytes.
       { apply bytes_.Impl_core_clone_Clone_for_alloy_primitives_bytes__Bytes.Implements. }
       { reflexivity. }
     }
-    { admit. }
-  Admitted.
+    { typeclasses eauto. }
+  Defined.
 
   Instance run : Clone.Run Self := {}.
 End Impl_Clone_for_Bytes.
@@ -52,6 +59,13 @@ Module Impl_Default_for_Bytes.
   Definition Self : Set :=
     Bytes.t.
 
+  Instance run_default :
+    Run.Trait
+      bytes_.Impl_core_default_Default_for_alloy_primitives_bytes__Bytes.default
+      [] [] [] Self.
+  Admitted.
+  Global Opaque run_default.
+
   Instance method_default : Default.Method_default Self.
   Proof.
     eexists.
@@ -60,8 +74,8 @@ Module Impl_Default_for_Bytes.
       { apply bytes_.Impl_core_default_Default_for_alloy_primitives_bytes__Bytes.Implements. }
       { reflexivity. }
     }
-    { admit. }
-  Admitted.
+    { typeclasses eauto. }
+  Defined.
 
   Instance run : Default.Run Self := {}.
 End Impl_Default_for_Bytes.

@@ -1,4 +1,5 @@
 Require Import simulate.RocqOfRust.
+Require Import alloy_primitives.links.aliases.
 Require Import core.links.array.
 Require Import core.links.cmp.
 Require Import core.simulate.cmp.
@@ -22,7 +23,7 @@ Definition op_slt
     Interpreter.t WIRE WIRE_types :=
   gas_macro interpreter constants.VERYLOW id (fun interpreter =>
   popn_top_macro interpreter {| Integer.value := 1 |} id (fun arr top interpreter =>
-    let '{| ArrayPair.x := op1 |} := arr.(array.value) in
+    let '⟬ op1 ⟭ := arr.(array.value) in
     let op2 := top.(RefStub.projection) interpreter.(Interpreter.stack) in
     let result :=
       match i256_cmp op1 op2 with
@@ -65,24 +66,13 @@ Proof.
   unfold op_slt.
   gas_macro_eq InterpreterTypesEq.
   popn_top_macro_eq InterpreterTypesEq.
-  cbn.
-  apply Run.LetUnfold.
-  eapply Run.Call. {
-    apply i256_cmp_eq; repeat unshelve econstructor.
-  }
-  cbn.
-  eapply Run.Call. {
-    apply PartialEq.Eq.eq; repeat unshelve econstructor.
-  }
-  cbn.
-  eapply Run.Call. {
-    apply Impl_Uint.from_eq.
-    { typeclasses eauto. }
-    { easy. }
-  }
-  cbn.
-  get_can_access.
-  cbn.
-  apply Run.PureEq; repeat f_equal.
+  match goal with
+  | array : array.t aliases.U256.t _ |- _ =>
+    destruct array as [[op1 []]]
+  end.
+  s. { s_apply i256_cmp_eq. }
+  s. { s_apply @PartialEq.Eq.eq. }
+  s. { s_apply Impl_Uint.from_eq. }
+  s.
   now destruct i256_cmp.
 Qed.

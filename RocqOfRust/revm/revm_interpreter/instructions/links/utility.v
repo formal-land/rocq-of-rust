@@ -73,6 +73,16 @@ Module Impl_IntoU256_for_B256.
   Definition Self : Set :=
     aliases.B256.t.
 
+  Instance run_into_u256 (self : Self) :
+    Run.Trait
+      instructions.utility.Impl_revm_interpreter_instructions_utility_IntoU256_for_alloy_primitives_bits_fixed_FixedBytes_Usize_32.into_u256
+      [] [] [φ self] aliases.U256.t.
+  Proof.
+    constructor.
+    run_symbolic.
+  Defined.
+  Global Opaque run_into_u256.
+
   (* fn into_u256(self) -> U256 *)
   Instance method_into_u256 : IntoU256.Method_into_u256 Self.
   Proof.
@@ -82,9 +92,7 @@ Module Impl_IntoU256_for_B256.
       { apply instructions.utility.Impl_revm_interpreter_instructions_utility_IntoU256_for_alloy_primitives_bits_fixed_FixedBytes_Usize_32.Implements. }
       { reflexivity. }
     }
-    { constructor.
-      run_symbolic.
-    }
+    { typeclasses eauto. }
   Defined.
 
   Instance run : IntoU256.Run Self := {}.
@@ -96,6 +104,16 @@ Module Impl_IntoU256_for_Address.
   Definition Self : Set :=
     Address.t.
 
+  Instance run_into_u256 (self : Self) :
+    Run.Trait
+      instructions.utility.Impl_revm_interpreter_instructions_utility_IntoU256_for_alloy_primitives_bits_address_Address.into_u256
+      [] [] [φ self] aliases.U256.t.
+  Proof.
+    constructor.
+    run_symbolic.
+  Defined.
+  Global Opaque run_into_u256.
+
   (* fn into_u256(self) -> U256 *)
   Instance method_into_u256 : IntoU256.Method_into_u256 Self.
   Proof.
@@ -105,11 +123,8 @@ Module Impl_IntoU256_for_Address.
       { apply instructions.utility.Impl_revm_interpreter_instructions_utility_IntoU256_for_alloy_primitives_bits_address_Address.Implements. }
       { reflexivity. }
     }
-    { constructor.
-      run_symbolic.
-      admit.
-    }
-  Admitted.
+    { typeclasses eauto. }
+  Defined.
 
   Instance run : IntoU256.Run Self := {}.
 End Impl_IntoU256_for_Address.

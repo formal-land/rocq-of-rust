@@ -248,6 +248,14 @@ Export (hints) Impl_Ord_for_u64.
 Module Impl_Ord_for_usize.
   Definition Self : Set := usize.
 
+  Instance run_cmp (self other : '& Self) :
+    Run.Trait cmp.impls.Impl_core_cmp_Ord_for_usize.cmp [] [] [ φ self; φ other ] Ordering.t.
+  Proof.
+    constructor.
+    run_symbolic.
+  Defined.
+  Global Opaque run_cmp.
+
   Instance method_cmp : Ord.Method_cmp Self.
   Proof.
     eexists.
@@ -256,9 +264,7 @@ Module Impl_Ord_for_usize.
       { apply cmp.impls.Impl_core_cmp_Ord_for_usize.Implements. }
       { reflexivity. }
     }
-    { constructor.
-      run_symbolic.
-    }
+    { typeclasses eauto. }
   Defined.
 
   Instance method_max : Ord.Method_max Self.

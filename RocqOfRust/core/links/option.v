@@ -119,11 +119,14 @@ Module Impl_Option.
     where
         F: FnOnce(T) -> U
   *)
-  Definition run_map {F T U : Set} `{Link F} `{Link T} `{Link U} 
-    (Run_FnOnce_for_F : function.FnOnce.Run F T U)
-    (self: Self T) (f : F) :
-    {{ option.Impl_core_option_Option_T.map (Φ T) [] [ Φ U; Φ F ] [ φ self; φ f ] 🔽 option U }}.
+  Instance run_map {F T U : Set} `{Link F} `{Link T} `{Link U}
+      (Run_FnOnce_for_F : function.FnOnce.Run F T U)
+      (self: Self T) (f : F) :
+    Run.Trait
+      (option.Impl_core_option_Option_T.map (Φ T)) [] [ Φ U; Φ F ] [ φ self; φ f ]
+      (option U).
   Admitted.
+  Global Opaque run_map.
 
   (* pub fn ok_or<E>(self, err: E) -> Result<T, E> *)
   Instance run_ok_or {T E : Set} `{Link T} `{Link E}

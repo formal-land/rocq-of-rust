@@ -99,7 +99,7 @@ Module Impl_Uint.
         self.(Uint.value) mod (2 ^ 64) : u64;
         (self.(Uint.value) / (2 ^ 64)) mod (2 ^ 64) : u64;
         (self.(Uint.value) / (2 ^ 128)) mod (2 ^ 64) : u64;
-        (self.(Uint.value) / (2 ^ 192)) : u64
+        (self.(Uint.value) / (2 ^ 192)) mod (2 ^ 64) : u64
       ] : ArrayPairs.t _ (Z.to_nat (i[4]));
     |}.
 

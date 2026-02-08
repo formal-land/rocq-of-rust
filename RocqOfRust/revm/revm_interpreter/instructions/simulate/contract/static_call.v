@@ -2,6 +2,7 @@ Require Import simulate.RocqOfRust.
 Require Import alloc.simulate.boxed.
 Require Import alloy_primitives.bits.simulate.address.
 Require Import alloy_primitives.bits.simulate.fixed.
+Require Import alloy_primitives.links.aliases.
 Require Import core.links.array.
 Require Import core.num.simulate.mod.
 Require Import core.simulate.result.
@@ -23,15 +24,16 @@ Definition static_call
     {WIRE H : Set} `{Link WIRE} `{Link H}
     {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
     {IInterpreterTypes : InterpreterTypes.C WIRE_types}
-    {IHost : Host.C H}
+    {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+    {IHost : Host.C H H_types}
     (interpreter : Interpreter.t WIRE WIRE_types)
     (host : H) :
     Interpreter.t WIRE WIRE_types * H :=
   check_macro interpreter SpecId.BYZANTIUM
     (fun interpreter => (interpreter, host)) (fun interpreter =>
-  popn_macro interpreter {| Integer.value := 2 |}
+  popn_macro interpreter 2
     (fun interpreter => (interpreter, host)) (fun arr interpreter =>
-  let '(_, to, local_gas_limit) := ArrayPairs.to_tuple_rev (arr.(array.value)) in
+  let '⟬ local_gas_limit; to ⟭ := arr.(array.value) in
   let to := Impl_Address.from_word (Impl_From_U256_for_FixedBytes_32.from to) in
 
   let local_gas_limit :=
@@ -102,7 +104,7 @@ Lemma static_call_eq
     (IInterpreterTypes : InterpreterTypes.C WIRE_types)
     (InterpreterTypesEq :
       InterpreterTypes.Eq.t WIRE WIRE_types run_InterpreterTypes_for_WIRE IInterpreterTypes)
-    (IHost : Host.C H)
+    (IHost : Host.C H H_types)
     (HostEq : Host.Eq.t IHost)
     (interpreter : Interpreter.t WIRE WIRE_types)
     (host : H) :
@@ -125,6 +127,9 @@ Proof.
   with_strategy transparent [run_static_call] unfold static_call, run_static_call; cbn.
   check_macro_eq InterpreterTypesEq.
   popn_macro_eq InterpreterTypesEq.
+  match goal with
+  | array : array.t aliases.U256.t _ |- _ => destruct array as [[local_gas_limit [to []]]]; cbn
+  end.
   l. {
     cw Impl_From_U256_for_FixedBytes_32.from_eq.
     cw Impl_Address.from_word_eq.
@@ -136,7 +141,6 @@ Proof.
     cw @Impl_Result_T_E.unwrap_or_eq.
     p.
   }
-  r.
   cw @call_helpers.get_memory_input_and_out_ranges_eq.
   destruct get_memory_input_and_out_ranges as [[[input_data return_memory_offset]|] ?interpreter];
     cbn;
@@ -152,9 +156,9 @@ Proof.
   cw @call_helpers.calc_call_gas_eq.
   destruct call_helpers.calc_call_gas as [[gas_limit|] ?interpreter]; cbn; [|apply Run.Pure].
   gas_macro_eq InterpreterTypesEq.
-  cp.
-  lu.
-  cw InterpreterTypesEq.
+  s. {
+    apply InterpreterTypesEq.
+  }
   cw Impl_Uint.ZERO_eq.
   cw @Impl_Box.new_eq.
   cw InterpreterTypesEq.

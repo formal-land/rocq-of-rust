@@ -25,22 +25,22 @@ Definition op_byte
     (interpreter : Interpreter.t WIRE WIRE_types) :
     Interpreter.t WIRE WIRE_types :=
   gas_macro interpreter constants.VERYLOW id (fun interpreter =>
-  popn_top_macro interpreter {| Integer.value := 1 |} id (fun arr top interpreter =>
-    let '{| ArrayPair.x := op1 |} := arr.(array.value) in
-    let op2 := top.(RefStub.projection) interpreter.(Interpreter.stack) in
-    let o1 := as_usize_saturated_macro op1 in
-    let result :=
-      if o1.(Integer.value) <? 32
-      then
-        (* `31 - o1` because `byte` returns LE, while we want BE *)
-        {| Uint.value := (Impl_Uint.byte op2 {| Integer.value := 31 - o1.(Integer.value) |}).(Integer.value) |}
-      else
-        {| Uint.value := 0 |} in
-    let stack :=
-      top.(RefStub.injection)
-        interpreter.(Interpreter.stack) result in
-    interpreter
-      <| Interpreter.stack := stack |>
+  popn_top_macro interpreter 1 id (fun arr top interpreter =>
+  let '⟬ op1 ⟭ := arr.(array.value) in
+  let op2 := top.(RefStub.projection) interpreter.(Interpreter.stack) in
+  let o1 := as_usize_saturated_macro op1 in
+  let result :=
+    if i[o1] <? 32
+    then
+      (* `31 - o1` because `byte` returns LE, while we want BE *)
+      {| Uint.value := i[Impl_Uint.byte op2 ((31 - i[o1]) mod 2^64)] |}
+    else
+      {| Uint.value := 0 |} in
+  let stack :=
+    top.(RefStub.injection)
+      interpreter.(Interpreter.stack) result in
+  interpreter
+    <| Interpreter.stack := stack |>
   )).
 
 Lemma op_byte_eq
@@ -72,54 +72,19 @@ Proof.
   unfold op_byte.
   gas_macro_eq InterpreterTypesEq.
   popn_top_macro_eq InterpreterTypesEq.
-  cbn.
   match goal with
   | array : array.t aliases.U256.t _ |- _ => destruct array as [[op1 []]]; cbn
   end.
   eapply Run.Let with (result := (Output.Success (as_usize_saturated_macro op1), _)). {
-    as_u64_saturated_macro_eq op1.
+    as_usize_saturated_macro_eq.
   }
-  cbn.
-  apply Run.LetUnfold.
-  get_can_access.
-  eapply Run.Call. {
-    apply Run.Pure.
+  s.
+  destruct (_ <? 32) eqn:H_lt_eq.
+  { s. { apply Impl_Uint.byte_eq; repeat unshelve econstructor. }
+    s. { apply Impl_Uint.from_eq; [typeclasses eauto | easy]. }
+    s.
   }
-  cbn.
-  eapply Run.Call. {
-    apply Run.Pure.
+  { s. { apply Impl_Uint.ZERO_eq. }
+    s.
   }
-  cbn.
-  destruct (_ <? 32) eqn:H_lt_eq; cbn.
-  { get_can_access.
-    eapply Run.Call. {
-      apply Run.Pure.
-    }
-    cbn.
-    eapply Run.Call. {
-      apply Impl_Uint.byte_eq; repeat unshelve econstructor.
-    }
-    cbn.
-    eapply Run.Call. {
-      apply Impl_Uint.from_eq.
-      { typeclasses eauto. }
-      { easy. }
-    }
-    cbn.
-    get_can_access.
-    destruct op1 as [op1]; cbn in *.
-    assert (0 <= op1) by admit.
-    replace (_ mod (2 ^ 64)) with (31 - Z.min op1 (2^64 - 1)) by lia.
-    apply Run.Pure.
-  }
-  { eapply Run.Call. {
-      apply Impl_Uint.ZERO_eq.
-    }
-    cbn.
-    get_can_access.
-    apply Run.PureEq; repeat f_equal.
-  }
-  (* Make sure there are no goals left *)
-  Unshelve.
-  all: easy.
-Admitted.
+Qed.

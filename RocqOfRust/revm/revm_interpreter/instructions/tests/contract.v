@@ -1,59 +1,19 @@
 Require Import simulate.RocqOfRust.
 Require Import alloy_primitives.bits.links.address.
+Require Import alloy_primitives.bytes.links.mod.
+Require Import alloy_primitives.links.aliases.
+Require Import alloy_primitives.log.links.mod.
 Require Import revm.revm_context_interface.links.host.
 Require Import revm.revm_context_interface.links.journaled_state.
 Require Import revm.revm_context_interface.simulate.host.
 Require Import revm.revm_interpreter.instructions.simulate.contract.static_call.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.instruction_result.
+Require Import revm.revm_interpreter.tests.host.
 Require Import revm.revm_interpreter.tests.interpreter.
 Require Import revm.revm_interpreter.tests.interpreter_types.
 Require Import ruint.links.lib.
-
-(** Mock Host that returns None - for FatalExternalError path *)
-Module TestHost.
-  Inductive t : Set := Make.
-
-  Instance IsLink : Link t.
-  Admitted.
-
-  Definition load_account_delegated (self : t) (address : Address.t) :
-      option AccountLoad.t * t :=
-    (None, Make).
-
-  Instance I : Host.C t := {
-    Host.load_account_delegated := load_account_delegated;
-  }.
-End TestHost.
-Export (hints) TestHost.
-
-(** Mock Host that returns Some - for success path *)
-Module TestHostWithAccount.
-  Inductive t : Set := Make.
-
-  Instance IsLink : Link t.
-  Admitted.
-
-  Definition test_account_load : AccountLoad.t := {|
-    AccountLoad.load := {|
-      Eip7702CodeLoad.state_load := {|
-        StateLoad.data := tt;
-        StateLoad.is_cold := false;
-      |};
-      Eip7702CodeLoad.is_delegate_account_cold := None;
-    |};
-    AccountLoad.is_empty := true;
-  |}.
-
-  Definition load_account_delegated (self : t) (address : Address.t) :
-      option AccountLoad.t * t :=
-    (Some test_account_load, Make).
-
-  Instance I : Host.C t := {
-    Host.load_account_delegated := load_account_delegated;
-  }.
-End TestHostWithAccount.
-Export (hints) TestHostWithAccount.
+Require Import ruint.simulate.lib.
 
 (** ** StackUnderflow Tests *)
 

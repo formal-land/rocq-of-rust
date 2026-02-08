@@ -1,7 +1,9 @@
 Require Import simulate.RocqOfRust.
 Require Export alloy_primitives.bits.links.fixed.
 Require Import alloy_primitives.links.aliases.
+Require Import core.convert.simulate.mod.
 Require Import core.links.array.
+Require Import ruint.links.lib.
 
 Module FixedBytes.
   (** Convert to [Z] interpreting in big-endian. *)
@@ -25,6 +27,37 @@ Module FixedBytes.
     {| FixedBytes.value := {| array.value := bytes_be n value |} |}.
 End FixedBytes.
 
+Module Impl_From_FixedBytes_32_for_U256.
+  Definition Self : Set :=
+    aliases.U256.t.
+
+  Definition from (value : FixedBytes.t {| Integer.value := 32 |}) : Self :=
+    {| Uint.value := FixedBytes.to_Z value |}.
+
+  Lemma from_eq (value : FixedBytes.t {| Integer.value := 32 |}) (stack : Stack.t) :
+    {{
+      SimulateM.eval_f
+        (Impl_From_FixedBytes_32_for_U256.run_from value)
+        stack 🌲
+      (Output.Success (from value), stack)
+    }}.
+  Admitted.
+
+  Instance I : From.C Self (FixedBytes.t {| Integer.value := 32 |}) := {|
+    From.from := from;
+  |}.
+
+  Module Eq.
+    Instance I : From.Eq.C (Self := Self) (T := FixedBytes.t {| Integer.value := 32 |}) I.
+    Proof.
+      constructor.
+      apply from_eq.
+    Qed.
+  End Eq.
+  Export (hints) Eq.
+End Impl_From_FixedBytes_32_for_U256.
+Export (hints) Impl_From_FixedBytes_32_for_U256.
+
 Module Impl_From_U256_for_FixedBytes_32.
   Definition Self : Set :=
     FixedBytes.t {| Integer.value := 32 |}.
@@ -43,4 +76,18 @@ Module Impl_From_U256_for_FixedBytes_32.
       )
     }}.
   Admitted.
+
+  Instance I : From.C Self aliases.U256.t := {|
+    From.from := from;
+  |}.
+
+  Module Eq.
+    Instance I : From.Eq.C (Self := Self) (T := aliases.U256.t) I.
+    Proof.
+      constructor.
+      apply from_eq.
+    Qed.
+  End Eq.
+  Export (hints) Eq.
 End Impl_From_U256_for_FixedBytes_32.
+Export (hints) Impl_From_U256_for_FixedBytes_32.

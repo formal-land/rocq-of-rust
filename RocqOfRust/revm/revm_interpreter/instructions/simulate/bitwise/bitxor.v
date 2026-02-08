@@ -1,4 +1,5 @@
 Require Import simulate.RocqOfRust.
+Require Import alloy_primitives.links.aliases.
 Require Import core.links.array.
 Require Import core.links.cmp.
 Require Import core.ops.simulate.bit.
@@ -23,7 +24,7 @@ Definition op_bitxor
     Interpreter.t WIRE WIRE_types :=
   gas_macro interpreter constants.VERYLOW id (fun interpreter =>
   popn_top_macro interpreter {| Integer.value := 1 |} id (fun arr top interpreter =>
-    let '{| ArrayPair.x := op1 |} := arr.(array.value) in
+    let '⟬ op1 ⟭ := arr.(array.value) in
     let op2 := top.(RefStub.projection) interpreter.(Interpreter.stack) in
     let result := Impl_BitXor_for_Uint.bitxor op1 op2 in
     let stack :=
@@ -62,14 +63,10 @@ Proof.
   unfold op_bitxor.
   gas_macro_eq InterpreterTypesEq.
   popn_top_macro_eq InterpreterTypesEq.
-  cbn.
-  apply Run.LetUnfold.
-  get_can_access.
-  eapply Run.Call. {
-    apply BitXor.Eq.bitxor.
-  }
-  cbn.
-  get_can_access.
-  cbn.
-  apply Run.PureEq; repeat f_equal.
+  match goal with
+  | array : array.t aliases.U256.t _ |- _ =>
+    destruct array as [[op1 []]]
+  end.
+  s. { s_apply @BitXor.Eq.bitxor. }
+  s.
 Qed.

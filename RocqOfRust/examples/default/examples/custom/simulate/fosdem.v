@@ -9,7 +9,7 @@ Lemma MAX_VALUE_eq (stack : Stack.t) :
     (Output.Success (Ref.immediate Pointer.Kind.Raw MAX_VALUE), stack)
   }}.
 Proof.
-  p.
+  s.
 Qed.
 
 Definition increment (counter : Counter.t) (amount : u64) : Counter.t :=
@@ -26,13 +26,9 @@ Lemma increment_eq (counter : Counter.t) (amount : u64) :
   }}.
 Proof.
   unfold increment.
-  cp.
-  cw MAX_VALUE_eq.
-  repeat cp.
+  s.
   unfold ">i"; cbn.
-  destruct (_ >? _); r.
-  { lu. cw MAX_VALUE_eq. p. }
-  { cp. lu. p. }
+  destruct (_ >? _); s.
 Qed.
 
 Definition CounterSmallerThanMAX_VALUE (counter : Counter.t) : Prop :=

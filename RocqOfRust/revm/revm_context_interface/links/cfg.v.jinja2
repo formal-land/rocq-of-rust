@@ -48,9 +48,10 @@ Module Cfg.
       H_Spec : Link types.(Spec);
     }.
 
-    Global Instance IsLinkSpec (types : t) (H : AreLinks types) : Link types.(Spec) :=
+    Instance IsLinkSpec (types : t) (H : AreLinks types) : Link types.(Spec) :=
       H.(H_Spec _).
   End Types.
+  Export (hints) Types.
 
   Definition trait (Self : Set) `{Link Self} : TraitHeader.t :=
     {|

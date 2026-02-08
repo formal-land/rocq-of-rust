@@ -30,7 +30,7 @@ Instance run_gasprice
   {WIRE H : Set} `{Link WIRE} `{Link H}
   {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
   (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-  (H_types : Host.Types.t) `{Host.Types.AreLinks H_types}
+  {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
   (run_Host_for_H : Host.Run H H_types)
   (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
   (host : '&mut H) :
@@ -61,7 +61,7 @@ Instance run_origin
   {WIRE H : Set} `{Link WIRE} `{Link H}
   {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
   (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-  (H_types : Host.Types.t) `{Host.Types.AreLinks H_types}
+  {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
   (run_Host_for_H : Host.Run H H_types)
   (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
   (host : '&mut H) :
@@ -91,7 +91,7 @@ Instance run_blob_hash
   {WIRE H : Set} `{Link WIRE} `{Link H}
   {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
   (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-  (H_types : Host.Types.t) `{Host.Types.AreLinks H_types}
+  {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
   (run_Host_for_H : Host.Run H H_types)
   (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
   (host : '&mut H) :

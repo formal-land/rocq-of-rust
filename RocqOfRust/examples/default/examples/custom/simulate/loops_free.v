@@ -15,13 +15,8 @@ Lemma max2_eq (stack : Stack.t) (a b : u32) :
   }}.
 Proof.
   unfold max2.
-  repeat (
-    cbn ||
-    get_can_access ||
-    eapply Run.Call ||
-    apply Run.Pure ||
-    destruct (_ <? _)
-  ).
+  s.
+  destruct (_ <? _); s.
 Qed.
 
 Definition abs_i32 (x : i32) : i32 :=
@@ -40,13 +35,10 @@ Lemma abs_i32_eq (stack : Stack.t) (x : i32) :
   }}.
 Proof.
   unfold abs_i32; cbn.
-  eapply Run.Call. { apply Run.Pure. } cbn.
-  eapply Run.Call. { apply Run.Pure. } cbn.
-  destruct (_ <? 0); cbn.
-  { eapply Run.Call. { apply Run.Pure. } cbn.
-    destruct (_ =? _); cbn; apply Run.Pure.
-  }
-  { apply Run.Pure. }
+  destruct x as [x].
+  s.
+  destruct (_ <? 0); s.
+  now destruct (_ =? _).
 Qed.
 
 Definition bool_and (a b : bool) : bool :=
@@ -61,14 +53,7 @@ Lemma bool_and_eq (stack : Stack.t) (a b : bool) :
   }}.
 Proof.
   unfold bool_and.
-  repeat (
-    cbn ||
-    get_can_access ||
-    eapply Run.Call ||
-    apply Run.Pure ||
-    destruct a ||
-    destruct b
-  ).
+  destruct a, b; s.
 Qed.
 
 Definition get_or_zero (xs : array.t u32 {| Integer.value := 4 |}) (i : usize) : u32 :=
@@ -101,15 +86,14 @@ Proof.
   destruct xs as [[x0 [x1 [x2 [x3 []]]]]].
   destruct i as [i]; cbn in H_i.
   unfold get_or_zero; cbn.
-  eapply Run.Call; cbn. { apply Run.Pure. } cbn.
-  eapply Run.Call; cbn. { apply Run.Pure. } cbn.
-  destruct (_ <? 4) eqn:HeqBound; cbn.
-  { progress repeat get_can_access.
+  s.
+  destruct (_ <? 4) eqn:HeqBound.
+  { s.
     unfold ArrayPairs.to_tuple_rev, Pos.to_nat; cbn.
-    destruct (i =? 0) eqn:Hi0. { replace i with 0 by lia; cbn; apply Run.Pure. }
-    destruct (i =? 1) eqn:Hi1. { replace i with 1 by lia; cbn; apply Run.Pure. }
-    destruct (i =? 2) eqn:Hi2. { replace i with 2 by lia; cbn; apply Run.Pure. }
-    destruct (i =? 3) eqn:Hi3. { replace i with 3 by lia; cbn; apply Run.Pure. }
+    destruct (i =? 0) eqn:Hi0. { replace i with 0 by lia; p. }
+    destruct (i =? 1) eqn:Hi1. { replace i with 1 by lia; p. }
+    destruct (i =? 2) eqn:Hi2. { replace i with 2 by lia; p. }
+    destruct (i =? 3) eqn:Hi3. { replace i with 3 by lia; p. }
     lia.
   }
   { unfold ArrayPairs.to_tuple_rev, Pos.to_nat; cbn.
@@ -117,7 +101,7 @@ Proof.
     destruct (i =? 1) eqn:Hi1; [lia|].
     destruct (i =? 2) eqn:Hi2; [lia|].
     destruct (i =? 3) eqn:Hi3; [lia|].
-    apply Run.Pure.
+    p.
   }
 Qed.
 
@@ -142,18 +126,9 @@ Proof.
   destruct a as [[[a0] [[a1] []]]].
   destruct b as [[[b0] [[b1] []]]].
   unfold eq2; cbn.
-  get_can_access.
-  get_can_access.
-  eapply Run.Call. { apply Run.Pure. } cbn.
-  destruct (_ =? _); cbn.
-  { progress repeat get_can_access.
-    eapply Run.Call. { apply Run.Pure. } cbn.
-    eapply Run.Call. { apply Run.Pure. } cbn.
-    destruct (_ =? _); cbn; apply Run.Pure.
-  }
-  { eapply Run.Call. { apply Run.Pure. } cbn.
-    apply Run.Pure.
-  }
+  s.
+  destruct (_ =? _); s.
+  destruct (_ =? _); s.
 Qed.
 
 Definition eq_pair (x y : u32 * u32) : bool :=
@@ -172,15 +147,9 @@ Lemma eq_pair_eq (stack : Stack.t) (x y : u32 * u32) :
 Proof.
   destruct x as [x0 x1]; destruct y as [y0 y1].
   unfold eq_pair; cbn.
-  eapply Run.Call. { apply Run.Pure. } cbn.
-  destruct (_ =? _); cbn.
-  { eapply Run.Call. { apply Run.Pure. } cbn.
-    eapply Run.Call. { apply Run.Pure. } cbn.
-    destruct (_ =? _); cbn; apply Run.Pure.
-  }
-  { eapply Run.Call. { apply Run.Pure. } cbn.
-    apply Run.Pure.
-  }
+  s.
+  destruct (_ =? _); s.
+  destruct (_ =? _); s.
 Qed.
 
 Definition min3 (a b c : u32) : u32 :=
@@ -195,28 +164,10 @@ Lemma min3_eq (a b c : u32) :
 Proof.
   destruct a as [a]; destruct b as [b]; destruct c as [c].
   unfold min3; cbn.
-  apply Run.LetUnfold.
-  eapply Run.Call. { apply Run.Pure. } cbn.
-  eapply Run.Call. { apply Run.Pure. } cbn.
-  destruct (a <? b); cbn.
-  { get_can_access.
-    eapply Run.Call. { apply Run.Pure. } cbn.
-    eapply Run.Call. { apply Run.Pure. } cbn.
-    destruct (a <? c); cbn.
-    { get_can_access.
-      apply Run.Pure.
-    }
-    { apply Run.Pure. }
-  }
-  { get_can_access.
-    eapply Run.Call. { apply Run.Pure. } cbn.
-    eapply Run.Call. { apply Run.Pure. } cbn.
-    destruct (b <? c); cbn.
-    { get_can_access.
-      apply Run.Pure.
-    }
-    { apply Run.Pure. }
-  }
+  s.
+  destruct (a <? b); s.
+  { destruct (a <? c); s. }
+  { destruct (b <? c); s. }
 Qed.
 
 Definition choose_ref (choice : bool) (a b : u32) : u32 :=
@@ -235,15 +186,6 @@ Lemma choose_ref_eq (choice : bool) (a b : u32) :
   }}.
 Proof.
   unfold choose_ref; cbn.
-  eapply Run.Call; cbn. {
-    apply Run.Pure.
-  }
-  cbn.
-  destruct choice; cbn.
-  { get_can_access.
-    apply Run.Pure.
-  }
-  { get_can_access.
-    apply Run.Pure.
-  }
+  s.
+  destruct choice; s.
 Qed.

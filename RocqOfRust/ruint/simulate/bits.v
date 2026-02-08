@@ -128,6 +128,24 @@ Module Impl_Uint.
   Definition Self (BITS LIMBS : usize) : Set :=
     Uint.t BITS LIMBS.
 
+  Definition bit {BITS LIMBS : usize} (self : Self BITS LIMBS) (index : usize) : bool :=
+    Z.testbit self.(Uint.value) i[index].
+
+  Lemma bit_eq (stack : Stack.t)
+      {BITS LIMBS : usize} (ref_self : '& (Self BITS LIMBS)) (index : usize)
+      (self : Self BITS LIMBS) :
+    CanRead.t stack self ref_self ->
+    {{
+      SimulateM.eval_f
+        (ruint.links.bits.Impl_Uint.run_bit BITS LIMBS ref_self index)
+        stack 🌲
+      (
+        Output.Success (bit self index),
+        stack
+      )
+    }}.
+  Admitted.
+
   (* Get byte at index (little-endian, so index 0 is the least significant byte) *)
   Definition byte {BITS LIMBS : usize} (self : Self BITS LIMBS) (index : usize) : u8 :=
     (self.(Uint.value) / (256 ^ i[index])) mod 256.

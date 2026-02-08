@@ -12,7 +12,7 @@ Module Impl_u64.
       (Output.Success (Ref.immediate Pointer.Kind.Raw MIN), stack)
     }}.
   Proof.
-    apply Run.Pure.
+    p.
   Qed.
 
   Definition MAX : Self := {| Integer.value := 2 ^ 64 - 1 |}.
@@ -54,6 +54,17 @@ Module Impl_u64.
   Proof.
   Admitted.
 
+  Definition saturating_sub (self rhs : Self) : Self :=
+    {| Integer.value := Z.max (self.(Integer.value) - rhs.(Integer.value)) 0 |}.
+
+  Lemma saturating_sub_eq (self rhs : Self) (stack : Stack.t) :
+    {{
+      SimulateM.eval_f (Impl_u64.run_saturating_sub self rhs) stack 🌲
+      (Output.Success (saturating_sub self rhs), stack)
+    }}.
+  Proof.
+  Admitted.
+
   Definition saturating_mul (self rhs : Self) : Self :=
     {| Integer.value := Z.min (self.(Integer.value) * rhs.(Integer.value)) MAX.(Integer.value) |}.
 
@@ -78,7 +89,7 @@ Module Impl_usize.
       (Output.Success (Ref.immediate Pointer.Kind.Raw MIN), stack)
     }}.
   Proof.
-    apply Run.Pure.
+    p.
   Qed.
 
   Definition MAX : Self := {| Integer.value := 2 ^ 64 - 1 |}.

@@ -20,6 +20,7 @@ _The development of `rocq-of-rust` was mainly funded by the **Ethereum Foundatio
 - [Features](#language-features)
 - [Contact](#contact)
 - [Alternative Projects](#alternative-projects)
+- [License](#license)
 - [Contributing](#contributing)
 
 ## Example
@@ -115,7 +116,15 @@ Here are other projects working on formal verification for Rust:
 - [Verus](https://github.com/verus-lang/verus): Automatic verification for Rust with annotations
 - [Kani](https://github.com/model-checking/kani): Model-checking with [CBMC](https://github.com/diffblue/cbmc)
 
+## License
+
+This project uses dual licensing:
+
+- **Rocq proofs and libraries** (`RocqOfRust/`): [MIT License](RocqOfRust/LICENSE)
+- **Rust transpiler** (`cli/`, `lib/`): [AGPL-3.0 License](lib/LICENSE)
+
 ## Contributing
+
 This is all open-source software.
 
-Open some pull requests or issues to contribute to this project. All contributions are welcome! This project is open-source under license AGPL for the Rust code (the translator) and MIT for the Rocq libraries. There is a bit of code taken from the [Creusot](https://github.com/xldenis/creusot) project to make the Cargo command `rocq-of-rust` and run the translation in the same context as Cargo.
+Open some pull requests or issues to contribute to this project. All contributions are welcome! See the [License](#license) section for details on the licensing terms. There is a bit of code taken from the [Creusot](https://github.com/xldenis/creusot) project to make the Cargo command `rocq-of-rust` and run the translation in the same context as Cargo.

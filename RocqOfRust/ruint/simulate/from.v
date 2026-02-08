@@ -55,10 +55,8 @@ Module UintTryFrom_T_for_Uint_where_TryFrom.
       )
     }}.
   Proof.
-    eapply Run.Call. {
-      apply H_TryFrom.
-    }
-    apply Run.Pure.
+    c. { apply H_TryFrom. }
+    p.
   Qed.
 
   Instance I {BITS LIMBS : usize} {T : Set} `{Link T}
@@ -115,12 +113,10 @@ Module Impl_Uint.
   Proof.
     with_strategy transparent [Impl_Uint.run_from] cbn.
     unfold from.
-    eapply Run.Call. {
-      apply H_TryFrom.
-    }
+    c. { apply H_TryFrom. }
     cbn.
     destruct (I_TryFrom.(UintTryFrom.uint_try_from) value) as [n|e]; cbn.
-    { apply Run.Pure. }
+    { p. }
     { easy. }
   Qed.
 End Impl_Uint.
@@ -201,6 +197,229 @@ Module TryFrom_u8_for_Uint.
   Export (hints) Eq.
 End TryFrom_u8_for_Uint.
 Export (hints) TryFrom_u8_for_Uint.
+
+Module TryFrom_u16_for_Uint.
+  Definition Self (BITS LIMBS : usize) : Set :=
+    Uint.t BITS LIMBS.
+
+  Definition Error (BITS LIMBS : usize) : Set :=
+    ToUintError.t (Self BITS LIMBS).
+
+  Definition try_from {BITS LIMBS : usize} (value : u16) :
+      Result.t (Self BITS LIMBS) (Error BITS LIMBS) :=
+    Result.Ok {| Uint.value := i[value] |}.
+
+  Lemma try_from_eq {BITS LIMBS : usize} (value : u16) (stack : Stack.t) :
+    {{
+      SimulateM.eval_f
+        (TryFrom_u16_for_Uint.run_try_from BITS LIMBS value)
+        stack 🌲
+      (
+        Output.Success (try_from value),
+        stack
+      )
+    }}.
+  Proof.
+  Admitted.
+
+  Instance I (BITS LIMBS : usize) : TryFrom.C (Self BITS LIMBS) u16 (Error BITS LIMBS) := {
+    try_from := try_from;
+  }.
+
+  Module Eq.
+    Instance I {BITS LIMBS : usize} : TryFrom.Eq.C (I BITS LIMBS) := {
+      try_from := try_from_eq;
+    }.
+  End Eq.
+  Export (hints) Eq.
+End TryFrom_u16_for_Uint.
+Export (hints) TryFrom_u16_for_Uint.
+
+Module TryFrom_u32_for_Uint.
+  Definition Self (BITS LIMBS : usize) : Set :=
+    Uint.t BITS LIMBS.
+
+  Definition Error (BITS LIMBS : usize) : Set :=
+    ToUintError.t (Self BITS LIMBS).
+
+  Definition try_from {BITS LIMBS : usize} (value : u32) :
+      Result.t (Self BITS LIMBS) (Error BITS LIMBS) :=
+    Result.Ok {| Uint.value := i[value] |}.
+
+  Lemma try_from_eq {BITS LIMBS : usize} (value : u32) (stack : Stack.t) :
+    {{
+      SimulateM.eval_f
+        (TryFrom_u32_for_Uint.run_try_from BITS LIMBS value)
+        stack 🌲
+      (
+        Output.Success (try_from value),
+        stack
+      )
+    }}.
+  Proof.
+  Admitted.
+
+  Instance I (BITS LIMBS : usize) : TryFrom.C (Self BITS LIMBS) u32 (Error BITS LIMBS) := {
+    try_from := try_from;
+  }.
+
+  Module Eq.
+    Instance I {BITS LIMBS : usize} : TryFrom.Eq.C (I BITS LIMBS) := {
+      try_from := try_from_eq;
+    }.
+  End Eq.
+  Export (hints) Eq.
+End TryFrom_u32_for_Uint.
+Export (hints) TryFrom_u32_for_Uint.
+
+Module TryFrom_u64_for_Uint.
+  Definition Self (BITS LIMBS : usize) : Set :=
+    Uint.t BITS LIMBS.
+
+  Definition Error (BITS LIMBS : usize) : Set :=
+    ToUintError.t (Self BITS LIMBS).
+
+  Definition try_from {BITS LIMBS : usize} (value : u64) :
+      Result.t (Self BITS LIMBS) (Error BITS LIMBS) :=
+    Result.Ok {| Uint.value := i[value] |}.
+
+  Lemma try_from_eq {BITS LIMBS : usize} (value : u64) (stack : Stack.t) :
+    {{
+      SimulateM.eval_f
+        (TryFrom_u64_for_Uint.run_try_from BITS LIMBS value)
+        stack 🌲
+      (
+        Output.Success (try_from value),
+        stack
+      )
+    }}.
+  Proof.
+  Admitted.
+
+  Instance I (BITS LIMBS : usize) : TryFrom.C (Self BITS LIMBS) u64 (Error BITS LIMBS) := {
+    try_from := try_from;
+  }.
+
+  Module Eq.
+    Instance I {BITS LIMBS : usize} : TryFrom.Eq.C (I BITS LIMBS) := {
+      try_from := try_from_eq;
+    }.
+  End Eq.
+  Export (hints) Eq.
+End TryFrom_u64_for_Uint.
+Export (hints) TryFrom_u64_for_Uint.
+
+Module TryFrom_u128_for_Uint.
+  Definition Self (BITS LIMBS : usize) : Set :=
+    Uint.t BITS LIMBS.
+
+  Definition Error (BITS LIMBS : usize) : Set :=
+    ToUintError.t (Self BITS LIMBS).
+
+  Definition try_from {BITS LIMBS : usize} (value : u128) :
+      Result.t (Self BITS LIMBS) (Error BITS LIMBS) :=
+    Result.Ok {| Uint.value := i[value] |}.
+
+  Lemma try_from_eq {BITS LIMBS : usize} (value : u128) (stack : Stack.t) :
+    {{
+      SimulateM.eval_f
+        (TryFrom_u128_for_Uint.run_try_from BITS LIMBS value)
+        stack 🌲
+      (
+        Output.Success (try_from value),
+        stack
+      )
+    }}.
+  Proof.
+  Admitted.
+
+  Instance I (BITS LIMBS : usize) : TryFrom.C (Self BITS LIMBS) u128 (Error BITS LIMBS) := {
+    try_from := try_from;
+  }.
+
+  Module Eq.
+    Instance I {BITS LIMBS : usize} : TryFrom.Eq.C (I BITS LIMBS) := {
+      try_from := try_from_eq;
+    }.
+  End Eq.
+  Export (hints) Eq.
+End TryFrom_u128_for_Uint.
+Export (hints) TryFrom_u128_for_Uint.
+
+Module TryFrom_usize_for_Uint.
+  Definition Self (BITS LIMBS : usize) : Set :=
+    Uint.t BITS LIMBS.
+
+  Definition Error (BITS LIMBS : usize) : Set :=
+    ToUintError.t (Self BITS LIMBS).
+
+  Definition try_from {BITS LIMBS : usize} (value : usize) :
+      Result.t (Self BITS LIMBS) (Error BITS LIMBS) :=
+    Result.Ok {| Uint.value := i[value] |}.
+
+  Lemma try_from_eq {BITS LIMBS : usize} (value : usize) (stack : Stack.t) :
+    {{
+      SimulateM.eval_f
+        (TryFrom_usize_for_Uint.run_try_from BITS LIMBS value)
+        stack 🌲
+      (
+        Output.Success (try_from value),
+        stack
+      )
+    }}.
+  Proof.
+  Admitted.
+
+  Instance I (BITS LIMBS : usize) : TryFrom.C (Self BITS LIMBS) usize (Error BITS LIMBS) := {
+    try_from := try_from;
+  }.
+
+  Module Eq.
+    Instance I {BITS LIMBS : usize} : TryFrom.Eq.C (I BITS LIMBS) := {
+      try_from := try_from_eq;
+    }.
+  End Eq.
+  Export (hints) Eq.
+End TryFrom_usize_for_Uint.
+Export (hints) TryFrom_usize_for_Uint.
+
+Module TryFrom_i32_for_Uint.
+  Definition Self (BITS LIMBS : usize) : Set :=
+    Uint.t BITS LIMBS.
+
+  Definition Error (BITS LIMBS : usize) : Set :=
+    ToUintError.t (Self BITS LIMBS).
+
+  Definition try_from {BITS LIMBS : usize} (value : i32) :
+      Result.t (Self BITS LIMBS) (Error BITS LIMBS) :=
+    (* TODO: check if negative *)
+    Result.Ok {| Uint.value := i[value] |}.
+
+  Lemma try_from_eq {BITS LIMBS : usize} (value : i32) (stack : Stack.t) :
+    {{
+      SimulateM.eval_f
+        (TryFrom_i32_for_Uint.run_try_from BITS LIMBS value)
+        stack 🌲
+      (
+      Output.Success (try_from value),
+      stack
+    )
+  }}.
+  Proof.
+  Admitted.
+
+  Instance I (BITS LIMBS : usize) : TryFrom.C (Self BITS LIMBS) i32 (Error BITS LIMBS) := {
+    try_from := try_from;
+  }.
+
+  Module Eq.
+    Instance I {BITS LIMBS : usize} : TryFrom.Eq.C (I BITS LIMBS) := {
+      try_from := try_from_eq;
+    }.
+  End Eq.
+  Export (hints) Eq.
+End TryFrom_i32_for_Uint.
+Export (hints) TryFrom_i32_for_Uint.
 
 Module TryFrom_Uint_for_u64.
   Definition Self : Set :=

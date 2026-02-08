@@ -25,13 +25,14 @@ Definition call_code
     {WIRE H : Set} `{Link WIRE} `{Link H}
     {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
     {IInterpreterTypes : InterpreterTypes.C WIRE_types}
-    {IHost : Host.C H}
+    {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+    {IHost : Host.C H H_types}
     (interpreter : Interpreter.t WIRE WIRE_types)
     (host : H) :
     Interpreter.t WIRE WIRE_types * H :=
   popn_macro interpreter {| Integer.value := 3 |}
     (fun interpreter => (interpreter, host)) (fun arr interpreter =>
-  let '(_, local_gas_limit, to, value) := ArrayPairs.to_tuple_rev (arr.(array.value)) in
+  let '⟬ local_gas_limit; to; value ⟭ := arr.(array.value) in
   let to := Impl_Address.from_word (Impl_From_U256_for_FixedBytes_32.from to) in
 
   let local_gas_limit :=
@@ -111,7 +112,7 @@ Lemma call_code_eq
     (IInterpreterTypes : InterpreterTypes.C WIRE_types)
     (InterpreterTypesEq :
       InterpreterTypes.Eq.t WIRE WIRE_types run_InterpreterTypes_for_WIRE IInterpreterTypes)
-    (IHost : Host.C H)
+    (IHost : Host.C H H_types)
     (HostEq : Host.Eq.t IHost)
     (interpreter : Interpreter.t WIRE WIRE_types)
     (host : H) :
@@ -130,4 +131,56 @@ Lemma call_code_eq
     )
   }}.
 Proof.
-Admitted.
+  intros.
+  with_strategy transparent [run_call_code] unfold call_code, run_call_code; cbn.
+  popn_macro_eq InterpreterTypesEq.
+  match goal with
+  | array : array.t _ {| Integer.value := 3 |} |- _ =>
+    destruct array as [[local_gas_limit [to [value []]]]]
+  end.
+  l. {
+    cw Impl_From_U256_for_FixedBytes_32.from_eq.
+    cw Impl_Address.from_word_eq.
+    p.
+  }
+  l. {
+    cw TryFrom_Uint_for_u64.try_from_eq.
+    cw Impl_u64.max_eq.
+    cw @Impl_Result_T_E.unwrap_or_eq.
+    p.
+  }
+  cw @call_helpers.get_memory_input_and_out_ranges_eq.
+  destruct get_memory_input_and_out_ranges as [[[input_data return_memory_offset]|] ?interpreter];
+    r; [|p].
+  cw HostEq.
+  lu.
+  destruct _.(Host.load_account_delegated) as [[load|] ?host]; cbn. 2: {
+    lu.
+    cw InterpreterTypesEq.
+    p.
+  }
+  lu.
+  cw @Impl_Uint.is_zero_eq.
+  s. {
+    apply call_helpers.calc_call_gas_eq; typeclasses eauto.
+  }
+  lu.
+  destruct call_helpers.calc_call_gas as [[gas_limit|] ?interpreter]; r; [|p].
+  gas_macro_eq InterpreterTypesEq.
+  s. {
+    apply Impl_Uint.is_zero_eq; repeat unshelve econstructor.
+  }
+  s.
+  destruct Impl_Uint.is_zero; r.
+  2: s; [
+    apply Impl_u64.saturating_add_eq
+  |].
+  all:
+    lu;
+    cw InterpreterTypesEq;
+    cw InterpreterTypesEq;
+    cw InterpreterTypesEq;
+    cw @Impl_Box.new_eq;
+    cw InterpreterTypesEq;
+    p.
+Qed.
