@@ -2,9 +2,9 @@
 
 > Formal verification tool for Rust: check 100% of execution cases of your programs to ensure they are safe and correct.
 
-Even if type system of Rust prevents many mistakes, including memory errors, the code is still not immune to vulnerabilities, such as security vulnerabilities, unexpected panics, or wrongly implemented business rules.
+Even if the type system of Rust prevents many mistakes, including memory errors, the code is still not immune to vulnerabilities, such as security vulnerabilities, unexpected panics, or wrongly implemented business rules.
 
-The way to go further is to **mathematically** prove that it implements its specification for all inputs: this is named "formal verification" and what `rocq-of-rust` proposes. This is the strongest way to look for bugs or vulnerabilities, even for code that needs to be safe against state-level actors, or in applications where human life is at stake.
+One way to go further is to **mathematically** prove that the code implements its specification for all inputs: this is named "formal verification" and what `rocq-of-rust` proposes for Rust. Note that this tool is a work in progress in many parts, although it aims to provide better coverage than testing or manual reviewing. To get 100% guarantee, the best is to additionally lower the verification down to the assembly level.
 
 | We propose formal verification as a service, including designing the specification and the proofs.<br /><br />**➡️ [Book a meeting](https://calendly.com/guillaume-claret) ⬅️** |
 | --- |
@@ -92,8 +92,6 @@ Examples of typical specifications are:
 - The storage system is sound, as what goes in goes out (this generally amounts to state that the serialization/deserialization functions are inverse).
 - The implementation behaves as a special case of what the whitepaper describes once formally expressed.
 
-**With that in hand, you can virtually reduce your bugs and vulnerabilities to zero.**
-
 ## Prerequisites
 
 - Rust
@@ -111,7 +109,7 @@ For formal verification services (training or application) on your Rust code bas
 Here are other projects working on formal verification for Rust:
 
 - [Aeneas](https://github.com/AeneasVerif/aeneas): Translation from MIR to purely functional Rocq/F* code. Automatically put the code in a functional form. See their paper [Aeneas: Rust verification by functional translation](https://dl.acm.org/doi/abs/10.1145/3547647).
-- [Hacspec v2](https://github.com/hacspec/hacspec-v2): Translation from THIR to Rocq/F* code
+- [Hax](https://github.com/cryspen/hax): Translation from THIR to Rocq/F*/Lean code
 - [Creusot](https://github.com/xldenis/creusot): Translation from MIR to Why3 (and then SMT solvers)
 - [Verus](https://github.com/verus-lang/verus): Automatic verification for Rust with annotations
 - [Kani](https://github.com/model-checking/kani): Model-checking with [CBMC](https://github.com/diffblue/cbmc)
