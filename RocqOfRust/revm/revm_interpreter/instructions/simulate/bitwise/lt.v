@@ -1,4 +1,5 @@
 Require Import simulate.RocqOfRust.
+Require Import alloy_primitives.links.aliases.
 Require Import core.links.array.
 Require Import core.links.cmp.
 Require Import core.simulate.cmp.
@@ -21,7 +22,7 @@ Definition op_lt
     Interpreter.t WIRE WIRE_types :=
   gas_macro interpreter constants.VERYLOW id (fun interpreter =>
   popn_top_macro interpreter {| Integer.value := 1 |} id (fun arr top interpreter =>
-    let '{| ArrayPair.x := op1 |} := arr.(array.value) in
+    let '⟬ op1 ⟭ := arr.(array.value) in
     let op2 := top.(RefStub.projection) interpreter.(Interpreter.stack) in
     let result :=
       if PartialOrd.lt op1 op2 then
@@ -64,8 +65,11 @@ Proof.
   unfold op_lt.
   gas_macro_eq InterpreterTypesEq.
   popn_top_macro_eq InterpreterTypesEq.
-  lu.
-  c. { apply PartialOrd.Eq.lt; repeat unshelve econstructor. }
-  c. { apply Impl_Uint.from_eq; [typeclasses eauto | easy]. }
-  pf.
+  match goal with
+  | array : array.t aliases.U256.t _ |- _ =>
+    destruct array as [[op1 []]]
+  end.
+  s. { s_apply @PartialOrd.Eq.lt. }
+  s. { s_apply Impl_Uint.from_eq. }
+  s.
 Qed.

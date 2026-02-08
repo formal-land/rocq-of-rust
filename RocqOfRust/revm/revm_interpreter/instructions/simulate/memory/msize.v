@@ -30,7 +30,7 @@ Definition msize
     IInterpreterTypes.(InterpreterTypes.MemoryTrait_for_Memory).(MemoryTrait.size)
       interpreter.(Interpreter.memory) in
   let value : aliases.U256.t := Impl_Uint.from size in
-  push_macro interpreter value id (fun interpreter => interpreter)).
+  push_macro interpreter value id id).
 
 Lemma msize_eq
     {WIRE H : Set} `{Link WIRE} `{Link H}

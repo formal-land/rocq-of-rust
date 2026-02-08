@@ -1,4 +1,5 @@
 Require Import simulate.RocqOfRust.
+Require Import alloy_primitives.links.aliases.
 Require Import core.links.array.
 Require Import core.links.cmp.
 Require Import core.ops.simulate.bit.
@@ -23,7 +24,7 @@ Definition op_bitand
     Interpreter.t WIRE WIRE_types :=
   gas_macro interpreter constants.VERYLOW id (fun interpreter =>
   popn_top_macro interpreter {| Integer.value := 1 |} id (fun arr top interpreter =>
-    let '{| ArrayPair.x := op1 |} := arr.(array.value) in
+    let '⟬ op1 ⟭ := arr.(array.value) in
     let op2 := top.(RefStub.projection) interpreter.(Interpreter.stack) in
     let result := Impl_BitAnd_for_Uint.bitand op1 op2 in
     let stack :=
@@ -62,7 +63,10 @@ Proof.
   unfold op_bitand.
   gas_macro_eq InterpreterTypesEq.
   popn_top_macro_eq InterpreterTypesEq.
-  lu.
-  cw @BitAnd.Eq.bitand.
-  pf.
+  match goal with
+  | array : array.t aliases.U256.t _ |- _ =>
+    destruct array as [[op1 []]]
+  end.
+  s. { s_apply @BitAnd.Eq.bitand. }
+  s.
 Qed.

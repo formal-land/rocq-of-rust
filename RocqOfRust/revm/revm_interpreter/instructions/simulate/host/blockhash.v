@@ -48,18 +48,24 @@ Lemma blockhash_eq
     (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
     {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
     (run_Host_for_H : Host.Run H H_types)
+    `{IInterpreterTypes : !InterpreterTypes.C WIRE_types}
+    `{InterpreterTypesEq :
+      !InterpreterTypes.Eq.t WIRE WIRE_types run_InterpreterTypes_for_WIRE IInterpreterTypes}
+    `{IHost : !Host.C H H_types}
+    `{HostEq : !Host.Eq.t IHost}
     (interpreter : Interpreter.t WIRE WIRE_types)
     (host : H) :
   let ref_interpreter := make_ref 0 in
   let ref_host := make_ref (A := H) 1 in
-  exists stack' : Stack.t,
-    {{
-      SimulateM.eval_f
-        (run_blockhash run_InterpreterTypes_for_WIRE run_Host_for_H ref_interpreter ref_host)
-        [interpreter; host]%stack 🌲
-      (
-        Output.Success tt,
-        stack'
-      )
-    }}.
+  let result := blockhash interpreter host in
+  {{
+    SimulateM.eval_f
+      (run_blockhash run_InterpreterTypes_for_WIRE run_Host_for_H ref_interpreter ref_host)
+      [interpreter; host]%stack 🌲
+    (
+      Output.Success tt,
+      [fst result; snd result]%stack
+    )
+  }}.
+Proof.
 Admitted.

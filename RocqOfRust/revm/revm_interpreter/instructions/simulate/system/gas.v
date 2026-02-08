@@ -23,7 +23,7 @@ Definition gas
   push_macro interpreter
     (Impl_Uint.from gas.(Gas.remaining))
     id
-    (fun interpreter => interpreter)
+    id
   ).
 
 Lemma gas_eq

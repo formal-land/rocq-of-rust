@@ -1,4 +1,5 @@
 Require Import simulate.RocqOfRust.
+Require Import alloy_primitives.links.aliases.
 Require Import core.links.array.
 Require Import core.links.cmp.
 Require Import core.simulate.cmp.
@@ -22,18 +23,18 @@ Definition op_sgt
     Interpreter.t WIRE WIRE_types :=
   gas_macro interpreter constants.VERYLOW id (fun interpreter =>
   popn_top_macro interpreter {| Integer.value := 1 |} id (fun arr top interpreter =>
-    let '{| ArrayPair.x := op1 |} := arr.(array.value) in
-    let op2 := top.(RefStub.projection) interpreter.(Interpreter.stack) in
-    let result :=
-      match i256_cmp op1 op2 with
-      | Ordering.Greater => {| Uint.value := 1 |}
-      | _ => {| Uint.value := 0 |}
-      end in
-    let stack :=
-      top.(RefStub.injection)
-        interpreter.(Interpreter.stack) result in
-    interpreter
-      <| Interpreter.stack := stack |>
+  let '⟬ op1 ⟭ := arr.(array.value) in
+  let op2 := top.(RefStub.projection) interpreter.(Interpreter.stack) in
+  let result :=
+    match i256_cmp op1 op2 with
+    | Ordering.Greater => {| Uint.value := 1 |}
+    | _ => {| Uint.value := 0 |}
+    end in
+  let stack :=
+    top.(RefStub.injection)
+      interpreter.(Interpreter.stack) result in
+  interpreter
+    <| Interpreter.stack := stack |>
   )).
 
 Lemma op_sgt_eq
@@ -65,10 +66,13 @@ Proof.
   unfold op_sgt.
   gas_macro_eq InterpreterTypesEq.
   popn_top_macro_eq InterpreterTypesEq.
-  lu.
-  c. { apply i256_cmp_eq; repeat unshelve econstructor. }
-  c. { apply PartialEq.Eq.eq; repeat unshelve econstructor. }
-  c. { apply Impl_Uint.from_eq; [typeclasses eauto | easy]. }
-  pf.
+  match goal with
+  | array : array.t aliases.U256.t _ |- _ =>
+    destruct array as [[op1 []]]
+  end.
+  s. { s_apply i256_cmp_eq. }
+  s. { s_apply @PartialEq.Eq.eq. }
+  s. { s_apply Impl_Uint.from_eq. }
+  s.
   now destruct i256_cmp.
 Qed.

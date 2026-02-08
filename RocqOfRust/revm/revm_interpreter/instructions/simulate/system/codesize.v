@@ -20,7 +20,7 @@ Definition codesize
   push_macro interpreter
     {| Uint.value := i[size] |}
     id
-    (fun interpreter => interpreter)
+    id
   ).
 
 Lemma codesize_eq

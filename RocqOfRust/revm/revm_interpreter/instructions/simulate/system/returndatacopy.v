@@ -14,7 +14,7 @@ Definition returndatacopy
     Interpreter.t WIRE WIRE_types :=
   check_macro interpreter SpecId.BYZANTIUM id (fun interpreter =>
     popn_macro interpreter 3
-      (fun interpreter => interpreter)
+      id
       (fun _ interpreter => interpreter)
   ).
 

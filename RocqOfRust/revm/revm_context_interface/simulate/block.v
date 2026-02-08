@@ -21,13 +21,13 @@ Module Block.
   Module Eq.
     Class t
         {Self : Set} `{Link Self}
+        `{!block.Block.Run Self}
         (I : C Self) :
         Prop := {
       number
           (stack : Stack.t)
           (ref_self : '& Self)
-          (self : Self)
-          `{!block.Block.Method_number Self} :
+          (self : Self) :
         CanRead.t stack self ref_self ->
         {{
           SimulateM.eval_f
@@ -41,8 +41,7 @@ Module Block.
       beneficiary
           (stack : Stack.t)
           (ref_self : '& Self)
-          (self : Self)
-          `{!block.Block.Method_beneficiary Self} :
+          (self : Self) :
         CanRead.t stack self ref_self ->
         {{
           SimulateM.eval_f
@@ -56,8 +55,7 @@ Module Block.
       timestamp
           (stack : Stack.t)
           (ref_self : '& Self)
-          (self : Self)
-          `{!block.Block.Method_timestamp Self} :
+          (self : Self) :
         CanRead.t stack self ref_self ->
         {{
           SimulateM.eval_f
@@ -71,8 +69,7 @@ Module Block.
       gas_limit
           (stack : Stack.t)
           (ref_self : '& Self)
-          (self : Self)
-          `{!block.Block.Method_gas_limit Self} :
+          (self : Self) :
         CanRead.t stack self ref_self ->
         {{
           SimulateM.eval_f
@@ -86,8 +83,7 @@ Module Block.
       basefee
           (stack : Stack.t)
           (ref_self : '& Self)
-          (self : Self)
-          `{!block.Block.Method_basefee Self} :
+          (self : Self) :
         CanRead.t stack self ref_self ->
         {{
           SimulateM.eval_f
@@ -101,8 +97,7 @@ Module Block.
       difficulty
           (stack : Stack.t)
           (ref_self : '& Self)
-          (self : Self)
-          `{!block.Block.Method_difficulty Self} :
+          (self : Self) :
         CanRead.t stack self ref_self ->
         {{
           SimulateM.eval_f
@@ -116,8 +111,7 @@ Module Block.
       prevrandao
           (stack : Stack.t)
           (ref_self : '& Self)
-          (self : Self)
-          `{!block.Block.Method_prevrandao Self} :
+          (self : Self) :
         CanRead.t stack self ref_self ->
         {{
           SimulateM.eval_f
@@ -131,8 +125,7 @@ Module Block.
       blob_excess_gas_and_price
           (stack : Stack.t)
           (ref_self : '& Self)
-          (self : Self)
-          `{!block.Block.Method_blob_excess_gas_and_price Self} :
+          (self : Self) :
         CanRead.t stack self ref_self ->
         {{
           SimulateM.eval_f
@@ -146,8 +139,7 @@ Module Block.
       blob_gasprice
           (stack : Stack.t)
           (ref_self : '& Self)
-          (self : Self)
-          `{!block.Block.Method_blob_gasprice Self} :
+          (self : Self) :
         CanRead.t stack self ref_self ->
         {{
           SimulateM.eval_f
@@ -161,8 +153,7 @@ Module Block.
       blob_excess_gas
           (stack : Stack.t)
           (ref_self : '& Self)
-          (self : Self)
-          `{!block.Block.Method_blob_excess_gas Self} :
+          (self : Self) :
         CanRead.t stack self ref_self ->
         {{
           SimulateM.eval_f
@@ -194,13 +185,13 @@ Module BlockGetter.
         {Self : Set} `{Link Self}
         {types : block.BlockGetter.Types.t}
         `{block.BlockGetter.Types.AreLinks types}
+        `{!block.BlockGetter.Run Self types}
         (I : C Self types) :
         Prop := {
       Block_for_Block :: Block.Eq.t I.(Block_for_Block);
       block
           (stack : Stack.t)
-          (ref_self : '& Self)
-          `{!block.BlockGetter.Method_block Self types} :
+          (ref_self : '& Self) :
         {{
           SimulateM.eval_f
             (block.BlockGetter.run_block ref_self)

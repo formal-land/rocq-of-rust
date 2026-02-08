@@ -24,7 +24,7 @@ Definition jumpdest_or_nop
     {IInterpreterTypes : InterpreterTypes.C WIRE_types}
     (interpreter : Interpreter.t WIRE WIRE_types) :
     Interpreter.t WIRE WIRE_types :=
-  gas_macro interpreter constants.JUMPDEST id (fun interpreter => interpreter).
+  gas_macro interpreter constants.JUMPDEST id id.
 
 Lemma jumpdest_or_nop_eq
     {WIRE H : Set} `{Link WIRE} `{Link H}

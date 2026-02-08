@@ -18,7 +18,7 @@ Definition callvalue
       interpreter.(Interpreter.input) in
   push_macro interpreter value
     id
-    (fun interpreter => interpreter)
+    id
   ).
 
 Lemma callvalue_eq

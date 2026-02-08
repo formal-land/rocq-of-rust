@@ -17,7 +17,7 @@ Definition keccak256
   popn_top_macro interpreter 1
     id
     (fun arr top interpreter =>
-      let '{| ArrayPair.x := offset |} := arr.(array.value) in
+      let '⟬ offset ⟭ := arr.(array.value) in
       let len_word := top.(RefStub.projection) interpreter.(Interpreter.stack) in
       as_usize_or_fail_macro interpreter len_word None
         id

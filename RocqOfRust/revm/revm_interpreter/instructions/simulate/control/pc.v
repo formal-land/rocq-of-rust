@@ -29,7 +29,7 @@ Definition pc
     IInterpreterTypes.(InterpreterTypes.Jumps_for_Bytecode).(Jumps.pc)
       interpreter.(Interpreter.bytecode) in
   let value : aliases.U256.t := {| Uint.value := i[pc -i 1] |} in
-  push_macro interpreter value id (fun interpreter => interpreter)
+  push_macro interpreter value id id
   ).
 
 Lemma pc_eq

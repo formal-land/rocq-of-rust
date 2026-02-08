@@ -21,13 +21,13 @@ Module Cfg.
     Class t
         {Self : Set} `{Link Self}
         {types : Cfg.Types.t} `{Cfg.Types.AreLinks types}
+        `{!Cfg.Run Self types}
         (I : C Self types) :
         Prop := {
       chain_id
           (stack : Stack.t)
           (ref_self : '& Self)
-          (self : Self)
-          `{!Cfg.Method_chain_id Self} :
+          (self : Self) :
         CanRead.t stack self ref_self ->
         {{
           SimulateM.eval_f
@@ -41,8 +41,7 @@ Module Cfg.
       spec
           (stack : Stack.t)
           (ref_self : '& Self)
-          (self : Self)
-          `{!Cfg.Method_spec Self types} :
+          (self : Self) :
         CanRead.t stack self ref_self ->
         {{
           SimulateM.eval_f
@@ -56,8 +55,7 @@ Module Cfg.
       max_code_size
           (stack : Stack.t)
           (ref_self : '& Self)
-          (self : Self)
-          `{!Cfg.Method_max_code_size Self} :
+          (self : Self) :
         CanRead.t stack self ref_self ->
         {{
           SimulateM.eval_f
@@ -71,8 +69,7 @@ Module Cfg.
       is_eip3607_disabled
           (stack : Stack.t)
           (ref_self : '& Self)
-          (self : Self)
-          `{!Cfg.Method_is_eip3607_disabled Self} :
+          (self : Self) :
         CanRead.t stack self ref_self ->
         {{
           SimulateM.eval_f
@@ -86,8 +83,7 @@ Module Cfg.
       is_balance_check_disabled
           (stack : Stack.t)
           (ref_self : '& Self)
-          (self : Self)
-          `{!Cfg.Method_is_balance_check_disabled Self} :
+          (self : Self) :
         CanRead.t stack self ref_self ->
         {{
           SimulateM.eval_f
@@ -101,8 +97,7 @@ Module Cfg.
       is_block_gas_limit_disabled
           (stack : Stack.t)
           (ref_self : '& Self)
-          (self : Self)
-          `{!Cfg.Method_is_block_gas_limit_disabled Self} :
+          (self : Self) :
         CanRead.t stack self ref_self ->
         {{
           SimulateM.eval_f
@@ -116,8 +111,7 @@ Module Cfg.
       is_nonce_check_disabled
           (stack : Stack.t)
           (ref_self : '& Self)
-          (self : Self)
-          `{!Cfg.Method_is_nonce_check_disabled Self} :
+          (self : Self) :
         CanRead.t stack self ref_self ->
         {{
           SimulateM.eval_f
@@ -131,8 +125,7 @@ Module Cfg.
       is_base_fee_check_disabled
           (stack : Stack.t)
           (ref_self : '& Self)
-          (self : Self)
-          `{!Cfg.Method_is_base_fee_check_disabled Self} :
+          (self : Self) :
         CanRead.t stack self ref_self ->
         {{
           SimulateM.eval_f
@@ -164,13 +157,13 @@ Module CfgGetter.
         {Self : Set} `{Link Self}
         {types : CfgGetter.Types.t}
         `{CfgGetter.Types.AreLinks types}
+        `{!CfgGetter.Run Self types}
         (I : C Self types) :
         Prop := {
       Cfg_for_Cfg :: Cfg.Eq.t I.(Cfg_for_Cfg);
       cfg
           (stack : Stack.t)
-          (ref_self : '& Self)
-          `{!CfgGetter.Method_cfg Self types} :
+          (ref_self : '& Self) :
         {{
           SimulateM.eval_f
             (CfgGetter.run_cfg ref_self)

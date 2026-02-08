@@ -11,7 +11,7 @@ Module TransactionError.
   Module Eq.
     Class t
         {Self : Set} `{Link Self}
-        `{!Error.Run Self}
+        `{!transaction.TransactionError.Run Self}
         (I : C Self) :
         Prop := {
       Error_for_Self : True;
@@ -44,13 +44,13 @@ Module Transaction.
         {Self : Set} `{Link Self}
         {types : Transaction.Types.t}
         `{Transaction.Types.AreLinks types}
+        `{!Transaction.Run Self types}
         (I : C Self types) :
         Prop := {
       tx_type
           (stack : Stack.t)
           (ref_self : '& Self)
-          (self : Self)
-          `{!Transaction.Method_tx_type Self types} :
+          (self : Self) :
         CanRead.t stack self ref_self ->
         {{
           SimulateM.eval_f
@@ -64,8 +64,7 @@ Module Transaction.
       legacy
           (stack : Stack.t)
           (ref_self : '& Self)
-          (self : Self)
-          `{!Transaction.Method_legacy Self types} :
+          (self : Self) :
         CanRead.t stack self ref_self ->
         {{
           SimulateM.eval_f
@@ -79,8 +78,7 @@ Module Transaction.
       eip2930
           (stack : Stack.t)
           (ref_self : '& Self)
-          (self : Self)
-          `{!Transaction.Method_eip2930 Self types} :
+          (self : Self) :
         CanRead.t stack self ref_self ->
         {{
           SimulateM.eval_f
@@ -94,8 +92,7 @@ Module Transaction.
       eip1559
           (stack : Stack.t)
           (ref_self : '& Self)
-          (self : Self)
-          `{!Transaction.Method_eip1559 Self types} :
+          (self : Self) :
         CanRead.t stack self ref_self ->
         {{
           SimulateM.eval_f
@@ -109,8 +106,7 @@ Module Transaction.
       eip4844
           (stack : Stack.t)
           (ref_self : '& Self)
-          (self : Self)
-          `{!Transaction.Method_eip4844 Self types} :
+          (self : Self) :
         CanRead.t stack self ref_self ->
         {{
           SimulateM.eval_f
@@ -124,8 +120,7 @@ Module Transaction.
       eip7702
           (stack : Stack.t)
           (ref_self : '& Self)
-          (self : Self)
-          `{!Transaction.Method_eip7702 Self types} :
+          (self : Self) :
         CanRead.t stack self ref_self ->
         {{
           SimulateM.eval_f
@@ -139,8 +134,7 @@ Module Transaction.
       max_fee
           (stack : Stack.t)
           (ref_self : '& Self)
-          (self : Self)
-          `{!Transaction.Method_max_fee Self types} :
+          (self : Self) :
         CanRead.t stack self ref_self ->
         {{
           SimulateM.eval_f
@@ -155,8 +149,7 @@ Module Transaction.
           (stack : Stack.t)
           (ref_self : '& Self)
           (self : Self)
-          (base_fee : u128)
-          `{!Transaction.Method_effective_gas_price Self types} :
+          (base_fee : u128) :
         CanRead.t stack self ref_self ->
         {{
           SimulateM.eval_f
@@ -170,8 +163,7 @@ Module Transaction.
       kind
           (stack : Stack.t)
           (ref_self : '& Self)
-          (self : Self)
-          `{!Transaction.Method_kind Self types} :
+          (self : Self) :
         CanRead.t stack self ref_self ->
         {{
           SimulateM.eval_f
@@ -185,8 +177,7 @@ Module Transaction.
       access_list
           (stack : Stack.t)
           (ref_self : '& Self)
-          (self : Self)
-          `{!Transaction.Method_access_list Self types} :
+          (self : Self) :
         CanRead.t stack self ref_self ->
         {{
           SimulateM.eval_f
@@ -222,14 +213,14 @@ Module TransactionGetter.
         {Transaction : Set} `{Link Transaction}
         {types : Transaction.Types.t}
         `{Transaction.Types.AreLinks types}
+        `{!transaction.TransactionGetter.Run Self Transaction types}
         (I : C Self Transaction types) :
         Prop := {
       Transaction_for_Transaction :: Transaction.Eq.t I.(Transaction_for_Transaction);
       tx
           (stack : Stack.t)
           (ref_self : '& Self)
-          (self : Self)
-          `{!transaction.TransactionGetter.Method_tx Self Transaction} :
+          (self : Self) :
         CanRead.t stack self ref_self ->
         {{
           SimulateM.eval_f
@@ -271,8 +262,7 @@ Module TransactionSetter.
       set_tx
           (self : Self)
           (tx : Transaction)
-          (stack : Stack.t)
-          `{!transaction.TransactionSetter.Method_set_tx Self Transaction} :
+          (stack : Stack.t) :
         let ref_self : '&mut Self := make_ref 0 in
         {{
           SimulateM.eval_f

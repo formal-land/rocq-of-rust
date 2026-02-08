@@ -22,7 +22,7 @@ Definition returndatasize
   push_macro interpreter
     {| Uint.value := Z.of_nat (List.length return_data) |}
     id
-    (fun interpreter => interpreter)
+    id
   )).
 
 Lemma returndatasize_eq

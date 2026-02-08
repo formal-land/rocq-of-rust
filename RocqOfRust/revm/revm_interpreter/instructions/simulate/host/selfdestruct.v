@@ -30,7 +30,7 @@ Definition selfdestruct
         result in
     interpreter <| Interpreter.control := control |> in
   popn_macro interpreter 1 (fun interpreter => (interpreter, host)) (fun arr interpreter =>
-    let '{| ArrayPair.x := target_u256 |} := arr.(array.value) in
+    let '⟬ target_u256 ⟭ := arr.(array.value) in
     let target := Impl_IntoAddress_for_U256.into_address target_u256 in
     let address :=
       IInterpreterTypes.(InterpreterTypes.InputsTrait_for_Input).(InputTraits.target_address)
@@ -50,18 +50,24 @@ Lemma selfdestruct_eq
     (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
     {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
     (run_Host_for_H : Host.Run H H_types)
+    `{IInterpreterTypes : !InterpreterTypes.C WIRE_types}
+    `{InterpreterTypesEq :
+      !InterpreterTypes.Eq.t WIRE WIRE_types run_InterpreterTypes_for_WIRE IInterpreterTypes}
+    `{IHost : !Host.C H H_types}
+    `{HostEq : !Host.Eq.t IHost}
     (interpreter : Interpreter.t WIRE WIRE_types)
     (host : H) :
   let ref_interpreter := make_ref 0 in
   let ref_host := make_ref (A := H) 1 in
-  exists stack' : Stack.t,
-    {{
-      SimulateM.eval_f
-        (run_selfdestruct run_InterpreterTypes_for_WIRE run_Host_for_H ref_interpreter ref_host)
-        [interpreter; host]%stack 🌲
-      (
-        Output.Success tt,
-        stack'
-      )
-    }}.
+  let result := selfdestruct interpreter host in
+  {{
+    SimulateM.eval_f
+      (run_selfdestruct run_InterpreterTypes_for_WIRE run_Host_for_H ref_interpreter ref_host)
+      [interpreter; host]%stack 🌲
+    (
+      Output.Success tt,
+      [fst result; snd result]%stack
+    )
+  }}.
+Proof.
 Admitted.

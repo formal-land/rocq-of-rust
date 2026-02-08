@@ -53,19 +53,19 @@ Lemma gasprice_eq
     (host : H) :
   let ref_interpreter := make_ref 0 in
   let ref_host := make_ref (A := H) 1 in
+  let result := gasprice interpreter host in
   {{
     SimulateM.eval_f
       (run_gasprice run_InterpreterTypes_for_WIRE run_Host_for_H ref_interpreter ref_host)
       [interpreter; host]%stack 🌲
     (
       Output.Success tt,
-      let '(interpreter, host) := gasprice interpreter host in
-      [interpreter; host]%stack
+      [fst result; snd result]%stack
     )
   }}.
 Proof.
-  intros.
   with_strategy transparent [run_gasprice] unfold gasprice, run_gasprice; cbn.
+  intros.
   gas_macro_eq InterpreterTypesEq.
   s. {
     apply HostEq.

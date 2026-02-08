@@ -24,7 +24,7 @@ Definition caller
   let value := Impl_IntoU256_for_Address.into_u256 caller in
   push_macro interpreter value
     id
-    (fun interpreter => interpreter)
+    id
   ).
 
 Lemma caller_eq

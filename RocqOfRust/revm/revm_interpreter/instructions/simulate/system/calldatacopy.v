@@ -13,7 +13,7 @@ Definition calldatacopy
     (interpreter : Interpreter.t WIRE WIRE_types) :
     Interpreter.t WIRE WIRE_types :=
   popn_macro interpreter 3
-    (fun interpreter => interpreter)
+    id
     (fun _ interpreter => interpreter).
 
 Lemma calldatacopy_eq

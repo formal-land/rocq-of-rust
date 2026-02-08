@@ -20,7 +20,7 @@ Definition calldatasize
   push_macro interpreter
     {| Uint.value := Z.of_nat (List.length input) |}
     id
-    (fun interpreter => interpreter)
+    id
   ).
 
 Lemma calldatasize_eq
