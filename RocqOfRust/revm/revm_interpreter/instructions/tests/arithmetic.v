@@ -1,6 +1,9 @@
 Require Import simulate.RocqOfRust.
 Require Import revm.revm_context_interface.links.host.
-Require Import revm.revm_interpreter.instructions.simulate.arithmetic.
+Require Import revm.revm_interpreter.instructions.simulate.arithmetic.add.
+Require Import revm.revm_interpreter.instructions.simulate.arithmetic.div.
+Require Import revm.revm_interpreter.instructions.simulate.arithmetic.mul.
+Require Import revm.revm_interpreter.instructions.simulate.arithmetic.sub.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.tests.interpreter.
 Require Import revm.revm_interpreter.tests.interpreter_types.
@@ -13,7 +16,7 @@ Goal
     {| Uint.value := 20 |}
   ] |} in
   let interpreter := make_interpreter stack in
-  let result := arithmetic.add interpreter in
+  let result := add interpreter in
   result.(Interpreter.stack).(Stack.value) = [{| Uint.value := 30 |}].
 Proof.
   timeout 1 vm_compute.
@@ -28,7 +31,7 @@ Goal
     {| Uint.value := 1 |}
   ] |} in
   let interpreter := make_interpreter stack in
-  let result := arithmetic.add interpreter in
+  let result := add interpreter in
   result.(Interpreter.stack).(Stack.value) = [{| Uint.value := 0 |}].
 Proof.
   timeout 1 vm_compute.
@@ -42,7 +45,7 @@ Goal
     {| Uint.value := 30 |}
   ] |} in
   let interpreter := make_interpreter stack in
-  let result := arithmetic.sub interpreter in
+  let result := sub interpreter in
   result.(Interpreter.stack).(Stack.value) = [{| Uint.value := 20 |}].
 Proof.
   timeout 1 vm_compute.
@@ -56,7 +59,7 @@ Goal
     {| Uint.value := 1 |}
   ] |} in
   let interpreter := make_interpreter stack in
-  let result := arithmetic.sub interpreter in
+  let result := sub interpreter in
   result.(Interpreter.stack).(Stack.value) = [{| Uint.value := 2 ^ 256 - 1 |}].
 Proof.
   timeout 1 vm_compute.
@@ -70,7 +73,7 @@ Goal
     {| Uint.value := 7 |}
   ] |} in
   let interpreter := make_interpreter stack in
-  let result := arithmetic.mul interpreter in
+  let result := mul interpreter in
   result.(Interpreter.stack).(Stack.value) = [{| Uint.value := 42 |}].
 Proof.
   timeout 1 vm_compute.
@@ -85,7 +88,7 @@ Goal
     {| Uint.value := 2 |}
   ] |} in
   let interpreter := make_interpreter stack in
-  let result := arithmetic.mul interpreter in
+  let result := mul interpreter in
   result.(Interpreter.stack).(Stack.value) = [{| Uint.value := 0 |}].
 Proof.
   timeout 1 vm_compute.
@@ -99,7 +102,7 @@ Goal
     {| Uint.value := 5 |}
   ] |} in
   let interpreter := make_interpreter stack in
-  let result := arithmetic.div interpreter in
+  let result := div interpreter in
   result.(Interpreter.stack).(Stack.value) = [{| Uint.value := 20 |}].
 Proof.
   timeout 1 vm_compute.
@@ -113,7 +116,7 @@ Goal
     {| Uint.value := 0 |}
   ] |} in
   let interpreter := make_interpreter stack in
-  let result := arithmetic.div interpreter in
+  let result := div interpreter in
   result.(Interpreter.stack).(Stack.value) = [{| Uint.value := 0 |}].
 Proof.
   timeout 1 vm_compute.
@@ -127,7 +130,7 @@ Goal
     {| Uint.value := 3 |}
   ] |} in
   let interpreter := make_interpreter stack in
-  let result := arithmetic.div interpreter in
+  let result := div interpreter in
   result.(Interpreter.stack).(Stack.value) = [{| Uint.value := 2 |}].
 Proof.
   timeout 1 vm_compute.

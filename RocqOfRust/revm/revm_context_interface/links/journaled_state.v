@@ -19,7 +19,7 @@ Module StateLoad.
   Instance IsLink {T : Set} `{Link T} : Link (t T) := {
     Φ := Ty.apply (Ty.path "revm_context_interface::journaled_state::StateLoad") [] [Φ T];
     φ x :=
-      Value.StructRecord "revm_context_interface::journaled_state::StateLoad" [] [] [
+      Value.StructRecord "revm_context_interface::journaled_state::StateLoad" [] [Φ T] [
         ("data", φ x.(data));
         ("is_cold", φ x.(is_cold))
       ];
@@ -40,7 +40,7 @@ Module StateLoad.
       (is_cold : bool) is_cold' :
     data' = φ data ->
     is_cold' = φ is_cold ->
-    Value.StructRecord "revm_context_interface::journaled_state::StateLoad" [] [] [
+    Value.StructRecord "revm_context_interface::journaled_state::StateLoad" [] [Φ T] [
       ("data", data');
       ("is_cold", is_cold')
     ] = φ (Build_t _ data is_cold).
@@ -115,6 +115,22 @@ Module Impl_Deref_for_StateLoad.
 End Impl_Deref_for_StateLoad.
 Export (hints) Impl_Deref_for_StateLoad.
 
+Module Impl_StateLoad.
+  Definition Self (T : Set) : Set :=
+    StateLoad.t T.
+
+  Instance run_new (T : Set) `{Link T} (data : T) (is_cold : bool) :
+    Run.Trait
+      (journaled_state.Impl_revm_context_interface_journaled_state_StateLoad_T.new (Φ T))
+      [] [] [ φ data; φ is_cold ] (Self T).
+  Proof.
+    constructor.
+    run_symbolic.
+  Defined.
+  Global Opaque run_new.
+End Impl_StateLoad.
+Export (hints) Impl_StateLoad.
+
 (*
 pub struct Eip7702CodeLoad<T> {
     pub state_load: StateLoad<T>,
@@ -133,8 +149,8 @@ Module Eip7702CodeLoad.
     Φ := Ty.apply (Ty.path "revm_context_interface::journaled_state::Eip7702CodeLoad") [] [Φ T];
     φ x :=
       Value.StructRecord "revm_context_interface::journaled_state::Eip7702CodeLoad" [] [Φ T] [
-        ("state_load", φ x.(state_load));
-        ("is_delegate_account_cold", φ x.(is_delegate_account_cold))
+        ("is_delegate_account_cold", φ x.(is_delegate_account_cold));
+        ("state_load", φ x.(state_load))
       ];
   }.
 
@@ -149,17 +165,18 @@ Module Eip7702CodeLoad.
   Smpl Add apply of_ty : of_ty.
 
   Lemma of_value_with
-      {T : Set} `{Link T}
+      {T : Set} `{Link T} T'
       (state_load : StateLoad.t T) state_load'
       (is_delegate_account_cold : option bool) is_delegate_account_cold' :
+    T' = Φ T ->
     state_load' = φ state_load ->
     is_delegate_account_cold' = φ is_delegate_account_cold ->
-    Value.StructRecord "revm_context_interface::journaled_state::Eip7702CodeLoad" [] [Φ T] [
-      ("state_load", state_load');
-      ("is_delegate_account_cold", is_delegate_account_cold')
+    Value.StructRecord "revm_context_interface::journaled_state::Eip7702CodeLoad" [] [T'] [
+      ("is_delegate_account_cold", is_delegate_account_cold');
+      ("state_load", state_load')
     ] = φ (Build_t _ state_load is_delegate_account_cold).
   Proof.
-    now intros; subst.
+    intros; now subst.
   Qed.
   Smpl Add apply of_value_with : of_value.
 
@@ -195,6 +212,36 @@ Module Eip7702CodeLoad.
 End Eip7702CodeLoad.
 Export (hints) Eip7702CodeLoad.
 
+Module Impl_Deref_for_Eip7702CodeLoad.
+  Definition Self (T : Set) : Set :=
+    Eip7702CodeLoad.t T.
+
+  Instance run_deref (T : Set) `{Link T} (self : '& (Self T)) :
+    Run.Trait
+      (journaled_state.Impl_core_ops_deref_Deref_for_revm_context_interface_journaled_state_Eip7702CodeLoad_T.deref (Φ T))
+      [] [] [ φ self ] ('& (StateLoad.t T)).
+  Proof.
+    constructor.
+    run_symbolic.
+  Defined.
+  Global Opaque run_deref.
+
+  Instance method_deref (T : Set) `{Link T} : Deref.Method_deref (Self T) (StateLoad.t T).
+  Proof.
+    econstructor.
+    { constructor.
+      eapply IsTraitMethod.Defined.
+      { apply journaled_state.Impl_core_ops_deref_Deref_for_revm_context_interface_journaled_state_Eip7702CodeLoad_T.Implements. }
+      { reflexivity. }
+    }
+    { typeclasses eauto. }
+  Defined.
+
+  Instance run (T : Set) `{Link T} : Deref.Run (Self T) (StateLoad.t T) :=
+  {}.
+End Impl_Deref_for_Eip7702CodeLoad.
+Export (hints) Impl_Deref_for_Eip7702CodeLoad.
+
 Module Impl_Eip7702CodeLoad.
   Definition Self (T : Set) `{Link T} : Set :=
     Eip7702CodeLoad.t T.
@@ -207,7 +254,11 @@ Module Impl_Eip7702CodeLoad.
   Proof.
     constructor.
     run_symbolic.
-  Admitted.
+    eapply Run.CallPrimitiveGetTraitMethod. {
+      apply Impl_Deref_for_Eip7702CodeLoad.method_deref.
+    }
+    run_symbolic.
+  Defined.
   Global Opaque run_into_components.
 End Impl_Eip7702CodeLoad.
 Export (hints) Impl_Eip7702CodeLoad.
