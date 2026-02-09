@@ -677,3 +677,18 @@ Module CanRead.
     Stack.CanAccess.read run = Some value ->
     t stack value {| Ref.core := ref_core |}.
 End CanRead.
+
+(*** Destruct the matched value in an expression [e]. *)
+Ltac destruct_match_in e :=
+  lazymatch e with
+  | context[match ?e with | _ => _ end] =>
+    destruct_match_in e
+  | _ => destruct e eqn:?
+  end.
+
+(** Destruct one matched value in the goal. *)
+Ltac step :=
+  match goal with
+  | |- context[match ?e with | _ => _ end] =>
+    destruct_match_in e
+  end.

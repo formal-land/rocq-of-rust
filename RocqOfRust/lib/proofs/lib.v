@@ -2,45 +2,6 @@ Require Import RocqOfRust.lib.lib.
 Require Import RocqOfRust.proofs.M.
 Require Import RocqOfRust.simulations_legacy.M.
 
-(*** Destruct the matched value in an expression [e]. *)
-Ltac destruct_match_in e :=
-  lazymatch e with
-  | context[match ?e with | _ => _ end] =>
-    destruct_match_in e
-  | context[let? _ := ?e in _] =>
-    destruct_match_in e
-  | context[let! _ := ?e in _] =>
-    destruct_match_in e
-  | context[let!? _ := ?e in _] =>
-    destruct_match_in e
-  | context[letS _ := ?e in _] =>
-    destruct_match_in e
-  | context[letS! _ := ?e in _] =>
-    destruct_match_in e
-  | context[letS!? _ := ?e in _] =>
-    destruct_match_in e
-  | _ => destruct e eqn:?
-  end.
-
-(** Destruct one matched value in the goal. *)
-Ltac step :=
-  match goal with
-  | |- context[match ?e with | _ => _ end] =>
-    destruct_match_in e
-  | |- context[let? _ := ?e in _] =>
-    destruct_match_in e
-  | |- context[let! _ := ?e in _] =>
-    destruct_match_in e
-  | |- context[let!? _ := ?e in _] =>
-    destruct_match_in e
-  | |- context[letS _ := ?e in _] =>
-    destruct_match_in e
-  | |- context[letS! _ := ?e in _] =>
-    destruct_match_in e
-  | |- context[letS!? _ := ?e in _] =>
-    destruct_match_in e
-  end.
-
 Ltac Zify.zify_pre_hook ::=
   autounfold with coq_of_rust_z in *;
   trivial.

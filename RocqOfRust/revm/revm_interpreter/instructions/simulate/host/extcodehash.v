@@ -1,16 +1,23 @@
 Require Import simulate.RocqOfRust.
+Require Import alloy_primitives.bits.simulate.fixed.
 Require Import alloy_primitives.links.aliases.
+Require Import core.convert.simulate.mod.
 Require Import core.links.array.
 Require Import revm.revm_context_interface.links.host.
 Require Import revm.revm_context_interface.links.journaled_state.
 Require Import revm.revm_context_interface.simulate.host.
+Require Import revm.revm_context_interface.simulate.journaled_state.
+Require Import revm.revm_interpreter.gas.simulate.calc.
 Require Import revm.revm_interpreter.instructions.links.host.extcodehash.
 Require Import revm.revm_interpreter.instructions.simulate.macros.
 Require Import revm.revm_interpreter.instructions.simulate.utility.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.instruction_result.
 Require Import revm.revm_interpreter.links.interpreter_types.
+Require Import revm.revm_interpreter.simulate.gas.
 Require Import revm.revm_interpreter.simulate.interpreter_types.
+Require Import revm.revm_specification.links.hardfork.
+Require Import revm.revm_specification.simulate.hardfork.
 
 Definition extcodehash
     {WIRE H : Set} `{Link WIRE} `{Link H}
@@ -21,29 +28,39 @@ Definition extcodehash
     (interpreter : Interpreter.t WIRE WIRE_types)
     (host : H) :
     Interpreter.t WIRE WIRE_types * H :=
-  let set_fatal (interpreter : Interpreter.t WIRE WIRE_types) :=
+  check_macro interpreter SpecId.CONSTANTINOPLE
+    (fun interpreter => (interpreter, host)) (fun interpreter =>
+  popn_top_macro interpreter 0 (fun interpreter => (interpreter, host)) (fun _ top interpreter =>
+  let address :=
+    Impl_IntoAddress_for_U256.into_address
+      (top.(RefStub.projection) interpreter.(Interpreter.stack)) in
+  let '(code_hash_opt, host) := IHost.(Host.code_hash) host address in
+  match code_hash_opt with
+  | None =>
     let control :=
       IInterpreterTypes.(InterpreterTypes.LoopControl_for_Control).(LoopControl.set_instruction_result)
         interpreter.(Interpreter.control)
         instruction_result.InstructionResult.FatalExternalError in
-    interpreter <| Interpreter.control := control |> in
-  popn_top_macro interpreter 0 (fun interpreter => (interpreter, host)) (fun _ top interpreter =>
-    let address :=
-      Impl_IntoAddress_for_U256.into_address
-        (top.(RefStub.projection) interpreter.(Interpreter.stack)) in
-    let '(result, host) := IHost.(Host.code_hash) host address in
-    match result with
-    | Some code_hash_load =>
-      let code_hash := code_hash_load.(Eip7702CodeLoad.state_load).(StateLoad.data) in
-      let stack :=
-        top.(RefStub.injection)
-          interpreter.(Interpreter.stack)
-          (Impl_IntoU256_for_B256.into_u256 code_hash) in
-      (interpreter <| Interpreter.stack := stack |>, host)
-    | None =>
-      (set_fatal interpreter, host)
-    end
-  ).
+    (interpreter <| Interpreter.control := control |>, host)
+  | Some code_hash =>
+  let '(code_hash, load) := Impl_Eip7702CodeLoad.into_components code_hash in
+  let spec_id :=
+    IInterpreterTypes.(InterpreterTypes.RuntimeFlag_for_RuntimeFlag).(RuntimeFlag.spec_id)
+      interpreter.(Interpreter.runtime_flag) in
+  gas_macro interpreter
+    (if Impl_SpecId.is_enabled_in spec_id SpecId.BERLIN then
+      calc.warm_cold_cost_with_delegation load
+    else if Impl_SpecId.is_enabled_in spec_id SpecId.ISTANBUL then
+      700
+    else
+      400)
+    (fun interpreter => (interpreter, host)) (fun interpreter =>
+  let stack :=
+    top.(RefStub.injection)
+      interpreter.(Interpreter.stack)
+      (Impl_IntoU256_for_B256.into_u256 code_hash) in
+  (interpreter <| Interpreter.stack := stack |>, host))
+  end)).
 
 Lemma extcodehash_eq
     {WIRE H : Set} `{Link WIRE} `{Link H}
@@ -71,4 +88,71 @@ Lemma extcodehash_eq
     )
   }}.
 Proof.
-Admitted.
+Opaque Impl_Eip7702CodeLoad.into_components.
+  with_strategy transparent [run_extcodehash] unfold extcodehash, run_extcodehash; cbn.
+  check_macro_eq InterpreterTypesEq.
+  popn_top_macro_eq InterpreterTypesEq.
+  s. {
+    apply Impl_IntoAddress_for_U256.into_address_eq.
+  }
+  s. {
+    apply HostEq.
+  }
+  destruct _.(Host.code_hash) as [[code_hash|] ?host]; cbn. 2: {
+    s. {
+      apply InterpreterTypesEq.
+    }
+    s.
+  }
+  s. {
+    apply Impl_Eip7702CodeLoad.into_components_eq.
+  }
+  destruct Impl_Eip7702CodeLoad.into_components as [?code_hash ?load]; cbn.
+  s. {
+    apply InterpreterTypesEq.
+  }
+  s. {
+    apply Impl_SpecId.is_enabled_in_eq.
+  }
+  destruct Impl_SpecId.is_enabled_in; cbn.
+  { unfold gas_macro.
+    s. {
+      apply InterpreterTypesEq.
+    }
+    s. {
+      apply calc.warm_cold_cost_with_delegation_eq.
+    }
+    s. {
+      apply Impl_Gas.record_cost_eq.
+    }
+    destruct Impl_Gas.record_cost; cbn.
+    { s. {
+        apply Impl_Into_for_From_T.Eq.I.
+      }
+      s.
+    }
+    { s. {
+        apply InterpreterTypesEq.
+      }
+      s.
+    }
+  }
+  { s. {
+      apply Impl_SpecId.is_enabled_in_eq.
+    }
+    destruct Impl_SpecId.is_enabled_in; cbn.
+    { gas_macro_eq InterpreterTypesEq.
+      s. {
+        apply Impl_Into_for_From_T.Eq.I.
+      }
+      s.
+    }
+    { gas_macro_eq InterpreterTypesEq.
+      s. {
+        apply Impl_Into_for_From_T.Eq.I.
+      }
+      s.
+    }
+  }
+Transparent Impl_Eip7702CodeLoad.into_components.
+Qed.

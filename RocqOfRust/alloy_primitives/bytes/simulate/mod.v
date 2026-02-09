@@ -111,7 +111,7 @@ Module Impl_Deref_for_Bytes.
   |}.
 
   Module Eq.
-    Instance t : Deref.Eq.t I.
+    Instance I : Deref.Eq.t I.
     Admitted.
   End Eq.
   Export (hints) Eq.
@@ -135,7 +135,7 @@ Module Impl_DerefMut_for_Bytes.
   |}.
 
   Module Eq.
-    Instance t : DerefMut.Eq.t I.
+    Instance I : DerefMut.Eq.t I.
     Admitted.
   End Eq.
   Export (hints) Eq.
@@ -166,7 +166,7 @@ Module Impl_From_Vec_u8_for_Bytes.
   |}.
 
   Module Eq.
-    Instance t : From.Eq.C (Self := Self) (T := Vec.t u8 Global.t) I.
+    Instance I : From.Eq.C (Self := Self) (T := Vec.t u8 Global.t) I.
     Proof.
       constructor; intros.
       (* from *)

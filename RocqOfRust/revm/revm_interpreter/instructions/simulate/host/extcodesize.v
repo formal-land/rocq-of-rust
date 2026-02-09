@@ -1,5 +1,6 @@
 Require Import simulate.RocqOfRust.
 Require Import alloy_primitives.bytes.links.mod.
+Require Import alloy_primitives.bytes.simulate.mod.
 Require Import alloy_primitives.links.aliases.
 Require Import bytes.simulate.bytes.
 Require Import core.links.array.
@@ -14,6 +15,7 @@ Require Import revm.revm_interpreter.instructions.simulate.utility.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.instruction_result.
 Require Import revm.revm_interpreter.links.interpreter_types.
+Require Import revm.revm_interpreter.simulate.gas.
 Require Import revm.revm_interpreter.simulate.interpreter_types.
 Require Import revm.revm_specification.links.hardfork.
 Require Import revm.revm_specification.simulate.hardfork.
@@ -86,77 +88,88 @@ Lemma extcodesize_eq
     )
   }}.
 Proof.
-  intros.
+Opaque Impl_Eip7702CodeLoad.into_components.
   with_strategy transparent [run_extcodesize] unfold extcodesize, run_extcodesize; cbn.
   popn_top_macro_eq InterpreterTypesEq.
-  (*
-  s. {
-    apply InterpreterTypesEq.
-  }
-  s; destruct _.(StackTrait.popn_top) as [[[]|] ?s]; cbn. 2: {
-    s. {
-      apply InterpreterTypesEq.
-    }
-    s.
-  }
   s. {
     apply Impl_IntoAddress_for_U256.into_address_eq.
   }
   s. {
     apply HostEq.
   }
-  destruct _.(Host.code) as [[code|] ?host]; cbn.
-  2: {
+  destruct _.(Host.code) as [[code|] ?host]; cbn. 2: {
     s. {
       apply InterpreterTypesEq.
     }
     s.
   }
-
   s. {
-    apply Impl_Eip7702CodeLoad_Simulate.into_components_eq.
+    apply Impl_Eip7702CodeLoad.into_components_eq.
   }
-
+  destruct Impl_Eip7702CodeLoad.into_components as [?code ?load]; cbn.
   unfold gas_macro.
-  s. {
-    apply InterpreterTypesEq.
-  }
   s. {
     apply InterpreterTypesEq.
   }
   s. {
     apply Impl_SpecId.is_enabled_in_eq.
   }
-
-  Ltac finish_gas_branch InterpreterTypesEq :=
-    s; [
-      apply Impl_Gas.record_cost_eq
-    |];
-    destruct Impl_Gas.record_cost; [s|];
-    s; [
-      apply InterpreterTypesEq
-    |];
-    s; [
-      apply Impl_Bytes.len_eq
-    |];
-    s; [
-      s_apply Impl_Uint.from_eq
-    |];
-    s.
-
-  destruct Impl_SpecId.is_enabled_in.
+  destruct Impl_SpecId.is_enabled_in; cbn.
   { s. {
+      apply InterpreterTypesEq.
+    }
+    s. {
       apply calc.warm_cold_cost_with_delegation_eq.
     }
-    finish_gas_branch InterpreterTypesEq.
+    s. {
+      apply Impl_Gas.record_cost_eq.
+    }
+    destruct Impl_Gas.record_cost; cbn.
+    { s. {
+        apply Impl_Deref_for_Bytes.Eq.I.
+      }
+      s. {
+        s_apply Impl_Bytes.len_eq.
+      }
+      s. {
+        s_apply Impl_Uint.from_eq.
+      }
+      s.
+    }
+    { s. {
+        apply InterpreterTypesEq.
+      }
+      s.
+    }
   }
   { s. {
-      apply Impl_SpecId.is_enabled_in_eq.
+      s_apply Impl_SpecId.is_enabled_in_eq.
     }
-    destruct Impl_SpecId.is_enabled_in.
-    { finish_gas_branch InterpreterTypesEq. }
-    { finish_gas_branch InterpreterTypesEq. }
+    destruct Impl_SpecId.is_enabled_in; cbn.
+    { gas_macro_eq InterpreterTypesEq.
+      s. {
+        apply Impl_Deref_for_Bytes.Eq.I.
+      }
+      s. {
+        s_apply Impl_Bytes.len_eq.
+      }
+      s. {
+        s_apply Impl_Uint.from_eq.
+      }
+      s.
+    }
+    { gas_macro_eq InterpreterTypesEq.
+      s. {
+        apply Impl_Deref_for_Bytes.Eq.I.
+      }
+      s. {
+        s_apply Impl_Bytes.len_eq.
+      }
+      s. {
+        s_apply Impl_Uint.from_eq.
+      }
+      s.
+    }
   }
+Transparent Impl_Eip7702CodeLoad.into_components.
 Qed.
-*)
-Admitted.

@@ -106,7 +106,9 @@ Definition call
               call_inputs.CallInputs.gas_limit := gas_limit;
               call_inputs.CallInputs.input := input;
               call_inputs.CallInputs.is_eof := false;
-              call_inputs.CallInputs.is_static := is_static;
+              call_inputs.CallInputs.is_static :=
+                IInterpreterTypes.(InterpreterTypes.RuntimeFlag_for_RuntimeFlag).(RuntimeFlag.is_static)
+                  interpreter.(Interpreter.runtime_flag);
               call_inputs.CallInputs.return_memory_offset := return_memory_offset;
               call_inputs.CallInputs.scheme := call_inputs.CallScheme.Call;
               call_inputs.CallInputs.target_address := to;
@@ -175,7 +177,15 @@ Proof.
     set (condition1 := e1);
     set (condition2 := e2)
   end.
-  eapply Run.Let with (result := if condition1 then if condition2 then _ else _ else _). {
+  eapply Run.Let with (result :=
+    if condition1 then
+      if condition2 then
+        _
+      else
+        _
+    else
+      _
+  ). {
     s. {
       apply InterpreterTypesEq.
     }
@@ -185,6 +195,7 @@ Proof.
     { s.
       destruct Impl_Uint.is_zero.
       { s.
+        change false with condition2.
         reflexivity.
       }
       { s. {
@@ -199,49 +210,49 @@ Proof.
     }
   }
   s.
-  destruct condition1; [destruct condition2; [s |] |].
-  { cw @call_helpers.get_memory_input_and_out_ranges_eq.
-    destruct get_memory_input_and_out_ranges as [[[input_data return_memory_offset]|] ?interpreter];
-      cbn;
-      [| p].
-    cw HostEq.
-    destruct _.(Host.load_account_delegated) as [[load|] ?host]; cbn. 2: {
-      lu.
-      cw InterpreterTypesEq.
-      p.
-    }
-    cw @call_helpers.calc_call_gas_eq.
-    lu.
-    destruct call_helpers.calc_call_gas as [[gas_limit|] ?interpreter]; cbn; [|apply Run.Pure].
-    gas_macro_eq InterpreterTypesEq.
-    s. {
-      apply InterpreterTypesEq.
-    }
-    s. {
-      apply InterpreterTypesEq.
-    }
-    s. {
-      apply @Impl_Box.new_eq.
-    }
-    s. {
-      apply InterpreterTypesEq.
-    }
+  destruct (condition1 && condition2) eqn:H_conditions.
+  { replace condition1 with true by
+      (destruct condition1, condition2; cbn in H_conditions; congruence).
+    replace condition2 with true by
+      (destruct condition1, condition2; cbn in H_conditions; congruence).
     s.
-    admit.
   }
-  { cw @call_helpers.get_memory_input_and_out_ranges_eq.
-    destruct get_memory_input_and_out_ranges as [[[input_data return_memory_offset]|] ?interpreter];
-      cbn;
-      [| p].
-    cw HostEq.
-    destruct _.(Host.load_account_delegated) as [[load|] ?host]; cbn. 2: {
-      lu.
-      cw InterpreterTypesEq.
-      p.
+  { set (if_result := if _ : bool then _ else _).
+    set (common_result := (Output.Success tt, _)) in if_result.
+    replace if_result with common_result. 2: {
+      unfold if_result.
+      destruct condition1, condition2; cbn in H_conditions; congruence.
     }
-    cw @call_helpers.calc_call_gas_eq.
-    lu.
-    destruct call_helpers.calc_call_gas as [[gas_limit|] ?interpreter]; cbn; [|apply Run.Pure].
-    gas_macro_eq InterpreterTypesEq.
+    unfold common_result, condition1, condition2.
     s. {
-Admitted.
+      s_apply @call_helpers.get_memory_input_and_out_ranges_eq.
+    }
+    destruct get_memory_input_and_out_ranges as [[[input return_memory_offset]|] ?interpreter]. 2: {
+      s.
+    }
+    s. {
+      apply HostEq.
+    }
+    destruct _.(Host.load_account_delegated) as [[account_load|] ?host]; cbn. 2: {
+      s. {
+        apply InterpreterTypesEq.
+      }
+      s.
+    }
+    s. {
+      s_apply @call_helpers.calc_call_gas_eq.
+    }
+    destruct call_helpers.calc_call_gas as [[gas_limit|] ?interpreter]; cbn. 2: {
+      s.
+    }
+    gas_macro_eq InterpreterTypesEq.
+    step.
+    1: s; [apply Impl_u64.saturating_add_eq |].
+    all:
+      s; [apply InterpreterTypesEq |];
+      s; [apply InterpreterTypesEq |];
+      s; [apply @Impl_Box.new_eq |];
+      s; [apply InterpreterTypesEq |];
+      s.
+  }
+Qed.

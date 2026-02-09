@@ -5,10 +5,12 @@ Formal verification of the EVM instruction simulation. Each instruction has a `s
 - ✓ = fully proven (`Qed`)
 - ✗ = admitted (`Admitted`)
 
+Some entries are helper functions used by other instructions rather than standalone EVM opcodes (e.g., `jump_inner`, `return_inner`, `extcall_input`, `memory_resize`).
+
 ## arithmetic/
 
 | Instruction | Status |
-|---|---|
+|---|:---:|
 | [add](arithmetic/add.v) | ✓ |
 | [addmod](arithmetic/addmod.v) | ✓ |
 | [div](arithmetic/div.v) | ✓ |
@@ -24,7 +26,7 @@ Formal verification of the EVM instruction simulation. Each instruction has a `s
 ## bitwise/
 
 | Instruction | Status |
-|---|---|
+|---|:---:|
 | [bitand](bitwise/bitand.v) | ✓ |
 | [bitor](bitwise/bitor.v) | ✓ |
 | [bitxor](bitwise/bitxor.v) | ✓ |
@@ -43,7 +45,7 @@ Formal verification of the EVM instruction simulation. Each instruction has a `s
 ## block_info/
 
 | Instruction | Status |
-|---|---|
+|---|:---:|
 | [basefee](block_info/basefee.v) | ✓ |
 | [blob_basefee](block_info/blob_basefee.v) | ✓ |
 | [block_number](block_info/block_number.v) | ✓ |
@@ -56,22 +58,17 @@ Formal verification of the EVM instruction simulation. Each instruction has a `s
 ## contract/
 
 | Instruction | Status |
-|---|---|
-| [call](contract/call.v) | ✗ |
+|---|:---:|
+| [call](contract/call.v) | ✓ |
 | [call_code](contract/call_code.v) | ✓ |
 | [delegate_call](contract/delegate_call.v) | ✓ |
-| [extcall](contract/extcall.v) | ✗ |
-| [extcall_gas_calc](contract/extcall_gas_calc.v) | ✗ |
 | [extcall_input](contract/extcall_input.v) | ✓ |
-| [extdelegatecall](contract/extdelegatecall.v) | ✗ |
-| [extstaticcall](contract/extstaticcall.v) | ✗ |
-| [pop_extcall_target_address](contract/pop_extcall_target_address.v) | ✗ |
 | [static_call](contract/static_call.v) | ✓ |
 
 ## control/
 
 | Instruction | Status |
-|---|---|
+|---|:---:|
 | [invalid](control/invalid.v) | ✓ |
 | [jump](control/jump.v) | ✓ |
 | [jump_inner](control/jump_inner.v) | ✓ |
@@ -87,11 +84,11 @@ Formal verification of the EVM instruction simulation. Each instruction has a `s
 ## host/
 
 | Instruction | Status |
-|---|---|
+|---|:---:|
 | [balance](host/balance.v) | ✓ |
 | [blockhash](host/blockhash.v) | ✗ |
 | [extcodecopy](host/extcodecopy.v) | ✗ |
-| [extcodehash](host/extcodehash.v) | ✗ |
+| [extcodehash](host/extcodehash.v) | ✓ |
 | [extcodesize](host/extcodesize.v) | ✓ |
 | [log](host/log.v) | ✗ |
 | [selfdestruct](host/selfdestruct.v) | ✗ |
@@ -104,7 +101,7 @@ Formal verification of the EVM instruction simulation. Each instruction has a `s
 ## memory/
 
 | Instruction | Status |
-|---|---|
+|---|:---:|
 | [mcopy](memory/mcopy.v) | ✗ |
 | [mload](memory/mload.v) | ✓ |
 | [msize](memory/msize.v) | ✓ |
@@ -114,7 +111,7 @@ Formal verification of the EVM instruction simulation. Each instruction has a `s
 ## stack/
 
 | Instruction | Status |
-|---|---|
+|---|:---:|
 | [dup](stack/dup.v) | ✓ |
 | [pop](stack/pop.v) | ✓ |
 | [push](stack/push.v) | ✓ |
@@ -124,7 +121,7 @@ Formal verification of the EVM instruction simulation. Each instruction has a `s
 ## system/
 
 | Instruction | Status |
-|---|---|
+|---|:---:|
 | [address](system/address.v) | ✓ |
 | [calldatacopy](system/calldatacopy.v) | ✗ |
 | [calldataload](system/calldataload.v) | ✗ |
@@ -142,21 +139,21 @@ Formal verification of the EVM instruction simulation. Each instruction has a `s
 ## tx_info/
 
 | Instruction | Status |
-|---|---|
+|---|:---:|
 | [gasprice](tx_info/gasprice.v) | ✓ |
 
 ## Summary
 
 | Category | Proven | Admitted | Total |
-|---|---|---|---|
+|---|:---:|:---:|:---:|
 | arithmetic | 11 | 0 | 11 |
 | bitwise | 14 | 0 | 14 |
 | block_info | 8 | 0 | 8 |
-| contract | 4 | 6 | 10 |
+| contract | 5 | 0 | 5 |
 | control | 11 | 0 | 11 |
-| host | 3 | 9 | 12 |
+| host | 4 | 8 | 12 |
 | memory | 4 | 1 | 5 |
 | stack | 5 | 0 | 5 |
 | system | 4 | 9 | 13 |
 | tx_info | 1 | 0 | 1 |
-| **Total** | **65** | **25** | **90** |
+| **Total** | **67** | **18** | **85** |
