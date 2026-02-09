@@ -54,8 +54,7 @@ Definition gas_macro {WIRE K : Set} `{Link WIRE}
 
 Ltac gas_macro_eq InterpreterTypesEq :=
   unfold gas_macro;
-  apply Run.LetUnfold;
-  eapply Run.Call; [
+  s; [
     apply InterpreterTypesEq
       .(InterpreterTypes.Eq.LoopControl_for_Control)
       .(LoopControl.Eq.gas)
