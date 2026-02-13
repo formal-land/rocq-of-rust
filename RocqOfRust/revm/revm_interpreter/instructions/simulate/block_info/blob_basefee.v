@@ -68,7 +68,7 @@ Proof.
   intros.
   with_strategy transparent [run_blob_basefee] unfold blob_basefee, run_blob_basefee; cbn.
   check_macro_eq InterpreterTypesEq.
-  gas_macro_eq InterpreterTypesEq.
+  gas_macro_eq idtac.
   s. {
     apply HostEq.
   }

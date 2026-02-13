@@ -44,7 +44,7 @@ Lemma callvalue_eq
 Proof.
   intros.
   with_strategy transparent [run_callvalue] unfold callvalue, run_callvalue; cbn.
-  gas_macro_eq InterpreterTypesEq.
+  gas_macro_eq idtac.
   s. {
     apply InterpreterTypesEq.
   }

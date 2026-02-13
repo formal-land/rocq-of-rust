@@ -82,7 +82,7 @@ Lemma mload_eq
 Proof.
   intros.
   unfold mload.
-  gas_macro_eq InterpreterTypesEq.
+  gas_macro_eq idtac.
   popn_top_macro_eq InterpreterTypesEq.
   as_usize_or_fail_macro_eq InterpreterTypesEq.
   resize_memory_macro_eq InterpreterTypesEq.

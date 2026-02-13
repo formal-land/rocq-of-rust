@@ -62,7 +62,7 @@ Lemma gaslimit_eq
 Proof.
   intros.
   with_strategy transparent [run_gaslimit] unfold gaslimit, run_gaslimit; cbn.
-  gas_macro_eq InterpreterTypesEq.
+  gas_macro_eq idtac.
   s. {
     apply HostEq.
   }

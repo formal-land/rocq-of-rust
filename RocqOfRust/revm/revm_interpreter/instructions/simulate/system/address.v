@@ -50,7 +50,7 @@ Lemma address_eq
 Proof.
   intros.
   with_strategy transparent [run_address] unfold address, run_address; cbn.
-  gas_macro_eq InterpreterTypesEq.
+  gas_macro_eq idtac.
   s. {
     apply InterpreterTypesEq.
   }

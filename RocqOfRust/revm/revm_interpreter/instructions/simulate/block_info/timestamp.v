@@ -63,7 +63,7 @@ Proof.
   intros.
   with_strategy transparent [run_timestamp]
     unfold timestamp, run_timestamp; cbn.
-  gas_macro_eq InterpreterTypesEq.
+  gas_macro_eq idtac.
   s. {
     apply HostEq.
   }

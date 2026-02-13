@@ -73,7 +73,7 @@ Lemma selfbalance_eq
 Proof.
   with_strategy transparent [run_selfbalance] unfold selfbalance, run_selfbalance; cbn.
   check_macro_eq InterpreterTypesEq.
-  gas_macro_eq InterpreterTypesEq.
+  gas_macro_eq idtac.
   s. {
     apply InterpreterTypesEq.
   }

@@ -52,7 +52,7 @@ Definition gas_macro {WIRE K : Set} `{Link WIRE}
     k interpreter
   end.
 
-Ltac gas_macro_eq InterpreterTypesEq :=
+(* Ltac gas_macro_eq idtac :=
   unfold gas_macro;
   s; [
     apply InterpreterTypesEq
@@ -84,7 +84,42 @@ Ltac gas_macro_eq InterpreterTypesEq :=
     |];
     cbn;
     apply Run.Pure
-  ].
+  ]. *)
+
+Ltac gas_macro_eq gas_eq :=
+  match goal with
+  | InterpreterTypesEq : InterpreterTypes.Eq.t _ _ _ _ |- _ =>
+  unfold gas_macro;
+  s; [
+    apply InterpreterTypesEq
+      .(InterpreterTypes.Eq.LoopControl_for_Control)
+      .(LoopControl.Eq.gas)
+  |];
+  gas_eq;
+  s; [
+    apply Impl_Gas.record_cost_eq
+  |];
+  destruct Impl_Gas.record_cost;
+  (
+    eapply Run.Call; [
+      apply Run.Pure
+    |]
+  );
+  cbn;
+  [|
+    eapply Run.Call; [
+      apply Run.Pure
+    |];
+    apply Run.LetUnfold;
+    eapply Run.Call; [
+      apply InterpreterTypesEq
+        .(InterpreterTypes.Eq.LoopControl_for_Control)
+        .(LoopControl.Eq.set_instruction_result)
+    |];
+    cbn;
+    apply Run.Pure
+  ]
+  end.
 
 Definition gas_or_fail_macro {WIRE K : Set} `{Link WIRE}
     {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
@@ -109,10 +144,17 @@ Definition gas_or_fail_macro {WIRE K : Set} `{Link WIRE}
     gas_macro interpreter gas_used k_exit k
   end.
 
-(* TODO; for now we inline this tactic where it is used *)
-(*
-Ltac gas_or_fail_macro_eq InterpreterTypesEq :=
-*)
+Ltac gas_or_fail_macro_eq :=
+  match goal with
+  | InterpreterTypesEq : InterpreterTypes.Eq.t _ _ _ _ |- _ =>
+  step; [
+    gas_macro_eq idtac |
+    s; [
+      apply InterpreterTypesEq
+    |];
+    s
+  ]
+  end.
 
 Definition popn_macro {WIRE K : Set} `{Link WIRE}
     {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}

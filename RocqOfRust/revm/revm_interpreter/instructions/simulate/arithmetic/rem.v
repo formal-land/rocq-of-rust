@@ -62,7 +62,7 @@ Lemma rem_eq
 Proof.
   intros.
   unfold rem.
-  gas_macro_eq InterpreterTypesEq.
+  gas_macro_eq idtac.
   popn_top_macro_eq InterpreterTypesEq.
   match goal with
   | array : array.t aliases.U256.t _ |- _ =>

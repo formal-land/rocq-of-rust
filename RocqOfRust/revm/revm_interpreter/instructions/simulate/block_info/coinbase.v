@@ -66,7 +66,7 @@ Lemma coinbase_eq
 Proof.
   intros.
   with_strategy transparent [run_coinbase] unfold coinbase, run_coinbase; cbn.
-  gas_macro_eq InterpreterTypesEq.
+  gas_macro_eq idtac.
   s. {
     apply HostEq.
   }

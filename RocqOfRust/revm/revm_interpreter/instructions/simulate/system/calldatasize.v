@@ -1,4 +1,5 @@
 Require Import simulate.RocqOfRust.
+Require Import core.slice.simulate.mod.
 Require Import revm.revm_interpreter.gas.simulate.constants.
 Require Import revm.revm_interpreter.instructions.links.system.calldatasize.
 Require Import revm.revm_interpreter.instructions.simulate.macros.
@@ -6,6 +7,7 @@ Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_types.
 Require Import revm.revm_interpreter.simulate.interpreter_types.
 Require Import ruint.links.lib.
+Require Import ruint.simulate.from.
 
 Definition calldatasize
     {WIRE : Set} `{Link WIRE}
@@ -17,10 +19,10 @@ Definition calldatasize
   let input :=
     IInterpreterTypes.(InterpreterTypes.InputsTrait_for_Input).(InputTraits.input)
       .(RefStub.projection) interpreter.(Interpreter.input) in
+  let length : usize := Impl_Slice.len input in
   push_macro interpreter
-    {| Uint.value := Z.of_nat (List.length input) |}
-    id
-    id
+    (Impl_Uint.from length)
+    id id
   ).
 
 Lemma calldatasize_eq
@@ -43,4 +45,19 @@ Lemma calldatasize_eq
         [calldatasize interpreter; host]%stack
       )
     }}.
-Admitted.
+Proof.
+  with_strategy transparent [run_calldatasize] unfold calldatasize, run_calldatasize; cbn.
+  gas_macro_eq idtac.
+  s. {
+    apply InterpreterTypesEq.
+  }
+  s. {
+    pose proof (Impl_Slice.len_eq (T := u8)) as H_apply.
+    s_apply H_apply.
+  }
+  s. {
+    s_apply Impl_Uint.from_eq.
+  }
+  push_macro_eq InterpreterTypesEq.
+  s.
+Qed.

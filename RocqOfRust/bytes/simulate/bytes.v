@@ -3,6 +3,22 @@ Require Import bytes.links.bytes.
 Require Import core.ops.links.deref.
 Require Import core.ops.simulate.deref.
 
+Class Execute {A : Set} (e : SimulateM.t A) (value : A) : Prop := {
+  foo : {{
+    e 🌲
+    value
+  }}
+}.
+
+Class Foo (P : Prop) : Prop := {
+  Provided : Prop;
+  provided : Provided;
+}.
+
+Class FooFlat (P : Prop) (Provided : Prop -> Prop) : Prop := {
+  provided : Provided P;
+}.
+
 Module Impl_Bytes.
   Definition Self : Set :=
     Bytes.t.
@@ -22,6 +38,70 @@ Module Impl_Bytes.
       )
     }}.
   Admitted.
+
+  Class Gre (P : Prop) : Prop := {
+    gre : True;
+  }.
+
+  Instance len_Execute (ref_self : '& Bytes.t) (self : Bytes.t) (stack : Stack.t)
+  (* CanRead.t stack self ref_self -> *)
+  `{Gre (CanRead.t stack self ref_self)} :
+    Execute
+      (* (SimulateM.eval (evaluate (bytes.Impl_Bytes.run_len ref_self).(Run.run_f)) stack) *)
+      (SimulateM.eval_f
+      (bytes.Impl_Bytes.run_len ref_self)
+      stack)
+      (
+        Output.Success (len self),
+        stack
+      ).
+  Admitted.
+
+  Instance len_Foo (ref_self : '& Self) (self : Self) (stack : Stack.t) :
+      Foo
+    {{
+      SimulateM.eval_f
+        (bytes.Impl_Bytes.run_len ref_self)
+        stack 🌲
+      (
+        Output.Success (len self),
+        stack
+      )
+    }} :=
+  {
+    provided := len_eq ref_self self stack
+  }.
+
+  (* Instance len_FooFlat (ref_self : '& Self) (self : Self) (stack : Stack.t) :
+    FooFlat
+    {{
+      SimulateM.eval_f
+        (bytes.Impl_Bytes.run_len ref_self)
+        stack 🌲
+      (
+        Output.Success (len self),
+        stack
+      )
+    }}
+    _ :=
+  {
+    provided
+      () := len_eq ref_self self stack
+  }. *)
+
+  Instance len_FooFlat (ref_self : '& Self) (self : Self) (stack : Stack.t) :
+    FooFlat
+      {{
+        SimulateM.eval_f
+          (bytes.Impl_Bytes.run_len ref_self)
+          stack 🌲
+        (
+          Output.Success (len self),
+          stack
+        )
+      }}
+      (fun P => CanRead.t stack self ref_self -> P).
+    Admitted.
 End Impl_Bytes.
 Export (hints) Impl_Bytes.
 

@@ -6,6 +6,7 @@ Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_types.
 Require Import revm.revm_interpreter.simulate.interpreter_types.
 Require Import ruint.links.lib.
+Require Import ruint.simulate.from.
 
 Definition codesize
     {WIRE : Set} `{Link WIRE}
@@ -18,9 +19,8 @@ Definition codesize
     IInterpreterTypes.(InterpreterTypes.LegacyBytecode_for_Bytecode).(LegacyBytecode.bytecode_len)
       interpreter.(Interpreter.bytecode) in
   push_macro interpreter
-    {| Uint.value := i[size] |}
-    id
-    id
+    (Impl_Uint.from size)
+    id id
   ).
 
 Lemma codesize_eq
@@ -43,4 +43,15 @@ Lemma codesize_eq
         [codesize interpreter; host]%stack
       )
     }}.
-Admitted.
+Proof.
+  with_strategy transparent [run_codesize] unfold codesize, run_codesize; cbn.
+  gas_macro_eq idtac.
+  s. {
+    apply InterpreterTypesEq.
+  }
+  s. {
+    s_apply Impl_Uint.from_eq.
+  }
+  push_macro_eq InterpreterTypesEq.
+  s.
+Qed.

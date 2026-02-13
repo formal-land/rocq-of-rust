@@ -67,7 +67,7 @@ Lemma mstore8_eq
 Proof.
   intros.
   with_strategy transparent [run_mstore8] unfold mstore8, run_mstore8; cbn.
-  gas_macro_eq InterpreterTypesEq.
+  gas_macro_eq idtac.
   popn_macro_eq InterpreterTypesEq.
   match goal with
   | array : array.t aliases.U256.t _ |- _ =>

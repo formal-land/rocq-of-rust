@@ -5,7 +5,7 @@ Require Import core.slice.links.index.
 Require Import core.slice.links.iter.
 
 Module Impl_Slice.
-  Definition Self (T : Set) `{Link T} : Set :=
+  Definition Self (T : Set) : Set :=
     list T.
 
   (*
@@ -44,7 +44,7 @@ Module Impl_Slice.
 
   (* pub const fn len(&self) -> usize *)
   Instance run_len
-      (T : Set) `{Link T}
+      {T : Set} `{Link T}
       (self : '& (Self T)) :
     Run.Trait (slice.Impl_slice_T.len (Φ T)) [] [] [φ self]
       usize.
@@ -53,7 +53,7 @@ Module Impl_Slice.
 
   (* pub const fn is_empty(&self) -> bool *)
   Instance run_is_empty
-      (T : Set) `{Link T}
+      {T : Set} `{Link T}
       (self : '& (Self T)) :
     Run.Trait (slice.Impl_slice_T.is_empty (Φ T)) [] [] [φ self]
       bool.

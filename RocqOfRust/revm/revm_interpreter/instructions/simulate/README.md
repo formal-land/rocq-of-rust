@@ -125,16 +125,16 @@ Some entries are helper functions used by other instructions rather than standal
 | [address](system/address.v) | ✓ |
 | [calldatacopy](system/calldatacopy.v) | ✗ |
 | [calldataload](system/calldataload.v) | ✗ |
-| [calldatasize](system/calldatasize.v) | ✗ |
+| [calldatasize](system/calldatasize.v) | ✓ |
 | [caller](system/caller.v) | ✓ |
 | [callvalue](system/callvalue.v) | ✓ |
-| [codecopy](system/codecopy.v) | ✗ |
-| [codesize](system/codesize.v) | ✗ |
+| [codecopy](system/codecopy.v) | ✓ |
+| [codesize](system/codesize.v) | ✓ |
 | [gas](system/gas.v) | ✓ |
-| [keccak256](system/keccak256.v) | ✗ |
-| [memory_resize](system/memory_resize.v) | ✗ |
+| [keccak256](system/keccak256.v) | ✓ |
+| [memory_resize](system/memory_resize.v) | ✓ |
 | [returndatacopy](system/returndatacopy.v) | ✗ |
-| [returndatasize](system/returndatasize.v) | ✗ |
+| [returndatasize](system/returndatasize.v) | ✓ |
 
 ## tx_info/
 
@@ -154,6 +154,6 @@ Some entries are helper functions used by other instructions rather than standal
 | host | 4 | 8 | 12 |
 | memory | 4 | 1 | 5 |
 | stack | 5 | 0 | 5 |
-| system | 4 | 9 | 13 |
+| system | 10 | 3 | 13 |
 | tx_info | 1 | 0 | 1 |
-| **Total** | **67** | **18** | **85** |
+| **Total** | **73** | **14** | **85** |

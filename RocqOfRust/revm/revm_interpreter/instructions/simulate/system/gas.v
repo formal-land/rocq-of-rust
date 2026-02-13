@@ -49,7 +49,7 @@ Lemma gas_eq
 Proof.
   intros.
   with_strategy transparent [run_gas] unfold gas, run_gas; cbn.
-  gas_macro_eq InterpreterTypesEq.
+  gas_macro_eq idtac.
   s. {
     apply InterpreterTypesEq.
   }

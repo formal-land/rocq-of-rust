@@ -141,13 +141,13 @@ Opaque Impl_Eip7702CodeLoad.into_components.
       apply Impl_SpecId.is_enabled_in_eq.
     }
     destruct Impl_SpecId.is_enabled_in; cbn.
-    { gas_macro_eq InterpreterTypesEq.
+    { gas_macro_eq idtac.
       s. {
         apply Impl_Into_for_From_T.Eq.I.
       }
       s.
     }
-    { gas_macro_eq InterpreterTypesEq.
+    { gas_macro_eq idtac.
       s. {
         apply Impl_Into_for_From_T.Eq.I.
       }

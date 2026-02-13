@@ -1127,7 +1127,8 @@ Module MemoryTrait.
         (interpreter : Interpreter.t WIRE WIRE_types)
         (stack_rest : Stack.t)
         (memory_offset data_offset len : usize)
-        (data : list u8) :
+        (ref_data : '& (list u8)) (data : list u8) :
+        CanRead.t (interpreter :: stack_rest)%stack data ref_data ->
         let ref_interpreter : '&mut (Interpreter.t WIRE WIRE_types) := make_ref 0 in
         let ref_self := {| Ref.core :=
           SubPointer.Runner.apply
@@ -1137,7 +1138,7 @@ Module MemoryTrait.
         let memory' := I.(set_data) interpreter.(Interpreter.memory) memory_offset data_offset len data in
         {{
           SimulateM.eval_f
-            (links.interpreter_types.MemoryTrait.run_set_data ref_self memory_offset data_offset len (Ref.immediate _ data))
+            (links.interpreter_types.MemoryTrait.run_set_data ref_self memory_offset data_offset len ref_data)
             (interpreter :: stack_rest)%stack 🌲
           (
             Output.Success tt,
@@ -1265,7 +1266,9 @@ Module MemoryTrait.
         }};
     }.
   End Eq.
+  Export (hints) Eq.
 End MemoryTrait.
+Export (hints) MemoryTrait.
 
 Module SubRoutineStack.
   Class C (Self : Set) `{Link Self} : Set := {
