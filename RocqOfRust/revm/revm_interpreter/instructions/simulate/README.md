@@ -161,9 +161,9 @@ Rust source: [`../tx_info.rs`](../tx_info.rs)
 | block_info | 8 | 0 | 8 |
 | contract | 5 | 0 | 5 |
 | control | 11 | 0 | 11 |
-| host | 9 | 3 | 12 |
+| host | 10 | 2 | 12 |
 | memory | 5 | 0 | 5 |
 | stack | 5 | 0 | 5 |
 | system | 12 | 1 | 13 |
 | tx_info | 1 | 2 | 3 |
-| **Total** | **81** | **6** | **87** |
+| **Total** | **82** | **5** | **87** |
