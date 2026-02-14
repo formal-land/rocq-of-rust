@@ -117,7 +117,7 @@ Opaque Impl_Eip7702CodeLoad.into_components.
   destruct Impl_SpecId.is_enabled_in; cbn.
   { gas_macro_eq ltac:(s; [apply calc.warm_cold_cost_with_delegation_eq |]).
     s. {
-      apply Impl_Deref_for_Bytes.Eq.I.
+      apply simulate.mod.Impl_Deref_for_Bytes.Eq.I.
     }
     s. {
       s_apply Impl_Bytes.len_eq.
@@ -133,7 +133,7 @@ Opaque Impl_Eip7702CodeLoad.into_components.
     destruct Impl_SpecId.is_enabled_in; cbn.
     { gas_macro_eq idtac.
       s. {
-        apply Impl_Deref_for_Bytes.Eq.I.
+        apply simulate.mod.Impl_Deref_for_Bytes.Eq.I.
       }
       s. {
         s_apply Impl_Bytes.len_eq.
@@ -145,7 +145,7 @@ Opaque Impl_Eip7702CodeLoad.into_components.
     }
     { gas_macro_eq idtac.
       s. {
-        apply Impl_Deref_for_Bytes.Eq.I.
+        apply simulate.mod.Impl_Deref_for_Bytes.Eq.I.
       }
       s. {
         s_apply Impl_Bytes.len_eq.

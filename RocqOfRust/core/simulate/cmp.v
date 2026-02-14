@@ -288,5 +288,34 @@ Module Impl_Ord_for_usize.
       (Output.Success (cmp self other), stack)
     }}.
   Admitted.
+
+  Lemma min_eq (self other : Self) (stack : Stack.t) :
+    {{
+      SimulateM.eval_f (cmp.Ord.Provided.run_min self other) stack 🌲
+      (Output.Success (Z.min i[self] i[other] : Self), stack)
+    }}.
+  Admitted.
+
+  Lemma max_eq (self other : Self) (stack : Stack.t) :
+    {{
+      SimulateM.eval_f (cmp.Ord.Provided.run_max self other) stack 🌲
+      (Output.Success (Z.max i[self] i[other] : Self), stack)
+    }}.
+  Admitted.
+
+  (* Helpers *)
+  Lemma toplevel_min_eq (self other : Self) (stack : Stack.t) :
+    {{
+      SimulateM.eval_f (run_min self other) stack 🌲
+      (Output.Success (Z.min i[self] i[other] : Self), stack)
+    }}.
+  Admitted.
+
+  Lemma toplevel_max_eq (self other : Self) (stack : Stack.t) :
+    {{
+      SimulateM.eval_f (run_max self other) stack 🌲
+      (Output.Success (Z.max i[self] i[other] : Self), stack)
+    }}.
+  Admitted.
 End Impl_Ord_for_usize.
 Export (hints) Impl_Ord_for_usize.
