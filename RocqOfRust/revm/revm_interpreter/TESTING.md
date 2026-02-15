@@ -31,6 +31,7 @@ make -j1 \
   revm/revm_interpreter/instructions/tests/bitwise.vo \
   revm/revm_interpreter/instructions/tests/block_info.vo \
   revm/revm_interpreter/instructions/tests/contract.vo \
+  revm/revm_interpreter/instructions/tests/contract/call_helpers.vo \
   revm/revm_interpreter/instructions/tests/control.vo \
   revm/revm_interpreter/instructions/tests/stack.vo \
   revm/revm_interpreter/instructions/tests/system.vo \
@@ -149,10 +150,17 @@ Each simulate definition models one EVM instruction in Rocq. The table below tra
 | Instruction     | Simulate file | Tested |
 |-----------------|---------------|--------|
 | static_call     | `contract/static_call.v` | Yes |
-| call            | `contract/call.v` | No |
-| call_code       | `contract/call_code.v` | No |
-| delegate_call   | `contract/delegate_call.v` | No |
-| extcall_input   | `contract/extcall_input.v` | No (helper) |
+| call            | `contract/call.v` | Yes (includes abstract-`is_static` branch check) |
+| call_code       | `contract/call_code.v` | Yes |
+| delegate_call   | `contract/delegate_call.v` | Yes |
+| extcall_input   | `contract/extcall_input.v` | Yes (in `instructions/tests/contract/call_helpers.v`) |
+
+### Contract Helpers (`instructions/tests/contract/call_helpers.v`)
+
+| Helper function | Source file | Tested |
+|-----------------|-------------|--------|
+| extcall_input | `simulate/contract/extcall_input.v` | Yes |
+| get_memory_input_and_out_ranges | `instructions/contract/simulate/call_helpers.v` | Yes |
 
 ### Host
 
