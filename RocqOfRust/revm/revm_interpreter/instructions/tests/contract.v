@@ -6,12 +6,16 @@ Require Import alloy_primitives.log.links.mod.
 Require Import revm.revm_context_interface.links.host.
 Require Import revm.revm_context_interface.links.journaled_state.
 Require Import revm.revm_context_interface.simulate.host.
+Require Import revm.revm_interpreter.instructions.simulate.contract.call.
+Require Import revm.revm_interpreter.instructions.simulate.contract.call_code.
+Require Import revm.revm_interpreter.instructions.simulate.contract.delegate_call.
 Require Import revm.revm_interpreter.instructions.simulate.contract.static_call.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.instruction_result.
 Require Import revm.revm_interpreter.tests.host.
 Require Import revm.revm_interpreter.tests.interpreter.
 Require Import revm.revm_interpreter.tests.interpreter_types.
+Require Import revm.revm_specification.links.hardfork.
 Require Import ruint.links.lib.
 Require Import ruint.simulate.lib.
 
@@ -25,6 +29,190 @@ Goal
   let '(result_interpreter, _) := static_call interpreter host in
   result_interpreter.(Interpreter.control).(Control.instruction_result) =
     Some InstructionResult.StackUnderflow.
+Proof.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
+
+(** ** CALL tests *)
+
+(** Test that call with empty stack returns StackUnderflow *)
+Goal
+  let stack := {| Stack.value := [] |} in
+  let interpreter := make_interpreter stack in
+  let host : TestHost.t := TestHost.Make in
+  let '(result_interpreter, _) := call interpreter host in
+  result_interpreter.(Interpreter.control).(Control.instruction_result) =
+    Some InstructionResult.StackUnderflow.
+Proof.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
+
+(** Test that call with only 2 values returns StackUnderflow *)
+Goal
+  let stack := {| Stack.value := [
+    {| Uint.value := 1000 |};
+    {| Uint.value := 42 |}
+  ] |} in
+  let interpreter := make_interpreter stack in
+  let host : TestHost.t := TestHost.Make in
+  let '(result_interpreter, _) := call interpreter host in
+  result_interpreter.(Interpreter.control).(Control.instruction_result) =
+    Some InstructionResult.StackUnderflow.
+Proof.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
+
+(** call can branch on abstract RuntimeFlag.is_static in test fixtures *)
+Goal
+  let stack := {| Stack.value := [
+    {| Uint.value := 1000 |};  (* local_gas_limit *)
+    {| Uint.value := 42 |};    (* to *)
+    {| Uint.value := 1 |};     (* value *)
+    {| Uint.value := 0 |};     (* in_offset *)
+    {| Uint.value := 0 |};     (* in_len *)
+    {| Uint.value := 0 |};     (* out_offset *)
+    {| Uint.value := 0 |}      (* out_len *)
+  ] |} in
+  let interpreter := make_interpreter stack in
+  let host : TestHost.t := TestHost.Make in
+  let '(result_interpreter, _) := call interpreter host in
+  result_interpreter.(Interpreter.control).(Control.instruction_result) =
+    Some InstructionResult.CallNotAllowedInsideStatic \/
+  result_interpreter.(Interpreter.control).(Control.instruction_result) =
+    Some InstructionResult.FatalExternalError.
+Proof.
+  timeout 1 vm_compute.
+  destruct (RuntimeFlag.is_static SpecId.LATEST); auto.
+Qed.
+
+Goal
+  let stack := {| Stack.value := [
+    {| Uint.value := 1000 |};  (* local_gas_limit *)
+    {| Uint.value := 42 |};    (* to *)
+    {| Uint.value := 1 |};     (* value *)
+    {| Uint.value := 0 |};     (* in_offset *)
+    {| Uint.value := 0 |};     (* in_len *)
+    {| Uint.value := 0 |};     (* out_offset *)
+    {| Uint.value := 0 |}      (* out_len *)
+  ] |} in
+  let interpreter := make_interpreter stack in
+  let host : TestHostWithAccount.t := TestHostWithAccount.Make in
+  let '(result_interpreter, _) := call interpreter host in
+  result_interpreter.(Interpreter.control).(Control.instruction_result) =
+    Some InstructionResult.CallNotAllowedInsideStatic \/
+  result_interpreter.(Interpreter.control).(Control.instruction_result) =
+    Some InstructionResult.CallOrCreate.
+Proof.
+  timeout 1 vm_compute.
+  destruct (RuntimeFlag.is_static SpecId.LATEST); auto.
+Qed.
+
+(** ** CALLCODE tests *)
+
+Goal
+  let stack := {| Stack.value := [] |} in
+  let interpreter := make_interpreter stack in
+  let host : TestHost.t := TestHost.Make in
+  let '(result_interpreter, _) := call_code interpreter host in
+  result_interpreter.(Interpreter.control).(Control.instruction_result) =
+    Some InstructionResult.StackUnderflow.
+Proof.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
+
+Goal
+  let stack := {| Stack.value := [
+    {| Uint.value := 1000 |};  (* local_gas_limit *)
+    {| Uint.value := 42 |};    (* to *)
+    {| Uint.value := 0 |};     (* value *)
+    {| Uint.value := 0 |};     (* in_offset *)
+    {| Uint.value := 0 |};     (* in_len *)
+    {| Uint.value := 0 |};     (* out_offset *)
+    {| Uint.value := 0 |}      (* out_len *)
+  ] |} in
+  let interpreter := make_interpreter stack in
+  let host : TestHost.t := TestHost.Make in
+  let '(result_interpreter, _) := call_code interpreter host in
+  result_interpreter.(Interpreter.control).(Control.instruction_result) =
+    Some InstructionResult.FatalExternalError.
+Proof.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
+
+Goal
+  let stack := {| Stack.value := [
+    {| Uint.value := 1000 |};  (* local_gas_limit *)
+    {| Uint.value := 42 |};    (* to *)
+    {| Uint.value := 0 |};     (* value *)
+    {| Uint.value := 0 |};     (* in_offset *)
+    {| Uint.value := 0 |};     (* in_len *)
+    {| Uint.value := 0 |};     (* out_offset *)
+    {| Uint.value := 0 |}      (* out_len *)
+  ] |} in
+  let interpreter := make_interpreter stack in
+  let host : TestHostWithAccount.t := TestHostWithAccount.Make in
+  let '(result_interpreter, _) := call_code interpreter host in
+  result_interpreter.(Interpreter.control).(Control.instruction_result) =
+    Some InstructionResult.CallOrCreate.
+Proof.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
+
+(** ** DELEGATECALL tests *)
+
+Goal
+  let stack := {| Stack.value := [
+    {| Uint.value := 1000 |}
+  ] |} in
+  let interpreter := make_interpreter stack in
+  let host : TestHost.t := TestHost.Make in
+  let '(result_interpreter, _) := delegate_call interpreter host in
+  result_interpreter.(Interpreter.control).(Control.instruction_result) =
+    Some InstructionResult.StackUnderflow.
+Proof.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
+
+Goal
+  let stack := {| Stack.value := [
+    {| Uint.value := 1000 |};  (* local_gas_limit *)
+    {| Uint.value := 42 |};    (* to *)
+    {| Uint.value := 0 |};     (* in_offset *)
+    {| Uint.value := 0 |};     (* in_len *)
+    {| Uint.value := 0 |};     (* out_offset *)
+    {| Uint.value := 0 |}      (* out_len *)
+  ] |} in
+  let interpreter := make_interpreter stack in
+  let host : TestHost.t := TestHost.Make in
+  let '(result_interpreter, _) := delegate_call interpreter host in
+  result_interpreter.(Interpreter.control).(Control.instruction_result) =
+    Some InstructionResult.FatalExternalError.
+Proof.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
+
+Goal
+  let stack := {| Stack.value := [
+    {| Uint.value := 1000 |};  (* local_gas_limit *)
+    {| Uint.value := 42 |};    (* to *)
+    {| Uint.value := 0 |};     (* in_offset *)
+    {| Uint.value := 0 |};     (* in_len *)
+    {| Uint.value := 0 |};     (* out_offset *)
+    {| Uint.value := 0 |}      (* out_len *)
+  ] |} in
+  let interpreter := make_interpreter stack in
+  let host : TestHostWithAccount.t := TestHostWithAccount.Make in
+  let '(result_interpreter, _) := delegate_call interpreter host in
+  result_interpreter.(Interpreter.control).(Control.instruction_result) =
+    Some InstructionResult.CallOrCreate.
 Proof.
   timeout 1 vm_compute.
   reflexivity.

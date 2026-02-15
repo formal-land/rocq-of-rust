@@ -155,7 +155,7 @@ Proof.
   lu.
   cw @call_helpers.calc_call_gas_eq.
   destruct call_helpers.calc_call_gas as [[gas_limit|] ?interpreter]; cbn; [|apply Run.Pure].
-  gas_macro_eq InterpreterTypesEq.
+  gas_macro_eq idtac.
   s. {
     apply InterpreterTypesEq.
   }

@@ -4,11 +4,15 @@ Require Import core.links.array.
 Require Import revm.revm_context_interface.links.host.
 Require Import revm.revm_context_interface.links.journaled_state.
 Require Import revm.revm_context_interface.simulate.host.
+Require Import revm.revm_interpreter.gas.simulate.constants.
 Require Import revm.revm_interpreter.instructions.links.host.tstore.
 Require Import revm.revm_interpreter.instructions.simulate.macros.
 Require Import revm.revm_interpreter.links.interpreter.
+Require Import revm.revm_interpreter.links.instruction_result.
 Require Import revm.revm_interpreter.links.interpreter_types.
+Require Import revm.revm_interpreter.simulate.gas.
 Require Import revm.revm_interpreter.simulate.interpreter_types.
+Require Import revm.revm_specification.links.hardfork.
 
 Definition tstore
     {WIRE H : Set} `{Link WIRE} `{Link H}
@@ -19,14 +23,20 @@ Definition tstore
     (interpreter : Interpreter.t WIRE WIRE_types)
     (host : H) :
     Interpreter.t WIRE WIRE_types * H :=
+  check_macro interpreter SpecId.CANCUN
+    (fun interpreter => (interpreter, host)) (fun interpreter =>
+  require_non_staticcall_macro interpreter
+    (fun interpreter => (interpreter, host)) (fun interpreter =>
+  gas_macro interpreter constants.WARM_STORAGE_READ_COST
+    (fun interpreter => (interpreter, host)) (fun interpreter =>
   popn_macro interpreter 2 (fun interpreter => (interpreter, host)) (fun arr interpreter =>
-    let '⟬ index; value ⟭ := arr.(array.value) in
-    let target :=
-      IInterpreterTypes.(InterpreterTypes.InputsTrait_for_Input).(InputTraits.target_address)
-        interpreter.(Interpreter.input) in
-    let host := IHost.(Host.tstore) host target index value in
-    (interpreter, host)
-  ).
+  let '⟬ index; value ⟭ := arr.(array.value) in
+  let target :=
+    IInterpreterTypes.(InterpreterTypes.InputsTrait_for_Input).(InputTraits.target_address)
+      interpreter.(Interpreter.input) in
+  let host := IHost.(Host.tstore) host target index value in
+  (interpreter, host)
+  )))).
 
 Lemma tstore_eq
     {WIRE H : Set} `{Link WIRE} `{Link H}
@@ -54,4 +64,20 @@ Lemma tstore_eq
     )
   }}.
 Proof.
-Admitted.
+  with_strategy transparent [run_tstore] unfold tstore, run_tstore; cbn.
+  check_macro_eq InterpreterTypesEq.
+  require_non_staticcall_macro_eq InterpreterTypesEq.
+  gas_macro_eq idtac.
+  popn_macro_eq InterpreterTypesEq.
+  match goal with
+  | array : array.t aliases.U256.t _ |- _ =>
+    destruct array as [[index [value []]]]
+  end.
+  s. {
+    apply InterpreterTypesEq.
+  }
+  s. {
+    apply HostEq.
+  }
+  s.
+Qed.

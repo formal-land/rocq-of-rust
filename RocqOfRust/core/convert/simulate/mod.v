@@ -59,6 +59,92 @@ Module Into.
 End Into.
 Export (hints) Into.
 
+Module AsRef.
+  Class C (Self T : Set) `{Link Self} `{Link T} : Set := {
+    as_ref : RefStub.t Self T;
+  }.
+
+  Module Eq.
+    Class C
+        {Self T : Set} `{Link Self} `{Link T}
+        `{!AsRef.Run Self T}
+        (I : AsRef.C Self T) :
+        Prop := {
+      as_ref (ref_self : '& Self) (stack : Stack.t) :
+        {{
+          SimulateM.eval_f
+            (AsRef.run_as_ref ref_self)
+            stack 🌲
+          (
+            Output.Success (RefStub.apply ref_self I.(AsRef.as_ref)),
+            stack
+          )
+        }};
+    }.
+  End Eq.
+End AsRef.
+Export (hints) AsRef.
+
+Module Impl_AsRef_for_Slice.
+  Definition Self (T : Set) : Set :=
+    list T.
+
+  Definition as_ref
+      {T : Set} `{Link T} :
+      RefStub.t (Self T) (Self T) := {|
+    RefStub.path := [];
+    RefStub.projection self := self;
+    RefStub.injection _self value := value;
+  |}.
+
+  Instance I
+      {T : Set} `{Link T} :
+      AsRef.C (Self T) (Self T) := {|
+    AsRef.as_ref := as_ref;
+  |}.
+
+  Module Eq.
+    Instance I
+        {T : Set} `{Link T} :
+        AsRef.Eq.C (Self := Self T) (T := Self T) Impl_AsRef_for_Slice.I.
+    Admitted.
+  End Eq.
+  Export (hints) Eq.
+End Impl_AsRef_for_Slice.
+Export (hints) Impl_AsRef_for_Slice.
+
+Module Impl_AsRef_for_Ref.
+  Definition Self (T : Set) `{Link T} : Set :=
+    '& T.
+
+  Parameter as_ref :
+    forall {T U : Set} `{Link T} `{Link U},
+      AsRef.C T U ->
+      RefStub.t (Self T) U.
+
+  Instance I
+      {T U : Set} `{Link T} `{Link U}
+      `{AsRef_for_T : AsRef.C T U} :
+      AsRef.C (Self T) U := {|
+    AsRef.as_ref := as_ref AsRef_for_T;
+  |}.
+
+  Module Eq.
+    Instance I
+        {T U : Set} `{Link T} `{Link U}
+        `{!AsRef.Run T U}
+        `{AsRef_for_T : !AsRef.C T U}
+        `{!AsRef.Eq.C AsRef_for_T} :
+        AsRef.Eq.C
+          (Self := Self T)
+          (T := U)
+          (I (AsRef_for_T := AsRef_for_T)).
+    Admitted.
+  End Eq.
+  Export (hints) Eq.
+End Impl_AsRef_for_Ref.
+Export (hints) Impl_AsRef_for_Ref.
+
 Module Impl_Into_for_From_T.
   Instance I
       (T U : Set)

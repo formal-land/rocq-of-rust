@@ -4,11 +4,13 @@ Require Import core.links.array.
 Require Import revm.revm_context_interface.links.host.
 Require Import revm.revm_context_interface.links.journaled_state.
 Require Import revm.revm_context_interface.simulate.host.
+Require Import revm.revm_interpreter.gas.simulate.constants.
 Require Import revm.revm_interpreter.instructions.links.host.tload.
 Require Import revm.revm_interpreter.instructions.simulate.macros.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_types.
 Require Import revm.revm_interpreter.simulate.interpreter_types.
+Require Import revm.revm_specification.links.hardfork.
 
 Definition tload
     {WIRE H : Set} `{Link WIRE} `{Link H}
@@ -19,15 +21,19 @@ Definition tload
     (interpreter : Interpreter.t WIRE WIRE_types)
     (host : H) :
     Interpreter.t WIRE WIRE_types * H :=
+  check_macro interpreter SpecId.CANCUN
+    (fun interpreter => (interpreter, host)) (fun interpreter =>
+  gas_macro interpreter constants.WARM_STORAGE_READ_COST
+    (fun interpreter => (interpreter, host)) (fun interpreter =>
   popn_top_macro interpreter 0 (fun interpreter => (interpreter, host)) (fun _ top interpreter =>
-    let target :=
-      IInterpreterTypes.(InterpreterTypes.InputsTrait_for_Input).(InputTraits.target_address)
-        interpreter.(Interpreter.input) in
-    let index := top.(RefStub.projection) interpreter.(Interpreter.stack) in
-    let '(value, host) := IHost.(Host.tload) host target index in
-    let stack := top.(RefStub.injection) interpreter.(Interpreter.stack) value in
-    (interpreter <| Interpreter.stack := stack |>, host)
-  ).
+  let target :=
+    IInterpreterTypes.(InterpreterTypes.InputsTrait_for_Input).(InputTraits.target_address)
+      interpreter.(Interpreter.input) in
+  let index := top.(RefStub.projection) interpreter.(Interpreter.stack) in
+  let '(value, host) := IHost.(Host.tload) host target index in
+  let stack := top.(RefStub.injection) interpreter.(Interpreter.stack) value in
+  (interpreter <| Interpreter.stack := stack |>, host)
+  ))).
 
 Lemma tload_eq
     {WIRE H : Set} `{Link WIRE} `{Link H}
@@ -55,4 +61,15 @@ Lemma tload_eq
     )
   }}.
 Proof.
-Admitted.
+  with_strategy transparent [run_tload] unfold tload, run_tload; cbn.
+  check_macro_eq InterpreterTypesEq.
+  gas_macro_eq idtac.
+  popn_top_macro_eq InterpreterTypesEq.
+  s. {
+    apply InterpreterTypesEq.
+  }
+  s. {
+    apply HostEq.
+  }
+  s; now destruct _.(Host.tload).
+Qed.

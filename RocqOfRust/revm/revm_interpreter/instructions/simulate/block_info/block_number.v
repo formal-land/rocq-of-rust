@@ -62,7 +62,7 @@ Lemma block_number_eq
 Proof.
   intros.
   with_strategy transparent [run_block_number] unfold block_number, run_block_number; cbn.
-  gas_macro_eq InterpreterTypesEq.
+  gas_macro_eq idtac.
   s. {
     apply HostEq.
   }

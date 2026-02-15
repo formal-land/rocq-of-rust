@@ -40,7 +40,7 @@ Module Impl_Deref_for_Bytes.
   |}.
 
   Module Eq.
-    Instance t : Deref.Eq.t I.
+    Instance I : Deref.Eq.t I.
     Admitted.
   End Eq.
   Export (hints) Eq.

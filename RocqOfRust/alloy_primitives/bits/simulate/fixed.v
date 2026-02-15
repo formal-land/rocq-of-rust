@@ -27,6 +27,48 @@ Module FixedBytes.
     {| FixedBytes.value := {| array.value := bytes_be n value |} |}.
 End FixedBytes.
 
+Module Impl_FixedBytes.
+  Definition Self (N : usize) : Set :=
+    FixedBytes.t N.
+
+  Definition ZERO {N : usize} : Self N :=
+    {| FixedBytes.value := {|
+      array.value := ArrayPairs.repeat (0 : u8) (Z.to_nat i[N])
+    |} |}.
+
+  Lemma ZERO_eq
+      (stack : Stack.t)
+      (N : usize) :
+    {{
+      SimulateM.eval_f
+        (Impl_FixedBytes.run_zero N)
+        stack 🌲
+      (
+        Output.Success (Ref.immediate Pointer.Kind.Raw ZERO),
+        stack
+      )
+    }}.
+  Admitted.
+
+  Definition new {N : usize} (bytes : array.t u8 N) : Self N :=
+    {| FixedBytes.value := bytes |}.
+
+  Lemma new_eq
+      (stack : Stack.t)
+      (N : usize)
+      (bytes : array.t u8 N) :
+    {{
+      SimulateM.eval_f
+        (Impl_FixedBytes.run_new N bytes)
+        stack 🌲
+      (
+        Output.Success (new bytes),
+        stack
+      )
+    }}.
+  Admitted.
+End Impl_FixedBytes.
+
 Module Impl_From_FixedBytes_32_for_U256.
   Definition Self : Set :=
     aliases.U256.t.

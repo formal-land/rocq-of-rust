@@ -59,7 +59,7 @@ Lemma msize_eq
 Proof.
   intros.
   unfold msize.
-  gas_macro_eq InterpreterTypesEq.
+  gas_macro_eq idtac.
   s. {
     apply InterpreterTypesEq.
   }

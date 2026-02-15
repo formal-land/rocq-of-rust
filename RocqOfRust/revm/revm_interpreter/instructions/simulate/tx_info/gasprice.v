@@ -66,7 +66,7 @@ Lemma gasprice_eq
 Proof.
   with_strategy transparent [run_gasprice] unfold gasprice, run_gasprice; cbn.
   intros.
-  gas_macro_eq InterpreterTypesEq.
+  gas_macro_eq idtac.
   s. {
     apply HostEq.
   }

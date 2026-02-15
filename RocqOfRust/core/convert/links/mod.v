@@ -128,12 +128,26 @@ Module AsRef.
     method_as_ref :: Method_as_ref Self T;
   }.
 End AsRef.
+Export (hints) AsRef.
 
 (* impl<T> AsRef<[T]> for [T] *)
 Module Impl_AsRef_for_Slice.
+  Definition Self (T : Set) : Set :=
+    list T.
+
+  Instance run_as_ref (T : Set) `{Link T} (self : '& (Self T)) :
+    Run.Trait (convert.Impl_core_convert_AsRef_slice_T_for_slice_T.as_ref (Φ T))
+      [] [] [φ self]
+      ('& (list T)).
+  Proof.
+    constructor.
+    run_symbolic.
+  Defined.
+  Global Opaque run_as_ref.
+
   Instance method_as_ref
     (T : Set) `{Link T} :
-    AsRef.Method_as_ref (list T) (list T).
+    AsRef.Method_as_ref (Self T) (list T).
   Proof.
     eexists.
     { constructor.
@@ -141,9 +155,7 @@ Module Impl_AsRef_for_Slice.
       { apply convert.Impl_core_convert_AsRef_slice_T_for_slice_T.Implements. }
       { reflexivity. }
     }
-    { constructor.
-      run_symbolic.
-    }
+    { typeclasses eauto. }
   Defined.
 
   Instance run
@@ -151,6 +163,49 @@ Module Impl_AsRef_for_Slice.
     AsRef.Run (list T) (list T) :=
   {}.
 End Impl_AsRef_for_Slice.
+Export (hints) Impl_AsRef_for_Slice.
+
+(*
+impl<T: PointeeSized, U: PointeeSized> const AsRef<U> for &T
+where
+    T: [const] AsRef<U>
+*)
+Module Impl_AsRef_for_Ref.
+  Definition Self (T : Set) `{Link T} : Set :=
+    '& T.
+
+  Instance run_as_ref (T U : Set) `{Link T} `{Link U} (self : '& (Self T))
+      `{!AsRef.Run T U} :
+    Run.Trait (convert.Impl_core_convert_AsRef_where_core_marker_Sized_T_where_core_marker_Sized_U_where_core_convert_AsRef_T_U_U_for_ref__T.as_ref (Φ T) (Φ U))
+      [] [] [φ self]
+      ('& U).
+  Proof.
+    constructor.
+    run_symbolic.
+  Defined.
+  Global Opaque run_as_ref.
+
+  Instance method_as_ref
+    (T U : Set) `{Link T} `{Link U}
+    `{!AsRef.Run T U} :
+    AsRef.Method_as_ref (Self T) U.
+  Proof.
+    eexists.
+    { constructor.
+      eapply IsTraitMethod.Defined.
+      { apply convert.Impl_core_convert_AsRef_where_core_marker_Sized_T_where_core_marker_Sized_U_where_core_convert_AsRef_T_U_U_for_ref__T.Implements. }
+      { reflexivity. }
+    }
+    { typeclasses eauto. }
+  Defined.
+
+  Instance run
+    (T U : Set) `{Link T} `{Link U}
+    `{!AsRef.Run T U} :
+    AsRef.Run (Self T) U :=
+  {}.
+End Impl_AsRef_for_Ref.
+Export (hints) Impl_AsRef_for_Ref.
 
 (*
 pub trait TryFrom<T>: Sized {

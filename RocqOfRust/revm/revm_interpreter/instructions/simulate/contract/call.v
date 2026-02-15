@@ -245,7 +245,7 @@ Proof.
     destruct call_helpers.calc_call_gas as [[gas_limit|] ?interpreter]; cbn. 2: {
       s.
     }
-    gas_macro_eq InterpreterTypesEq.
+    gas_macro_eq idtac.
     step.
     1: s; [apply Impl_u64.saturating_add_eq |].
     all:

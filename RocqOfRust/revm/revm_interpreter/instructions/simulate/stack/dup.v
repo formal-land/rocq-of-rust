@@ -62,7 +62,7 @@ Lemma dup_eq
 Proof.
   intros.
   with_strategy transparent [run_dup] unfold dup, run_dup; cbn.
-  gas_macro_eq InterpreterTypesEq.
+  gas_macro_eq idtac.
   s. {
     apply InterpreterTypesEq.
   }

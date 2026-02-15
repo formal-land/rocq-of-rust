@@ -14,6 +14,46 @@ Require Import revm.revm_specification.simulate.hardfork.
 Require Import ruint.links.lib.
 Require Import ruint.simulate.lib.
 
+Definition require_non_staticcall_macro {WIRE K : Set} `{Link WIRE}
+    {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
+    {IInterpreterTypes : InterpreterTypes.C WIRE_types}
+    (interpreter : Interpreter.t WIRE WIRE_types)
+    (k_exit : Interpreter.t WIRE WIRE_types -> K)
+    (k : Interpreter.t WIRE WIRE_types -> K) :
+    K :=
+  let is_static :=
+    IInterpreterTypes
+      .(InterpreterTypes.RuntimeFlag_for_RuntimeFlag)
+      .(RuntimeFlag.is_static)
+      interpreter.(Interpreter.runtime_flag) in
+  if is_static then
+    let control :=
+      IInterpreterTypes
+        .(InterpreterTypes.LoopControl_for_Control)
+        .(LoopControl.set_instruction_result)
+        interpreter.(Interpreter.control)
+        instruction_result.InstructionResult.StateChangeDuringStaticCall in
+    let interpreter := interpreter <| Interpreter.control := control |> in
+    k_exit interpreter
+  else
+    k interpreter.
+
+Ltac require_non_staticcall_macro_eq InterpreterTypesEq :=
+  unfold require_non_staticcall_macro;
+  s; [
+    apply InterpreterTypesEq
+      .(InterpreterTypes.Eq.RuntimeFlag_for_RuntimeFlag)
+      .(RuntimeFlag.Eq.is_static)
+  |];
+  destruct _.(RuntimeFlag.is_static); cbn; [
+    s; [
+      apply InterpreterTypesEq
+        .(InterpreterTypes.Eq.LoopControl_for_Control)
+        .(LoopControl.Eq.set_instruction_result)
+    |];
+    s
+  |].
+
 Definition gas_macro {WIRE K : Set} `{Link WIRE}
     {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
     {IInterpreterTypes : InterpreterTypes.C WIRE_types}
@@ -52,17 +92,17 @@ Definition gas_macro {WIRE K : Set} `{Link WIRE}
     k interpreter
   end.
 
-Ltac gas_macro_eq InterpreterTypesEq :=
+Ltac gas_macro_eq gas_eq :=
+  match goal with
+  | InterpreterTypesEq : InterpreterTypes.Eq.t _ _ _ _ |- _ =>
   unfold gas_macro;
   s; [
     apply InterpreterTypesEq
       .(InterpreterTypes.Eq.LoopControl_for_Control)
       .(LoopControl.Eq.gas)
   |];
-  try (eapply Run.Call; [
-    apply Run.Pure
-  |]);
-  c; [
+  gas_eq;
+  s; [
     apply Impl_Gas.record_cost_eq
   |];
   destruct Impl_Gas.record_cost;
@@ -84,7 +124,8 @@ Ltac gas_macro_eq InterpreterTypesEq :=
     |];
     cbn;
     apply Run.Pure
-  ].
+  ]
+  end.
 
 Definition gas_or_fail_macro {WIRE K : Set} `{Link WIRE}
     {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
@@ -109,10 +150,17 @@ Definition gas_or_fail_macro {WIRE K : Set} `{Link WIRE}
     gas_macro interpreter gas_used k_exit k
   end.
 
-(* TODO; for now we inline this tactic where it is used *)
-(*
-Ltac gas_or_fail_macro_eq InterpreterTypesEq :=
-*)
+Ltac gas_or_fail_macro_eq :=
+  match goal with
+  | InterpreterTypesEq : InterpreterTypes.Eq.t _ _ _ _ |- _ =>
+  step; [
+    gas_macro_eq idtac |
+    s; [
+      apply InterpreterTypesEq
+    |];
+    s
+  ]
+  end.
 
 Definition popn_macro {WIRE K : Set} `{Link WIRE}
     {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
@@ -314,19 +362,24 @@ Ltac as_u64_saturated_macro_eq :=
     s_apply Impl_Uint.as_limbs_eq
   |];
   s;
+  (* In each branch of the [destruct], there are two possibilities depending on wether we called
+     the [as_usize_saturated_macro_eq] macro or not. *)
   destruct (_ && _) in |- *; [
-    s; [
-      apply Impl_usize.max_eq
-    |];
-    s;
-    unfold M.cast_integer; cbn;
-    f_equal; [hauto lq: on | lia]
+    (now s) ||
+    (
+      s; [
+        apply Impl_usize.max_eq
+      |];
+      s;
+      unfold M.cast_integer; cbn;
+      f_equal; [hauto lq: on | lia]
+    )
   | s; [
       apply Impl_u64.max_eq
     |];
-    s; [
+    try (s; [
       apply Impl_usize.max_eq
-    |];
+    |]);
     s
   ].
 

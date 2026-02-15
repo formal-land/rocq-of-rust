@@ -1,6 +1,7 @@
 Require Import simulate.RocqOfRust.
 Require Import alloy_primitives.links.aliases.
 Require Import core.links.array.
+Require Import core.num.simulate.mod.
 Require Import core.ops.simulate.deref.
 Require Import core.simulate.cmp.
 Require Import core.simulate.option.
@@ -100,13 +101,11 @@ Proof.
   as_usize_or_fail_macro_eq InterpreterTypesEq.
   as_usize_or_fail_macro_eq InterpreterTypesEq.
   s. {
-    (* max *)
-    s. {
-      s. {
-        s. {
-          s. {
-            s_apply Impl_Ord_for_usize.cmp_eq.
-          }
-          s.
-        }
-Admitted.
+    apply Impl_Ord_for_usize.toplevel_max_eq.
+  }
+  resize_memory_macro_eq InterpreterTypesEq.
+  s. {
+    apply InterpreterTypesEq.
+  }
+  now s; destruct _.(MemoryTrait.resize).
+Qed.

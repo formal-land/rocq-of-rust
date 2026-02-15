@@ -124,7 +124,7 @@ Definition WIRE_types : InterpreterTypes.Types.t := {|
   InterpreterTypes.Types.Memory := Memory.t;
   InterpreterTypes.Types.Memory_Synthetic := MemorySlice.t;
   InterpreterTypes.Types.Memory_Synthetic1 := MemorySlice.t;
-  InterpreterTypes.Types.Bytecode := unit;
+  InterpreterTypes.Types.Bytecode := usize;
   InterpreterTypes.Types.ReturnData := unit;
   InterpreterTypes.Types.Input := unit;
   InterpreterTypes.Types.SubRoutineStack := unit;
@@ -136,8 +136,29 @@ Definition WIRE_types : InterpreterTypes.Types.t := {|
 Instance AreLinks_WIRE_types : InterpreterTypes.Types.AreLinks WIRE_types := {}.
 
 Module Immediates.
-  Instance I : Immediates.C WIRE_types.(InterpreterTypes.Types.Bytecode).
-  Admitted.
+  Definition Self : Set := usize.
+
+  Definition read_i16 (self : Self) : i16 := 0.
+  Definition read_u16 (self : Self) : u16 := 0.
+  Definition read_i8 (self : Self) : i8 := 0.
+  Definition read_u8 (self : Self) : u8 := 0.
+  Definition read_offset_i16 (self : Self) (offset : isize) : i16 := 0.
+  Definition read_offset_u16 (self : Self) (offset : isize) : u16 := 0.
+  Definition read_slice (len : usize) : RefStub.t Self (list u8) := {|
+    RefStub.path := [];
+    RefStub.projection := fun _ => List.repeat (0 : u8) (Z.to_nat i[len]);
+    RefStub.injection := fun x _ => x;
+  |}.
+
+  Instance I : Immediates.C WIRE_types.(InterpreterTypes.Types.Bytecode) := {|
+    simulate.interpreter_types.Immediates.read_i16 := read_i16;
+    simulate.interpreter_types.Immediates.read_u16 := read_u16;
+    simulate.interpreter_types.Immediates.read_i8 := read_i8;
+    simulate.interpreter_types.Immediates.read_u8 := read_u8;
+    simulate.interpreter_types.Immediates.read_offset_i16 := read_offset_i16;
+    simulate.interpreter_types.Immediates.read_offset_u16 := read_offset_u16;
+    simulate.interpreter_types.Immediates.read_slice := read_slice;
+  |}.
 End Immediates.
 Export (hints) Immediates.
 
@@ -148,8 +169,22 @@ End LegacyBytecode.
 Export (hints) LegacyBytecode.
 
 Module Jumps.
-  Instance I : Jumps.C WIRE_types.(InterpreterTypes.Types.Bytecode).
-  Admitted.
+  Definition Self : Set := usize.
+
+  Definition relative_jump (self : Self) (offset : isize) : Self :=
+    {| Integer.value := i[self] + i[offset] |}.
+  Definition absolute_jump (_self : Self) (offset : usize) : Self := offset.
+  Definition is_valid_legacy_jump (self : Self) (_offset : usize) : bool * Self := (true, self).
+  Definition pc (self : Self) : usize := self.
+  Definition opcode (self : Self) : u8 := 0.
+
+  Instance I : Jumps.C WIRE_types.(InterpreterTypes.Types.Bytecode) := {|
+    simulate.interpreter_types.Jumps.relative_jump := relative_jump;
+    simulate.interpreter_types.Jumps.absolute_jump := absolute_jump;
+    simulate.interpreter_types.Jumps.is_valid_legacy_jump := is_valid_legacy_jump;
+    simulate.interpreter_types.Jumps.pc := pc;
+    simulate.interpreter_types.Jumps.opcode := opcode;
+  |}.
 End Jumps.
 Export (hints) Jumps.
 
@@ -256,17 +291,53 @@ Module StackTrait.
     | None => (None, self')
     end.
 
-  Definition pop (self : Self) : option aliases.U256.t * Self.
-  Admitted.
+  Definition pop (self : Self) : option aliases.U256.t * Self :=
+    match self.(Stack.value) with
+    | [] => (None, self)
+    | value :: rest => (Some value, {| Stack.value := rest |})
+    end.
 
-  Definition pop_address (self : Self) : option Address.t * Self.
-  Admitted.
+  Definition pop_address (self : Self) : option Address.t * Self :=
+    match self.(Stack.value) with
+    | [] => (None, self)
+    | value :: rest =>
+      (Some {| Address.value := value.(Uint.value) mod 2 ^ 160 |},
+       {| Stack.value := rest |})
+    end.
 
-  Definition exchange (self : Self) (n m : usize) : bool * Self.
-  Admitted.
+  Fixpoint list_set {A : Type} (l : list A) (n : nat) (v : A) : list A :=
+    match l, n with
+    | [], _ => []
+    | _ :: rest, O => v :: rest
+    | x :: rest, S n => x :: list_set rest n v
+    end.
 
-  Definition dup (self : Self) (n : usize) : bool * Self.
-  Admitted.
+  Definition exchange (self : Self) (n m : usize) : bool * Self :=
+    let stack_list := self.(Stack.value) in
+    let len := Z.of_nat (List.length stack_list) in
+    let nm := (i[n] + i[m])%Z in
+    if nm <? len then
+      let n_nat := Z.to_nat i[n] in
+      let nm_nat := Z.to_nat nm in
+      match List.nth_error stack_list n_nat,
+            List.nth_error stack_list nm_nat with
+      | Some vn, Some vnm =>
+        let stack' := list_set (list_set stack_list n_nat vnm) nm_nat vn in
+        (true, {| Stack.value := stack' |})
+      | _, _ => (false, self)
+      end
+    else
+      (false, self).
+
+  Definition dup (self : Self) (n : usize) : bool * Self :=
+    let len := Z.of_nat (List.length self.(Stack.value)) in
+    if (0 <? i[n]) && (i[n] <=? len) && (len <? 1024) then
+      match List.nth_error self.(Stack.value) (Z.to_nat (i[n] - 1)) with
+      | Some value => (true, {| Stack.value := value :: self.(Stack.value) |})
+      | None => (false, self)
+      end
+    else
+      (false, self).
 
   Instance I : StackTrait.C WIRE_types.(InterpreterTypes.Types.Stack) := {
     StackTrait.len := len;

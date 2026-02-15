@@ -8,6 +8,7 @@ Formal verification of the EVM instruction simulation. Each instruction has a `s
 Some entries are helper functions used by other instructions rather than standalone EVM opcodes (e.g., `jump_inner`, `return_inner`, `extcall_input`, `memory_resize`).
 
 ## arithmetic/
+Rust source: [`../arithmetic.rs`](../arithmetic.rs)
 
 | Instruction | Status |
 |---|:---:|
@@ -24,6 +25,7 @@ Some entries are helper functions used by other instructions rather than standal
 | [sub](arithmetic/sub.v) | ✓ |
 
 ## bitwise/
+Rust source: [`../bitwise.rs`](../bitwise.rs)
 
 | Instruction | Status |
 |---|:---:|
@@ -43,6 +45,7 @@ Some entries are helper functions used by other instructions rather than standal
 | [slt](bitwise/slt.v) | ✓ |
 
 ## block_info/
+Rust source: [`../block_info.rs`](../block_info.rs)
 
 | Instruction | Status |
 |---|:---:|
@@ -56,6 +59,7 @@ Some entries are helper functions used by other instructions rather than standal
 | [timestamp](block_info/timestamp.v) | ✓ |
 
 ## contract/
+Rust source: [`../contract.rs`](../contract.rs)
 
 | Instruction | Status |
 |---|:---:|
@@ -66,6 +70,7 @@ Some entries are helper functions used by other instructions rather than standal
 | [static_call](contract/static_call.v) | ✓ |
 
 ## control/
+Rust source: [`../control.rs`](../control.rs)
 
 | Instruction | Status |
 |---|:---:|
@@ -82,33 +87,36 @@ Some entries are helper functions used by other instructions rather than standal
 | [unknown](control/unknown.v) | ✓ |
 
 ## host/
+Rust source: [`../host.rs`](../host.rs)
 
 | Instruction | Status |
 |---|:---:|
 | [balance](host/balance.v) | ✓ |
-| [blockhash](host/blockhash.v) | ✗ |
-| [extcodecopy](host/extcodecopy.v) | ✗ |
+| [blockhash](host/blockhash.v) | ✓ |
+| [extcodecopy](host/extcodecopy.v) | ✓ |
 | [extcodehash](host/extcodehash.v) | ✓ |
 | [extcodesize](host/extcodesize.v) | ✓ |
 | [log](host/log.v) | ✗ |
 | [selfdestruct](host/selfdestruct.v) | ✗ |
 | [selfbalance](host/selfbalance.v) | ✓ |
-| [sload](host/sload.v) | ✗ |
-| [sstore](host/sstore.v) | ✗ |
-| [tload](host/tload.v) | ✗ |
-| [tstore](host/tstore.v) | ✗ |
+| [sload](host/sload.v) | ✓ |
+| [sstore](host/sstore.v) | ✓ |
+| [tload](host/tload.v) | ✓ |
+| [tstore](host/tstore.v) | ✓ |
 
 ## memory/
+Rust source: [`../memory.rs`](../memory.rs)
 
 | Instruction | Status |
 |---|:---:|
-| [mcopy](memory/mcopy.v) | ✗ |
+| [mcopy](memory/mcopy.v) | ✓ |
 | [mload](memory/mload.v) | ✓ |
 | [msize](memory/msize.v) | ✓ |
 | [mstore](memory/mstore.v) | ✓ |
 | [mstore8](memory/mstore8.v) | ✓ |
 
 ## stack/
+Rust source: [`../stack.rs`](../stack.rs)
 
 | Instruction | Status |
 |---|:---:|
@@ -119,24 +127,26 @@ Some entries are helper functions used by other instructions rather than standal
 | [swap](stack/swap.v) | ✓ |
 
 ## system/
+Rust source: [`../system.rs`](../system.rs)
 
 | Instruction | Status |
 |---|:---:|
 | [address](system/address.v) | ✓ |
-| [calldatacopy](system/calldatacopy.v) | ✗ |
+| [calldatacopy](system/calldatacopy.v) | ✓ |
 | [calldataload](system/calldataload.v) | ✗ |
-| [calldatasize](system/calldatasize.v) | ✗ |
+| [calldatasize](system/calldatasize.v) | ✓ |
 | [caller](system/caller.v) | ✓ |
 | [callvalue](system/callvalue.v) | ✓ |
-| [codecopy](system/codecopy.v) | ✗ |
-| [codesize](system/codesize.v) | ✗ |
+| [codecopy](system/codecopy.v) | ✓ |
+| [codesize](system/codesize.v) | ✓ |
 | [gas](system/gas.v) | ✓ |
-| [keccak256](system/keccak256.v) | ✗ |
-| [memory_resize](system/memory_resize.v) | ✗ |
-| [returndatacopy](system/returndatacopy.v) | ✗ |
-| [returndatasize](system/returndatasize.v) | ✗ |
+| [keccak256](system/keccak256.v) | ✓ |
+| [memory_resize](system/memory_resize.v) | ✓ |
+| [returndatacopy](system/returndatacopy.v) | ✓ |
+| [returndatasize](system/returndatasize.v) | ✓ |
 
 ## tx_info/
+Rust source: [`../tx_info.rs`](../tx_info.rs)
 
 | Instruction | Status |
 |---|:---:|
@@ -151,9 +161,9 @@ Some entries are helper functions used by other instructions rather than standal
 | block_info | 8 | 0 | 8 |
 | contract | 5 | 0 | 5 |
 | control | 11 | 0 | 11 |
-| host | 4 | 8 | 12 |
-| memory | 4 | 1 | 5 |
+| host | 10 | 2 | 12 |
+| memory | 5 | 0 | 5 |
 | stack | 5 | 0 | 5 |
-| system | 4 | 9 | 13 |
-| tx_info | 1 | 0 | 1 |
-| **Total** | **67** | **18** | **85** |
+| system | 12 | 1 | 13 |
+| tx_info | 1 | 2 | 3 |
+| **Total** | **82** | **5** | **87** |

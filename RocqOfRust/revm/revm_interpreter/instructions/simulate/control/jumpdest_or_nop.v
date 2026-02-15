@@ -49,6 +49,6 @@ Lemma jumpdest_or_nop_eq
 Proof.
   intros.
   with_strategy transparent [run_jumpdest_or_nop] unfold jumpdest_or_nop, run_jumpdest_or_nop; cbn.
-  gas_macro_eq InterpreterTypesEq.
+  gas_macro_eq idtac.
   s.
 Qed.

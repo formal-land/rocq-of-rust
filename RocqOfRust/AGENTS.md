@@ -61,6 +61,16 @@ This section overrides older notes below when they conflict.
   - if `run_*` executes more behavior than the current simulate definition, `Qed` is not possible without updating the definition.
 - Keep path alignment strict:
   - simulate files mirror source/links area layout (e.g. split memory/system/control).
+- For host instruction simulations, match Rust control-flow order exactly (e.g. checks/gas before stack or host calls), or `_eq` proofs will fail against `run_*`.
+- Added simulate macro `require_non_staticcall_macro` in `revm/revm_interpreter/instructions/simulate/macros.v`:
+  - behavior: if `runtime_flag.is_static` then set `StateChangeDuringStaticCall` and exit; otherwise continue.
+  - use `require_non_staticcall_macro_eq` in proofs instead of manually reproducing the static-guard branch.
+- `tstore` and `tload` should include EIP-1153 gates from Rust:
+  - `check_macro ... SpecId.CANCUN`
+  - (for `tstore`) `require_non_staticcall_macro`
+  - `gas_macro ... constants.WARM_STORAGE_READ_COST`
+  - then stack pop / host call logic.
+- When updating `simulate/README.md` summary counts, recompute from section tables; do not trust stale totals (tx_info row drifted once).
 
 ## Log of tips (newest first)
 

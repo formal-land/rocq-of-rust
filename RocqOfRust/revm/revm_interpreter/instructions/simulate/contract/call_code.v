@@ -166,7 +166,7 @@ Proof.
   }
   lu.
   destruct call_helpers.calc_call_gas as [[gas_limit|] ?interpreter]; r; [|p].
-  gas_macro_eq InterpreterTypesEq.
+  gas_macro_eq idtac.
   s. {
     apply Impl_Uint.is_zero_eq; repeat unshelve econstructor.
   }

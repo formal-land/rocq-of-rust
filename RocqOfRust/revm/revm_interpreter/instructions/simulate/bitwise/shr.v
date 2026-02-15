@@ -70,7 +70,7 @@ Proof.
   intros.
   unfold op_shr.
   check_macro_eq InterpreterTypesEq.
-  gas_macro_eq InterpreterTypesEq.
+  gas_macro_eq idtac.
   popn_top_macro_eq InterpreterTypesEq.
   match goal with
   | array : array.t aliases.U256.t _ |- _ => destruct array as [[op1 []]]; cbn

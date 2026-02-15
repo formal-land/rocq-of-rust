@@ -1,4 +1,8 @@
 Require Import simulate.RocqOfRust.
+Require Import alloy_primitives.bits.simulate.fixed.
+Require Import core.convert.simulate.mod.
+Require Import core.simulate.cmp.
+Require Import core.slice.simulate.mod.
 Require Import revm.revm_interpreter.gas.simulate.constants.
 Require Import revm.revm_interpreter.instructions.links.system.calldataload.
 Require Import revm.revm_interpreter.instructions.simulate.macros.
@@ -15,15 +19,25 @@ Definition calldataload
     Interpreter.t WIRE WIRE_types :=
   gas_macro interpreter constants.VERYLOW id (fun interpreter =>
   popn_top_macro interpreter 0
-    id
-    (fun _ top interpreter =>
-      let stack :=
-        top.(RefStub.injection)
-          interpreter.(Interpreter.stack)
-          {| Uint.value := 0 |} in
-      interpreter <| Interpreter.stack := stack |>
-    )
-  ).
+    id (fun _ offset_ptr_stub interpreter =>
+  let offset_ptr := offset_ptr_stub.(RefStub.projection) interpreter.(Interpreter.stack) in
+  let offset := as_usize_saturated_macro offset_ptr in
+  let input :=
+    IInterpreterTypes.(InterpreterTypes.InputsTrait_for_Input).(InputTraits.input)
+      .(RefStub.projection) interpreter.(Interpreter.input) in
+  let input_len := Impl_Slice.len input in
+  let word :=
+    if i[offset] <? i[input_len] then
+      let count := Z.min 32 i[input_len -i offset] in
+      Impl_FixedBytes.ZERO
+    else
+      Impl_FixedBytes.ZERO in
+  let stack :=
+    offset_ptr_stub.(RefStub.injection)
+      interpreter.(Interpreter.stack)
+      (Into.into word) in
+  interpreter <| Interpreter.stack := stack |>
+  )).
 
 Lemma calldataload_eq
     {WIRE H : Set} `{Link WIRE} `{Link H}
@@ -45,4 +59,36 @@ Lemma calldataload_eq
         [calldataload interpreter; host]%stack
       )
     }}.
+Proof.
+  with_strategy transparent [run_calldataload] unfold calldataload, run_calldataload; cbn.
+  gas_macro_eq idtac.
+  popn_top_macro_eq InterpreterTypesEq.
+  s. {
+    apply Impl_FixedBytes.ZERO_eq.
+  }
+  eapply Run.Let with (result :=
+    (Output.Success (as_usize_saturated_macro (t0.(RefStub.projection) s0)), _)
+  ). {
+    as_usize_saturated_macro_eq.
+  }
+  s. {
+    apply InterpreterTypesEq.
+  }
+  s. {
+    pose proof (Impl_Slice.len_eq (T := u8)) as H_apply.
+    s_apply H_apply.
+  }
+  s.
+  destruct (_ <? _) eqn:H_lt_eq; cbn.
+  { s. {
+      apply Impl_Ord_for_usize.min_eq.
+    }
+    (* TODO: debug_assert! macro *)
+    admit.
+  }
+  { s. {
+      apply Impl_Into_for_From_T.Eq.I.
+    }
+    s.
+  }
 Admitted.

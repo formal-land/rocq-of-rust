@@ -50,7 +50,7 @@ Lemma caller_eq
 Proof.
   intros.
   with_strategy transparent [run_caller] unfold caller, run_caller; cbn.
-  gas_macro_eq InterpreterTypesEq.
+  gas_macro_eq idtac.
   s. {
     apply InterpreterTypesEq.
   }
