@@ -97,11 +97,11 @@ Each simulate definition models one EVM instruction in Rocq. The table below tra
 |----------------|---------------|--------|
 | stop           | `control/stop.v` | Yes |
 | invalid        | `control/invalid.v` | Yes |
-| jump           | `control/jump.v` | No (uses `Jumps` - Admitted) |
-| jumpi          | `control/jumpi.v` | No (uses `Jumps` - Admitted) |
-| jump_inner     | `control/jump_inner.v` | No (uses `Jumps` - Admitted) |
-| jumpdest_or_nop | `control/jumpdest_or_nop.v` | No (uses `Immediates` - Admitted) |
-| pc             | `control/pc.v` | No (uses `LegacyBytecode` - Admitted) |
+| jump           | `control/jump.v` | Yes |
+| jumpi          | `control/jumpi.v` | Yes |
+| jump_inner     | `control/jump_inner.v` | Yes |
+| jumpdest_or_nop | `control/jumpdest_or_nop.v` | Yes |
+| pc             | `control/pc.v` | Yes |
 | ret            | `control/ret.v` | Yes |
 | revert         | `control/revert.v` | Yes |
 | return_inner   | `control/return_inner.v` | No (tested via ret/revert) |
@@ -113,7 +113,7 @@ Each simulate definition models one EVM instruction in Rocq. The table below tra
 |--------------|---------------|--------|
 | pop          | `stack/pop.v` | Yes |
 | push0        | `stack/push0.v` | Yes |
-| push         | `stack/push.v` | No (uses `Immediates` - Admitted) |
+| push         | `stack/push.v` | Yes |
 | dup          | `stack/dup.v` | Yes |
 | swap         | `stack/swap.v` | Yes |
 
@@ -122,18 +122,18 @@ Each simulate definition models one EVM instruction in Rocq. The table below tra
 | Instruction     | Simulate file | Tested |
 |-----------------|---------------|--------|
 | gas             | `system/gas.v` | Yes |
-| address         | `system/address.v` | No (uses `InputTraits` - Admitted) |
-| caller          | `system/caller.v` | No (uses `InputTraits` - Admitted) |
-| callvalue       | `system/callvalue.v` | No (uses `InputTraits` - Admitted) |
-| calldataload    | `system/calldataload.v` | No (uses `InputTraits` - Admitted) |
-| calldatasize    | `system/calldatasize.v` | No (uses `InputTraits` - Admitted) |
-| calldatacopy    | `system/calldatacopy.v` | No (uses `InputTraits` - Admitted) |
-| codesize        | `system/codesize.v` | No (uses `LegacyBytecode` - Admitted) |
-| codecopy        | `system/codecopy.v` | No (uses `LegacyBytecode` - Admitted) |
-| returndatasize  | `system/returndatasize.v` | No (uses `ReturnData` - Admitted) |
-| returndatacopy  | `system/returndatacopy.v` | No (uses `ReturnData` - Admitted) |
+| address         | `system/address.v` | Yes |
+| caller          | `system/caller.v` | Yes |
+| callvalue       | `system/callvalue.v` | Yes |
+| calldataload    | `system/calldataload.v` | Yes |
+| calldatasize    | `system/calldatasize.v` | Yes |
+| calldatacopy    | `system/calldatacopy.v` | Yes |
+| codesize        | `system/codesize.v` | Yes |
+| codecopy        | `system/codecopy.v` | Yes |
+| returndatasize  | `system/returndatasize.v` | Yes |
+| returndatacopy  | `system/returndatacopy.v` | Yes |
 | keccak256       | `system/keccak256.v` | Yes |
-| memory_resize   | `system/memory_resize.v` | No (helper, not an instruction) |
+| memory_resize   | `system/memory_resize.v` | Yes (helper smoke test) |
 
 ### Memory (`instructions/tests/memory.v`)
 

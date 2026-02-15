@@ -2,8 +2,14 @@ Require Import simulate.RocqOfRust.
 Require Import revm.revm_interpreter.instructions.simulate.control.stop.
 Require Import revm.revm_interpreter.instructions.simulate.control.invalid.
 Require Import revm.revm_interpreter.instructions.simulate.control.unknown.
+Require Import revm.revm_interpreter.instructions.simulate.control.jump.
+Require Import revm.revm_interpreter.instructions.simulate.control.jump_inner.
+Require Import revm.revm_interpreter.instructions.simulate.control.jumpdest_or_nop.
+Require Import revm.revm_interpreter.instructions.simulate.control.jumpi.
+Require Import revm.revm_interpreter.instructions.simulate.control.pc.
 Require Import revm.revm_interpreter.instructions.simulate.control.ret.
 Require Import revm.revm_interpreter.instructions.simulate.control.revert.
+Require Import alloy_primitives.links.aliases.
 Require Import revm.revm_interpreter.links.instruction_result.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_action.
@@ -99,6 +105,126 @@ Goal
   let result := revert interpreter in
   result.(Interpreter.control).(Control.instruction_result) =
     Some InstructionResult.Revert.
+Proof.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
+
+(** ** JUMPDEST_OR_NOP tests *)
+
+(** Test that JUMPDEST_OR_NOP just deducts gas, no error *)
+Goal
+  let stack := {| Stack.value := [] |} in
+  let interpreter := make_interpreter stack in
+  let result := jumpdest_or_nop interpreter in
+  result.(Interpreter.control).(Control.instruction_result) = None.
+Proof.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
+
+(** ** PC tests *)
+
+(** Test that PC pushes pc-1 = 0 onto the stack *)
+Goal
+  let stack := {| Stack.value := [] |} in
+  let interpreter := make_interpreter stack in
+  let result := pc interpreter in
+  result.(Interpreter.stack).(Stack.value) = [{| Uint.value := 0 |}].
+Proof.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
+
+(** ** JUMP tests *)
+
+(** Test that JUMP with valid target succeeds *)
+Goal
+  let stack := {| Stack.value := [{| Uint.value := 5 |}] |} in
+  let interpreter := make_interpreter stack in
+  let result := jump interpreter in
+  result.(Interpreter.control).(Control.instruction_result) = None.
+Proof.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
+
+(** Test that JUMP pops the target from stack *)
+Goal
+  let stack := {| Stack.value := [{| Uint.value := 5 |}] |} in
+  let interpreter := make_interpreter stack in
+  let result := jump interpreter in
+  result.(Interpreter.stack).(Stack.value) = [].
+Proof.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
+
+(** Test that JUMP with empty stack gives StackUnderflow *)
+Goal
+  let stack := {| Stack.value := [] |} in
+  let interpreter := make_interpreter stack in
+  let result := jump interpreter in
+  result.(Interpreter.control).(Control.instruction_result) =
+    Some InstructionResult.StackUnderflow.
+Proof.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
+
+(** ** JUMPI tests *)
+
+(** Test that JUMPI with cond=0 does not jump *)
+Goal
+  let stack := {| Stack.value := [
+    {| Uint.value := 5 |};
+    {| Uint.value := 0 |}
+  ] |} in
+  let interpreter := make_interpreter stack in
+  let result := jumpi interpreter in
+  result.(Interpreter.control).(Control.instruction_result) = None.
+Proof.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
+
+(** Test that JUMPI with cond=0 pops both values *)
+Goal
+  let stack := {| Stack.value := [
+    {| Uint.value := 5 |};
+    {| Uint.value := 0 |}
+  ] |} in
+  let interpreter := make_interpreter stack in
+  let result := jumpi interpreter in
+  result.(Interpreter.stack).(Stack.value) = [].
+Proof.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
+
+(** Test that JUMPI with cond=1 takes the jump *)
+Goal
+  let stack := {| Stack.value := [
+    {| Uint.value := 5 |};
+    {| Uint.value := 1 |}
+  ] |} in
+  let interpreter := make_interpreter stack in
+  let result := jumpi interpreter in
+  result.(Interpreter.control).(Control.instruction_result) = None.
+Proof.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
+
+(** ** JUMP_INNER tests *)
+
+(** Test that JUMP_INNER with valid target succeeds *)
+Goal
+  let stack := {| Stack.value := [] |} in
+  let interpreter := make_interpreter stack in
+  let target : aliases.U256.t := {| Uint.value := 5 |} in
+  let result := jump_inner interpreter target in
+  result.(Interpreter.control).(Control.instruction_result) = None.
 Proof.
   timeout 1 vm_compute.
   reflexivity.

@@ -136,8 +136,29 @@ Definition WIRE_types : InterpreterTypes.Types.t := {|
 Instance AreLinks_WIRE_types : InterpreterTypes.Types.AreLinks WIRE_types := {}.
 
 Module Immediates.
-  Instance I : Immediates.C WIRE_types.(InterpreterTypes.Types.Bytecode).
-  Admitted.
+  Definition Self : Set := unit.
+
+  Definition read_i16 (self : Self) : i16 := 0.
+  Definition read_u16 (self : Self) : u16 := 0.
+  Definition read_i8 (self : Self) : i8 := 0.
+  Definition read_u8 (self : Self) : u8 := 0.
+  Definition read_offset_i16 (self : Self) (offset : isize) : i16 := 0.
+  Definition read_offset_u16 (self : Self) (offset : isize) : u16 := 0.
+  Definition read_slice (len : usize) : RefStub.t Self (list u8) := {|
+    RefStub.path := [];
+    RefStub.projection := fun _ => List.repeat (0 : u8) (Z.to_nat i[len]);
+    RefStub.injection := fun _ _ => tt;
+  |}.
+
+  Instance I : Immediates.C WIRE_types.(InterpreterTypes.Types.Bytecode) := {|
+    simulate.interpreter_types.Immediates.read_i16 := read_i16;
+    simulate.interpreter_types.Immediates.read_u16 := read_u16;
+    simulate.interpreter_types.Immediates.read_i8 := read_i8;
+    simulate.interpreter_types.Immediates.read_u8 := read_u8;
+    simulate.interpreter_types.Immediates.read_offset_i16 := read_offset_i16;
+    simulate.interpreter_types.Immediates.read_offset_u16 := read_offset_u16;
+    simulate.interpreter_types.Immediates.read_slice := read_slice;
+  |}.
 End Immediates.
 Export (hints) Immediates.
 
@@ -148,8 +169,21 @@ End LegacyBytecode.
 Export (hints) LegacyBytecode.
 
 Module Jumps.
-  Instance I : Jumps.C WIRE_types.(InterpreterTypes.Types.Bytecode).
-  Admitted.
+  Definition Self : Set := unit.
+
+  Definition relative_jump (self : Self) (offset : isize) : Self := tt.
+  Definition absolute_jump (self : Self) (offset : usize) : Self := tt.
+  Definition is_valid_legacy_jump (self : Self) (offset : usize) : bool * Self := (true, tt).
+  Definition pc (self : Self) : usize := 1.
+  Definition opcode (self : Self) : u8 := 0.
+
+  Instance I : Jumps.C WIRE_types.(InterpreterTypes.Types.Bytecode) := {|
+    simulate.interpreter_types.Jumps.relative_jump := relative_jump;
+    simulate.interpreter_types.Jumps.absolute_jump := absolute_jump;
+    simulate.interpreter_types.Jumps.is_valid_legacy_jump := is_valid_legacy_jump;
+    simulate.interpreter_types.Jumps.pc := pc;
+    simulate.interpreter_types.Jumps.opcode := opcode;
+  |}.
 End Jumps.
 Export (hints) Jumps.
 

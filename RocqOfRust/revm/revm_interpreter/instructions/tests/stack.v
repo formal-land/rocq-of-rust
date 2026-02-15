@@ -1,6 +1,7 @@
 Require Import simulate.RocqOfRust.
 Require Import revm.revm_interpreter.instructions.simulate.stack.dup.
 Require Import revm.revm_interpreter.instructions.simulate.stack.pop.
+Require Import revm.revm_interpreter.instructions.simulate.stack.push.
 Require Import revm.revm_interpreter.instructions.simulate.stack.push0.
 Require Import revm.revm_interpreter.instructions.simulate.stack.swap.
 Require Import revm.revm_interpreter.links.instruction_result.
@@ -127,6 +128,30 @@ Goal
     {| Uint.value := 1 |};
     {| Uint.value := 4 |}
   ].
+Proof.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
+
+(** ** PUSH tests *)
+
+(** Test that PUSH1 pushes a value onto the stack (zero bytes from unit bytecode) *)
+Goal
+  let stack := {| Stack.value := [] |} in
+  let interpreter := make_interpreter stack in
+  let result := push 1 interpreter in
+  result.(Interpreter.stack).(Stack.value) = [{| Uint.value := 0 |}].
+Proof.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
+
+(** Test that PUSH1 does not set an error *)
+Goal
+  let stack := {| Stack.value := [] |} in
+  let interpreter := make_interpreter stack in
+  let result := push 1 interpreter in
+  result.(Interpreter.control).(Control.instruction_result) = None.
 Proof.
   timeout 1 vm_compute.
   reflexivity.

@@ -1,8 +1,21 @@
 Require Import simulate.RocqOfRust.
 Require Import alloy_primitives.bits.simulate.fixed.
 Require Import core.convert.simulate.mod.
+Require Import revm.revm_interpreter.instructions.simulate.system.address.
+Require Import revm.revm_interpreter.instructions.simulate.system.caller.
+Require Import revm.revm_interpreter.instructions.simulate.system.callvalue.
+Require Import revm.revm_interpreter.instructions.simulate.system.calldatasize.
+Require Import revm.revm_interpreter.instructions.simulate.system.calldataload.
+Require Import revm.revm_interpreter.instructions.simulate.system.calldatacopy.
+Require Import revm.revm_interpreter.instructions.simulate.system.codesize.
+Require Import revm.revm_interpreter.instructions.simulate.system.codecopy.
 Require Import revm.revm_interpreter.instructions.simulate.system.gas.
 Require Import revm.revm_interpreter.instructions.simulate.system.keccak256.
+Require Import revm.revm_interpreter.instructions.simulate.system.returndatasize.
+Require Import revm.revm_interpreter.instructions.simulate.system.returndatacopy.
+Require Import revm.revm_interpreter.instructions.simulate.system.memory_resize.
+Require Import revm.revm_interpreter.links.gas.
+Require Import revm.revm_interpreter.links.instruction_result.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.tests.interpreter.
 Require Import revm.revm_interpreter.tests.interpreter_types.
@@ -38,5 +51,111 @@ Goal
     [Into.into KECCAK_EMPTY].
 Proof.
   timeout 5 vm_compute.
+  reflexivity.
+Qed.
+
+(** ** ADDRESS/CALLER/CALLVALUE/CALLDATASIZE/CODESIZE/RETURNDATASIZE tests *)
+
+Goal
+  let interpreter := make_interpreter {| Stack.value := [] |} in
+  Z.of_nat (List.length (address interpreter).(Interpreter.stack).(Stack.value)) = 1.
+Proof.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
+
+Goal
+  let interpreter := make_interpreter {| Stack.value := [] |} in
+  (address interpreter).(Interpreter.control).(Control.gas).(Gas.remaining) = 999998.
+Proof.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
+
+Goal
+  let interpreter := make_interpreter {| Stack.value := [] |} in
+  Z.of_nat (List.length (caller interpreter).(Interpreter.stack).(Stack.value)) = 1.
+Proof.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
+
+Goal
+  let interpreter := make_interpreter {| Stack.value := [] |} in
+  Z.of_nat (List.length (callvalue interpreter).(Interpreter.stack).(Stack.value)) = 1.
+Proof.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
+
+Goal
+  let interpreter := make_interpreter {| Stack.value := [] |} in
+  Z.of_nat (List.length (calldatasize interpreter).(Interpreter.stack).(Stack.value)) = 1.
+Proof.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
+
+Goal
+  let interpreter := make_interpreter {| Stack.value := [] |} in
+  Z.of_nat (List.length (codesize interpreter).(Interpreter.stack).(Stack.value)) = 1.
+Proof.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
+
+Goal
+  let interpreter := make_interpreter {| Stack.value := [] |} in
+  Z.of_nat (List.length (returndatasize interpreter).(Interpreter.stack).(Stack.value)) = 1.
+Proof.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
+
+(** ** Stack underflow tests *)
+
+Goal
+  let interpreter := make_interpreter {| Stack.value := [] |} in
+  (calldataload interpreter).(Interpreter.control).(Control.instruction_result) =
+    Some InstructionResult.StackUnderflow.
+Proof.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
+
+Goal
+  let interpreter := make_interpreter {| Stack.value := [] |} in
+  (calldatacopy interpreter).(Interpreter.control).(Control.instruction_result) =
+    Some InstructionResult.StackUnderflow.
+Proof.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
+
+Goal
+  let interpreter := make_interpreter {| Stack.value := [] |} in
+  (codecopy interpreter).(Interpreter.control).(Control.instruction_result) =
+    Some InstructionResult.StackUnderflow.
+Proof.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
+
+Goal
+  let interpreter := make_interpreter {| Stack.value := [] |} in
+  (returndatacopy interpreter).(Interpreter.control).(Control.instruction_result) =
+    Some InstructionResult.StackUnderflow.
+Proof.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
+
+(** ** memory_resize helper smoke test *)
+
+Goal
+  let interpreter := make_interpreter {| Stack.value := [] |} in
+  fst (memory_resize interpreter {| Uint.value := 0 |} {| Integer.value := 0 |}) = None.
+Proof.
+  timeout 1 vm_compute.
   reflexivity.
 Qed.
