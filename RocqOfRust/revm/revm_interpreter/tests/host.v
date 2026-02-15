@@ -3,6 +3,7 @@ Require Import alloy_primitives.bits.links.address.
 Require Import alloy_primitives.bytes.links.mod.
 Require Import alloy_primitives.links.aliases.
 Require Import alloy_primitives.log.links.mod.
+Require Import revm.revm_context_interface.links.cfg.
 Require Import revm.revm_context_interface.links.host.
 Require Import revm.revm_context_interface.links.journaled_state.
 Require Import revm.revm_context_interface.links.transaction.
@@ -133,13 +134,43 @@ Module TestHost.
         host_types.(Host.Types.TransactionTypes).
   Admitted.
 
+  Instance Block_for_t : Block.C t := {
+    Block.number := number;
+    Block.beneficiary := beneficiary;
+    Block.timestamp := timestamp;
+    Block.gas_limit := gas_limit;
+    Block.basefee := basefee;
+    Block.difficulty := difficulty;
+    Block.prevrandao := prevrandao;
+    Block.blob_excess_gas_and_price _ := None;
+    Block.blob_gasprice := blob_gasprice;
+    Block.blob_excess_gas _ := None;
+  }.
+
   Instance BlockGetter_for_t :
-      BlockGetter.C t (Host.Types.to_BlockGetter_types host_types).
-  Admitted.
+      BlockGetter.C t (Host.Types.to_BlockGetter_types host_types) := {
+    BlockGetter.Block_for_Block := Block_for_t;
+    BlockGetter.block := block;
+  }.
+
+  Instance Cfg_for_t :
+      Cfg.C t (CfgGetter.Types.to_Cfg_types (Host.Types.to_CfgGetter_types host_types)) := {
+    Cfg.chain_id := chain_id;
+    Cfg.spec := spec;
+    Cfg.max_code_size := max_code_size;
+    Cfg.is_eip3607_disabled := is_eip3607_disabled;
+    Cfg.is_balance_check_disabled := is_balance_check_disabled;
+    Cfg.is_gas_refund_disabled := is_gas_refund_disabled;
+    Cfg.is_block_gas_limit_disabled := is_block_gas_limit_disabled;
+    Cfg.is_nonce_check_disabled := is_nonce_check_disabled;
+    Cfg.is_base_fee_check_disabled := is_base_fee_check_disabled;
+  }.
 
   Instance CfgGetter_for_t :
-      CfgGetter.C t (Host.Types.to_CfgGetter_types host_types).
-  Admitted.
+      CfgGetter.C t (Host.Types.to_CfgGetter_types host_types) := {
+    CfgGetter.Cfg_for_Cfg := Cfg_for_t;
+    CfgGetter.cfg := cfg;
+  }.
 
   Instance I : Host.C t host_types := {
     Host.TransactionGetter_for_Self := TransactionGetter_for_t;
@@ -291,13 +322,43 @@ Module TestHostWithAccount.
         host_types.(Host.Types.TransactionTypes).
   Admitted.
 
+  Instance Block_for_t : Block.C t := {
+    Block.number := number;
+    Block.beneficiary := beneficiary;
+    Block.timestamp := timestamp;
+    Block.gas_limit := gas_limit;
+    Block.basefee := basefee;
+    Block.difficulty := difficulty;
+    Block.prevrandao := prevrandao;
+    Block.blob_excess_gas_and_price _ := None;
+    Block.blob_gasprice := blob_gasprice;
+    Block.blob_excess_gas _ := None;
+  }.
+
   Instance BlockGetter_for_t :
-      BlockGetter.C t (Host.Types.to_BlockGetter_types host_types).
-  Admitted.
+      BlockGetter.C t (Host.Types.to_BlockGetter_types host_types) := {
+    BlockGetter.Block_for_Block := Block_for_t;
+    BlockGetter.block := block;
+  }.
+
+  Instance Cfg_for_t :
+      Cfg.C t (CfgGetter.Types.to_Cfg_types (Host.Types.to_CfgGetter_types host_types)) := {
+    Cfg.chain_id := chain_id;
+    Cfg.spec := spec;
+    Cfg.max_code_size := max_code_size;
+    Cfg.is_eip3607_disabled := is_eip3607_disabled;
+    Cfg.is_balance_check_disabled := is_balance_check_disabled;
+    Cfg.is_gas_refund_disabled := is_gas_refund_disabled;
+    Cfg.is_block_gas_limit_disabled := is_block_gas_limit_disabled;
+    Cfg.is_nonce_check_disabled := is_nonce_check_disabled;
+    Cfg.is_base_fee_check_disabled := is_base_fee_check_disabled;
+  }.
 
   Instance CfgGetter_for_t :
-      CfgGetter.C t (Host.Types.to_CfgGetter_types host_types).
-  Admitted.
+      CfgGetter.C t (Host.Types.to_CfgGetter_types host_types) := {
+    CfgGetter.Cfg_for_Cfg := Cfg_for_t;
+    CfgGetter.cfg := cfg;
+  }.
 
   Instance I : Host.C t host_types := {
     Host.TransactionGetter_for_Self := TransactionGetter_for_t;
