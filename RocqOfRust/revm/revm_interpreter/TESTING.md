@@ -101,10 +101,10 @@ Each simulate definition models one EVM instruction in Rocq. The table below tra
 | jump_inner     | `control/jump_inner.v` | No (uses `Jumps` - Admitted) |
 | jumpdest_or_nop | `control/jumpdest_or_nop.v` | No (uses `Immediates` - Admitted) |
 | pc             | `control/pc.v` | No (uses `LegacyBytecode` - Admitted) |
-| ret            | `control/ret.v` | No (uses `StackTrait.pop` - Admitted) |
-| revert         | `control/revert.v` | No (uses `StackTrait.pop` - Admitted) |
-| return_inner   | `control/return_inner.v` | No (uses `StackTrait.pop` - Admitted) |
-| unknown        | `control/unknown.v` | No |
+| ret            | `control/ret.v` | Yes |
+| revert         | `control/revert.v` | Yes |
+| return_inner   | `control/return_inner.v` | No (tested via ret/revert) |
+| unknown        | `control/unknown.v` | Yes |
 
 ### Stack (`instructions/tests/stack.v`)
 
@@ -113,8 +113,8 @@ Each simulate definition models one EVM instruction in Rocq. The table below tra
 | pop          | `stack/pop.v` | Yes |
 | push0        | `stack/push0.v` | Yes |
 | push         | `stack/push.v` | No (uses `Immediates` - Admitted) |
-| dup          | `stack/dup.v` | No (uses `StackTrait.dup` - Admitted) |
-| swap         | `stack/swap.v` | No (uses `StackTrait.exchange` - Admitted) |
+| dup          | `stack/dup.v` | Yes |
+| swap         | `stack/swap.v` | Yes |
 
 ### System (`instructions/tests/system.v`)
 
@@ -131,7 +131,7 @@ Each simulate definition models one EVM instruction in Rocq. The table below tra
 | codecopy        | `system/codecopy.v` | No (uses `LegacyBytecode` - Admitted) |
 | returndatasize  | `system/returndatasize.v` | No (uses `ReturnData` - Admitted) |
 | returndatacopy  | `system/returndatacopy.v` | No (uses `ReturnData` - Admitted) |
-| keccak256       | `system/keccak256.v` | No |
+| keccak256       | `system/keccak256.v` | Yes |
 | memory_resize   | `system/memory_resize.v` | No (helper, not an instruction) |
 
 ### Memory (`instructions/tests/memory.v`)
@@ -141,8 +141,8 @@ Each simulate definition models one EVM instruction in Rocq. The table below tra
 | msize        | `memory/msize.v` | Yes |
 | mstore       | `memory/mstore.v` | Yes |
 | mload        | `memory/mload.v` | Yes |
-| mstore8      | `memory/mstore8.v` | No |
-| mcopy        | `memory/mcopy.v` | No |
+| mstore8      | `memory/mstore8.v` | Yes |
+| mcopy        | `memory/mcopy.v` | Yes |
 
 ### Contract (`instructions/tests/contract.v`)
 
@@ -160,16 +160,16 @@ Each simulate definition models one EVM instruction in Rocq. The table below tra
 |----------------|---------------|--------|
 | balance        | `host/balance.v` | No (uses `InputTraits` - Admitted) |
 | selfbalance    | `host/selfbalance.v` | No (uses `InputTraits` - Admitted) |
-| blockhash      | `host/blockhash.v` | No (uses `StackTrait.pop` - Admitted) |
-| sload          | `host/sload.v` | No (uses `StackTrait.pop` - Admitted) |
-| sstore         | `host/sstore.v` | No (uses `StackTrait.pop` - Admitted) |
+| blockhash      | `host/blockhash.v` | No (uses Host methods - Admitted) |
+| sload          | `host/sload.v` | No (uses Host methods - Admitted) |
+| sstore         | `host/sstore.v` | No (uses Host methods - Admitted) |
 | tload          | `host/tload.v` | No (uses `InputTraits` - Admitted) |
 | tstore         | `host/tstore.v` | No (uses `InputTraits` - Admitted) |
 | log            | `host/log.v` | No (uses `InputTraits` - Admitted) |
 | selfdestruct   | `host/selfdestruct.v` | No (uses `InputTraits` - Admitted) |
-| extcodesize    | `host/extcodesize.v` | No (uses `StackTrait.pop` - Admitted) |
-| extcodecopy    | `host/extcodecopy.v` | No (uses `StackTrait.pop` - Admitted) |
-| extcodehash    | `host/extcodehash.v` | No (uses `StackTrait.pop` - Admitted) |
+| extcodesize    | `host/extcodesize.v` | No (uses Host methods - Admitted) |
+| extcodecopy    | `host/extcodecopy.v` | No (uses Host methods - Admitted) |
+| extcodehash    | `host/extcodehash.v` | No (uses Host methods - Admitted) |
 
 ### Block Info (`instructions/tests/block_info.v`)
 

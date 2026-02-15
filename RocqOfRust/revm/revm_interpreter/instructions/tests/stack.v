@@ -1,6 +1,8 @@
 Require Import simulate.RocqOfRust.
+Require Import revm.revm_interpreter.instructions.simulate.stack.dup.
 Require Import revm.revm_interpreter.instructions.simulate.stack.pop.
 Require Import revm.revm_interpreter.instructions.simulate.stack.push0.
+Require Import revm.revm_interpreter.instructions.simulate.stack.swap.
 Require Import revm.revm_interpreter.links.instruction_result.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.tests.interpreter.
@@ -43,6 +45,88 @@ Goal
   let interpreter := make_interpreter stack in
   let result := push0 interpreter in
   result.(Interpreter.stack).(Stack.value) = [{| Uint.value := 0 |}].
+Proof.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
+
+(** ** DUP tests *)
+
+(** Test that DUP1 duplicates the top element: [a, b] -> [a, a, b] *)
+Goal
+  let stack := {| Stack.value := [
+    {| Uint.value := 42 |};
+    {| Uint.value := 10 |}
+  ] |} in
+  let interpreter := make_interpreter stack in
+  let result := dup {| Integer.value := 1 |} interpreter in
+  result.(Interpreter.stack).(Stack.value) = [
+    {| Uint.value := 42 |};
+    {| Uint.value := 42 |};
+    {| Uint.value := 10 |}
+  ].
+Proof.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
+
+(** Test that DUP2 duplicates the second element: [a, b, c] -> [b, a, b, c] *)
+Goal
+  let stack := {| Stack.value := [
+    {| Uint.value := 1 |};
+    {| Uint.value := 2 |};
+    {| Uint.value := 3 |}
+  ] |} in
+  let interpreter := make_interpreter stack in
+  let result := dup {| Integer.value := 2 |} interpreter in
+  result.(Interpreter.stack).(Stack.value) = [
+    {| Uint.value := 2 |};
+    {| Uint.value := 1 |};
+    {| Uint.value := 2 |};
+    {| Uint.value := 3 |}
+  ].
+Proof.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
+
+(** ** SWAP tests *)
+
+(** Test that SWAP1 swaps the top two elements: [a, b, c] -> [b, a, c] *)
+Goal
+  let stack := {| Stack.value := [
+    {| Uint.value := 1 |};
+    {| Uint.value := 2 |};
+    {| Uint.value := 3 |}
+  ] |} in
+  let interpreter := make_interpreter stack in
+  let result := swap {| Integer.value := 1 |} interpreter in
+  result.(Interpreter.stack).(Stack.value) = [
+    {| Uint.value := 2 |};
+    {| Uint.value := 1 |};
+    {| Uint.value := 3 |}
+  ].
+Proof.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
+
+(** Test that SWAP2 swaps top and third element: [a, b, c, d] -> [c, b, a, d] *)
+Goal
+  let stack := {| Stack.value := [
+    {| Uint.value := 1 |};
+    {| Uint.value := 2 |};
+    {| Uint.value := 3 |};
+    {| Uint.value := 4 |}
+  ] |} in
+  let interpreter := make_interpreter stack in
+  let result := swap {| Integer.value := 2 |} interpreter in
+  result.(Interpreter.stack).(Stack.value) = [
+    {| Uint.value := 3 |};
+    {| Uint.value := 2 |};
+    {| Uint.value := 1 |};
+    {| Uint.value := 4 |}
+  ].
 Proof.
   timeout 1 vm_compute.
   reflexivity.

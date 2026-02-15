@@ -256,17 +256,53 @@ Module StackTrait.
     | None => (None, self')
     end.
 
-  Definition pop (self : Self) : option aliases.U256.t * Self.
-  Admitted.
+  Definition pop (self : Self) : option aliases.U256.t * Self :=
+    match self.(Stack.value) with
+    | [] => (None, self)
+    | value :: rest => (Some value, {| Stack.value := rest |})
+    end.
 
-  Definition pop_address (self : Self) : option Address.t * Self.
-  Admitted.
+  Definition pop_address (self : Self) : option Address.t * Self :=
+    match self.(Stack.value) with
+    | [] => (None, self)
+    | value :: rest =>
+      (Some {| Address.value := value.(Uint.value) mod 2 ^ 160 |},
+       {| Stack.value := rest |})
+    end.
 
-  Definition exchange (self : Self) (n m : usize) : bool * Self.
-  Admitted.
+  Fixpoint list_set {A : Type} (l : list A) (n : nat) (v : A) : list A :=
+    match l, n with
+    | [], _ => []
+    | _ :: rest, O => v :: rest
+    | x :: rest, S n => x :: list_set rest n v
+    end.
 
-  Definition dup (self : Self) (n : usize) : bool * Self.
-  Admitted.
+  Definition exchange (self : Self) (n m : usize) : bool * Self :=
+    let stack_list := self.(Stack.value) in
+    let len := Z.of_nat (List.length stack_list) in
+    let nm := (i[n] + i[m])%Z in
+    if nm <? len then
+      let n_nat := Z.to_nat i[n] in
+      let nm_nat := Z.to_nat nm in
+      match List.nth_error stack_list n_nat,
+            List.nth_error stack_list nm_nat with
+      | Some vn, Some vnm =>
+        let stack' := list_set (list_set stack_list n_nat vnm) nm_nat vn in
+        (true, {| Stack.value := stack' |})
+      | _, _ => (false, self)
+      end
+    else
+      (false, self).
+
+  Definition dup (self : Self) (n : usize) : bool * Self :=
+    let len := Z.of_nat (List.length self.(Stack.value)) in
+    if (0 <? i[n]) && (i[n] <=? len) && (len <? 1024) then
+      match List.nth_error self.(Stack.value) (Z.to_nat (i[n] - 1)) with
+      | Some value => (true, {| Stack.value := value :: self.(Stack.value) |})
+      | None => (false, self)
+      end
+    else
+      (false, self).
 
   Instance I : StackTrait.C WIRE_types.(InterpreterTypes.Types.Stack) := {
     StackTrait.len := len;
