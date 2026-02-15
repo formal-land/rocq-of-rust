@@ -125,12 +125,13 @@ Qed.
 
 (** ** PC tests *)
 
-(** Test that PC pushes pc-1 = 0 onto the stack *)
+(** Test that PC pushes pc-1 onto the stack.
+    With test bytecode pc = 0, this wraps to usize::MAX. *)
 Goal
   let stack := {| Stack.value := [] |} in
   let interpreter := make_interpreter stack in
   let result := pc interpreter in
-  result.(Interpreter.stack).(Stack.value) = [{| Uint.value := 0 |}].
+  result.(Interpreter.stack).(Stack.value) = [{| Uint.value := 18446744073709551615 |}].
 Proof.
   timeout 1 vm_compute.
   reflexivity.

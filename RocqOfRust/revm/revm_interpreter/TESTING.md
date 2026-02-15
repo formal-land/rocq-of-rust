@@ -33,9 +33,11 @@ make -j1 \
   revm/revm_interpreter/instructions/tests/contract.vo \
   revm/revm_interpreter/instructions/tests/contract/call_helpers.vo \
   revm/revm_interpreter/instructions/tests/control.vo \
+  revm/revm_interpreter/instructions/tests/host.vo \
   revm/revm_interpreter/instructions/tests/stack.vo \
   revm/revm_interpreter/instructions/tests/system.vo \
-  revm/revm_interpreter/instructions/tests/memory.vo
+  revm/revm_interpreter/instructions/tests/memory.vo \
+  revm/revm_interpreter/instructions/tests/tx_info.vo
 ```
 
 Notes:
@@ -104,7 +106,7 @@ Each simulate definition models one EVM instruction in Rocq. The table below tra
 | pc             | `control/pc.v` | Yes |
 | ret            | `control/ret.v` | Yes |
 | revert         | `control/revert.v` | Yes |
-| return_inner   | `control/return_inner.v` | No (tested via ret/revert) |
+| return_inner   | `control/return_inner.v` | Yes (tested via ret/revert) |
 | unknown        | `control/unknown.v` | Yes |
 
 ### Stack (`instructions/tests/stack.v`)
@@ -166,18 +168,18 @@ Each simulate definition models one EVM instruction in Rocq. The table below tra
 
 | Instruction    | Simulate file | Tested |
 |----------------|---------------|--------|
-| balance        | `host/balance.v` | No (uses `InputTraits` - Admitted) |
-| selfbalance    | `host/selfbalance.v` | No (uses `InputTraits` - Admitted) |
-| blockhash      | `host/blockhash.v` | No (uses Host methods - Admitted) |
-| sload          | `host/sload.v` | No (uses Host methods - Admitted) |
-| sstore         | `host/sstore.v` | No (uses Host methods - Admitted) |
-| tload          | `host/tload.v` | No (uses `InputTraits` - Admitted) |
-| tstore         | `host/tstore.v` | No (uses `InputTraits` - Admitted) |
-| log            | `host/log.v` | No (uses `InputTraits` - Admitted) |
-| selfdestruct   | `host/selfdestruct.v` | No (uses `InputTraits` - Admitted) |
-| extcodesize    | `host/extcodesize.v` | No (uses Host methods - Admitted) |
-| extcodecopy    | `host/extcodecopy.v` | No (uses Host methods - Admitted) |
-| extcodehash    | `host/extcodehash.v` | No (uses Host methods - Admitted) |
+| balance        | `host/balance.v` | Yes |
+| selfbalance    | `host/selfbalance.v` | Yes |
+| blockhash      | `host/blockhash.v` | Yes |
+| sload          | `host/sload.v` | Yes |
+| sstore         | `host/sstore.v` | Yes (branch-sensitive on `is_static`) |
+| tload          | `host/tload.v` | Yes |
+| tstore         | `host/tstore.v` | Yes (branch-sensitive on `is_static`) |
+| log            | `host/log.v` | Yes |
+| selfdestruct   | `host/selfdestruct.v` | Yes |
+| extcodesize    | `host/extcodesize.v` | Yes |
+| extcodecopy    | `host/extcodecopy.v` | Yes |
+| extcodehash    | `host/extcodehash.v` | Yes |
 
 ### Block Info (`instructions/tests/block_info.v`)
 
@@ -192,8 +194,8 @@ Each simulate definition models one EVM instruction in Rocq. The table below tra
 | timestamp     | `block_info/timestamp.v` | Yes |
 | chainid       | `block_info/chainid.v` | Yes |
 
-### Tx Info
+### Tx Info (`instructions/tests/tx_info.v`)
 
 | Instruction  | Simulate file | Tested |
 |--------------|---------------|--------|
-| gasprice     | `tx_info/gasprice.v` | No (uses `TransactionGetter` - Admitted) |
+| gasprice     | `tx_info/gasprice.v` | Yes |

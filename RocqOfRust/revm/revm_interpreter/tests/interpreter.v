@@ -6,7 +6,7 @@ Require Import revm.revm_interpreter.tests.interpreter_types.
 Require Import revm.revm_specification.links.hardfork.
 
 Definition make_interpreter (stack : Stack.t) : Interpreter.t WIRE WIRE_types := {|
-  Interpreter.bytecode := tt;
+  Interpreter.bytecode := {| Integer.value := 0 |};
   Interpreter.stack := stack;
   Interpreter.return_data := tt;
   Interpreter.memory := {| Memory.value := [] |};

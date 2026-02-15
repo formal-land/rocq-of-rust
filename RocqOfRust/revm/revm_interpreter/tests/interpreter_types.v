@@ -124,7 +124,7 @@ Definition WIRE_types : InterpreterTypes.Types.t := {|
   InterpreterTypes.Types.Memory := Memory.t;
   InterpreterTypes.Types.Memory_Synthetic := MemorySlice.t;
   InterpreterTypes.Types.Memory_Synthetic1 := MemorySlice.t;
-  InterpreterTypes.Types.Bytecode := unit;
+  InterpreterTypes.Types.Bytecode := usize;
   InterpreterTypes.Types.ReturnData := unit;
   InterpreterTypes.Types.Input := unit;
   InterpreterTypes.Types.SubRoutineStack := unit;
@@ -136,7 +136,7 @@ Definition WIRE_types : InterpreterTypes.Types.t := {|
 Instance AreLinks_WIRE_types : InterpreterTypes.Types.AreLinks WIRE_types := {}.
 
 Module Immediates.
-  Definition Self : Set := unit.
+  Definition Self : Set := usize.
 
   Definition read_i16 (self : Self) : i16 := 0.
   Definition read_u16 (self : Self) : u16 := 0.
@@ -147,7 +147,7 @@ Module Immediates.
   Definition read_slice (len : usize) : RefStub.t Self (list u8) := {|
     RefStub.path := [];
     RefStub.projection := fun _ => List.repeat (0 : u8) (Z.to_nat i[len]);
-    RefStub.injection := fun _ _ => tt;
+    RefStub.injection := fun x _ => x;
   |}.
 
   Instance I : Immediates.C WIRE_types.(InterpreterTypes.Types.Bytecode) := {|
@@ -169,12 +169,13 @@ End LegacyBytecode.
 Export (hints) LegacyBytecode.
 
 Module Jumps.
-  Definition Self : Set := unit.
+  Definition Self : Set := usize.
 
-  Definition relative_jump (self : Self) (offset : isize) : Self := tt.
-  Definition absolute_jump (self : Self) (offset : usize) : Self := tt.
-  Definition is_valid_legacy_jump (self : Self) (offset : usize) : bool * Self := (true, tt).
-  Definition pc (self : Self) : usize := 1.
+  Definition relative_jump (self : Self) (offset : isize) : Self :=
+    {| Integer.value := i[self] + i[offset] |}.
+  Definition absolute_jump (_self : Self) (offset : usize) : Self := offset.
+  Definition is_valid_legacy_jump (self : Self) (_offset : usize) : bool * Self := (true, self).
+  Definition pc (self : Self) : usize := self.
   Definition opcode (self : Self) : u8 := 0.
 
   Instance I : Jumps.C WIRE_types.(InterpreterTypes.Types.Bytecode) := {|

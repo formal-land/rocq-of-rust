@@ -45,7 +45,7 @@ Qed.
 (** Helper to build an interpreter with a given stack and memory *)
 Definition make_interpreter_with_memory (stack : Stack.t) (memory : Memory.t)
     (gas_val : Gas.t) : Interpreter.t WIRE WIRE_types := {|
-  Interpreter.bytecode := tt;
+  Interpreter.bytecode := 0;
   Interpreter.stack := stack;
   Interpreter.return_data := tt;
   Interpreter.memory := memory;

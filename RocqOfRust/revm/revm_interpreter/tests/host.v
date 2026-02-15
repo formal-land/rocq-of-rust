@@ -1,6 +1,7 @@
 Require Import simulate.RocqOfRust.
 Require Import alloy_primitives.bits.links.address.
 Require Import alloy_primitives.bytes.links.mod.
+Require Import alloy_primitives.links.common.
 Require Import alloy_primitives.links.aliases.
 Require Import alloy_primitives.log.links.mod.
 Require Import revm.revm_context_interface.links.cfg.
@@ -128,11 +129,53 @@ Module TestHost.
 
   Instance host_types_are_links : Host.Types.AreLinks host_types := {}.
 
+  Definition effective_gas_price (_self : t) (_base_fee : u128) : u128 :=
+    {| Integer.value := 42 |}.
+
+  Instance Transaction_for_t : Transaction.C t transaction_types := {
+    Transaction.tx_type _ := Make;
+    Transaction.legacy := {|
+      RefStub.path := [];
+      RefStub.projection _ := Make;
+      RefStub.injection _ _ := Make;
+    |};
+    Transaction.eip2930 := {|
+      RefStub.path := [];
+      RefStub.projection _ := Make;
+      RefStub.injection _ _ := Make;
+    |};
+    Transaction.eip1559 := {|
+      RefStub.path := [];
+      RefStub.projection _ := Make;
+      RefStub.injection _ _ := Make;
+    |};
+    Transaction.eip4844 := {|
+      RefStub.path := [];
+      RefStub.projection _ := Make;
+      RefStub.injection _ _ := Make;
+    |};
+    Transaction.eip7702 := {|
+      RefStub.path := [];
+      RefStub.projection _ := Make;
+      RefStub.injection _ _ := Make;
+    |};
+    Transaction.max_fee _ := {| Integer.value := 0 |};
+    Transaction.effective_gas_price := effective_gas_price;
+    Transaction.kind _ := TxKind.Create;
+    Transaction.access_list _ := None;
+  }.
+
   Instance TransactionGetter_for_t :
       TransactionGetter.C t
         host_types.(Host.Types.Transaction)
-        host_types.(Host.Types.TransactionTypes).
-  Admitted.
+        host_types.(Host.Types.TransactionTypes) := {
+    TransactionGetter.Transaction_for_Transaction := Transaction_for_t;
+    TransactionGetter.tx := {|
+      RefStub.path := [];
+      RefStub.projection self := self;
+      RefStub.injection _ y := y;
+    |};
+  }.
 
   Instance Block_for_t : Block.C t := {
     Block.number := number;
@@ -316,11 +359,53 @@ Module TestHostWithAccount.
 
   Instance host_types_are_links : Host.Types.AreLinks host_types := {}.
 
+  Definition effective_gas_price (_self : t) (_base_fee : u128) : u128 :=
+    {| Integer.value := 42 |}.
+
+  Instance Transaction_for_t : Transaction.C t transaction_types := {
+    Transaction.tx_type _ := Make;
+    Transaction.legacy := {|
+      RefStub.path := [];
+      RefStub.projection _ := Make;
+      RefStub.injection _ _ := Make;
+    |};
+    Transaction.eip2930 := {|
+      RefStub.path := [];
+      RefStub.projection _ := Make;
+      RefStub.injection _ _ := Make;
+    |};
+    Transaction.eip1559 := {|
+      RefStub.path := [];
+      RefStub.projection _ := Make;
+      RefStub.injection _ _ := Make;
+    |};
+    Transaction.eip4844 := {|
+      RefStub.path := [];
+      RefStub.projection _ := Make;
+      RefStub.injection _ _ := Make;
+    |};
+    Transaction.eip7702 := {|
+      RefStub.path := [];
+      RefStub.projection _ := Make;
+      RefStub.injection _ _ := Make;
+    |};
+    Transaction.max_fee _ := {| Integer.value := 0 |};
+    Transaction.effective_gas_price := effective_gas_price;
+    Transaction.kind _ := TxKind.Create;
+    Transaction.access_list _ := None;
+  }.
+
   Instance TransactionGetter_for_t :
       TransactionGetter.C t
         host_types.(Host.Types.Transaction)
-        host_types.(Host.Types.TransactionTypes).
-  Admitted.
+        host_types.(Host.Types.TransactionTypes) := {
+    TransactionGetter.Transaction_for_Transaction := Transaction_for_t;
+    TransactionGetter.tx := {|
+      RefStub.path := [];
+      RefStub.projection self := self;
+      RefStub.injection _ y := y;
+    |};
+  }.
 
   Instance Block_for_t : Block.C t := {
     Block.number := number;
