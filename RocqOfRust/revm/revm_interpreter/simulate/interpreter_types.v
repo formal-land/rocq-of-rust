@@ -171,6 +171,7 @@ Module Immediates.
     }.
   End Eq.
 End Immediates.
+Export (hints) Immediates.
 
 Module LegacyBytecode.
   Class C (Self : Set) `{Link Self} : Set := {
@@ -226,6 +227,7 @@ Module LegacyBytecode.
     }.
   End Eq.
 End LegacyBytecode.
+Export (hints) LegacyBytecode.
 
 Module Jumps.
   Class C (Self : Set) `{Link Self} : Set := {
@@ -347,6 +349,7 @@ Module Jumps.
     }.
   End Eq.
 End Jumps.
+Export (hints) Jumps.
 
 Module EofData.
   Class C (Self : Set) `{Link Self} : Set := {
@@ -423,6 +426,7 @@ Module EofData.
     }.
   End Eq.
 End EofData.
+Export (hints) EofData.
 
 Module EofContainer.
   Class C (Self : Set) `{Link Self} : Set := {
@@ -460,6 +464,7 @@ Module EofContainer.
     }.
   End Eq.
 End EofContainer.
+Export (hints) EofContainer.
 
 Module EofCodeInfo.
   Class C (Self : Set) `{Link Self} : Set := {
@@ -518,6 +523,7 @@ Module EofCodeInfo.
     }.
   End Eq.
 End EofCodeInfo.
+Export (hints) EofCodeInfo.
 
 Module InputTraits.
   Class C (Self : Set) `{Link Self} : Set := {
@@ -613,6 +619,7 @@ Module InputTraits.
     }.
   End Eq.
 End InputTraits.
+Export (hints) InputTraits.
 
 Module StackTrait.
   Class C (Self : Set) `{Link Self} : Type := {
@@ -873,6 +880,7 @@ Module StackTrait.
     }.
   End Eq.
 End StackTrait.
+Export (hints) StackTrait.
 
 Module LoopControl.
   Class C (Self : Set) `{Link Self} : Set := {
@@ -994,6 +1002,7 @@ Module LoopControl.
     }.
   End Eq.
 End LoopControl.
+Export (hints) LoopControl.
 
 Module RuntimeFlag.
   Class C (Self : Set) `{Link Self} : Set := {
@@ -1089,6 +1098,7 @@ Module RuntimeFlag.
     }.
   End Eq.
 End RuntimeFlag.
+Export (hints) RuntimeFlag.
 
 Module MemoryTrait.
   Class C (Self Synthetic Synthetic1 : Set) `{Link Self} `{Link Synthetic} `{Link Synthetic1} : Set := {
@@ -1409,6 +1419,7 @@ Module SubRoutineStack.
     }.
   End Eq.
 End SubRoutineStack.
+Export (hints) SubRoutineStack.
 
 Module ReturnData.
   Class C (Self : Set) `{Link Self} : Set := {
@@ -1464,6 +1475,7 @@ Module ReturnData.
     }.
   End Eq.
 End ReturnData.
+Export (hints) ReturnData.
 
 Module InterpreterTypes.
   Class C
