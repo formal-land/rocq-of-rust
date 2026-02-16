@@ -135,7 +135,7 @@ Qed.
 
 (** ** PUSH tests *)
 
-(** Test that PUSH1 pushes a value onto the stack (zero bytes from unit bytecode) *)
+(** Test that PUSH1 pushes a value onto the stack (zero bytes from test bytecode) *)
 Goal
   let stack := {| Stack.value := [] |} in
   let interpreter := make_interpreter stack in

@@ -228,7 +228,7 @@ Module StackTrait.
   (* TODO: check spec *)
   Definition push (self : Self) (value : aliases.U256.t) : bool * Self :=
     let MAX_LEN := Z.of_nat 1024 in
-    if i[len self] <=? MAX_LEN then
+    if i[len self] <=? MAX_LEN - 1 then
       (true, self <| Stack.value := value :: self.(Stack.value) |>)
     else
       (false, self).

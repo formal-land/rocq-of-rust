@@ -42,11 +42,6 @@ Instance run_calldatacopy
     unit.
 Proof.
   constructor.
-  destruct run_InterpreterTypes_for_WIRE eqn:?.
-  destruct run_StackTrait_for_Stack.
-  destruct run_LoopControl_for_Control.
-  destruct run_MemoryTrait_for_Memory.
-  destruct run_InputsTrait_for_Input.
   destruct Impl_TryFrom_u64_for_usize.run.
   run_symbolic.
 Defined.

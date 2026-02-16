@@ -41,10 +41,6 @@ Instance run_calldatasize
     unit.
 Proof.
   constructor.
-  destruct run_InterpreterTypes_for_WIRE.
-  destruct run_StackTrait_for_Stack.
-  destruct run_LoopControl_for_Control.
-  destruct run_InputsTrait_for_Input.
   run_symbolic.
 Defined.
 Global Opaque run_calldatasize.

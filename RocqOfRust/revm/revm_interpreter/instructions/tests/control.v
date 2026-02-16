@@ -217,6 +217,18 @@ Proof.
   reflexivity.
 Qed.
 
+(** Test that JUMPI with empty stack gives StackUnderflow *)
+Goal
+  let stack := {| Stack.value := [] |} in
+  let interpreter := make_interpreter stack in
+  let result := jumpi interpreter in
+  result.(Interpreter.control).(Control.instruction_result) =
+    Some InstructionResult.StackUnderflow.
+Proof.
+  timeout 1 vm_compute.
+  reflexivity.
+Qed.
+
 (** ** JUMP_INNER tests *)
 
 (** Test that JUMP_INNER with valid target succeeds *)
