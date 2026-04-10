@@ -18,7 +18,7 @@ Module iter.
                 Ty.apply
                   (Ty.path "&")
                   []
-                  [ Ty.dyn [ ("core::iter::traits::iterator::Iterator::Trait", []) ] ],
+                  [ Ty.dyn [ ("core::iter::traits::iterator::Iterator", [], []) ] ],
                 β0
               |) in
             M.match_operator (| Ty.tuple [], β0, [ fun γ => ltac:(M.monadic (Value.Tuple [])) ] |)))

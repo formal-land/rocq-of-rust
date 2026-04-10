@@ -37,8 +37,8 @@ Module any.
         (* Instance *) [ ("type_id", InstanceField.Method (type_id T)) ].
   End Impl_core_any_Any_where_core_marker_Sized_T_for_T.
   
-  Module Impl_core_fmt_Debug_for_Dyn_core_any_Any_Trait.
-    Definition Self : Ty.t := Ty.dyn [ ("core::any::Any::Trait", []) ].
+  Module Impl_core_fmt_Debug_for_Dyn_core_any_Any.
+    Definition Self : Ty.t := Ty.dyn [ ("core::any::Any", [], []) ].
     
     (*
         fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
@@ -51,7 +51,7 @@ Module any.
         ltac:(M.monadic
           (let self :=
             M.alloc (|
-              Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::any::Any::Trait", []) ] ],
+              Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::any::Any", [], []) ] ],
               self
             |) in
           let f :=
@@ -99,11 +99,11 @@ Module any.
         (* Trait polymorphic types *) []
         Self
         (* Instance *) [ ("fmt", InstanceField.Method fmt) ].
-  End Impl_core_fmt_Debug_for_Dyn_core_any_Any_Trait.
+  End Impl_core_fmt_Debug_for_Dyn_core_any_Any.
   
-  Module Impl_core_fmt_Debug_for_Dyn_core_any_Any_Trait_core_marker_Send_AutoTrait.
+  Module Impl_core_fmt_Debug_for_Dyn_core_any_Any_core_marker_Send_AutoTrait.
     Definition Self : Ty.t :=
-      Ty.dyn [ ("core::any::Any::Trait", []); ("core::marker::Send::AutoTrait", []) ].
+      Ty.dyn [ ("core::any::Any", [], []); ("core::marker::Send::AutoTrait", [], []) ].
     
     (*
         fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
@@ -119,7 +119,8 @@ Module any.
               Ty.apply
                 (Ty.path "&")
                 []
-                [ Ty.dyn [ ("core::any::Any::Trait", []); ("core::marker::Send::AutoTrait", []) ] ],
+                [ Ty.dyn [ ("core::any::Any", [], []); ("core::marker::Send::AutoTrait", [], []) ]
+                ],
               self
             |) in
           let f :=
@@ -167,15 +168,15 @@ Module any.
         (* Trait polymorphic types *) []
         Self
         (* Instance *) [ ("fmt", InstanceField.Method fmt) ].
-  End Impl_core_fmt_Debug_for_Dyn_core_any_Any_Trait_core_marker_Send_AutoTrait.
+  End Impl_core_fmt_Debug_for_Dyn_core_any_Any_core_marker_Send_AutoTrait.
   
-  Module Impl_core_fmt_Debug_for_Dyn_core_any_Any_Trait_core_marker_Sync_AutoTrait_core_marker_Send_AutoTrait.
+  Module Impl_core_fmt_Debug_for_Dyn_core_any_Any_core_marker_Sync_AutoTrait_core_marker_Send_AutoTrait.
     Definition Self : Ty.t :=
       Ty.dyn
         [
-          ("core::any::Any::Trait", []);
-          ("core::marker::Sync::AutoTrait", []);
-          ("core::marker::Send::AutoTrait", [])
+          ("core::any::Any", [], []);
+          ("core::marker::Sync::AutoTrait", [], []);
+          ("core::marker::Send::AutoTrait", [], [])
         ].
     
     (*
@@ -195,9 +196,9 @@ Module any.
                 [
                   Ty.dyn
                     [
-                      ("core::any::Any::Trait", []);
-                      ("core::marker::Sync::AutoTrait", []);
-                      ("core::marker::Send::AutoTrait", [])
+                      ("core::any::Any", [], []);
+                      ("core::marker::Sync::AutoTrait", [], []);
+                      ("core::marker::Send::AutoTrait", [], [])
                     ]
                 ],
               self
@@ -247,10 +248,10 @@ Module any.
         (* Trait polymorphic types *) []
         Self
         (* Instance *) [ ("fmt", InstanceField.Method fmt) ].
-  End Impl_core_fmt_Debug_for_Dyn_core_any_Any_Trait_core_marker_Sync_AutoTrait_core_marker_Send_AutoTrait.
+  End Impl_core_fmt_Debug_for_Dyn_core_any_Any_core_marker_Sync_AutoTrait_core_marker_Send_AutoTrait.
   
-  Module Impl_Dyn_core_any_Any_Trait.
-    Definition Self : Ty.t := Ty.dyn [ ("core::any::Any::Trait", []) ].
+  Module Impl_Dyn_core_any_Any.
+    Definition Self : Ty.t := Ty.dyn [ ("core::any::Any", [], []) ].
     
     (*
         pub fn is<T: Any>(&self) -> bool {
@@ -270,7 +271,7 @@ Module any.
         ltac:(M.monadic
           (let self :=
             M.alloc (|
-              Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::any::Any::Trait", []) ] ],
+              Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::any::Any", [], []) ] ],
               self
             |) in
           M.read (|
@@ -285,7 +286,7 @@ Module any.
                 Ty.path "core::any::TypeId",
                 M.get_trait_method (|
                   "core::any::Any",
-                  Ty.dyn [ ("core::any::Any::Trait", []) ],
+                  Ty.dyn [ ("core::any::Any", [], []) ],
                   [],
                   [],
                   "type_id",
@@ -336,7 +337,7 @@ Module any.
         ltac:(M.monadic
           (let self :=
             M.alloc (|
-              Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::any::Any::Trait", []) ] ],
+              Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::any::Any", [], []) ] ],
               self
             |) in
           M.match_operator (|
@@ -352,7 +353,7 @@ Module any.
                         M.call_closure (|
                           Ty.path "bool",
                           M.get_associated_function (|
-                            Ty.dyn [ ("core::any::Any::Trait", []) ],
+                            Ty.dyn [ ("core::any::Any", [], []) ],
                             "is",
                             [],
                             [ T ]
@@ -372,7 +373,7 @@ Module any.
                           M.call_closure (|
                             Ty.apply (Ty.path "&") [] [ T ],
                             M.get_associated_function (|
-                              Ty.dyn [ ("core::any::Any::Trait", []) ],
+                              Ty.dyn [ ("core::any::Any", [], []) ],
                               "downcast_ref_unchecked",
                               [],
                               [ T ]
@@ -417,7 +418,7 @@ Module any.
         ltac:(M.monadic
           (let self :=
             M.alloc (|
-              Ty.apply (Ty.path "&mut") [] [ Ty.dyn [ ("core::any::Any::Trait", []) ] ],
+              Ty.apply (Ty.path "&mut") [] [ Ty.dyn [ ("core::any::Any", [], []) ] ],
               self
             |) in
           M.match_operator (|
@@ -433,7 +434,7 @@ Module any.
                         M.call_closure (|
                           Ty.path "bool",
                           M.get_associated_function (|
-                            Ty.dyn [ ("core::any::Any::Trait", []) ],
+                            Ty.dyn [ ("core::any::Any", [], []) ],
                             "is",
                             [],
                             [ T ]
@@ -453,7 +454,7 @@ Module any.
                           M.call_closure (|
                             Ty.apply (Ty.path "&mut") [] [ T ],
                             M.get_associated_function (|
-                              Ty.dyn [ ("core::any::Any::Trait", []) ],
+                              Ty.dyn [ ("core::any::Any", [], []) ],
                               "downcast_mut_unchecked",
                               [],
                               [ T ]
@@ -493,7 +494,7 @@ Module any.
         ltac:(M.monadic
           (let self :=
             M.alloc (|
-              Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::any::Any::Trait", []) ] ],
+              Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::any::Any", [], []) ] ],
               self
             |) in
           M.read (|
@@ -525,7 +526,7 @@ Module any.
                                             M.call_closure (|
                                               Ty.path "bool",
                                               M.get_associated_function (|
-                                                Ty.dyn [ ("core::any::Any::Trait", []) ],
+                                                Ty.dyn [ ("core::any::Any", [], []) ],
                                                 "is",
                                                 [],
                                                 [ T ]
@@ -576,22 +577,22 @@ Module any.
                               Ty.apply
                                 (Ty.path "*const")
                                 []
-                                [ Ty.dyn [ ("core::any::Any::Trait", []) ] ],
+                                [ Ty.dyn [ ("core::any::Any", [], []) ] ],
                               M.call_closure (|
                                 Ty.apply
                                   (Ty.path "*const")
                                   []
-                                  [ Ty.dyn [ ("core::any::Any::Trait", []) ] ],
+                                  [ Ty.dyn [ ("core::any::Any", [], []) ] ],
                                 M.pointer_coercion
                                   M.PointerCoercion.Unsize
                                   (Ty.apply
                                     (Ty.path "*const")
                                     []
-                                    [ Ty.dyn [ ("core::any::Any::Trait", []) ] ])
+                                    [ Ty.dyn [ ("core::any::Any", [], []) ] ])
                                   (Ty.apply
                                     (Ty.path "*const")
                                     []
-                                    [ Ty.dyn [ ("core::any::Any::Trait", []) ] ]),
+                                    [ Ty.dyn [ ("core::any::Any", [], []) ] ]),
                                 [
                                   M.borrow (|
                                     Pointer.Kind.ConstPointer,
@@ -628,7 +629,7 @@ Module any.
         ltac:(M.monadic
           (let self :=
             M.alloc (|
-              Ty.apply (Ty.path "&mut") [] [ Ty.dyn [ ("core::any::Any::Trait", []) ] ],
+              Ty.apply (Ty.path "&mut") [] [ Ty.dyn [ ("core::any::Any", [], []) ] ],
               self
             |) in
           M.borrow (|
@@ -664,7 +665,7 @@ Module any.
                                                 M.call_closure (|
                                                   Ty.path "bool",
                                                   M.get_associated_function (|
-                                                    Ty.dyn [ ("core::any::Any::Trait", []) ],
+                                                    Ty.dyn [ ("core::any::Any", [], []) ],
                                                     "is",
                                                     [],
                                                     [ T ]
@@ -718,22 +719,22 @@ Module any.
                                       Ty.apply
                                         (Ty.path "*mut")
                                         []
-                                        [ Ty.dyn [ ("core::any::Any::Trait", []) ] ],
+                                        [ Ty.dyn [ ("core::any::Any", [], []) ] ],
                                       M.call_closure (|
                                         Ty.apply
                                           (Ty.path "*mut")
                                           []
-                                          [ Ty.dyn [ ("core::any::Any::Trait", []) ] ],
+                                          [ Ty.dyn [ ("core::any::Any", [], []) ] ],
                                         M.pointer_coercion
                                           M.PointerCoercion.Unsize
                                           (Ty.apply
                                             (Ty.path "*mut")
                                             []
-                                            [ Ty.dyn [ ("core::any::Any::Trait", []) ] ])
+                                            [ Ty.dyn [ ("core::any::Any", [], []) ] ])
                                           (Ty.apply
                                             (Ty.path "*mut")
                                             []
-                                            [ Ty.dyn [ ("core::any::Any::Trait", []) ] ]),
+                                            [ Ty.dyn [ ("core::any::Any", [], []) ] ]),
                                         [
                                           M.borrow (|
                                             Pointer.Kind.MutPointer,
@@ -760,11 +761,11 @@ Module any.
       M.IsAssociatedFunction.C Self "downcast_mut_unchecked" downcast_mut_unchecked.
     Admitted.
     Global Typeclasses Opaque downcast_mut_unchecked.
-  End Impl_Dyn_core_any_Any_Trait.
+  End Impl_Dyn_core_any_Any.
   
-  Module Impl_Dyn_core_any_Any_Trait_core_marker_Send_AutoTrait.
+  Module Impl_Dyn_core_any_Any_core_marker_Send_AutoTrait.
     Definition Self : Ty.t :=
-      Ty.dyn [ ("core::any::Any::Trait", []); ("core::marker::Send::AutoTrait", []) ].
+      Ty.dyn [ ("core::any::Any", [], []); ("core::marker::Send::AutoTrait", [], []) ].
     
     (*
         pub fn is<T: Any>(&self) -> bool {
@@ -780,20 +781,16 @@ Module any.
               Ty.apply
                 (Ty.path "&")
                 []
-                [ Ty.dyn [ ("core::any::Any::Trait", []); ("core::marker::Send::AutoTrait", []) ] ],
+                [ Ty.dyn [ ("core::any::Any", [], []); ("core::marker::Send::AutoTrait", [], []) ]
+                ],
               self
             |) in
           M.call_closure (|
             Ty.path "bool",
-            M.get_associated_function (|
-              Ty.dyn [ ("core::any::Any::Trait", []) ],
-              "is",
-              [],
-              [ T ]
-            |),
+            M.get_associated_function (| Ty.dyn [ ("core::any::Any", [], []) ], "is", [], [ T ] |),
             [
               M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::any::Any::Trait", []) ] ],
+                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::any::Any", [], []) ] ],
                 M.pointer_coercion
                   M.PointerCoercion.Unsize
                   (Ty.apply
@@ -801,9 +798,9 @@ Module any.
                     []
                     [
                       Ty.dyn
-                        [ ("core::any::Any::Trait", []); ("core::marker::Send::AutoTrait", []) ]
+                        [ ("core::any::Any", [], []); ("core::marker::Send::AutoTrait", [], []) ]
                     ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::any::Any::Trait", []) ] ]),
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::any::Any", [], []) ] ]),
                 [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
               |)
             ]
@@ -829,20 +826,21 @@ Module any.
               Ty.apply
                 (Ty.path "&")
                 []
-                [ Ty.dyn [ ("core::any::Any::Trait", []); ("core::marker::Send::AutoTrait", []) ] ],
+                [ Ty.dyn [ ("core::any::Any", [], []); ("core::marker::Send::AutoTrait", [], []) ]
+                ],
               self
             |) in
           M.call_closure (|
             Ty.apply (Ty.path "core::option::Option") [] [ Ty.apply (Ty.path "&") [] [ T ] ],
             M.get_associated_function (|
-              Ty.dyn [ ("core::any::Any::Trait", []) ],
+              Ty.dyn [ ("core::any::Any", [], []) ],
               "downcast_ref",
               [],
               [ T ]
             |),
             [
               M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::any::Any::Trait", []) ] ],
+                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::any::Any", [], []) ] ],
                 M.pointer_coercion
                   M.PointerCoercion.Unsize
                   (Ty.apply
@@ -850,9 +848,9 @@ Module any.
                     []
                     [
                       Ty.dyn
-                        [ ("core::any::Any::Trait", []); ("core::marker::Send::AutoTrait", []) ]
+                        [ ("core::any::Any", [], []); ("core::marker::Send::AutoTrait", [], []) ]
                     ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::any::Any::Trait", []) ] ]),
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::any::Any", [], []) ] ]),
                 [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
               |)
             ]
@@ -879,20 +877,21 @@ Module any.
               Ty.apply
                 (Ty.path "&mut")
                 []
-                [ Ty.dyn [ ("core::any::Any::Trait", []); ("core::marker::Send::AutoTrait", []) ] ],
+                [ Ty.dyn [ ("core::any::Any", [], []); ("core::marker::Send::AutoTrait", [], []) ]
+                ],
               self
             |) in
           M.call_closure (|
             Ty.apply (Ty.path "core::option::Option") [] [ Ty.apply (Ty.path "&mut") [] [ T ] ],
             M.get_associated_function (|
-              Ty.dyn [ ("core::any::Any::Trait", []) ],
+              Ty.dyn [ ("core::any::Any", [], []) ],
               "downcast_mut",
               [],
               [ T ]
             |),
             [
               M.call_closure (|
-                Ty.apply (Ty.path "&mut") [] [ Ty.dyn [ ("core::any::Any::Trait", []) ] ],
+                Ty.apply (Ty.path "&mut") [] [ Ty.dyn [ ("core::any::Any", [], []) ] ],
                 M.pointer_coercion
                   M.PointerCoercion.Unsize
                   (Ty.apply
@@ -900,9 +899,9 @@ Module any.
                     []
                     [
                       Ty.dyn
-                        [ ("core::any::Any::Trait", []); ("core::marker::Send::AutoTrait", []) ]
+                        [ ("core::any::Any", [], []); ("core::marker::Send::AutoTrait", [], []) ]
                     ])
-                  (Ty.apply (Ty.path "&mut") [] [ Ty.dyn [ ("core::any::Any::Trait", []) ] ]),
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.dyn [ ("core::any::Any", [], []) ] ]),
                 [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |) ]
               |)
             ]
@@ -930,7 +929,8 @@ Module any.
               Ty.apply
                 (Ty.path "&")
                 []
-                [ Ty.dyn [ ("core::any::Any::Trait", []); ("core::marker::Send::AutoTrait", []) ] ],
+                [ Ty.dyn [ ("core::any::Any", [], []); ("core::marker::Send::AutoTrait", [], []) ]
+                ],
               self
             |) in
           M.borrow (|
@@ -939,14 +939,14 @@ Module any.
               M.call_closure (|
                 Ty.apply (Ty.path "&") [] [ T ],
                 M.get_associated_function (|
-                  Ty.dyn [ ("core::any::Any::Trait", []) ],
+                  Ty.dyn [ ("core::any::Any", [], []) ],
                   "downcast_ref_unchecked",
                   [],
                   [ T ]
                 |),
                 [
                   M.call_closure (|
-                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::any::Any::Trait", []) ] ],
+                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::any::Any", [], []) ] ],
                     M.pointer_coercion
                       M.PointerCoercion.Unsize
                       (Ty.apply
@@ -954,9 +954,10 @@ Module any.
                         []
                         [
                           Ty.dyn
-                            [ ("core::any::Any::Trait", []); ("core::marker::Send::AutoTrait", []) ]
+                            [ ("core::any::Any", [], []); ("core::marker::Send::AutoTrait", [], [])
+                            ]
                         ])
-                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::any::Any::Trait", []) ] ]),
+                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::any::Any", [], []) ] ]),
                     [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
                   |)
                 ]
@@ -986,7 +987,8 @@ Module any.
               Ty.apply
                 (Ty.path "&mut")
                 []
-                [ Ty.dyn [ ("core::any::Any::Trait", []); ("core::marker::Send::AutoTrait", []) ] ],
+                [ Ty.dyn [ ("core::any::Any", [], []); ("core::marker::Send::AutoTrait", [], []) ]
+                ],
               self
             |) in
           M.borrow (|
@@ -1001,17 +1003,14 @@ Module any.
                       M.call_closure (|
                         Ty.apply (Ty.path "&mut") [] [ T ],
                         M.get_associated_function (|
-                          Ty.dyn [ ("core::any::Any::Trait", []) ],
+                          Ty.dyn [ ("core::any::Any", [], []) ],
                           "downcast_mut_unchecked",
                           [],
                           [ T ]
                         |),
                         [
                           M.call_closure (|
-                            Ty.apply
-                              (Ty.path "&mut")
-                              []
-                              [ Ty.dyn [ ("core::any::Any::Trait", []) ] ],
+                            Ty.apply (Ty.path "&mut") [] [ Ty.dyn [ ("core::any::Any", [], []) ] ],
                             M.pointer_coercion
                               M.PointerCoercion.Unsize
                               (Ty.apply
@@ -1020,14 +1019,14 @@ Module any.
                                 [
                                   Ty.dyn
                                     [
-                                      ("core::any::Any::Trait", []);
-                                      ("core::marker::Send::AutoTrait", [])
+                                      ("core::any::Any", [], []);
+                                      ("core::marker::Send::AutoTrait", [], [])
                                     ]
                                 ])
                               (Ty.apply
                                 (Ty.path "&mut")
                                 []
-                                [ Ty.dyn [ ("core::any::Any::Trait", []) ] ]),
+                                [ Ty.dyn [ ("core::any::Any", [], []) ] ]),
                             [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |) ]
                           |)
                         ]
@@ -1045,15 +1044,15 @@ Module any.
       M.IsAssociatedFunction.C Self "downcast_mut_unchecked" downcast_mut_unchecked.
     Admitted.
     Global Typeclasses Opaque downcast_mut_unchecked.
-  End Impl_Dyn_core_any_Any_Trait_core_marker_Send_AutoTrait.
+  End Impl_Dyn_core_any_Any_core_marker_Send_AutoTrait.
   
-  Module Impl_Dyn_core_any_Any_Trait_core_marker_Sync_AutoTrait_core_marker_Send_AutoTrait.
+  Module Impl_Dyn_core_any_Any_core_marker_Sync_AutoTrait_core_marker_Send_AutoTrait.
     Definition Self : Ty.t :=
       Ty.dyn
         [
-          ("core::any::Any::Trait", []);
-          ("core::marker::Sync::AutoTrait", []);
-          ("core::marker::Send::AutoTrait", [])
+          ("core::any::Any", [], []);
+          ("core::marker::Sync::AutoTrait", [], []);
+          ("core::marker::Send::AutoTrait", [], [])
         ].
     
     (*
@@ -1073,24 +1072,19 @@ Module any.
                 [
                   Ty.dyn
                     [
-                      ("core::any::Any::Trait", []);
-                      ("core::marker::Sync::AutoTrait", []);
-                      ("core::marker::Send::AutoTrait", [])
+                      ("core::any::Any", [], []);
+                      ("core::marker::Sync::AutoTrait", [], []);
+                      ("core::marker::Send::AutoTrait", [], [])
                     ]
                 ],
               self
             |) in
           M.call_closure (|
             Ty.path "bool",
-            M.get_associated_function (|
-              Ty.dyn [ ("core::any::Any::Trait", []) ],
-              "is",
-              [],
-              [ T ]
-            |),
+            M.get_associated_function (| Ty.dyn [ ("core::any::Any", [], []) ], "is", [], [ T ] |),
             [
               M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::any::Any::Trait", []) ] ],
+                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::any::Any", [], []) ] ],
                 M.pointer_coercion
                   M.PointerCoercion.Unsize
                   (Ty.apply
@@ -1099,12 +1093,12 @@ Module any.
                     [
                       Ty.dyn
                         [
-                          ("core::any::Any::Trait", []);
-                          ("core::marker::Sync::AutoTrait", []);
-                          ("core::marker::Send::AutoTrait", [])
+                          ("core::any::Any", [], []);
+                          ("core::marker::Sync::AutoTrait", [], []);
+                          ("core::marker::Send::AutoTrait", [], [])
                         ]
                     ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::any::Any::Trait", []) ] ]),
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::any::Any", [], []) ] ]),
                 [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
               |)
             ]
@@ -1133,9 +1127,9 @@ Module any.
                 [
                   Ty.dyn
                     [
-                      ("core::any::Any::Trait", []);
-                      ("core::marker::Sync::AutoTrait", []);
-                      ("core::marker::Send::AutoTrait", [])
+                      ("core::any::Any", [], []);
+                      ("core::marker::Sync::AutoTrait", [], []);
+                      ("core::marker::Send::AutoTrait", [], [])
                     ]
                 ],
               self
@@ -1143,14 +1137,14 @@ Module any.
           M.call_closure (|
             Ty.apply (Ty.path "core::option::Option") [] [ Ty.apply (Ty.path "&") [] [ T ] ],
             M.get_associated_function (|
-              Ty.dyn [ ("core::any::Any::Trait", []) ],
+              Ty.dyn [ ("core::any::Any", [], []) ],
               "downcast_ref",
               [],
               [ T ]
             |),
             [
               M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::any::Any::Trait", []) ] ],
+                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::any::Any", [], []) ] ],
                 M.pointer_coercion
                   M.PointerCoercion.Unsize
                   (Ty.apply
@@ -1159,12 +1153,12 @@ Module any.
                     [
                       Ty.dyn
                         [
-                          ("core::any::Any::Trait", []);
-                          ("core::marker::Sync::AutoTrait", []);
-                          ("core::marker::Send::AutoTrait", [])
+                          ("core::any::Any", [], []);
+                          ("core::marker::Sync::AutoTrait", [], []);
+                          ("core::marker::Send::AutoTrait", [], [])
                         ]
                     ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::any::Any::Trait", []) ] ]),
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::any::Any", [], []) ] ]),
                 [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
               |)
             ]
@@ -1194,9 +1188,9 @@ Module any.
                 [
                   Ty.dyn
                     [
-                      ("core::any::Any::Trait", []);
-                      ("core::marker::Sync::AutoTrait", []);
-                      ("core::marker::Send::AutoTrait", [])
+                      ("core::any::Any", [], []);
+                      ("core::marker::Sync::AutoTrait", [], []);
+                      ("core::marker::Send::AutoTrait", [], [])
                     ]
                 ],
               self
@@ -1204,14 +1198,14 @@ Module any.
           M.call_closure (|
             Ty.apply (Ty.path "core::option::Option") [] [ Ty.apply (Ty.path "&mut") [] [ T ] ],
             M.get_associated_function (|
-              Ty.dyn [ ("core::any::Any::Trait", []) ],
+              Ty.dyn [ ("core::any::Any", [], []) ],
               "downcast_mut",
               [],
               [ T ]
             |),
             [
               M.call_closure (|
-                Ty.apply (Ty.path "&mut") [] [ Ty.dyn [ ("core::any::Any::Trait", []) ] ],
+                Ty.apply (Ty.path "&mut") [] [ Ty.dyn [ ("core::any::Any", [], []) ] ],
                 M.pointer_coercion
                   M.PointerCoercion.Unsize
                   (Ty.apply
@@ -1220,12 +1214,12 @@ Module any.
                     [
                       Ty.dyn
                         [
-                          ("core::any::Any::Trait", []);
-                          ("core::marker::Sync::AutoTrait", []);
-                          ("core::marker::Send::AutoTrait", [])
+                          ("core::any::Any", [], []);
+                          ("core::marker::Sync::AutoTrait", [], []);
+                          ("core::marker::Send::AutoTrait", [], [])
                         ]
                     ])
-                  (Ty.apply (Ty.path "&mut") [] [ Ty.dyn [ ("core::any::Any::Trait", []) ] ]),
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.dyn [ ("core::any::Any", [], []) ] ]),
                 [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |) ]
               |)
             ]
@@ -1256,9 +1250,9 @@ Module any.
                 [
                   Ty.dyn
                     [
-                      ("core::any::Any::Trait", []);
-                      ("core::marker::Sync::AutoTrait", []);
-                      ("core::marker::Send::AutoTrait", [])
+                      ("core::any::Any", [], []);
+                      ("core::marker::Sync::AutoTrait", [], []);
+                      ("core::marker::Send::AutoTrait", [], [])
                     ]
                 ],
               self
@@ -1269,14 +1263,14 @@ Module any.
               M.call_closure (|
                 Ty.apply (Ty.path "&") [] [ T ],
                 M.get_associated_function (|
-                  Ty.dyn [ ("core::any::Any::Trait", []) ],
+                  Ty.dyn [ ("core::any::Any", [], []) ],
                   "downcast_ref_unchecked",
                   [],
                   [ T ]
                 |),
                 [
                   M.call_closure (|
-                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::any::Any::Trait", []) ] ],
+                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::any::Any", [], []) ] ],
                     M.pointer_coercion
                       M.PointerCoercion.Unsize
                       (Ty.apply
@@ -1285,12 +1279,12 @@ Module any.
                         [
                           Ty.dyn
                             [
-                              ("core::any::Any::Trait", []);
-                              ("core::marker::Sync::AutoTrait", []);
-                              ("core::marker::Send::AutoTrait", [])
+                              ("core::any::Any", [], []);
+                              ("core::marker::Sync::AutoTrait", [], []);
+                              ("core::marker::Send::AutoTrait", [], [])
                             ]
                         ])
-                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::any::Any::Trait", []) ] ]),
+                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::any::Any", [], []) ] ]),
                     [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
                   |)
                 ]
@@ -1323,9 +1317,9 @@ Module any.
                 [
                   Ty.dyn
                     [
-                      ("core::any::Any::Trait", []);
-                      ("core::marker::Sync::AutoTrait", []);
-                      ("core::marker::Send::AutoTrait", [])
+                      ("core::any::Any", [], []);
+                      ("core::marker::Sync::AutoTrait", [], []);
+                      ("core::marker::Send::AutoTrait", [], [])
                     ]
                 ],
               self
@@ -1342,17 +1336,14 @@ Module any.
                       M.call_closure (|
                         Ty.apply (Ty.path "&mut") [] [ T ],
                         M.get_associated_function (|
-                          Ty.dyn [ ("core::any::Any::Trait", []) ],
+                          Ty.dyn [ ("core::any::Any", [], []) ],
                           "downcast_mut_unchecked",
                           [],
                           [ T ]
                         |),
                         [
                           M.call_closure (|
-                            Ty.apply
-                              (Ty.path "&mut")
-                              []
-                              [ Ty.dyn [ ("core::any::Any::Trait", []) ] ],
+                            Ty.apply (Ty.path "&mut") [] [ Ty.dyn [ ("core::any::Any", [], []) ] ],
                             M.pointer_coercion
                               M.PointerCoercion.Unsize
                               (Ty.apply
@@ -1361,15 +1352,15 @@ Module any.
                                 [
                                   Ty.dyn
                                     [
-                                      ("core::any::Any::Trait", []);
-                                      ("core::marker::Sync::AutoTrait", []);
-                                      ("core::marker::Send::AutoTrait", [])
+                                      ("core::any::Any", [], []);
+                                      ("core::marker::Sync::AutoTrait", [], []);
+                                      ("core::marker::Send::AutoTrait", [], [])
                                     ]
                                 ])
                               (Ty.apply
                                 (Ty.path "&mut")
                                 []
-                                [ Ty.dyn [ ("core::any::Any::Trait", []) ] ]),
+                                [ Ty.dyn [ ("core::any::Any", [], []) ] ]),
                             [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |) ]
                           |)
                         ]
@@ -1387,7 +1378,7 @@ Module any.
       M.IsAssociatedFunction.C Self "downcast_mut_unchecked" downcast_mut_unchecked.
     Admitted.
     Global Typeclasses Opaque downcast_mut_unchecked.
-  End Impl_Dyn_core_any_Any_Trait_core_marker_Sync_AutoTrait_core_marker_Send_AutoTrait.
+  End Impl_Dyn_core_any_Any_core_marker_Sync_AutoTrait_core_marker_Send_AutoTrait.
   
   (* StructRecord
     {

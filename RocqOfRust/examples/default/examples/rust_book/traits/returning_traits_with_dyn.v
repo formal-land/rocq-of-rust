@@ -98,9 +98,7 @@ Definition random_animal (ε : list Value.t) (τ : list Ty.t) (α : list Value.t
         Ty.apply
           (Ty.path "alloc::boxed::Box")
           []
-          [
-            Ty.dyn [ ("returning_traits_with_dyn::Animal::Trait", []) ];
-            Ty.path "alloc::alloc::Global"
+          [ Ty.dyn [ ("returning_traits_with_dyn::Animal", [], []) ]; Ty.path "alloc::alloc::Global"
           ],
         M.pointer_coercion
           M.PointerCoercion.Unsize
@@ -108,14 +106,14 @@ Definition random_animal (ε : list Value.t) (τ : list Ty.t) (α : list Value.t
             (Ty.path "alloc::boxed::Box")
             []
             [
-              Ty.dyn [ ("returning_traits_with_dyn::Animal::Trait", []) ];
+              Ty.dyn [ ("returning_traits_with_dyn::Animal", [], []) ];
               Ty.path "alloc::alloc::Global"
             ])
           (Ty.apply
             (Ty.path "alloc::boxed::Box")
             []
             [
-              Ty.dyn [ ("returning_traits_with_dyn::Animal::Trait", []) ];
+              Ty.dyn [ ("returning_traits_with_dyn::Animal", [], []) ];
               Ty.path "alloc::alloc::Global"
             ]),
         [
@@ -124,7 +122,7 @@ Definition random_animal (ε : list Value.t) (τ : list Ty.t) (α : list Value.t
               (Ty.path "alloc::boxed::Box")
               []
               [
-                Ty.dyn [ ("returning_traits_with_dyn::Animal::Trait", []) ];
+                Ty.dyn [ ("returning_traits_with_dyn::Animal", [], []) ];
                 Ty.path "alloc::alloc::Global"
               ],
             M.pointer_coercion
@@ -133,14 +131,14 @@ Definition random_animal (ε : list Value.t) (τ : list Ty.t) (α : list Value.t
                 (Ty.path "alloc::boxed::Box")
                 []
                 [
-                  Ty.dyn [ ("returning_traits_with_dyn::Animal::Trait", []) ];
+                  Ty.dyn [ ("returning_traits_with_dyn::Animal", [], []) ];
                   Ty.path "alloc::alloc::Global"
                 ])
               (Ty.apply
                 (Ty.path "alloc::boxed::Box")
                 []
                 [
-                  Ty.dyn [ ("returning_traits_with_dyn::Animal::Trait", []) ];
+                  Ty.dyn [ ("returning_traits_with_dyn::Animal", [], []) ];
                   Ty.path "alloc::alloc::Global"
                 ]),
             [
@@ -149,7 +147,7 @@ Definition random_animal (ε : list Value.t) (τ : list Ty.t) (α : list Value.t
                   (Ty.path "alloc::boxed::Box")
                   []
                   [
-                    Ty.dyn [ ("returning_traits_with_dyn::Animal::Trait", []) ];
+                    Ty.dyn [ ("returning_traits_with_dyn::Animal", [], []) ];
                     Ty.path "alloc::alloc::Global"
                   ],
                 M.alloc (| Ty.tuple [], Value.Tuple [] |),
@@ -172,7 +170,7 @@ Definition random_animal (ε : list Value.t) (τ : list Ty.t) (α : list Value.t
                           (Ty.path "alloc::boxed::Box")
                           []
                           [
-                            Ty.dyn [ ("returning_traits_with_dyn::Animal::Trait", []) ];
+                            Ty.dyn [ ("returning_traits_with_dyn::Animal", [], []) ];
                             Ty.path "alloc::alloc::Global"
                           ],
                         M.pointer_coercion
@@ -181,14 +179,14 @@ Definition random_animal (ε : list Value.t) (τ : list Ty.t) (α : list Value.t
                             (Ty.path "alloc::boxed::Box")
                             []
                             [
-                              Ty.dyn [ ("returning_traits_with_dyn::Animal::Trait", []) ];
+                              Ty.dyn [ ("returning_traits_with_dyn::Animal", [], []) ];
                               Ty.path "alloc::alloc::Global"
                             ])
                           (Ty.apply
                             (Ty.path "alloc::boxed::Box")
                             []
                             [
-                              Ty.dyn [ ("returning_traits_with_dyn::Animal::Trait", []) ];
+                              Ty.dyn [ ("returning_traits_with_dyn::Animal", [], []) ];
                               Ty.path "alloc::alloc::Global"
                             ]),
                         [
@@ -197,7 +195,7 @@ Definition random_animal (ε : list Value.t) (τ : list Ty.t) (α : list Value.t
                               (Ty.path "alloc::boxed::Box")
                               []
                               [
-                                Ty.dyn [ ("returning_traits_with_dyn::Animal::Trait", []) ];
+                                Ty.dyn [ ("returning_traits_with_dyn::Animal", [], []) ];
                                 Ty.path "alloc::alloc::Global"
                               ],
                             M.pointer_coercion
@@ -213,7 +211,7 @@ Definition random_animal (ε : list Value.t) (τ : list Ty.t) (α : list Value.t
                                 (Ty.path "alloc::boxed::Box")
                                 []
                                 [
-                                  Ty.dyn [ ("returning_traits_with_dyn::Animal::Trait", []) ];
+                                  Ty.dyn [ ("returning_traits_with_dyn::Animal", [], []) ];
                                   Ty.path "alloc::alloc::Global"
                                 ]),
                             [
@@ -250,7 +248,7 @@ Definition random_animal (ε : list Value.t) (τ : list Ty.t) (α : list Value.t
                           (Ty.path "alloc::boxed::Box")
                           []
                           [
-                            Ty.dyn [ ("returning_traits_with_dyn::Animal::Trait", []) ];
+                            Ty.dyn [ ("returning_traits_with_dyn::Animal", [], []) ];
                             Ty.path "alloc::alloc::Global"
                           ],
                         M.pointer_coercion
@@ -266,7 +264,7 @@ Definition random_animal (ε : list Value.t) (τ : list Ty.t) (α : list Value.t
                             (Ty.path "alloc::boxed::Box")
                             []
                             [
-                              Ty.dyn [ ("returning_traits_with_dyn::Animal::Trait", []) ];
+                              Ty.dyn [ ("returning_traits_with_dyn::Animal", [], []) ];
                               Ty.path "alloc::alloc::Global"
                             ]),
                         [
@@ -329,7 +327,7 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
               (Ty.path "alloc::boxed::Box")
               []
               [
-                Ty.dyn [ ("returning_traits_with_dyn::Animal::Trait", []) ];
+                Ty.dyn [ ("returning_traits_with_dyn::Animal", [], []) ];
                 Ty.path "alloc::alloc::Global"
               ] :=
           M.call_closure (|
@@ -337,7 +335,7 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
               (Ty.path "alloc::boxed::Box")
               []
               [
-                Ty.dyn [ ("returning_traits_with_dyn::Animal::Trait", []) ];
+                Ty.dyn [ ("returning_traits_with_dyn::Animal", [], []) ];
                 Ty.path "alloc::alloc::Global"
               ],
             M.get_function (| "returning_traits_with_dyn::random_animal", [], [] |),
@@ -412,9 +410,7 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                                                 M.get_trait_method (|
                                                   "returning_traits_with_dyn::Animal",
                                                   Ty.dyn
-                                                    [
-                                                      ("returning_traits_with_dyn::Animal::Trait",
-                                                        [])
+                                                    [ ("returning_traits_with_dyn::Animal", [], [])
                                                     ],
                                                   [],
                                                   [],

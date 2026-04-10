@@ -342,7 +342,7 @@ Module Impl_core_fmt_Debug_for_revm_precompile_Precompiles.
             M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Precompiles" |) |) |);
             M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "inner" |) |) |);
             M.call_closure (|
-              Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+              Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ],
               M.pointer_coercion
                 M.PointerCoercion.Unsize
                 (Ty.apply
@@ -369,7 +369,7 @@ Module Impl_core_fmt_Debug_for_revm_precompile_Precompiles.
                         Ty.path "std::hash::random::RandomState"
                       ]
                   ])
-                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ]),
               [
                 M.borrow (|
                   Pointer.Kind.Ref,
@@ -388,7 +388,7 @@ Module Impl_core_fmt_Debug_for_revm_precompile_Precompiles.
             |);
             M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "addresses" |) |) |);
             M.call_closure (|
-              Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+              Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ],
               M.pointer_coercion
                 M.PointerCoercion.Unsize
                 (Ty.apply
@@ -408,7 +408,7 @@ Module Impl_core_fmt_Debug_for_revm_precompile_Precompiles.
                           ]
                       ]
                   ])
-                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ]),
               [
                 M.borrow (|
                   Pointer.Kind.Ref,
@@ -3056,11 +3056,11 @@ Module Impl_core_fmt_Debug_for_revm_precompile_PrecompileWithAddress.
             M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
             M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "PrecompileWithAddress" |) |) |);
             M.call_closure (|
-              Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+              Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ],
               M.pointer_coercion
                 M.PointerCoercion.Unsize
                 (Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bits::address::Address" ])
-                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ]),
               [
                 M.borrow (|
                   Pointer.Kind.Ref,
@@ -3078,7 +3078,7 @@ Module Impl_core_fmt_Debug_for_revm_precompile_PrecompileWithAddress.
               ]
             |);
             M.call_closure (|
-              Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+              Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ],
               M.pointer_coercion
                 M.PointerCoercion.Unsize
                 (Ty.apply
@@ -3103,7 +3103,7 @@ Module Impl_core_fmt_Debug_for_revm_precompile_PrecompileWithAddress.
                             ])
                       ]
                   ])
-                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ]),
               [
                 M.borrow (|
                   Pointer.Kind.Ref,

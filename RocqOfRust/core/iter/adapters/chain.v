@@ -145,14 +145,14 @@ Module iter.
                   M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Chain" |) |) |);
                   M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "a" |) |) |);
                   M.call_closure (|
-                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ],
                     M.pointer_coercion
                       M.PointerCoercion.Unsize
                       (Ty.apply
                         (Ty.path "&")
                         []
                         [ Ty.apply (Ty.path "core::option::Option") [] [ A ] ])
-                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ]),
                     [
                       M.borrow (|
                         Pointer.Kind.Ref,
@@ -171,7 +171,7 @@ Module iter.
                   |);
                   M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "b" |) |) |);
                   M.call_closure (|
-                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ],
                     M.pointer_coercion
                       M.PointerCoercion.Unsize
                       (Ty.apply
@@ -183,7 +183,7 @@ Module iter.
                             []
                             [ Ty.apply (Ty.path "core::option::Option") [] [ B ] ]
                         ])
-                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ]),
                     [
                       M.borrow (|
                         Pointer.Kind.Ref,

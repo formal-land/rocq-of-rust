@@ -10080,11 +10080,11 @@ Module bytes_mut.
             M.get_function (| "core::fmt::write", [], [] |),
             [
               M.call_closure (|
-                Ty.apply (Ty.path "&mut") [] [ Ty.dyn [ ("core::fmt::Write::Trait", []) ] ],
+                Ty.apply (Ty.path "&mut") [] [ Ty.dyn [ ("core::fmt::Write", [], []) ] ],
                 M.pointer_coercion
                   M.PointerCoercion.Unsize
                   (Ty.apply (Ty.path "&mut") [] [ Ty.path "bytes::bytes_mut::BytesMut" ])
-                  (Ty.apply (Ty.path "&mut") [] [ Ty.dyn [ ("core::fmt::Write::Trait", []) ] ]),
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.dyn [ ("core::fmt::Write", [], []) ] ]),
                 [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |) ]
               |);
               M.read (| args |)

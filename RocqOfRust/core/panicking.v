@@ -2319,20 +2319,20 @@ Module panicking.
           [
             M.read (| kind |);
             M.call_closure (|
-              Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+              Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ],
               M.pointer_coercion
                 M.PointerCoercion.Unsize
                 (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ T ] ])
-                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ]),
               [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.borrow (| Pointer.Kind.Ref, left |) |) |)
               ]
             |);
             M.call_closure (|
-              Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+              Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ],
               M.pointer_coercion
                 M.PointerCoercion.Unsize
                 (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ U ] ])
-                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ]),
               [
                 M.borrow (|
                   Pointer.Kind.Ref,
@@ -2384,23 +2384,23 @@ Module panicking.
           [
             Value.StructTuple "core::panicking::AssertKind::Match" [] [] [];
             M.call_closure (|
-              Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+              Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ],
               M.pointer_coercion
                 M.PointerCoercion.Unsize
                 (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ T ] ])
-                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ]),
               [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.borrow (| Pointer.Kind.Ref, left |) |) |)
               ]
             |);
             M.call_closure (|
-              Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+              Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ],
               M.pointer_coercion
                 M.PointerCoercion.Unsize
                 (Ty.apply
                   (Ty.path "&")
                   []
                   [ Ty.path "core::panicking::assert_matches_failed::Pattern" ])
-                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ]),
               [
                 M.borrow (|
                   Pointer.Kind.Ref,
@@ -2531,12 +2531,12 @@ Module panicking.
         (let kind := M.alloc (| Ty.path "core::panicking::AssertKind", kind |) in
         let left :=
           M.alloc (|
-            Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+            Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ],
             left
           |) in
         let right :=
           M.alloc (|
-            Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+            Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ],
             right
           |) in
         let args :=
@@ -2668,7 +2668,7 @@ Module panicking.
                                               Ty.apply
                                                 (Ty.path "&")
                                                 []
-                                                [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]
+                                                [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ]
                                             ]
                                           |),
                                           [
@@ -2688,7 +2688,7 @@ Module panicking.
                                               Ty.apply
                                                 (Ty.path "&")
                                                 []
-                                                [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]
+                                                [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ]
                                             ]
                                           |),
                                           [
@@ -2783,7 +2783,7 @@ Module panicking.
                                               Ty.apply
                                                 (Ty.path "&")
                                                 []
-                                                [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]
+                                                [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ]
                                             ]
                                           |),
                                           [
@@ -2803,7 +2803,7 @@ Module panicking.
                                               Ty.apply
                                                 (Ty.path "&")
                                                 []
-                                                [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]
+                                                [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ]
                                             ]
                                           |),
                                           [

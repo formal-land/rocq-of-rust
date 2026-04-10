@@ -1225,61 +1225,6 @@ pub(crate) fn translate_top_level(
         .collect()
 }
 
-#[derive(Debug, Serialize)]
-pub(crate) struct DynNameGen {
-    name: String,
-    // Resources to be translated into a list of `WherePredicates`.
-    // Traits' paths along with their opaque type names
-    predicates: Vec<(Rc<Path>, String)>,
-}
-
-impl DynNameGen {
-    pub(crate) fn new(name: String) -> Self {
-        DynNameGen {
-            name,
-            predicates: vec![],
-        }
-    }
-
-    fn next(&mut self, path: Rc<Path>) -> String {
-        // Get the next character
-        let next_letter = self
-            .name
-            .chars()
-            .map(|c| (c as u8 + 1u8) as char)
-            .collect::<String>();
-        let full_name = format!("Dyn{}", self.name);
-        // Collect the current path to be associated
-        let predicates = [self.predicates.clone(), vec![(path, full_name.clone())]].concat();
-        self.predicates = predicates;
-        self.name = next_letter;
-        full_name
-    }
-
-    fn make_dyn_parm(&mut self, arg: Rc<RocqType>) -> Rc<RocqType> {
-        if let Some((name, arg)) = arg.clone().match_ref() {
-            let ct = self.make_dyn_parm(arg);
-            Rc::new(RocqType::Application {
-                func: RocqType::path(&[&name]),
-                consts: vec![],
-                tys: vec![ct],
-            })
-        } else if let RocqType::Dyn { traits } = arg.as_ref() {
-            // We suppose `dyn` is only associated with one trait so we can directly extract the first element
-            if let Some(trait_) = traits.first() {
-                let dy_name = self.next(trait_.clone());
-                RocqType::var(dy_name.as_ref())
-            } else {
-                Rc::new(RocqType::Dyn {
-                    traits: traits.clone(),
-                })
-            }
-        } else {
-            arg
-        }
-    }
-}
-
 impl FunDefinition {
     /// compiles a given function
     fn compile<'a>(
@@ -1288,20 +1233,13 @@ impl FunDefinition {
         fn_decl_and_body: HirFnDeclAndBody<'a>,
         is_axiom: bool,
     ) -> Rc<Self> {
-        let mut dyn_name_gen = DynNameGen::new("T".to_string());
         let FnSigAndBody { args, ret_ty, body } =
             &*compile_fn_sig_and_body(env, fn_decl_and_body, is_axiom);
-        let args = args.as_ref().map(|args| {
-            args.iter().fold(vec![], |result, (string, ty, pattern)| {
-                let ty = dyn_name_gen.make_dyn_parm(ty.clone());
-                [result, vec![(string.to_owned(), ty, pattern.clone())]].concat()
-            })
-        });
         let const_params = get_const_params(env, generics);
         let ty_params = get_ty_params(env, generics);
 
         let signature_and_body = Rc::new(FnSigAndBody {
-            args,
+            args: args.clone(),
             ret_ty: ret_ty.clone(),
             body: body.clone(),
         });

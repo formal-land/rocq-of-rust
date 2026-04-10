@@ -482,8 +482,8 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                                               [
                                                 Ty.dyn
                                                   [
-                                                    ("core::any::Any::Trait", []);
-                                                    ("core::marker::Send::AutoTrait", [])
+                                                    ("core::any::Any", [], []);
+                                                    ("core::marker::Send::AutoTrait", [], [])
                                                   ];
                                                 Ty.path "alloc::alloc::Global"
                                               ]
@@ -500,8 +500,8 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                                                 [
                                                   Ty.dyn
                                                     [
-                                                      ("core::any::Any::Trait", []);
-                                                      ("core::marker::Send::AutoTrait", [])
+                                                      ("core::any::Any", [], []);
+                                                      ("core::marker::Send::AutoTrait", [], [])
                                                     ];
                                                   Ty.path "alloc::alloc::Global"
                                                 ]

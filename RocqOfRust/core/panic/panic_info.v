@@ -48,14 +48,14 @@ Module panic.
                 M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "PanicInfo" |) |) |);
                 M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "message" |) |) |);
                 M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ],
                   M.pointer_coercion
                     M.PointerCoercion.Unsize
                     (Ty.apply
                       (Ty.path "&")
                       []
                       [ Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::Arguments" ] ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ]),
                   [
                     M.borrow (|
                       Pointer.Kind.Ref,
@@ -74,14 +74,14 @@ Module panic.
                 |);
                 M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "location" |) |) |);
                 M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ],
                   M.pointer_coercion
                     M.PointerCoercion.Unsize
                     (Ty.apply
                       (Ty.path "&")
                       []
                       [ Ty.apply (Ty.path "&") [] [ Ty.path "core::panic::location::Location" ] ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ]),
                   [
                     M.borrow (|
                       Pointer.Kind.Ref,
@@ -100,11 +100,11 @@ Module panic.
                 |);
                 M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "can_unwind" |) |) |);
                 M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ],
                   M.pointer_coercion
                     M.PointerCoercion.Unsize
                     (Ty.apply (Ty.path "&") [] [ Ty.path "bool" ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ]),
                   [
                     M.borrow (|
                       Pointer.Kind.Ref,
@@ -123,11 +123,11 @@ Module panic.
                 |);
                 M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "force_no_backtrace" |) |) |);
                 M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ],
                   M.pointer_coercion
                     M.PointerCoercion.Unsize
                     (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "bool" ] ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ]),
                   [
                     M.borrow (|
                       Pointer.Kind.Ref,
@@ -321,18 +321,19 @@ Module panic.
               Ty.apply
                 (Ty.path "&")
                 []
-                [ Ty.dyn [ ("core::any::Any::Trait", []); ("core::marker::Send::AutoTrait", []) ] ],
+                [ Ty.dyn [ ("core::any::Any", [], []); ("core::marker::Send::AutoTrait", [], []) ]
+                ],
               M.pointer_coercion
                 M.PointerCoercion.Unsize
                 (Ty.apply
                   (Ty.path "&")
                   []
-                  [ Ty.dyn [ ("core::any::Any::Trait", []); ("core::marker::Send::AutoTrait", []) ]
+                  [ Ty.dyn [ ("core::any::Any", [], []); ("core::marker::Send::AutoTrait", [], []) ]
                   ])
                 (Ty.apply
                   (Ty.path "&")
                   []
-                  [ Ty.dyn [ ("core::any::Any::Trait", []); ("core::marker::Send::AutoTrait", []) ]
+                  [ Ty.dyn [ ("core::any::Any", [], []); ("core::marker::Send::AutoTrait", [], []) ]
                   ]),
               [
                 M.borrow (|
@@ -344,7 +345,8 @@ Module panic.
                         []
                         [
                           Ty.dyn
-                            [ ("core::any::Any::Trait", []); ("core::marker::Send::AutoTrait", []) ]
+                            [ ("core::any::Any", [], []); ("core::marker::Send::AutoTrait", [], [])
+                            ]
                         ],
                       M.pointer_coercion
                         M.PointerCoercion.Unsize
@@ -357,7 +359,9 @@ Module panic.
                           []
                           [
                             Ty.dyn
-                              [ ("core::any::Any::Trait", []); ("core::marker::Send::AutoTrait", [])
+                              [
+                                ("core::any::Any", [], []);
+                                ("core::marker::Send::AutoTrait", [], [])
                               ]
                           ]),
                       [

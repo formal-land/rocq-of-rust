@@ -1156,17 +1156,14 @@ Module cell.
                           [
                             M.borrow (| Pointer.Kind.MutRef, d |);
                             M.call_closure (|
-                              Ty.apply
-                                (Ty.path "&")
-                                []
-                                [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                              Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ],
                               M.pointer_coercion
                                 M.PointerCoercion.Unsize
                                 (Ty.apply (Ty.path "&") [] [ T ])
                                 (Ty.apply
                                   (Ty.path "&")
                                   []
-                                  [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                                  [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ]),
                               [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| data |) |) |) ]
                             |)
                           ]
@@ -1194,14 +1191,14 @@ Module cell.
                                   Ty.apply
                                     (Ty.path "&")
                                     []
-                                    [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                                    [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ],
                                   M.pointer_coercion
                                     M.PointerCoercion.Unsize
                                     (Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::Arguments" ])
                                     (Ty.apply
                                       (Ty.path "&")
                                       []
-                                      [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                                      [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ]),
                                   [
                                     M.borrow (|
                                       Pointer.Kind.Ref,

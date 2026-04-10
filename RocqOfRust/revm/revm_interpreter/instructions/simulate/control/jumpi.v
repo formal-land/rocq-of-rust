@@ -43,8 +43,8 @@ Lemma jumpi_eq
       InterpreterTypes.Eq.t WIRE WIRE_types run_InterpreterTypes_for_WIRE IInterpreterTypes)
     (interpreter : Interpreter.t WIRE WIRE_types)
     (_host : H) :
-  let ref_interpreter := make_ref 0 in
-  let ref_host := make_ref (A := H) 1 in
+  let ref_interpreter : '&mut (Interpreter.t WIRE WIRE_types) := make_ref 0 in
+  let ref_host : '&mut H := make_ref 1 in
   {{
     SimulateM.eval_f
       (run_jumpi run_InterpreterTypes_for_WIRE ref_interpreter ref_host)

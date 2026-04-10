@@ -268,7 +268,7 @@ Module eip7702.
                         M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
                         M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Signed" |) |) |);
                         M.call_closure (|
-                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ],
                           M.pointer_coercion
                             M.PointerCoercion.Unsize
                             (Ty.apply
@@ -288,10 +288,7 @@ Module eip7702.
                                       ]
                                   ]
                               ])
-                            (Ty.apply
-                              (Ty.path "&")
-                              []
-                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                            (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ]),
                           [
                             M.borrow (|
                               Pointer.Kind.Ref,
@@ -342,7 +339,7 @@ Module eip7702.
                         M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
                         M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Recovered" |) |) |);
                         M.call_closure (|
-                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ],
                           M.pointer_coercion
                             M.PointerCoercion.Unsize
                             (Ty.apply
@@ -363,10 +360,7 @@ Module eip7702.
                                       ]
                                   ]
                               ])
-                            (Ty.apply
-                              (Ty.path "&")
-                              []
-                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                            (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ]),
                           [
                             M.borrow (|
                               Pointer.Kind.Ref,
@@ -1128,7 +1122,7 @@ Module eip7702.
                 (Ty.path "alloc::boxed::Box")
                 []
                 [
-                  Ty.dyn [ ("core::iter::traits::iterator::Iterator::Trait", []) ];
+                  Ty.dyn [ ("core::iter::traits::iterator::Iterator", [], []) ];
                   Ty.path "alloc::alloc::Global"
                 ],
               M.pointer_coercion
@@ -1137,14 +1131,14 @@ Module eip7702.
                   (Ty.path "alloc::boxed::Box")
                   []
                   [
-                    Ty.dyn [ ("core::iter::traits::iterator::Iterator::Trait", []) ];
+                    Ty.dyn [ ("core::iter::traits::iterator::Iterator", [], []) ];
                     Ty.path "alloc::alloc::Global"
                   ])
                 (Ty.apply
                   (Ty.path "alloc::boxed::Box")
                   []
                   [
-                    Ty.dyn [ ("core::iter::traits::iterator::Iterator::Trait", []) ];
+                    Ty.dyn [ ("core::iter::traits::iterator::Iterator", [], []) ];
                     Ty.path "alloc::alloc::Global"
                   ]),
               [
@@ -1153,7 +1147,7 @@ Module eip7702.
                     (Ty.path "alloc::boxed::Box")
                     []
                     [
-                      Ty.dyn [ ("core::iter::traits::iterator::Iterator::Trait", []) ];
+                      Ty.dyn [ ("core::iter::traits::iterator::Iterator", [], []) ];
                       Ty.path "alloc::alloc::Global"
                     ],
                   M.pointer_coercion
@@ -1162,14 +1156,14 @@ Module eip7702.
                       (Ty.path "alloc::boxed::Box")
                       []
                       [
-                        Ty.dyn [ ("core::iter::traits::iterator::Iterator::Trait", []) ];
+                        Ty.dyn [ ("core::iter::traits::iterator::Iterator", [], []) ];
                         Ty.path "alloc::alloc::Global"
                       ])
                     (Ty.apply
                       (Ty.path "alloc::boxed::Box")
                       []
                       [
-                        Ty.dyn [ ("core::iter::traits::iterator::Iterator::Trait", []) ];
+                        Ty.dyn [ ("core::iter::traits::iterator::Iterator", [], []) ];
                         Ty.path "alloc::alloc::Global"
                       ]),
                   [
@@ -1178,7 +1172,7 @@ Module eip7702.
                         (Ty.path "alloc::boxed::Box")
                         []
                         [
-                          Ty.dyn [ ("core::iter::traits::iterator::Iterator::Trait", []) ];
+                          Ty.dyn [ ("core::iter::traits::iterator::Iterator", [], []) ];
                           Ty.path "alloc::alloc::Global"
                         ],
                       self,
@@ -1213,7 +1207,7 @@ Module eip7702.
                                 (Ty.path "alloc::boxed::Box")
                                 []
                                 [
-                                  Ty.dyn [ ("core::iter::traits::iterator::Iterator::Trait", []) ];
+                                  Ty.dyn [ ("core::iter::traits::iterator::Iterator", [], []) ];
                                   Ty.path "alloc::alloc::Global"
                                 ],
                               M.pointer_coercion
@@ -1250,8 +1244,7 @@ Module eip7702.
                                   (Ty.path "alloc::boxed::Box")
                                   []
                                   [
-                                    Ty.dyn
-                                      [ ("core::iter::traits::iterator::Iterator::Trait", []) ];
+                                    Ty.dyn [ ("core::iter::traits::iterator::Iterator", [], []) ];
                                     Ty.path "alloc::alloc::Global"
                                   ]),
                               [
@@ -1555,7 +1548,7 @@ Module eip7702.
                                 (Ty.path "alloc::boxed::Box")
                                 []
                                 [
-                                  Ty.dyn [ ("core::iter::traits::iterator::Iterator::Trait", []) ];
+                                  Ty.dyn [ ("core::iter::traits::iterator::Iterator", [], []) ];
                                   Ty.path "alloc::alloc::Global"
                                 ],
                               M.pointer_coercion
@@ -1578,8 +1571,7 @@ Module eip7702.
                                   (Ty.path "alloc::boxed::Box")
                                   []
                                   [
-                                    Ty.dyn
-                                      [ ("core::iter::traits::iterator::Iterator::Trait", []) ];
+                                    Ty.dyn [ ("core::iter::traits::iterator::Iterator", [], []) ];
                                     Ty.path "alloc::alloc::Global"
                                   ]),
                               [

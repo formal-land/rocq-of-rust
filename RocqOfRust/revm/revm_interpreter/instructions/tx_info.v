@@ -603,7 +603,8 @@ Module instructions.
                                                         "revm_context_interface::transaction::common::CommonTxFields",
                                                         Ty.dyn
                                                           [
-                                                            ("revm_context_interface::transaction::common::CommonTxFields::Trait",
+                                                            ("revm_context_interface::transaction::common::CommonTxFields",
+                                                              [],
                                                               [])
                                                           ],
                                                         [],
@@ -623,7 +624,8 @@ Module instructions.
                                                                 [
                                                                   Ty.dyn
                                                                     [
-                                                                      ("revm_context_interface::transaction::common::CommonTxFields::Trait",
+                                                                      ("revm_context_interface::transaction::common::CommonTxFields",
+                                                                        [],
                                                                         [])
                                                                     ]
                                                                 ],

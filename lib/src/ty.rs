@@ -6,6 +6,13 @@ use serde::Serialize;
 use std::rc::Rc;
 
 #[derive(Debug, Eq, PartialEq, Serialize)]
+pub(crate) struct DynTrait {
+    pub(crate) path: Rc<Path>,
+    pub(crate) const_args: Vec<Rc<Expr>>,
+    pub(crate) ty_args: Vec<Rc<RocqType>>,
+}
+
+#[derive(Debug, Eq, PartialEq, Serialize)]
 pub(crate) enum RocqType {
     Var {
         name: String,
@@ -27,9 +34,8 @@ pub(crate) enum RocqType {
     Tuple {
         tys: Vec<Rc<RocqType>>,
     },
-    // TODO: add the type parameters for the traits
     Dyn {
-        traits: Vec<Rc<Path>>,
+        traits: Vec<Rc<DynTrait>>,
     },
     AssociatedInTrait {
         trait_name: Rc<Path>,
@@ -70,22 +76,6 @@ impl RocqType {
             consts: vec![],
             tys: vec![ty],
         })
-    }
-
-    pub(crate) fn match_ref(self: Rc<RocqType>) -> Option<(String, Rc<RocqType>)> {
-        if let RocqType::Application { func, consts, tys } = &*self {
-            if let RocqType::Path { path, .. } = &**func {
-                let Path { segments } = path.as_ref();
-                if segments.len() == 1 && consts.is_empty() && tys.len() == 1 {
-                    let name = segments.first().unwrap();
-                    if name == "&" || name == "&mut" {
-                        return Some((name.clone(), tys.first().unwrap().clone()));
-                    }
-                }
-            }
-        }
-
-        None
     }
 }
 
@@ -187,10 +177,23 @@ impl RocqType {
                 rocq::Expression::just_name("Ty.dyn").apply(Rc::new(rocq::Expression::List {
                     exprs: traits
                         .iter()
-                        .map(|trait_name| {
+                        .map(|trait_| {
                             Rc::new(rocq::Expression::Tuple(vec![
-                                Rc::new(rocq::Expression::String(trait_name.to_string())),
-                                Rc::new(rocq::Expression::List { exprs: vec![] }),
+                                Rc::new(rocq::Expression::String(trait_.path.to_string())),
+                                Rc::new(rocq::Expression::List {
+                                    exprs: trait_
+                                        .const_args
+                                        .iter()
+                                        .map(|const_| const_.to_rocq())
+                                        .collect(),
+                                }),
+                                Rc::new(rocq::Expression::List {
+                                    exprs: trait_
+                                        .ty_args
+                                        .iter()
+                                        .map(|ty| ty.to_rocq())
+                                        .collect(),
+                                }),
                             ]))
                         })
                         .collect(),
@@ -260,7 +263,7 @@ impl RocqType {
                 let mut name = "Dyn".to_string();
                 for trait_ in traits {
                     name.push('_');
-                    name.push_str(&trait_.to_name());
+                    name.push_str(&trait_.path.to_name());
                 }
                 name
             }

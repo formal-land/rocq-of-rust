@@ -12,7 +12,7 @@ Axiom Result :
         Ty.apply
           (Ty.path "alloc::boxed::Box")
           []
-          [ Ty.dyn [ ("core::error::Error::Trait", []) ]; Ty.path "alloc::alloc::Global" ]
+          [ Ty.dyn [ ("core::error::Error", [], []) ]; Ty.path "alloc::alloc::Global" ]
       ]).
 
 (* StructTuple
@@ -160,7 +160,7 @@ Definition double_first (ε : list Value.t) (τ : list Ty.t) (α : list Value.t)
             Ty.apply
               (Ty.path "alloc::boxed::Box")
               []
-              [ Ty.dyn [ ("core::error::Error::Trait", []) ]; Ty.path "alloc::alloc::Global" ]
+              [ Ty.dyn [ ("core::error::Error", [], []) ]; Ty.path "alloc::alloc::Global" ]
           ]) (|
         ltac:(M.monadic
           (M.read (|
@@ -331,7 +331,7 @@ Definition double_first (ε : list Value.t) (τ : list Ty.t) (α : list Value.t)
                                     (Ty.path "alloc::boxed::Box")
                                     []
                                     [
-                                      Ty.dyn [ ("core::error::Error::Trait", []) ];
+                                      Ty.dyn [ ("core::error::Error", [], []) ];
                                       Ty.path "alloc::alloc::Global"
                                     ]
                                 ],
@@ -346,7 +346,7 @@ Definition double_first (ε : list Value.t) (τ : list Ty.t) (α : list Value.t)
                                       (Ty.path "alloc::boxed::Box")
                                       []
                                       [
-                                        Ty.dyn [ ("core::error::Error::Trait", []) ];
+                                        Ty.dyn [ ("core::error::Error", [], []) ];
                                         Ty.path "alloc::alloc::Global"
                                       ]
                                   ],
@@ -483,7 +483,7 @@ Definition double_first (ε : list Value.t) (τ : list Ty.t) (α : list Value.t)
                                     (Ty.path "alloc::boxed::Box")
                                     []
                                     [
-                                      Ty.dyn [ ("core::error::Error::Trait", []) ];
+                                      Ty.dyn [ ("core::error::Error", [], []) ];
                                       Ty.path "alloc::alloc::Global"
                                     ]
                                 ],
@@ -498,7 +498,7 @@ Definition double_first (ε : list Value.t) (τ : list Ty.t) (α : list Value.t)
                                       (Ty.path "alloc::boxed::Box")
                                       []
                                       [
-                                        Ty.dyn [ ("core::error::Error::Trait", []) ];
+                                        Ty.dyn [ ("core::error::Error", [], []) ];
                                         Ty.path "alloc::alloc::Global"
                                       ]
                                   ],
@@ -542,7 +542,7 @@ Definition double_first (ε : list Value.t) (τ : list Ty.t) (α : list Value.t)
                   Ty.apply
                     (Ty.path "alloc::boxed::Box")
                     []
-                    [ Ty.dyn [ ("core::error::Error::Trait", []) ]; Ty.path "alloc::alloc::Global" ]
+                    [ Ty.dyn [ ("core::error::Error", [], []) ]; Ty.path "alloc::alloc::Global" ]
                 ],
               Value.StructTuple
                 "core::result::Result::Ok"
@@ -552,7 +552,7 @@ Definition double_first (ε : list Value.t) (τ : list Ty.t) (α : list Value.t)
                   Ty.apply
                     (Ty.path "alloc::boxed::Box")
                     []
-                    [ Ty.dyn [ ("core::error::Error::Trait", []) ]; Ty.path "alloc::alloc::Global" ]
+                    [ Ty.dyn [ ("core::error::Error", [], []) ]; Ty.path "alloc::alloc::Global" ]
                 ]
                 [
                   M.call_closure (|
@@ -594,7 +594,7 @@ Definition print (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
               Ty.apply
                 (Ty.path "alloc::boxed::Box")
                 []
-                [ Ty.dyn [ ("core::error::Error::Trait", []) ]; Ty.path "alloc::alloc::Global" ]
+                [ Ty.dyn [ ("core::error::Error", [], []) ]; Ty.path "alloc::alloc::Global" ]
             ],
           result
         |) in
@@ -686,8 +686,7 @@ Definition print (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                   Ty.apply
                     (Ty.path "alloc::boxed::Box")
                     []
-                    [ Ty.dyn [ ("core::error::Error::Trait", []) ]; Ty.path "alloc::alloc::Global"
-                    ],
+                    [ Ty.dyn [ ("core::error::Error", [], []) ]; Ty.path "alloc::alloc::Global" ],
                   γ0_0
                 |) in
               M.read (|
@@ -744,7 +743,7 @@ Definition print (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                                               (Ty.path "alloc::boxed::Box")
                                               []
                                               [
-                                                Ty.dyn [ ("core::error::Error::Trait", []) ];
+                                                Ty.dyn [ ("core::error::Error", [], []) ];
                                                 Ty.path "alloc::alloc::Global"
                                               ]
                                           ]
@@ -1012,8 +1011,7 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                     Ty.apply
                       (Ty.path "alloc::boxed::Box")
                       []
-                      [ Ty.dyn [ ("core::error::Error::Trait", []) ]; Ty.path "alloc::alloc::Global"
-                      ]
+                      [ Ty.dyn [ ("core::error::Error", [], []) ]; Ty.path "alloc::alloc::Global" ]
                   ],
                 M.get_function (| "other_uses_of_question_mark::double_first", [], [] |),
                 [ M.read (| numbers |) ]
@@ -1034,8 +1032,7 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                     Ty.apply
                       (Ty.path "alloc::boxed::Box")
                       []
-                      [ Ty.dyn [ ("core::error::Error::Trait", []) ]; Ty.path "alloc::alloc::Global"
-                      ]
+                      [ Ty.dyn [ ("core::error::Error", [], []) ]; Ty.path "alloc::alloc::Global" ]
                   ],
                 M.get_function (| "other_uses_of_question_mark::double_first", [], [] |),
                 [ M.read (| empty |) ]
@@ -1056,8 +1053,7 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                     Ty.apply
                       (Ty.path "alloc::boxed::Box")
                       []
-                      [ Ty.dyn [ ("core::error::Error::Trait", []) ]; Ty.path "alloc::alloc::Global"
-                      ]
+                      [ Ty.dyn [ ("core::error::Error", [], []) ]; Ty.path "alloc::alloc::Global" ]
                   ],
                 M.get_function (| "other_uses_of_question_mark::double_first", [], [] |),
                 [ M.read (| strings |) ]

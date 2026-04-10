@@ -91,7 +91,7 @@ Module Impl_core_fmt_Debug_for_wrapping_errors_DoubleError.
                     M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
                     M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Parse" |) |) |);
                     M.call_closure (|
-                      Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                      Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ],
                       M.pointer_coercion
                         M.PointerCoercion.Unsize
                         (Ty.apply
@@ -99,7 +99,7 @@ Module Impl_core_fmt_Debug_for_wrapping_errors_DoubleError.
                           []
                           [ Ty.apply (Ty.path "&") [] [ Ty.path "core::num::error::ParseIntError" ]
                           ])
-                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ]),
                       [
                         M.borrow (|
                           Pointer.Kind.Ref,
@@ -286,7 +286,7 @@ Module Impl_core_error_Error_for_wrapping_errors_DoubleError.
           Ty.apply
             (Ty.path "core::option::Option")
             []
-            [ Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ] ],
+            [ Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error", [], []) ] ] ],
           M.deref (| M.read (| self |) |),
           [
             fun γ =>
@@ -295,7 +295,7 @@ Module Impl_core_error_Error_for_wrapping_errors_DoubleError.
                 Value.StructTuple
                   "core::option::Option::None"
                   []
-                  [ Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ] ]
+                  [ Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error", [], []) ] ] ]
                   []));
             fun γ =>
               ltac:(M.monadic
@@ -313,17 +313,14 @@ Module Impl_core_error_Error_for_wrapping_errors_DoubleError.
                 Value.StructTuple
                   "core::option::Option::Some"
                   []
-                  [ Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ] ]
+                  [ Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error", [], []) ] ] ]
                   [
                     M.call_closure (|
-                      Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ],
+                      Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error", [], []) ] ],
                       M.pointer_coercion
                         M.PointerCoercion.Unsize
                         (Ty.apply (Ty.path "&") [] [ Ty.path "core::num::error::ParseIntError" ])
-                        (Ty.apply
-                          (Ty.path "&")
-                          []
-                          [ Ty.dyn [ ("core::error::Error::Trait", []) ] ]),
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error", [], []) ] ]),
                       [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| e |) |) |) ]
                     |)
                   ]))
@@ -954,7 +951,7 @@ Definition print (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                                   Ty.apply
                                     (Ty.path "&")
                                     []
-                                    [ Ty.dyn [ ("core::error::Error::Trait", []) ] ]
+                                    [ Ty.dyn [ ("core::error::Error", [], []) ] ]
                                 ],
                               M.call_closure (|
                                 Ty.apply
@@ -964,7 +961,7 @@ Definition print (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                                     Ty.apply
                                       (Ty.path "&")
                                       []
-                                      [ Ty.dyn [ ("core::error::Error::Trait", []) ] ]
+                                      [ Ty.dyn [ ("core::error::Error", [], []) ] ]
                                   ],
                                 M.get_trait_method (|
                                   "core::error::Error",
@@ -989,7 +986,7 @@ Definition print (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                               Ty.apply
                                 (Ty.path "&")
                                 []
-                                [ Ty.dyn [ ("core::error::Error::Trait", []) ] ],
+                                [ Ty.dyn [ ("core::error::Error", [], []) ] ],
                               γ0_0
                             |) in
                           M.read (|
@@ -1054,10 +1051,7 @@ Definition print (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                                                               []
                                                               [
                                                                 Ty.dyn
-                                                                  [
-                                                                    ("core::error::Error::Trait",
-                                                                      [])
-                                                                  ]
+                                                                  [ ("core::error::Error", [], []) ]
                                                               ]
                                                           ]
                                                         |),

@@ -30,7 +30,7 @@ Definition comp_sci_student_greeting (ε : list Value.t) (τ : list Ty.t) (α : 
     ltac:(M.monadic
       (let student :=
         M.alloc (|
-          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("supertraits::CompSciStudent::Trait", []) ] ],
+          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("supertraits::CompSciStudent", [], []) ] ],
           student
         |) in
       M.call_closure (|
@@ -106,7 +106,7 @@ Definition comp_sci_student_greeting (ε : list Value.t) (τ : list Ty.t) (α : 
                                                 M.get_trait_method (|
                                                   "supertraits::Person",
                                                   Ty.dyn
-                                                    [ ("supertraits::CompSciStudent::Trait", []) ],
+                                                    [ ("supertraits::CompSciStudent", [], []) ],
                                                   [],
                                                   [],
                                                   "name",
@@ -147,7 +147,7 @@ Definition comp_sci_student_greeting (ε : list Value.t) (τ : list Ty.t) (α : 
                                                 M.get_trait_method (|
                                                   "supertraits::Student",
                                                   Ty.dyn
-                                                    [ ("supertraits::CompSciStudent::Trait", []) ],
+                                                    [ ("supertraits::CompSciStudent", [], []) ],
                                                   [],
                                                   [],
                                                   "university",
@@ -188,7 +188,7 @@ Definition comp_sci_student_greeting (ε : list Value.t) (τ : list Ty.t) (α : 
                                                 M.get_trait_method (|
                                                   "supertraits::Programmer",
                                                   Ty.dyn
-                                                    [ ("supertraits::CompSciStudent::Trait", []) ],
+                                                    [ ("supertraits::CompSciStudent", [], []) ],
                                                   [],
                                                   [],
                                                   "fav_language",
@@ -229,7 +229,7 @@ Definition comp_sci_student_greeting (ε : list Value.t) (τ : list Ty.t) (α : 
                                                 M.get_trait_method (|
                                                   "supertraits::CompSciStudent",
                                                   Ty.dyn
-                                                    [ ("supertraits::CompSciStudent::Trait", []) ],
+                                                    [ ("supertraits::CompSciStudent", [], []) ],
                                                   [],
                                                   [],
                                                   "git_username",

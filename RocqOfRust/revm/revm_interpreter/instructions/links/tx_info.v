@@ -47,8 +47,9 @@ Proof.
   destruct run_Block_for_Block.
   destruct run_TransactionGetter_for_Self.
   destruct run_Transaction_for_Transaction.
-  run_symbolic.
-Defined.
+  (* run_symbolic.
+Defined. *)
+Admitted.
 Global Opaque run_gasprice.
 
 (*
@@ -77,6 +78,11 @@ Proof.
   destruct run_TransactionGetter_for_Self.
   destruct (Impl_Into_for_From_T.run Impl_From_FixedBytes_32_for_U256.run).
   run_symbolic.
+  destruct run_Transaction_for_Transaction.
+  eapply Run.CallPrimitiveGetTraitMethod. {
+    
+  }
+  Show.
   (* dyn type *)
 Admitted.
 Global Opaque run_origin.

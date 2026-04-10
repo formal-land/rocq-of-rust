@@ -10558,9 +10558,9 @@ Module rc.
   
   
   
-  Module Impl_alloc_rc_Rc_Dyn_core_any_Any_Trait_A.
+  Module Impl_alloc_rc_Rc_Dyn_core_any_Any_A.
     Definition Self (A : Ty.t) : Ty.t :=
-      Ty.apply (Ty.path "alloc::rc::Rc") [] [ Ty.dyn [ ("core::any::Any::Trait", []) ]; A ].
+      Ty.apply (Ty.path "alloc::rc::Rc") [] [ Ty.dyn [ ("core::any::Any", [], []) ]; A ].
     
     (*
         pub fn downcast<T: Any>(self) -> Result<Rc<T, A>, Self> {
@@ -10581,7 +10581,7 @@ Module rc.
         ltac:(M.monadic
           (let self :=
             M.alloc (|
-              Ty.apply (Ty.path "alloc::rc::Rc") [] [ Ty.dyn [ ("core::any::Any::Trait", []) ]; A ],
+              Ty.apply (Ty.path "alloc::rc::Rc") [] [ Ty.dyn [ ("core::any::Any", [], []) ]; A ],
               self
             |) in
           M.match_operator (|
@@ -10590,10 +10590,7 @@ Module rc.
               []
               [
                 Ty.apply (Ty.path "alloc::rc::Rc") [] [ T; A ];
-                Ty.apply
-                  (Ty.path "alloc::rc::Rc")
-                  []
-                  [ Ty.dyn [ ("core::any::Any::Trait", []) ]; A ]
+                Ty.apply (Ty.path "alloc::rc::Rc") [] [ Ty.dyn [ ("core::any::Any", [], []) ]; A ]
               ],
             M.alloc (| Ty.tuple [], Value.Tuple [] |),
             [
@@ -10606,7 +10603,7 @@ Module rc.
                         M.call_closure (|
                           Ty.path "bool",
                           M.get_associated_function (|
-                            Ty.dyn [ ("core::any::Any::Trait", []) ],
+                            Ty.dyn [ ("core::any::Any", [], []) ],
                             "is",
                             [],
                             [ T ]
@@ -10619,13 +10616,13 @@ Module rc.
                                   Ty.apply
                                     (Ty.path "&")
                                     []
-                                    [ Ty.dyn [ ("core::any::Any::Trait", []) ] ],
+                                    [ Ty.dyn [ ("core::any::Any", [], []) ] ],
                                   M.get_trait_method (|
                                     "core::ops::deref::Deref",
                                     Ty.apply
                                       (Ty.path "alloc::rc::Rc")
                                       []
-                                      [ Ty.dyn [ ("core::any::Any::Trait", []) ]; A ],
+                                      [ Ty.dyn [ ("core::any::Any", [], []) ]; A ],
                                     [],
                                     [],
                                     "deref",
@@ -10649,7 +10646,7 @@ Module rc.
                         Ty.apply
                           (Ty.path "alloc::rc::Rc")
                           []
-                          [ Ty.dyn [ ("core::any::Any::Trait", []) ]; A ]
+                          [ Ty.dyn [ ("core::any::Any", [], []) ]; A ]
                       ],
                     M.alloc (|
                       Ty.tuple
@@ -10661,7 +10658,7 @@ Module rc.
                               Ty.apply
                                 (Ty.path "alloc::rc::RcInner")
                                 []
-                                [ Ty.dyn [ ("core::any::Any::Trait", []) ] ]
+                                [ Ty.dyn [ ("core::any::Any", [], []) ] ]
                             ];
                           A
                         ],
@@ -10675,7 +10672,7 @@ Module rc.
                                 Ty.apply
                                   (Ty.path "alloc::rc::RcInner")
                                   []
-                                  [ Ty.dyn [ ("core::any::Any::Trait", []) ] ]
+                                  [ Ty.dyn [ ("core::any::Any", [], []) ] ]
                               ];
                             A
                           ],
@@ -10683,7 +10680,7 @@ Module rc.
                           Ty.apply
                             (Ty.path "alloc::rc::Rc")
                             []
-                            [ Ty.dyn [ ("core::any::Any::Trait", []) ]; A ],
+                            [ Ty.dyn [ ("core::any::Any", [], []) ]; A ],
                           "into_inner_with_allocator",
                           [],
                           []
@@ -10705,7 +10702,7 @@ Module rc.
                                   Ty.apply
                                     (Ty.path "alloc::rc::RcInner")
                                     []
-                                    [ Ty.dyn [ ("core::any::Any::Trait", []) ] ]
+                                    [ Ty.dyn [ ("core::any::Any", [], []) ] ]
                                 ],
                               γ0_0
                             |) in
@@ -10718,7 +10715,7 @@ Module rc.
                               Ty.apply
                                 (Ty.path "alloc::rc::Rc")
                                 []
-                                [ Ty.dyn [ ("core::any::Any::Trait", []) ]; A ]
+                                [ Ty.dyn [ ("core::any::Any", [], []) ]; A ]
                             ]
                             [
                               M.call_closure (|
@@ -10743,7 +10740,7 @@ Module rc.
                                           Ty.apply
                                             (Ty.path "alloc::rc::RcInner")
                                             []
-                                            [ Ty.dyn [ ("core::any::Any::Trait", []) ] ]
+                                            [ Ty.dyn [ ("core::any::Any", [], []) ] ]
                                         ],
                                       "cast",
                                       [],
@@ -10767,24 +10764,24 @@ Module rc.
                       Ty.apply
                         (Ty.path "alloc::rc::Rc")
                         []
-                        [ Ty.dyn [ ("core::any::Any::Trait", []) ]; A ]
+                        [ Ty.dyn [ ("core::any::Any", [], []) ]; A ]
                     ]
                     [
                       M.call_closure (|
                         Ty.apply
                           (Ty.path "alloc::rc::Rc")
                           []
-                          [ Ty.dyn [ ("core::any::Any::Trait", []) ]; A ],
+                          [ Ty.dyn [ ("core::any::Any", [], []) ]; A ],
                         M.pointer_coercion
                           M.PointerCoercion.Unsize
                           (Ty.apply
                             (Ty.path "alloc::rc::Rc")
                             []
-                            [ Ty.dyn [ ("core::any::Any::Trait", []) ]; A ])
+                            [ Ty.dyn [ ("core::any::Any", [], []) ]; A ])
                           (Ty.apply
                             (Ty.path "alloc::rc::Rc")
                             []
-                            [ Ty.dyn [ ("core::any::Any::Trait", []) ]; A ]),
+                            [ Ty.dyn [ ("core::any::Any", [], []) ]; A ]),
                         [ M.read (| self |) ]
                       |)
                     ]))
@@ -10819,7 +10816,7 @@ Module rc.
         ltac:(M.monadic
           (let self :=
             M.alloc (|
-              Ty.apply (Ty.path "alloc::rc::Rc") [] [ Ty.dyn [ ("core::any::Any::Trait", []) ]; A ],
+              Ty.apply (Ty.path "alloc::rc::Rc") [] [ Ty.dyn [ ("core::any::Any", [], []) ]; A ],
               self
             |) in
           M.match_operator (|
@@ -10834,7 +10831,7 @@ Module rc.
                       Ty.apply
                         (Ty.path "alloc::rc::RcInner")
                         []
-                        [ Ty.dyn [ ("core::any::Any::Trait", []) ] ]
+                        [ Ty.dyn [ ("core::any::Any", [], []) ] ]
                     ];
                   A
                 ],
@@ -10848,7 +10845,7 @@ Module rc.
                         Ty.apply
                           (Ty.path "alloc::rc::RcInner")
                           []
-                          [ Ty.dyn [ ("core::any::Any::Trait", []) ] ]
+                          [ Ty.dyn [ ("core::any::Any", [], []) ] ]
                       ];
                     A
                   ],
@@ -10856,7 +10853,7 @@ Module rc.
                   Ty.apply
                     (Ty.path "alloc::rc::Rc")
                     []
-                    [ Ty.dyn [ ("core::any::Any::Trait", []) ]; A ],
+                    [ Ty.dyn [ ("core::any::Any", [], []) ]; A ],
                   "into_inner_with_allocator",
                   [],
                   []
@@ -10878,7 +10875,7 @@ Module rc.
                           Ty.apply
                             (Ty.path "alloc::rc::RcInner")
                             []
-                            [ Ty.dyn [ ("core::any::Any::Trait", []) ] ]
+                            [ Ty.dyn [ ("core::any::Any", [], []) ] ]
                         ],
                       γ0_0
                     |) in
@@ -10905,7 +10902,7 @@ Module rc.
                               Ty.apply
                                 (Ty.path "alloc::rc::RcInner")
                                 []
-                                [ Ty.dyn [ ("core::any::Any::Trait", []) ] ]
+                                [ Ty.dyn [ ("core::any::Any", [], []) ] ]
                             ],
                           "cast",
                           [],
@@ -10926,7 +10923,7 @@ Module rc.
       M.IsAssociatedFunction.C (Self A) "downcast_unchecked" (downcast_unchecked A).
     Admitted.
     Global Typeclasses Opaque downcast_unchecked.
-  End Impl_alloc_rc_Rc_Dyn_core_any_Any_Trait_A.
+  End Impl_alloc_rc_Rc_Dyn_core_any_Any_A.
   
   
   
@@ -17440,7 +17437,7 @@ Module rc.
               M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "UniqueRc" |) |) |);
               M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "ptr" |) |) |);
               M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ],
                 M.pointer_coercion
                   M.PointerCoercion.Unsize
                   (Ty.apply
@@ -17452,7 +17449,7 @@ Module rc.
                         []
                         [ Ty.apply (Ty.path "alloc::rc::RcInner") [] [ T ] ]
                     ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ]),
                 [
                   M.borrow (|
                     Pointer.Kind.Ref,
@@ -17471,7 +17468,7 @@ Module rc.
               |);
               M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "phantom" |) |) |);
               M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ],
                 M.pointer_coercion
                   M.PointerCoercion.Unsize
                   (Ty.apply
@@ -17483,7 +17480,7 @@ Module rc.
                         []
                         [ Ty.apply (Ty.path "alloc::rc::RcInner") [] [ T ] ]
                     ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ]),
                 [
                   M.borrow (|
                     Pointer.Kind.Ref,
@@ -17502,11 +17499,11 @@ Module rc.
               |);
               M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "alloc" |) |) |);
               M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ],
                 M.pointer_coercion
                   M.PointerCoercion.Unsize
                   (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ A ] ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ]),
                 [
                   M.borrow (|
                     Pointer.Kind.Ref,

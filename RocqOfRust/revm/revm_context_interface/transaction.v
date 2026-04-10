@@ -376,25 +376,19 @@ Module transaction.
             Ty.apply
               (Ty.path "&")
               []
-              [
-                Ty.dyn
-                  [ ("revm_context_interface::transaction::common::CommonTxFields::Trait", []) ]
+              [ Ty.dyn [ ("revm_context_interface::transaction::common::CommonTxFields", [], []) ]
               ],
             M.pointer_coercion
               M.PointerCoercion.Unsize
               (Ty.apply
                 (Ty.path "&")
                 []
-                [
-                  Ty.dyn
-                    [ ("revm_context_interface::transaction::common::CommonTxFields::Trait", []) ]
+                [ Ty.dyn [ ("revm_context_interface::transaction::common::CommonTxFields", [], []) ]
                 ])
               (Ty.apply
                 (Ty.path "&")
                 []
-                [
-                  Ty.dyn
-                    [ ("revm_context_interface::transaction::common::CommonTxFields::Trait", []) ]
+                [ Ty.dyn [ ("revm_context_interface::transaction::common::CommonTxFields", [], []) ]
                 ]),
             [
               M.borrow (|
@@ -406,9 +400,7 @@ Module transaction.
                       []
                       [
                         Ty.dyn
-                          [
-                            ("revm_context_interface::transaction::common::CommonTxFields::Trait",
-                              [])
+                          [ ("revm_context_interface::transaction::common::CommonTxFields", [], [])
                           ]
                       ],
                     M.pointer_coercion
@@ -419,7 +411,8 @@ Module transaction.
                         [
                           Ty.dyn
                             [
-                              ("revm_context_interface::transaction::common::CommonTxFields::Trait",
+                              ("revm_context_interface::transaction::common::CommonTxFields",
+                                [],
                                 [])
                             ]
                         ])
@@ -429,7 +422,8 @@ Module transaction.
                         [
                           Ty.dyn
                             [
-                              ("revm_context_interface::transaction::common::CommonTxFields::Trait",
+                              ("revm_context_interface::transaction::common::CommonTxFields",
+                                [],
                                 [])
                             ]
                         ]),
@@ -444,7 +438,8 @@ Module transaction.
                               [
                                 Ty.dyn
                                   [
-                                    ("revm_context_interface::transaction::common::CommonTxFields::Trait",
+                                    ("revm_context_interface::transaction::common::CommonTxFields",
+                                      [],
                                       [])
                                   ]
                               ],
@@ -513,7 +508,8 @@ Module transaction.
                                       [
                                         Ty.dyn
                                           [
-                                            ("revm_context_interface::transaction::common::CommonTxFields::Trait",
+                                            ("revm_context_interface::transaction::common::CommonTxFields",
+                                              [],
                                               [])
                                           ]
                                       ],
@@ -536,7 +532,8 @@ Module transaction.
                                         [
                                           Ty.dyn
                                             [
-                                              ("revm_context_interface::transaction::common::CommonTxFields::Trait",
+                                              ("revm_context_interface::transaction::common::CommonTxFields",
+                                                [],
                                                 [])
                                             ]
                                         ]),
@@ -590,7 +587,8 @@ Module transaction.
                                       [
                                         Ty.dyn
                                           [
-                                            ("revm_context_interface::transaction::common::CommonTxFields::Trait",
+                                            ("revm_context_interface::transaction::common::CommonTxFields",
+                                              [],
                                               [])
                                           ]
                                       ],
@@ -613,7 +611,8 @@ Module transaction.
                                         [
                                           Ty.dyn
                                             [
-                                              ("revm_context_interface::transaction::common::CommonTxFields::Trait",
+                                              ("revm_context_interface::transaction::common::CommonTxFields",
+                                                [],
                                                 [])
                                             ]
                                         ]),
@@ -667,7 +666,8 @@ Module transaction.
                                       [
                                         Ty.dyn
                                           [
-                                            ("revm_context_interface::transaction::common::CommonTxFields::Trait",
+                                            ("revm_context_interface::transaction::common::CommonTxFields",
+                                              [],
                                               [])
                                           ]
                                       ],
@@ -690,7 +690,8 @@ Module transaction.
                                         [
                                           Ty.dyn
                                             [
-                                              ("revm_context_interface::transaction::common::CommonTxFields::Trait",
+                                              ("revm_context_interface::transaction::common::CommonTxFields",
+                                                [],
                                                 [])
                                             ]
                                         ]),
@@ -744,7 +745,8 @@ Module transaction.
                                       [
                                         Ty.dyn
                                           [
-                                            ("revm_context_interface::transaction::common::CommonTxFields::Trait",
+                                            ("revm_context_interface::transaction::common::CommonTxFields",
+                                              [],
                                               [])
                                           ]
                                       ],
@@ -767,7 +769,8 @@ Module transaction.
                                         [
                                           Ty.dyn
                                             [
-                                              ("revm_context_interface::transaction::common::CommonTxFields::Trait",
+                                              ("revm_context_interface::transaction::common::CommonTxFields",
+                                                [],
                                                 [])
                                             ]
                                         ]),
@@ -821,7 +824,8 @@ Module transaction.
                                       [
                                         Ty.dyn
                                           [
-                                            ("revm_context_interface::transaction::common::CommonTxFields::Trait",
+                                            ("revm_context_interface::transaction::common::CommonTxFields",
+                                              [],
                                               [])
                                           ]
                                       ],
@@ -844,7 +848,8 @@ Module transaction.
                                         [
                                           Ty.dyn
                                             [
-                                              ("revm_context_interface::transaction::common::CommonTxFields::Trait",
+                                              ("revm_context_interface::transaction::common::CommonTxFields",
+                                                [],
                                                 [])
                                             ]
                                         ]),
@@ -3345,9 +3350,7 @@ Module transaction.
               Ty.apply
                 (Ty.path "&")
                 []
-                [
-                  Ty.dyn
-                    [ ("revm_context_interface::transaction::common::CommonTxFields::Trait", []) ]
+                [ Ty.dyn [ ("revm_context_interface::transaction::common::CommonTxFields", [], []) ]
                 ],
               M.pointer_coercion
                 M.PointerCoercion.Unsize
@@ -3356,14 +3359,14 @@ Module transaction.
                   []
                   [
                     Ty.dyn
-                      [ ("revm_context_interface::transaction::common::CommonTxFields::Trait", []) ]
+                      [ ("revm_context_interface::transaction::common::CommonTxFields", [], []) ]
                   ])
                 (Ty.apply
                   (Ty.path "&")
                   []
                   [
                     Ty.dyn
-                      [ ("revm_context_interface::transaction::common::CommonTxFields::Trait", []) ]
+                      [ ("revm_context_interface::transaction::common::CommonTxFields", [], []) ]
                   ]),
               [
                 M.borrow (|
@@ -3376,7 +3379,8 @@ Module transaction.
                         [
                           Ty.dyn
                             [
-                              ("revm_context_interface::transaction::common::CommonTxFields::Trait",
+                              ("revm_context_interface::transaction::common::CommonTxFields",
+                                [],
                                 [])
                             ]
                         ],
@@ -3388,7 +3392,8 @@ Module transaction.
                           [
                             Ty.dyn
                               [
-                                ("revm_context_interface::transaction::common::CommonTxFields::Trait",
+                                ("revm_context_interface::transaction::common::CommonTxFields",
+                                  [],
                                   [])
                               ]
                           ])
@@ -3398,7 +3403,8 @@ Module transaction.
                           [
                             Ty.dyn
                               [
-                                ("revm_context_interface::transaction::common::CommonTxFields::Trait",
+                                ("revm_context_interface::transaction::common::CommonTxFields",
+                                  [],
                                   [])
                               ]
                           ]),
@@ -3413,7 +3419,8 @@ Module transaction.
                                 [
                                   Ty.dyn
                                     [
-                                      ("revm_context_interface::transaction::common::CommonTxFields::Trait",
+                                      ("revm_context_interface::transaction::common::CommonTxFields",
+                                        [],
                                         [])
                                     ]
                                 ],
@@ -3983,9 +3990,7 @@ Module transaction.
               Ty.apply
                 (Ty.path "&")
                 []
-                [
-                  Ty.dyn
-                    [ ("revm_context_interface::transaction::common::CommonTxFields::Trait", []) ]
+                [ Ty.dyn [ ("revm_context_interface::transaction::common::CommonTxFields", [], []) ]
                 ],
               M.pointer_coercion
                 M.PointerCoercion.Unsize
@@ -3994,14 +3999,14 @@ Module transaction.
                   []
                   [
                     Ty.dyn
-                      [ ("revm_context_interface::transaction::common::CommonTxFields::Trait", []) ]
+                      [ ("revm_context_interface::transaction::common::CommonTxFields", [], []) ]
                   ])
                 (Ty.apply
                   (Ty.path "&")
                   []
                   [
                     Ty.dyn
-                      [ ("revm_context_interface::transaction::common::CommonTxFields::Trait", []) ]
+                      [ ("revm_context_interface::transaction::common::CommonTxFields", [], []) ]
                   ]),
               [
                 M.borrow (|
@@ -4014,7 +4019,8 @@ Module transaction.
                         [
                           Ty.dyn
                             [
-                              ("revm_context_interface::transaction::common::CommonTxFields::Trait",
+                              ("revm_context_interface::transaction::common::CommonTxFields",
+                                [],
                                 [])
                             ]
                         ],
@@ -4026,7 +4032,8 @@ Module transaction.
                           [
                             Ty.dyn
                               [
-                                ("revm_context_interface::transaction::common::CommonTxFields::Trait",
+                                ("revm_context_interface::transaction::common::CommonTxFields",
+                                  [],
                                   [])
                               ]
                           ])
@@ -4036,7 +4043,8 @@ Module transaction.
                           [
                             Ty.dyn
                               [
-                                ("revm_context_interface::transaction::common::CommonTxFields::Trait",
+                                ("revm_context_interface::transaction::common::CommonTxFields",
+                                  [],
                                   [])
                               ]
                           ]),
@@ -4051,7 +4059,8 @@ Module transaction.
                                 [
                                   Ty.dyn
                                     [
-                                      ("revm_context_interface::transaction::common::CommonTxFields::Trait",
+                                      ("revm_context_interface::transaction::common::CommonTxFields",
+                                        [],
                                         [])
                                     ]
                                 ],
@@ -4751,9 +4760,7 @@ Module transaction.
               Ty.apply
                 (Ty.path "&")
                 []
-                [
-                  Ty.dyn
-                    [ ("revm_context_interface::transaction::common::CommonTxFields::Trait", []) ]
+                [ Ty.dyn [ ("revm_context_interface::transaction::common::CommonTxFields", [], []) ]
                 ],
               M.pointer_coercion
                 M.PointerCoercion.Unsize
@@ -4762,14 +4769,14 @@ Module transaction.
                   []
                   [
                     Ty.dyn
-                      [ ("revm_context_interface::transaction::common::CommonTxFields::Trait", []) ]
+                      [ ("revm_context_interface::transaction::common::CommonTxFields", [], []) ]
                   ])
                 (Ty.apply
                   (Ty.path "&")
                   []
                   [
                     Ty.dyn
-                      [ ("revm_context_interface::transaction::common::CommonTxFields::Trait", []) ]
+                      [ ("revm_context_interface::transaction::common::CommonTxFields", [], []) ]
                   ]),
               [
                 M.borrow (|
@@ -4782,7 +4789,8 @@ Module transaction.
                         [
                           Ty.dyn
                             [
-                              ("revm_context_interface::transaction::common::CommonTxFields::Trait",
+                              ("revm_context_interface::transaction::common::CommonTxFields",
+                                [],
                                 [])
                             ]
                         ],
@@ -4794,7 +4802,8 @@ Module transaction.
                           [
                             Ty.dyn
                               [
-                                ("revm_context_interface::transaction::common::CommonTxFields::Trait",
+                                ("revm_context_interface::transaction::common::CommonTxFields",
+                                  [],
                                   [])
                               ]
                           ])
@@ -4804,7 +4813,8 @@ Module transaction.
                           [
                             Ty.dyn
                               [
-                                ("revm_context_interface::transaction::common::CommonTxFields::Trait",
+                                ("revm_context_interface::transaction::common::CommonTxFields",
+                                  [],
                                   [])
                               ]
                           ]),
@@ -4819,7 +4829,8 @@ Module transaction.
                                 [
                                   Ty.dyn
                                     [
-                                      ("revm_context_interface::transaction::common::CommonTxFields::Trait",
+                                      ("revm_context_interface::transaction::common::CommonTxFields",
+                                        [],
                                         [])
                                     ]
                                 ],
@@ -5599,9 +5610,7 @@ Module transaction.
               Ty.apply
                 (Ty.path "&")
                 []
-                [
-                  Ty.dyn
-                    [ ("revm_context_interface::transaction::common::CommonTxFields::Trait", []) ]
+                [ Ty.dyn [ ("revm_context_interface::transaction::common::CommonTxFields", [], []) ]
                 ],
               M.pointer_coercion
                 M.PointerCoercion.Unsize
@@ -5610,14 +5619,14 @@ Module transaction.
                   []
                   [
                     Ty.dyn
-                      [ ("revm_context_interface::transaction::common::CommonTxFields::Trait", []) ]
+                      [ ("revm_context_interface::transaction::common::CommonTxFields", [], []) ]
                   ])
                 (Ty.apply
                   (Ty.path "&")
                   []
                   [
                     Ty.dyn
-                      [ ("revm_context_interface::transaction::common::CommonTxFields::Trait", []) ]
+                      [ ("revm_context_interface::transaction::common::CommonTxFields", [], []) ]
                   ]),
               [
                 M.borrow (|
@@ -5630,7 +5639,8 @@ Module transaction.
                         [
                           Ty.dyn
                             [
-                              ("revm_context_interface::transaction::common::CommonTxFields::Trait",
+                              ("revm_context_interface::transaction::common::CommonTxFields",
+                                [],
                                 [])
                             ]
                         ],
@@ -5642,7 +5652,8 @@ Module transaction.
                           [
                             Ty.dyn
                               [
-                                ("revm_context_interface::transaction::common::CommonTxFields::Trait",
+                                ("revm_context_interface::transaction::common::CommonTxFields",
+                                  [],
                                   [])
                               ]
                           ])
@@ -5652,7 +5663,8 @@ Module transaction.
                           [
                             Ty.dyn
                               [
-                                ("revm_context_interface::transaction::common::CommonTxFields::Trait",
+                                ("revm_context_interface::transaction::common::CommonTxFields",
+                                  [],
                                   [])
                               ]
                           ]),
@@ -5667,7 +5679,8 @@ Module transaction.
                                 [
                                   Ty.dyn
                                     [
-                                      ("revm_context_interface::transaction::common::CommonTxFields::Trait",
+                                      ("revm_context_interface::transaction::common::CommonTxFields",
+                                        [],
                                         [])
                                     ]
                                 ],
