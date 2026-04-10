@@ -64,11 +64,11 @@ Module Impl_core_fmt_Debug_for_tuples_Matrix.
             M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
             M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Matrix" |) |) |);
             M.call_closure (|
-              Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+              Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ],
               M.pointer_coercion
                 M.PointerCoercion.Unsize
                 (Ty.apply (Ty.path "&") [] [ Ty.path "f32" ])
-                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ]),
               [
                 M.borrow (|
                   Pointer.Kind.Ref,
@@ -86,11 +86,11 @@ Module Impl_core_fmt_Debug_for_tuples_Matrix.
               ]
             |);
             M.call_closure (|
-              Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+              Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ],
               M.pointer_coercion
                 M.PointerCoercion.Unsize
                 (Ty.apply (Ty.path "&") [] [ Ty.path "f32" ])
-                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ]),
               [
                 M.borrow (|
                   Pointer.Kind.Ref,
@@ -108,11 +108,11 @@ Module Impl_core_fmt_Debug_for_tuples_Matrix.
               ]
             |);
             M.call_closure (|
-              Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+              Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ],
               M.pointer_coercion
                 M.PointerCoercion.Unsize
                 (Ty.apply (Ty.path "&") [] [ Ty.path "f32" ])
-                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ]),
               [
                 M.borrow (|
                   Pointer.Kind.Ref,
@@ -130,11 +130,11 @@ Module Impl_core_fmt_Debug_for_tuples_Matrix.
               ]
             |);
             M.call_closure (|
-              Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+              Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ],
               M.pointer_coercion
                 M.PointerCoercion.Unsize
                 (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "f32" ] ])
-                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ]),
               [
                 M.borrow (|
                   Pointer.Kind.Ref,

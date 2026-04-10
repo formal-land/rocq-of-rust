@@ -2872,7 +2872,7 @@ Module instruction_result.
                       M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
                       M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Success" |) |) |);
                       M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ],
                         M.pointer_coercion
                           M.PointerCoercion.Unsize
                           (Ty.apply
@@ -2884,10 +2884,7 @@ Module instruction_result.
                                 []
                                 [ Ty.path "revm_context_interface::result::SuccessReason" ]
                             ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                          (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ]),
                         [
                           M.borrow (|
                             Pointer.Kind.Ref,
@@ -2946,14 +2943,11 @@ Module instruction_result.
                       M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
                       M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Halt" |) |) |);
                       M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ],
                         M.pointer_coercion
                           M.PointerCoercion.Unsize
                           (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ HaltReasonT ] ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                          (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ]),
                         [
                           M.borrow (|
                             Pointer.Kind.Ref,
@@ -3022,7 +3016,7 @@ Module instruction_result.
                       M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
                       M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Internal" |) |) |);
                       M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ],
                         M.pointer_coercion
                           M.PointerCoercion.Unsize
                           (Ty.apply
@@ -3034,10 +3028,7 @@ Module instruction_result.
                                 []
                                 [ Ty.path "revm_interpreter::instruction_result::InternalResult" ]
                             ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                          (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ]),
                         [
                           M.borrow (|
                             Pointer.Kind.Ref,

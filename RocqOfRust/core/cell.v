@@ -7400,12 +7400,14 @@ Module cell.
             Ty.apply
               (Ty.path "core::cell::UnsafeCell")
               []
-              [ Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::marker::Send::AutoTrait", []) ] ] ],
+              [ Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::marker::Send::AutoTrait", [], []) ] ]
+              ],
             M.call_closure (|
               Ty.apply
                 (Ty.path "core::cell::UnsafeCell")
                 []
-                [ Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::marker::Send::AutoTrait", []) ] ] ],
+                [ Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::marker::Send::AutoTrait", [], []) ] ]
+                ],
               M.pointer_coercion
                 M.PointerCoercion.Unsize
                 (Ty.apply
@@ -7415,7 +7417,11 @@ Module cell.
                 (Ty.apply
                   (Ty.path "core::cell::UnsafeCell")
                   []
-                  [ Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::marker::Send::AutoTrait", []) ] ]
+                  [
+                    Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.dyn [ ("core::marker::Send::AutoTrait", [], []) ] ]
                   ]),
               [ M.read (| a |) ]
             |)
@@ -7433,7 +7439,7 @@ Module cell.
                         Ty.apply
                           (Ty.path "&")
                           []
-                          [ Ty.dyn [ ("core::marker::Send::AutoTrait", []) ] ]
+                          [ Ty.dyn [ ("core::marker::Send::AutoTrait", [], []) ] ]
                       ],
                     M.call_closure (|
                       Ty.apply
@@ -7443,7 +7449,7 @@ Module cell.
                           Ty.apply
                             (Ty.path "&")
                             []
-                            [ Ty.dyn [ ("core::marker::Send::AutoTrait", []) ] ]
+                            [ Ty.dyn [ ("core::marker::Send::AutoTrait", [], []) ] ]
                         ],
                       M.pointer_coercion
                         M.PointerCoercion.Unsize
@@ -7458,7 +7464,7 @@ Module cell.
                             Ty.apply
                               (Ty.path "&")
                               []
-                              [ Ty.dyn [ ("core::marker::Send::AutoTrait", []) ] ]
+                              [ Ty.dyn [ ("core::marker::Send::AutoTrait", [], []) ] ]
                           ]),
                       [ M.read (| b |) ]
                     |)
@@ -7476,7 +7482,7 @@ Module cell.
                                 Ty.apply
                                   (Ty.path "&")
                                   []
-                                  [ Ty.dyn [ ("core::marker::Send::AutoTrait", []) ] ]
+                                  [ Ty.dyn [ ("core::marker::Send::AutoTrait", [], []) ] ]
                               ],
                             M.call_closure (|
                               Ty.apply
@@ -7486,7 +7492,7 @@ Module cell.
                                   Ty.apply
                                     (Ty.path "&")
                                     []
-                                    [ Ty.dyn [ ("core::marker::Send::AutoTrait", []) ] ]
+                                    [ Ty.dyn [ ("core::marker::Send::AutoTrait", [], []) ] ]
                                 ],
                               M.pointer_coercion
                                 M.PointerCoercion.Unsize
@@ -7501,7 +7507,7 @@ Module cell.
                                     Ty.apply
                                       (Ty.path "&")
                                       []
-                                      [ Ty.dyn [ ("core::marker::Send::AutoTrait", []) ] ]
+                                      [ Ty.dyn [ ("core::marker::Send::AutoTrait", [], []) ] ]
                                   ]),
                               [ M.read (| c |) ]
                             |)
@@ -7519,7 +7525,7 @@ Module cell.
                                         Ty.apply
                                           (Ty.path "&")
                                           []
-                                          [ Ty.dyn [ ("core::marker::Send::AutoTrait", []) ] ]
+                                          [ Ty.dyn [ ("core::marker::Send::AutoTrait", [], []) ] ]
                                       ],
                                     M.call_closure (|
                                       Ty.apply
@@ -7529,7 +7535,7 @@ Module cell.
                                           Ty.apply
                                             (Ty.path "&")
                                             []
-                                            [ Ty.dyn [ ("core::marker::Send::AutoTrait", []) ] ]
+                                            [ Ty.dyn [ ("core::marker::Send::AutoTrait", [], []) ] ]
                                         ],
                                       M.pointer_coercion
                                         M.PointerCoercion.Unsize
@@ -7544,7 +7550,8 @@ Module cell.
                                             Ty.apply
                                               (Ty.path "&")
                                               []
-                                              [ Ty.dyn [ ("core::marker::Send::AutoTrait", []) ] ]
+                                              [ Ty.dyn [ ("core::marker::Send::AutoTrait", [], []) ]
+                                              ]
                                           ]),
                                       [ M.read (| d |) ]
                                     |)

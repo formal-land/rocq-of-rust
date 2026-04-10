@@ -141,14 +141,14 @@ Module interpreter_action.
                 M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "CallOutcome" |) |) |);
                 M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "result" |) |) |);
                 M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ],
                   M.pointer_coercion
                     M.PointerCoercion.Unsize
                     (Ty.apply
                       (Ty.path "&")
                       []
                       [ Ty.path "revm_interpreter::interpreter::InterpreterResult" ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ]),
                   [
                     M.borrow (|
                       Pointer.Kind.Ref,
@@ -167,7 +167,7 @@ Module interpreter_action.
                 |);
                 M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "memory_offset" |) |) |);
                 M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ],
                   M.pointer_coercion
                     M.PointerCoercion.Unsize
                     (Ty.apply
@@ -179,7 +179,7 @@ Module interpreter_action.
                           []
                           [ Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ] ]
                       ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ]),
                   [
                     M.borrow (|
                       Pointer.Kind.Ref,

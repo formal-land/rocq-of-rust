@@ -50,7 +50,7 @@ Module bit_arr.
               M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
               M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Bits" |) |) |);
               M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ],
                 M.pointer_coercion
                   M.PointerCoercion.Unsize
                   (Ty.apply
@@ -62,7 +62,7 @@ Module bit_arr.
                         []
                         [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
                     ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ]),
                 [
                   M.borrow (|
                     Pointer.Kind.Ref,

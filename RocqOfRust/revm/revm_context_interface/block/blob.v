@@ -101,11 +101,11 @@ Module block.
                 M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "BlobExcessGasAndPrice" |) |) |);
                 M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "excess_blob_gas" |) |) |);
                 M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ],
                   M.pointer_coercion
                     M.PointerCoercion.Unsize
                     (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ]),
                   [
                     M.borrow (|
                       Pointer.Kind.Ref,
@@ -124,11 +124,11 @@ Module block.
                 |);
                 M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "blob_gasprice" |) |) |);
                 M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ],
                   M.pointer_coercion
                     M.PointerCoercion.Unsize
                     (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "u128" ] ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ]),
                   [
                     M.borrow (|
                       Pointer.Kind.Ref,

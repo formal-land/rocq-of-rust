@@ -12,7 +12,7 @@ Axiom Result :
         Ty.apply
           (Ty.path "alloc::boxed::Box")
           []
-          [ Ty.dyn [ ("core::error::Error::Trait", []) ]; Ty.path "alloc::alloc::Global" ]
+          [ Ty.dyn [ ("core::error::Error", [], []) ]; Ty.path "alloc::alloc::Global" ]
       ]).
 
 (* StructTuple

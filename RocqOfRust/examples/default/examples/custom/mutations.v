@@ -33,11 +33,11 @@ Module Impl_core_fmt_Debug_for_mutations_Numbers.
             M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Numbers" |) |) |);
             M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "a" |) |) |);
             M.call_closure (|
-              Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+              Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ],
               M.pointer_coercion
                 M.PointerCoercion.Unsize
                 (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
-                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ]),
               [
                 M.borrow (|
                   Pointer.Kind.Ref,
@@ -56,11 +56,11 @@ Module Impl_core_fmt_Debug_for_mutations_Numbers.
             |);
             M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "b" |) |) |);
             M.call_closure (|
-              Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+              Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ],
               M.pointer_coercion
                 M.PointerCoercion.Unsize
                 (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
-                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ]),
               [
                 M.borrow (|
                   Pointer.Kind.Ref,
@@ -79,11 +79,11 @@ Module Impl_core_fmt_Debug_for_mutations_Numbers.
             |);
             M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "c" |) |) |);
             M.call_closure (|
-              Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+              Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ],
               M.pointer_coercion
                 M.PointerCoercion.Unsize
                 (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ])
-                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ]),
               [
                 M.borrow (|
                   Pointer.Kind.Ref,

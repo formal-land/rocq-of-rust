@@ -171,11 +171,11 @@ Module legacy.
                 |);
                 M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "bytecode" |) |) |);
                 M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ],
                   M.pointer_coercion
                     M.PointerCoercion.Unsize
                     (Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ]),
                   [
                     M.borrow (|
                       Pointer.Kind.Ref,
@@ -194,11 +194,11 @@ Module legacy.
                 |);
                 M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "original_len" |) |) |);
                 M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ],
                   M.pointer_coercion
                     M.PointerCoercion.Unsize
                     (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ]),
                   [
                     M.borrow (|
                       Pointer.Kind.Ref,
@@ -217,7 +217,7 @@ Module legacy.
                 |);
                 M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "jump_table" |) |) |);
                 M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ],
                   M.pointer_coercion
                     M.PointerCoercion.Unsize
                     (Ty.apply
@@ -229,7 +229,7 @@ Module legacy.
                           []
                           [ Ty.path "revm_bytecode::legacy::jump_map::JumpTable" ]
                       ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ]),
                   [
                     M.borrow (|
                       Pointer.Kind.Ref,

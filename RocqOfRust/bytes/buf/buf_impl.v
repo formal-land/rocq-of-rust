@@ -14295,7 +14295,7 @@ Module buf.
         ltac:(M.monadic
           (let _b :=
             M.alloc (|
-              Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("bytes::buf::buf_impl::Buf::Trait", []) ] ],
+              Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("bytes::buf::buf_impl::Buf", [], []) ] ],
               _b
             |) in
           Value.Tuple []))

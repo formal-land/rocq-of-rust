@@ -45,6 +45,45 @@ fn compile_poly_fn_sig<'a>(
     Rc::new(RocqType::Function { args, ret })
 }
 
+fn compile_dyn_predicate<'a>(
+    env: &Env<'a>,
+    span: &rustc_span::Span,
+    generics: &'a rustc_middle::ty::Generics,
+    predicate: rustc_middle::ty::ExistentialPredicate<'a>,
+) -> Option<Rc<DynTrait>> {
+    match predicate {
+        rustc_middle::ty::ExistentialPredicate::Trait(existential_trait_ref) => {
+            let path = compile_def_id(env, existential_trait_ref.def_id);
+            let mut const_args = Vec::new();
+            let mut ty_args = Vec::new();
+
+            for arg in existential_trait_ref.args.iter() {
+                match arg.unpack() {
+                    GenericArgKind::Const(constant) => {
+                        const_args.push(compile_const(env, span, &constant));
+                    }
+                    GenericArgKind::Type(ty) => {
+                        ty_args.push(compile_type(env, span, generics, &ty));
+                    }
+                    GenericArgKind::Lifetime(_) => {}
+                }
+            }
+
+            Some(Rc::new(DynTrait {
+                path,
+                const_args,
+                ty_args,
+            }))
+        }
+        rustc_middle::ty::ExistentialPredicate::AutoTrait(def_id) => Some(Rc::new(DynTrait {
+            path: Path::concat(&[compile_def_id(env, def_id), Path::new(&["AutoTrait"])]),
+            const_args: vec![],
+            ty_args: vec![],
+        })),
+        rustc_middle::ty::ExistentialPredicate::Projection(_) => None,
+    }
+}
+
 /// The [generics] parameter is the list of generic types available in the
 /// current environment. It is required to disambiguate the names of the
 /// occurrences of these generic types. It is possible to have twice the same
@@ -117,26 +156,8 @@ pub(crate) fn compile_type<'a>(
         TyKind::Dynamic(existential_predicates, _, _) => {
             let traits = existential_predicates
                 .iter()
-                .filter_map(
-                    |existential_predicate| match existential_predicate.no_bound_vars() {
-                        None => Some(Path::new(&["existential predicate with variables"])),
-                        Some(existential_predicate) => match existential_predicate {
-                            rustc_middle::ty::ExistentialPredicate::Trait(
-                                existential_trait_ref,
-                            ) => Some(Path::concat(&[
-                                compile_def_id(env, existential_trait_ref.def_id),
-                                Path::new(&["Trait"]),
-                            ])),
-                            rustc_middle::ty::ExistentialPredicate::AutoTrait(def_id) => {
-                                Some(Path::concat(&[
-                                    compile_def_id(env, def_id),
-                                    Path::new(&["AutoTrait"]),
-                                ]))
-                            }
-                            _ => None,
-                        },
-                    },
-                )
+                .filter_map(|predicate| predicate.no_bound_vars())
+                .filter_map(|predicate| compile_dyn_predicate(env, span, generics, predicate))
                 .collect();
 
             Rc::new(RocqType::Dyn { traits })

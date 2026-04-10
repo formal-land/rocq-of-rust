@@ -12,7 +12,7 @@ Module error.
           Value.StructTuple
             "core::option::Option::None"
             []
-            [ Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ] ]
+            [ Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error", [], []) ] ] ]
             []))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -69,7 +69,7 @@ Module error.
             Ty.apply
               (Ty.path "core::option::Option")
               []
-              [ Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ] ],
+              [ Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error", [], []) ] ] ],
             M.get_trait_method (| "core::error::Error", Self, [], [], "source", [], [] |),
             [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
           |)))
@@ -154,8 +154,8 @@ Module error.
         (* Instance *) [].
   End Impl_core_error_Error_for_never.
   
-  Module Impl_Dyn_core_error_Error_Trait.
-    Definition Self : Ty.t := Ty.dyn [ ("core::error::Error::Trait", []) ].
+  Module Impl_Dyn_core_error_Error.
+    Definition Self : Ty.t := Ty.dyn [ ("core::error::Error", [], []) ].
     
     (*
         pub fn is<T: Error + 'static>(&self) -> bool {
@@ -175,7 +175,7 @@ Module error.
         ltac:(M.monadic
           (let self :=
             M.alloc (|
-              Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ],
+              Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error", [], []) ] ],
               self
             |) in
           M.read (|
@@ -190,7 +190,7 @@ Module error.
                 Ty.path "core::any::TypeId",
                 M.get_trait_method (|
                   "core::error::Error",
-                  Ty.dyn [ ("core::error::Error::Trait", []) ],
+                  Ty.dyn [ ("core::error::Error", [], []) ],
                   [],
                   [],
                   "type_id",
@@ -242,7 +242,7 @@ Module error.
         ltac:(M.monadic
           (let self :=
             M.alloc (|
-              Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ],
+              Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error", [], []) ] ],
               self
             |) in
           M.match_operator (|
@@ -258,7 +258,7 @@ Module error.
                         M.call_closure (|
                           Ty.path "bool",
                           M.get_associated_function (|
-                            Ty.dyn [ ("core::error::Error::Trait", []) ],
+                            Ty.dyn [ ("core::error::Error", [], []) ],
                             "is",
                             [],
                             [ T ]
@@ -286,22 +286,22 @@ Module error.
                                       Ty.apply
                                         (Ty.path "*const")
                                         []
-                                        [ Ty.dyn [ ("core::error::Error::Trait", []) ] ],
+                                        [ Ty.dyn [ ("core::error::Error", [], []) ] ],
                                       M.call_closure (|
                                         Ty.apply
                                           (Ty.path "*const")
                                           []
-                                          [ Ty.dyn [ ("core::error::Error::Trait", []) ] ],
+                                          [ Ty.dyn [ ("core::error::Error", [], []) ] ],
                                         M.pointer_coercion
                                           M.PointerCoercion.Unsize
                                           (Ty.apply
                                             (Ty.path "*const")
                                             []
-                                            [ Ty.dyn [ ("core::error::Error::Trait", []) ] ])
+                                            [ Ty.dyn [ ("core::error::Error", [], []) ] ])
                                           (Ty.apply
                                             (Ty.path "*const")
                                             []
-                                            [ Ty.dyn [ ("core::error::Error::Trait", []) ] ]),
+                                            [ Ty.dyn [ ("core::error::Error", [], []) ] ]),
                                         [
                                           M.borrow (|
                                             Pointer.Kind.ConstPointer,
@@ -349,7 +349,7 @@ Module error.
         ltac:(M.monadic
           (let self :=
             M.alloc (|
-              Ty.apply (Ty.path "&mut") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ],
+              Ty.apply (Ty.path "&mut") [] [ Ty.dyn [ ("core::error::Error", [], []) ] ],
               self
             |) in
           M.match_operator (|
@@ -365,7 +365,7 @@ Module error.
                         M.call_closure (|
                           Ty.path "bool",
                           M.get_associated_function (|
-                            Ty.dyn [ ("core::error::Error::Trait", []) ],
+                            Ty.dyn [ ("core::error::Error", [], []) ],
                             "is",
                             [],
                             [ T ]
@@ -393,22 +393,22 @@ Module error.
                                       Ty.apply
                                         (Ty.path "*mut")
                                         []
-                                        [ Ty.dyn [ ("core::error::Error::Trait", []) ] ],
+                                        [ Ty.dyn [ ("core::error::Error", [], []) ] ],
                                       M.call_closure (|
                                         Ty.apply
                                           (Ty.path "*mut")
                                           []
-                                          [ Ty.dyn [ ("core::error::Error::Trait", []) ] ],
+                                          [ Ty.dyn [ ("core::error::Error", [], []) ] ],
                                         M.pointer_coercion
                                           M.PointerCoercion.Unsize
                                           (Ty.apply
                                             (Ty.path "*mut")
                                             []
-                                            [ Ty.dyn [ ("core::error::Error::Trait", []) ] ])
+                                            [ Ty.dyn [ ("core::error::Error", [], []) ] ])
                                           (Ty.apply
                                             (Ty.path "*mut")
                                             []
-                                            [ Ty.dyn [ ("core::error::Error::Trait", []) ] ]),
+                                            [ Ty.dyn [ ("core::error::Error", [], []) ] ]),
                                         [
                                           M.borrow (|
                                             Pointer.Kind.MutPointer,
@@ -462,7 +462,7 @@ Module error.
         ltac:(M.monadic
           (let self :=
             M.alloc (|
-              Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ],
+              Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error", [], []) ] ],
               self
             |) in
           Value.mkStructRecord
@@ -474,17 +474,14 @@ Module error.
                 Value.StructTuple
                   "core::option::Option::Some"
                   []
-                  [ Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ] ]
+                  [ Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error", [], []) ] ] ]
                   [
                     M.call_closure (|
-                      Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ],
+                      Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error", [], []) ] ],
                       M.pointer_coercion
                         M.PointerCoercion.Unsize
-                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ])
-                        (Ty.apply
-                          (Ty.path "&")
-                          []
-                          [ Ty.dyn [ ("core::error::Error::Trait", []) ] ]),
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error", [], []) ] ])
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error", [], []) ] ]),
                       [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
                     |)
                   ])
@@ -495,11 +492,11 @@ Module error.
     Global Instance AssociatedFunction_sources : M.IsAssociatedFunction.C Self "sources" sources.
     Admitted.
     Global Typeclasses Opaque sources.
-  End Impl_Dyn_core_error_Error_Trait.
+  End Impl_Dyn_core_error_Error.
   
-  Module Impl_Dyn_core_error_Error_Trait_core_marker_Send_AutoTrait.
+  Module Impl_Dyn_core_error_Error_core_marker_Send_AutoTrait.
     Definition Self : Ty.t :=
-      Ty.dyn [ ("core::error::Error::Trait", []); ("core::marker::Send::AutoTrait", []) ].
+      Ty.dyn [ ("core::error::Error", [], []); ("core::marker::Send::AutoTrait", [], []) ].
     
     (*
         pub fn is<T: Error + 'static>(&self) -> bool {
@@ -517,21 +514,21 @@ Module error.
                 []
                 [
                   Ty.dyn
-                    [ ("core::error::Error::Trait", []); ("core::marker::Send::AutoTrait", []) ]
+                    [ ("core::error::Error", [], []); ("core::marker::Send::AutoTrait", [], []) ]
                 ],
               self
             |) in
           M.call_closure (|
             Ty.path "bool",
             M.get_associated_function (|
-              Ty.dyn [ ("core::error::Error::Trait", []) ],
+              Ty.dyn [ ("core::error::Error", [], []) ],
               "is",
               [],
               [ T ]
             |),
             [
               M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ],
+                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error", [], []) ] ],
                 M.pointer_coercion
                   M.PointerCoercion.Unsize
                   (Ty.apply
@@ -539,9 +536,10 @@ Module error.
                     []
                     [
                       Ty.dyn
-                        [ ("core::error::Error::Trait", []); ("core::marker::Send::AutoTrait", []) ]
+                        [ ("core::error::Error", [], []); ("core::marker::Send::AutoTrait", [], [])
+                        ]
                     ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ]),
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error", [], []) ] ]),
                 [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
               |)
             ]
@@ -569,21 +567,21 @@ Module error.
                 []
                 [
                   Ty.dyn
-                    [ ("core::error::Error::Trait", []); ("core::marker::Send::AutoTrait", []) ]
+                    [ ("core::error::Error", [], []); ("core::marker::Send::AutoTrait", [], []) ]
                 ],
               self
             |) in
           M.call_closure (|
             Ty.apply (Ty.path "core::option::Option") [] [ Ty.apply (Ty.path "&") [] [ T ] ],
             M.get_associated_function (|
-              Ty.dyn [ ("core::error::Error::Trait", []) ],
+              Ty.dyn [ ("core::error::Error", [], []) ],
               "downcast_ref",
               [],
               [ T ]
             |),
             [
               M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ],
+                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error", [], []) ] ],
                 M.pointer_coercion
                   M.PointerCoercion.Unsize
                   (Ty.apply
@@ -591,9 +589,10 @@ Module error.
                     []
                     [
                       Ty.dyn
-                        [ ("core::error::Error::Trait", []); ("core::marker::Send::AutoTrait", []) ]
+                        [ ("core::error::Error", [], []); ("core::marker::Send::AutoTrait", [], [])
+                        ]
                     ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ]),
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error", [], []) ] ]),
                 [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
               |)
             ]
@@ -622,21 +621,21 @@ Module error.
                 []
                 [
                   Ty.dyn
-                    [ ("core::error::Error::Trait", []); ("core::marker::Send::AutoTrait", []) ]
+                    [ ("core::error::Error", [], []); ("core::marker::Send::AutoTrait", [], []) ]
                 ],
               self
             |) in
           M.call_closure (|
             Ty.apply (Ty.path "core::option::Option") [] [ Ty.apply (Ty.path "&mut") [] [ T ] ],
             M.get_associated_function (|
-              Ty.dyn [ ("core::error::Error::Trait", []) ],
+              Ty.dyn [ ("core::error::Error", [], []) ],
               "downcast_mut",
               [],
               [ T ]
             |),
             [
               M.call_closure (|
-                Ty.apply (Ty.path "&mut") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ],
+                Ty.apply (Ty.path "&mut") [] [ Ty.dyn [ ("core::error::Error", [], []) ] ],
                 M.pointer_coercion
                   M.PointerCoercion.Unsize
                   (Ty.apply
@@ -644,9 +643,10 @@ Module error.
                     []
                     [
                       Ty.dyn
-                        [ ("core::error::Error::Trait", []); ("core::marker::Send::AutoTrait", []) ]
+                        [ ("core::error::Error", [], []); ("core::marker::Send::AutoTrait", [], [])
+                        ]
                     ])
-                  (Ty.apply (Ty.path "&mut") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ]),
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.dyn [ ("core::error::Error", [], []) ] ]),
                 [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |) ]
               |)
             ]
@@ -658,15 +658,15 @@ Module error.
       M.IsAssociatedFunction.C Self "downcast_mut" downcast_mut.
     Admitted.
     Global Typeclasses Opaque downcast_mut.
-  End Impl_Dyn_core_error_Error_Trait_core_marker_Send_AutoTrait.
+  End Impl_Dyn_core_error_Error_core_marker_Send_AutoTrait.
   
-  Module Impl_Dyn_core_error_Error_Trait_core_marker_Sync_AutoTrait_core_marker_Send_AutoTrait.
+  Module Impl_Dyn_core_error_Error_core_marker_Sync_AutoTrait_core_marker_Send_AutoTrait.
     Definition Self : Ty.t :=
       Ty.dyn
         [
-          ("core::error::Error::Trait", []);
-          ("core::marker::Sync::AutoTrait", []);
-          ("core::marker::Send::AutoTrait", [])
+          ("core::error::Error", [], []);
+          ("core::marker::Sync::AutoTrait", [], []);
+          ("core::marker::Send::AutoTrait", [], [])
         ].
     
     (*
@@ -686,9 +686,9 @@ Module error.
                 [
                   Ty.dyn
                     [
-                      ("core::error::Error::Trait", []);
-                      ("core::marker::Sync::AutoTrait", []);
-                      ("core::marker::Send::AutoTrait", [])
+                      ("core::error::Error", [], []);
+                      ("core::marker::Sync::AutoTrait", [], []);
+                      ("core::marker::Send::AutoTrait", [], [])
                     ]
                 ],
               self
@@ -696,14 +696,14 @@ Module error.
           M.call_closure (|
             Ty.path "bool",
             M.get_associated_function (|
-              Ty.dyn [ ("core::error::Error::Trait", []) ],
+              Ty.dyn [ ("core::error::Error", [], []) ],
               "is",
               [],
               [ T ]
             |),
             [
               M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ],
+                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error", [], []) ] ],
                 M.pointer_coercion
                   M.PointerCoercion.Unsize
                   (Ty.apply
@@ -712,12 +712,12 @@ Module error.
                     [
                       Ty.dyn
                         [
-                          ("core::error::Error::Trait", []);
-                          ("core::marker::Sync::AutoTrait", []);
-                          ("core::marker::Send::AutoTrait", [])
+                          ("core::error::Error", [], []);
+                          ("core::marker::Sync::AutoTrait", [], []);
+                          ("core::marker::Send::AutoTrait", [], [])
                         ]
                     ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ]),
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error", [], []) ] ]),
                 [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
               |)
             ]
@@ -746,9 +746,9 @@ Module error.
                 [
                   Ty.dyn
                     [
-                      ("core::error::Error::Trait", []);
-                      ("core::marker::Sync::AutoTrait", []);
-                      ("core::marker::Send::AutoTrait", [])
+                      ("core::error::Error", [], []);
+                      ("core::marker::Sync::AutoTrait", [], []);
+                      ("core::marker::Send::AutoTrait", [], [])
                     ]
                 ],
               self
@@ -756,14 +756,14 @@ Module error.
           M.call_closure (|
             Ty.apply (Ty.path "core::option::Option") [] [ Ty.apply (Ty.path "&") [] [ T ] ],
             M.get_associated_function (|
-              Ty.dyn [ ("core::error::Error::Trait", []) ],
+              Ty.dyn [ ("core::error::Error", [], []) ],
               "downcast_ref",
               [],
               [ T ]
             |),
             [
               M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ],
+                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error", [], []) ] ],
                 M.pointer_coercion
                   M.PointerCoercion.Unsize
                   (Ty.apply
@@ -772,12 +772,12 @@ Module error.
                     [
                       Ty.dyn
                         [
-                          ("core::error::Error::Trait", []);
-                          ("core::marker::Sync::AutoTrait", []);
-                          ("core::marker::Send::AutoTrait", [])
+                          ("core::error::Error", [], []);
+                          ("core::marker::Sync::AutoTrait", [], []);
+                          ("core::marker::Send::AutoTrait", [], [])
                         ]
                     ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ]),
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error", [], []) ] ]),
                 [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
               |)
             ]
@@ -807,9 +807,9 @@ Module error.
                 [
                   Ty.dyn
                     [
-                      ("core::error::Error::Trait", []);
-                      ("core::marker::Sync::AutoTrait", []);
-                      ("core::marker::Send::AutoTrait", [])
+                      ("core::error::Error", [], []);
+                      ("core::marker::Sync::AutoTrait", [], []);
+                      ("core::marker::Send::AutoTrait", [], [])
                     ]
                 ],
               self
@@ -817,14 +817,14 @@ Module error.
           M.call_closure (|
             Ty.apply (Ty.path "core::option::Option") [] [ Ty.apply (Ty.path "&mut") [] [ T ] ],
             M.get_associated_function (|
-              Ty.dyn [ ("core::error::Error::Trait", []) ],
+              Ty.dyn [ ("core::error::Error", [], []) ],
               "downcast_mut",
               [],
               [ T ]
             |),
             [
               M.call_closure (|
-                Ty.apply (Ty.path "&mut") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ],
+                Ty.apply (Ty.path "&mut") [] [ Ty.dyn [ ("core::error::Error", [], []) ] ],
                 M.pointer_coercion
                   M.PointerCoercion.Unsize
                   (Ty.apply
@@ -833,12 +833,12 @@ Module error.
                     [
                       Ty.dyn
                         [
-                          ("core::error::Error::Trait", []);
-                          ("core::marker::Sync::AutoTrait", []);
-                          ("core::marker::Send::AutoTrait", [])
+                          ("core::error::Error", [], []);
+                          ("core::marker::Sync::AutoTrait", [], []);
+                          ("core::marker::Send::AutoTrait", [], [])
                         ]
                     ])
-                  (Ty.apply (Ty.path "&mut") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ]),
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.dyn [ ("core::error::Error", [], []) ] ]),
                 [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |) ]
               |)
             ]
@@ -850,7 +850,7 @@ Module error.
       M.IsAssociatedFunction.C Self "downcast_mut" downcast_mut.
     Admitted.
     Global Typeclasses Opaque downcast_mut.
-  End Impl_Dyn_core_error_Error_Trait_core_marker_Sync_AutoTrait_core_marker_Send_AutoTrait.
+  End Impl_Dyn_core_error_Error_core_marker_Sync_AutoTrait_core_marker_Send_AutoTrait.
   
   
   (*
@@ -1018,11 +1018,7 @@ Module error.
       const_params := [];
       ty_params := [];
       fields :=
-        [
-          Ty.apply
-            (Ty.path "core::error::Tagged")
-            []
-            [ Ty.dyn [ ("core::error::Erased::Trait", []) ] ]
+        [ Ty.apply (Ty.path "core::error::Tagged") [] [ Ty.dyn [ ("core::error::Erased", [], []) ] ]
         ];
     } *)
   
@@ -1282,7 +1278,7 @@ Module error.
                                   Ty.apply
                                     (Ty.path "core::error::Tagged")
                                     []
-                                    [ Ty.dyn [ ("core::error::Erased::Trait", []) ] ],
+                                    [ Ty.dyn [ ("core::error::Erased", [], []) ] ],
                                   "downcast_mut",
                                   [],
                                   [ I ]
@@ -1415,7 +1411,7 @@ Module error.
                                   Ty.apply
                                     (Ty.path "core::error::Tagged")
                                     []
-                                    [ Ty.dyn [ ("core::error::Erased::Trait", []) ] ],
+                                    [ Ty.dyn [ ("core::error::Erased", [], []) ] ],
                                   "downcast_mut",
                                   [],
                                   [ I ]
@@ -1631,7 +1627,7 @@ Module error.
                   Ty.apply
                     (Ty.path "core::error::Tagged")
                     []
-                    [ Ty.dyn [ ("core::error::Erased::Trait", []) ] ],
+                    [ Ty.dyn [ ("core::error::Erased", [], []) ] ],
                   "downcast",
                   [],
                   [ I ]
@@ -1801,7 +1797,7 @@ Module error.
                 M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
                 M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Value" |) |) |);
                 M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ],
                   M.pointer_coercion
                     M.PointerCoercion.Unsize
                     (Ty.apply
@@ -1813,7 +1809,7 @@ Module error.
                           []
                           [ Ty.apply (Ty.path "core::marker::PhantomData") [] [ T ] ]
                       ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ]),
                   [
                     M.borrow (|
                       Pointer.Kind.Ref,
@@ -1913,7 +1909,7 @@ Module error.
                 M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
                 M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "MaybeSizedValue" |) |) |);
                 M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ],
                   M.pointer_coercion
                     M.PointerCoercion.Unsize
                     (Ty.apply
@@ -1925,7 +1921,7 @@ Module error.
                           []
                           [ Ty.apply (Ty.path "core::marker::PhantomData") [] [ T ] ]
                       ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ]),
                   [
                     M.borrow (|
                       Pointer.Kind.Ref,
@@ -2022,7 +2018,7 @@ Module error.
                 M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
                 M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Ref" |) |) |);
                 M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ],
                   M.pointer_coercion
                     M.PointerCoercion.Unsize
                     (Ty.apply
@@ -2034,7 +2030,7 @@ Module error.
                           []
                           [ Ty.apply (Ty.path "core::marker::PhantomData") [] [ I ] ]
                       ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ]),
                   [
                     M.borrow (|
                       Pointer.Kind.Ref,
@@ -2155,7 +2151,7 @@ Module error.
                         Ty.apply
                           (Ty.path "core::error::Tagged")
                           []
-                          [ Ty.dyn [ ("core::error::Erased::Trait", []) ] ]
+                          [ Ty.dyn [ ("core::error::Erased", [], []) ] ]
                       ] :=
                   M.read (|
                     M.use
@@ -2167,7 +2163,7 @@ Module error.
                             Ty.apply
                               (Ty.path "core::error::Tagged")
                               []
-                              [ Ty.dyn [ ("core::error::Erased::Trait", []) ] ]
+                              [ Ty.dyn [ ("core::error::Erased", [], []) ] ]
                           ],
                         M.call_closure (|
                           Ty.apply
@@ -2177,7 +2173,7 @@ Module error.
                               Ty.apply
                                 (Ty.path "core::error::Tagged")
                                 []
-                                [ Ty.dyn [ ("core::error::Erased::Trait", []) ] ]
+                                [ Ty.dyn [ ("core::error::Erased", [], []) ] ]
                             ],
                           M.pointer_coercion
                             M.PointerCoercion.Unsize
@@ -2197,7 +2193,7 @@ Module error.
                                 Ty.apply
                                   (Ty.path "core::error::Tagged")
                                   []
-                                  [ Ty.dyn [ ("core::error::Erased::Trait", []) ] ]
+                                  [ Ty.dyn [ ("core::error::Erased", [], []) ] ]
                               ]),
                           [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |) ]
                         |)
@@ -2226,7 +2222,7 @@ Module error.
                                           Ty.apply
                                             (Ty.path "core::error::Tagged")
                                             []
-                                            [ Ty.dyn [ ("core::error::Erased::Trait", []) ] ]
+                                            [ Ty.dyn [ ("core::error::Erased", [], []) ] ]
                                         ],
                                       M.call_closure (|
                                         Ty.apply
@@ -2236,7 +2232,7 @@ Module error.
                                             Ty.apply
                                               (Ty.path "core::error::Tagged")
                                               []
-                                              [ Ty.dyn [ ("core::error::Erased::Trait", []) ] ]
+                                              [ Ty.dyn [ ("core::error::Erased", [], []) ] ]
                                           ],
                                         M.pointer_coercion
                                           M.PointerCoercion.Unsize
@@ -2247,7 +2243,7 @@ Module error.
                                               Ty.apply
                                                 (Ty.path "core::error::Tagged")
                                                 []
-                                                [ Ty.dyn [ ("core::error::Erased::Trait", []) ] ]
+                                                [ Ty.dyn [ ("core::error::Erased", [], []) ] ]
                                             ])
                                           (Ty.apply
                                             (Ty.path "*mut")
@@ -2256,7 +2252,7 @@ Module error.
                                               Ty.apply
                                                 (Ty.path "core::error::Tagged")
                                                 []
-                                                [ Ty.dyn [ ("core::error::Erased::Trait", []) ] ]
+                                                [ Ty.dyn [ ("core::error::Erased", [], []) ] ]
                                             ]),
                                         [
                                           M.borrow (|
@@ -2311,9 +2307,9 @@ Module error.
       fields := [ ("tag_id", Ty.path "core::any::TypeId"); ("value", E) ];
     } *)
   
-  Module Impl_core_error_Tagged_Dyn_core_error_Erased_Trait.
+  Module Impl_core_error_Tagged_Dyn_core_error_Erased.
     Definition Self : Ty.t :=
-      Ty.apply (Ty.path "core::error::Tagged") [] [ Ty.dyn [ ("core::error::Erased::Trait", []) ] ].
+      Ty.apply (Ty.path "core::error::Tagged") [] [ Ty.dyn [ ("core::error::Erased", [], []) ] ].
     
     (*
         fn downcast<I>(&self) -> Option<&TaggedOption<'a, I>>
@@ -2341,7 +2337,7 @@ Module error.
                   Ty.apply
                     (Ty.path "core::error::Tagged")
                     []
-                    [ Ty.dyn [ ("core::error::Erased::Trait", []) ] ]
+                    [ Ty.dyn [ ("core::error::Erased", [], []) ] ]
                 ],
               self
             |) in
@@ -2446,7 +2442,7 @@ Module error.
                                             Ty.apply
                                               (Ty.path "core::error::Tagged")
                                               []
-                                              [ Ty.dyn [ ("core::error::Erased::Trait", []) ] ]
+                                              [ Ty.dyn [ ("core::error::Erased", [], []) ] ]
                                           ],
                                         "cast",
                                         [],
@@ -2473,8 +2469,7 @@ Module error.
                                                   Ty.apply
                                                     (Ty.path "core::error::Tagged")
                                                     []
-                                                    [ Ty.dyn [ ("core::error::Erased::Trait", []) ]
-                                                    ]
+                                                    [ Ty.dyn [ ("core::error::Erased", [], []) ] ]
                                                 ],
                                               M.call_closure (|
                                                 Ty.apply
@@ -2484,10 +2479,7 @@ Module error.
                                                     Ty.apply
                                                       (Ty.path "core::error::Tagged")
                                                       []
-                                                      [
-                                                        Ty.dyn
-                                                          [ ("core::error::Erased::Trait", []) ]
-                                                      ]
+                                                      [ Ty.dyn [ ("core::error::Erased", [], []) ] ]
                                                   ],
                                                 M.pointer_coercion
                                                   M.PointerCoercion.Unsize
@@ -2498,9 +2490,7 @@ Module error.
                                                       Ty.apply
                                                         (Ty.path "core::error::Tagged")
                                                         []
-                                                        [
-                                                          Ty.dyn
-                                                            [ ("core::error::Erased::Trait", []) ]
+                                                        [ Ty.dyn [ ("core::error::Erased", [], []) ]
                                                         ]
                                                     ])
                                                   (Ty.apply
@@ -2510,9 +2500,7 @@ Module error.
                                                       Ty.apply
                                                         (Ty.path "core::error::Tagged")
                                                         []
-                                                        [
-                                                          Ty.dyn
-                                                            [ ("core::error::Erased::Trait", []) ]
+                                                        [ Ty.dyn [ ("core::error::Erased", [], []) ]
                                                         ]
                                                     ]),
                                                 [
@@ -2586,7 +2574,7 @@ Module error.
                   Ty.apply
                     (Ty.path "core::error::Tagged")
                     []
-                    [ Ty.dyn [ ("core::error::Erased::Trait", []) ] ]
+                    [ Ty.dyn [ ("core::error::Erased", [], []) ] ]
                 ],
               self
             |) in
@@ -2691,7 +2679,7 @@ Module error.
                                             Ty.apply
                                               (Ty.path "core::error::Tagged")
                                               []
-                                              [ Ty.dyn [ ("core::error::Erased::Trait", []) ] ]
+                                              [ Ty.dyn [ ("core::error::Erased", [], []) ] ]
                                           ],
                                         "cast",
                                         [],
@@ -2718,8 +2706,7 @@ Module error.
                                                   Ty.apply
                                                     (Ty.path "core::error::Tagged")
                                                     []
-                                                    [ Ty.dyn [ ("core::error::Erased::Trait", []) ]
-                                                    ]
+                                                    [ Ty.dyn [ ("core::error::Erased", [], []) ] ]
                                                 ],
                                               M.call_closure (|
                                                 Ty.apply
@@ -2729,10 +2716,7 @@ Module error.
                                                     Ty.apply
                                                       (Ty.path "core::error::Tagged")
                                                       []
-                                                      [
-                                                        Ty.dyn
-                                                          [ ("core::error::Erased::Trait", []) ]
-                                                      ]
+                                                      [ Ty.dyn [ ("core::error::Erased", [], []) ] ]
                                                   ],
                                                 M.pointer_coercion
                                                   M.PointerCoercion.Unsize
@@ -2743,9 +2727,7 @@ Module error.
                                                       Ty.apply
                                                         (Ty.path "core::error::Tagged")
                                                         []
-                                                        [
-                                                          Ty.dyn
-                                                            [ ("core::error::Erased::Trait", []) ]
+                                                        [ Ty.dyn [ ("core::error::Erased", [], []) ]
                                                         ]
                                                     ])
                                                   (Ty.apply
@@ -2755,9 +2737,7 @@ Module error.
                                                       Ty.apply
                                                         (Ty.path "core::error::Tagged")
                                                         []
-                                                        [
-                                                          Ty.dyn
-                                                            [ ("core::error::Erased::Trait", []) ]
+                                                        [ Ty.dyn [ ("core::error::Erased", [], []) ]
                                                         ]
                                                     ]),
                                                 [
@@ -2802,7 +2782,7 @@ Module error.
       M.IsAssociatedFunction.C Self "downcast_mut" downcast_mut.
     Admitted.
     Global Typeclasses Opaque downcast_mut.
-  End Impl_core_error_Tagged_Dyn_core_error_Erased_Trait.
+  End Impl_core_error_Tagged_Dyn_core_error_Erased.
   
   (* StructRecord
     {
@@ -2815,7 +2795,7 @@ Module error.
             Ty.apply
               (Ty.path "core::option::Option")
               []
-              [ Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ] ])
+              [ Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error", [], []) ] ] ])
         ];
     } *)
   
@@ -2839,14 +2819,13 @@ Module error.
                   Ty.apply
                     (Ty.path "core::option::Option")
                     []
-                    [ Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ] ],
+                    [ Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error", [], []) ] ] ],
                   M.get_trait_method (|
                     "core::clone::Clone",
                     Ty.apply
                       (Ty.path "core::option::Option")
                       []
-                      [ Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ]
-                      ],
+                      [ Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error", [], []) ] ] ],
                     [],
                     [],
                     "clone",
@@ -2910,7 +2889,7 @@ Module error.
               M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Source" |) |) |);
               M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "current" |) |) |);
               M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ],
                 M.pointer_coercion
                   M.PointerCoercion.Unsize
                   (Ty.apply
@@ -2928,11 +2907,11 @@ Module error.
                               Ty.apply
                                 (Ty.path "&")
                                 []
-                                [ Ty.dyn [ ("core::error::Error::Trait", []) ] ]
+                                [ Ty.dyn [ ("core::error::Error", [], []) ] ]
                             ]
                         ]
                     ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ]),
                 [
                   M.borrow (|
                     Pointer.Kind.Ref,
@@ -2951,7 +2930,7 @@ Module error.
                                   Ty.apply
                                     (Ty.path "&")
                                     []
-                                    [ Ty.dyn [ ("core::error::Error::Trait", []) ] ]
+                                    [ Ty.dyn [ ("core::error::Error", [], []) ] ]
                                 ]
                             ],
                           M.borrow (|
@@ -2987,7 +2966,7 @@ Module error.
     
     (*     type Item = &'a (dyn Error + 'static); *)
     Definition _Item : Ty.t :=
-      Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ].
+      Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error", [], []) ] ].
     
     (*
         fn next(&mut self) -> Option<Self::Item> {
@@ -3007,7 +2986,7 @@ Module error.
                 Ty.apply
                   (Ty.path "core::option::Option")
                   []
-                  [ Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ] ] :=
+                  [ Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error", [], []) ] ] ] :=
               M.read (|
                 M.SubPointer.get_struct_record_field (|
                   M.deref (| M.read (| self |) |),
@@ -3026,28 +3005,22 @@ Module error.
                   Ty.apply
                     (Ty.path "core::option::Option")
                     []
-                    [ Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ] ],
+                    [ Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error", [], []) ] ] ],
                   M.get_associated_function (|
                     Ty.apply
                       (Ty.path "core::option::Option")
                       []
-                      [ Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ]
-                      ],
+                      [ Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error", [], []) ] ] ],
                     "and_then",
                     [],
                     [
-                      Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ];
+                      Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error", [], []) ] ];
                       Ty.function
-                        [ Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ]
-                        ]
+                        [ Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error", [], []) ] ] ]
                         (Ty.apply
                           (Ty.path "core::option::Option")
                           []
-                          [
-                            Ty.apply
-                              (Ty.path "&")
-                              []
-                              [ Ty.dyn [ ("core::error::Error::Trait", []) ] ]
+                          [ Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error", [], []) ] ]
                           ])
                     ]
                   |),
@@ -3061,7 +3034,7 @@ Module error.
                     |);
                     M.get_trait_method (|
                       "core::error::Error",
-                      Ty.dyn [ ("core::error::Error::Trait", []) ],
+                      Ty.dyn [ ("core::error::Error", [], []) ],
                       [],
                       [],
                       "source",
@@ -3108,7 +3081,7 @@ Module error.
                                 Ty.apply
                                   (Ty.path "&")
                                   []
-                                  [ Ty.dyn [ ("core::error::Error::Trait", []) ] ]
+                                  [ Ty.dyn [ ("core::error::Error", [], []) ] ]
                               ],
                             "is_some",
                             [],
@@ -3228,7 +3201,7 @@ Module error.
             Ty.apply
               (Ty.path "core::option::Option")
               []
-              [ Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ] ],
+              [ Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error", [], []) ] ] ],
             M.get_trait_method (| "core::error::Error", T, [], [], "cause", [], [] |),
             [
               M.borrow (|
@@ -3261,7 +3234,7 @@ Module error.
             Ty.apply
               (Ty.path "core::option::Option")
               []
-              [ Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ] ],
+              [ Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error", [], []) ] ] ],
             M.get_trait_method (| "core::error::Error", T, [], [], "source", [], [] |),
             [
               M.borrow (|

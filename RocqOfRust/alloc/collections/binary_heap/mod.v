@@ -102,14 +102,11 @@ Module collections.
                           |)
                         |);
                         M.call_closure (|
-                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ],
                           M.pointer_coercion
                             M.PointerCoercion.Unsize
                             (Ty.apply (Ty.path "&") [] [ T ])
-                            (Ty.apply
-                              (Ty.path "&")
-                              []
-                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                            (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ]),
                           [
                             M.borrow (|
                               Pointer.Kind.Ref,
@@ -6352,17 +6349,14 @@ Module collections.
                           |)
                         |);
                         M.call_closure (|
-                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ],
                           M.pointer_coercion
                             M.PointerCoercion.Unsize
                             (Ty.apply
                               (Ty.path "&")
                               []
                               [ Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ] ])
-                            (Ty.apply
-                              (Ty.path "&")
-                              []
-                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                            (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ]),
                           [
                             M.borrow (|
                               Pointer.Kind.Ref,
@@ -6963,17 +6957,14 @@ Module collections.
                           |)
                         |);
                         M.call_closure (|
-                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ],
                           M.pointer_coercion
                             M.PointerCoercion.Unsize
                             (Ty.apply
                               (Ty.path "&")
                               []
                               [ Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ] ])
-                            (Ty.apply
-                              (Ty.path "&")
-                              []
-                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                            (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ]),
                           [
                             M.borrow (|
                               Pointer.Kind.Ref,
@@ -7660,7 +7651,7 @@ Module collections.
                 M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "IntoIterSorted" |) |) |);
                 M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "inner" |) |) |);
                 M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ],
                   M.pointer_coercion
                     M.PointerCoercion.Unsize
                     (Ty.apply
@@ -7677,7 +7668,7 @@ Module collections.
                               [ T; A ]
                           ]
                       ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ]),
                   [
                     M.borrow (|
                       Pointer.Kind.Ref,
@@ -7990,7 +7981,7 @@ Module collections.
                 M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Drain" |) |) |);
                 M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "iter" |) |) |);
                 M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ],
                   M.pointer_coercion
                     M.PointerCoercion.Unsize
                     (Ty.apply
@@ -8002,7 +7993,7 @@ Module collections.
                           []
                           [ Ty.apply (Ty.path "alloc::vec::drain::Drain") [] [ T; A ] ]
                       ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ]),
                   [
                     M.borrow (|
                       Pointer.Kind.Ref,
@@ -8388,7 +8379,7 @@ Module collections.
                 M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "DrainSorted" |) |) |);
                 M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "inner" |) |) |);
                 M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ],
                   M.pointer_coercion
                     M.PointerCoercion.Unsize
                     (Ty.apply
@@ -8410,7 +8401,7 @@ Module collections.
                               ]
                           ]
                       ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ]),
                   [
                     M.borrow (|
                       Pointer.Kind.Ref,

@@ -2349,7 +2349,7 @@ Module cfg.
                       M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Create2" |) |) |);
                       M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "salt" |) |) |);
                       M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ],
                         M.pointer_coercion
                           M.PointerCoercion.Unsize
                           (Ty.apply
@@ -2369,10 +2369,7 @@ Module cfg.
                                     []
                                 ]
                             ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                          (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ]),
                         [
                           M.borrow (|
                             Pointer.Kind.Ref,

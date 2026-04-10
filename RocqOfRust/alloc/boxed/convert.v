@@ -1502,9 +1502,9 @@ Module boxed.
           ].
     End Impl_core_convert_TryFrom_alloc_vec_Vec_T_alloc_alloc_Global_for_alloc_boxed_Box_array_N_T_alloc_alloc_Global.
     
-    Module Impl_alloc_boxed_Box_Dyn_core_any_Any_Trait_A.
+    Module Impl_alloc_boxed_Box_Dyn_core_any_Any_A.
       Definition Self (A : Ty.t) : Ty.t :=
-        Ty.apply (Ty.path "alloc::boxed::Box") [] [ Ty.dyn [ ("core::any::Any::Trait", []) ]; A ].
+        Ty.apply (Ty.path "alloc::boxed::Box") [] [ Ty.dyn [ ("core::any::Any", [], []) ]; A ].
       
       (*
           pub fn downcast<T: Any>(self) -> Result<Box<T, A>, Self> {
@@ -1521,7 +1521,7 @@ Module boxed.
                 Ty.apply
                   (Ty.path "alloc::boxed::Box")
                   []
-                  [ Ty.dyn [ ("core::any::Any::Trait", []) ]; A ],
+                  [ Ty.dyn [ ("core::any::Any", [], []) ]; A ],
                 self
               |) in
             M.match_operator (|
@@ -1533,7 +1533,7 @@ Module boxed.
                   Ty.apply
                     (Ty.path "alloc::boxed::Box")
                     []
-                    [ Ty.dyn [ ("core::any::Any::Trait", []) ]; A ]
+                    [ Ty.dyn [ ("core::any::Any", [], []) ]; A ]
                 ],
               M.alloc (| Ty.tuple [], Value.Tuple [] |),
               [
@@ -1546,7 +1546,7 @@ Module boxed.
                           M.call_closure (|
                             Ty.path "bool",
                             M.get_associated_function (|
-                              Ty.dyn [ ("core::any::Any::Trait", []) ],
+                              Ty.dyn [ ("core::any::Any", [], []) ],
                               "is",
                               [],
                               [ T ]
@@ -1563,7 +1563,7 @@ Module boxed.
                         Ty.apply
                           (Ty.path "alloc::boxed::Box")
                           []
-                          [ Ty.dyn [ ("core::any::Any::Trait", []) ]; A ]
+                          [ Ty.dyn [ ("core::any::Any", [], []) ]; A ]
                       ]
                       [
                         M.call_closure (|
@@ -1572,7 +1572,7 @@ Module boxed.
                             Ty.apply
                               (Ty.path "alloc::boxed::Box")
                               []
-                              [ Ty.dyn [ ("core::any::Any::Trait", []) ]; A ],
+                              [ Ty.dyn [ ("core::any::Any", [], []) ]; A ],
                             "downcast_unchecked",
                             [],
                             [ T ]
@@ -1590,24 +1590,24 @@ Module boxed.
                         Ty.apply
                           (Ty.path "alloc::boxed::Box")
                           []
-                          [ Ty.dyn [ ("core::any::Any::Trait", []) ]; A ]
+                          [ Ty.dyn [ ("core::any::Any", [], []) ]; A ]
                       ]
                       [
                         M.call_closure (|
                           Ty.apply
                             (Ty.path "alloc::boxed::Box")
                             []
-                            [ Ty.dyn [ ("core::any::Any::Trait", []) ]; A ],
+                            [ Ty.dyn [ ("core::any::Any", [], []) ]; A ],
                           M.pointer_coercion
                             M.PointerCoercion.Unsize
                             (Ty.apply
                               (Ty.path "alloc::boxed::Box")
                               []
-                              [ Ty.dyn [ ("core::any::Any::Trait", []) ]; A ])
+                              [ Ty.dyn [ ("core::any::Any", [], []) ]; A ])
                             (Ty.apply
                               (Ty.path "alloc::boxed::Box")
                               []
-                              [ Ty.dyn [ ("core::any::Any::Trait", []) ]; A ]),
+                              [ Ty.dyn [ ("core::any::Any", [], []) ]; A ]),
                           [ M.read (| self |) ]
                         |)
                       ]))
@@ -1646,7 +1646,7 @@ Module boxed.
                 Ty.apply
                   (Ty.path "alloc::boxed::Box")
                   []
-                  [ Ty.dyn [ ("core::any::Any::Trait", []) ]; A ],
+                  [ Ty.dyn [ ("core::any::Any", [], []) ]; A ],
                 self
               |) in
             M.read (|
@@ -1678,7 +1678,7 @@ Module boxed.
                                               M.call_closure (|
                                                 Ty.path "bool",
                                                 M.get_associated_function (|
-                                                  Ty.dyn [ ("core::any::Any::Trait", []) ],
+                                                  Ty.dyn [ ("core::any::Any", [], []) ],
                                                   "is",
                                                   [],
                                                   [ T ]
@@ -1719,19 +1719,16 @@ Module boxed.
                   Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; A ],
                   M.alloc (|
                     Ty.tuple
-                      [ Ty.apply (Ty.path "*mut") [] [ Ty.dyn [ ("core::any::Any::Trait", []) ] ]; A
-                      ],
+                      [ Ty.apply (Ty.path "*mut") [] [ Ty.dyn [ ("core::any::Any", [], []) ] ]; A ],
                     M.call_closure (|
                       Ty.tuple
-                        [
-                          Ty.apply (Ty.path "*mut") [] [ Ty.dyn [ ("core::any::Any::Trait", []) ] ];
-                          A
+                        [ Ty.apply (Ty.path "*mut") [] [ Ty.dyn [ ("core::any::Any", [], []) ] ]; A
                         ],
                       M.get_associated_function (|
                         Ty.apply
                           (Ty.path "alloc::boxed::Box")
                           []
-                          [ Ty.dyn [ ("core::any::Any::Trait", []) ]; A ],
+                          [ Ty.dyn [ ("core::any::Any", [], []) ]; A ],
                         "into_raw_with_allocator",
                         [],
                         []
@@ -1741,17 +1738,17 @@ Module boxed.
                           Ty.apply
                             (Ty.path "alloc::boxed::Box")
                             []
-                            [ Ty.dyn [ ("core::any::Any::Trait", []) ]; A ],
+                            [ Ty.dyn [ ("core::any::Any", [], []) ]; A ],
                           M.pointer_coercion
                             M.PointerCoercion.Unsize
                             (Ty.apply
                               (Ty.path "alloc::boxed::Box")
                               []
-                              [ Ty.dyn [ ("core::any::Any::Trait", []) ]; A ])
+                              [ Ty.dyn [ ("core::any::Any", [], []) ]; A ])
                             (Ty.apply
                               (Ty.path "alloc::boxed::Box")
                               []
-                              [ Ty.dyn [ ("core::any::Any::Trait", []) ]; A ]),
+                              [ Ty.dyn [ ("core::any::Any", [], []) ]; A ]),
                           [ M.read (| self |) ]
                         |)
                       ]
@@ -1764,10 +1761,7 @@ Module boxed.
                         let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
                         let raw :=
                           M.copy (|
-                            Ty.apply
-                              (Ty.path "*mut")
-                              []
-                              [ Ty.dyn [ ("core::any::Any::Trait", []) ] ],
+                            Ty.apply (Ty.path "*mut") [] [ Ty.dyn [ ("core::any::Any", [], []) ] ],
                             γ0_0
                           |) in
                         let alloc := M.copy (| A, γ0_1 |) in
@@ -1796,14 +1790,14 @@ Module boxed.
         M.IsAssociatedFunction.C (Self A) "downcast_unchecked" (downcast_unchecked A).
       Admitted.
       Global Typeclasses Opaque downcast_unchecked.
-    End Impl_alloc_boxed_Box_Dyn_core_any_Any_Trait_A.
+    End Impl_alloc_boxed_Box_Dyn_core_any_Any_A.
     
-    Module Impl_alloc_boxed_Box_Dyn_core_any_Any_Trait_core_marker_Send_AutoTrait_A.
+    Module Impl_alloc_boxed_Box_Dyn_core_any_Any_core_marker_Send_AutoTrait_A.
       Definition Self (A : Ty.t) : Ty.t :=
         Ty.apply
           (Ty.path "alloc::boxed::Box")
           []
-          [ Ty.dyn [ ("core::any::Any::Trait", []); ("core::marker::Send::AutoTrait", []) ]; A ].
+          [ Ty.dyn [ ("core::any::Any", [], []); ("core::marker::Send::AutoTrait", [], []) ]; A ].
       
       (*
           pub fn downcast<T: Any>(self) -> Result<Box<T, A>, Self> {
@@ -1821,7 +1815,8 @@ Module boxed.
                   (Ty.path "alloc::boxed::Box")
                   []
                   [
-                    Ty.dyn [ ("core::any::Any::Trait", []); ("core::marker::Send::AutoTrait", []) ];
+                    Ty.dyn
+                      [ ("core::any::Any", [], []); ("core::marker::Send::AutoTrait", [], []) ];
                     A
                   ],
                 self
@@ -1837,7 +1832,7 @@ Module boxed.
                     []
                     [
                       Ty.dyn
-                        [ ("core::any::Any::Trait", []); ("core::marker::Send::AutoTrait", []) ];
+                        [ ("core::any::Any", [], []); ("core::marker::Send::AutoTrait", [], []) ];
                       A
                     ]
                 ],
@@ -1854,8 +1849,8 @@ Module boxed.
                             M.get_associated_function (|
                               Ty.dyn
                                 [
-                                  ("core::any::Any::Trait", []);
-                                  ("core::marker::Send::AutoTrait", [])
+                                  ("core::any::Any", [], []);
+                                  ("core::marker::Send::AutoTrait", [], [])
                                 ],
                               "is",
                               [],
@@ -1875,7 +1870,9 @@ Module boxed.
                           []
                           [
                             Ty.dyn
-                              [ ("core::any::Any::Trait", []); ("core::marker::Send::AutoTrait", [])
+                              [
+                                ("core::any::Any", [], []);
+                                ("core::marker::Send::AutoTrait", [], [])
                               ];
                             A
                           ]
@@ -1890,8 +1887,8 @@ Module boxed.
                               [
                                 Ty.dyn
                                   [
-                                    ("core::any::Any::Trait", []);
-                                    ("core::marker::Send::AutoTrait", [])
+                                    ("core::any::Any", [], []);
+                                    ("core::marker::Send::AutoTrait", [], [])
                                   ];
                                 A
                               ],
@@ -1914,7 +1911,9 @@ Module boxed.
                           []
                           [
                             Ty.dyn
-                              [ ("core::any::Any::Trait", []); ("core::marker::Send::AutoTrait", [])
+                              [
+                                ("core::any::Any", [], []);
+                                ("core::marker::Send::AutoTrait", [], [])
                               ];
                             A
                           ]
@@ -1927,8 +1926,8 @@ Module boxed.
                             [
                               Ty.dyn
                                 [
-                                  ("core::any::Any::Trait", []);
-                                  ("core::marker::Send::AutoTrait", [])
+                                  ("core::any::Any", [], []);
+                                  ("core::marker::Send::AutoTrait", [], [])
                                 ];
                               A
                             ],
@@ -1940,8 +1939,8 @@ Module boxed.
                               [
                                 Ty.dyn
                                   [
-                                    ("core::any::Any::Trait", []);
-                                    ("core::marker::Send::AutoTrait", [])
+                                    ("core::any::Any", [], []);
+                                    ("core::marker::Send::AutoTrait", [], [])
                                   ];
                                 A
                               ])
@@ -1951,8 +1950,8 @@ Module boxed.
                               [
                                 Ty.dyn
                                   [
-                                    ("core::any::Any::Trait", []);
-                                    ("core::marker::Send::AutoTrait", [])
+                                    ("core::any::Any", [], []);
+                                    ("core::marker::Send::AutoTrait", [], [])
                                   ];
                                 A
                               ]),
@@ -1995,7 +1994,8 @@ Module boxed.
                   (Ty.path "alloc::boxed::Box")
                   []
                   [
-                    Ty.dyn [ ("core::any::Any::Trait", []); ("core::marker::Send::AutoTrait", []) ];
+                    Ty.dyn
+                      [ ("core::any::Any", [], []); ("core::marker::Send::AutoTrait", [], []) ];
                     A
                   ],
                 self
@@ -2031,8 +2031,8 @@ Module boxed.
                                                 M.get_associated_function (|
                                                   Ty.dyn
                                                     [
-                                                      ("core::any::Any::Trait", []);
-                                                      ("core::marker::Send::AutoTrait", [])
+                                                      ("core::any::Any", [], []);
+                                                      ("core::marker::Send::AutoTrait", [], [])
                                                     ],
                                                   "is",
                                                   [],
@@ -2080,7 +2080,9 @@ Module boxed.
                           []
                           [
                             Ty.dyn
-                              [ ("core::any::Any::Trait", []); ("core::marker::Send::AutoTrait", [])
+                              [
+                                ("core::any::Any", [], []);
+                                ("core::marker::Send::AutoTrait", [], [])
                               ]
                           ];
                         A
@@ -2094,8 +2096,8 @@ Module boxed.
                             [
                               Ty.dyn
                                 [
-                                  ("core::any::Any::Trait", []);
-                                  ("core::marker::Send::AutoTrait", [])
+                                  ("core::any::Any", [], []);
+                                  ("core::marker::Send::AutoTrait", [], [])
                                 ]
                             ];
                           A
@@ -2106,7 +2108,9 @@ Module boxed.
                           []
                           [
                             Ty.dyn
-                              [ ("core::any::Any::Trait", []); ("core::marker::Send::AutoTrait", [])
+                              [
+                                ("core::any::Any", [], []);
+                                ("core::marker::Send::AutoTrait", [], [])
                               ];
                             A
                           ],
@@ -2122,8 +2126,8 @@ Module boxed.
                             [
                               Ty.dyn
                                 [
-                                  ("core::any::Any::Trait", []);
-                                  ("core::marker::Send::AutoTrait", [])
+                                  ("core::any::Any", [], []);
+                                  ("core::marker::Send::AutoTrait", [], [])
                                 ];
                               A
                             ],
@@ -2135,8 +2139,8 @@ Module boxed.
                               [
                                 Ty.dyn
                                   [
-                                    ("core::any::Any::Trait", []);
-                                    ("core::marker::Send::AutoTrait", [])
+                                    ("core::any::Any", [], []);
+                                    ("core::marker::Send::AutoTrait", [], [])
                                   ];
                                 A
                               ])
@@ -2146,8 +2150,8 @@ Module boxed.
                               [
                                 Ty.dyn
                                   [
-                                    ("core::any::Any::Trait", []);
-                                    ("core::marker::Send::AutoTrait", [])
+                                    ("core::any::Any", [], []);
+                                    ("core::marker::Send::AutoTrait", [], [])
                                   ];
                                 A
                               ]),
@@ -2169,8 +2173,8 @@ Module boxed.
                               [
                                 Ty.dyn
                                   [
-                                    ("core::any::Any::Trait", []);
-                                    ("core::marker::Send::AutoTrait", [])
+                                    ("core::any::Any", [], []);
+                                    ("core::marker::Send::AutoTrait", [], [])
                                   ]
                               ],
                             γ0_0
@@ -2201,9 +2205,9 @@ Module boxed.
         M.IsAssociatedFunction.C (Self A) "downcast_unchecked" (downcast_unchecked A).
       Admitted.
       Global Typeclasses Opaque downcast_unchecked.
-    End Impl_alloc_boxed_Box_Dyn_core_any_Any_Trait_core_marker_Send_AutoTrait_A.
+    End Impl_alloc_boxed_Box_Dyn_core_any_Any_core_marker_Send_AutoTrait_A.
     
-    Module Impl_alloc_boxed_Box_Dyn_core_any_Any_Trait_core_marker_Sync_AutoTrait_core_marker_Send_AutoTrait_A.
+    Module Impl_alloc_boxed_Box_Dyn_core_any_Any_core_marker_Sync_AutoTrait_core_marker_Send_AutoTrait_A.
       Definition Self (A : Ty.t) : Ty.t :=
         Ty.apply
           (Ty.path "alloc::boxed::Box")
@@ -2211,9 +2215,9 @@ Module boxed.
           [
             Ty.dyn
               [
-                ("core::any::Any::Trait", []);
-                ("core::marker::Sync::AutoTrait", []);
-                ("core::marker::Send::AutoTrait", [])
+                ("core::any::Any", [], []);
+                ("core::marker::Sync::AutoTrait", [], []);
+                ("core::marker::Send::AutoTrait", [], [])
               ];
             A
           ].
@@ -2236,9 +2240,9 @@ Module boxed.
                   [
                     Ty.dyn
                       [
-                        ("core::any::Any::Trait", []);
-                        ("core::marker::Sync::AutoTrait", []);
-                        ("core::marker::Send::AutoTrait", [])
+                        ("core::any::Any", [], []);
+                        ("core::marker::Sync::AutoTrait", [], []);
+                        ("core::marker::Send::AutoTrait", [], [])
                       ];
                     A
                   ],
@@ -2256,9 +2260,9 @@ Module boxed.
                     [
                       Ty.dyn
                         [
-                          ("core::any::Any::Trait", []);
-                          ("core::marker::Sync::AutoTrait", []);
-                          ("core::marker::Send::AutoTrait", [])
+                          ("core::any::Any", [], []);
+                          ("core::marker::Sync::AutoTrait", [], []);
+                          ("core::marker::Send::AutoTrait", [], [])
                         ];
                       A
                     ]
@@ -2276,9 +2280,9 @@ Module boxed.
                             M.get_associated_function (|
                               Ty.dyn
                                 [
-                                  ("core::any::Any::Trait", []);
-                                  ("core::marker::Sync::AutoTrait", []);
-                                  ("core::marker::Send::AutoTrait", [])
+                                  ("core::any::Any", [], []);
+                                  ("core::marker::Sync::AutoTrait", [], []);
+                                  ("core::marker::Send::AutoTrait", [], [])
                                 ],
                               "is",
                               [],
@@ -2299,9 +2303,9 @@ Module boxed.
                           [
                             Ty.dyn
                               [
-                                ("core::any::Any::Trait", []);
-                                ("core::marker::Sync::AutoTrait", []);
-                                ("core::marker::Send::AutoTrait", [])
+                                ("core::any::Any", [], []);
+                                ("core::marker::Sync::AutoTrait", [], []);
+                                ("core::marker::Send::AutoTrait", [], [])
                               ];
                             A
                           ]
@@ -2316,9 +2320,9 @@ Module boxed.
                               [
                                 Ty.dyn
                                   [
-                                    ("core::any::Any::Trait", []);
-                                    ("core::marker::Sync::AutoTrait", []);
-                                    ("core::marker::Send::AutoTrait", [])
+                                    ("core::any::Any", [], []);
+                                    ("core::marker::Sync::AutoTrait", [], []);
+                                    ("core::marker::Send::AutoTrait", [], [])
                                   ];
                                 A
                               ],
@@ -2342,9 +2346,9 @@ Module boxed.
                           [
                             Ty.dyn
                               [
-                                ("core::any::Any::Trait", []);
-                                ("core::marker::Sync::AutoTrait", []);
-                                ("core::marker::Send::AutoTrait", [])
+                                ("core::any::Any", [], []);
+                                ("core::marker::Sync::AutoTrait", [], []);
+                                ("core::marker::Send::AutoTrait", [], [])
                               ];
                             A
                           ]
@@ -2357,9 +2361,9 @@ Module boxed.
                             [
                               Ty.dyn
                                 [
-                                  ("core::any::Any::Trait", []);
-                                  ("core::marker::Sync::AutoTrait", []);
-                                  ("core::marker::Send::AutoTrait", [])
+                                  ("core::any::Any", [], []);
+                                  ("core::marker::Sync::AutoTrait", [], []);
+                                  ("core::marker::Send::AutoTrait", [], [])
                                 ];
                               A
                             ],
@@ -2371,9 +2375,9 @@ Module boxed.
                               [
                                 Ty.dyn
                                   [
-                                    ("core::any::Any::Trait", []);
-                                    ("core::marker::Sync::AutoTrait", []);
-                                    ("core::marker::Send::AutoTrait", [])
+                                    ("core::any::Any", [], []);
+                                    ("core::marker::Sync::AutoTrait", [], []);
+                                    ("core::marker::Send::AutoTrait", [], [])
                                   ];
                                 A
                               ])
@@ -2383,9 +2387,9 @@ Module boxed.
                               [
                                 Ty.dyn
                                   [
-                                    ("core::any::Any::Trait", []);
-                                    ("core::marker::Sync::AutoTrait", []);
-                                    ("core::marker::Send::AutoTrait", [])
+                                    ("core::any::Any", [], []);
+                                    ("core::marker::Sync::AutoTrait", [], []);
+                                    ("core::marker::Send::AutoTrait", [], [])
                                   ];
                                 A
                               ]),
@@ -2431,9 +2435,9 @@ Module boxed.
                   [
                     Ty.dyn
                       [
-                        ("core::any::Any::Trait", []);
-                        ("core::marker::Sync::AutoTrait", []);
-                        ("core::marker::Send::AutoTrait", [])
+                        ("core::any::Any", [], []);
+                        ("core::marker::Sync::AutoTrait", [], []);
+                        ("core::marker::Send::AutoTrait", [], [])
                       ];
                     A
                   ],
@@ -2470,9 +2474,9 @@ Module boxed.
                                                 M.get_associated_function (|
                                                   Ty.dyn
                                                     [
-                                                      ("core::any::Any::Trait", []);
-                                                      ("core::marker::Sync::AutoTrait", []);
-                                                      ("core::marker::Send::AutoTrait", [])
+                                                      ("core::any::Any", [], []);
+                                                      ("core::marker::Sync::AutoTrait", [], []);
+                                                      ("core::marker::Send::AutoTrait", [], [])
                                                     ],
                                                   "is",
                                                   [],
@@ -2521,9 +2525,9 @@ Module boxed.
                           [
                             Ty.dyn
                               [
-                                ("core::any::Any::Trait", []);
-                                ("core::marker::Sync::AutoTrait", []);
-                                ("core::marker::Send::AutoTrait", [])
+                                ("core::any::Any", [], []);
+                                ("core::marker::Sync::AutoTrait", [], []);
+                                ("core::marker::Send::AutoTrait", [], [])
                               ]
                           ];
                         A
@@ -2537,9 +2541,9 @@ Module boxed.
                             [
                               Ty.dyn
                                 [
-                                  ("core::any::Any::Trait", []);
-                                  ("core::marker::Sync::AutoTrait", []);
-                                  ("core::marker::Send::AutoTrait", [])
+                                  ("core::any::Any", [], []);
+                                  ("core::marker::Sync::AutoTrait", [], []);
+                                  ("core::marker::Send::AutoTrait", [], [])
                                 ]
                             ];
                           A
@@ -2551,9 +2555,9 @@ Module boxed.
                           [
                             Ty.dyn
                               [
-                                ("core::any::Any::Trait", []);
-                                ("core::marker::Sync::AutoTrait", []);
-                                ("core::marker::Send::AutoTrait", [])
+                                ("core::any::Any", [], []);
+                                ("core::marker::Sync::AutoTrait", [], []);
+                                ("core::marker::Send::AutoTrait", [], [])
                               ];
                             A
                           ],
@@ -2569,9 +2573,9 @@ Module boxed.
                             [
                               Ty.dyn
                                 [
-                                  ("core::any::Any::Trait", []);
-                                  ("core::marker::Sync::AutoTrait", []);
-                                  ("core::marker::Send::AutoTrait", [])
+                                  ("core::any::Any", [], []);
+                                  ("core::marker::Sync::AutoTrait", [], []);
+                                  ("core::marker::Send::AutoTrait", [], [])
                                 ];
                               A
                             ],
@@ -2583,9 +2587,9 @@ Module boxed.
                               [
                                 Ty.dyn
                                   [
-                                    ("core::any::Any::Trait", []);
-                                    ("core::marker::Sync::AutoTrait", []);
-                                    ("core::marker::Send::AutoTrait", [])
+                                    ("core::any::Any", [], []);
+                                    ("core::marker::Sync::AutoTrait", [], []);
+                                    ("core::marker::Send::AutoTrait", [], [])
                                   ];
                                 A
                               ])
@@ -2595,9 +2599,9 @@ Module boxed.
                               [
                                 Ty.dyn
                                   [
-                                    ("core::any::Any::Trait", []);
-                                    ("core::marker::Sync::AutoTrait", []);
-                                    ("core::marker::Send::AutoTrait", [])
+                                    ("core::any::Any", [], []);
+                                    ("core::marker::Sync::AutoTrait", [], []);
+                                    ("core::marker::Send::AutoTrait", [], [])
                                   ];
                                 A
                               ]),
@@ -2619,9 +2623,9 @@ Module boxed.
                               [
                                 Ty.dyn
                                   [
-                                    ("core::any::Any::Trait", []);
-                                    ("core::marker::Sync::AutoTrait", []);
-                                    ("core::marker::Send::AutoTrait", [])
+                                    ("core::any::Any", [], []);
+                                    ("core::marker::Sync::AutoTrait", [], []);
+                                    ("core::marker::Send::AutoTrait", [], [])
                                   ]
                               ],
                             γ0_0
@@ -2652,14 +2656,14 @@ Module boxed.
         M.IsAssociatedFunction.C (Self A) "downcast_unchecked" (downcast_unchecked A).
       Admitted.
       Global Typeclasses Opaque downcast_unchecked.
-    End Impl_alloc_boxed_Box_Dyn_core_any_Any_Trait_core_marker_Sync_AutoTrait_core_marker_Send_AutoTrait_A.
+    End Impl_alloc_boxed_Box_Dyn_core_any_Any_core_marker_Sync_AutoTrait_core_marker_Send_AutoTrait_A.
     
-    Module Impl_core_convert_From_where_core_error_Error_E_E_for_alloc_boxed_Box_Dyn_core_error_Error_Trait_alloc_alloc_Global.
+    Module Impl_core_convert_From_where_core_error_Error_E_E_for_alloc_boxed_Box_Dyn_core_error_Error_alloc_alloc_Global.
       Definition Self (E : Ty.t) : Ty.t :=
         Ty.apply
           (Ty.path "alloc::boxed::Box")
           []
-          [ Ty.dyn [ ("core::error::Error::Trait", []) ]; Ty.path "alloc::alloc::Global" ].
+          [ Ty.dyn [ ("core::error::Error", [], []) ]; Ty.path "alloc::alloc::Global" ].
       
       (*
           fn from(err: E) -> Box<dyn Error + 'a> {
@@ -2676,24 +2680,23 @@ Module boxed.
               Ty.apply
                 (Ty.path "alloc::boxed::Box")
                 []
-                [ Ty.dyn [ ("core::error::Error::Trait", []) ]; Ty.path "alloc::alloc::Global" ],
+                [ Ty.dyn [ ("core::error::Error", [], []) ]; Ty.path "alloc::alloc::Global" ],
               M.pointer_coercion
                 M.PointerCoercion.Unsize
                 (Ty.apply
                   (Ty.path "alloc::boxed::Box")
                   []
-                  [ Ty.dyn [ ("core::error::Error::Trait", []) ]; Ty.path "alloc::alloc::Global" ])
+                  [ Ty.dyn [ ("core::error::Error", [], []) ]; Ty.path "alloc::alloc::Global" ])
                 (Ty.apply
                   (Ty.path "alloc::boxed::Box")
                   []
-                  [ Ty.dyn [ ("core::error::Error::Trait", []) ]; Ty.path "alloc::alloc::Global" ]),
+                  [ Ty.dyn [ ("core::error::Error", [], []) ]; Ty.path "alloc::alloc::Global" ]),
               [
                 M.call_closure (|
                   Ty.apply
                     (Ty.path "alloc::boxed::Box")
                     []
-                    [ Ty.dyn [ ("core::error::Error::Trait", []) ]; Ty.path "alloc::alloc::Global"
-                    ],
+                    [ Ty.dyn [ ("core::error::Error", [], []) ]; Ty.path "alloc::alloc::Global" ],
                   M.pointer_coercion
                     M.PointerCoercion.Unsize
                     (Ty.apply
@@ -2703,7 +2706,7 @@ Module boxed.
                     (Ty.apply
                       (Ty.path "alloc::boxed::Box")
                       []
-                      [ Ty.dyn [ ("core::error::Error::Trait", []) ]; Ty.path "alloc::alloc::Global"
+                      [ Ty.dyn [ ("core::error::Error", [], []) ]; Ty.path "alloc::alloc::Global"
                       ]),
                   [
                     M.call_closure (|
@@ -2737,9 +2740,9 @@ Module boxed.
           (* Trait polymorphic types *) [ E ]
           (Self E)
           (* Instance *) [ ("from", InstanceField.Method (from E)) ].
-    End Impl_core_convert_From_where_core_error_Error_E_E_for_alloc_boxed_Box_Dyn_core_error_Error_Trait_alloc_alloc_Global.
+    End Impl_core_convert_From_where_core_error_Error_E_E_for_alloc_boxed_Box_Dyn_core_error_Error_alloc_alloc_Global.
     
-    Module Impl_core_convert_From_where_core_error_Error_E_where_core_marker_Send_E_where_core_marker_Sync_E_E_for_alloc_boxed_Box_Dyn_core_error_Error_Trait_core_marker_Sync_AutoTrait_core_marker_Send_AutoTrait_alloc_alloc_Global.
+    Module Impl_core_convert_From_where_core_error_Error_E_where_core_marker_Send_E_where_core_marker_Sync_E_E_for_alloc_boxed_Box_Dyn_core_error_Error_core_marker_Sync_AutoTrait_core_marker_Send_AutoTrait_alloc_alloc_Global.
       Definition Self (E : Ty.t) : Ty.t :=
         Ty.apply
           (Ty.path "alloc::boxed::Box")
@@ -2747,9 +2750,9 @@ Module boxed.
           [
             Ty.dyn
               [
-                ("core::error::Error::Trait", []);
-                ("core::marker::Sync::AutoTrait", []);
-                ("core::marker::Send::AutoTrait", [])
+                ("core::error::Error", [], []);
+                ("core::marker::Sync::AutoTrait", [], []);
+                ("core::marker::Send::AutoTrait", [], [])
               ];
             Ty.path "alloc::alloc::Global"
           ].
@@ -2772,9 +2775,9 @@ Module boxed.
                 [
                   Ty.dyn
                     [
-                      ("core::error::Error::Trait", []);
-                      ("core::marker::Sync::AutoTrait", []);
-                      ("core::marker::Send::AutoTrait", [])
+                      ("core::error::Error", [], []);
+                      ("core::marker::Sync::AutoTrait", [], []);
+                      ("core::marker::Send::AutoTrait", [], [])
                     ];
                   Ty.path "alloc::alloc::Global"
                 ],
@@ -2786,9 +2789,9 @@ Module boxed.
                   [
                     Ty.dyn
                       [
-                        ("core::error::Error::Trait", []);
-                        ("core::marker::Sync::AutoTrait", []);
-                        ("core::marker::Send::AutoTrait", [])
+                        ("core::error::Error", [], []);
+                        ("core::marker::Sync::AutoTrait", [], []);
+                        ("core::marker::Send::AutoTrait", [], [])
                       ];
                     Ty.path "alloc::alloc::Global"
                   ])
@@ -2798,9 +2801,9 @@ Module boxed.
                   [
                     Ty.dyn
                       [
-                        ("core::error::Error::Trait", []);
-                        ("core::marker::Sync::AutoTrait", []);
-                        ("core::marker::Send::AutoTrait", [])
+                        ("core::error::Error", [], []);
+                        ("core::marker::Sync::AutoTrait", [], []);
+                        ("core::marker::Send::AutoTrait", [], [])
                       ];
                     Ty.path "alloc::alloc::Global"
                   ]),
@@ -2812,9 +2815,9 @@ Module boxed.
                     [
                       Ty.dyn
                         [
-                          ("core::error::Error::Trait", []);
-                          ("core::marker::Sync::AutoTrait", []);
-                          ("core::marker::Send::AutoTrait", [])
+                          ("core::error::Error", [], []);
+                          ("core::marker::Sync::AutoTrait", [], []);
+                          ("core::marker::Send::AutoTrait", [], [])
                         ];
                       Ty.path "alloc::alloc::Global"
                     ],
@@ -2830,9 +2833,9 @@ Module boxed.
                       [
                         Ty.dyn
                           [
-                            ("core::error::Error::Trait", []);
-                            ("core::marker::Sync::AutoTrait", []);
-                            ("core::marker::Send::AutoTrait", [])
+                            ("core::error::Error", [], []);
+                            ("core::marker::Sync::AutoTrait", [], []);
+                            ("core::marker::Send::AutoTrait", [], [])
                           ];
                         Ty.path "alloc::alloc::Global"
                       ]),
@@ -2868,9 +2871,9 @@ Module boxed.
           (* Trait polymorphic types *) [ E ]
           (Self E)
           (* Instance *) [ ("from", InstanceField.Method (from E)) ].
-    End Impl_core_convert_From_where_core_error_Error_E_where_core_marker_Send_E_where_core_marker_Sync_E_E_for_alloc_boxed_Box_Dyn_core_error_Error_Trait_core_marker_Sync_AutoTrait_core_marker_Send_AutoTrait_alloc_alloc_Global.
+    End Impl_core_convert_From_where_core_error_Error_E_where_core_marker_Send_E_where_core_marker_Sync_E_E_for_alloc_boxed_Box_Dyn_core_error_Error_core_marker_Sync_AutoTrait_core_marker_Send_AutoTrait_alloc_alloc_Global.
     
-    Module Impl_core_convert_From_alloc_string_String_for_alloc_boxed_Box_Dyn_core_error_Error_Trait_core_marker_Sync_AutoTrait_core_marker_Send_AutoTrait_alloc_alloc_Global.
+    Module Impl_core_convert_From_alloc_string_String_for_alloc_boxed_Box_Dyn_core_error_Error_core_marker_Sync_AutoTrait_core_marker_Send_AutoTrait_alloc_alloc_Global.
       Definition Self : Ty.t :=
         Ty.apply
           (Ty.path "alloc::boxed::Box")
@@ -2878,9 +2881,9 @@ Module boxed.
           [
             Ty.dyn
               [
-                ("core::error::Error::Trait", []);
-                ("core::marker::Sync::AutoTrait", []);
-                ("core::marker::Send::AutoTrait", [])
+                ("core::error::Error", [], []);
+                ("core::marker::Sync::AutoTrait", [], []);
+                ("core::marker::Send::AutoTrait", [], [])
               ];
             Ty.path "alloc::alloc::Global"
           ].
@@ -2924,9 +2927,9 @@ Module boxed.
                 [
                   Ty.dyn
                     [
-                      ("core::error::Error::Trait", []);
-                      ("core::marker::Sync::AutoTrait", []);
-                      ("core::marker::Send::AutoTrait", [])
+                      ("core::error::Error", [], []);
+                      ("core::marker::Sync::AutoTrait", [], []);
+                      ("core::marker::Send::AutoTrait", [], [])
                     ];
                   Ty.path "alloc::alloc::Global"
                 ],
@@ -2938,9 +2941,9 @@ Module boxed.
                   [
                     Ty.dyn
                       [
-                        ("core::error::Error::Trait", []);
-                        ("core::marker::Sync::AutoTrait", []);
-                        ("core::marker::Send::AutoTrait", [])
+                        ("core::error::Error", [], []);
+                        ("core::marker::Sync::AutoTrait", [], []);
+                        ("core::marker::Send::AutoTrait", [], [])
                       ];
                     Ty.path "alloc::alloc::Global"
                   ])
@@ -2950,9 +2953,9 @@ Module boxed.
                   [
                     Ty.dyn
                       [
-                        ("core::error::Error::Trait", []);
-                        ("core::marker::Sync::AutoTrait", []);
-                        ("core::marker::Send::AutoTrait", [])
+                        ("core::error::Error", [], []);
+                        ("core::marker::Sync::AutoTrait", [], []);
+                        ("core::marker::Send::AutoTrait", [], [])
                       ];
                     Ty.path "alloc::alloc::Global"
                   ]),
@@ -2964,9 +2967,9 @@ Module boxed.
                     [
                       Ty.dyn
                         [
-                          ("core::error::Error::Trait", []);
-                          ("core::marker::Sync::AutoTrait", []);
-                          ("core::marker::Send::AutoTrait", [])
+                          ("core::error::Error", [], []);
+                          ("core::marker::Sync::AutoTrait", [], []);
+                          ("core::marker::Send::AutoTrait", [], [])
                         ];
                       Ty.path "alloc::alloc::Global"
                     ],
@@ -2985,9 +2988,9 @@ Module boxed.
                       [
                         Ty.dyn
                           [
-                            ("core::error::Error::Trait", []);
-                            ("core::marker::Sync::AutoTrait", []);
-                            ("core::marker::Send::AutoTrait", [])
+                            ("core::error::Error", [], []);
+                            ("core::marker::Sync::AutoTrait", [], []);
+                            ("core::marker::Send::AutoTrait", [], [])
                           ];
                         Ty.path "alloc::alloc::Global"
                       ]),
@@ -3034,14 +3037,14 @@ Module boxed.
           (* Trait polymorphic types *) [ Ty.path "alloc::string::String" ]
           Self
           (* Instance *) [ ("from", InstanceField.Method from) ].
-    End Impl_core_convert_From_alloc_string_String_for_alloc_boxed_Box_Dyn_core_error_Error_Trait_core_marker_Sync_AutoTrait_core_marker_Send_AutoTrait_alloc_alloc_Global.
+    End Impl_core_convert_From_alloc_string_String_for_alloc_boxed_Box_Dyn_core_error_Error_core_marker_Sync_AutoTrait_core_marker_Send_AutoTrait_alloc_alloc_Global.
     
-    Module Impl_core_convert_From_alloc_string_String_for_alloc_boxed_Box_Dyn_core_error_Error_Trait_alloc_alloc_Global.
+    Module Impl_core_convert_From_alloc_string_String_for_alloc_boxed_Box_Dyn_core_error_Error_alloc_alloc_Global.
       Definition Self : Ty.t :=
         Ty.apply
           (Ty.path "alloc::boxed::Box")
           []
-          [ Ty.dyn [ ("core::error::Error::Trait", []) ]; Ty.path "alloc::alloc::Global" ].
+          [ Ty.dyn [ ("core::error::Error", [], []) ]; Ty.path "alloc::alloc::Global" ].
       
       (*
           fn from(str_err: String) -> Box<dyn Error + 'a> {
@@ -3059,17 +3062,17 @@ Module boxed.
               Ty.apply
                 (Ty.path "alloc::boxed::Box")
                 []
-                [ Ty.dyn [ ("core::error::Error::Trait", []) ]; Ty.path "alloc::alloc::Global" ],
+                [ Ty.dyn [ ("core::error::Error", [], []) ]; Ty.path "alloc::alloc::Global" ],
               M.pointer_coercion
                 M.PointerCoercion.Unsize
                 (Ty.apply
                   (Ty.path "alloc::boxed::Box")
                   []
-                  [ Ty.dyn [ ("core::error::Error::Trait", []) ]; Ty.path "alloc::alloc::Global" ])
+                  [ Ty.dyn [ ("core::error::Error", [], []) ]; Ty.path "alloc::alloc::Global" ])
                 (Ty.apply
                   (Ty.path "alloc::boxed::Box")
                   []
-                  [ Ty.dyn [ ("core::error::Error::Trait", []) ]; Ty.path "alloc::alloc::Global" ]),
+                  [ Ty.dyn [ ("core::error::Error", [], []) ]; Ty.path "alloc::alloc::Global" ]),
               [
                 M.read (|
                   let~ err1 :
@@ -3079,9 +3082,9 @@ Module boxed.
                         [
                           Ty.dyn
                             [
-                              ("core::error::Error::Trait", []);
-                              ("core::marker::Sync::AutoTrait", []);
-                              ("core::marker::Send::AutoTrait", [])
+                              ("core::error::Error", [], []);
+                              ("core::marker::Sync::AutoTrait", [], []);
+                              ("core::marker::Send::AutoTrait", [], [])
                             ];
                           Ty.path "alloc::alloc::Global"
                         ] :=
@@ -3092,9 +3095,9 @@ Module boxed.
                         [
                           Ty.dyn
                             [
-                              ("core::error::Error::Trait", []);
-                              ("core::marker::Sync::AutoTrait", []);
-                              ("core::marker::Send::AutoTrait", [])
+                              ("core::error::Error", [], []);
+                              ("core::marker::Sync::AutoTrait", [], []);
+                              ("core::marker::Send::AutoTrait", [], [])
                             ];
                           Ty.path "alloc::alloc::Global"
                         ],
@@ -3106,9 +3109,9 @@ Module boxed.
                           [
                             Ty.dyn
                               [
-                                ("core::error::Error::Trait", []);
-                                ("core::marker::Sync::AutoTrait", []);
-                                ("core::marker::Send::AutoTrait", [])
+                                ("core::error::Error", [], []);
+                                ("core::marker::Sync::AutoTrait", [], []);
+                                ("core::marker::Send::AutoTrait", [], [])
                               ];
                             Ty.path "alloc::alloc::Global"
                           ],
@@ -3124,17 +3127,13 @@ Module boxed.
                       Ty.apply
                         (Ty.path "alloc::boxed::Box")
                         []
-                        [
-                          Ty.dyn [ ("core::error::Error::Trait", []) ];
-                          Ty.path "alloc::alloc::Global"
+                        [ Ty.dyn [ ("core::error::Error", [], []) ]; Ty.path "alloc::alloc::Global"
                         ] :=
                     M.call_closure (|
                       Ty.apply
                         (Ty.path "alloc::boxed::Box")
                         []
-                        [
-                          Ty.dyn [ ("core::error::Error::Trait", []) ];
-                          Ty.path "alloc::alloc::Global"
+                        [ Ty.dyn [ ("core::error::Error", [], []) ]; Ty.path "alloc::alloc::Global"
                         ],
                       M.pointer_coercion
                         M.PointerCoercion.Unsize
@@ -3144,9 +3143,9 @@ Module boxed.
                           [
                             Ty.dyn
                               [
-                                ("core::error::Error::Trait", []);
-                                ("core::marker::Sync::AutoTrait", []);
-                                ("core::marker::Send::AutoTrait", [])
+                                ("core::error::Error", [], []);
+                                ("core::marker::Sync::AutoTrait", [], []);
+                                ("core::marker::Send::AutoTrait", [], [])
                               ];
                             Ty.path "alloc::alloc::Global"
                           ])
@@ -3154,7 +3153,7 @@ Module boxed.
                           (Ty.path "alloc::boxed::Box")
                           []
                           [
-                            Ty.dyn [ ("core::error::Error::Trait", []) ];
+                            Ty.dyn [ ("core::error::Error", [], []) ];
                             Ty.path "alloc::alloc::Global"
                           ]),
                       [ M.read (| err1 |) ]
@@ -3163,15 +3162,12 @@ Module boxed.
                     Ty.apply
                       (Ty.path "alloc::boxed::Box")
                       []
-                      [ Ty.dyn [ ("core::error::Error::Trait", []) ]; Ty.path "alloc::alloc::Global"
-                      ],
+                      [ Ty.dyn [ ("core::error::Error", [], []) ]; Ty.path "alloc::alloc::Global" ],
                     M.call_closure (|
                       Ty.apply
                         (Ty.path "alloc::boxed::Box")
                         []
-                        [
-                          Ty.dyn [ ("core::error::Error::Trait", []) ];
-                          Ty.path "alloc::alloc::Global"
+                        [ Ty.dyn [ ("core::error::Error", [], []) ]; Ty.path "alloc::alloc::Global"
                         ],
                       M.pointer_coercion
                         M.PointerCoercion.Unsize
@@ -3179,14 +3175,14 @@ Module boxed.
                           (Ty.path "alloc::boxed::Box")
                           []
                           [
-                            Ty.dyn [ ("core::error::Error::Trait", []) ];
+                            Ty.dyn [ ("core::error::Error", [], []) ];
                             Ty.path "alloc::alloc::Global"
                           ])
                         (Ty.apply
                           (Ty.path "alloc::boxed::Box")
                           []
                           [
-                            Ty.dyn [ ("core::error::Error::Trait", []) ];
+                            Ty.dyn [ ("core::error::Error", [], []) ];
                             Ty.path "alloc::alloc::Global"
                           ]),
                       [ M.read (| err2 |) ]
@@ -3205,9 +3201,9 @@ Module boxed.
           (* Trait polymorphic types *) [ Ty.path "alloc::string::String" ]
           Self
           (* Instance *) [ ("from", InstanceField.Method from) ].
-    End Impl_core_convert_From_alloc_string_String_for_alloc_boxed_Box_Dyn_core_error_Error_Trait_alloc_alloc_Global.
+    End Impl_core_convert_From_alloc_string_String_for_alloc_boxed_Box_Dyn_core_error_Error_alloc_alloc_Global.
     
-    Module Impl_core_convert_From_ref__str_for_alloc_boxed_Box_Dyn_core_error_Error_Trait_core_marker_Sync_AutoTrait_core_marker_Send_AutoTrait_alloc_alloc_Global.
+    Module Impl_core_convert_From_ref__str_for_alloc_boxed_Box_Dyn_core_error_Error_core_marker_Sync_AutoTrait_core_marker_Send_AutoTrait_alloc_alloc_Global.
       Definition Self : Ty.t :=
         Ty.apply
           (Ty.path "alloc::boxed::Box")
@@ -3215,9 +3211,9 @@ Module boxed.
           [
             Ty.dyn
               [
-                ("core::error::Error::Trait", []);
-                ("core::marker::Sync::AutoTrait", []);
-                ("core::marker::Send::AutoTrait", [])
+                ("core::error::Error", [], []);
+                ("core::marker::Sync::AutoTrait", [], []);
+                ("core::marker::Send::AutoTrait", [], [])
               ];
             Ty.path "alloc::alloc::Global"
           ].
@@ -3239,9 +3235,9 @@ Module boxed.
                 [
                   Ty.dyn
                     [
-                      ("core::error::Error::Trait", []);
-                      ("core::marker::Sync::AutoTrait", []);
-                      ("core::marker::Send::AutoTrait", [])
+                      ("core::error::Error", [], []);
+                      ("core::marker::Sync::AutoTrait", [], []);
+                      ("core::marker::Send::AutoTrait", [], [])
                     ];
                   Ty.path "alloc::alloc::Global"
                 ],
@@ -3253,9 +3249,9 @@ Module boxed.
                   [
                     Ty.dyn
                       [
-                        ("core::error::Error::Trait", []);
-                        ("core::marker::Sync::AutoTrait", []);
-                        ("core::marker::Send::AutoTrait", [])
+                        ("core::error::Error", [], []);
+                        ("core::marker::Sync::AutoTrait", [], []);
+                        ("core::marker::Send::AutoTrait", [], [])
                       ];
                     Ty.path "alloc::alloc::Global"
                   ])
@@ -3265,9 +3261,9 @@ Module boxed.
                   [
                     Ty.dyn
                       [
-                        ("core::error::Error::Trait", []);
-                        ("core::marker::Sync::AutoTrait", []);
-                        ("core::marker::Send::AutoTrait", [])
+                        ("core::error::Error", [], []);
+                        ("core::marker::Sync::AutoTrait", [], []);
+                        ("core::marker::Send::AutoTrait", [], [])
                       ];
                     Ty.path "alloc::alloc::Global"
                   ]),
@@ -3279,9 +3275,9 @@ Module boxed.
                     [
                       Ty.dyn
                         [
-                          ("core::error::Error::Trait", []);
-                          ("core::marker::Sync::AutoTrait", []);
-                          ("core::marker::Send::AutoTrait", [])
+                          ("core::error::Error", [], []);
+                          ("core::marker::Sync::AutoTrait", [], []);
+                          ("core::marker::Send::AutoTrait", [], [])
                         ];
                       Ty.path "alloc::alloc::Global"
                     ],
@@ -3293,9 +3289,9 @@ Module boxed.
                       [
                         Ty.dyn
                           [
-                            ("core::error::Error::Trait", []);
-                            ("core::marker::Sync::AutoTrait", []);
-                            ("core::marker::Send::AutoTrait", [])
+                            ("core::error::Error", [], []);
+                            ("core::marker::Sync::AutoTrait", [], []);
+                            ("core::marker::Send::AutoTrait", [], [])
                           ];
                         Ty.path "alloc::alloc::Global"
                       ],
@@ -3333,14 +3329,14 @@ Module boxed.
           (* Trait polymorphic types *) [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
           Self
           (* Instance *) [ ("from", InstanceField.Method from) ].
-    End Impl_core_convert_From_ref__str_for_alloc_boxed_Box_Dyn_core_error_Error_Trait_core_marker_Sync_AutoTrait_core_marker_Send_AutoTrait_alloc_alloc_Global.
+    End Impl_core_convert_From_ref__str_for_alloc_boxed_Box_Dyn_core_error_Error_core_marker_Sync_AutoTrait_core_marker_Send_AutoTrait_alloc_alloc_Global.
     
-    Module Impl_core_convert_From_ref__str_for_alloc_boxed_Box_Dyn_core_error_Error_Trait_alloc_alloc_Global.
+    Module Impl_core_convert_From_ref__str_for_alloc_boxed_Box_Dyn_core_error_Error_alloc_alloc_Global.
       Definition Self : Ty.t :=
         Ty.apply
           (Ty.path "alloc::boxed::Box")
           []
-          [ Ty.dyn [ ("core::error::Error::Trait", []) ]; Ty.path "alloc::alloc::Global" ].
+          [ Ty.dyn [ ("core::error::Error", [], []) ]; Ty.path "alloc::alloc::Global" ].
       
       (*
           fn from(err: &str) -> Box<dyn Error + 'a> {
@@ -3356,31 +3352,29 @@ Module boxed.
               Ty.apply
                 (Ty.path "alloc::boxed::Box")
                 []
-                [ Ty.dyn [ ("core::error::Error::Trait", []) ]; Ty.path "alloc::alloc::Global" ],
+                [ Ty.dyn [ ("core::error::Error", [], []) ]; Ty.path "alloc::alloc::Global" ],
               M.pointer_coercion
                 M.PointerCoercion.Unsize
                 (Ty.apply
                   (Ty.path "alloc::boxed::Box")
                   []
-                  [ Ty.dyn [ ("core::error::Error::Trait", []) ]; Ty.path "alloc::alloc::Global" ])
+                  [ Ty.dyn [ ("core::error::Error", [], []) ]; Ty.path "alloc::alloc::Global" ])
                 (Ty.apply
                   (Ty.path "alloc::boxed::Box")
                   []
-                  [ Ty.dyn [ ("core::error::Error::Trait", []) ]; Ty.path "alloc::alloc::Global" ]),
+                  [ Ty.dyn [ ("core::error::Error", [], []) ]; Ty.path "alloc::alloc::Global" ]),
               [
                 M.call_closure (|
                   Ty.apply
                     (Ty.path "alloc::boxed::Box")
                     []
-                    [ Ty.dyn [ ("core::error::Error::Trait", []) ]; Ty.path "alloc::alloc::Global"
-                    ],
+                    [ Ty.dyn [ ("core::error::Error", [], []) ]; Ty.path "alloc::alloc::Global" ],
                   M.get_trait_method (|
                     "core::convert::From",
                     Ty.apply
                       (Ty.path "alloc::boxed::Box")
                       []
-                      [ Ty.dyn [ ("core::error::Error::Trait", []) ]; Ty.path "alloc::alloc::Global"
-                      ],
+                      [ Ty.dyn [ ("core::error::Error", [], []) ]; Ty.path "alloc::alloc::Global" ],
                     [],
                     [ Ty.path "alloc::string::String" ],
                     "from",
@@ -3415,9 +3409,9 @@ Module boxed.
           (* Trait polymorphic types *) [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
           Self
           (* Instance *) [ ("from", InstanceField.Method from) ].
-    End Impl_core_convert_From_ref__str_for_alloc_boxed_Box_Dyn_core_error_Error_Trait_alloc_alloc_Global.
+    End Impl_core_convert_From_ref__str_for_alloc_boxed_Box_Dyn_core_error_Error_alloc_alloc_Global.
     
-    Module Impl_core_convert_From_alloc_borrow_Cow_str_for_alloc_boxed_Box_Dyn_core_error_Error_Trait_core_marker_Sync_AutoTrait_core_marker_Send_AutoTrait_alloc_alloc_Global.
+    Module Impl_core_convert_From_alloc_borrow_Cow_str_for_alloc_boxed_Box_Dyn_core_error_Error_core_marker_Sync_AutoTrait_core_marker_Send_AutoTrait_alloc_alloc_Global.
       Definition Self : Ty.t :=
         Ty.apply
           (Ty.path "alloc::boxed::Box")
@@ -3425,9 +3419,9 @@ Module boxed.
           [
             Ty.dyn
               [
-                ("core::error::Error::Trait", []);
-                ("core::marker::Sync::AutoTrait", []);
-                ("core::marker::Send::AutoTrait", [])
+                ("core::error::Error", [], []);
+                ("core::marker::Sync::AutoTrait", [], []);
+                ("core::marker::Send::AutoTrait", [], [])
               ];
             Ty.path "alloc::alloc::Global"
           ].
@@ -3450,9 +3444,9 @@ Module boxed.
                 [
                   Ty.dyn
                     [
-                      ("core::error::Error::Trait", []);
-                      ("core::marker::Sync::AutoTrait", []);
-                      ("core::marker::Send::AutoTrait", [])
+                      ("core::error::Error", [], []);
+                      ("core::marker::Sync::AutoTrait", [], []);
+                      ("core::marker::Send::AutoTrait", [], [])
                     ];
                   Ty.path "alloc::alloc::Global"
                 ],
@@ -3464,9 +3458,9 @@ Module boxed.
                   [
                     Ty.dyn
                       [
-                        ("core::error::Error::Trait", []);
-                        ("core::marker::Sync::AutoTrait", []);
-                        ("core::marker::Send::AutoTrait", [])
+                        ("core::error::Error", [], []);
+                        ("core::marker::Sync::AutoTrait", [], []);
+                        ("core::marker::Send::AutoTrait", [], [])
                       ];
                     Ty.path "alloc::alloc::Global"
                   ])
@@ -3476,9 +3470,9 @@ Module boxed.
                   [
                     Ty.dyn
                       [
-                        ("core::error::Error::Trait", []);
-                        ("core::marker::Sync::AutoTrait", []);
-                        ("core::marker::Send::AutoTrait", [])
+                        ("core::error::Error", [], []);
+                        ("core::marker::Sync::AutoTrait", [], []);
+                        ("core::marker::Send::AutoTrait", [], [])
                       ];
                     Ty.path "alloc::alloc::Global"
                   ]),
@@ -3490,9 +3484,9 @@ Module boxed.
                     [
                       Ty.dyn
                         [
-                          ("core::error::Error::Trait", []);
-                          ("core::marker::Sync::AutoTrait", []);
-                          ("core::marker::Send::AutoTrait", [])
+                          ("core::error::Error", [], []);
+                          ("core::marker::Sync::AutoTrait", [], []);
+                          ("core::marker::Send::AutoTrait", [], [])
                         ];
                       Ty.path "alloc::alloc::Global"
                     ],
@@ -3504,9 +3498,9 @@ Module boxed.
                       [
                         Ty.dyn
                           [
-                            ("core::error::Error::Trait", []);
-                            ("core::marker::Sync::AutoTrait", []);
-                            ("core::marker::Send::AutoTrait", [])
+                            ("core::error::Error", [], []);
+                            ("core::marker::Sync::AutoTrait", [], []);
+                            ("core::marker::Send::AutoTrait", [], [])
                           ];
                         Ty.path "alloc::alloc::Global"
                       ],
@@ -3545,14 +3539,14 @@ Module boxed.
           [ Ty.apply (Ty.path "alloc::borrow::Cow") [] [ Ty.path "str" ] ]
           Self
           (* Instance *) [ ("from", InstanceField.Method from) ].
-    End Impl_core_convert_From_alloc_borrow_Cow_str_for_alloc_boxed_Box_Dyn_core_error_Error_Trait_core_marker_Sync_AutoTrait_core_marker_Send_AutoTrait_alloc_alloc_Global.
+    End Impl_core_convert_From_alloc_borrow_Cow_str_for_alloc_boxed_Box_Dyn_core_error_Error_core_marker_Sync_AutoTrait_core_marker_Send_AutoTrait_alloc_alloc_Global.
     
-    Module Impl_core_convert_From_alloc_borrow_Cow_str_for_alloc_boxed_Box_Dyn_core_error_Error_Trait_alloc_alloc_Global.
+    Module Impl_core_convert_From_alloc_borrow_Cow_str_for_alloc_boxed_Box_Dyn_core_error_Error_alloc_alloc_Global.
       Definition Self : Ty.t :=
         Ty.apply
           (Ty.path "alloc::boxed::Box")
           []
-          [ Ty.dyn [ ("core::error::Error::Trait", []) ]; Ty.path "alloc::alloc::Global" ].
+          [ Ty.dyn [ ("core::error::Error", [], []) ]; Ty.path "alloc::alloc::Global" ].
       
       (*
           fn from(err: Cow<'b, str>) -> Box<dyn Error + 'a> {
@@ -3569,31 +3563,29 @@ Module boxed.
               Ty.apply
                 (Ty.path "alloc::boxed::Box")
                 []
-                [ Ty.dyn [ ("core::error::Error::Trait", []) ]; Ty.path "alloc::alloc::Global" ],
+                [ Ty.dyn [ ("core::error::Error", [], []) ]; Ty.path "alloc::alloc::Global" ],
               M.pointer_coercion
                 M.PointerCoercion.Unsize
                 (Ty.apply
                   (Ty.path "alloc::boxed::Box")
                   []
-                  [ Ty.dyn [ ("core::error::Error::Trait", []) ]; Ty.path "alloc::alloc::Global" ])
+                  [ Ty.dyn [ ("core::error::Error", [], []) ]; Ty.path "alloc::alloc::Global" ])
                 (Ty.apply
                   (Ty.path "alloc::boxed::Box")
                   []
-                  [ Ty.dyn [ ("core::error::Error::Trait", []) ]; Ty.path "alloc::alloc::Global" ]),
+                  [ Ty.dyn [ ("core::error::Error", [], []) ]; Ty.path "alloc::alloc::Global" ]),
               [
                 M.call_closure (|
                   Ty.apply
                     (Ty.path "alloc::boxed::Box")
                     []
-                    [ Ty.dyn [ ("core::error::Error::Trait", []) ]; Ty.path "alloc::alloc::Global"
-                    ],
+                    [ Ty.dyn [ ("core::error::Error", [], []) ]; Ty.path "alloc::alloc::Global" ],
                   M.get_trait_method (|
                     "core::convert::From",
                     Ty.apply
                       (Ty.path "alloc::boxed::Box")
                       []
-                      [ Ty.dyn [ ("core::error::Error::Trait", []) ]; Ty.path "alloc::alloc::Global"
-                      ],
+                      [ Ty.dyn [ ("core::error::Error", [], []) ]; Ty.path "alloc::alloc::Global" ],
                     [],
                     [ Ty.path "alloc::string::String" ],
                     "from",
@@ -3629,10 +3621,10 @@ Module boxed.
           [ Ty.apply (Ty.path "alloc::borrow::Cow") [] [ Ty.path "str" ] ]
           Self
           (* Instance *) [ ("from", InstanceField.Method from) ].
-    End Impl_core_convert_From_alloc_borrow_Cow_str_for_alloc_boxed_Box_Dyn_core_error_Error_Trait_alloc_alloc_Global.
+    End Impl_core_convert_From_alloc_borrow_Cow_str_for_alloc_boxed_Box_Dyn_core_error_Error_alloc_alloc_Global.
     
-    Module Impl_Dyn_core_error_Error_Trait.
-      Definition Self : Ty.t := Ty.dyn [ ("core::error::Error::Trait", []) ].
+    Module Impl_Dyn_core_error_Error.
+      Definition Self : Ty.t := Ty.dyn [ ("core::error::Error", [], []) ].
       
       (*
           pub fn downcast<T: Error + 'static>(self: Box<Self>) -> Result<Box<T>, Box<dyn Error>> {
@@ -3655,7 +3647,7 @@ Module boxed.
                 Ty.apply
                   (Ty.path "alloc::boxed::Box")
                   []
-                  [ Ty.dyn [ ("core::error::Error::Trait", []) ]; Ty.path "alloc::alloc::Global" ],
+                  [ Ty.dyn [ ("core::error::Error", [], []) ]; Ty.path "alloc::alloc::Global" ],
                 self
               |) in
             M.match_operator (|
@@ -3667,7 +3659,7 @@ Module boxed.
                   Ty.apply
                     (Ty.path "alloc::boxed::Box")
                     []
-                    [ Ty.dyn [ ("core::error::Error::Trait", []) ]; Ty.path "alloc::alloc::Global" ]
+                    [ Ty.dyn [ ("core::error::Error", [], []) ]; Ty.path "alloc::alloc::Global" ]
                 ],
               M.alloc (| Ty.tuple [], Value.Tuple [] |),
               [
@@ -3680,7 +3672,7 @@ Module boxed.
                           M.call_closure (|
                             Ty.path "bool",
                             M.get_associated_function (|
-                              Ty.dyn [ ("core::error::Error::Trait", []) ],
+                              Ty.dyn [ ("core::error::Error", [], []) ],
                               "is",
                               [],
                               [ T ]
@@ -3694,34 +3686,34 @@ Module boxed.
                           Ty.apply
                             (Ty.path "*mut")
                             []
-                            [ Ty.dyn [ ("core::error::Error::Trait", []) ] ] :=
+                            [ Ty.dyn [ ("core::error::Error", [], []) ] ] :=
                         M.call_closure (|
                           Ty.apply
                             (Ty.path "*mut")
                             []
-                            [ Ty.dyn [ ("core::error::Error::Trait", []) ] ],
+                            [ Ty.dyn [ ("core::error::Error", [], []) ] ],
                           M.pointer_coercion
                             M.PointerCoercion.Unsize
                             (Ty.apply
                               (Ty.path "*mut")
                               []
-                              [ Ty.dyn [ ("core::error::Error::Trait", []) ] ])
+                              [ Ty.dyn [ ("core::error::Error", [], []) ] ])
                             (Ty.apply
                               (Ty.path "*mut")
                               []
-                              [ Ty.dyn [ ("core::error::Error::Trait", []) ] ]),
+                              [ Ty.dyn [ ("core::error::Error", [], []) ] ]),
                           [
                             M.call_closure (|
                               Ty.apply
                                 (Ty.path "*mut")
                                 []
-                                [ Ty.dyn [ ("core::error::Error::Trait", []) ] ],
+                                [ Ty.dyn [ ("core::error::Error", [], []) ] ],
                               M.get_associated_function (|
                                 Ty.apply
                                   (Ty.path "alloc::boxed::Box")
                                   []
                                   [
-                                    Ty.dyn [ ("core::error::Error::Trait", []) ];
+                                    Ty.dyn [ ("core::error::Error", [], []) ];
                                     Ty.path "alloc::alloc::Global"
                                   ],
                                 "into_raw",
@@ -3734,7 +3726,7 @@ Module boxed.
                                     (Ty.path "alloc::boxed::Box")
                                     []
                                     [
-                                      Ty.dyn [ ("core::error::Error::Trait", []) ];
+                                      Ty.dyn [ ("core::error::Error", [], []) ];
                                       Ty.path "alloc::alloc::Global"
                                     ],
                                   M.pointer_coercion
@@ -3743,14 +3735,14 @@ Module boxed.
                                       (Ty.path "alloc::boxed::Box")
                                       []
                                       [
-                                        Ty.dyn [ ("core::error::Error::Trait", []) ];
+                                        Ty.dyn [ ("core::error::Error", [], []) ];
                                         Ty.path "alloc::alloc::Global"
                                       ])
                                     (Ty.apply
                                       (Ty.path "alloc::boxed::Box")
                                       []
                                       [
-                                        Ty.dyn [ ("core::error::Error::Trait", []) ];
+                                        Ty.dyn [ ("core::error::Error", [], []) ];
                                         Ty.path "alloc::alloc::Global"
                                       ]),
                                   [ M.read (| self |) ]
@@ -3772,7 +3764,7 @@ Module boxed.
                               (Ty.path "alloc::boxed::Box")
                               []
                               [
-                                Ty.dyn [ ("core::error::Error::Trait", []) ];
+                                Ty.dyn [ ("core::error::Error", [], []) ];
                                 Ty.path "alloc::alloc::Global"
                               ]
                           ],
@@ -3788,7 +3780,7 @@ Module boxed.
                               (Ty.path "alloc::boxed::Box")
                               []
                               [
-                                Ty.dyn [ ("core::error::Error::Trait", []) ];
+                                Ty.dyn [ ("core::error::Error", [], []) ];
                                 Ty.path "alloc::alloc::Global"
                               ]
                           ]
@@ -3826,7 +3818,7 @@ Module boxed.
                           (Ty.path "alloc::boxed::Box")
                           []
                           [
-                            Ty.dyn [ ("core::error::Error::Trait", []) ];
+                            Ty.dyn [ ("core::error::Error", [], []) ];
                             Ty.path "alloc::alloc::Global"
                           ]
                       ]
@@ -3836,7 +3828,7 @@ Module boxed.
                             (Ty.path "alloc::boxed::Box")
                             []
                             [
-                              Ty.dyn [ ("core::error::Error::Trait", []) ];
+                              Ty.dyn [ ("core::error::Error", [], []) ];
                               Ty.path "alloc::alloc::Global"
                             ],
                           M.pointer_coercion
@@ -3845,14 +3837,14 @@ Module boxed.
                               (Ty.path "alloc::boxed::Box")
                               []
                               [
-                                Ty.dyn [ ("core::error::Error::Trait", []) ];
+                                Ty.dyn [ ("core::error::Error", [], []) ];
                                 Ty.path "alloc::alloc::Global"
                               ])
                             (Ty.apply
                               (Ty.path "alloc::boxed::Box")
                               []
                               [
-                                Ty.dyn [ ("core::error::Error::Trait", []) ];
+                                Ty.dyn [ ("core::error::Error", [], []) ];
                                 Ty.path "alloc::alloc::Global"
                               ]),
                           [ M.read (| self |) ]
@@ -3867,11 +3859,11 @@ Module boxed.
         M.IsAssociatedFunction.C Self "downcast" downcast.
       Admitted.
       Global Typeclasses Opaque downcast.
-    End Impl_Dyn_core_error_Error_Trait.
+    End Impl_Dyn_core_error_Error.
     
-    Module Impl_Dyn_core_error_Error_Trait_core_marker_Send_AutoTrait.
+    Module Impl_Dyn_core_error_Error_core_marker_Send_AutoTrait.
       Definition Self : Ty.t :=
-        Ty.dyn [ ("core::error::Error::Trait", []); ("core::marker::Send::AutoTrait", []) ].
+        Ty.dyn [ ("core::error::Error", [], []); ("core::marker::Send::AutoTrait", [], []) ].
       
       (*
           pub fn downcast<T: Error + 'static>(self: Box<Self>) -> Result<Box<T>, Box<dyn Error + Send>> {
@@ -3893,7 +3885,7 @@ Module boxed.
                   []
                   [
                     Ty.dyn
-                      [ ("core::error::Error::Trait", []); ("core::marker::Send::AutoTrait", []) ];
+                      [ ("core::error::Error", [], []); ("core::marker::Send::AutoTrait", [], []) ];
                     Ty.path "alloc::alloc::Global"
                   ],
                 self
@@ -3903,14 +3895,12 @@ Module boxed.
                   Ty.apply
                     (Ty.path "alloc::boxed::Box")
                     []
-                    [ Ty.dyn [ ("core::error::Error::Trait", []) ]; Ty.path "alloc::alloc::Global"
-                    ] :=
+                    [ Ty.dyn [ ("core::error::Error", [], []) ]; Ty.path "alloc::alloc::Global" ] :=
                 M.call_closure (|
                   Ty.apply
                     (Ty.path "alloc::boxed::Box")
                     []
-                    [ Ty.dyn [ ("core::error::Error::Trait", []) ]; Ty.path "alloc::alloc::Global"
-                    ],
+                    [ Ty.dyn [ ("core::error::Error", [], []) ]; Ty.path "alloc::alloc::Global" ],
                   M.pointer_coercion
                     M.PointerCoercion.Unsize
                     (Ty.apply
@@ -3918,14 +3908,16 @@ Module boxed.
                       []
                       [
                         Ty.dyn
-                          [ ("core::error::Error::Trait", []); ("core::marker::Send::AutoTrait", [])
+                          [
+                            ("core::error::Error", [], []);
+                            ("core::marker::Send::AutoTrait", [], [])
                           ];
                         Ty.path "alloc::alloc::Global"
                       ])
                     (Ty.apply
                       (Ty.path "alloc::boxed::Box")
                       []
-                      [ Ty.dyn [ ("core::error::Error::Trait", []) ]; Ty.path "alloc::alloc::Global"
+                      [ Ty.dyn [ ("core::error::Error", [], []) ]; Ty.path "alloc::alloc::Global"
                       ]),
                   [ M.read (| self |) ]
                 |) in
@@ -3940,7 +3932,9 @@ Module boxed.
                       []
                       [
                         Ty.dyn
-                          [ ("core::error::Error::Trait", []); ("core::marker::Send::AutoTrait", [])
+                          [
+                            ("core::error::Error", [], []);
+                            ("core::marker::Send::AutoTrait", [], [])
                           ];
                         Ty.path "alloc::alloc::Global"
                       ]
@@ -3960,8 +3954,8 @@ Module boxed.
                         [
                           Ty.dyn
                             [
-                              ("core::error::Error::Trait", []);
-                              ("core::marker::Send::AutoTrait", [])
+                              ("core::error::Error", [], []);
+                              ("core::marker::Send::AutoTrait", [], [])
                             ];
                           Ty.path "alloc::alloc::Global"
                         ]
@@ -3979,7 +3973,7 @@ Module boxed.
                           (Ty.path "alloc::boxed::Box")
                           []
                           [
-                            Ty.dyn [ ("core::error::Error::Trait", []) ];
+                            Ty.dyn [ ("core::error::Error", [], []) ];
                             Ty.path "alloc::alloc::Global"
                           ]
                       ],
@@ -3992,8 +3986,8 @@ Module boxed.
                         [
                           Ty.dyn
                             [
-                              ("core::error::Error::Trait", []);
-                              ("core::marker::Send::AutoTrait", [])
+                              ("core::error::Error", [], []);
+                              ("core::marker::Send::AutoTrait", [], [])
                             ];
                           Ty.path "alloc::alloc::Global"
                         ];
@@ -4003,7 +3997,7 @@ Module boxed.
                             (Ty.path "alloc::boxed::Box")
                             []
                             [
-                              Ty.dyn [ ("core::error::Error::Trait", []) ];
+                              Ty.dyn [ ("core::error::Error", [], []) ];
                               Ty.path "alloc::alloc::Global"
                             ]
                         ]
@@ -4013,8 +4007,8 @@ Module boxed.
                           [
                             Ty.dyn
                               [
-                                ("core::error::Error::Trait", []);
-                                ("core::marker::Send::AutoTrait", [])
+                                ("core::error::Error", [], []);
+                                ("core::marker::Send::AutoTrait", [], [])
                               ];
                             Ty.path "alloc::alloc::Global"
                           ])
@@ -4034,12 +4028,12 @@ Module boxed.
                             (Ty.path "alloc::boxed::Box")
                             []
                             [
-                              Ty.dyn [ ("core::error::Error::Trait", []) ];
+                              Ty.dyn [ ("core::error::Error", [], []) ];
                               Ty.path "alloc::alloc::Global"
                             ]
                         ],
                       M.get_associated_function (|
-                        Ty.dyn [ ("core::error::Error::Trait", []) ],
+                        Ty.dyn [ ("core::error::Error", [], []) ],
                         "downcast",
                         [],
                         [ T ]
@@ -4050,7 +4044,7 @@ Module boxed.
                             (Ty.path "alloc::boxed::Box")
                             []
                             [
-                              Ty.dyn [ ("core::error::Error::Trait", []) ];
+                              Ty.dyn [ ("core::error::Error", [], []) ];
                               Ty.path "alloc::alloc::Global"
                             ],
                           M.pointer_coercion
@@ -4059,14 +4053,14 @@ Module boxed.
                               (Ty.path "alloc::boxed::Box")
                               []
                               [
-                                Ty.dyn [ ("core::error::Error::Trait", []) ];
+                                Ty.dyn [ ("core::error::Error", [], []) ];
                                 Ty.path "alloc::alloc::Global"
                               ])
                             (Ty.apply
                               (Ty.path "alloc::boxed::Box")
                               []
                               [
-                                Ty.dyn [ ("core::error::Error::Trait", []) ];
+                                Ty.dyn [ ("core::error::Error", [], []) ];
                                 Ty.path "alloc::alloc::Global"
                               ]),
                           [ M.read (| err |) ]
@@ -4086,8 +4080,8 @@ Module boxed.
                                   [
                                     Ty.dyn
                                       [
-                                        ("core::error::Error::Trait", []);
-                                        ("core::marker::Send::AutoTrait", [])
+                                        ("core::error::Error", [], []);
+                                        ("core::marker::Send::AutoTrait", [], [])
                                       ];
                                     Ty.path "alloc::alloc::Global"
                                   ],
@@ -4096,7 +4090,7 @@ Module boxed.
                                     (Ty.path "alloc::boxed::Box")
                                     []
                                     [
-                                      Ty.dyn [ ("core::error::Error::Trait", []) ];
+                                      Ty.dyn [ ("core::error::Error", [], []) ];
                                       Ty.path "alloc::alloc::Global"
                                     ],
                                   α0
@@ -4110,7 +4104,7 @@ Module boxed.
                                             (Ty.path "alloc::boxed::Box")
                                             []
                                             [
-                                              Ty.dyn [ ("core::error::Error::Trait", []) ];
+                                              Ty.dyn [ ("core::error::Error", [], []) ];
                                               Ty.path "alloc::alloc::Global"
                                             ],
                                           γ
@@ -4122,8 +4116,8 @@ Module boxed.
                                           [
                                             Ty.dyn
                                               [
-                                                ("core::error::Error::Trait", []);
-                                                ("core::marker::Send::AutoTrait", [])
+                                                ("core::error::Error", [], []);
+                                                ("core::marker::Send::AutoTrait", [], [])
                                               ];
                                             Ty.path "alloc::alloc::Global"
                                           ],
@@ -4135,8 +4129,8 @@ Module boxed.
                                             [
                                               Ty.dyn
                                                 [
-                                                  ("core::error::Error::Trait", []);
-                                                  ("core::marker::Send::AutoTrait", [])
+                                                  ("core::error::Error", [], []);
+                                                  ("core::marker::Send::AutoTrait", [], [])
                                                 ];
                                               Ty.path "alloc::alloc::Global"
                                             ])
@@ -4146,8 +4140,8 @@ Module boxed.
                                             [
                                               Ty.dyn
                                                 [
-                                                  ("core::error::Error::Trait", []);
-                                                  ("core::marker::Send::AutoTrait", [])
+                                                  ("core::error::Error", [], []);
+                                                  ("core::marker::Send::AutoTrait", [], [])
                                                 ];
                                               Ty.path "alloc::alloc::Global"
                                             ]),
@@ -4159,8 +4153,8 @@ Module boxed.
                                               [
                                                 Ty.dyn
                                                   [
-                                                    ("core::error::Error::Trait", []);
-                                                    ("core::marker::Send::AutoTrait", [])
+                                                    ("core::error::Error", [], []);
+                                                    ("core::marker::Send::AutoTrait", [], [])
                                                   ];
                                                 Ty.path "alloc::alloc::Global"
                                               ],
@@ -4172,7 +4166,7 @@ Module boxed.
                                                   (Ty.path "alloc::boxed::Box")
                                                   []
                                                   [
-                                                    Ty.dyn [ ("core::error::Error::Trait", []) ];
+                                                    Ty.dyn [ ("core::error::Error", [], []) ];
                                                     Ty.path "alloc::alloc::Global"
                                                   ];
                                                 Ty.apply
@@ -4181,8 +4175,8 @@ Module boxed.
                                                   [
                                                     Ty.dyn
                                                       [
-                                                        ("core::error::Error::Trait", []);
-                                                        ("core::marker::Send::AutoTrait", [])
+                                                        ("core::error::Error", [], []);
+                                                        ("core::marker::Send::AutoTrait", [], [])
                                                       ];
                                                     Ty.path "alloc::alloc::Global"
                                                   ]
@@ -4194,7 +4188,7 @@ Module boxed.
                                                   (Ty.path "alloc::boxed::Box")
                                                   []
                                                   [
-                                                    Ty.dyn [ ("core::error::Error::Trait", []) ];
+                                                    Ty.dyn [ ("core::error::Error", [], []) ];
                                                     Ty.path "alloc::alloc::Global"
                                                   ],
                                                 M.pointer_coercion
@@ -4203,14 +4197,14 @@ Module boxed.
                                                     (Ty.path "alloc::boxed::Box")
                                                     []
                                                     [
-                                                      Ty.dyn [ ("core::error::Error::Trait", []) ];
+                                                      Ty.dyn [ ("core::error::Error", [], []) ];
                                                       Ty.path "alloc::alloc::Global"
                                                     ])
                                                   (Ty.apply
                                                     (Ty.path "alloc::boxed::Box")
                                                     []
                                                     [
-                                                      Ty.dyn [ ("core::error::Error::Trait", []) ];
+                                                      Ty.dyn [ ("core::error::Error", [], []) ];
                                                       Ty.path "alloc::alloc::Global"
                                                     ]),
                                                 [ M.read (| s |) ]
@@ -4234,15 +4228,15 @@ Module boxed.
         M.IsAssociatedFunction.C Self "downcast" downcast.
       Admitted.
       Global Typeclasses Opaque downcast.
-    End Impl_Dyn_core_error_Error_Trait_core_marker_Send_AutoTrait.
+    End Impl_Dyn_core_error_Error_core_marker_Send_AutoTrait.
     
-    Module Impl_Dyn_core_error_Error_Trait_core_marker_Sync_AutoTrait_core_marker_Send_AutoTrait.
+    Module Impl_Dyn_core_error_Error_core_marker_Sync_AutoTrait_core_marker_Send_AutoTrait.
       Definition Self : Ty.t :=
         Ty.dyn
           [
-            ("core::error::Error::Trait", []);
-            ("core::marker::Sync::AutoTrait", []);
-            ("core::marker::Send::AutoTrait", [])
+            ("core::error::Error", [], []);
+            ("core::marker::Sync::AutoTrait", [], []);
+            ("core::marker::Send::AutoTrait", [], [])
           ].
       
       (*
@@ -4266,9 +4260,9 @@ Module boxed.
                   [
                     Ty.dyn
                       [
-                        ("core::error::Error::Trait", []);
-                        ("core::marker::Sync::AutoTrait", []);
-                        ("core::marker::Send::AutoTrait", [])
+                        ("core::error::Error", [], []);
+                        ("core::marker::Sync::AutoTrait", [], []);
+                        ("core::marker::Send::AutoTrait", [], [])
                       ];
                     Ty.path "alloc::alloc::Global"
                   ],
@@ -4279,14 +4273,12 @@ Module boxed.
                   Ty.apply
                     (Ty.path "alloc::boxed::Box")
                     []
-                    [ Ty.dyn [ ("core::error::Error::Trait", []) ]; Ty.path "alloc::alloc::Global"
-                    ] :=
+                    [ Ty.dyn [ ("core::error::Error", [], []) ]; Ty.path "alloc::alloc::Global" ] :=
                 M.call_closure (|
                   Ty.apply
                     (Ty.path "alloc::boxed::Box")
                     []
-                    [ Ty.dyn [ ("core::error::Error::Trait", []) ]; Ty.path "alloc::alloc::Global"
-                    ],
+                    [ Ty.dyn [ ("core::error::Error", [], []) ]; Ty.path "alloc::alloc::Global" ],
                   M.pointer_coercion
                     M.PointerCoercion.Unsize
                     (Ty.apply
@@ -4295,16 +4287,16 @@ Module boxed.
                       [
                         Ty.dyn
                           [
-                            ("core::error::Error::Trait", []);
-                            ("core::marker::Sync::AutoTrait", []);
-                            ("core::marker::Send::AutoTrait", [])
+                            ("core::error::Error", [], []);
+                            ("core::marker::Sync::AutoTrait", [], []);
+                            ("core::marker::Send::AutoTrait", [], [])
                           ];
                         Ty.path "alloc::alloc::Global"
                       ])
                     (Ty.apply
                       (Ty.path "alloc::boxed::Box")
                       []
-                      [ Ty.dyn [ ("core::error::Error::Trait", []) ]; Ty.path "alloc::alloc::Global"
+                      [ Ty.dyn [ ("core::error::Error", [], []) ]; Ty.path "alloc::alloc::Global"
                       ]),
                   [ M.read (| self |) ]
                 |) in
@@ -4320,9 +4312,9 @@ Module boxed.
                       [
                         Ty.dyn
                           [
-                            ("core::error::Error::Trait", []);
-                            ("core::marker::Sync::AutoTrait", []);
-                            ("core::marker::Send::AutoTrait", [])
+                            ("core::error::Error", [], []);
+                            ("core::marker::Sync::AutoTrait", [], []);
+                            ("core::marker::Send::AutoTrait", [], [])
                           ];
                         Ty.path "alloc::alloc::Global"
                       ]
@@ -4342,9 +4334,9 @@ Module boxed.
                         [
                           Ty.dyn
                             [
-                              ("core::error::Error::Trait", []);
-                              ("core::marker::Sync::AutoTrait", []);
-                              ("core::marker::Send::AutoTrait", [])
+                              ("core::error::Error", [], []);
+                              ("core::marker::Sync::AutoTrait", [], []);
+                              ("core::marker::Send::AutoTrait", [], [])
                             ];
                           Ty.path "alloc::alloc::Global"
                         ]
@@ -4362,7 +4354,7 @@ Module boxed.
                           (Ty.path "alloc::boxed::Box")
                           []
                           [
-                            Ty.dyn [ ("core::error::Error::Trait", []) ];
+                            Ty.dyn [ ("core::error::Error", [], []) ];
                             Ty.path "alloc::alloc::Global"
                           ]
                       ],
@@ -4375,9 +4367,9 @@ Module boxed.
                         [
                           Ty.dyn
                             [
-                              ("core::error::Error::Trait", []);
-                              ("core::marker::Sync::AutoTrait", []);
-                              ("core::marker::Send::AutoTrait", [])
+                              ("core::error::Error", [], []);
+                              ("core::marker::Sync::AutoTrait", [], []);
+                              ("core::marker::Send::AutoTrait", [], [])
                             ];
                           Ty.path "alloc::alloc::Global"
                         ];
@@ -4387,7 +4379,7 @@ Module boxed.
                             (Ty.path "alloc::boxed::Box")
                             []
                             [
-                              Ty.dyn [ ("core::error::Error::Trait", []) ];
+                              Ty.dyn [ ("core::error::Error", [], []) ];
                               Ty.path "alloc::alloc::Global"
                             ]
                         ]
@@ -4397,9 +4389,9 @@ Module boxed.
                           [
                             Ty.dyn
                               [
-                                ("core::error::Error::Trait", []);
-                                ("core::marker::Sync::AutoTrait", []);
-                                ("core::marker::Send::AutoTrait", [])
+                                ("core::error::Error", [], []);
+                                ("core::marker::Sync::AutoTrait", [], []);
+                                ("core::marker::Send::AutoTrait", [], [])
                               ];
                             Ty.path "alloc::alloc::Global"
                           ])
@@ -4419,12 +4411,12 @@ Module boxed.
                             (Ty.path "alloc::boxed::Box")
                             []
                             [
-                              Ty.dyn [ ("core::error::Error::Trait", []) ];
+                              Ty.dyn [ ("core::error::Error", [], []) ];
                               Ty.path "alloc::alloc::Global"
                             ]
                         ],
                       M.get_associated_function (|
-                        Ty.dyn [ ("core::error::Error::Trait", []) ],
+                        Ty.dyn [ ("core::error::Error", [], []) ],
                         "downcast",
                         [],
                         [ T ]
@@ -4435,7 +4427,7 @@ Module boxed.
                             (Ty.path "alloc::boxed::Box")
                             []
                             [
-                              Ty.dyn [ ("core::error::Error::Trait", []) ];
+                              Ty.dyn [ ("core::error::Error", [], []) ];
                               Ty.path "alloc::alloc::Global"
                             ],
                           M.pointer_coercion
@@ -4444,14 +4436,14 @@ Module boxed.
                               (Ty.path "alloc::boxed::Box")
                               []
                               [
-                                Ty.dyn [ ("core::error::Error::Trait", []) ];
+                                Ty.dyn [ ("core::error::Error", [], []) ];
                                 Ty.path "alloc::alloc::Global"
                               ])
                             (Ty.apply
                               (Ty.path "alloc::boxed::Box")
                               []
                               [
-                                Ty.dyn [ ("core::error::Error::Trait", []) ];
+                                Ty.dyn [ ("core::error::Error", [], []) ];
                                 Ty.path "alloc::alloc::Global"
                               ]),
                           [ M.read (| err |) ]
@@ -4471,9 +4463,9 @@ Module boxed.
                                   [
                                     Ty.dyn
                                       [
-                                        ("core::error::Error::Trait", []);
-                                        ("core::marker::Sync::AutoTrait", []);
-                                        ("core::marker::Send::AutoTrait", [])
+                                        ("core::error::Error", [], []);
+                                        ("core::marker::Sync::AutoTrait", [], []);
+                                        ("core::marker::Send::AutoTrait", [], [])
                                       ];
                                     Ty.path "alloc::alloc::Global"
                                   ],
@@ -4482,7 +4474,7 @@ Module boxed.
                                     (Ty.path "alloc::boxed::Box")
                                     []
                                     [
-                                      Ty.dyn [ ("core::error::Error::Trait", []) ];
+                                      Ty.dyn [ ("core::error::Error", [], []) ];
                                       Ty.path "alloc::alloc::Global"
                                     ],
                                   α0
@@ -4496,7 +4488,7 @@ Module boxed.
                                             (Ty.path "alloc::boxed::Box")
                                             []
                                             [
-                                              Ty.dyn [ ("core::error::Error::Trait", []) ];
+                                              Ty.dyn [ ("core::error::Error", [], []) ];
                                               Ty.path "alloc::alloc::Global"
                                             ],
                                           γ
@@ -4508,9 +4500,9 @@ Module boxed.
                                           [
                                             Ty.dyn
                                               [
-                                                ("core::error::Error::Trait", []);
-                                                ("core::marker::Sync::AutoTrait", []);
-                                                ("core::marker::Send::AutoTrait", [])
+                                                ("core::error::Error", [], []);
+                                                ("core::marker::Sync::AutoTrait", [], []);
+                                                ("core::marker::Send::AutoTrait", [], [])
                                               ];
                                             Ty.path "alloc::alloc::Global"
                                           ],
@@ -4522,9 +4514,9 @@ Module boxed.
                                             [
                                               Ty.dyn
                                                 [
-                                                  ("core::error::Error::Trait", []);
-                                                  ("core::marker::Sync::AutoTrait", []);
-                                                  ("core::marker::Send::AutoTrait", [])
+                                                  ("core::error::Error", [], []);
+                                                  ("core::marker::Sync::AutoTrait", [], []);
+                                                  ("core::marker::Send::AutoTrait", [], [])
                                                 ];
                                               Ty.path "alloc::alloc::Global"
                                             ])
@@ -4534,9 +4526,9 @@ Module boxed.
                                             [
                                               Ty.dyn
                                                 [
-                                                  ("core::error::Error::Trait", []);
-                                                  ("core::marker::Sync::AutoTrait", []);
-                                                  ("core::marker::Send::AutoTrait", [])
+                                                  ("core::error::Error", [], []);
+                                                  ("core::marker::Sync::AutoTrait", [], []);
+                                                  ("core::marker::Send::AutoTrait", [], [])
                                                 ];
                                               Ty.path "alloc::alloc::Global"
                                             ]),
@@ -4548,9 +4540,9 @@ Module boxed.
                                               [
                                                 Ty.dyn
                                                   [
-                                                    ("core::error::Error::Trait", []);
-                                                    ("core::marker::Sync::AutoTrait", []);
-                                                    ("core::marker::Send::AutoTrait", [])
+                                                    ("core::error::Error", [], []);
+                                                    ("core::marker::Sync::AutoTrait", [], []);
+                                                    ("core::marker::Send::AutoTrait", [], [])
                                                   ];
                                                 Ty.path "alloc::alloc::Global"
                                               ],
@@ -4562,7 +4554,7 @@ Module boxed.
                                                   (Ty.path "alloc::boxed::Box")
                                                   []
                                                   [
-                                                    Ty.dyn [ ("core::error::Error::Trait", []) ];
+                                                    Ty.dyn [ ("core::error::Error", [], []) ];
                                                     Ty.path "alloc::alloc::Global"
                                                   ];
                                                 Ty.apply
@@ -4571,9 +4563,9 @@ Module boxed.
                                                   [
                                                     Ty.dyn
                                                       [
-                                                        ("core::error::Error::Trait", []);
-                                                        ("core::marker::Sync::AutoTrait", []);
-                                                        ("core::marker::Send::AutoTrait", [])
+                                                        ("core::error::Error", [], []);
+                                                        ("core::marker::Sync::AutoTrait", [], []);
+                                                        ("core::marker::Send::AutoTrait", [], [])
                                                       ];
                                                     Ty.path "alloc::alloc::Global"
                                                   ]
@@ -4585,7 +4577,7 @@ Module boxed.
                                                   (Ty.path "alloc::boxed::Box")
                                                   []
                                                   [
-                                                    Ty.dyn [ ("core::error::Error::Trait", []) ];
+                                                    Ty.dyn [ ("core::error::Error", [], []) ];
                                                     Ty.path "alloc::alloc::Global"
                                                   ],
                                                 M.pointer_coercion
@@ -4594,14 +4586,14 @@ Module boxed.
                                                     (Ty.path "alloc::boxed::Box")
                                                     []
                                                     [
-                                                      Ty.dyn [ ("core::error::Error::Trait", []) ];
+                                                      Ty.dyn [ ("core::error::Error", [], []) ];
                                                       Ty.path "alloc::alloc::Global"
                                                     ])
                                                   (Ty.apply
                                                     (Ty.path "alloc::boxed::Box")
                                                     []
                                                     [
-                                                      Ty.dyn [ ("core::error::Error::Trait", []) ];
+                                                      Ty.dyn [ ("core::error::Error", [], []) ];
                                                       Ty.path "alloc::alloc::Global"
                                                     ]),
                                                 [ M.read (| s |) ]
@@ -4625,6 +4617,6 @@ Module boxed.
         M.IsAssociatedFunction.C Self "downcast" downcast.
       Admitted.
       Global Typeclasses Opaque downcast.
-    End Impl_Dyn_core_error_Error_Trait_core_marker_Sync_AutoTrait_core_marker_Send_AutoTrait.
+    End Impl_Dyn_core_error_Error_core_marker_Sync_AutoTrait_core_marker_Send_AutoTrait.
   End convert.
 End boxed.

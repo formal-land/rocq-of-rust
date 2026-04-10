@@ -82,11 +82,11 @@ Module opcode.
               M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
               M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "OpCode" |) |) |);
               M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ],
                 M.pointer_coercion
                   M.PointerCoercion.Unsize
                   (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "u8" ] ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ]),
                 [
                   M.borrow (|
                     Pointer.Kind.Ref,
@@ -3428,9 +3428,7 @@ Module opcode.
                                                                   []
                                                                   [
                                                                     Ty.dyn
-                                                                      [
-                                                                        ("core::fmt::Debug::Trait",
-                                                                          [])
+                                                                      [ ("core::fmt::Debug", [], [])
                                                                       ]
                                                                   ],
                                                                 M.pointer_coercion
@@ -3450,7 +3448,8 @@ Module opcode.
                                                                     [
                                                                       Ty.dyn
                                                                         [
-                                                                          ("core::fmt::Debug::Trait",
+                                                                          ("core::fmt::Debug",
+                                                                            [],
                                                                             [])
                                                                         ]
                                                                     ]),
@@ -3504,9 +3503,7 @@ Module opcode.
                                                         Ty.apply
                                                           (Ty.path "&")
                                                           []
-                                                          [
-                                                            Ty.dyn
-                                                              [ ("core::fmt::Debug::Trait", []) ]
+                                                          [ Ty.dyn [ ("core::fmt::Debug", [], []) ]
                                                           ],
                                                         M.pointer_coercion
                                                           M.PointerCoercion.Unsize
@@ -3519,7 +3516,7 @@ Module opcode.
                                                             []
                                                             [
                                                               Ty.dyn
-                                                                [ ("core::fmt::Debug::Trait", []) ]
+                                                                [ ("core::fmt::Debug", [], []) ]
                                                             ]),
                                                         [
                                                           M.borrow (|
@@ -3565,14 +3562,14 @@ Module opcode.
                                                 Ty.apply
                                                   (Ty.path "&")
                                                   []
-                                                  [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                                                  [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ],
                                                 M.pointer_coercion
                                                   M.PointerCoercion.Unsize
                                                   (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ])
                                                   (Ty.apply
                                                     (Ty.path "&")
                                                     []
-                                                    [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                                                    [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ]),
                                                 [
                                                   M.borrow (|
                                                     Pointer.Kind.Ref,
@@ -3615,14 +3612,14 @@ Module opcode.
                                         Ty.apply
                                           (Ty.path "&")
                                           []
-                                          [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                                          [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ],
                                         M.pointer_coercion
                                           M.PointerCoercion.Unsize
                                           (Ty.apply (Ty.path "&") [] [ Ty.path "bool" ])
                                           (Ty.apply
                                             (Ty.path "&")
                                             []
-                                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                                            [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ]),
                                         [
                                           M.borrow (|
                                             Pointer.Kind.Ref,
@@ -3664,14 +3661,14 @@ Module opcode.
                                 Ty.apply
                                   (Ty.path "&")
                                   []
-                                  [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                                  [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ],
                                 M.pointer_coercion
                                   M.PointerCoercion.Unsize
                                   (Ty.apply (Ty.path "&") [] [ Ty.path "bool" ])
                                   (Ty.apply
                                     (Ty.path "&")
                                     []
-                                    [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                                    [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ]),
                                 [
                                   M.borrow (|
                                     Pointer.Kind.Ref,
@@ -3707,14 +3704,11 @@ Module opcode.
                       |);
                       M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "immediate_size" |) |) |);
                       M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ],
                         M.pointer_coercion
                           M.PointerCoercion.Unsize
                           (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                          (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ]),
                         [
                           M.borrow (|
                             Pointer.Kind.Ref,

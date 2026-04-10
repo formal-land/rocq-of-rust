@@ -32,8 +32,8 @@ Module Ty.
   Parameter apply : Ty.t -> list Value.t -> list Ty.t -> Ty.t.
 
   (** As parameter: a list of traits, described by their absolute name and their
-      list of type parameters, excluding `Self`. *)
-  Parameter dyn : list (string * list Ty.t) -> Ty.t.
+      list of type/const parameters, excluding `Self`. *)
+  Parameter dyn : list (string * list Value.t * list Ty.t) -> Ty.t.
 
   Parameter associated_in_trait : string -> list Value.t -> list Ty.t -> Ty.t -> string -> Ty.t.
 

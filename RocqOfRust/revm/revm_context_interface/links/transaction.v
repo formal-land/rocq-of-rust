@@ -4,6 +4,7 @@ Require Import alloy_primitives.links.common.
 Require Import core.convert.links.mod.
 Require Import core.links.error.
 Require Import core.links.option.
+Require Import revm.revm_context_interface.transaction.links.common.
 Require Import revm.revm_context_interface.transaction.links.eip4844.
 Require Import revm.revm_context_interface.transaction.links.transaction_type.
 
@@ -116,6 +117,27 @@ Module Transaction.
     run_eip7702 (self : '& Self) :: Run.Trait eip7702 [] [] [ φ self ] ('& types.(Types.Eip7702));
   }.
 
+  Module dyn_CommonTxFields.
+    Record t {Self : Set} : Set := {
+      H : Link Self;
+      run : CommonTxFields.Run Self;
+    }.
+    Arguments t : clear implicits.
+
+    Instance IsLink : Link {Self: Set @ t Self} := {
+      Φ := Ty.dyn [("revm_context_interface::transaction::common::CommonTxFields", [], [])];
+      φ x := Value.StructTuple "revm_context_interface::transaction::common::CommonTxFields" [] [] [];
+    }.
+  End dyn_CommonTxFields.
+  Export (hints) dyn_CommonTxFields.
+
+  Class Method_common_fields (Self : Set) `{Link Self} (types : Types.t) `{Types.AreLinks types} : Set := {
+    common_fields : PolymorphicFunction.t;
+    common_fields_is_method :: IsTraitMethod.C (trait Self) "common_fields" common_fields;
+    run_common_fields (self : '& Self) ::
+      Run.Trait common_fields [] [] [ φ self ] ('& {Self : Set @ dyn_CommonTxFields.t Self});
+  }.
+
   Class Method_max_fee (Self : Set) `{Link Self} (types : Types.t) `{Types.AreLinks types} : Set := {
     max_fee : PolymorphicFunction.t;
     max_fee_is_method :: IsTraitMethod.C (trait Self) "max_fee" max_fee;
@@ -185,6 +207,7 @@ Module Transaction.
     method_eip1559 :: Method_eip1559 Self types;
     method_eip4844 :: Method_eip4844 Self types;
     method_eip7702 :: Method_eip7702 Self types;
+    method_common_fields :: Method_common_fields Self types;
     method_max_fee :: Method_max_fee Self types;
     method_effective_gas_price :: Method_effective_gas_price Self types;
     method_kind :: Method_kind Self types;

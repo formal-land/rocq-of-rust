@@ -8365,7 +8365,7 @@ Module boxed.
             Ty.apply
               (Ty.path "core::option::Option")
               []
-              [ Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ] ],
+              [ Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error", [], []) ] ] ],
             M.get_trait_method (| "core::error::Error", E, [], [], "cause", [], [] |),
             [
               M.borrow (|
@@ -8404,7 +8404,7 @@ Module boxed.
             Ty.apply
               (Ty.path "core::option::Option")
               []
-              [ Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ] ],
+              [ Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error", [], []) ] ] ],
             M.get_trait_method (| "core::error::Error", E, [], [], "source", [], [] |),
             [
               M.borrow (|

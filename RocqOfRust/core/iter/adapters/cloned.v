@@ -105,11 +105,11 @@ Module iter.
                   M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Cloned" |) |) |);
                   M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "it" |) |) |);
                   M.call_closure (|
-                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ],
                     M.pointer_coercion
                       M.PointerCoercion.Unsize
                       (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ I ] ])
-                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ]),
                     [
                       M.borrow (|
                         Pointer.Kind.Ref,

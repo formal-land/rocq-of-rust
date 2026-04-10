@@ -35,10 +35,7 @@ Module table.
   
   Axiom DynInstruction :
     forall (W H : Ty.t),
-    (Ty.apply (Ty.path "revm_interpreter::table::DynInstruction") [] [ W; H ]) =
-      (Ty.dyn
-        [ ("existential predicate with variables", []); ("existential predicate with variables", [])
-        ]).
+    (Ty.apply (Ty.path "revm_interpreter::table::DynInstruction") [] [ W; H ]) = (Ty.dyn []).
   
   Axiom CustomInstructionTable :
     forall (IT : Ty.t),

@@ -111,11 +111,11 @@ Module num.
                   M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Decoded" |) |) |);
                   M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "mant" |) |) |);
                   M.call_closure (|
-                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ],
                     M.pointer_coercion
                       M.PointerCoercion.Unsize
                       (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
-                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ]),
                     [
                       M.borrow (|
                         Pointer.Kind.Ref,
@@ -134,11 +134,11 @@ Module num.
                   |);
                   M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "minus" |) |) |);
                   M.call_closure (|
-                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ],
                     M.pointer_coercion
                       M.PointerCoercion.Unsize
                       (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
-                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ]),
                     [
                       M.borrow (|
                         Pointer.Kind.Ref,
@@ -157,11 +157,11 @@ Module num.
                   |);
                   M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "plus" |) |) |);
                   M.call_closure (|
-                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ],
                     M.pointer_coercion
                       M.PointerCoercion.Unsize
                       (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
-                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ]),
                     [
                       M.borrow (|
                         Pointer.Kind.Ref,
@@ -180,11 +180,11 @@ Module num.
                   |);
                   M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "exp" |) |) |);
                   M.call_closure (|
-                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ],
                     M.pointer_coercion
                       M.PointerCoercion.Unsize
                       (Ty.apply (Ty.path "&") [] [ Ty.path "i16" ])
-                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ]),
                     [
                       M.borrow (|
                         Pointer.Kind.Ref,
@@ -203,11 +203,11 @@ Module num.
                   |);
                   M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "inclusive" |) |) |);
                   M.call_closure (|
-                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ],
                     M.pointer_coercion
                       M.PointerCoercion.Unsize
                       (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "bool" ] ])
-                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ]),
                     [
                       M.borrow (|
                         Pointer.Kind.Ref,
@@ -653,10 +653,7 @@ Module num.
                           M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
                           M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Finite" |) |) |);
                           M.call_closure (|
-                            Ty.apply
-                              (Ty.path "&")
-                              []
-                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                            Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ],
                             M.pointer_coercion
                               M.PointerCoercion.Unsize
                               (Ty.apply
@@ -671,7 +668,7 @@ Module num.
                               (Ty.apply
                                 (Ty.path "&")
                                 []
-                                [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                                [ Ty.dyn [ ("core::fmt::Debug", [], []) ] ]),
                             [
                               M.borrow (|
                                 Pointer.Kind.Ref,
