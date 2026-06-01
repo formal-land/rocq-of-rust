@@ -59,7 +59,7 @@ Proof.
   destruct run_LoopControl_for_Control.
   destruct run_Host_for_H.
   destruct (Impl_AsRef_for_Slice.run u8).
-  destruct run_Deref_for_Synthetic1.
+  destruct run_Deref_for_Synthetic.
   destruct (
     let B := FixedBytes.t {| Integer.value := 32 |} in
     let I := IntoIter.t aliases.U256.t N in
@@ -81,4 +81,3 @@ Proof.
   typeclasses eauto.
 Defined.
 Global Opaque run_log.
-

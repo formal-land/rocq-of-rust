@@ -291,11 +291,11 @@ Module MemoryTrait.
       Run.Trait slice [] [] [ φ self; φ range ] Synthetic;
   }.
 
-  Class Method_slice_len (Self Synthetic1 : Set) `{Link Self} `{Link Synthetic1} : Set := {
+  Class Method_slice_len (Self Synthetic : Set) `{Link Self} `{Link Synthetic} : Set := {
     slice_len : PolymorphicFunction.t;
     slice_len_is_method :: IsTraitMethod.C (trait Self) "slice_len" slice_len;
     run_slice_len (self : '& Self) (offset len : usize) ::
-      Run.Trait slice_len [] [] [ φ self; φ offset; φ len ] Synthetic1;
+      Run.Trait slice_len [] [] [ φ self; φ offset; φ len ] Synthetic;
   }.
 
   Class Method_resize (Self : Set) `{Link Self} : Set := {
@@ -314,14 +314,14 @@ Module MemoryTrait.
     method_copy :: Method_copy Self;
     Synthetic_IsAssociated :
       IsTraitAssociatedType "revm_interpreter::interpreter_types::MemoryTrait" [] [] (Φ Self)
-      "{{synthetic}}" (Φ Synthetic);
+      "{{anon_assoc}}" (Φ Synthetic);
     run_Deref_for_Synthetic :: deref.Deref.Run Synthetic (list u8);
     method_slice :: Method_slice Self Synthetic;
     Synthetic1_IsAssociated :
       IsTraitAssociatedType "revm_interpreter::interpreter_types::MemoryTrait" [] [] (Φ Self)
       "{{synthetic}}'1" (Φ Synthetic1);
     run_Deref_for_Synthetic1 :: deref.Deref.Run Synthetic1 (list u8);
-    method_slice_len :: Method_slice_len Self Synthetic1;
+    method_slice_len :: Method_slice_len Self Synthetic;
     method_resize :: Method_resize Self;
   }.
 End MemoryTrait.

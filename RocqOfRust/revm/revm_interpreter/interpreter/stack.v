@@ -1236,9 +1236,9 @@ Module interpreter.
                                                                           M.borrow (|
                                                                             Pointer.Kind.Ref,
                                                                             M.deref (|
-                                                                              M.read (|
-                                                                                UnsupportedLiteral
-                                                                              |)
+                                                                              mk_byte_str_ref
+                                                                                2
+                                                                                [ 192; 0 ]
                                                                             |)
                                                                           |);
                                                                           M.borrow (|

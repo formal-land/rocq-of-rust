@@ -53,6 +53,8 @@ pub(crate) struct LiteralInteger {
 pub(crate) enum Literal {
     Bool(bool),
     Integer(LiteralInteger),
+    Byte(u8),
+    ByteString(Vec<u8>),
     Char(char),
     String(String),
     Error,
@@ -447,6 +449,18 @@ fn string_to_rocq(message: &str) -> Rc<rocq::Expression> {
     rocq::Expression::just_name("mk_str").monadic_apply(string_pieces_to_rocq(&pieces))
 }
 
+fn byte_string_to_rocq(bytes: &[u8]) -> Rc<rocq::Expression> {
+    rocq::Expression::just_name("mk_byte_str_ref").apply_many(&[
+        Rc::new(rocq::Expression::U128(bytes.len() as u128)),
+        Rc::new(rocq::Expression::List {
+            exprs: bytes
+                .iter()
+                .map(|byte| Rc::new(rocq::Expression::U128(*byte as u128)))
+                .collect_vec(),
+        }),
+    ])
+}
+
 impl LoopControlFlow {
     pub fn to_rocq(self) -> Rc<rocq::Expression> {
         match self {
@@ -475,6 +489,11 @@ impl Literal {
                     rocq::Expression::just_name(value.to_string().as_str())
                 },
             ]),
+            Literal::Byte(byte) => rocq::Expression::just_name("Value.Integer").apply_many(&[
+                rocq::Expression::just_name("IntegerKind.U8"),
+                Rc::new(rocq::Expression::U128(*byte as u128)),
+            ]),
+            Literal::ByteString(bytes) => byte_string_to_rocq(bytes),
             Literal::Char(c) => rocq::Expression::just_name("Value.UnicodeChar").apply(
                 rocq::Expression::just_name((*c as u32).to_string().as_str()),
             ),
@@ -497,6 +516,11 @@ impl Literal {
                     format!("{kind}_{value}")
                 }
             }
+            Literal::Byte(byte) => format!("byte_{byte}"),
+            Literal::ByteString(bytes) => format!(
+                "byte_string_{}",
+                bytes.iter().map(u8::to_string).collect_vec().join("_")
+            ),
             Literal::Char(c) => format!("char_{}", c),
             Literal::String(s) => format!("string_{}", s),
             Literal::Error => "error".to_string(),

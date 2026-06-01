@@ -309,6 +309,53 @@ Proof.
 Defined.
 Smpl Add apply of_value_repeat : of_value.
 
+Definition of_value_byte_string_ref (length : Z) (bytes : list Z) :
+  OfValue.t (mk_byte_str_ref length bytes).
+Proof.
+  eapply OfValue.Make with
+    (value := Ref.immediate Pointer.Kind.Ref
+      (Build_t u8
+        {| Integer.value := length |}
+        (ArrayPairs.repeat
+          (Integer.Build_t IntegerKind.U8 0)
+          (Z.to_nat length)))).
+  unfold mk_byte_str_ref.
+  change (
+    Value.Pointer {|
+      Pointer.kind := Pointer.Kind.Ref;
+      Pointer.core := Pointer.Core.Immediate (Some (
+        Value.Array (repeat_nat
+          (Z.to_nat length)
+          (Value.Integer IntegerKind.U8 0))
+      ));
+    |} =
+    Value.Pointer {|
+      Pointer.kind := Pointer.Kind.Ref;
+      Pointer.core := Pointer.Core.Immediate (Some (
+        Value.Array (ArrayPairs.to_values (ArrayPairs.repeat
+          (Integer.Build_t IntegerKind.U8 0)
+          (Z.to_nat length)))
+      ));
+    |}
+  ).
+  do 3 f_equal.
+  f_equal.
+  change (
+    Value.Array
+      (repeat_nat
+        (Z.to_nat length)
+        (Value.Integer IntegerKind.U8 0)) =
+    φ (Build_t u8
+      {| Integer.value := length |}
+      (ArrayPairs.repeat
+        (Integer.Build_t IntegerKind.U8 0)
+        (Z.to_nat length)))
+  ).
+  change (Value.Integer IntegerKind.U8 0) with (φ (Integer.Build_t IntegerKind.U8 0)).
+  apply repeat_nat_φ_eq.
+Defined.
+Smpl Add apply of_value_byte_string_ref : of_value.
+
 Module SubPointer.
   Definition get_index (A : Set) `{Link A} (length : usize) (index : Z) :
     SubPointer.Runner.t (t A length) (Pointer.Index.Array index) :=

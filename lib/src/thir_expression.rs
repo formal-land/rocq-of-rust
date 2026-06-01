@@ -1056,6 +1056,13 @@ pub(crate) fn compile_expr<'a>(
             rustc_ast::LitKind::Str(symbol, _) => {
                 Rc::new(Expr::Literal(Rc::new(Literal::String(symbol.to_string())))).alloc(ty)
             }
+            rustc_ast::LitKind::ByteStr(symbol, _) => Rc::new(Expr::Literal(Rc::new(
+                Literal::ByteString(symbol.as_byte_str().to_vec()),
+            )))
+            .alloc(ty),
+            rustc_ast::LitKind::Byte(byte) => {
+                Rc::new(Expr::Literal(Rc::new(Literal::Byte(byte)))).alloc(ty)
+            }
             rustc_ast::LitKind::Char(c) => {
                 Rc::new(Expr::Literal(Rc::new(Literal::Char(c)))).alloc(ty)
             }
