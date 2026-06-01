@@ -637,7 +637,7 @@ Module base_convert.
                               M.borrow (|
                                 Pointer.Kind.Ref,
                                 M.deref (|
-                                  mk_byte_str_ref
+                                  M.mk_byte_str_ref
                                     47
                                     [
                                       26;
@@ -807,7 +807,7 @@ Module base_convert.
                               M.borrow (|
                                 Pointer.Kind.Ref,
                                 M.deref (|
-                                  mk_byte_str_ref
+                                  M.mk_byte_str_ref
                                     37
                                     [
                                       6;

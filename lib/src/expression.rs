@@ -450,7 +450,7 @@ fn string_to_rocq(message: &str) -> Rc<rocq::Expression> {
 }
 
 fn byte_string_to_rocq(bytes: &[u8]) -> Rc<rocq::Expression> {
-    rocq::Expression::just_name("mk_byte_str_ref").apply_many(&[
+    rocq::Expression::just_name("M.mk_byte_str_ref").apply_many(&[
         Rc::new(rocq::Expression::U128(bytes.len() as u128)),
         Rc::new(rocq::Expression::List {
             exprs: bytes

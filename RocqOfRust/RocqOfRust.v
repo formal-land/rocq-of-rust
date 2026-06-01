@@ -41,22 +41,3 @@ Parameter pointer_coercion : string -> Value.t -> Value.t.
 Parameter InlineAssembly : Value.t.
 
 Parameter UnsupportedLiteral : Value.t.
-
-Fixpoint byte_string_values (bytes : list Z) : list Value.t :=
-  match bytes with
-  | [] => []
-  | byte :: bytes => Value.Integer IntegerKind.U8 byte :: byte_string_values bytes
-  end.
-
-Definition byte_string_length (bytes : list Z) : Z :=
-  Z.of_nat (List.length bytes).
-
-Definition mk_byte_str_ref (length : Z) (bytes : list Z) : Value.t :=
-  Value.Pointer {|
-    Pointer.kind := Pointer.Kind.Ref;
-    Pointer.core := Pointer.Core.Immediate (Some (
-      Value.Array (repeat_nat
-        (Z.to_nat length)
-        (Value.Integer IntegerKind.U8 0))
-    ));
-  |}.

@@ -8,7 +8,7 @@ fn byte_string_literal() -> &'static [u8; 5] {
 *)
 Definition byte_string_literal (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   match ε, τ, α with
-  | [], [], [] => ltac:(M.monadic (mk_byte_str_ref 5 [ 104; 101; 108; 108; 111 ]))
+  | [], [], [] => ltac:(M.monadic (M.mk_byte_str_ref 5 [ 104; 101; 108; 108; 111 ]))
   | _, _, _ => M.impossible "wrong number of arguments"
   end.
 

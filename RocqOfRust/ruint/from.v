@@ -1070,7 +1070,7 @@ Module from.
                               M.borrow (|
                                 Pointer.Kind.Ref,
                                 M.deref (|
-                                  mk_byte_str_ref
+                                  M.mk_byte_str_ref
                                     33
                                     [
                                       28;
@@ -1200,7 +1200,7 @@ Module from.
                               M.borrow (|
                                 Pointer.Kind.Ref,
                                 M.deref (|
-                                  mk_byte_str_ref
+                                  M.mk_byte_str_ref
                                     51
                                     [
                                       46;
@@ -1342,7 +1342,7 @@ Module from.
                               M.borrow (|
                                 Pointer.Kind.Ref,
                                 M.deref (|
-                                  mk_byte_str_ref
+                                  M.mk_byte_str_ref
                                     56
                                     [
                                       51;
@@ -2153,7 +2153,7 @@ Module from.
                               M.borrow (|
                                 Pointer.Kind.Ref,
                                 M.deref (|
-                                  mk_byte_str_ref
+                                  M.mk_byte_str_ref
                                     35
                                     [
                                       5;
@@ -2545,7 +2545,7 @@ Module from.
                                 M.borrow (|
                                   Pointer.Kind.Ref,
                                   M.deref (|
-                                    mk_byte_str_ref
+                                    M.mk_byte_str_ref
                                       26
                                       [
                                         23;

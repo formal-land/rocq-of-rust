@@ -309,50 +309,56 @@ Proof.
 Defined.
 Smpl Add apply of_value_repeat : of_value.
 
+Fixpoint byte_string_array_pairs
+    (length : nat) (bytes : list Z) : ArrayPairs.t u8 length :=
+  match length, bytes with
+  | O, _ => ArrayEmpty.Make
+  | S length, [] =>
+      {|
+        ArrayPair.x := Integer.Build_t IntegerKind.U8 0;
+        ArrayPair.xs := byte_string_array_pairs length [];
+      |}
+  | S length, byte :: bytes =>
+      {|
+        ArrayPair.x := Integer.Build_t IntegerKind.U8 byte;
+        ArrayPair.xs := byte_string_array_pairs length bytes;
+      |}
+  end.
+
+Lemma byte_string_to_values_eq (length : nat) (bytes : list Z) :
+  M.byte_string_to_values length bytes =
+  ArrayPairs.to_values (byte_string_array_pairs length bytes).
+Proof.
+  revert bytes.
+  induction length; intros [|byte bytes]; cbn; try reflexivity;
+    now rewrite IHlength.
+Qed.
+
 Definition of_value_byte_string_ref (length : Z) (bytes : list Z) :
-  OfValue.t (mk_byte_str_ref length bytes).
+  OfValue.t (M.mk_byte_str_ref length bytes).
 Proof.
   eapply OfValue.Make with
     (value := Ref.immediate Pointer.Kind.Ref
       (Build_t u8
         {| Integer.value := length |}
-        (ArrayPairs.repeat
-          (Integer.Build_t IntegerKind.U8 0)
-          (Z.to_nat length)))).
-  unfold mk_byte_str_ref.
+        (byte_string_array_pairs (Z.to_nat length) bytes))).
+  unfold M.mk_byte_str_ref.
   change (
     Value.Pointer {|
       Pointer.kind := Pointer.Kind.Ref;
       Pointer.core := Pointer.Core.Immediate (Some (
-        Value.Array (repeat_nat
-          (Z.to_nat length)
-          (Value.Integer IntegerKind.U8 0))
+        Value.Array (M.byte_string_to_values (Z.to_nat length) bytes)
       ));
     |} =
     Value.Pointer {|
       Pointer.kind := Pointer.Kind.Ref;
       Pointer.core := Pointer.Core.Immediate (Some (
-        Value.Array (ArrayPairs.to_values (ArrayPairs.repeat
-          (Integer.Build_t IntegerKind.U8 0)
-          (Z.to_nat length)))
+        Value.Array (ArrayPairs.to_values
+          (byte_string_array_pairs (Z.to_nat length) bytes))
       ));
     |}
   ).
-  do 3 f_equal.
-  f_equal.
-  change (
-    Value.Array
-      (repeat_nat
-        (Z.to_nat length)
-        (Value.Integer IntegerKind.U8 0)) =
-    φ (Build_t u8
-      {| Integer.value := length |}
-      (ArrayPairs.repeat
-        (Integer.Build_t IntegerKind.U8 0)
-        (Z.to_nat length)))
-  ).
-  change (Value.Integer IntegerKind.U8 0) with (φ (Integer.Build_t IntegerKind.U8 0)).
-  apply repeat_nat_φ_eq.
+  now rewrite byte_string_to_values_eq.
 Defined.
 Smpl Add apply of_value_byte_string_ref : of_value.
 

@@ -40,82 +40,42 @@ Module Impl_Arguments.
   Admitted.
   Global Opaque run_new.
 
-  Instance run_new_byte_str (N M : usize)
+  Instance run_new_byte_str (N M : usize) (bytes : list Z)
       (args : '& (array.t Argument.t M)) :
     Run.Trait
       fmt.Impl_core_fmt_Arguments.new
       [φ N; φ M]
       []
       [
-        Value.Pointer {|
-          Pointer.kind := Pointer.Kind.Ref;
-          Pointer.core := {|
-            Pointer.kind := Pointer.Kind.Ref;
-            Pointer.core := Pointer.Core.Immediate (Some (
-              Value.Array (repeat_nat
-                (Z.to_nat N.(Integer.value))
-                (Value.Integer IntegerKind.U8 0))
-            ));
-          |}.(Pointer.core);
-        |};
+        M.mk_byte_str_ref N.(Integer.value) bytes;
         φ args
       ]
       Self.
   Proof.
-    replace (
-      Value.Pointer {|
-        Pointer.kind := Pointer.Kind.Ref;
-        Pointer.core := {|
-          Pointer.kind := Pointer.Kind.Ref;
-          Pointer.core := Pointer.Core.Immediate (Some (
-            Value.Array (repeat_nat
-              (Z.to_nat N.(Integer.value))
-              (Value.Integer IntegerKind.U8 0))
-          ));
-        |}.(Pointer.core);
-      |}
-    ) with (
+    replace (M.mk_byte_str_ref N.(Integer.value) bytes) with (
       φ (Ref.immediate Pointer.Kind.Ref
         (array.Build_t u8 N
-          (array.ArrayPairs.repeat
-            (Integer.Build_t IntegerKind.U8 0)
-            (Z.to_nat N.(Integer.value)))))
+          (array.byte_string_array_pairs (Z.to_nat N.(Integer.value)) bytes)))
     ).
     { apply run_new. }
-    cbn.
+    unfold M.mk_byte_str_ref.
     symmetry.
     change (
       Value.Pointer {|
         Pointer.kind := Pointer.Kind.Ref;
         Pointer.core := Pointer.Core.Immediate (Some (
-          Value.Array (repeat_nat
-            (Z.to_nat N.(Integer.value))
-            (Value.Integer IntegerKind.U8 0))
+          Value.Array (M.byte_string_to_values (Z.to_nat N.(Integer.value)) bytes)
         ));
       |} =
       Value.Pointer {|
         Pointer.kind := Pointer.Kind.Ref;
         Pointer.core := Pointer.Core.Immediate (Some (
-          Value.Array (array.ArrayPairs.to_values (array.ArrayPairs.repeat
-            (Integer.Build_t IntegerKind.U8 0)
-            (Z.to_nat N.(Integer.value))))
+          Value.Array (array.ArrayPairs.to_values
+            (array.byte_string_array_pairs (Z.to_nat N.(Integer.value)) bytes))
         ));
       |}
     ).
-    do 3 f_equal.
-    f_equal.
-    change (
-      Value.Array
-        (repeat_nat
-          (Z.to_nat N.(Integer.value))
-          (Value.Integer IntegerKind.U8 0)) =
-      φ (array.Build_t u8 N
-        (array.ArrayPairs.repeat
-          (Integer.Build_t IntegerKind.U8 0)
-          (Z.to_nat N.(Integer.value))))
-    ).
-    change (Value.Integer IntegerKind.U8 0) with (φ (Integer.Build_t IntegerKind.U8 0)).
-    apply array.repeat_nat_φ_eq.
+    now rewrite array.byte_string_to_values_eq.
   Defined.
   Global Opaque run_new_byte_str.
 

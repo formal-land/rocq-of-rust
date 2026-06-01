@@ -2660,7 +2660,7 @@ Module interpreter.
                                                   M.borrow (|
                                                     Pointer.Kind.Ref,
                                                     M.deref (|
-                                                      mk_byte_str_ref
+                                                      M.mk_byte_str_ref
                                                         69
                                                         [
                                                           53;
@@ -3023,7 +3023,7 @@ Module interpreter.
                                                       M.borrow (|
                                                         Pointer.Kind.Ref,
                                                         M.deref (|
-                                                          mk_byte_str_ref
+                                                          M.mk_byte_str_ref
                                                             60
                                                             [
                                                               53;

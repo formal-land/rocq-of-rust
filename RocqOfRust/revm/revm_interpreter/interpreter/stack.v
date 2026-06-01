@@ -1236,7 +1236,7 @@ Module interpreter.
                                                                           M.borrow (|
                                                                             Pointer.Kind.Ref,
                                                                             M.deref (|
-                                                                              mk_byte_str_ref
+                                                                              M.mk_byte_str_ref
                                                                                 2
                                                                                 [ 192; 0 ]
                                                                             |)
