@@ -4891,7 +4891,38 @@ Module eof.
                               [
                                 M.borrow (|
                                   Pointer.Kind.Ref,
-                                  M.deref (| M.read (| UnsupportedLiteral |) |)
+                                  M.deref (|
+                                    M.mk_byte_str_ref
+                                      26
+                                      [
+                                        23;
+                                        66;
+                                        121;
+                                        116;
+                                        101;
+                                        99;
+                                        111;
+                                        100;
+                                        101;
+                                        32;
+                                        100;
+                                        101;
+                                        99;
+                                        111;
+                                        100;
+                                        101;
+                                        32;
+                                        101;
+                                        114;
+                                        114;
+                                        111;
+                                        114;
+                                        58;
+                                        32;
+                                        192;
+                                        0
+                                      ]
+                                  |)
                                 |);
                                 M.borrow (|
                                   Pointer.Kind.Ref,
@@ -5000,7 +5031,42 @@ Module eof.
                               [
                                 M.borrow (|
                                   Pointer.Kind.Ref,
-                                  M.deref (| M.read (| UnsupportedLiteral |) |)
+                                  M.deref (|
+                                    M.mk_byte_str_ref
+                                      30
+                                      [
+                                        27;
+                                        66;
+                                        121;
+                                        116;
+                                        101;
+                                        99;
+                                        111;
+                                        100;
+                                        101;
+                                        32;
+                                        118;
+                                        97;
+                                        108;
+                                        105;
+                                        100;
+                                        97;
+                                        116;
+                                        105;
+                                        111;
+                                        110;
+                                        32;
+                                        101;
+                                        114;
+                                        114;
+                                        111;
+                                        114;
+                                        58;
+                                        32;
+                                        192;
+                                        0
+                                      ]
+                                  |)
                                 |);
                                 M.borrow (|
                                   Pointer.Kind.Ref,

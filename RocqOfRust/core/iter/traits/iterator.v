@@ -1404,7 +1404,35 @@ Module iter.
                                                   [
                                                     M.borrow (|
                                                       Pointer.Kind.Ref,
-                                                      M.deref (| M.read (| UnsupportedLiteral |) |)
+                                                      M.deref (|
+                                                        M.mk_byte_str_ref
+                                                          23
+                                                          [
+                                                            20;
+                                                            77;
+                                                            97;
+                                                            108;
+                                                            102;
+                                                            111;
+                                                            114;
+                                                            109;
+                                                            101;
+                                                            100;
+                                                            32;
+                                                            115;
+                                                            105;
+                                                            122;
+                                                            101;
+                                                            95;
+                                                            104;
+                                                            105;
+                                                            110;
+                                                            116;
+                                                            32;
+                                                            192;
+                                                            0
+                                                          ]
+                                                      |)
                                                     |);
                                                     M.borrow (|
                                                       Pointer.Kind.Ref,

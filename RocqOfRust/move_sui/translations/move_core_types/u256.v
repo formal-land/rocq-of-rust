@@ -816,7 +816,47 @@ Module u256.
                             [
                               M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.deref (| M.read (| UnsupportedLiteral |) |)
+                                M.deref (|
+                                  M.mk_byte_str_ref
+                                    35
+                                    [
+                                      13;
+                                      67;
+                                      97;
+                                      115;
+                                      116;
+                                      32;
+                                      102;
+                                      97;
+                                      105;
+                                      108;
+                                      101;
+                                      100;
+                                      46;
+                                      32;
+                                      192;
+                                      15;
+                                      32;
+                                      116;
+                                      111;
+                                      111;
+                                      32;
+                                      108;
+                                      97;
+                                      114;
+                                      103;
+                                      101;
+                                      32;
+                                      102;
+                                      111;
+                                      114;
+                                      32;
+                                      192;
+                                      1;
+                                      46;
+                                      0
+                                    ]
+                                |)
                               |);
                               M.borrow (|
                                 Pointer.Kind.Ref,
@@ -886,7 +926,7 @@ Module u256.
                         [
                           M.borrow (|
                             Pointer.Kind.Ref,
-                            M.deref (| M.read (| UnsupportedLiteral |) |)
+                            M.deref (| M.mk_byte_str_ref 2 [ 192; 0 ] |)
                           |);
                           M.borrow (|
                             Pointer.Kind.Ref,
@@ -1042,10 +1082,7 @@ Module u256.
                       []
                     |),
                     [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| M.read (| UnsupportedLiteral |) |)
-                      |);
+                      M.borrow (| Pointer.Kind.Ref, M.deref (| M.mk_byte_str_ref 2 [ 192; 0 ] |) |);
                       M.borrow (|
                         Pointer.Kind.Ref,
                         M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
@@ -5355,7 +5392,7 @@ Module u256.
                             [
                               M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.deref (| M.read (| UnsupportedLiteral |) |)
+                                M.deref (| M.mk_byte_str_ref 2 [ 192; 0 ] |)
                               |);
                               M.borrow (|
                                 Pointer.Kind.Ref,

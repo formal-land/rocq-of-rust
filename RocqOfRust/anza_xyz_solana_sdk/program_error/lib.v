@@ -2090,7 +2090,41 @@ Module Impl_core_fmt_Display_for_solana_program_error_ProgramError.
                           [
                             M.borrow (|
                               Pointer.Kind.Ref,
-                              M.deref (| M.read (| UnsupportedLiteral |) |)
+                              M.deref (|
+                                M.mk_byte_str_ref
+                                  29
+                                  [
+                                    22;
+                                    67;
+                                    117;
+                                    115;
+                                    116;
+                                    111;
+                                    109;
+                                    32;
+                                    112;
+                                    114;
+                                    111;
+                                    103;
+                                    114;
+                                    97;
+                                    109;
+                                    32;
+                                    101;
+                                    114;
+                                    114;
+                                    111;
+                                    114;
+                                    58;
+                                    32;
+                                    193;
+                                    32;
+                                    0;
+                                    128;
+                                    96;
+                                    0
+                                  ]
+                              |)
                             |);
                             M.borrow (|
                               Pointer.Kind.Ref,

@@ -120,7 +120,48 @@ Definition drink (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                         [
                           M.borrow (|
                             Pointer.Kind.Ref,
-                            M.deref (| M.read (| UnsupportedLiteral |) |)
+                            M.deref (|
+                              M.mk_byte_str_ref
+                                36
+                                [
+                                  16;
+                                  83;
+                                  111;
+                                  109;
+                                  101;
+                                  32;
+                                  114;
+                                  101;
+                                  102;
+                                  114;
+                                  101;
+                                  115;
+                                  104;
+                                  105;
+                                  110;
+                                  103;
+                                  32;
+                                  192;
+                                  16;
+                                  32;
+                                  105;
+                                  115;
+                                  32;
+                                  97;
+                                  108;
+                                  108;
+                                  32;
+                                  73;
+                                  32;
+                                  110;
+                                  101;
+                                  101;
+                                  100;
+                                  46;
+                                  10;
+                                  0
+                                ]
+                            |)
                           |);
                           M.borrow (|
                             Pointer.Kind.Ref,

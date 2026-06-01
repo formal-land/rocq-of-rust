@@ -4129,9 +4129,9 @@ Module num.
                                                                         BinOp.eq,
                                                                         [
                                                                           M.read (| c |);
-                                                                          M.read (|
-                                                                            UnsupportedLiteral
-                                                                          |)
+                                                                          Value.Integer
+                                                                            IntegerKind.U8
+                                                                            48
                                                                         ]
                                                                       |)
                                                                     |) in
@@ -4180,9 +4180,9 @@ Module num.
                                                                                 BinOp.ne,
                                                                                 [
                                                                                   M.read (| c |);
-                                                                                  M.read (|
-                                                                                    UnsupportedLiteral
-                                                                                  |)
+                                                                                  Value.Integer
+                                                                                    IntegerKind.U8
+                                                                                    46
                                                                                 ]
                                                                               |)
                                                                             |) in
@@ -4420,13 +4420,13 @@ Module num.
                                       M.call_closure (|
                                         Ty.path "bool",
                                         BinOp.eq,
-                                        [ M.read (| ch |); M.read (| UnsupportedLiteral |) ]
+                                        [ M.read (| ch |); Value.Integer IntegerKind.U8 101 ]
                                       |),
                                       ltac:(M.monadic
                                         (M.call_closure (|
                                           Ty.path "bool",
                                           BinOp.eq,
-                                          [ M.read (| ch |); M.read (| UnsupportedLiteral |) ]
+                                          [ M.read (| ch |); Value.Integer IntegerKind.U8 69 ]
                                         |)))
                                     |)
                                   |) in
@@ -4538,7 +4538,7 @@ Module num.
                                                     BinOp.eq,
                                                     [
                                                       M.read (| ch |);
-                                                      M.read (| UnsupportedLiteral |)
+                                                      Value.Integer IntegerKind.U8 45
                                                     ]
                                                   |)
                                                 |) in
@@ -4559,7 +4559,7 @@ Module num.
                                                                 BinOp.eq,
                                                                 [
                                                                   M.read (| ch |);
-                                                                  M.read (| UnsupportedLiteral |)
+                                                                  Value.Integer IntegerKind.U8 45
                                                                 ]
                                                               |),
                                                               ltac:(M.monadic
@@ -4568,7 +4568,7 @@ Module num.
                                                                   BinOp.eq,
                                                                   [
                                                                     M.read (| ch |);
-                                                                    M.read (| UnsupportedLiteral |)
+                                                                    Value.Integer IntegerKind.U8 43
                                                                   ]
                                                                 |)))
                                                             |)

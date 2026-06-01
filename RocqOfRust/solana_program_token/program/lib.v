@@ -211,7 +211,9 @@ Definition amount_to_ui_amount_string (ε : list Value.t) (τ : list Ty.t) (α :
                                     [
                                       M.borrow (|
                                         Pointer.Kind.Ref,
-                                        M.deref (| M.read (| UnsupportedLiteral |) |)
+                                        M.deref (|
+                                          M.mk_byte_str_ref 8 [ 211; 32; 0; 0; 105; 1; 0; 0 ]
+                                        |)
                                       |);
                                       M.borrow (|
                                         Pointer.Kind.Ref,

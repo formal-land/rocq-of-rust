@@ -11402,7 +11402,217 @@ Module fmt.
             (Ty.path "&")
             []
             [ Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 200 ] [ Ty.path "u8" ] ],
-          UnsupportedLiteral
+          M.alloc (|
+            Ty.apply
+              (Ty.path "&")
+              []
+              [ Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 200 ] [ Ty.path "u8" ]
+              ],
+            M.mk_byte_str_ref
+              200
+              [
+                48;
+                48;
+                48;
+                49;
+                48;
+                50;
+                48;
+                51;
+                48;
+                52;
+                48;
+                53;
+                48;
+                54;
+                48;
+                55;
+                48;
+                56;
+                48;
+                57;
+                49;
+                48;
+                49;
+                49;
+                49;
+                50;
+                49;
+                51;
+                49;
+                52;
+                49;
+                53;
+                49;
+                54;
+                49;
+                55;
+                49;
+                56;
+                49;
+                57;
+                50;
+                48;
+                50;
+                49;
+                50;
+                50;
+                50;
+                51;
+                50;
+                52;
+                50;
+                53;
+                50;
+                54;
+                50;
+                55;
+                50;
+                56;
+                50;
+                57;
+                51;
+                48;
+                51;
+                49;
+                51;
+                50;
+                51;
+                51;
+                51;
+                52;
+                51;
+                53;
+                51;
+                54;
+                51;
+                55;
+                51;
+                56;
+                51;
+                57;
+                52;
+                48;
+                52;
+                49;
+                52;
+                50;
+                52;
+                51;
+                52;
+                52;
+                52;
+                53;
+                52;
+                54;
+                52;
+                55;
+                52;
+                56;
+                52;
+                57;
+                53;
+                48;
+                53;
+                49;
+                53;
+                50;
+                53;
+                51;
+                53;
+                52;
+                53;
+                53;
+                53;
+                54;
+                53;
+                55;
+                53;
+                56;
+                53;
+                57;
+                54;
+                48;
+                54;
+                49;
+                54;
+                50;
+                54;
+                51;
+                54;
+                52;
+                54;
+                53;
+                54;
+                54;
+                54;
+                55;
+                54;
+                56;
+                54;
+                57;
+                55;
+                48;
+                55;
+                49;
+                55;
+                50;
+                55;
+                51;
+                55;
+                52;
+                55;
+                53;
+                55;
+                54;
+                55;
+                55;
+                55;
+                56;
+                55;
+                57;
+                56;
+                48;
+                56;
+                49;
+                56;
+                50;
+                56;
+                51;
+                56;
+                52;
+                56;
+                53;
+                56;
+                54;
+                56;
+                55;
+                56;
+                56;
+                56;
+                57;
+                57;
+                48;
+                57;
+                49;
+                57;
+                50;
+                57;
+                51;
+                57;
+                52;
+                57;
+                53;
+                57;
+                54;
+                57;
+                55;
+                57;
+                56;
+                57;
+                57
+              ]
+          |)
         |))).
     
     Global Instance Instance_IsConstant_value_DECIMAL_PAIRS :
@@ -15148,7 +15358,7 @@ Module fmt.
                                       M.read (| offset |)
                                     |)
                                   |);
-                                  M.read (| UnsupportedLiteral |)
+                                  Value.Integer IntegerKind.U8 45
                                 ]
                               |) in
                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -17089,7 +17299,7 @@ Module fmt.
                                       M.read (| offset |)
                                     |)
                                   |);
-                                  M.read (| UnsupportedLiteral |)
+                                  Value.Integer IntegerKind.U8 45
                                 ]
                               |) in
                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -19030,7 +19240,7 @@ Module fmt.
                                       M.read (| offset |)
                                     |)
                                   |);
-                                  M.read (| UnsupportedLiteral |)
+                                  Value.Integer IntegerKind.U8 45
                                 ]
                               |) in
                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -20971,7 +21181,7 @@ Module fmt.
                                       M.read (| offset |)
                                     |)
                                   |);
-                                  M.read (| UnsupportedLiteral |)
+                                  Value.Integer IntegerKind.U8 45
                                 ]
                               |) in
                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -22941,7 +23151,7 @@ Module fmt.
                                       M.read (| offset |)
                                     |)
                                   |);
-                                  M.read (| UnsupportedLiteral |)
+                                  Value.Integer IntegerKind.U8 45
                                 ]
                               |) in
                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -24108,7 +24318,7 @@ Module fmt.
                                         Value.Integer IntegerKind.Usize 1
                                       |)
                                     |);
-                                    M.read (| UnsupportedLiteral |)
+                                    Value.Integer IntegerKind.U8 46
                                   ]
                                 |) in
                               let~ fraction_range :
@@ -24799,7 +25009,7 @@ Module fmt.
                                                       Ty.path "u8",
                                                       BinOp.Wrap.add,
                                                       [
-                                                        M.read (| UnsupportedLiteral |);
+                                                        Value.Integer IntegerKind.U8 48;
                                                         M.cast (Ty.path "u8") (M.read (| digit |))
                                                       ]
                                                     |)
@@ -25011,7 +25221,7 @@ Module fmt.
                                   Ty.path "u8",
                                   BinOp.Wrap.add,
                                   [
-                                    M.read (| UnsupportedLiteral |);
+                                    Value.Integer IntegerKind.U8 48;
                                     M.cast (Ty.path "u8") (M.read (| lead_dec |))
                                   ]
                                 |)
@@ -25096,7 +25306,7 @@ Module fmt.
                                               Ty.path "u8",
                                               BinOp.Wrap.add,
                                               [
-                                                M.read (| UnsupportedLiteral |);
+                                                Value.Integer IntegerKind.U8 48;
                                                 M.cast (Ty.path "u8") (M.read (| exp |))
                                               ]
                                             |)
@@ -25906,7 +26116,7 @@ Module fmt.
                     BinOp.ge,
                     [ M.read (| M.deref (| M.read (| self |) |) |); Value.Integer IntegerKind.I8 0 ]
                   |);
-                  M.read (| UnsupportedLiteral |)
+                  Value.Integer IntegerKind.U8 101
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -25946,7 +26156,7 @@ Module fmt.
                   M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
                   M.cast (Ty.path "u64") (M.read (| M.deref (| M.read (| self |) |) |));
                   Value.Bool true;
-                  M.read (| UnsupportedLiteral |)
+                  Value.Integer IntegerKind.U8 101
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -25996,7 +26206,7 @@ Module fmt.
                     BinOp.ge,
                     [ M.read (| M.deref (| M.read (| self |) |) |); Value.Integer IntegerKind.I8 0 ]
                   |);
-                  M.read (| UnsupportedLiteral |)
+                  Value.Integer IntegerKind.U8 69
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -26036,7 +26246,7 @@ Module fmt.
                   M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
                   M.cast (Ty.path "u64") (M.read (| M.deref (| M.read (| self |) |) |));
                   Value.Bool true;
-                  M.read (| UnsupportedLiteral |)
+                  Value.Integer IntegerKind.U8 69
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -26087,7 +26297,7 @@ Module fmt.
                     [ M.read (| M.deref (| M.read (| self |) |) |); Value.Integer IntegerKind.I16 0
                     ]
                   |);
-                  M.read (| UnsupportedLiteral |)
+                  Value.Integer IntegerKind.U8 101
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -26127,7 +26337,7 @@ Module fmt.
                   M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
                   M.cast (Ty.path "u64") (M.read (| M.deref (| M.read (| self |) |) |));
                   Value.Bool true;
-                  M.read (| UnsupportedLiteral |)
+                  Value.Integer IntegerKind.U8 101
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -26178,7 +26388,7 @@ Module fmt.
                     [ M.read (| M.deref (| M.read (| self |) |) |); Value.Integer IntegerKind.I16 0
                     ]
                   |);
-                  M.read (| UnsupportedLiteral |)
+                  Value.Integer IntegerKind.U8 69
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -26218,7 +26428,7 @@ Module fmt.
                   M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
                   M.cast (Ty.path "u64") (M.read (| M.deref (| M.read (| self |) |) |));
                   Value.Bool true;
-                  M.read (| UnsupportedLiteral |)
+                  Value.Integer IntegerKind.U8 69
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -26269,7 +26479,7 @@ Module fmt.
                     [ M.read (| M.deref (| M.read (| self |) |) |); Value.Integer IntegerKind.I32 0
                     ]
                   |);
-                  M.read (| UnsupportedLiteral |)
+                  Value.Integer IntegerKind.U8 101
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -26309,7 +26519,7 @@ Module fmt.
                   M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
                   M.cast (Ty.path "u64") (M.read (| M.deref (| M.read (| self |) |) |));
                   Value.Bool true;
-                  M.read (| UnsupportedLiteral |)
+                  Value.Integer IntegerKind.U8 101
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -26360,7 +26570,7 @@ Module fmt.
                     [ M.read (| M.deref (| M.read (| self |) |) |); Value.Integer IntegerKind.I32 0
                     ]
                   |);
-                  M.read (| UnsupportedLiteral |)
+                  Value.Integer IntegerKind.U8 69
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -26400,7 +26610,7 @@ Module fmt.
                   M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
                   M.cast (Ty.path "u64") (M.read (| M.deref (| M.read (| self |) |) |));
                   Value.Bool true;
-                  M.read (| UnsupportedLiteral |)
+                  Value.Integer IntegerKind.U8 69
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -26455,7 +26665,7 @@ Module fmt.
                     [ M.read (| M.deref (| M.read (| self |) |) |); Value.Integer IntegerKind.I64 0
                     ]
                   |);
-                  M.read (| UnsupportedLiteral |)
+                  Value.Integer IntegerKind.U8 101
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -26495,7 +26705,7 @@ Module fmt.
                   M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
                   M.read (| M.use (M.deref (| M.read (| self |) |)) |);
                   Value.Bool true;
-                  M.read (| UnsupportedLiteral |)
+                  Value.Integer IntegerKind.U8 101
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -26550,7 +26760,7 @@ Module fmt.
                     [ M.read (| M.deref (| M.read (| self |) |) |); Value.Integer IntegerKind.I64 0
                     ]
                   |);
-                  M.read (| UnsupportedLiteral |)
+                  Value.Integer IntegerKind.U8 69
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -26590,7 +26800,7 @@ Module fmt.
                   M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
                   M.read (| M.use (M.deref (| M.read (| self |) |)) |);
                   Value.Bool true;
-                  M.read (| UnsupportedLiteral |)
+                  Value.Integer IntegerKind.U8 69
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -26643,7 +26853,7 @@ Module fmt.
                       Value.Integer IntegerKind.Isize 0
                     ]
                   |);
-                  M.read (| UnsupportedLiteral |)
+                  Value.Integer IntegerKind.U8 101
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -26683,7 +26893,7 @@ Module fmt.
                   M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
                   M.cast (Ty.path "u64") (M.read (| M.deref (| M.read (| self |) |) |));
                   Value.Bool true;
-                  M.read (| UnsupportedLiteral |)
+                  Value.Integer IntegerKind.U8 101
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -26736,7 +26946,7 @@ Module fmt.
                       Value.Integer IntegerKind.Isize 0
                     ]
                   |);
-                  M.read (| UnsupportedLiteral |)
+                  Value.Integer IntegerKind.U8 69
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -26776,7 +26986,7 @@ Module fmt.
                   M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
                   M.cast (Ty.path "u64") (M.read (| M.deref (| M.read (| self |) |) |));
                   Value.Bool true;
-                  M.read (| UnsupportedLiteral |)
+                  Value.Integer IntegerKind.U8 69
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -27863,7 +28073,7 @@ Module fmt.
                                       Value.Integer IntegerKind.Usize 1
                                     |)
                                   |);
-                                  M.read (| UnsupportedLiteral |)
+                                  Value.Integer IntegerKind.U8 46
                                 ]
                               |) in
                             let~ fraction_range :
@@ -28545,7 +28755,7 @@ Module fmt.
                                                     Ty.path "u8",
                                                     BinOp.Wrap.add,
                                                     [
-                                                      M.read (| UnsupportedLiteral |);
+                                                      Value.Integer IntegerKind.U8 48;
                                                       M.cast (Ty.path "u8") (M.read (| digit |))
                                                     ]
                                                   |)
@@ -28756,7 +28966,7 @@ Module fmt.
                                 Ty.path "u8",
                                 BinOp.Wrap.add,
                                 [
-                                  M.read (| UnsupportedLiteral |);
+                                  Value.Integer IntegerKind.U8 48;
                                   M.cast (Ty.path "u8") (M.read (| lead_dec |))
                                 ]
                               |)
@@ -28841,7 +29051,7 @@ Module fmt.
                                             Ty.path "u8",
                                             BinOp.Wrap.add,
                                             [
-                                              M.read (| UnsupportedLiteral |);
+                                              Value.Integer IntegerKind.U8 48;
                                               M.cast (Ty.path "u8") (M.read (| exp |))
                                             ]
                                           |)
@@ -29647,7 +29857,7 @@ Module fmt.
                   BinOp.ge,
                   [ M.read (| M.deref (| M.read (| self |) |) |); Value.Integer IntegerKind.I128 0 ]
                 |);
-                M.read (| UnsupportedLiteral |)
+                Value.Integer IntegerKind.U8 101
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -29687,7 +29897,7 @@ Module fmt.
                 M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
                 M.read (| M.use (M.deref (| M.read (| self |) |)) |);
                 Value.Bool true;
-                M.read (| UnsupportedLiteral |)
+                Value.Integer IntegerKind.U8 101
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -29741,7 +29951,7 @@ Module fmt.
                   BinOp.ge,
                   [ M.read (| M.deref (| M.read (| self |) |) |); Value.Integer IntegerKind.I128 0 ]
                 |);
-                M.read (| UnsupportedLiteral |)
+                Value.Integer IntegerKind.U8 69
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -29781,7 +29991,7 @@ Module fmt.
                 M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
                 M.read (| M.use (M.deref (| M.read (| self |) |)) |);
                 Value.Bool true;
-                M.read (| UnsupportedLiteral |)
+                Value.Integer IntegerKind.U8 69
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -30366,7 +30576,7 @@ Module fmt.
                                           M.read (| offset |)
                                         |)
                                       |);
-                                      M.read (| UnsupportedLiteral |)
+                                      Value.Integer IntegerKind.U8 48
                                     ]
                                   |) in
                                 M.return_ (| M.read (| offset |) |)
@@ -32139,7 +32349,7 @@ Module fmt.
                                     |)
                                   |)
                                 |);
-                                M.read (| UnsupportedLiteral |)
+                                Value.Integer IntegerKind.U8 45
                               ]
                             |) in
                           M.alloc (| Ty.tuple [], Value.Tuple [] |)

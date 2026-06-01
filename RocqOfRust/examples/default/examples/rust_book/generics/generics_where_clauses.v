@@ -88,7 +88,7 @@ Module Impl_generics_where_clauses_PrintInOption_where_core_fmt_Debug_core_optio
                           [
                             M.borrow (|
                               Pointer.Kind.Ref,
-                              M.deref (| M.read (| UnsupportedLiteral |) |)
+                              M.deref (| M.mk_byte_str_ref 4 [ 192; 1; 10; 0 ] |)
                             |);
                             M.borrow (|
                               Pointer.Kind.Ref,

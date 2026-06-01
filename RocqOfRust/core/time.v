@@ -4141,7 +4141,7 @@ Module time.
                               [
                                 M.borrow (|
                                   Pointer.Kind.Ref,
-                                  M.deref (| M.read (| UnsupportedLiteral |) |)
+                                  M.deref (| M.mk_byte_str_ref 2 [ 192; 0 ] |)
                                 |);
                                 M.borrow (|
                                   Pointer.Kind.Ref,
@@ -4266,7 +4266,7 @@ Module time.
                               [
                                 M.borrow (|
                                   Pointer.Kind.Ref,
-                                  M.deref (| M.read (| UnsupportedLiteral |) |)
+                                  M.deref (| M.mk_byte_str_ref 2 [ 192; 0 ] |)
                                 |);
                                 M.borrow (|
                                   Pointer.Kind.Ref,

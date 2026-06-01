@@ -393,7 +393,7 @@ Module num.
                                         |),
                                         [
                                           M.read (| M.deref (| M.read (| c |) |) |);
-                                          M.read (| UnsupportedLiteral |)
+                                          Value.Integer IntegerKind.U8 48
                                         ]
                                       |) in
                                     M.alloc (|

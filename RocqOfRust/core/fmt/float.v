@@ -2464,7 +2464,7 @@ Module fmt.
                       [
                         M.borrow (|
                           Pointer.Kind.Ref,
-                          M.deref (| M.read (| UnsupportedLiteral |) |)
+                          M.deref (| M.mk_byte_str_ref 8 [ 195; 32; 0; 128; 105; 34; 0; 0 ] |)
                         |);
                         M.borrow (|
                           Pointer.Kind.Ref,

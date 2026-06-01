@@ -125,7 +125,11 @@ Module Impl_scoping_rules_lifetimes_methods_Owner.
                           [
                             M.borrow (|
                               Pointer.Kind.Ref,
-                              M.deref (| M.read (| UnsupportedLiteral |) |)
+                              M.deref (|
+                                M.mk_byte_str_ref
+                                  14
+                                  [ 9; 96; 112; 114; 105; 110; 116; 96; 58; 32; 192; 1; 10; 0 ]
+                              |)
                             |);
                             M.borrow (|
                               Pointer.Kind.Ref,

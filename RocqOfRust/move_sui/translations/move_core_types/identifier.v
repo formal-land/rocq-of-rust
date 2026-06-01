@@ -1204,7 +1204,35 @@ Module identifier.
                                                         M.borrow (|
                                                           Pointer.Kind.Ref,
                                                           M.deref (|
-                                                            M.read (| UnsupportedLiteral |)
+                                                            M.mk_byte_str_ref
+                                                              25
+                                                              [
+                                                                20;
+                                                                73;
+                                                                110;
+                                                                118;
+                                                                97;
+                                                                108;
+                                                                105;
+                                                                100;
+                                                                32;
+                                                                105;
+                                                                100;
+                                                                101;
+                                                                110;
+                                                                116;
+                                                                105;
+                                                                102;
+                                                                105;
+                                                                101;
+                                                                114;
+                                                                32;
+                                                                39;
+                                                                192;
+                                                                1;
+                                                                39;
+                                                                0
+                                                              ]
                                                           |)
                                                         |);
                                                         M.borrow (|
@@ -1967,10 +1995,7 @@ Module identifier.
                       []
                     |),
                     [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| M.read (| UnsupportedLiteral |) |)
-                      |);
+                      M.borrow (| Pointer.Kind.Ref, M.deref (| M.mk_byte_str_ref 2 [ 192; 0 ] |) |);
                       M.borrow (|
                         Pointer.Kind.Ref,
                         M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
@@ -2751,7 +2776,37 @@ Module identifier.
                                                   [
                                                     M.borrow (|
                                                       Pointer.Kind.Ref,
-                                                      M.deref (| M.read (| UnsupportedLiteral |) |)
+                                                      M.deref (|
+                                                        M.mk_byte_str_ref
+                                                          25
+                                                          [
+                                                            20;
+                                                            73;
+                                                            110;
+                                                            118;
+                                                            97;
+                                                            108;
+                                                            105;
+                                                            100;
+                                                            32;
+                                                            105;
+                                                            100;
+                                                            101;
+                                                            110;
+                                                            116;
+                                                            105;
+                                                            102;
+                                                            105;
+                                                            101;
+                                                            114;
+                                                            32;
+                                                            39;
+                                                            192;
+                                                            1;
+                                                            39;
+                                                            0
+                                                          ]
+                                                      |)
                                                     |);
                                                     M.borrow (|
                                                       Pointer.Kind.Ref,
@@ -3223,10 +3278,7 @@ Module identifier.
                       []
                     |),
                     [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| M.read (| UnsupportedLiteral |) |)
-                      |);
+                      M.borrow (| Pointer.Kind.Ref, M.deref (| M.mk_byte_str_ref 2 [ 192; 0 ] |) |);
                       M.borrow (|
                         Pointer.Kind.Ref,
                         M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)

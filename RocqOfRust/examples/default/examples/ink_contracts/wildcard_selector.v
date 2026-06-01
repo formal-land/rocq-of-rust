@@ -240,7 +240,49 @@ Module Impl_wildcard_selector_WildcardSelector.
                                   [
                                     M.borrow (|
                                       Pointer.Kind.Ref,
-                                      M.deref (| M.read (| UnsupportedLiteral |) |)
+                                      M.deref (|
+                                        M.mk_byte_str_ref
+                                          37
+                                          [
+                                            19;
+                                            87;
+                                            105;
+                                            108;
+                                            100;
+                                            99;
+                                            97;
+                                            114;
+                                            100;
+                                            32;
+                                            115;
+                                            101;
+                                            108;
+                                            101;
+                                            99;
+                                            116;
+                                            111;
+                                            114;
+                                            58;
+                                            32;
+                                            192;
+                                            11;
+                                            44;
+                                            32;
+                                            109;
+                                            101;
+                                            115;
+                                            115;
+                                            97;
+                                            103;
+                                            101;
+                                            58;
+                                            32;
+                                            192;
+                                            1;
+                                            10;
+                                            0
+                                          ]
+                                      |)
                                     |);
                                     M.borrow (|
                                       Pointer.Kind.Ref,
@@ -332,7 +374,46 @@ Module Impl_wildcard_selector_WildcardSelector.
                           [
                             M.borrow (|
                               Pointer.Kind.Ref,
-                              M.deref (| M.read (| UnsupportedLiteral |) |)
+                              M.deref (|
+                                M.mk_byte_str_ref
+                                  34
+                                  [
+                                    29;
+                                    87;
+                                    105;
+                                    108;
+                                    100;
+                                    99;
+                                    97;
+                                    114;
+                                    100;
+                                    32;
+                                    99;
+                                    111;
+                                    109;
+                                    112;
+                                    108;
+                                    101;
+                                    109;
+                                    101;
+                                    110;
+                                    116;
+                                    32;
+                                    109;
+                                    101;
+                                    115;
+                                    115;
+                                    97;
+                                    103;
+                                    101;
+                                    58;
+                                    32;
+                                    192;
+                                    1;
+                                    10;
+                                    0
+                                  ]
+                              |)
                             |);
                             M.borrow (|
                               Pointer.Kind.Ref,

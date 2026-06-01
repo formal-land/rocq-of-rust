@@ -5604,9 +5604,34 @@ Module limits.
                                                                                                               M.borrow (|
                                                                                                                 Pointer.Kind.Ref,
                                                                                                                 M.deref (|
-                                                                                                                  M.read (|
-                                                                                                                    UnsupportedLiteral
-                                                                                                                  |)
+                                                                                                                  M.mk_byte_str_ref
+                                                                                                                    24
+                                                                                                                    [
+                                                                                                                      21;
+                                                                                                                      118;
+                                                                                                                      101;
+                                                                                                                      99;
+                                                                                                                      116;
+                                                                                                                      111;
+                                                                                                                      114;
+                                                                                                                      32;
+                                                                                                                      115;
+                                                                                                                      105;
+                                                                                                                      122;
+                                                                                                                      101;
+                                                                                                                      32;
+                                                                                                                      108;
+                                                                                                                      105;
+                                                                                                                      109;
+                                                                                                                      105;
+                                                                                                                      116;
+                                                                                                                      32;
+                                                                                                                      105;
+                                                                                                                      115;
+                                                                                                                      32;
+                                                                                                                      192;
+                                                                                                                      0
+                                                                                                                    ]
                                                                                                                 |)
                                                                                                               |);
                                                                                                               M.borrow (|

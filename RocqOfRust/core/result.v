@@ -3363,7 +3363,10 @@ Module result.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| UnsupportedLiteral |) |) |);
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (| M.mk_byte_str_ref 6 [ 192; 2; 58; 32; 192; 0 ] |)
+                    |);
                     M.borrow (|
                       Pointer.Kind.Ref,
                       M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)

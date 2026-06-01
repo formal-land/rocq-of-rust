@@ -292,7 +292,7 @@ Module fmt.
                                                                 BinOp.eq,
                                                                 [
                                                                   M.read (| b |);
-                                                                  M.read (| UnsupportedLiteral |)
+                                                                  Value.Integer IntegerKind.U8 10
                                                                 ]
                                                               |)
                                                             |) in
@@ -511,9 +511,9 @@ Module fmt.
                                                                         BinOp.eq,
                                                                         [
                                                                           M.read (| b |);
-                                                                          M.read (|
-                                                                            UnsupportedLiteral
-                                                                          |)
+                                                                          Value.Integer
+                                                                            IntegerKind.U8
+                                                                            13
                                                                         ]
                                                                       |)
                                                                     |) in
@@ -740,9 +740,9 @@ Module fmt.
                                                                                 BinOp.eq,
                                                                                 [
                                                                                   M.read (| b |);
-                                                                                  M.read (|
-                                                                                    UnsupportedLiteral
-                                                                                  |)
+                                                                                  Value.Integer
+                                                                                    IntegerKind.U8
+                                                                                    9
                                                                                 ]
                                                                               |)
                                                                             |) in
@@ -982,9 +982,9 @@ Module fmt.
                                                                                             M.read (|
                                                                                               b
                                                                                             |);
-                                                                                            M.read (|
-                                                                                              UnsupportedLiteral
-                                                                                            |)
+                                                                                            Value.Integer
+                                                                                              IntegerKind.U8
+                                                                                              92
                                                                                           ]
                                                                                         |),
                                                                                         ltac:(M.monadic
@@ -996,9 +996,9 @@ Module fmt.
                                                                                               M.read (|
                                                                                                 b
                                                                                               |);
-                                                                                              M.read (|
-                                                                                                UnsupportedLiteral
-                                                                                              |)
+                                                                                              Value.Integer
+                                                                                                IntegerKind.U8
+                                                                                                34
                                                                                             ]
                                                                                           |)))
                                                                                       |)
@@ -1199,9 +1199,14 @@ Module fmt.
                                                                                                           M.borrow (|
                                                                                                             Pointer.Kind.Ref,
                                                                                                             M.deref (|
-                                                                                                              M.read (|
-                                                                                                                UnsupportedLiteral
-                                                                                                              |)
+                                                                                                              M.mk_byte_str_ref
+                                                                                                                4
+                                                                                                                [
+                                                                                                                  1;
+                                                                                                                  92;
+                                                                                                                  192;
+                                                                                                                  0
+                                                                                                                ]
                                                                                                             |)
                                                                                                           |);
                                                                                                           M.borrow (|
@@ -1348,9 +1353,9 @@ Module fmt.
                                                                                                   M.read (|
                                                                                                     b
                                                                                                   |);
-                                                                                                  M.read (|
-                                                                                                    UnsupportedLiteral
-                                                                                                  |)
+                                                                                                  Value.Integer
+                                                                                                    IntegerKind.U8
+                                                                                                    0
                                                                                                 ]
                                                                                               |)
                                                                                             |) in
@@ -1862,9 +1867,12 @@ Module fmt.
                                                                                                                           M.borrow (|
                                                                                                                             Pointer.Kind.Ref,
                                                                                                                             M.deref (|
-                                                                                                                              M.read (|
-                                                                                                                                UnsupportedLiteral
-                                                                                                                              |)
+                                                                                                                              M.mk_byte_str_ref
+                                                                                                                                2
+                                                                                                                                [
+                                                                                                                                  192;
+                                                                                                                                  0
+                                                                                                                                ]
                                                                                                                             |)
                                                                                                                           |);
                                                                                                                           M.borrow (|
@@ -2176,9 +2184,21 @@ Module fmt.
                                                                                                                           M.borrow (|
                                                                                                                             Pointer.Kind.Ref,
                                                                                                                             M.deref (|
-                                                                                                                              M.read (|
-                                                                                                                                UnsupportedLiteral
-                                                                                                                              |)
+                                                                                                                              M.mk_byte_str_ref
+                                                                                                                                11
+                                                                                                                                [
+                                                                                                                                  2;
+                                                                                                                                  92;
+                                                                                                                                  120;
+                                                                                                                                  195;
+                                                                                                                                  32;
+                                                                                                                                  0;
+                                                                                                                                  0;
+                                                                                                                                  105;
+                                                                                                                                  2;
+                                                                                                                                  0;
+                                                                                                                                  0
+                                                                                                                                ]
                                                                                                                             |)
                                                                                                                           |);
                                                                                                                           M.borrow (|

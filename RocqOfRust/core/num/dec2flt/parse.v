@@ -675,7 +675,7 @@ Module num.
                                               |),
                                               [
                                                 M.read (| M.deref (| M.read (| c |) |) |);
-                                                M.read (| UnsupportedLiteral |)
+                                                Value.Integer IntegerKind.U8 48
                                               ]
                                             |) in
                                           M.alloc (|
@@ -896,7 +896,7 @@ Module num.
                               M.call_closure (|
                                 Ty.path "bool",
                                 BinOp.eq,
-                                [ M.read (| c |); M.read (| UnsupportedLiteral |) ]
+                                [ M.read (| c |); Value.Integer IntegerKind.U8 45 ]
                               |)
                             |) in
                           M.alloc (|
@@ -914,13 +914,13 @@ Module num.
                                           M.call_closure (|
                                             Ty.path "bool",
                                             BinOp.eq,
-                                            [ M.read (| c |); M.read (| UnsupportedLiteral |) ]
+                                            [ M.read (| c |); Value.Integer IntegerKind.U8 45 ]
                                           |),
                                           ltac:(M.monadic
                                             (M.call_closure (|
                                               Ty.path "bool",
                                               BinOp.eq,
-                                              [ M.read (| c |); M.read (| UnsupportedLiteral |) ]
+                                              [ M.read (| c |); Value.Integer IntegerKind.U8 43 ]
                                             |)))
                                         |)
                                       |) in
@@ -1707,13 +1707,13 @@ Module num.
                                           M.call_closure (|
                                             Ty.path "bool",
                                             BinOp.eq,
-                                            [ M.read (| c |); M.read (| UnsupportedLiteral |) ]
+                                            [ M.read (| c |); Value.Integer IntegerKind.U8 101 ]
                                           |),
                                           ltac:(M.monadic
                                             (M.call_closure (|
                                               Ty.path "bool",
                                               BinOp.eq,
-                                              [ M.read (| c |); M.read (| UnsupportedLiteral |) ]
+                                              [ M.read (| c |); Value.Integer IntegerKind.U8 69 ]
                                             |)))
                                         |)
                                       |) in
@@ -2067,7 +2067,7 @@ Module num.
                                                     BinOp.eq,
                                                     [
                                                       M.read (| c |);
-                                                      M.read (| UnsupportedLiteral |)
+                                                      Value.Integer IntegerKind.U8 46
                                                     ]
                                                   |),
                                                   ltac:(M.monadic
@@ -2076,7 +2076,7 @@ Module num.
                                                       BinOp.eq,
                                                       [
                                                         M.read (| c |);
-                                                        M.read (| UnsupportedLiteral |)
+                                                        Value.Integer IntegerKind.U8 48
                                                       ]
                                                     |)))
                                                 |)
@@ -2112,7 +2112,7 @@ Module num.
                                                               Ty.path "u8",
                                                               BinOp.Wrap.sub,
                                                               [
-                                                                M.read (| UnsupportedLiteral |);
+                                                                Value.Integer IntegerKind.U8 48;
                                                                 Value.Integer IntegerKind.U8 1
                                                               ]
                                                             |)

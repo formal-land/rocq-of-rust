@@ -1972,7 +1972,9 @@ Module transaction_argument.
                             [
                               M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.deref (| M.read (| UnsupportedLiteral |) |)
+                                M.deref (|
+                                  M.mk_byte_str_ref 10 [ 5; 123; 85; 56; 58; 32; 192; 1; 125; 0 ]
+                                |)
                               |);
                               M.borrow (|
                                 Pointer.Kind.Ref,
@@ -2058,7 +2060,11 @@ Module transaction_argument.
                             [
                               M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.deref (| M.read (| UnsupportedLiteral |) |)
+                                M.deref (|
+                                  M.mk_byte_str_ref
+                                    11
+                                    [ 6; 123; 85; 54; 52; 58; 32; 192; 1; 125; 0 ]
+                                |)
                               |);
                               M.borrow (|
                                 Pointer.Kind.Ref,
@@ -2144,7 +2150,11 @@ Module transaction_argument.
                             [
                               M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.deref (| M.read (| UnsupportedLiteral |) |)
+                                M.deref (|
+                                  M.mk_byte_str_ref
+                                    12
+                                    [ 7; 123; 85; 49; 50; 56; 58; 32; 192; 1; 125; 0 ]
+                                |)
                               |);
                               M.borrow (|
                                 Pointer.Kind.Ref,
@@ -2230,7 +2240,11 @@ Module transaction_argument.
                             [
                               M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.deref (| M.read (| UnsupportedLiteral |) |)
+                                M.deref (|
+                                  M.mk_byte_str_ref
+                                    12
+                                    [ 7; 123; 66; 79; 79; 76; 58; 32; 192; 1; 125; 0 ]
+                                |)
                               |);
                               M.borrow (|
                                 Pointer.Kind.Ref,
@@ -2333,7 +2347,11 @@ Module transaction_argument.
                             [
                               M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.deref (| M.read (| UnsupportedLiteral |) |)
+                                M.deref (|
+                                  M.mk_byte_str_ref
+                                    15
+                                    [ 10; 123; 65; 68; 68; 82; 69; 83; 83; 58; 32; 192; 1; 125; 0 ]
+                                |)
                               |);
                               M.borrow (|
                                 Pointer.Kind.Ref,
@@ -2453,7 +2471,30 @@ Module transaction_argument.
                             [
                               M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.deref (| M.read (| UnsupportedLiteral |) |)
+                                M.deref (|
+                                  M.mk_byte_str_ref
+                                    18
+                                    [
+                                      13;
+                                      123;
+                                      85;
+                                      56;
+                                      86;
+                                      101;
+                                      99;
+                                      116;
+                                      111;
+                                      114;
+                                      58;
+                                      32;
+                                      48;
+                                      120;
+                                      192;
+                                      1;
+                                      125;
+                                      0
+                                    ]
+                                |)
                               |);
                               M.borrow (|
                                 Pointer.Kind.Ref,
@@ -2539,7 +2580,11 @@ Module transaction_argument.
                             [
                               M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.deref (| M.read (| UnsupportedLiteral |) |)
+                                M.deref (|
+                                  M.mk_byte_str_ref
+                                    11
+                                    [ 6; 123; 85; 49; 54; 58; 32; 192; 1; 125; 0 ]
+                                |)
                               |);
                               M.borrow (|
                                 Pointer.Kind.Ref,
@@ -2625,7 +2670,11 @@ Module transaction_argument.
                             [
                               M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.deref (| M.read (| UnsupportedLiteral |) |)
+                                M.deref (|
+                                  M.mk_byte_str_ref
+                                    11
+                                    [ 6; 123; 85; 51; 50; 58; 32; 192; 1; 125; 0 ]
+                                |)
                               |);
                               M.borrow (|
                                 Pointer.Kind.Ref,
@@ -2725,7 +2774,11 @@ Module transaction_argument.
                             [
                               M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.deref (| M.read (| UnsupportedLiteral |) |)
+                                M.deref (|
+                                  M.mk_byte_str_ref
+                                    12
+                                    [ 7; 123; 85; 50; 53; 54; 58; 32; 192; 1; 125; 0 ]
+                                |)
                               |);
                               M.borrow (|
                                 Pointer.Kind.Ref,
@@ -3481,9 +3534,40 @@ Module transaction_argument.
                                                                                                 M.borrow (|
                                                                                                   Pointer.Kind.Ref,
                                                                                                   M.deref (|
-                                                                                                    M.read (|
-                                                                                                      UnsupportedLiteral
-                                                                                                    |)
+                                                                                                    M.mk_byte_str_ref
+                                                                                                      30
+                                                                                                      [
+                                                                                                        27;
+                                                                                                        117;
+                                                                                                        110;
+                                                                                                        101;
+                                                                                                        120;
+                                                                                                        112;
+                                                                                                        101;
+                                                                                                        99;
+                                                                                                        116;
+                                                                                                        101;
+                                                                                                        100;
+                                                                                                        32;
+                                                                                                        118;
+                                                                                                        97;
+                                                                                                        108;
+                                                                                                        117;
+                                                                                                        101;
+                                                                                                        32;
+                                                                                                        105;
+                                                                                                        110;
+                                                                                                        32;
+                                                                                                        98;
+                                                                                                        121;
+                                                                                                        116;
+                                                                                                        101;
+                                                                                                        115;
+                                                                                                        58;
+                                                                                                        32;
+                                                                                                        192;
+                                                                                                        0
+                                                                                                      ]
                                                                                                   |)
                                                                                                 |);
                                                                                                 M.borrow (|
@@ -3748,9 +3832,43 @@ Module transaction_argument.
                                                                   M.borrow (|
                                                                     Pointer.Kind.Ref,
                                                                     M.deref (|
-                                                                      M.read (|
-                                                                        UnsupportedLiteral
-                                                                      |)
+                                                                      M.mk_byte_str_ref
+                                                                        33
+                                                                        [
+                                                                          30;
+                                                                          105;
+                                                                          110;
+                                                                          118;
+                                                                          97;
+                                                                          108;
+                                                                          105;
+                                                                          100;
+                                                                          32;
+                                                                          116;
+                                                                          114;
+                                                                          97;
+                                                                          110;
+                                                                          115;
+                                                                          97;
+                                                                          99;
+                                                                          116;
+                                                                          105;
+                                                                          111;
+                                                                          110;
+                                                                          32;
+                                                                          97;
+                                                                          114;
+                                                                          103;
+                                                                          117;
+                                                                          109;
+                                                                          101;
+                                                                          110;
+                                                                          116;
+                                                                          58;
+                                                                          32;
+                                                                          192;
+                                                                          0
+                                                                        ]
                                                                     |)
                                                                   |);
                                                                   M.borrow (|

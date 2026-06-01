@@ -84,7 +84,46 @@ Definition eat_box_i32 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) 
                         [
                           M.borrow (|
                             Pointer.Kind.Ref,
-                            M.deref (| M.read (| UnsupportedLiteral |) |)
+                            M.deref (|
+                              M.mk_byte_str_ref
+                                34
+                                [
+                                  29;
+                                  68;
+                                  101;
+                                  115;
+                                  116;
+                                  114;
+                                  111;
+                                  121;
+                                  105;
+                                  110;
+                                  103;
+                                  32;
+                                  98;
+                                  111;
+                                  120;
+                                  32;
+                                  116;
+                                  104;
+                                  97;
+                                  116;
+                                  32;
+                                  99;
+                                  111;
+                                  110;
+                                  116;
+                                  97;
+                                  105;
+                                  110;
+                                  115;
+                                  32;
+                                  192;
+                                  1;
+                                  10;
+                                  0
+                                ]
+                            |)
                           |);
                           M.borrow (|
                             Pointer.Kind.Ref,
@@ -175,7 +214,30 @@ Definition borrow_i32 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) :
                         [
                           M.borrow (|
                             Pointer.Kind.Ref,
-                            M.deref (| M.read (| UnsupportedLiteral |) |)
+                            M.deref (|
+                              M.mk_byte_str_ref
+                                18
+                                [
+                                  13;
+                                  84;
+                                  104;
+                                  105;
+                                  115;
+                                  32;
+                                  105;
+                                  110;
+                                  116;
+                                  32;
+                                  105;
+                                  115;
+                                  58;
+                                  32;
+                                  192;
+                                  1;
+                                  10;
+                                  0
+                                ]
+                            |)
                           |);
                           M.borrow (|
                             Pointer.Kind.Ref,

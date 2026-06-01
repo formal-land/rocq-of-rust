@@ -2004,7 +2004,34 @@ Module marker.
                       [
                         M.borrow (|
                           Pointer.Kind.Ref,
-                          M.deref (| M.read (| UnsupportedLiteral |) |)
+                          M.deref (|
+                            M.mk_byte_str_ref
+                              22
+                              [
+                                17;
+                                80;
+                                104;
+                                97;
+                                110;
+                                116;
+                                111;
+                                109;
+                                67;
+                                111;
+                                118;
+                                97;
+                                114;
+                                105;
+                                97;
+                                110;
+                                116;
+                                60;
+                                192;
+                                1;
+                                62;
+                                0
+                              ]
+                          |)
                         |);
                         M.borrow (|
                           Pointer.Kind.Ref,
@@ -2511,7 +2538,38 @@ Module marker.
                       [
                         M.borrow (|
                           Pointer.Kind.Ref,
-                          M.deref (| M.read (| UnsupportedLiteral |) |)
+                          M.deref (|
+                            M.mk_byte_str_ref
+                              26
+                              [
+                                21;
+                                80;
+                                104;
+                                97;
+                                110;
+                                116;
+                                111;
+                                109;
+                                67;
+                                111;
+                                110;
+                                116;
+                                114;
+                                97;
+                                118;
+                                97;
+                                114;
+                                105;
+                                97;
+                                110;
+                                116;
+                                60;
+                                192;
+                                1;
+                                62;
+                                0
+                              ]
+                          |)
                         |);
                         M.borrow (|
                           Pointer.Kind.Ref,
@@ -3005,7 +3063,34 @@ Module marker.
                       [
                         M.borrow (|
                           Pointer.Kind.Ref,
-                          M.deref (| M.read (| UnsupportedLiteral |) |)
+                          M.deref (|
+                            M.mk_byte_str_ref
+                              22
+                              [
+                                17;
+                                80;
+                                104;
+                                97;
+                                110;
+                                116;
+                                111;
+                                109;
+                                73;
+                                110;
+                                118;
+                                97;
+                                114;
+                                105;
+                                97;
+                                110;
+                                116;
+                                60;
+                                192;
+                                1;
+                                62;
+                                0
+                              ]
+                          |)
                         |);
                         M.borrow (|
                           Pointer.Kind.Ref,

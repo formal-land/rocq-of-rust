@@ -1790,7 +1790,7 @@ Module bits.
                     M.deref (| M.read (| buf |) |),
                     Value.Integer IntegerKind.Usize 0
                   |),
-                  M.read (| UnsupportedLiteral |)
+                  Value.Integer IntegerKind.U8 48
                 |) in
               let~ _ : Ty.tuple [] :=
                 M.write (|
@@ -1798,7 +1798,7 @@ Module bits.
                     M.deref (| M.read (| buf |) |),
                     Value.Integer IntegerKind.Usize 1
                   |),
-                  M.read (| UnsupportedLiteral |)
+                  Value.Integer IntegerKind.U8 120
                 |) in
               let~ _ : Ty.tuple [] :=
                 M.call_closure (|
@@ -2357,7 +2357,7 @@ Module bits.
                                                                   M.read (|
                                                                     M.deref (| M.read (| out |) |)
                                                                   |);
-                                                                  M.read (| UnsupportedLiteral |)
+                                                                  Value.Integer IntegerKind.U8 97
                                                                 ]
                                                               |);
                                                               M.call_closure (|

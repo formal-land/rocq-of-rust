@@ -1227,7 +1227,7 @@ Module panic.
                       [
                         M.borrow (|
                           Pointer.Kind.Ref,
-                          M.deref (| M.read (| UnsupportedLiteral |) |)
+                          M.deref (| M.mk_byte_str_ref 8 [ 192; 1; 58; 192; 1; 58; 192; 0 ] |)
                         |);
                         M.borrow (|
                           Pointer.Kind.Ref,

@@ -594,7 +594,31 @@ Module signature.
                               [
                                 M.borrow (|
                                   Pointer.Kind.Ref,
-                                  M.deref (| M.read (| UnsupportedLiteral |) |)
+                                  M.deref (|
+                                    M.mk_byte_str_ref
+                                      19
+                                      [
+                                        16;
+                                        105;
+                                        110;
+                                        118;
+                                        97;
+                                        108;
+                                        105;
+                                        100;
+                                        32;
+                                        112;
+                                        97;
+                                        114;
+                                        105;
+                                        116;
+                                        121;
+                                        58;
+                                        32;
+                                        192;
+                                        0
+                                      ]
+                                  |)
                                 |);
                                 M.borrow (|
                                   Pointer.Kind.Ref,

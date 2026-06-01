@@ -9219,7 +9219,7 @@ Module language_storage.
                         [
                           M.borrow (|
                             Pointer.Kind.Ref,
-                            M.deref (| M.read (| UnsupportedLiteral |) |)
+                            M.deref (| M.mk_byte_str_ref 9 [ 2; 48; 120; 192; 2; 58; 58; 192; 0 ] |)
                           |);
                           M.borrow (|
                             Pointer.Kind.Ref,
@@ -9327,10 +9327,7 @@ Module language_storage.
                       []
                     |),
                     [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| M.read (| UnsupportedLiteral |) |)
-                      |);
+                      M.borrow (| Pointer.Kind.Ref, M.deref (| M.mk_byte_str_ref 2 [ 192; 0 ] |) |);
                       M.borrow (|
                         Pointer.Kind.Ref,
                         M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
@@ -9589,7 +9586,11 @@ Module language_storage.
                                     [
                                       M.borrow (|
                                         Pointer.Kind.Ref,
-                                        M.deref (| M.read (| UnsupportedLiteral |) |)
+                                        M.deref (|
+                                          M.mk_byte_str_ref
+                                            13
+                                            [ 2; 48; 120; 192; 2; 58; 58; 192; 2; 58; 58; 192; 0 ]
+                                        |)
                                       |);
                                       M.borrow (|
                                         Pointer.Kind.Ref,
@@ -10037,7 +10038,7 @@ Module language_storage.
                                                 [
                                                   M.borrow (|
                                                     Pointer.Kind.Ref,
-                                                    M.deref (| M.read (| UnsupportedLiteral |) |)
+                                                    M.deref (| M.mk_byte_str_ref 2 [ 192; 0 ] |)
                                                   |);
                                                   M.borrow (|
                                                     Pointer.Kind.Ref,
@@ -10570,9 +10571,15 @@ Module language_storage.
                                                                                     M.borrow (|
                                                                                       Pointer.Kind.Ref,
                                                                                       M.deref (|
-                                                                                        M.read (|
-                                                                                          UnsupportedLiteral
-                                                                                        |)
+                                                                                        M.mk_byte_str_ref
+                                                                                          5
+                                                                                          [
+                                                                                            2;
+                                                                                            44;
+                                                                                            32;
+                                                                                            192;
+                                                                                            0
+                                                                                          ]
                                                                                       |)
                                                                                     |);
                                                                                     M.borrow (|
@@ -11017,7 +11024,7 @@ Module language_storage.
                             [
                               M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.deref (| M.read (| UnsupportedLiteral |) |)
+                                M.deref (| M.mk_byte_str_ref 2 [ 192; 0 ] |)
                               |);
                               M.borrow (|
                                 Pointer.Kind.Ref,
@@ -11144,7 +11151,11 @@ Module language_storage.
                             [
                               M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.deref (| M.read (| UnsupportedLiteral |) |)
+                                M.deref (|
+                                  M.mk_byte_str_ref
+                                    12
+                                    [ 7; 118; 101; 99; 116; 111; 114; 60; 192; 1; 62; 0 ]
+                                |)
                               |);
                               M.borrow (|
                                 Pointer.Kind.Ref,
@@ -11573,7 +11584,7 @@ Module language_storage.
                     [
                       M.borrow (|
                         Pointer.Kind.Ref,
-                        M.deref (| M.read (| UnsupportedLiteral |) |)
+                        M.deref (| M.mk_byte_str_ref 8 [ 2; 48; 120; 192; 1; 47; 192; 0 ] |)
                       |);
                       M.borrow (|
                         Pointer.Kind.Ref,

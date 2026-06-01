@@ -13683,7 +13683,28 @@ Module annotated_value.
                             [
                               M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.deref (| M.read (| UnsupportedLiteral |) |)
+                                M.deref (|
+                                  M.mk_byte_str_ref
+                                    16
+                                    [
+                                      7;
+                                      118;
+                                      101;
+                                      99;
+                                      116;
+                                      111;
+                                      114;
+                                      60;
+                                      193;
+                                      32;
+                                      0;
+                                      128;
+                                      96;
+                                      1;
+                                      62;
+                                      0
+                                    ]
+                                |)
                               |);
                               M.borrow (|
                                 Pointer.Kind.Ref,
@@ -13812,7 +13833,11 @@ Module annotated_value.
                             [
                               M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.deref (| M.read (| UnsupportedLiteral |) |)
+                                M.deref (|
+                                  M.mk_byte_str_ref
+                                    12
+                                    [ 7; 118; 101; 99; 116; 111; 114; 60; 192; 1; 62; 0 ]
+                                |)
                               |);
                               M.borrow (|
                                 Pointer.Kind.Ref,
@@ -13930,7 +13955,7 @@ Module annotated_value.
                             [
                               M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.deref (| M.read (| UnsupportedLiteral |) |)
+                                M.deref (| M.mk_byte_str_ref 6 [ 193; 32; 0; 128; 96; 0 ] |)
                               |);
                               M.borrow (|
                                 Pointer.Kind.Ref,
@@ -14033,7 +14058,7 @@ Module annotated_value.
                             [
                               M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.deref (| M.read (| UnsupportedLiteral |) |)
+                                M.deref (| M.mk_byte_str_ref 2 [ 192; 0 ] |)
                               |);
                               M.borrow (|
                                 Pointer.Kind.Ref,
@@ -14186,7 +14211,7 @@ Module annotated_value.
                             [
                               M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.deref (| M.read (| UnsupportedLiteral |) |)
+                                M.deref (| M.mk_byte_str_ref 6 [ 193; 32; 0; 128; 96; 0 ] |)
                               |);
                               M.borrow (|
                                 Pointer.Kind.Ref,
@@ -14267,7 +14292,7 @@ Module annotated_value.
                             [
                               M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.deref (| M.read (| UnsupportedLiteral |) |)
+                                M.deref (| M.mk_byte_str_ref 2 [ 192; 0 ] |)
                               |);
                               M.borrow (|
                                 Pointer.Kind.Ref,
@@ -14572,7 +14597,7 @@ Module annotated_value.
                                     [
                                       M.borrow (|
                                         Pointer.Kind.Ref,
-                                        M.deref (| M.read (| UnsupportedLiteral |) |)
+                                        M.deref (| M.mk_byte_str_ref 4 [ 192; 1; 32; 0 ] |)
                                       |);
                                       M.borrow (|
                                         Pointer.Kind.Ref,
@@ -15496,7 +15521,7 @@ Module annotated_value.
                                 [
                                   M.borrow (|
                                     Pointer.Kind.Ref,
-                                    M.deref (| M.read (| UnsupportedLiteral |) |)
+                                    M.deref (| M.mk_byte_str_ref 5 [ 192; 2; 117; 56; 0 ] |)
                                   |);
                                   M.borrow (|
                                     Pointer.Kind.Ref,
@@ -15582,7 +15607,7 @@ Module annotated_value.
                                 [
                                   M.borrow (|
                                     Pointer.Kind.Ref,
-                                    M.deref (| M.read (| UnsupportedLiteral |) |)
+                                    M.deref (| M.mk_byte_str_ref 6 [ 192; 3; 117; 49; 54; 0 ] |)
                                   |);
                                   M.borrow (|
                                     Pointer.Kind.Ref,
@@ -15668,7 +15693,7 @@ Module annotated_value.
                                 [
                                   M.borrow (|
                                     Pointer.Kind.Ref,
-                                    M.deref (| M.read (| UnsupportedLiteral |) |)
+                                    M.deref (| M.mk_byte_str_ref 6 [ 192; 3; 117; 51; 50; 0 ] |)
                                   |);
                                   M.borrow (|
                                     Pointer.Kind.Ref,
@@ -15754,7 +15779,7 @@ Module annotated_value.
                                 [
                                   M.borrow (|
                                     Pointer.Kind.Ref,
-                                    M.deref (| M.read (| UnsupportedLiteral |) |)
+                                    M.deref (| M.mk_byte_str_ref 6 [ 192; 3; 117; 54; 52; 0 ] |)
                                   |);
                                   M.borrow (|
                                     Pointer.Kind.Ref,
@@ -15840,7 +15865,7 @@ Module annotated_value.
                                 [
                                   M.borrow (|
                                     Pointer.Kind.Ref,
-                                    M.deref (| M.read (| UnsupportedLiteral |) |)
+                                    M.deref (| M.mk_byte_str_ref 7 [ 192; 4; 117; 49; 50; 56; 0 ] |)
                                   |);
                                   M.borrow (|
                                     Pointer.Kind.Ref,
@@ -15940,7 +15965,7 @@ Module annotated_value.
                                 [
                                   M.borrow (|
                                     Pointer.Kind.Ref,
-                                    M.deref (| M.read (| UnsupportedLiteral |) |)
+                                    M.deref (| M.mk_byte_str_ref 7 [ 192; 4; 117; 50; 53; 54; 0 ] |)
                                   |);
                                   M.borrow (|
                                     Pointer.Kind.Ref,
@@ -16125,7 +16150,7 @@ Module annotated_value.
                                 [
                                   M.borrow (|
                                     Pointer.Kind.Ref,
-                                    M.deref (| M.read (| UnsupportedLiteral |) |)
+                                    M.deref (| M.mk_byte_str_ref 2 [ 192; 0 ] |)
                                   |);
                                   M.borrow (|
                                     Pointer.Kind.Ref,
@@ -16238,7 +16263,11 @@ Module annotated_value.
                                 [
                                   M.borrow (|
                                     Pointer.Kind.Ref,
-                                    M.deref (| M.read (| UnsupportedLiteral |) |)
+                                    M.deref (|
+                                      M.mk_byte_str_ref
+                                        12
+                                        [ 7; 115; 105; 103; 110; 101; 114; 40; 192; 1; 41; 0 ]
+                                    |)
                                   |);
                                   M.borrow (|
                                     Pointer.Kind.Ref,

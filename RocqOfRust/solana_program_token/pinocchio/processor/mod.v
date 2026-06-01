@@ -1979,7 +1979,7 @@ Module processor.
                     [ Value.Integer IntegerKind.Usize 257 ]
                     [ Ty.path "u8" ] :=
                 lib.repeat (|
-                  M.read (| UnsupportedLiteral |),
+                  Value.Integer IntegerKind.U8 48,
                   Value.Integer IntegerKind.Usize 257
                 |) in
               let~ _ : Ty.tuple [] :=

@@ -294,9 +294,37 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                                                                                           M.borrow (|
                                                                                             Pointer.Kind.Ref,
                                                                                             M.deref (|
-                                                                                              M.read (|
-                                                                                                UnsupportedLiteral
-                                                                                              |)
+                                                                                              M.mk_byte_str_ref
+                                                                                                27
+                                                                                                [
+                                                                                                  22;
+                                                                                                  116;
+                                                                                                  104;
+                                                                                                  105;
+                                                                                                  115;
+                                                                                                  32;
+                                                                                                  105;
+                                                                                                  115;
+                                                                                                  32;
+                                                                                                  116;
+                                                                                                  104;
+                                                                                                  114;
+                                                                                                  101;
+                                                                                                  97;
+                                                                                                  100;
+                                                                                                  32;
+                                                                                                  110;
+                                                                                                  117;
+                                                                                                  109;
+                                                                                                  98;
+                                                                                                  101;
+                                                                                                  114;
+                                                                                                  32;
+                                                                                                  192;
+                                                                                                  1;
+                                                                                                  10;
+                                                                                                  0
+                                                                                                ]
                                                                                             |)
                                                                                           |);
                                                                                           M.borrow (|

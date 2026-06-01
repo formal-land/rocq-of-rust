@@ -321,7 +321,80 @@ Module reference_safety.
                                                 [
                                                   M.borrow (|
                                                     Pointer.Kind.Ref,
-                                                    M.deref (| M.read (| UnsupportedLiteral |) |)
+                                                    M.deref (|
+                                                      M.mk_byte_str_ref
+                                                        68
+                                                        [
+                                                          61;
+                                                          99;
+                                                          114;
+                                                          97;
+                                                          116;
+                                                          101;
+                                                          115;
+                                                          47;
+                                                          109;
+                                                          111;
+                                                          118;
+                                                          101;
+                                                          45;
+                                                          98;
+                                                          121;
+                                                          116;
+                                                          101;
+                                                          99;
+                                                          111;
+                                                          100;
+                                                          101;
+                                                          45;
+                                                          118;
+                                                          101;
+                                                          114;
+                                                          105;
+                                                          102;
+                                                          105;
+                                                          101;
+                                                          114;
+                                                          47;
+                                                          115;
+                                                          114;
+                                                          99;
+                                                          47;
+                                                          114;
+                                                          101;
+                                                          102;
+                                                          101;
+                                                          114;
+                                                          101;
+                                                          110;
+                                                          99;
+                                                          101;
+                                                          95;
+                                                          115;
+                                                          97;
+                                                          102;
+                                                          101;
+                                                          116;
+                                                          121;
+                                                          47;
+                                                          109;
+                                                          111;
+                                                          100;
+                                                          46;
+                                                          114;
+                                                          115;
+                                                          58;
+                                                          53;
+                                                          56;
+                                                          32;
+                                                          193;
+                                                          32;
+                                                          0;
+                                                          128;
+                                                          96;
+                                                          0
+                                                        ]
+                                                    |)
                                                   |);
                                                   M.borrow (|
                                                     Pointer.Kind.Ref,
@@ -421,7 +494,7 @@ Module reference_safety.
                                                   [
                                                     M.borrow (|
                                                       Pointer.Kind.Ref,
-                                                      M.deref (| M.read (| UnsupportedLiteral |) |)
+                                                      M.deref (| M.mk_byte_str_ref 2 [ 192; 0 ] |)
                                                     |);
                                                     M.borrow (|
                                                       Pointer.Kind.Ref,
@@ -666,7 +739,80 @@ Module reference_safety.
                                                 [
                                                   M.borrow (|
                                                     Pointer.Kind.Ref,
-                                                    M.deref (| M.read (| UnsupportedLiteral |) |)
+                                                    M.deref (|
+                                                      M.mk_byte_str_ref
+                                                        68
+                                                        [
+                                                          61;
+                                                          99;
+                                                          114;
+                                                          97;
+                                                          116;
+                                                          101;
+                                                          115;
+                                                          47;
+                                                          109;
+                                                          111;
+                                                          118;
+                                                          101;
+                                                          45;
+                                                          98;
+                                                          121;
+                                                          116;
+                                                          101;
+                                                          99;
+                                                          111;
+                                                          100;
+                                                          101;
+                                                          45;
+                                                          118;
+                                                          101;
+                                                          114;
+                                                          105;
+                                                          102;
+                                                          105;
+                                                          101;
+                                                          114;
+                                                          47;
+                                                          115;
+                                                          114;
+                                                          99;
+                                                          47;
+                                                          114;
+                                                          101;
+                                                          102;
+                                                          101;
+                                                          114;
+                                                          101;
+                                                          110;
+                                                          99;
+                                                          101;
+                                                          95;
+                                                          115;
+                                                          97;
+                                                          102;
+                                                          101;
+                                                          116;
+                                                          121;
+                                                          47;
+                                                          109;
+                                                          111;
+                                                          100;
+                                                          46;
+                                                          114;
+                                                          115;
+                                                          58;
+                                                          54;
+                                                          51;
+                                                          32;
+                                                          193;
+                                                          32;
+                                                          0;
+                                                          128;
+                                                          96;
+                                                          0
+                                                        ]
+                                                    |)
                                                   |);
                                                   M.borrow (|
                                                     Pointer.Kind.Ref,
@@ -766,7 +912,7 @@ Module reference_safety.
                                                   [
                                                     M.borrow (|
                                                       Pointer.Kind.Ref,
-                                                      M.deref (| M.read (| UnsupportedLiteral |) |)
+                                                      M.deref (| M.mk_byte_str_ref 2 [ 192; 0 ] |)
                                                     |);
                                                     M.borrow (|
                                                       Pointer.Kind.Ref,
@@ -2825,9 +2971,79 @@ Module reference_safety.
                                                                                                       M.borrow (|
                                                                                                         Pointer.Kind.Ref,
                                                                                                         M.deref (|
-                                                                                                          M.read (|
-                                                                                                            UnsupportedLiteral
-                                                                                                          |)
+                                                                                                          M.mk_byte_str_ref
+                                                                                                            69
+                                                                                                            [
+                                                                                                              62;
+                                                                                                              99;
+                                                                                                              114;
+                                                                                                              97;
+                                                                                                              116;
+                                                                                                              101;
+                                                                                                              115;
+                                                                                                              47;
+                                                                                                              109;
+                                                                                                              111;
+                                                                                                              118;
+                                                                                                              101;
+                                                                                                              45;
+                                                                                                              98;
+                                                                                                              121;
+                                                                                                              116;
+                                                                                                              101;
+                                                                                                              99;
+                                                                                                              111;
+                                                                                                              100;
+                                                                                                              101;
+                                                                                                              45;
+                                                                                                              118;
+                                                                                                              101;
+                                                                                                              114;
+                                                                                                              105;
+                                                                                                              102;
+                                                                                                              105;
+                                                                                                              101;
+                                                                                                              114;
+                                                                                                              47;
+                                                                                                              115;
+                                                                                                              114;
+                                                                                                              99;
+                                                                                                              47;
+                                                                                                              114;
+                                                                                                              101;
+                                                                                                              102;
+                                                                                                              101;
+                                                                                                              114;
+                                                                                                              101;
+                                                                                                              110;
+                                                                                                              99;
+                                                                                                              101;
+                                                                                                              95;
+                                                                                                              115;
+                                                                                                              97;
+                                                                                                              102;
+                                                                                                              101;
+                                                                                                              116;
+                                                                                                              121;
+                                                                                                              47;
+                                                                                                              109;
+                                                                                                              111;
+                                                                                                              100;
+                                                                                                              46;
+                                                                                                              114;
+                                                                                                              115;
+                                                                                                              58;
+                                                                                                              49;
+                                                                                                              50;
+                                                                                                              55;
+                                                                                                              32;
+                                                                                                              193;
+                                                                                                              32;
+                                                                                                              0;
+                                                                                                              128;
+                                                                                                              96;
+                                                                                                              0
+                                                                                                            ]
                                                                                                         |)
                                                                                                       |);
                                                                                                       M.borrow (|
@@ -2976,9 +3192,12 @@ Module reference_safety.
                                                                                                         M.borrow (|
                                                                                                           Pointer.Kind.Ref,
                                                                                                           M.deref (|
-                                                                                                            M.read (|
-                                                                                                              UnsupportedLiteral
-                                                                                                            |)
+                                                                                                            M.mk_byte_str_ref
+                                                                                                              2
+                                                                                                              [
+                                                                                                                192;
+                                                                                                                0
+                                                                                                              ]
                                                                                                           |)
                                                                                                         |);
                                                                                                         M.borrow (|
@@ -3224,9 +3443,9 @@ Module reference_safety.
                                                                                 M.borrow (|
                                                                                   Pointer.Kind.Ref,
                                                                                   M.deref (|
-                                                                                    M.read (|
-                                                                                      UnsupportedLiteral
-                                                                                    |)
+                                                                                    M.mk_byte_str_ref
+                                                                                      2
+                                                                                      [ 192; 0 ]
                                                                                   |)
                                                                                 |);
                                                                                 M.borrow (|
@@ -3712,9 +3931,79 @@ Module reference_safety.
                                                                         M.borrow (|
                                                                           Pointer.Kind.Ref,
                                                                           M.deref (|
-                                                                            M.read (|
-                                                                              UnsupportedLiteral
-                                                                            |)
+                                                                            M.mk_byte_str_ref
+                                                                              69
+                                                                              [
+                                                                                62;
+                                                                                99;
+                                                                                114;
+                                                                                97;
+                                                                                116;
+                                                                                101;
+                                                                                115;
+                                                                                47;
+                                                                                109;
+                                                                                111;
+                                                                                118;
+                                                                                101;
+                                                                                45;
+                                                                                98;
+                                                                                121;
+                                                                                116;
+                                                                                101;
+                                                                                99;
+                                                                                111;
+                                                                                100;
+                                                                                101;
+                                                                                45;
+                                                                                118;
+                                                                                101;
+                                                                                114;
+                                                                                105;
+                                                                                102;
+                                                                                105;
+                                                                                101;
+                                                                                114;
+                                                                                47;
+                                                                                115;
+                                                                                114;
+                                                                                99;
+                                                                                47;
+                                                                                114;
+                                                                                101;
+                                                                                102;
+                                                                                101;
+                                                                                114;
+                                                                                101;
+                                                                                110;
+                                                                                99;
+                                                                                101;
+                                                                                95;
+                                                                                115;
+                                                                                97;
+                                                                                102;
+                                                                                101;
+                                                                                116;
+                                                                                121;
+                                                                                47;
+                                                                                109;
+                                                                                111;
+                                                                                100;
+                                                                                46;
+                                                                                114;
+                                                                                115;
+                                                                                58;
+                                                                                49;
+                                                                                51;
+                                                                                56;
+                                                                                32;
+                                                                                193;
+                                                                                32;
+                                                                                0;
+                                                                                128;
+                                                                                96;
+                                                                                0
+                                                                              ]
                                                                           |)
                                                                         |);
                                                                         M.borrow (|
@@ -3850,9 +4139,9 @@ Module reference_safety.
                                                                           M.borrow (|
                                                                             Pointer.Kind.Ref,
                                                                             M.deref (|
-                                                                              M.read (|
-                                                                                UnsupportedLiteral
-                                                                              |)
+                                                                              M.mk_byte_str_ref
+                                                                                2
+                                                                                [ 192; 0 ]
                                                                             |)
                                                                           |);
                                                                           M.borrow (|
@@ -4043,7 +4332,7 @@ Module reference_safety.
                                                 [
                                                   M.borrow (|
                                                     Pointer.Kind.Ref,
-                                                    M.deref (| M.read (| UnsupportedLiteral |) |)
+                                                    M.deref (| M.mk_byte_str_ref 2 [ 192; 0 ] |)
                                                   |);
                                                   M.borrow (|
                                                     Pointer.Kind.Ref,
@@ -5444,7 +5733,79 @@ Module reference_safety.
                                                             M.borrow (|
                                                               Pointer.Kind.Ref,
                                                               M.deref (|
-                                                                M.read (| UnsupportedLiteral |)
+                                                                M.mk_byte_str_ref
+                                                                  69
+                                                                  [
+                                                                    62;
+                                                                    99;
+                                                                    114;
+                                                                    97;
+                                                                    116;
+                                                                    101;
+                                                                    115;
+                                                                    47;
+                                                                    109;
+                                                                    111;
+                                                                    118;
+                                                                    101;
+                                                                    45;
+                                                                    98;
+                                                                    121;
+                                                                    116;
+                                                                    101;
+                                                                    99;
+                                                                    111;
+                                                                    100;
+                                                                    101;
+                                                                    45;
+                                                                    118;
+                                                                    101;
+                                                                    114;
+                                                                    105;
+                                                                    102;
+                                                                    105;
+                                                                    101;
+                                                                    114;
+                                                                    47;
+                                                                    115;
+                                                                    114;
+                                                                    99;
+                                                                    47;
+                                                                    114;
+                                                                    101;
+                                                                    102;
+                                                                    101;
+                                                                    114;
+                                                                    101;
+                                                                    110;
+                                                                    99;
+                                                                    101;
+                                                                    95;
+                                                                    115;
+                                                                    97;
+                                                                    102;
+                                                                    101;
+                                                                    116;
+                                                                    121;
+                                                                    47;
+                                                                    109;
+                                                                    111;
+                                                                    100;
+                                                                    46;
+                                                                    114;
+                                                                    115;
+                                                                    58;
+                                                                    49;
+                                                                    55;
+                                                                    50;
+                                                                    32;
+                                                                    193;
+                                                                    32;
+                                                                    0;
+                                                                    128;
+                                                                    96;
+                                                                    0
+                                                                  ]
                                                               |)
                                                             |);
                                                             M.borrow (|
@@ -5558,7 +5919,7 @@ Module reference_safety.
                                                               M.borrow (|
                                                                 Pointer.Kind.Ref,
                                                                 M.deref (|
-                                                                  M.read (| UnsupportedLiteral |)
+                                                                  M.mk_byte_str_ref 2 [ 192; 0 ]
                                                                 |)
                                                               |);
                                                               M.borrow (|
@@ -6526,9 +6887,79 @@ Module reference_safety.
                                                                     M.borrow (|
                                                                       Pointer.Kind.Ref,
                                                                       M.deref (|
-                                                                        M.read (|
-                                                                          UnsupportedLiteral
-                                                                        |)
+                                                                        M.mk_byte_str_ref
+                                                                          69
+                                                                          [
+                                                                            62;
+                                                                            99;
+                                                                            114;
+                                                                            97;
+                                                                            116;
+                                                                            101;
+                                                                            115;
+                                                                            47;
+                                                                            109;
+                                                                            111;
+                                                                            118;
+                                                                            101;
+                                                                            45;
+                                                                            98;
+                                                                            121;
+                                                                            116;
+                                                                            101;
+                                                                            99;
+                                                                            111;
+                                                                            100;
+                                                                            101;
+                                                                            45;
+                                                                            118;
+                                                                            101;
+                                                                            114;
+                                                                            105;
+                                                                            102;
+                                                                            105;
+                                                                            101;
+                                                                            114;
+                                                                            47;
+                                                                            115;
+                                                                            114;
+                                                                            99;
+                                                                            47;
+                                                                            114;
+                                                                            101;
+                                                                            102;
+                                                                            101;
+                                                                            114;
+                                                                            101;
+                                                                            110;
+                                                                            99;
+                                                                            101;
+                                                                            95;
+                                                                            115;
+                                                                            97;
+                                                                            102;
+                                                                            101;
+                                                                            116;
+                                                                            121;
+                                                                            47;
+                                                                            109;
+                                                                            111;
+                                                                            100;
+                                                                            46;
+                                                                            114;
+                                                                            115;
+                                                                            58;
+                                                                            49;
+                                                                            56;
+                                                                            51;
+                                                                            32;
+                                                                            193;
+                                                                            32;
+                                                                            0;
+                                                                            128;
+                                                                            96;
+                                                                            0
+                                                                          ]
                                                                       |)
                                                                     |);
                                                                     M.borrow (|
@@ -6662,9 +7093,9 @@ Module reference_safety.
                                                                       M.borrow (|
                                                                         Pointer.Kind.Ref,
                                                                         M.deref (|
-                                                                          M.read (|
-                                                                            UnsupportedLiteral
-                                                                          |)
+                                                                          M.mk_byte_str_ref
+                                                                            2
+                                                                            [ 192; 0 ]
                                                                         |)
                                                                       |);
                                                                       M.borrow (|
@@ -7024,9 +7455,79 @@ Module reference_safety.
                                                                         M.borrow (|
                                                                           Pointer.Kind.Ref,
                                                                           M.deref (|
-                                                                            M.read (|
-                                                                              UnsupportedLiteral
-                                                                            |)
+                                                                            M.mk_byte_str_ref
+                                                                              69
+                                                                              [
+                                                                                62;
+                                                                                99;
+                                                                                114;
+                                                                                97;
+                                                                                116;
+                                                                                101;
+                                                                                115;
+                                                                                47;
+                                                                                109;
+                                                                                111;
+                                                                                118;
+                                                                                101;
+                                                                                45;
+                                                                                98;
+                                                                                121;
+                                                                                116;
+                                                                                101;
+                                                                                99;
+                                                                                111;
+                                                                                100;
+                                                                                101;
+                                                                                45;
+                                                                                118;
+                                                                                101;
+                                                                                114;
+                                                                                105;
+                                                                                102;
+                                                                                105;
+                                                                                101;
+                                                                                114;
+                                                                                47;
+                                                                                115;
+                                                                                114;
+                                                                                99;
+                                                                                47;
+                                                                                114;
+                                                                                101;
+                                                                                102;
+                                                                                101;
+                                                                                114;
+                                                                                101;
+                                                                                110;
+                                                                                99;
+                                                                                101;
+                                                                                95;
+                                                                                115;
+                                                                                97;
+                                                                                102;
+                                                                                101;
+                                                                                116;
+                                                                                121;
+                                                                                47;
+                                                                                109;
+                                                                                111;
+                                                                                100;
+                                                                                46;
+                                                                                114;
+                                                                                115;
+                                                                                58;
+                                                                                49;
+                                                                                56;
+                                                                                55;
+                                                                                32;
+                                                                                193;
+                                                                                32;
+                                                                                0;
+                                                                                128;
+                                                                                96;
+                                                                                0
+                                                                              ]
                                                                           |)
                                                                         |);
                                                                         M.borrow (|
@@ -7162,9 +7663,9 @@ Module reference_safety.
                                                                           M.borrow (|
                                                                             Pointer.Kind.Ref,
                                                                             M.deref (|
-                                                                              M.read (|
-                                                                                UnsupportedLiteral
-                                                                              |)
+                                                                              M.mk_byte_str_ref
+                                                                                2
+                                                                                [ 192; 0 ]
                                                                             |)
                                                                           |);
                                                                           M.borrow (|
@@ -7381,7 +7882,7 @@ Module reference_safety.
                                                               M.borrow (|
                                                                 Pointer.Kind.Ref,
                                                                 M.deref (|
-                                                                  M.read (| UnsupportedLiteral |)
+                                                                  M.mk_byte_str_ref 2 [ 192; 0 ]
                                                                 |)
                                                               |);
                                                               M.borrow (|
@@ -7970,9 +8471,79 @@ Module reference_safety.
                                                                       M.borrow (|
                                                                         Pointer.Kind.Ref,
                                                                         M.deref (|
-                                                                          M.read (|
-                                                                            UnsupportedLiteral
-                                                                          |)
+                                                                          M.mk_byte_str_ref
+                                                                            69
+                                                                            [
+                                                                              62;
+                                                                              99;
+                                                                              114;
+                                                                              97;
+                                                                              116;
+                                                                              101;
+                                                                              115;
+                                                                              47;
+                                                                              109;
+                                                                              111;
+                                                                              118;
+                                                                              101;
+                                                                              45;
+                                                                              98;
+                                                                              121;
+                                                                              116;
+                                                                              101;
+                                                                              99;
+                                                                              111;
+                                                                              100;
+                                                                              101;
+                                                                              45;
+                                                                              118;
+                                                                              101;
+                                                                              114;
+                                                                              105;
+                                                                              102;
+                                                                              105;
+                                                                              101;
+                                                                              114;
+                                                                              47;
+                                                                              115;
+                                                                              114;
+                                                                              99;
+                                                                              47;
+                                                                              114;
+                                                                              101;
+                                                                              102;
+                                                                              101;
+                                                                              114;
+                                                                              101;
+                                                                              110;
+                                                                              99;
+                                                                              101;
+                                                                              95;
+                                                                              115;
+                                                                              97;
+                                                                              102;
+                                                                              101;
+                                                                              116;
+                                                                              121;
+                                                                              47;
+                                                                              109;
+                                                                              111;
+                                                                              100;
+                                                                              46;
+                                                                              114;
+                                                                              115;
+                                                                              58;
+                                                                              49;
+                                                                              57;
+                                                                              50;
+                                                                              32;
+                                                                              193;
+                                                                              32;
+                                                                              0;
+                                                                              128;
+                                                                              96;
+                                                                              0
+                                                                            ]
                                                                         |)
                                                                       |);
                                                                       M.borrow (|
@@ -8107,9 +8678,9 @@ Module reference_safety.
                                                                         M.borrow (|
                                                                           Pointer.Kind.Ref,
                                                                           M.deref (|
-                                                                            M.read (|
-                                                                              UnsupportedLiteral
-                                                                            |)
+                                                                            M.mk_byte_str_ref
+                                                                              2
+                                                                              [ 192; 0 ]
                                                                           |)
                                                                         |);
                                                                         M.borrow (|
@@ -8360,9 +8931,79 @@ Module reference_safety.
                                                                       M.borrow (|
                                                                         Pointer.Kind.Ref,
                                                                         M.deref (|
-                                                                          M.read (|
-                                                                            UnsupportedLiteral
-                                                                          |)
+                                                                          M.mk_byte_str_ref
+                                                                            69
+                                                                            [
+                                                                              62;
+                                                                              99;
+                                                                              114;
+                                                                              97;
+                                                                              116;
+                                                                              101;
+                                                                              115;
+                                                                              47;
+                                                                              109;
+                                                                              111;
+                                                                              118;
+                                                                              101;
+                                                                              45;
+                                                                              98;
+                                                                              121;
+                                                                              116;
+                                                                              101;
+                                                                              99;
+                                                                              111;
+                                                                              100;
+                                                                              101;
+                                                                              45;
+                                                                              118;
+                                                                              101;
+                                                                              114;
+                                                                              105;
+                                                                              102;
+                                                                              105;
+                                                                              101;
+                                                                              114;
+                                                                              47;
+                                                                              115;
+                                                                              114;
+                                                                              99;
+                                                                              47;
+                                                                              114;
+                                                                              101;
+                                                                              102;
+                                                                              101;
+                                                                              114;
+                                                                              101;
+                                                                              110;
+                                                                              99;
+                                                                              101;
+                                                                              95;
+                                                                              115;
+                                                                              97;
+                                                                              102;
+                                                                              101;
+                                                                              116;
+                                                                              121;
+                                                                              47;
+                                                                              109;
+                                                                              111;
+                                                                              100;
+                                                                              46;
+                                                                              114;
+                                                                              115;
+                                                                              58;
+                                                                              49;
+                                                                              57;
+                                                                              51;
+                                                                              32;
+                                                                              193;
+                                                                              32;
+                                                                              0;
+                                                                              128;
+                                                                              96;
+                                                                              0
+                                                                            ]
                                                                         |)
                                                                       |);
                                                                       M.borrow (|
@@ -8497,9 +9138,9 @@ Module reference_safety.
                                                                         M.borrow (|
                                                                           Pointer.Kind.Ref,
                                                                           M.deref (|
-                                                                            M.read (|
-                                                                              UnsupportedLiteral
-                                                                            |)
+                                                                            M.mk_byte_str_ref
+                                                                              2
+                                                                              [ 192; 0 ]
                                                                           |)
                                                                         |);
                                                                         M.borrow (|
@@ -9107,9 +9748,79 @@ Module reference_safety.
                                                                         M.borrow (|
                                                                           Pointer.Kind.Ref,
                                                                           M.deref (|
-                                                                            M.read (|
-                                                                              UnsupportedLiteral
-                                                                            |)
+                                                                            M.mk_byte_str_ref
+                                                                              69
+                                                                              [
+                                                                                62;
+                                                                                99;
+                                                                                114;
+                                                                                97;
+                                                                                116;
+                                                                                101;
+                                                                                115;
+                                                                                47;
+                                                                                109;
+                                                                                111;
+                                                                                118;
+                                                                                101;
+                                                                                45;
+                                                                                98;
+                                                                                121;
+                                                                                116;
+                                                                                101;
+                                                                                99;
+                                                                                111;
+                                                                                100;
+                                                                                101;
+                                                                                45;
+                                                                                118;
+                                                                                101;
+                                                                                114;
+                                                                                105;
+                                                                                102;
+                                                                                105;
+                                                                                101;
+                                                                                114;
+                                                                                47;
+                                                                                115;
+                                                                                114;
+                                                                                99;
+                                                                                47;
+                                                                                114;
+                                                                                101;
+                                                                                102;
+                                                                                101;
+                                                                                114;
+                                                                                101;
+                                                                                110;
+                                                                                99;
+                                                                                101;
+                                                                                95;
+                                                                                115;
+                                                                                97;
+                                                                                102;
+                                                                                101;
+                                                                                116;
+                                                                                121;
+                                                                                47;
+                                                                                109;
+                                                                                111;
+                                                                                100;
+                                                                                46;
+                                                                                114;
+                                                                                115;
+                                                                                58;
+                                                                                49;
+                                                                                57;
+                                                                                56;
+                                                                                32;
+                                                                                193;
+                                                                                32;
+                                                                                0;
+                                                                                128;
+                                                                                96;
+                                                                                0
+                                                                              ]
                                                                           |)
                                                                         |);
                                                                         M.borrow (|
@@ -9245,9 +9956,9 @@ Module reference_safety.
                                                                           M.borrow (|
                                                                             Pointer.Kind.Ref,
                                                                             M.deref (|
-                                                                              M.read (|
-                                                                                UnsupportedLiteral
-                                                                              |)
+                                                                              M.mk_byte_str_ref
+                                                                                2
+                                                                                [ 192; 0 ]
                                                                             |)
                                                                           |);
                                                                           M.borrow (|
@@ -9464,7 +10175,7 @@ Module reference_safety.
                                                               M.borrow (|
                                                                 Pointer.Kind.Ref,
                                                                 M.deref (|
-                                                                  M.read (| UnsupportedLiteral |)
+                                                                  M.mk_byte_str_ref 2 [ 192; 0 ]
                                                                 |)
                                                               |);
                                                               M.borrow (|
@@ -10056,9 +10767,79 @@ Module reference_safety.
                                                                         M.borrow (|
                                                                           Pointer.Kind.Ref,
                                                                           M.deref (|
-                                                                            M.read (|
-                                                                              UnsupportedLiteral
-                                                                            |)
+                                                                            M.mk_byte_str_ref
+                                                                              69
+                                                                              [
+                                                                                62;
+                                                                                99;
+                                                                                114;
+                                                                                97;
+                                                                                116;
+                                                                                101;
+                                                                                115;
+                                                                                47;
+                                                                                109;
+                                                                                111;
+                                                                                118;
+                                                                                101;
+                                                                                45;
+                                                                                98;
+                                                                                121;
+                                                                                116;
+                                                                                101;
+                                                                                99;
+                                                                                111;
+                                                                                100;
+                                                                                101;
+                                                                                45;
+                                                                                118;
+                                                                                101;
+                                                                                114;
+                                                                                105;
+                                                                                102;
+                                                                                105;
+                                                                                101;
+                                                                                114;
+                                                                                47;
+                                                                                115;
+                                                                                114;
+                                                                                99;
+                                                                                47;
+                                                                                114;
+                                                                                101;
+                                                                                102;
+                                                                                101;
+                                                                                114;
+                                                                                101;
+                                                                                110;
+                                                                                99;
+                                                                                101;
+                                                                                95;
+                                                                                115;
+                                                                                97;
+                                                                                102;
+                                                                                101;
+                                                                                116;
+                                                                                121;
+                                                                                47;
+                                                                                109;
+                                                                                111;
+                                                                                100;
+                                                                                46;
+                                                                                114;
+                                                                                115;
+                                                                                58;
+                                                                                50;
+                                                                                48;
+                                                                                51;
+                                                                                32;
+                                                                                193;
+                                                                                32;
+                                                                                0;
+                                                                                128;
+                                                                                96;
+                                                                                0
+                                                                              ]
                                                                           |)
                                                                         |);
                                                                         M.borrow (|
@@ -10194,9 +10975,9 @@ Module reference_safety.
                                                                           M.borrow (|
                                                                             Pointer.Kind.Ref,
                                                                             M.deref (|
-                                                                              M.read (|
-                                                                                UnsupportedLiteral
-                                                                              |)
+                                                                              M.mk_byte_str_ref
+                                                                                2
+                                                                                [ 192; 0 ]
                                                                             |)
                                                                           |);
                                                                           M.borrow (|
@@ -10413,7 +11194,7 @@ Module reference_safety.
                                                               M.borrow (|
                                                                 Pointer.Kind.Ref,
                                                                 M.deref (|
-                                                                  M.read (| UnsupportedLiteral |)
+                                                                  M.mk_byte_str_ref 2 [ 192; 0 ]
                                                                 |)
                                                               |);
                                                               M.borrow (|
@@ -10637,7 +11418,79 @@ Module reference_safety.
                                                             M.borrow (|
                                                               Pointer.Kind.Ref,
                                                               M.deref (|
-                                                                M.read (| UnsupportedLiteral |)
+                                                                M.mk_byte_str_ref
+                                                                  69
+                                                                  [
+                                                                    62;
+                                                                    99;
+                                                                    114;
+                                                                    97;
+                                                                    116;
+                                                                    101;
+                                                                    115;
+                                                                    47;
+                                                                    109;
+                                                                    111;
+                                                                    118;
+                                                                    101;
+                                                                    45;
+                                                                    98;
+                                                                    121;
+                                                                    116;
+                                                                    101;
+                                                                    99;
+                                                                    111;
+                                                                    100;
+                                                                    101;
+                                                                    45;
+                                                                    118;
+                                                                    101;
+                                                                    114;
+                                                                    105;
+                                                                    102;
+                                                                    105;
+                                                                    101;
+                                                                    114;
+                                                                    47;
+                                                                    115;
+                                                                    114;
+                                                                    99;
+                                                                    47;
+                                                                    114;
+                                                                    101;
+                                                                    102;
+                                                                    101;
+                                                                    114;
+                                                                    101;
+                                                                    110;
+                                                                    99;
+                                                                    101;
+                                                                    95;
+                                                                    115;
+                                                                    97;
+                                                                    102;
+                                                                    101;
+                                                                    116;
+                                                                    121;
+                                                                    47;
+                                                                    109;
+                                                                    111;
+                                                                    100;
+                                                                    46;
+                                                                    114;
+                                                                    115;
+                                                                    58;
+                                                                    50;
+                                                                    48;
+                                                                    52;
+                                                                    32;
+                                                                    193;
+                                                                    32;
+                                                                    0;
+                                                                    128;
+                                                                    96;
+                                                                    0
+                                                                  ]
                                                               |)
                                                             |);
                                                             M.borrow (|
@@ -10751,7 +11604,7 @@ Module reference_safety.
                                                               M.borrow (|
                                                                 Pointer.Kind.Ref,
                                                                 M.deref (|
-                                                                  M.read (| UnsupportedLiteral |)
+                                                                  M.mk_byte_str_ref 2 [ 192; 0 ]
                                                                 |)
                                                               |);
                                                               M.borrow (|
@@ -10977,7 +11830,7 @@ Module reference_safety.
                                                               M.borrow (|
                                                                 Pointer.Kind.Ref,
                                                                 M.deref (|
-                                                                  M.read (| UnsupportedLiteral |)
+                                                                  M.mk_byte_str_ref 2 [ 192; 0 ]
                                                                 |)
                                                               |);
                                                               M.borrow (|
@@ -12063,9 +12916,79 @@ Module reference_safety.
                                                                         M.borrow (|
                                                                           Pointer.Kind.Ref,
                                                                           M.deref (|
-                                                                            M.read (|
-                                                                              UnsupportedLiteral
-                                                                            |)
+                                                                            M.mk_byte_str_ref
+                                                                              69
+                                                                              [
+                                                                                62;
+                                                                                99;
+                                                                                114;
+                                                                                97;
+                                                                                116;
+                                                                                101;
+                                                                                115;
+                                                                                47;
+                                                                                109;
+                                                                                111;
+                                                                                118;
+                                                                                101;
+                                                                                45;
+                                                                                98;
+                                                                                121;
+                                                                                116;
+                                                                                101;
+                                                                                99;
+                                                                                111;
+                                                                                100;
+                                                                                101;
+                                                                                45;
+                                                                                118;
+                                                                                101;
+                                                                                114;
+                                                                                105;
+                                                                                102;
+                                                                                105;
+                                                                                101;
+                                                                                114;
+                                                                                47;
+                                                                                115;
+                                                                                114;
+                                                                                99;
+                                                                                47;
+                                                                                114;
+                                                                                101;
+                                                                                102;
+                                                                                101;
+                                                                                114;
+                                                                                101;
+                                                                                110;
+                                                                                99;
+                                                                                101;
+                                                                                95;
+                                                                                115;
+                                                                                97;
+                                                                                102;
+                                                                                101;
+                                                                                116;
+                                                                                121;
+                                                                                47;
+                                                                                109;
+                                                                                111;
+                                                                                100;
+                                                                                46;
+                                                                                114;
+                                                                                115;
+                                                                                58;
+                                                                                50;
+                                                                                49;
+                                                                                56;
+                                                                                32;
+                                                                                193;
+                                                                                32;
+                                                                                0;
+                                                                                128;
+                                                                                96;
+                                                                                0
+                                                                              ]
                                                                           |)
                                                                         |);
                                                                         M.borrow (|
@@ -12201,9 +13124,9 @@ Module reference_safety.
                                                                           M.borrow (|
                                                                             Pointer.Kind.Ref,
                                                                             M.deref (|
-                                                                              M.read (|
-                                                                                UnsupportedLiteral
-                                                                              |)
+                                                                              M.mk_byte_str_ref
+                                                                                2
+                                                                                [ 192; 0 ]
                                                                             |)
                                                                           |);
                                                                           M.borrow (|
@@ -12420,7 +13343,7 @@ Module reference_safety.
                                                               M.borrow (|
                                                                 Pointer.Kind.Ref,
                                                                 M.deref (|
-                                                                  M.read (| UnsupportedLiteral |)
+                                                                  M.mk_byte_str_ref 2 [ 192; 0 ]
                                                                 |)
                                                               |);
                                                               M.borrow (|
@@ -13056,9 +13979,79 @@ Module reference_safety.
                                                                         M.borrow (|
                                                                           Pointer.Kind.Ref,
                                                                           M.deref (|
-                                                                            M.read (|
-                                                                              UnsupportedLiteral
-                                                                            |)
+                                                                            M.mk_byte_str_ref
+                                                                              69
+                                                                              [
+                                                                                62;
+                                                                                99;
+                                                                                114;
+                                                                                97;
+                                                                                116;
+                                                                                101;
+                                                                                115;
+                                                                                47;
+                                                                                109;
+                                                                                111;
+                                                                                118;
+                                                                                101;
+                                                                                45;
+                                                                                98;
+                                                                                121;
+                                                                                116;
+                                                                                101;
+                                                                                99;
+                                                                                111;
+                                                                                100;
+                                                                                101;
+                                                                                45;
+                                                                                118;
+                                                                                101;
+                                                                                114;
+                                                                                105;
+                                                                                102;
+                                                                                105;
+                                                                                101;
+                                                                                114;
+                                                                                47;
+                                                                                115;
+                                                                                114;
+                                                                                99;
+                                                                                47;
+                                                                                114;
+                                                                                101;
+                                                                                102;
+                                                                                101;
+                                                                                114;
+                                                                                101;
+                                                                                110;
+                                                                                99;
+                                                                                101;
+                                                                                95;
+                                                                                115;
+                                                                                97;
+                                                                                102;
+                                                                                101;
+                                                                                116;
+                                                                                121;
+                                                                                47;
+                                                                                109;
+                                                                                111;
+                                                                                100;
+                                                                                46;
+                                                                                114;
+                                                                                115;
+                                                                                58;
+                                                                                50;
+                                                                                50;
+                                                                                52;
+                                                                                32;
+                                                                                193;
+                                                                                32;
+                                                                                0;
+                                                                                128;
+                                                                                96;
+                                                                                0
+                                                                              ]
                                                                           |)
                                                                         |);
                                                                         M.borrow (|
@@ -13194,9 +14187,9 @@ Module reference_safety.
                                                                           M.borrow (|
                                                                             Pointer.Kind.Ref,
                                                                             M.deref (|
-                                                                              M.read (|
-                                                                                UnsupportedLiteral
-                                                                              |)
+                                                                              M.mk_byte_str_ref
+                                                                                2
+                                                                                [ 192; 0 ]
                                                                             |)
                                                                           |);
                                                                           M.borrow (|
@@ -13413,7 +14406,7 @@ Module reference_safety.
                                                               M.borrow (|
                                                                 Pointer.Kind.Ref,
                                                                 M.deref (|
-                                                                  M.read (| UnsupportedLiteral |)
+                                                                  M.mk_byte_str_ref 2 [ 192; 0 ]
                                                                 |)
                                                               |);
                                                               M.borrow (|
@@ -14022,9 +15015,79 @@ Module reference_safety.
                                                                         M.borrow (|
                                                                           Pointer.Kind.Ref,
                                                                           M.deref (|
-                                                                            M.read (|
-                                                                              UnsupportedLiteral
-                                                                            |)
+                                                                            M.mk_byte_str_ref
+                                                                              69
+                                                                              [
+                                                                                62;
+                                                                                99;
+                                                                                114;
+                                                                                97;
+                                                                                116;
+                                                                                101;
+                                                                                115;
+                                                                                47;
+                                                                                109;
+                                                                                111;
+                                                                                118;
+                                                                                101;
+                                                                                45;
+                                                                                98;
+                                                                                121;
+                                                                                116;
+                                                                                101;
+                                                                                99;
+                                                                                111;
+                                                                                100;
+                                                                                101;
+                                                                                45;
+                                                                                118;
+                                                                                101;
+                                                                                114;
+                                                                                105;
+                                                                                102;
+                                                                                105;
+                                                                                101;
+                                                                                114;
+                                                                                47;
+                                                                                115;
+                                                                                114;
+                                                                                99;
+                                                                                47;
+                                                                                114;
+                                                                                101;
+                                                                                102;
+                                                                                101;
+                                                                                114;
+                                                                                101;
+                                                                                110;
+                                                                                99;
+                                                                                101;
+                                                                                95;
+                                                                                115;
+                                                                                97;
+                                                                                102;
+                                                                                101;
+                                                                                116;
+                                                                                121;
+                                                                                47;
+                                                                                109;
+                                                                                111;
+                                                                                100;
+                                                                                46;
+                                                                                114;
+                                                                                115;
+                                                                                58;
+                                                                                50;
+                                                                                50;
+                                                                                57;
+                                                                                32;
+                                                                                193;
+                                                                                32;
+                                                                                0;
+                                                                                128;
+                                                                                96;
+                                                                                0
+                                                                              ]
                                                                           |)
                                                                         |);
                                                                         M.borrow (|
@@ -14160,9 +15223,9 @@ Module reference_safety.
                                                                           M.borrow (|
                                                                             Pointer.Kind.Ref,
                                                                             M.deref (|
-                                                                              M.read (|
-                                                                                UnsupportedLiteral
-                                                                              |)
+                                                                              M.mk_byte_str_ref
+                                                                                2
+                                                                                [ 192; 0 ]
                                                                             |)
                                                                           |);
                                                                           M.borrow (|
@@ -14379,7 +15442,7 @@ Module reference_safety.
                                                               M.borrow (|
                                                                 Pointer.Kind.Ref,
                                                                 M.deref (|
-                                                                  M.read (| UnsupportedLiteral |)
+                                                                  M.mk_byte_str_ref 2 [ 192; 0 ]
                                                                 |)
                                                               |);
                                                               M.borrow (|
@@ -15015,9 +16078,79 @@ Module reference_safety.
                                                                         M.borrow (|
                                                                           Pointer.Kind.Ref,
                                                                           M.deref (|
-                                                                            M.read (|
-                                                                              UnsupportedLiteral
-                                                                            |)
+                                                                            M.mk_byte_str_ref
+                                                                              69
+                                                                              [
+                                                                                62;
+                                                                                99;
+                                                                                114;
+                                                                                97;
+                                                                                116;
+                                                                                101;
+                                                                                115;
+                                                                                47;
+                                                                                109;
+                                                                                111;
+                                                                                118;
+                                                                                101;
+                                                                                45;
+                                                                                98;
+                                                                                121;
+                                                                                116;
+                                                                                101;
+                                                                                99;
+                                                                                111;
+                                                                                100;
+                                                                                101;
+                                                                                45;
+                                                                                118;
+                                                                                101;
+                                                                                114;
+                                                                                105;
+                                                                                102;
+                                                                                105;
+                                                                                101;
+                                                                                114;
+                                                                                47;
+                                                                                115;
+                                                                                114;
+                                                                                99;
+                                                                                47;
+                                                                                114;
+                                                                                101;
+                                                                                102;
+                                                                                101;
+                                                                                114;
+                                                                                101;
+                                                                                110;
+                                                                                99;
+                                                                                101;
+                                                                                95;
+                                                                                115;
+                                                                                97;
+                                                                                102;
+                                                                                101;
+                                                                                116;
+                                                                                121;
+                                                                                47;
+                                                                                109;
+                                                                                111;
+                                                                                100;
+                                                                                46;
+                                                                                114;
+                                                                                115;
+                                                                                58;
+                                                                                50;
+                                                                                51;
+                                                                                53;
+                                                                                32;
+                                                                                193;
+                                                                                32;
+                                                                                0;
+                                                                                128;
+                                                                                96;
+                                                                                0
+                                                                              ]
                                                                           |)
                                                                         |);
                                                                         M.borrow (|
@@ -15153,9 +16286,9 @@ Module reference_safety.
                                                                           M.borrow (|
                                                                             Pointer.Kind.Ref,
                                                                             M.deref (|
-                                                                              M.read (|
-                                                                                UnsupportedLiteral
-                                                                              |)
+                                                                              M.mk_byte_str_ref
+                                                                                2
+                                                                                [ 192; 0 ]
                                                                             |)
                                                                           |);
                                                                           M.borrow (|
@@ -15372,7 +16505,7 @@ Module reference_safety.
                                                               M.borrow (|
                                                                 Pointer.Kind.Ref,
                                                                 M.deref (|
-                                                                  M.read (| UnsupportedLiteral |)
+                                                                  M.mk_byte_str_ref 2 [ 192; 0 ]
                                                                 |)
                                                               |);
                                                               M.borrow (|
@@ -15996,9 +17129,79 @@ Module reference_safety.
                                                                                     M.borrow (|
                                                                                       Pointer.Kind.Ref,
                                                                                       M.deref (|
-                                                                                        M.read (|
-                                                                                          UnsupportedLiteral
-                                                                                        |)
+                                                                                        M.mk_byte_str_ref
+                                                                                          69
+                                                                                          [
+                                                                                            62;
+                                                                                            99;
+                                                                                            114;
+                                                                                            97;
+                                                                                            116;
+                                                                                            101;
+                                                                                            115;
+                                                                                            47;
+                                                                                            109;
+                                                                                            111;
+                                                                                            118;
+                                                                                            101;
+                                                                                            45;
+                                                                                            98;
+                                                                                            121;
+                                                                                            116;
+                                                                                            101;
+                                                                                            99;
+                                                                                            111;
+                                                                                            100;
+                                                                                            101;
+                                                                                            45;
+                                                                                            118;
+                                                                                            101;
+                                                                                            114;
+                                                                                            105;
+                                                                                            102;
+                                                                                            105;
+                                                                                            101;
+                                                                                            114;
+                                                                                            47;
+                                                                                            115;
+                                                                                            114;
+                                                                                            99;
+                                                                                            47;
+                                                                                            114;
+                                                                                            101;
+                                                                                            102;
+                                                                                            101;
+                                                                                            114;
+                                                                                            101;
+                                                                                            110;
+                                                                                            99;
+                                                                                            101;
+                                                                                            95;
+                                                                                            115;
+                                                                                            97;
+                                                                                            102;
+                                                                                            101;
+                                                                                            116;
+                                                                                            121;
+                                                                                            47;
+                                                                                            109;
+                                                                                            111;
+                                                                                            100;
+                                                                                            46;
+                                                                                            114;
+                                                                                            115;
+                                                                                            58;
+                                                                                            50;
+                                                                                            52;
+                                                                                            49;
+                                                                                            32;
+                                                                                            193;
+                                                                                            32;
+                                                                                            0;
+                                                                                            128;
+                                                                                            96;
+                                                                                            0
+                                                                                          ]
                                                                                       |)
                                                                                     |);
                                                                                     M.borrow (|
@@ -16139,9 +17342,10 @@ Module reference_safety.
                                                                                       M.borrow (|
                                                                                         Pointer.Kind.Ref,
                                                                                         M.deref (|
-                                                                                          M.read (|
-                                                                                            UnsupportedLiteral
-                                                                                          |)
+                                                                                          M.mk_byte_str_ref
+                                                                                            2
+                                                                                            [ 192; 0
+                                                                                            ]
                                                                                         |)
                                                                                       |);
                                                                                       M.borrow (|
@@ -16346,7 +17550,7 @@ Module reference_safety.
                                                               M.borrow (|
                                                                 Pointer.Kind.Ref,
                                                                 M.deref (|
-                                                                  M.read (| UnsupportedLiteral |)
+                                                                  M.mk_byte_str_ref 2 [ 192; 0 ]
                                                                 |)
                                                               |);
                                                               M.borrow (|
@@ -16967,9 +18171,79 @@ Module reference_safety.
                                                                                     M.borrow (|
                                                                                       Pointer.Kind.Ref,
                                                                                       M.deref (|
-                                                                                        M.read (|
-                                                                                          UnsupportedLiteral
-                                                                                        |)
+                                                                                        M.mk_byte_str_ref
+                                                                                          69
+                                                                                          [
+                                                                                            62;
+                                                                                            99;
+                                                                                            114;
+                                                                                            97;
+                                                                                            116;
+                                                                                            101;
+                                                                                            115;
+                                                                                            47;
+                                                                                            109;
+                                                                                            111;
+                                                                                            118;
+                                                                                            101;
+                                                                                            45;
+                                                                                            98;
+                                                                                            121;
+                                                                                            116;
+                                                                                            101;
+                                                                                            99;
+                                                                                            111;
+                                                                                            100;
+                                                                                            101;
+                                                                                            45;
+                                                                                            118;
+                                                                                            101;
+                                                                                            114;
+                                                                                            105;
+                                                                                            102;
+                                                                                            105;
+                                                                                            101;
+                                                                                            114;
+                                                                                            47;
+                                                                                            115;
+                                                                                            114;
+                                                                                            99;
+                                                                                            47;
+                                                                                            114;
+                                                                                            101;
+                                                                                            102;
+                                                                                            101;
+                                                                                            114;
+                                                                                            101;
+                                                                                            110;
+                                                                                            99;
+                                                                                            101;
+                                                                                            95;
+                                                                                            115;
+                                                                                            97;
+                                                                                            102;
+                                                                                            101;
+                                                                                            116;
+                                                                                            121;
+                                                                                            47;
+                                                                                            109;
+                                                                                            111;
+                                                                                            100;
+                                                                                            46;
+                                                                                            114;
+                                                                                            115;
+                                                                                            58;
+                                                                                            50;
+                                                                                            52;
+                                                                                            54;
+                                                                                            32;
+                                                                                            193;
+                                                                                            32;
+                                                                                            0;
+                                                                                            128;
+                                                                                            96;
+                                                                                            0
+                                                                                          ]
                                                                                       |)
                                                                                     |);
                                                                                     M.borrow (|
@@ -17110,9 +18384,10 @@ Module reference_safety.
                                                                                       M.borrow (|
                                                                                         Pointer.Kind.Ref,
                                                                                         M.deref (|
-                                                                                          M.read (|
-                                                                                            UnsupportedLiteral
-                                                                                          |)
+                                                                                          M.mk_byte_str_ref
+                                                                                            2
+                                                                                            [ 192; 0
+                                                                                            ]
                                                                                         |)
                                                                                       |);
                                                                                       M.borrow (|
@@ -17317,7 +18592,7 @@ Module reference_safety.
                                                               M.borrow (|
                                                                 Pointer.Kind.Ref,
                                                                 M.deref (|
-                                                                  M.read (| UnsupportedLiteral |)
+                                                                  M.mk_byte_str_ref 2 [ 192; 0 ]
                                                                 |)
                                                               |);
                                                               M.borrow (|
@@ -17975,9 +19250,79 @@ Module reference_safety.
                                                                                     M.borrow (|
                                                                                       Pointer.Kind.Ref,
                                                                                       M.deref (|
-                                                                                        M.read (|
-                                                                                          UnsupportedLiteral
-                                                                                        |)
+                                                                                        M.mk_byte_str_ref
+                                                                                          69
+                                                                                          [
+                                                                                            62;
+                                                                                            99;
+                                                                                            114;
+                                                                                            97;
+                                                                                            116;
+                                                                                            101;
+                                                                                            115;
+                                                                                            47;
+                                                                                            109;
+                                                                                            111;
+                                                                                            118;
+                                                                                            101;
+                                                                                            45;
+                                                                                            98;
+                                                                                            121;
+                                                                                            116;
+                                                                                            101;
+                                                                                            99;
+                                                                                            111;
+                                                                                            100;
+                                                                                            101;
+                                                                                            45;
+                                                                                            118;
+                                                                                            101;
+                                                                                            114;
+                                                                                            105;
+                                                                                            102;
+                                                                                            105;
+                                                                                            101;
+                                                                                            114;
+                                                                                            47;
+                                                                                            115;
+                                                                                            114;
+                                                                                            99;
+                                                                                            47;
+                                                                                            114;
+                                                                                            101;
+                                                                                            102;
+                                                                                            101;
+                                                                                            114;
+                                                                                            101;
+                                                                                            110;
+                                                                                            99;
+                                                                                            101;
+                                                                                            95;
+                                                                                            115;
+                                                                                            97;
+                                                                                            102;
+                                                                                            101;
+                                                                                            116;
+                                                                                            121;
+                                                                                            47;
+                                                                                            109;
+                                                                                            111;
+                                                                                            100;
+                                                                                            46;
+                                                                                            114;
+                                                                                            115;
+                                                                                            58;
+                                                                                            50;
+                                                                                            53;
+                                                                                            50;
+                                                                                            32;
+                                                                                            193;
+                                                                                            32;
+                                                                                            0;
+                                                                                            128;
+                                                                                            96;
+                                                                                            0
+                                                                                          ]
                                                                                       |)
                                                                                     |);
                                                                                     M.borrow (|
@@ -18118,9 +19463,10 @@ Module reference_safety.
                                                                                       M.borrow (|
                                                                                         Pointer.Kind.Ref,
                                                                                         M.deref (|
-                                                                                          M.read (|
-                                                                                            UnsupportedLiteral
-                                                                                          |)
+                                                                                          M.mk_byte_str_ref
+                                                                                            2
+                                                                                            [ 192; 0
+                                                                                            ]
                                                                                         |)
                                                                                       |);
                                                                                       M.borrow (|
@@ -18325,7 +19671,7 @@ Module reference_safety.
                                                               M.borrow (|
                                                                 Pointer.Kind.Ref,
                                                                 M.deref (|
-                                                                  M.read (| UnsupportedLiteral |)
+                                                                  M.mk_byte_str_ref 2 [ 192; 0 ]
                                                                 |)
                                                               |);
                                                               M.borrow (|
@@ -18946,9 +20292,79 @@ Module reference_safety.
                                                                                     M.borrow (|
                                                                                       Pointer.Kind.Ref,
                                                                                       M.deref (|
-                                                                                        M.read (|
-                                                                                          UnsupportedLiteral
-                                                                                        |)
+                                                                                        M.mk_byte_str_ref
+                                                                                          69
+                                                                                          [
+                                                                                            62;
+                                                                                            99;
+                                                                                            114;
+                                                                                            97;
+                                                                                            116;
+                                                                                            101;
+                                                                                            115;
+                                                                                            47;
+                                                                                            109;
+                                                                                            111;
+                                                                                            118;
+                                                                                            101;
+                                                                                            45;
+                                                                                            98;
+                                                                                            121;
+                                                                                            116;
+                                                                                            101;
+                                                                                            99;
+                                                                                            111;
+                                                                                            100;
+                                                                                            101;
+                                                                                            45;
+                                                                                            118;
+                                                                                            101;
+                                                                                            114;
+                                                                                            105;
+                                                                                            102;
+                                                                                            105;
+                                                                                            101;
+                                                                                            114;
+                                                                                            47;
+                                                                                            115;
+                                                                                            114;
+                                                                                            99;
+                                                                                            47;
+                                                                                            114;
+                                                                                            101;
+                                                                                            102;
+                                                                                            101;
+                                                                                            114;
+                                                                                            101;
+                                                                                            110;
+                                                                                            99;
+                                                                                            101;
+                                                                                            95;
+                                                                                            115;
+                                                                                            97;
+                                                                                            102;
+                                                                                            101;
+                                                                                            116;
+                                                                                            121;
+                                                                                            47;
+                                                                                            109;
+                                                                                            111;
+                                                                                            100;
+                                                                                            46;
+                                                                                            114;
+                                                                                            115;
+                                                                                            58;
+                                                                                            50;
+                                                                                            53;
+                                                                                            55;
+                                                                                            32;
+                                                                                            193;
+                                                                                            32;
+                                                                                            0;
+                                                                                            128;
+                                                                                            96;
+                                                                                            0
+                                                                                          ]
                                                                                       |)
                                                                                     |);
                                                                                     M.borrow (|
@@ -19089,9 +20505,10 @@ Module reference_safety.
                                                                                       M.borrow (|
                                                                                         Pointer.Kind.Ref,
                                                                                         M.deref (|
-                                                                                          M.read (|
-                                                                                            UnsupportedLiteral
-                                                                                          |)
+                                                                                          M.mk_byte_str_ref
+                                                                                            2
+                                                                                            [ 192; 0
+                                                                                            ]
                                                                                         |)
                                                                                       |);
                                                                                       M.borrow (|
@@ -19296,7 +20713,7 @@ Module reference_safety.
                                                               M.borrow (|
                                                                 Pointer.Kind.Ref,
                                                                 M.deref (|
-                                                                  M.read (| UnsupportedLiteral |)
+                                                                  M.mk_byte_str_ref 2 [ 192; 0 ]
                                                                 |)
                                                               |);
                                                               M.borrow (|
@@ -19954,9 +21371,79 @@ Module reference_safety.
                                                                                     M.borrow (|
                                                                                       Pointer.Kind.Ref,
                                                                                       M.deref (|
-                                                                                        M.read (|
-                                                                                          UnsupportedLiteral
-                                                                                        |)
+                                                                                        M.mk_byte_str_ref
+                                                                                          69
+                                                                                          [
+                                                                                            62;
+                                                                                            99;
+                                                                                            114;
+                                                                                            97;
+                                                                                            116;
+                                                                                            101;
+                                                                                            115;
+                                                                                            47;
+                                                                                            109;
+                                                                                            111;
+                                                                                            118;
+                                                                                            101;
+                                                                                            45;
+                                                                                            98;
+                                                                                            121;
+                                                                                            116;
+                                                                                            101;
+                                                                                            99;
+                                                                                            111;
+                                                                                            100;
+                                                                                            101;
+                                                                                            45;
+                                                                                            118;
+                                                                                            101;
+                                                                                            114;
+                                                                                            105;
+                                                                                            102;
+                                                                                            105;
+                                                                                            101;
+                                                                                            114;
+                                                                                            47;
+                                                                                            115;
+                                                                                            114;
+                                                                                            99;
+                                                                                            47;
+                                                                                            114;
+                                                                                            101;
+                                                                                            102;
+                                                                                            101;
+                                                                                            114;
+                                                                                            101;
+                                                                                            110;
+                                                                                            99;
+                                                                                            101;
+                                                                                            95;
+                                                                                            115;
+                                                                                            97;
+                                                                                            102;
+                                                                                            101;
+                                                                                            116;
+                                                                                            121;
+                                                                                            47;
+                                                                                            109;
+                                                                                            111;
+                                                                                            100;
+                                                                                            46;
+                                                                                            114;
+                                                                                            115;
+                                                                                            58;
+                                                                                            50;
+                                                                                            54;
+                                                                                            51;
+                                                                                            32;
+                                                                                            193;
+                                                                                            32;
+                                                                                            0;
+                                                                                            128;
+                                                                                            96;
+                                                                                            0
+                                                                                          ]
                                                                                       |)
                                                                                     |);
                                                                                     M.borrow (|
@@ -20097,9 +21584,10 @@ Module reference_safety.
                                                                                       M.borrow (|
                                                                                         Pointer.Kind.Ref,
                                                                                         M.deref (|
-                                                                                          M.read (|
-                                                                                            UnsupportedLiteral
-                                                                                          |)
+                                                                                          M.mk_byte_str_ref
+                                                                                            2
+                                                                                            [ 192; 0
+                                                                                            ]
                                                                                         |)
                                                                                       |);
                                                                                       M.borrow (|
@@ -20304,7 +21792,7 @@ Module reference_safety.
                                                               M.borrow (|
                                                                 Pointer.Kind.Ref,
                                                                 M.deref (|
-                                                                  M.read (| UnsupportedLiteral |)
+                                                                  M.mk_byte_str_ref 2 [ 192; 0 ]
                                                                 |)
                                                               |);
                                                               M.borrow (|
@@ -20924,9 +22412,79 @@ Module reference_safety.
                                                                                     M.borrow (|
                                                                                       Pointer.Kind.Ref,
                                                                                       M.deref (|
-                                                                                        M.read (|
-                                                                                          UnsupportedLiteral
-                                                                                        |)
+                                                                                        M.mk_byte_str_ref
+                                                                                          69
+                                                                                          [
+                                                                                            62;
+                                                                                            99;
+                                                                                            114;
+                                                                                            97;
+                                                                                            116;
+                                                                                            101;
+                                                                                            115;
+                                                                                            47;
+                                                                                            109;
+                                                                                            111;
+                                                                                            118;
+                                                                                            101;
+                                                                                            45;
+                                                                                            98;
+                                                                                            121;
+                                                                                            116;
+                                                                                            101;
+                                                                                            99;
+                                                                                            111;
+                                                                                            100;
+                                                                                            101;
+                                                                                            45;
+                                                                                            118;
+                                                                                            101;
+                                                                                            114;
+                                                                                            105;
+                                                                                            102;
+                                                                                            105;
+                                                                                            101;
+                                                                                            114;
+                                                                                            47;
+                                                                                            115;
+                                                                                            114;
+                                                                                            99;
+                                                                                            47;
+                                                                                            114;
+                                                                                            101;
+                                                                                            102;
+                                                                                            101;
+                                                                                            114;
+                                                                                            101;
+                                                                                            110;
+                                                                                            99;
+                                                                                            101;
+                                                                                            95;
+                                                                                            115;
+                                                                                            97;
+                                                                                            102;
+                                                                                            101;
+                                                                                            116;
+                                                                                            121;
+                                                                                            47;
+                                                                                            109;
+                                                                                            111;
+                                                                                            100;
+                                                                                            46;
+                                                                                            114;
+                                                                                            115;
+                                                                                            58;
+                                                                                            50;
+                                                                                            54;
+                                                                                            56;
+                                                                                            32;
+                                                                                            193;
+                                                                                            32;
+                                                                                            0;
+                                                                                            128;
+                                                                                            96;
+                                                                                            0
+                                                                                          ]
                                                                                       |)
                                                                                     |);
                                                                                     M.borrow (|
@@ -21067,9 +22625,10 @@ Module reference_safety.
                                                                                       M.borrow (|
                                                                                         Pointer.Kind.Ref,
                                                                                         M.deref (|
-                                                                                          M.read (|
-                                                                                            UnsupportedLiteral
-                                                                                          |)
+                                                                                          M.mk_byte_str_ref
+                                                                                            2
+                                                                                            [ 192; 0
+                                                                                            ]
                                                                                         |)
                                                                                       |);
                                                                                       M.borrow (|
@@ -21274,7 +22833,7 @@ Module reference_safety.
                                                               M.borrow (|
                                                                 Pointer.Kind.Ref,
                                                                 M.deref (|
-                                                                  M.read (| UnsupportedLiteral |)
+                                                                  M.mk_byte_str_ref 2 [ 192; 0 ]
                                                                 |)
                                                               |);
                                                               M.borrow (|
@@ -22577,9 +24136,79 @@ Module reference_safety.
                                                                                                   M.borrow (|
                                                                                                     Pointer.Kind.Ref,
                                                                                                     M.deref (|
-                                                                                                      M.read (|
-                                                                                                        UnsupportedLiteral
-                                                                                                      |)
+                                                                                                      M.mk_byte_str_ref
+                                                                                                        69
+                                                                                                        [
+                                                                                                          62;
+                                                                                                          99;
+                                                                                                          114;
+                                                                                                          97;
+                                                                                                          116;
+                                                                                                          101;
+                                                                                                          115;
+                                                                                                          47;
+                                                                                                          109;
+                                                                                                          111;
+                                                                                                          118;
+                                                                                                          101;
+                                                                                                          45;
+                                                                                                          98;
+                                                                                                          121;
+                                                                                                          116;
+                                                                                                          101;
+                                                                                                          99;
+                                                                                                          111;
+                                                                                                          100;
+                                                                                                          101;
+                                                                                                          45;
+                                                                                                          118;
+                                                                                                          101;
+                                                                                                          114;
+                                                                                                          105;
+                                                                                                          102;
+                                                                                                          105;
+                                                                                                          101;
+                                                                                                          114;
+                                                                                                          47;
+                                                                                                          115;
+                                                                                                          114;
+                                                                                                          99;
+                                                                                                          47;
+                                                                                                          114;
+                                                                                                          101;
+                                                                                                          102;
+                                                                                                          101;
+                                                                                                          114;
+                                                                                                          101;
+                                                                                                          110;
+                                                                                                          99;
+                                                                                                          101;
+                                                                                                          95;
+                                                                                                          115;
+                                                                                                          97;
+                                                                                                          102;
+                                                                                                          101;
+                                                                                                          116;
+                                                                                                          121;
+                                                                                                          47;
+                                                                                                          109;
+                                                                                                          111;
+                                                                                                          100;
+                                                                                                          46;
+                                                                                                          114;
+                                                                                                          115;
+                                                                                                          58;
+                                                                                                          50;
+                                                                                                          56;
+                                                                                                          55;
+                                                                                                          32;
+                                                                                                          193;
+                                                                                                          32;
+                                                                                                          0;
+                                                                                                          128;
+                                                                                                          96;
+                                                                                                          0
+                                                                                                        ]
                                                                                                     |)
                                                                                                   |);
                                                                                                   M.borrow (|
@@ -22728,9 +24357,12 @@ Module reference_safety.
                                                                                                     M.borrow (|
                                                                                                       Pointer.Kind.Ref,
                                                                                                       M.deref (|
-                                                                                                        M.read (|
-                                                                                                          UnsupportedLiteral
-                                                                                                        |)
+                                                                                                        M.mk_byte_str_ref
+                                                                                                          2
+                                                                                                          [
+                                                                                                            192;
+                                                                                                            0
+                                                                                                          ]
                                                                                                       |)
                                                                                                     |);
                                                                                                     M.borrow (|
@@ -23404,9 +25036,79 @@ Module reference_safety.
                                                                                               M.borrow (|
                                                                                                 Pointer.Kind.Ref,
                                                                                                 M.deref (|
-                                                                                                  M.read (|
-                                                                                                    UnsupportedLiteral
-                                                                                                  |)
+                                                                                                  M.mk_byte_str_ref
+                                                                                                    69
+                                                                                                    [
+                                                                                                      62;
+                                                                                                      99;
+                                                                                                      114;
+                                                                                                      97;
+                                                                                                      116;
+                                                                                                      101;
+                                                                                                      115;
+                                                                                                      47;
+                                                                                                      109;
+                                                                                                      111;
+                                                                                                      118;
+                                                                                                      101;
+                                                                                                      45;
+                                                                                                      98;
+                                                                                                      121;
+                                                                                                      116;
+                                                                                                      101;
+                                                                                                      99;
+                                                                                                      111;
+                                                                                                      100;
+                                                                                                      101;
+                                                                                                      45;
+                                                                                                      118;
+                                                                                                      101;
+                                                                                                      114;
+                                                                                                      105;
+                                                                                                      102;
+                                                                                                      105;
+                                                                                                      101;
+                                                                                                      114;
+                                                                                                      47;
+                                                                                                      115;
+                                                                                                      114;
+                                                                                                      99;
+                                                                                                      47;
+                                                                                                      114;
+                                                                                                      101;
+                                                                                                      102;
+                                                                                                      101;
+                                                                                                      114;
+                                                                                                      101;
+                                                                                                      110;
+                                                                                                      99;
+                                                                                                      101;
+                                                                                                      95;
+                                                                                                      115;
+                                                                                                      97;
+                                                                                                      102;
+                                                                                                      101;
+                                                                                                      116;
+                                                                                                      121;
+                                                                                                      47;
+                                                                                                      109;
+                                                                                                      111;
+                                                                                                      100;
+                                                                                                      46;
+                                                                                                      114;
+                                                                                                      115;
+                                                                                                      58;
+                                                                                                      51;
+                                                                                                      48;
+                                                                                                      55;
+                                                                                                      32;
+                                                                                                      193;
+                                                                                                      32;
+                                                                                                      0;
+                                                                                                      128;
+                                                                                                      96;
+                                                                                                      0
+                                                                                                    ]
                                                                                                 |)
                                                                                               |);
                                                                                               M.borrow (|
@@ -23555,9 +25257,12 @@ Module reference_safety.
                                                                                                 M.borrow (|
                                                                                                   Pointer.Kind.Ref,
                                                                                                   M.deref (|
-                                                                                                    M.read (|
-                                                                                                      UnsupportedLiteral
-                                                                                                    |)
+                                                                                                    M.mk_byte_str_ref
+                                                                                                      2
+                                                                                                      [
+                                                                                                        192;
+                                                                                                        0
+                                                                                                      ]
                                                                                                   |)
                                                                                                 |);
                                                                                                 M.borrow (|
@@ -23796,9 +25501,9 @@ Module reference_safety.
                                                                         M.borrow (|
                                                                           Pointer.Kind.Ref,
                                                                           M.deref (|
-                                                                            M.read (|
-                                                                              UnsupportedLiteral
-                                                                            |)
+                                                                            M.mk_byte_str_ref
+                                                                              2
+                                                                              [ 192; 0 ]
                                                                           |)
                                                                         |);
                                                                         M.borrow (|
@@ -24129,9 +25834,79 @@ Module reference_safety.
                                                                                               M.borrow (|
                                                                                                 Pointer.Kind.Ref,
                                                                                                 M.deref (|
-                                                                                                  M.read (|
-                                                                                                    UnsupportedLiteral
-                                                                                                  |)
+                                                                                                  M.mk_byte_str_ref
+                                                                                                    69
+                                                                                                    [
+                                                                                                      62;
+                                                                                                      99;
+                                                                                                      114;
+                                                                                                      97;
+                                                                                                      116;
+                                                                                                      101;
+                                                                                                      115;
+                                                                                                      47;
+                                                                                                      109;
+                                                                                                      111;
+                                                                                                      118;
+                                                                                                      101;
+                                                                                                      45;
+                                                                                                      98;
+                                                                                                      121;
+                                                                                                      116;
+                                                                                                      101;
+                                                                                                      99;
+                                                                                                      111;
+                                                                                                      100;
+                                                                                                      101;
+                                                                                                      45;
+                                                                                                      118;
+                                                                                                      101;
+                                                                                                      114;
+                                                                                                      105;
+                                                                                                      102;
+                                                                                                      105;
+                                                                                                      101;
+                                                                                                      114;
+                                                                                                      47;
+                                                                                                      115;
+                                                                                                      114;
+                                                                                                      99;
+                                                                                                      47;
+                                                                                                      114;
+                                                                                                      101;
+                                                                                                      102;
+                                                                                                      101;
+                                                                                                      114;
+                                                                                                      101;
+                                                                                                      110;
+                                                                                                      99;
+                                                                                                      101;
+                                                                                                      95;
+                                                                                                      115;
+                                                                                                      97;
+                                                                                                      102;
+                                                                                                      101;
+                                                                                                      116;
+                                                                                                      121;
+                                                                                                      47;
+                                                                                                      109;
+                                                                                                      111;
+                                                                                                      100;
+                                                                                                      46;
+                                                                                                      114;
+                                                                                                      115;
+                                                                                                      58;
+                                                                                                      51;
+                                                                                                      49;
+                                                                                                      49;
+                                                                                                      32;
+                                                                                                      193;
+                                                                                                      32;
+                                                                                                      0;
+                                                                                                      128;
+                                                                                                      96;
+                                                                                                      0
+                                                                                                    ]
                                                                                                 |)
                                                                                               |);
                                                                                               M.borrow (|
@@ -24280,9 +26055,12 @@ Module reference_safety.
                                                                                                 M.borrow (|
                                                                                                   Pointer.Kind.Ref,
                                                                                                   M.deref (|
-                                                                                                    M.read (|
-                                                                                                      UnsupportedLiteral
-                                                                                                    |)
+                                                                                                    M.mk_byte_str_ref
+                                                                                                      2
+                                                                                                      [
+                                                                                                        192;
+                                                                                                        0
+                                                                                                      ]
                                                                                                   |)
                                                                                                 |);
                                                                                                 M.borrow (|
@@ -24521,9 +26299,9 @@ Module reference_safety.
                                                                         M.borrow (|
                                                                           Pointer.Kind.Ref,
                                                                           M.deref (|
-                                                                            M.read (|
-                                                                              UnsupportedLiteral
-                                                                            |)
+                                                                            M.mk_byte_str_ref
+                                                                              2
+                                                                              [ 192; 0 ]
                                                                           |)
                                                                         |);
                                                                         M.borrow (|
@@ -24789,9 +26567,79 @@ Module reference_safety.
                                                                           M.borrow (|
                                                                             Pointer.Kind.Ref,
                                                                             M.deref (|
-                                                                              M.read (|
-                                                                                UnsupportedLiteral
-                                                                              |)
+                                                                              M.mk_byte_str_ref
+                                                                                69
+                                                                                [
+                                                                                  62;
+                                                                                  99;
+                                                                                  114;
+                                                                                  97;
+                                                                                  116;
+                                                                                  101;
+                                                                                  115;
+                                                                                  47;
+                                                                                  109;
+                                                                                  111;
+                                                                                  118;
+                                                                                  101;
+                                                                                  45;
+                                                                                  98;
+                                                                                  121;
+                                                                                  116;
+                                                                                  101;
+                                                                                  99;
+                                                                                  111;
+                                                                                  100;
+                                                                                  101;
+                                                                                  45;
+                                                                                  118;
+                                                                                  101;
+                                                                                  114;
+                                                                                  105;
+                                                                                  102;
+                                                                                  105;
+                                                                                  101;
+                                                                                  114;
+                                                                                  47;
+                                                                                  115;
+                                                                                  114;
+                                                                                  99;
+                                                                                  47;
+                                                                                  114;
+                                                                                  101;
+                                                                                  102;
+                                                                                  101;
+                                                                                  114;
+                                                                                  101;
+                                                                                  110;
+                                                                                  99;
+                                                                                  101;
+                                                                                  95;
+                                                                                  115;
+                                                                                  97;
+                                                                                  102;
+                                                                                  101;
+                                                                                  116;
+                                                                                  121;
+                                                                                  47;
+                                                                                  109;
+                                                                                  111;
+                                                                                  100;
+                                                                                  46;
+                                                                                  114;
+                                                                                  115;
+                                                                                  58;
+                                                                                  51;
+                                                                                  49;
+                                                                                  51;
+                                                                                  32;
+                                                                                  193;
+                                                                                  32;
+                                                                                  0;
+                                                                                  128;
+                                                                                  96;
+                                                                                  0
+                                                                                ]
                                                                             |)
                                                                           |);
                                                                           M.borrow (|
@@ -24927,9 +26775,9 @@ Module reference_safety.
                                                                             M.borrow (|
                                                                               Pointer.Kind.Ref,
                                                                               M.deref (|
-                                                                                M.read (|
-                                                                                  UnsupportedLiteral
-                                                                                |)
+                                                                                M.mk_byte_str_ref
+                                                                                  2
+                                                                                  [ 192; 0 ]
                                                                               |)
                                                                             |);
                                                                             M.borrow (|
@@ -26935,9 +28783,79 @@ Module reference_safety.
                                                                                               M.borrow (|
                                                                                                 Pointer.Kind.Ref,
                                                                                                 M.deref (|
-                                                                                                  M.read (|
-                                                                                                    UnsupportedLiteral
-                                                                                                  |)
+                                                                                                  M.mk_byte_str_ref
+                                                                                                    69
+                                                                                                    [
+                                                                                                      62;
+                                                                                                      99;
+                                                                                                      114;
+                                                                                                      97;
+                                                                                                      116;
+                                                                                                      101;
+                                                                                                      115;
+                                                                                                      47;
+                                                                                                      109;
+                                                                                                      111;
+                                                                                                      118;
+                                                                                                      101;
+                                                                                                      45;
+                                                                                                      98;
+                                                                                                      121;
+                                                                                                      116;
+                                                                                                      101;
+                                                                                                      99;
+                                                                                                      111;
+                                                                                                      100;
+                                                                                                      101;
+                                                                                                      45;
+                                                                                                      118;
+                                                                                                      101;
+                                                                                                      114;
+                                                                                                      105;
+                                                                                                      102;
+                                                                                                      105;
+                                                                                                      101;
+                                                                                                      114;
+                                                                                                      47;
+                                                                                                      115;
+                                                                                                      114;
+                                                                                                      99;
+                                                                                                      47;
+                                                                                                      114;
+                                                                                                      101;
+                                                                                                      102;
+                                                                                                      101;
+                                                                                                      114;
+                                                                                                      101;
+                                                                                                      110;
+                                                                                                      99;
+                                                                                                      101;
+                                                                                                      95;
+                                                                                                      115;
+                                                                                                      97;
+                                                                                                      102;
+                                                                                                      101;
+                                                                                                      116;
+                                                                                                      121;
+                                                                                                      47;
+                                                                                                      109;
+                                                                                                      111;
+                                                                                                      100;
+                                                                                                      46;
+                                                                                                      114;
+                                                                                                      115;
+                                                                                                      58;
+                                                                                                      51;
+                                                                                                      52;
+                                                                                                      54;
+                                                                                                      32;
+                                                                                                      193;
+                                                                                                      32;
+                                                                                                      0;
+                                                                                                      128;
+                                                                                                      96;
+                                                                                                      0
+                                                                                                    ]
                                                                                                 |)
                                                                                               |);
                                                                                               M.borrow (|
@@ -27086,9 +29004,12 @@ Module reference_safety.
                                                                                                 M.borrow (|
                                                                                                   Pointer.Kind.Ref,
                                                                                                   M.deref (|
-                                                                                                    M.read (|
-                                                                                                      UnsupportedLiteral
-                                                                                                    |)
+                                                                                                    M.mk_byte_str_ref
+                                                                                                      2
+                                                                                                      [
+                                                                                                        192;
+                                                                                                        0
+                                                                                                      ]
                                                                                                   |)
                                                                                                 |);
                                                                                                 M.borrow (|
@@ -27327,9 +29248,9 @@ Module reference_safety.
                                                                         M.borrow (|
                                                                           Pointer.Kind.Ref,
                                                                           M.deref (|
-                                                                            M.read (|
-                                                                              UnsupportedLiteral
-                                                                            |)
+                                                                            M.mk_byte_str_ref
+                                                                              2
+                                                                              [ 192; 0 ]
                                                                           |)
                                                                         |);
                                                                         M.borrow (|
@@ -27623,9 +29544,79 @@ Module reference_safety.
                                                                                               M.borrow (|
                                                                                                 Pointer.Kind.Ref,
                                                                                                 M.deref (|
-                                                                                                  M.read (|
-                                                                                                    UnsupportedLiteral
-                                                                                                  |)
+                                                                                                  M.mk_byte_str_ref
+                                                                                                    69
+                                                                                                    [
+                                                                                                      62;
+                                                                                                      99;
+                                                                                                      114;
+                                                                                                      97;
+                                                                                                      116;
+                                                                                                      101;
+                                                                                                      115;
+                                                                                                      47;
+                                                                                                      109;
+                                                                                                      111;
+                                                                                                      118;
+                                                                                                      101;
+                                                                                                      45;
+                                                                                                      98;
+                                                                                                      121;
+                                                                                                      116;
+                                                                                                      101;
+                                                                                                      99;
+                                                                                                      111;
+                                                                                                      100;
+                                                                                                      101;
+                                                                                                      45;
+                                                                                                      118;
+                                                                                                      101;
+                                                                                                      114;
+                                                                                                      105;
+                                                                                                      102;
+                                                                                                      105;
+                                                                                                      101;
+                                                                                                      114;
+                                                                                                      47;
+                                                                                                      115;
+                                                                                                      114;
+                                                                                                      99;
+                                                                                                      47;
+                                                                                                      114;
+                                                                                                      101;
+                                                                                                      102;
+                                                                                                      101;
+                                                                                                      114;
+                                                                                                      101;
+                                                                                                      110;
+                                                                                                      99;
+                                                                                                      101;
+                                                                                                      95;
+                                                                                                      115;
+                                                                                                      97;
+                                                                                                      102;
+                                                                                                      101;
+                                                                                                      116;
+                                                                                                      121;
+                                                                                                      47;
+                                                                                                      109;
+                                                                                                      111;
+                                                                                                      100;
+                                                                                                      46;
+                                                                                                      114;
+                                                                                                      115;
+                                                                                                      58;
+                                                                                                      51;
+                                                                                                      52;
+                                                                                                      55;
+                                                                                                      32;
+                                                                                                      193;
+                                                                                                      32;
+                                                                                                      0;
+                                                                                                      128;
+                                                                                                      96;
+                                                                                                      0
+                                                                                                    ]
                                                                                                 |)
                                                                                               |);
                                                                                               M.borrow (|
@@ -27774,9 +29765,12 @@ Module reference_safety.
                                                                                                 M.borrow (|
                                                                                                   Pointer.Kind.Ref,
                                                                                                   M.deref (|
-                                                                                                    M.read (|
-                                                                                                      UnsupportedLiteral
-                                                                                                    |)
+                                                                                                    M.mk_byte_str_ref
+                                                                                                      2
+                                                                                                      [
+                                                                                                        192;
+                                                                                                        0
+                                                                                                      ]
                                                                                                   |)
                                                                                                 |);
                                                                                                 M.borrow (|
@@ -28015,9 +30009,9 @@ Module reference_safety.
                                                                         M.borrow (|
                                                                           Pointer.Kind.Ref,
                                                                           M.deref (|
-                                                                            M.read (|
-                                                                              UnsupportedLiteral
-                                                                            |)
+                                                                            M.mk_byte_str_ref
+                                                                              2
+                                                                              [ 192; 0 ]
                                                                           |)
                                                                         |);
                                                                         M.borrow (|
@@ -29400,9 +31394,79 @@ Module reference_safety.
                                                                         M.borrow (|
                                                                           Pointer.Kind.Ref,
                                                                           M.deref (|
-                                                                            M.read (|
-                                                                              UnsupportedLiteral
-                                                                            |)
+                                                                            M.mk_byte_str_ref
+                                                                              69
+                                                                              [
+                                                                                62;
+                                                                                99;
+                                                                                114;
+                                                                                97;
+                                                                                116;
+                                                                                101;
+                                                                                115;
+                                                                                47;
+                                                                                109;
+                                                                                111;
+                                                                                118;
+                                                                                101;
+                                                                                45;
+                                                                                98;
+                                                                                121;
+                                                                                116;
+                                                                                101;
+                                                                                99;
+                                                                                111;
+                                                                                100;
+                                                                                101;
+                                                                                45;
+                                                                                118;
+                                                                                101;
+                                                                                114;
+                                                                                105;
+                                                                                102;
+                                                                                105;
+                                                                                101;
+                                                                                114;
+                                                                                47;
+                                                                                115;
+                                                                                114;
+                                                                                99;
+                                                                                47;
+                                                                                114;
+                                                                                101;
+                                                                                102;
+                                                                                101;
+                                                                                114;
+                                                                                101;
+                                                                                110;
+                                                                                99;
+                                                                                101;
+                                                                                95;
+                                                                                115;
+                                                                                97;
+                                                                                102;
+                                                                                101;
+                                                                                116;
+                                                                                121;
+                                                                                47;
+                                                                                109;
+                                                                                111;
+                                                                                100;
+                                                                                46;
+                                                                                114;
+                                                                                115;
+                                                                                58;
+                                                                                51;
+                                                                                55;
+                                                                                52;
+                                                                                32;
+                                                                                193;
+                                                                                32;
+                                                                                0;
+                                                                                128;
+                                                                                96;
+                                                                                0
+                                                                              ]
                                                                           |)
                                                                         |);
                                                                         M.borrow (|
@@ -29538,9 +31602,9 @@ Module reference_safety.
                                                                           M.borrow (|
                                                                             Pointer.Kind.Ref,
                                                                             M.deref (|
-                                                                              M.read (|
-                                                                                UnsupportedLiteral
-                                                                              |)
+                                                                              M.mk_byte_str_ref
+                                                                                2
+                                                                                [ 192; 0 ]
                                                                             |)
                                                                           |);
                                                                           M.borrow (|
@@ -29801,9 +31865,9 @@ Module reference_safety.
                                                                           M.borrow (|
                                                                             Pointer.Kind.Ref,
                                                                             M.deref (|
-                                                                              M.read (|
-                                                                                UnsupportedLiteral
-                                                                              |)
+                                                                              M.mk_byte_str_ref
+                                                                                2
+                                                                                [ 192; 0 ]
                                                                             |)
                                                                           |);
                                                                           M.borrow (|
@@ -30399,7 +32463,79 @@ Module reference_safety.
                                                             M.borrow (|
                                                               Pointer.Kind.Ref,
                                                               M.deref (|
-                                                                M.read (| UnsupportedLiteral |)
+                                                                M.mk_byte_str_ref
+                                                                  69
+                                                                  [
+                                                                    62;
+                                                                    99;
+                                                                    114;
+                                                                    97;
+                                                                    116;
+                                                                    101;
+                                                                    115;
+                                                                    47;
+                                                                    109;
+                                                                    111;
+                                                                    118;
+                                                                    101;
+                                                                    45;
+                                                                    98;
+                                                                    121;
+                                                                    116;
+                                                                    101;
+                                                                    99;
+                                                                    111;
+                                                                    100;
+                                                                    101;
+                                                                    45;
+                                                                    118;
+                                                                    101;
+                                                                    114;
+                                                                    105;
+                                                                    102;
+                                                                    105;
+                                                                    101;
+                                                                    114;
+                                                                    47;
+                                                                    115;
+                                                                    114;
+                                                                    99;
+                                                                    47;
+                                                                    114;
+                                                                    101;
+                                                                    102;
+                                                                    101;
+                                                                    114;
+                                                                    101;
+                                                                    110;
+                                                                    99;
+                                                                    101;
+                                                                    95;
+                                                                    115;
+                                                                    97;
+                                                                    102;
+                                                                    101;
+                                                                    116;
+                                                                    121;
+                                                                    47;
+                                                                    109;
+                                                                    111;
+                                                                    100;
+                                                                    46;
+                                                                    114;
+                                                                    115;
+                                                                    58;
+                                                                    51;
+                                                                    56;
+                                                                    51;
+                                                                    32;
+                                                                    193;
+                                                                    32;
+                                                                    0;
+                                                                    128;
+                                                                    96;
+                                                                    0
+                                                                  ]
                                                               |)
                                                             |);
                                                             M.borrow (|
@@ -30513,7 +32649,7 @@ Module reference_safety.
                                                               M.borrow (|
                                                                 Pointer.Kind.Ref,
                                                                 M.deref (|
-                                                                  M.read (| UnsupportedLiteral |)
+                                                                  M.mk_byte_str_ref 2 [ 192; 0 ]
                                                                 |)
                                                               |);
                                                               M.borrow (|
@@ -31143,9 +33279,79 @@ Module reference_safety.
                                                                                     M.borrow (|
                                                                                       Pointer.Kind.Ref,
                                                                                       M.deref (|
-                                                                                        M.read (|
-                                                                                          UnsupportedLiteral
-                                                                                        |)
+                                                                                        M.mk_byte_str_ref
+                                                                                          69
+                                                                                          [
+                                                                                            62;
+                                                                                            99;
+                                                                                            114;
+                                                                                            97;
+                                                                                            116;
+                                                                                            101;
+                                                                                            115;
+                                                                                            47;
+                                                                                            109;
+                                                                                            111;
+                                                                                            118;
+                                                                                            101;
+                                                                                            45;
+                                                                                            98;
+                                                                                            121;
+                                                                                            116;
+                                                                                            101;
+                                                                                            99;
+                                                                                            111;
+                                                                                            100;
+                                                                                            101;
+                                                                                            45;
+                                                                                            118;
+                                                                                            101;
+                                                                                            114;
+                                                                                            105;
+                                                                                            102;
+                                                                                            105;
+                                                                                            101;
+                                                                                            114;
+                                                                                            47;
+                                                                                            115;
+                                                                                            114;
+                                                                                            99;
+                                                                                            47;
+                                                                                            114;
+                                                                                            101;
+                                                                                            102;
+                                                                                            101;
+                                                                                            114;
+                                                                                            101;
+                                                                                            110;
+                                                                                            99;
+                                                                                            101;
+                                                                                            95;
+                                                                                            115;
+                                                                                            97;
+                                                                                            102;
+                                                                                            101;
+                                                                                            116;
+                                                                                            121;
+                                                                                            47;
+                                                                                            109;
+                                                                                            111;
+                                                                                            100;
+                                                                                            46;
+                                                                                            114;
+                                                                                            115;
+                                                                                            58;
+                                                                                            51;
+                                                                                            56;
+                                                                                            57;
+                                                                                            32;
+                                                                                            193;
+                                                                                            32;
+                                                                                            0;
+                                                                                            128;
+                                                                                            96;
+                                                                                            0
+                                                                                          ]
                                                                                       |)
                                                                                     |);
                                                                                     M.borrow (|
@@ -31286,9 +33492,10 @@ Module reference_safety.
                                                                                       M.borrow (|
                                                                                         Pointer.Kind.Ref,
                                                                                         M.deref (|
-                                                                                          M.read (|
-                                                                                            UnsupportedLiteral
-                                                                                          |)
+                                                                                          M.mk_byte_str_ref
+                                                                                            2
+                                                                                            [ 192; 0
+                                                                                            ]
                                                                                         |)
                                                                                       |);
                                                                                       M.borrow (|
@@ -31493,7 +33700,7 @@ Module reference_safety.
                                                               M.borrow (|
                                                                 Pointer.Kind.Ref,
                                                                 M.deref (|
-                                                                  M.read (| UnsupportedLiteral |)
+                                                                  M.mk_byte_str_ref 2 [ 192; 0 ]
                                                                 |)
                                                               |);
                                                               M.borrow (|
@@ -31718,7 +33925,79 @@ Module reference_safety.
                                                             M.borrow (|
                                                               Pointer.Kind.Ref,
                                                               M.deref (|
-                                                                M.read (| UnsupportedLiteral |)
+                                                                M.mk_byte_str_ref
+                                                                  69
+                                                                  [
+                                                                    62;
+                                                                    99;
+                                                                    114;
+                                                                    97;
+                                                                    116;
+                                                                    101;
+                                                                    115;
+                                                                    47;
+                                                                    109;
+                                                                    111;
+                                                                    118;
+                                                                    101;
+                                                                    45;
+                                                                    98;
+                                                                    121;
+                                                                    116;
+                                                                    101;
+                                                                    99;
+                                                                    111;
+                                                                    100;
+                                                                    101;
+                                                                    45;
+                                                                    118;
+                                                                    101;
+                                                                    114;
+                                                                    105;
+                                                                    102;
+                                                                    105;
+                                                                    101;
+                                                                    114;
+                                                                    47;
+                                                                    115;
+                                                                    114;
+                                                                    99;
+                                                                    47;
+                                                                    114;
+                                                                    101;
+                                                                    102;
+                                                                    101;
+                                                                    114;
+                                                                    101;
+                                                                    110;
+                                                                    99;
+                                                                    101;
+                                                                    95;
+                                                                    115;
+                                                                    97;
+                                                                    102;
+                                                                    101;
+                                                                    116;
+                                                                    121;
+                                                                    47;
+                                                                    109;
+                                                                    111;
+                                                                    100;
+                                                                    46;
+                                                                    114;
+                                                                    115;
+                                                                    58;
+                                                                    51;
+                                                                    57;
+                                                                    48;
+                                                                    32;
+                                                                    193;
+                                                                    32;
+                                                                    0;
+                                                                    128;
+                                                                    96;
+                                                                    0
+                                                                  ]
                                                               |)
                                                             |);
                                                             M.borrow (|
@@ -31832,7 +34111,7 @@ Module reference_safety.
                                                               M.borrow (|
                                                                 Pointer.Kind.Ref,
                                                                 M.deref (|
-                                                                  M.read (| UnsupportedLiteral |)
+                                                                  M.mk_byte_str_ref 2 [ 192; 0 ]
                                                                 |)
                                                               |);
                                                               M.borrow (|
@@ -32441,9 +34720,79 @@ Module reference_safety.
                                                                                     M.borrow (|
                                                                                       Pointer.Kind.Ref,
                                                                                       M.deref (|
-                                                                                        M.read (|
-                                                                                          UnsupportedLiteral
-                                                                                        |)
+                                                                                        M.mk_byte_str_ref
+                                                                                          69
+                                                                                          [
+                                                                                            62;
+                                                                                            99;
+                                                                                            114;
+                                                                                            97;
+                                                                                            116;
+                                                                                            101;
+                                                                                            115;
+                                                                                            47;
+                                                                                            109;
+                                                                                            111;
+                                                                                            118;
+                                                                                            101;
+                                                                                            45;
+                                                                                            98;
+                                                                                            121;
+                                                                                            116;
+                                                                                            101;
+                                                                                            99;
+                                                                                            111;
+                                                                                            100;
+                                                                                            101;
+                                                                                            45;
+                                                                                            118;
+                                                                                            101;
+                                                                                            114;
+                                                                                            105;
+                                                                                            102;
+                                                                                            105;
+                                                                                            101;
+                                                                                            114;
+                                                                                            47;
+                                                                                            115;
+                                                                                            114;
+                                                                                            99;
+                                                                                            47;
+                                                                                            114;
+                                                                                            101;
+                                                                                            102;
+                                                                                            101;
+                                                                                            114;
+                                                                                            101;
+                                                                                            110;
+                                                                                            99;
+                                                                                            101;
+                                                                                            95;
+                                                                                            115;
+                                                                                            97;
+                                                                                            102;
+                                                                                            101;
+                                                                                            116;
+                                                                                            121;
+                                                                                            47;
+                                                                                            109;
+                                                                                            111;
+                                                                                            100;
+                                                                                            46;
+                                                                                            114;
+                                                                                            115;
+                                                                                            58;
+                                                                                            51;
+                                                                                            57;
+                                                                                            53;
+                                                                                            32;
+                                                                                            193;
+                                                                                            32;
+                                                                                            0;
+                                                                                            128;
+                                                                                            96;
+                                                                                            0
+                                                                                          ]
                                                                                       |)
                                                                                     |);
                                                                                     M.borrow (|
@@ -32584,9 +34933,10 @@ Module reference_safety.
                                                                                       M.borrow (|
                                                                                         Pointer.Kind.Ref,
                                                                                         M.deref (|
-                                                                                          M.read (|
-                                                                                            UnsupportedLiteral
-                                                                                          |)
+                                                                                          M.mk_byte_str_ref
+                                                                                            2
+                                                                                            [ 192; 0
+                                                                                            ]
                                                                                         |)
                                                                                       |);
                                                                                       M.borrow (|
@@ -32791,7 +35141,7 @@ Module reference_safety.
                                                               M.borrow (|
                                                                 Pointer.Kind.Ref,
                                                                 M.deref (|
-                                                                  M.read (| UnsupportedLiteral |)
+                                                                  M.mk_byte_str_ref 2 [ 192; 0 ]
                                                                 |)
                                                               |);
                                                               M.borrow (|
@@ -33016,7 +35366,79 @@ Module reference_safety.
                                                             M.borrow (|
                                                               Pointer.Kind.Ref,
                                                               M.deref (|
-                                                                M.read (| UnsupportedLiteral |)
+                                                                M.mk_byte_str_ref
+                                                                  69
+                                                                  [
+                                                                    62;
+                                                                    99;
+                                                                    114;
+                                                                    97;
+                                                                    116;
+                                                                    101;
+                                                                    115;
+                                                                    47;
+                                                                    109;
+                                                                    111;
+                                                                    118;
+                                                                    101;
+                                                                    45;
+                                                                    98;
+                                                                    121;
+                                                                    116;
+                                                                    101;
+                                                                    99;
+                                                                    111;
+                                                                    100;
+                                                                    101;
+                                                                    45;
+                                                                    118;
+                                                                    101;
+                                                                    114;
+                                                                    105;
+                                                                    102;
+                                                                    105;
+                                                                    101;
+                                                                    114;
+                                                                    47;
+                                                                    115;
+                                                                    114;
+                                                                    99;
+                                                                    47;
+                                                                    114;
+                                                                    101;
+                                                                    102;
+                                                                    101;
+                                                                    114;
+                                                                    101;
+                                                                    110;
+                                                                    99;
+                                                                    101;
+                                                                    95;
+                                                                    115;
+                                                                    97;
+                                                                    102;
+                                                                    101;
+                                                                    116;
+                                                                    121;
+                                                                    47;
+                                                                    109;
+                                                                    111;
+                                                                    100;
+                                                                    46;
+                                                                    114;
+                                                                    115;
+                                                                    58;
+                                                                    51;
+                                                                    57;
+                                                                    54;
+                                                                    32;
+                                                                    193;
+                                                                    32;
+                                                                    0;
+                                                                    128;
+                                                                    96;
+                                                                    0
+                                                                  ]
                                                               |)
                                                             |);
                                                             M.borrow (|
@@ -33130,7 +35552,7 @@ Module reference_safety.
                                                               M.borrow (|
                                                                 Pointer.Kind.Ref,
                                                                 M.deref (|
-                                                                  M.read (| UnsupportedLiteral |)
+                                                                  M.mk_byte_str_ref 2 [ 192; 0 ]
                                                                 |)
                                                               |);
                                                               M.borrow (|
@@ -33739,9 +36161,79 @@ Module reference_safety.
                                                                                     M.borrow (|
                                                                                       Pointer.Kind.Ref,
                                                                                       M.deref (|
-                                                                                        M.read (|
-                                                                                          UnsupportedLiteral
-                                                                                        |)
+                                                                                        M.mk_byte_str_ref
+                                                                                          69
+                                                                                          [
+                                                                                            62;
+                                                                                            99;
+                                                                                            114;
+                                                                                            97;
+                                                                                            116;
+                                                                                            101;
+                                                                                            115;
+                                                                                            47;
+                                                                                            109;
+                                                                                            111;
+                                                                                            118;
+                                                                                            101;
+                                                                                            45;
+                                                                                            98;
+                                                                                            121;
+                                                                                            116;
+                                                                                            101;
+                                                                                            99;
+                                                                                            111;
+                                                                                            100;
+                                                                                            101;
+                                                                                            45;
+                                                                                            118;
+                                                                                            101;
+                                                                                            114;
+                                                                                            105;
+                                                                                            102;
+                                                                                            105;
+                                                                                            101;
+                                                                                            114;
+                                                                                            47;
+                                                                                            115;
+                                                                                            114;
+                                                                                            99;
+                                                                                            47;
+                                                                                            114;
+                                                                                            101;
+                                                                                            102;
+                                                                                            101;
+                                                                                            114;
+                                                                                            101;
+                                                                                            110;
+                                                                                            99;
+                                                                                            101;
+                                                                                            95;
+                                                                                            115;
+                                                                                            97;
+                                                                                            102;
+                                                                                            101;
+                                                                                            116;
+                                                                                            121;
+                                                                                            47;
+                                                                                            109;
+                                                                                            111;
+                                                                                            100;
+                                                                                            46;
+                                                                                            114;
+                                                                                            115;
+                                                                                            58;
+                                                                                            52;
+                                                                                            48;
+                                                                                            50;
+                                                                                            32;
+                                                                                            193;
+                                                                                            32;
+                                                                                            0;
+                                                                                            128;
+                                                                                            96;
+                                                                                            0
+                                                                                          ]
                                                                                       |)
                                                                                     |);
                                                                                     M.borrow (|
@@ -33882,9 +36374,10 @@ Module reference_safety.
                                                                                       M.borrow (|
                                                                                         Pointer.Kind.Ref,
                                                                                         M.deref (|
-                                                                                          M.read (|
-                                                                                            UnsupportedLiteral
-                                                                                          |)
+                                                                                          M.mk_byte_str_ref
+                                                                                            2
+                                                                                            [ 192; 0
+                                                                                            ]
                                                                                         |)
                                                                                       |);
                                                                                       M.borrow (|
@@ -34089,7 +36582,7 @@ Module reference_safety.
                                                               M.borrow (|
                                                                 Pointer.Kind.Ref,
                                                                 M.deref (|
-                                                                  M.read (| UnsupportedLiteral |)
+                                                                  M.mk_byte_str_ref 2 [ 192; 0 ]
                                                                 |)
                                                               |);
                                                               M.borrow (|
@@ -34314,7 +36807,79 @@ Module reference_safety.
                                                             M.borrow (|
                                                               Pointer.Kind.Ref,
                                                               M.deref (|
-                                                                M.read (| UnsupportedLiteral |)
+                                                                M.mk_byte_str_ref
+                                                                  69
+                                                                  [
+                                                                    62;
+                                                                    99;
+                                                                    114;
+                                                                    97;
+                                                                    116;
+                                                                    101;
+                                                                    115;
+                                                                    47;
+                                                                    109;
+                                                                    111;
+                                                                    118;
+                                                                    101;
+                                                                    45;
+                                                                    98;
+                                                                    121;
+                                                                    116;
+                                                                    101;
+                                                                    99;
+                                                                    111;
+                                                                    100;
+                                                                    101;
+                                                                    45;
+                                                                    118;
+                                                                    101;
+                                                                    114;
+                                                                    105;
+                                                                    102;
+                                                                    105;
+                                                                    101;
+                                                                    114;
+                                                                    47;
+                                                                    115;
+                                                                    114;
+                                                                    99;
+                                                                    47;
+                                                                    114;
+                                                                    101;
+                                                                    102;
+                                                                    101;
+                                                                    114;
+                                                                    101;
+                                                                    110;
+                                                                    99;
+                                                                    101;
+                                                                    95;
+                                                                    115;
+                                                                    97;
+                                                                    102;
+                                                                    101;
+                                                                    116;
+                                                                    121;
+                                                                    47;
+                                                                    109;
+                                                                    111;
+                                                                    100;
+                                                                    46;
+                                                                    114;
+                                                                    115;
+                                                                    58;
+                                                                    52;
+                                                                    48;
+                                                                    51;
+                                                                    32;
+                                                                    193;
+                                                                    32;
+                                                                    0;
+                                                                    128;
+                                                                    96;
+                                                                    0
+                                                                  ]
                                                               |)
                                                             |);
                                                             M.borrow (|
@@ -34428,7 +36993,7 @@ Module reference_safety.
                                                               M.borrow (|
                                                                 Pointer.Kind.Ref,
                                                                 M.deref (|
-                                                                  M.read (| UnsupportedLiteral |)
+                                                                  M.mk_byte_str_ref 2 [ 192; 0 ]
                                                                 |)
                                                               |);
                                                               M.borrow (|
@@ -34820,7 +37385,79 @@ Module reference_safety.
                                                             M.borrow (|
                                                               Pointer.Kind.Ref,
                                                               M.deref (|
-                                                                M.read (| UnsupportedLiteral |)
+                                                                M.mk_byte_str_ref
+                                                                  69
+                                                                  [
+                                                                    62;
+                                                                    99;
+                                                                    114;
+                                                                    97;
+                                                                    116;
+                                                                    101;
+                                                                    115;
+                                                                    47;
+                                                                    109;
+                                                                    111;
+                                                                    118;
+                                                                    101;
+                                                                    45;
+                                                                    98;
+                                                                    121;
+                                                                    116;
+                                                                    101;
+                                                                    99;
+                                                                    111;
+                                                                    100;
+                                                                    101;
+                                                                    45;
+                                                                    118;
+                                                                    101;
+                                                                    114;
+                                                                    105;
+                                                                    102;
+                                                                    105;
+                                                                    101;
+                                                                    114;
+                                                                    47;
+                                                                    115;
+                                                                    114;
+                                                                    99;
+                                                                    47;
+                                                                    114;
+                                                                    101;
+                                                                    102;
+                                                                    101;
+                                                                    114;
+                                                                    101;
+                                                                    110;
+                                                                    99;
+                                                                    101;
+                                                                    95;
+                                                                    115;
+                                                                    97;
+                                                                    102;
+                                                                    101;
+                                                                    116;
+                                                                    121;
+                                                                    47;
+                                                                    109;
+                                                                    111;
+                                                                    100;
+                                                                    46;
+                                                                    114;
+                                                                    115;
+                                                                    58;
+                                                                    52;
+                                                                    48;
+                                                                    56;
+                                                                    32;
+                                                                    193;
+                                                                    32;
+                                                                    0;
+                                                                    128;
+                                                                    96;
+                                                                    0
+                                                                  ]
                                                               |)
                                                             |);
                                                             M.borrow (|
@@ -34934,7 +37571,7 @@ Module reference_safety.
                                                               M.borrow (|
                                                                 Pointer.Kind.Ref,
                                                                 M.deref (|
-                                                                  M.read (| UnsupportedLiteral |)
+                                                                  M.mk_byte_str_ref 2 [ 192; 0 ]
                                                                 |)
                                                               |);
                                                               M.borrow (|
@@ -35718,9 +38355,79 @@ Module reference_safety.
                                                                                     M.borrow (|
                                                                                       Pointer.Kind.Ref,
                                                                                       M.deref (|
-                                                                                        M.read (|
-                                                                                          UnsupportedLiteral
-                                                                                        |)
+                                                                                        M.mk_byte_str_ref
+                                                                                          69
+                                                                                          [
+                                                                                            62;
+                                                                                            99;
+                                                                                            114;
+                                                                                            97;
+                                                                                            116;
+                                                                                            101;
+                                                                                            115;
+                                                                                            47;
+                                                                                            109;
+                                                                                            111;
+                                                                                            118;
+                                                                                            101;
+                                                                                            45;
+                                                                                            98;
+                                                                                            121;
+                                                                                            116;
+                                                                                            101;
+                                                                                            99;
+                                                                                            111;
+                                                                                            100;
+                                                                                            101;
+                                                                                            45;
+                                                                                            118;
+                                                                                            101;
+                                                                                            114;
+                                                                                            105;
+                                                                                            102;
+                                                                                            105;
+                                                                                            101;
+                                                                                            114;
+                                                                                            47;
+                                                                                            115;
+                                                                                            114;
+                                                                                            99;
+                                                                                            47;
+                                                                                            114;
+                                                                                            101;
+                                                                                            102;
+                                                                                            101;
+                                                                                            114;
+                                                                                            101;
+                                                                                            110;
+                                                                                            99;
+                                                                                            101;
+                                                                                            95;
+                                                                                            115;
+                                                                                            97;
+                                                                                            102;
+                                                                                            101;
+                                                                                            116;
+                                                                                            121;
+                                                                                            47;
+                                                                                            109;
+                                                                                            111;
+                                                                                            100;
+                                                                                            46;
+                                                                                            114;
+                                                                                            115;
+                                                                                            58;
+                                                                                            52;
+                                                                                            49;
+                                                                                            54;
+                                                                                            32;
+                                                                                            193;
+                                                                                            32;
+                                                                                            0;
+                                                                                            128;
+                                                                                            96;
+                                                                                            0
+                                                                                          ]
                                                                                       |)
                                                                                     |);
                                                                                     M.borrow (|
@@ -35861,9 +38568,10 @@ Module reference_safety.
                                                                                       M.borrow (|
                                                                                         Pointer.Kind.Ref,
                                                                                         M.deref (|
-                                                                                          M.read (|
-                                                                                            UnsupportedLiteral
-                                                                                          |)
+                                                                                          M.mk_byte_str_ref
+                                                                                            2
+                                                                                            [ 192; 0
+                                                                                            ]
                                                                                         |)
                                                                                       |);
                                                                                       M.borrow (|
@@ -36068,7 +38776,7 @@ Module reference_safety.
                                                               M.borrow (|
                                                                 Pointer.Kind.Ref,
                                                                 M.deref (|
-                                                                  M.read (| UnsupportedLiteral |)
+                                                                  M.mk_byte_str_ref 2 [ 192; 0 ]
                                                                 |)
                                                               |);
                                                               M.borrow (|
@@ -36690,9 +39398,79 @@ Module reference_safety.
                                                                                     M.borrow (|
                                                                                       Pointer.Kind.Ref,
                                                                                       M.deref (|
-                                                                                        M.read (|
-                                                                                          UnsupportedLiteral
-                                                                                        |)
+                                                                                        M.mk_byte_str_ref
+                                                                                          69
+                                                                                          [
+                                                                                            62;
+                                                                                            99;
+                                                                                            114;
+                                                                                            97;
+                                                                                            116;
+                                                                                            101;
+                                                                                            115;
+                                                                                            47;
+                                                                                            109;
+                                                                                            111;
+                                                                                            118;
+                                                                                            101;
+                                                                                            45;
+                                                                                            98;
+                                                                                            121;
+                                                                                            116;
+                                                                                            101;
+                                                                                            99;
+                                                                                            111;
+                                                                                            100;
+                                                                                            101;
+                                                                                            45;
+                                                                                            118;
+                                                                                            101;
+                                                                                            114;
+                                                                                            105;
+                                                                                            102;
+                                                                                            105;
+                                                                                            101;
+                                                                                            114;
+                                                                                            47;
+                                                                                            115;
+                                                                                            114;
+                                                                                            99;
+                                                                                            47;
+                                                                                            114;
+                                                                                            101;
+                                                                                            102;
+                                                                                            101;
+                                                                                            114;
+                                                                                            101;
+                                                                                            110;
+                                                                                            99;
+                                                                                            101;
+                                                                                            95;
+                                                                                            115;
+                                                                                            97;
+                                                                                            102;
+                                                                                            101;
+                                                                                            116;
+                                                                                            121;
+                                                                                            47;
+                                                                                            109;
+                                                                                            111;
+                                                                                            100;
+                                                                                            46;
+                                                                                            114;
+                                                                                            115;
+                                                                                            58;
+                                                                                            52;
+                                                                                            50;
+                                                                                            51;
+                                                                                            32;
+                                                                                            193;
+                                                                                            32;
+                                                                                            0;
+                                                                                            128;
+                                                                                            96;
+                                                                                            0
+                                                                                          ]
                                                                                       |)
                                                                                     |);
                                                                                     M.borrow (|
@@ -36833,9 +39611,10 @@ Module reference_safety.
                                                                                       M.borrow (|
                                                                                         Pointer.Kind.Ref,
                                                                                         M.deref (|
-                                                                                          M.read (|
-                                                                                            UnsupportedLiteral
-                                                                                          |)
+                                                                                          M.mk_byte_str_ref
+                                                                                            2
+                                                                                            [ 192; 0
+                                                                                            ]
                                                                                         |)
                                                                                       |);
                                                                                       M.borrow (|
@@ -37040,7 +39819,7 @@ Module reference_safety.
                                                               M.borrow (|
                                                                 Pointer.Kind.Ref,
                                                                 M.deref (|
-                                                                  M.read (| UnsupportedLiteral |)
+                                                                  M.mk_byte_str_ref 2 [ 192; 0 ]
                                                                 |)
                                                               |);
                                                               M.borrow (|
@@ -37331,9 +40110,79 @@ Module reference_safety.
                                                                                     M.borrow (|
                                                                                       Pointer.Kind.Ref,
                                                                                       M.deref (|
-                                                                                        M.read (|
-                                                                                          UnsupportedLiteral
-                                                                                        |)
+                                                                                        M.mk_byte_str_ref
+                                                                                          69
+                                                                                          [
+                                                                                            62;
+                                                                                            99;
+                                                                                            114;
+                                                                                            97;
+                                                                                            116;
+                                                                                            101;
+                                                                                            115;
+                                                                                            47;
+                                                                                            109;
+                                                                                            111;
+                                                                                            118;
+                                                                                            101;
+                                                                                            45;
+                                                                                            98;
+                                                                                            121;
+                                                                                            116;
+                                                                                            101;
+                                                                                            99;
+                                                                                            111;
+                                                                                            100;
+                                                                                            101;
+                                                                                            45;
+                                                                                            118;
+                                                                                            101;
+                                                                                            114;
+                                                                                            105;
+                                                                                            102;
+                                                                                            105;
+                                                                                            101;
+                                                                                            114;
+                                                                                            47;
+                                                                                            115;
+                                                                                            114;
+                                                                                            99;
+                                                                                            47;
+                                                                                            114;
+                                                                                            101;
+                                                                                            102;
+                                                                                            101;
+                                                                                            114;
+                                                                                            101;
+                                                                                            110;
+                                                                                            99;
+                                                                                            101;
+                                                                                            95;
+                                                                                            115;
+                                                                                            97;
+                                                                                            102;
+                                                                                            101;
+                                                                                            116;
+                                                                                            121;
+                                                                                            47;
+                                                                                            109;
+                                                                                            111;
+                                                                                            100;
+                                                                                            46;
+                                                                                            114;
+                                                                                            115;
+                                                                                            58;
+                                                                                            52;
+                                                                                            50;
+                                                                                            52;
+                                                                                            32;
+                                                                                            193;
+                                                                                            32;
+                                                                                            0;
+                                                                                            128;
+                                                                                            96;
+                                                                                            0
+                                                                                          ]
                                                                                       |)
                                                                                     |);
                                                                                     M.borrow (|
@@ -37474,9 +40323,10 @@ Module reference_safety.
                                                                                       M.borrow (|
                                                                                         Pointer.Kind.Ref,
                                                                                         M.deref (|
-                                                                                          M.read (|
-                                                                                            UnsupportedLiteral
-                                                                                          |)
+                                                                                          M.mk_byte_str_ref
+                                                                                            2
+                                                                                            [ 192; 0
+                                                                                            ]
                                                                                         |)
                                                                                       |);
                                                                                       M.borrow (|
@@ -37681,7 +40531,7 @@ Module reference_safety.
                                                               M.borrow (|
                                                                 Pointer.Kind.Ref,
                                                                 M.deref (|
-                                                                  M.read (| UnsupportedLiteral |)
+                                                                  M.mk_byte_str_ref 2 [ 192; 0 ]
                                                                 |)
                                                               |);
                                                               M.borrow (|
@@ -37906,7 +40756,79 @@ Module reference_safety.
                                                             M.borrow (|
                                                               Pointer.Kind.Ref,
                                                               M.deref (|
-                                                                M.read (| UnsupportedLiteral |)
+                                                                M.mk_byte_str_ref
+                                                                  69
+                                                                  [
+                                                                    62;
+                                                                    99;
+                                                                    114;
+                                                                    97;
+                                                                    116;
+                                                                    101;
+                                                                    115;
+                                                                    47;
+                                                                    109;
+                                                                    111;
+                                                                    118;
+                                                                    101;
+                                                                    45;
+                                                                    98;
+                                                                    121;
+                                                                    116;
+                                                                    101;
+                                                                    99;
+                                                                    111;
+                                                                    100;
+                                                                    101;
+                                                                    45;
+                                                                    118;
+                                                                    101;
+                                                                    114;
+                                                                    105;
+                                                                    102;
+                                                                    105;
+                                                                    101;
+                                                                    114;
+                                                                    47;
+                                                                    115;
+                                                                    114;
+                                                                    99;
+                                                                    47;
+                                                                    114;
+                                                                    101;
+                                                                    102;
+                                                                    101;
+                                                                    114;
+                                                                    101;
+                                                                    110;
+                                                                    99;
+                                                                    101;
+                                                                    95;
+                                                                    115;
+                                                                    97;
+                                                                    102;
+                                                                    101;
+                                                                    116;
+                                                                    121;
+                                                                    47;
+                                                                    109;
+                                                                    111;
+                                                                    100;
+                                                                    46;
+                                                                    114;
+                                                                    115;
+                                                                    58;
+                                                                    52;
+                                                                    50;
+                                                                    53;
+                                                                    32;
+                                                                    193;
+                                                                    32;
+                                                                    0;
+                                                                    128;
+                                                                    96;
+                                                                    0
+                                                                  ]
                                                               |)
                                                             |);
                                                             M.borrow (|
@@ -38020,7 +40942,7 @@ Module reference_safety.
                                                               M.borrow (|
                                                                 Pointer.Kind.Ref,
                                                                 M.deref (|
-                                                                  M.read (| UnsupportedLiteral |)
+                                                                  M.mk_byte_str_ref 2 [ 192; 0 ]
                                                                 |)
                                                               |);
                                                               M.borrow (|
@@ -38666,7 +41588,7 @@ Module reference_safety.
                                                                 M.borrow (|
                                                                   Pointer.Kind.Ref,
                                                                   M.deref (|
-                                                                    M.read (| UnsupportedLiteral |)
+                                                                    M.mk_byte_str_ref 2 [ 192; 0 ]
                                                                   |)
                                                                 |);
                                                                 M.borrow (|

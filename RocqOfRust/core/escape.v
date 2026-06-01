@@ -56,7 +56,16 @@ Module escape.
                 [],
                 []
               |),
-              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| UnsupportedLiteral |) |) |) ]
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.mk_byte_str_ref
+                      16
+                      [ 48; 49; 50; 51; 52; 53; 54; 55; 56; 57; 97; 98; 99; 100; 101; 102 ]
+                  |)
+                |)
+              ]
             |)
           ]
         |)
@@ -593,7 +602,7 @@ Module escape.
                                           BinOp.Wrap.bit_or,
                                           [
                                             Value.Integer IntegerKind.U8 128;
-                                            M.read (| UnsupportedLiteral |)
+                                            Value.Integer IntegerKind.U8 116
                                           ]
                                         |)));
                                     fun γ =>
@@ -608,7 +617,7 @@ Module escape.
                                           BinOp.Wrap.bit_or,
                                           [
                                             Value.Integer IntegerKind.U8 128;
-                                            M.read (| UnsupportedLiteral |)
+                                            Value.Integer IntegerKind.U8 114
                                           ]
                                         |)));
                                     fun γ =>
@@ -623,7 +632,7 @@ Module escape.
                                           BinOp.Wrap.bit_or,
                                           [
                                             Value.Integer IntegerKind.U8 128;
-                                            M.read (| UnsupportedLiteral |)
+                                            Value.Integer IntegerKind.U8 110
                                           ]
                                         |)));
                                     fun γ =>
@@ -638,7 +647,7 @@ Module escape.
                                           BinOp.Wrap.bit_or,
                                           [
                                             Value.Integer IntegerKind.U8 128;
-                                            M.read (| UnsupportedLiteral |)
+                                            Value.Integer IntegerKind.U8 92
                                           ]
                                         |)));
                                     fun γ =>
@@ -653,7 +662,7 @@ Module escape.
                                           BinOp.Wrap.bit_or,
                                           [
                                             Value.Integer IntegerKind.U8 128;
-                                            M.read (| UnsupportedLiteral |)
+                                            Value.Integer IntegerKind.U8 39
                                           ]
                                         |)));
                                     fun γ =>
@@ -668,7 +677,7 @@ Module escape.
                                           BinOp.Wrap.bit_or,
                                           [
                                             Value.Integer IntegerKind.U8 128;
-                                            M.read (| UnsupportedLiteral |)
+                                            Value.Integer IntegerKind.U8 34
                                           ]
                                         |)));
                                     fun γ =>
@@ -689,7 +698,7 @@ Module escape.
                                                     BinOp.Wrap.bit_or,
                                                     [
                                                       Value.Integer IntegerKind.U8 128;
-                                                      M.read (| UnsupportedLiteral |)
+                                                      Value.Integer IntegerKind.U8 0
                                                     ]
                                                   |)))
                                               | _ => M.impossible "wrong number of arguments"
@@ -3745,7 +3754,7 @@ Module escape.
                                     [
                                       M.borrow (|
                                         Pointer.Kind.Ref,
-                                        M.deref (| M.read (| UnsupportedLiteral |) |)
+                                        M.deref (| M.mk_byte_str_ref 6 [ 1; 39; 192; 1; 39; 0 ] |)
                                       |);
                                       M.borrow (|
                                         Pointer.Kind.Ref,
@@ -3943,7 +3952,7 @@ Module escape.
                                     [
                                       M.borrow (|
                                         Pointer.Kind.Ref,
-                                        M.deref (| M.read (| UnsupportedLiteral |) |)
+                                        M.deref (| M.mk_byte_str_ref 6 [ 1; 39; 192; 1; 39; 0 ] |)
                                       |);
                                       M.borrow (|
                                         Pointer.Kind.Ref,

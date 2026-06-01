@@ -176,7 +176,40 @@ Module control_flow_graph.
                             [
                               M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.deref (| M.read (| UnsupportedLiteral |) |)
+                                M.deref (|
+                                  M.mk_byte_str_ref
+                                    28
+                                    [
+                                      10;
+                                      124;
+                                      32;
+                                      69;
+                                      110;
+                                      116;
+                                      101;
+                                      114;
+                                      58;
+                                      32;
+                                      32;
+                                      192;
+                                      14;
+                                      32;
+                                      32;
+                                      32;
+                                      32;
+                                      32;
+                                      32;
+                                      32;
+                                      32;
+                                      32;
+                                      32;
+                                      32;
+                                      32;
+                                      124;
+                                      10;
+                                      0
+                                    ]
+                                |)
                               |);
                               M.borrow (|
                                 Pointer.Kind.Ref,
@@ -290,7 +323,31 @@ Module control_flow_graph.
                             [
                               M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.deref (| M.read (| UnsupportedLiteral |) |)
+                                M.deref (|
+                                  M.mk_byte_str_ref
+                                    19
+                                    [
+                                      14;
+                                      61;
+                                      61;
+                                      62;
+                                      32;
+                                      67;
+                                      104;
+                                      105;
+                                      108;
+                                      100;
+                                      114;
+                                      101;
+                                      110;
+                                      58;
+                                      32;
+                                      192;
+                                      1;
+                                      10;
+                                      0
+                                    ]
+                                |)
                               |);
                               M.borrow (|
                                 Pointer.Kind.Ref,
@@ -387,7 +444,40 @@ Module control_flow_graph.
                             [
                               M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.deref (| M.read (| UnsupportedLiteral |) |)
+                                M.deref (|
+                                  M.mk_byte_str_ref
+                                    28
+                                    [
+                                      10;
+                                      124;
+                                      32;
+                                      69;
+                                      120;
+                                      105;
+                                      116;
+                                      58;
+                                      32;
+                                      32;
+                                      32;
+                                      192;
+                                      14;
+                                      32;
+                                      32;
+                                      32;
+                                      32;
+                                      32;
+                                      32;
+                                      32;
+                                      32;
+                                      32;
+                                      32;
+                                      32;
+                                      32;
+                                      124;
+                                      10;
+                                      0
+                                    ]
+                                |)
                               |);
                               M.borrow (|
                                 Pointer.Kind.Ref,
@@ -2916,7 +3006,32 @@ Module control_flow_graph.
                             [
                               M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.deref (| M.read (| UnsupportedLiteral |) |)
+                                M.deref (|
+                                  M.mk_byte_str_ref
+                                    20
+                                    [
+                                      11;
+                                      84;
+                                      114;
+                                      97;
+                                      118;
+                                      101;
+                                      114;
+                                      115;
+                                      97;
+                                      108;
+                                      58;
+                                      32;
+                                      193;
+                                      32;
+                                      0;
+                                      128;
+                                      96;
+                                      1;
+                                      10;
+                                      0
+                                    ]
+                                |)
                               |);
                               M.borrow (|
                                 Pointer.Kind.Ref,

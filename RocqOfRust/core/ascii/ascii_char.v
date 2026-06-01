@@ -1392,7 +1392,7 @@ Module ascii.
                 M.call_closure (|
                   Ty.path "u8",
                   M.get_associated_function (| Ty.path "u8", "unchecked_add", [], [] |),
-                  [ M.read (| UnsupportedLiteral |); M.read (| d |) ]
+                  [ Value.Integer IntegerKind.U8 48; M.read (| d |) ]
                 |) in
               M.alloc (|
                 Ty.path "core::ascii::ascii_char::AsciiChar",

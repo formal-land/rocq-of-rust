@@ -137,7 +137,7 @@ Definition fmt_list (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M
                                 [
                                   M.borrow (|
                                     Pointer.Kind.Ref,
-                                    M.deref (| M.read (| UnsupportedLiteral |) |)
+                                    M.deref (| M.mk_byte_str_ref 2 [ 192; 0 ] |)
                                   |);
                                   M.borrow (|
                                     Pointer.Kind.Ref,
@@ -382,7 +382,7 @@ Definition fmt_list (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M
                                             [
                                               M.borrow (|
                                                 Pointer.Kind.Ref,
-                                                M.deref (| M.read (| UnsupportedLiteral |) |)
+                                                M.deref (| M.mk_byte_str_ref 2 [ 192; 0 ] |)
                                               |);
                                               M.borrow (|
                                                 Pointer.Kind.Ref,
@@ -717,9 +717,15 @@ Definition fmt_list (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M
                                                                             M.borrow (|
                                                                               Pointer.Kind.Ref,
                                                                               M.deref (|
-                                                                                M.read (|
-                                                                                  UnsupportedLiteral
-                                                                                |)
+                                                                                M.mk_byte_str_ref
+                                                                                  5
+                                                                                  [
+                                                                                    2;
+                                                                                    44;
+                                                                                    32;
+                                                                                    192;
+                                                                                    0
+                                                                                  ]
                                                                               |)
                                                                             |);
                                                                             M.borrow (|
@@ -937,7 +943,7 @@ Definition fmt_list (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M
                                 [
                                   M.borrow (|
                                     Pointer.Kind.Ref,
-                                    M.deref (| M.read (| UnsupportedLiteral |) |)
+                                    M.deref (| M.mk_byte_str_ref 2 [ 192; 0 ] |)
                                   |);
                                   M.borrow (|
                                     Pointer.Kind.Ref,

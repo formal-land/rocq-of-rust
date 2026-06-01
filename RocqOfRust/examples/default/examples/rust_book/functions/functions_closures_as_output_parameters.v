@@ -100,7 +100,28 @@ Definition create_fn (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : 
                                           [
                                             M.borrow (|
                                               Pointer.Kind.Ref,
-                                              M.deref (| M.read (| UnsupportedLiteral |) |)
+                                              M.deref (|
+                                                M.mk_byte_str_ref
+                                                  16
+                                                  [
+                                                    11;
+                                                    84;
+                                                    104;
+                                                    105;
+                                                    115;
+                                                    32;
+                                                    105;
+                                                    115;
+                                                    32;
+                                                    97;
+                                                    58;
+                                                    32;
+                                                    192;
+                                                    1;
+                                                    10;
+                                                    0
+                                                  ]
+                                              |)
                                             |);
                                             M.borrow (|
                                               Pointer.Kind.Ref,
@@ -227,7 +248,28 @@ Definition create_fnmut (ε : list Value.t) (τ : list Ty.t) (α : list Value.t)
                                           [
                                             M.borrow (|
                                               Pointer.Kind.Ref,
-                                              M.deref (| M.read (| UnsupportedLiteral |) |)
+                                              M.deref (|
+                                                M.mk_byte_str_ref
+                                                  16
+                                                  [
+                                                    11;
+                                                    84;
+                                                    104;
+                                                    105;
+                                                    115;
+                                                    32;
+                                                    105;
+                                                    115;
+                                                    32;
+                                                    97;
+                                                    58;
+                                                    32;
+                                                    192;
+                                                    1;
+                                                    10;
+                                                    0
+                                                  ]
+                                              |)
                                             |);
                                             M.borrow (|
                                               Pointer.Kind.Ref,
@@ -354,7 +396,28 @@ Definition create_fnonce (ε : list Value.t) (τ : list Ty.t) (α : list Value.t
                                           [
                                             M.borrow (|
                                               Pointer.Kind.Ref,
-                                              M.deref (| M.read (| UnsupportedLiteral |) |)
+                                              M.deref (|
+                                                M.mk_byte_str_ref
+                                                  16
+                                                  [
+                                                    11;
+                                                    84;
+                                                    104;
+                                                    105;
+                                                    115;
+                                                    32;
+                                                    105;
+                                                    115;
+                                                    32;
+                                                    97;
+                                                    58;
+                                                    32;
+                                                    192;
+                                                    1;
+                                                    10;
+                                                    0
+                                                  ]
+                                              |)
                                             |);
                                             M.borrow (|
                                               Pointer.Kind.Ref,

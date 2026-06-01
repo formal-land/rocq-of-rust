@@ -136,7 +136,11 @@ Module Animal.
                           [
                             M.borrow (|
                               Pointer.Kind.Ref,
-                              M.deref (| M.read (| UnsupportedLiteral |) |)
+                              M.deref (|
+                                M.mk_byte_str_ref
+                                  12
+                                  [ 192; 6; 32; 115; 97; 121; 115; 32; 192; 1; 10; 0 ]
+                              |)
                             |);
                             M.borrow (|
                               Pointer.Kind.Ref,
@@ -302,7 +306,36 @@ Module Impl_traits_Sheep.
                                   [
                                     M.borrow (|
                                       Pointer.Kind.Ref,
-                                      M.deref (| M.read (| UnsupportedLiteral |) |)
+                                      M.deref (|
+                                        M.mk_byte_str_ref
+                                          24
+                                          [
+                                            192;
+                                            21;
+                                            32;
+                                            105;
+                                            115;
+                                            32;
+                                            97;
+                                            108;
+                                            114;
+                                            101;
+                                            97;
+                                            100;
+                                            121;
+                                            32;
+                                            110;
+                                            97;
+                                            107;
+                                            101;
+                                            100;
+                                            46;
+                                            46;
+                                            46;
+                                            10;
+                                            0
+                                          ]
+                                      |)
                                     |);
                                     M.borrow (|
                                       Pointer.Kind.Ref,
@@ -389,7 +422,32 @@ Module Impl_traits_Sheep.
                                   [
                                     M.borrow (|
                                       Pointer.Kind.Ref,
-                                      M.deref (| M.read (| UnsupportedLiteral |) |)
+                                      M.deref (|
+                                        M.mk_byte_str_ref
+                                          20
+                                          [
+                                            192;
+                                            17;
+                                            32;
+                                            103;
+                                            101;
+                                            116;
+                                            115;
+                                            32;
+                                            97;
+                                            32;
+                                            104;
+                                            97;
+                                            105;
+                                            114;
+                                            99;
+                                            117;
+                                            116;
+                                            33;
+                                            10;
+                                            0
+                                          ]
+                                      |)
                                     |);
                                     M.borrow (|
                                       Pointer.Kind.Ref,
@@ -624,7 +682,37 @@ Module Impl_traits_Animal_for_traits_Sheep.
                           [
                             M.borrow (|
                               Pointer.Kind.Ref,
-                              M.deref (| M.read (| UnsupportedLiteral |) |)
+                              M.deref (|
+                                M.mk_byte_str_ref
+                                  25
+                                  [
+                                    192;
+                                    19;
+                                    32;
+                                    112;
+                                    97;
+                                    117;
+                                    115;
+                                    101;
+                                    115;
+                                    32;
+                                    98;
+                                    114;
+                                    105;
+                                    101;
+                                    102;
+                                    108;
+                                    121;
+                                    46;
+                                    46;
+                                    46;
+                                    32;
+                                    192;
+                                    1;
+                                    10;
+                                    0
+                                  ]
+                              |)
                             |);
                             M.borrow (|
                               Pointer.Kind.Ref,

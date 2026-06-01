@@ -1996,10 +1996,7 @@ Module gas_algebra.
                       []
                     |),
                     [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| M.read (| UnsupportedLiteral |) |)
-                      |);
+                      M.borrow (| Pointer.Kind.Ref, M.deref (| M.mk_byte_str_ref 2 [ 192; 0 ] |) |);
                       M.borrow (|
                         Pointer.Kind.Ref,
                         M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
@@ -2135,7 +2132,7 @@ Module gas_algebra.
                     [
                       M.borrow (|
                         Pointer.Kind.Ref,
-                        M.deref (| M.read (| UnsupportedLiteral |) |)
+                        M.deref (| M.mk_byte_str_ref 8 [ 192; 2; 32; 40; 192; 1; 41; 0 ] |)
                       |);
                       M.borrow (|
                         Pointer.Kind.Ref,

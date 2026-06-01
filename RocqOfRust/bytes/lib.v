@@ -243,7 +243,72 @@ Definition panic_advance (ε : list Value.t) (τ : list Ty.t) (α : list Value.t
                   []
                 |),
                 [
-                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| UnsupportedLiteral |) |) |);
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.mk_byte_str_ref
+                        57
+                        [
+                          34;
+                          97;
+                          100;
+                          118;
+                          97;
+                          110;
+                          99;
+                          101;
+                          32;
+                          111;
+                          117;
+                          116;
+                          32;
+                          111;
+                          102;
+                          32;
+                          98;
+                          111;
+                          117;
+                          110;
+                          100;
+                          115;
+                          58;
+                          32;
+                          116;
+                          104;
+                          101;
+                          32;
+                          108;
+                          101;
+                          110;
+                          32;
+                          105;
+                          115;
+                          32;
+                          192;
+                          18;
+                          32;
+                          98;
+                          117;
+                          116;
+                          32;
+                          97;
+                          100;
+                          118;
+                          97;
+                          110;
+                          99;
+                          105;
+                          110;
+                          103;
+                          32;
+                          98;
+                          121;
+                          32;
+                          192;
+                          0
+                        ]
+                    |)
+                  |);
                   M.borrow (|
                     Pointer.Kind.Ref,
                     M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
@@ -339,7 +404,83 @@ Definition panic_does_not_fit (ε : list Value.t) (τ : list Ty.t) (α : list Va
                   []
                 |),
                 [
-                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| UnsupportedLiteral |) |) |);
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.mk_byte_str_ref
+                        68
+                        [
+                          41;
+                          115;
+                          105;
+                          122;
+                          101;
+                          32;
+                          116;
+                          111;
+                          111;
+                          32;
+                          108;
+                          97;
+                          114;
+                          103;
+                          101;
+                          58;
+                          32;
+                          116;
+                          104;
+                          101;
+                          32;
+                          105;
+                          110;
+                          116;
+                          101;
+                          103;
+                          101;
+                          114;
+                          32;
+                          116;
+                          121;
+                          112;
+                          101;
+                          32;
+                          99;
+                          97;
+                          110;
+                          32;
+                          102;
+                          105;
+                          116;
+                          32;
+                          192;
+                          22;
+                          32;
+                          98;
+                          121;
+                          116;
+                          101;
+                          115;
+                          44;
+                          32;
+                          98;
+                          117;
+                          116;
+                          32;
+                          110;
+                          98;
+                          121;
+                          116;
+                          101;
+                          115;
+                          32;
+                          105;
+                          115;
+                          32;
+                          192;
+                          0
+                        ]
+                    |)
+                  |);
                   M.borrow (|
                     Pointer.Kind.Ref,
                     M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)

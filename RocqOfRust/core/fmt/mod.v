@@ -8824,9 +8824,9 @@ Module fmt.
                                                                                                     "u8",
                                                                                                   BinOp.Wrap.add,
                                                                                                   [
-                                                                                                    M.read (|
-                                                                                                      UnsupportedLiteral
-                                                                                                    |);
+                                                                                                    Value.Integer
+                                                                                                      IntegerKind.U8
+                                                                                                      48;
                                                                                                     M.cast
                                                                                                       (Ty.path
                                                                                                         "u8")
@@ -25701,7 +25701,29 @@ Module fmt.
                     [
                       M.borrow (|
                         Pointer.Kind.Ref,
-                        M.deref (| M.read (| UnsupportedLiteral |) |)
+                        M.deref (|
+                          M.mk_byte_str_ref
+                            17
+                            [
+                              12;
+                              80;
+                              104;
+                              97;
+                              110;
+                              116;
+                              111;
+                              109;
+                              68;
+                              97;
+                              116;
+                              97;
+                              60;
+                              192;
+                              1;
+                              62;
+                              0
+                            ]
+                        |)
                       |);
                       M.borrow (|
                         Pointer.Kind.Ref,

@@ -941,7 +941,7 @@ Module num.
                   M.call_closure (|
                     Ty.path "bool",
                     BinOp.eq,
-                    [ M.read (| c |); M.read (| UnsupportedLiteral |) ]
+                    [ M.read (| c |); Value.Integer IntegerKind.U8 45 ]
                   |) in
                 let~ _ : Ty.tuple [] :=
                   M.match_operator (|
@@ -957,13 +957,13 @@ Module num.
                                 M.call_closure (|
                                   Ty.path "bool",
                                   BinOp.eq,
-                                  [ M.read (| c |); M.read (| UnsupportedLiteral |) ]
+                                  [ M.read (| c |); Value.Integer IntegerKind.U8 45 ]
                                 |),
                                 ltac:(M.monadic
                                   (M.call_closure (|
                                     Ty.path "bool",
                                     BinOp.eq,
-                                    [ M.read (| c |); M.read (| UnsupportedLiteral |) ]
+                                    [ M.read (| c |); Value.Integer IntegerKind.U8 43 ]
                                   |)))
                               |)
                             |) in

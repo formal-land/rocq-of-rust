@@ -1906,7 +1906,56 @@ Module instantiation_loops.
                                         [
                                           M.borrow (|
                                             Pointer.Kind.Ref,
-                                            M.deref (| M.read (| UnsupportedLiteral |) |)
+                                            M.deref (|
+                                              M.mk_byte_str_ref
+                                                44
+                                                [
+                                                  26;
+                                                  101;
+                                                  100;
+                                                  103;
+                                                  101;
+                                                  115;
+                                                  32;
+                                                  119;
+                                                  105;
+                                                  116;
+                                                  104;
+                                                  32;
+                                                  99;
+                                                  111;
+                                                  110;
+                                                  115;
+                                                  116;
+                                                  114;
+                                                  117;
+                                                  99;
+                                                  116;
+                                                  111;
+                                                  114;
+                                                  115;
+                                                  58;
+                                                  32;
+                                                  91;
+                                                  192;
+                                                  11;
+                                                  93;
+                                                  44;
+                                                  32;
+                                                  110;
+                                                  111;
+                                                  100;
+                                                  101;
+                                                  115;
+                                                  58;
+                                                  32;
+                                                  91;
+                                                  192;
+                                                  1;
+                                                  93;
+                                                  0
+                                                ]
+                                            |)
                                           |);
                                           M.borrow (|
                                             Pointer.Kind.Ref,
@@ -6350,7 +6399,7 @@ Module instantiation_loops.
                                 [
                                   M.borrow (|
                                     Pointer.Kind.Ref,
-                                    M.deref (| M.read (| UnsupportedLiteral |) |)
+                                    M.deref (| M.mk_byte_str_ref 7 [ 1; 102; 192; 1; 35; 192; 0 ] |)
                                   |);
                                   M.borrow (|
                                     Pointer.Kind.Ref,
@@ -6760,7 +6809,25 @@ Module instantiation_loops.
                                             [
                                               M.borrow (|
                                                 Pointer.Kind.Ref,
-                                                M.deref (| M.read (| UnsupportedLiteral |) |)
+                                                M.deref (|
+                                                  M.mk_byte_str_ref
+                                                    13
+                                                    [
+                                                      192;
+                                                      3;
+                                                      32;
+                                                      45;
+                                                      45;
+                                                      192;
+                                                      4;
+                                                      45;
+                                                      45;
+                                                      62;
+                                                      32;
+                                                      192;
+                                                      0
+                                                    ]
+                                                |)
                                               |);
                                               M.borrow (|
                                                 Pointer.Kind.Ref,
@@ -6874,7 +6941,11 @@ Module instantiation_loops.
                                             [
                                               M.borrow (|
                                                 Pointer.Kind.Ref,
-                                                M.deref (| M.read (| UnsupportedLiteral |) |)
+                                                M.deref (|
+                                                  M.mk_byte_str_ref
+                                                    11
+                                                    [ 192; 7; 32; 45; 45; 45; 45; 62; 32; 192; 0 ]
+                                                |)
                                               |);
                                               M.borrow (|
                                                 Pointer.Kind.Ref,

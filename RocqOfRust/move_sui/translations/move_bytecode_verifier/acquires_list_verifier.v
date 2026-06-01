@@ -994,9 +994,12 @@ Module acquires_list_verifier.
                                                                                         M.borrow (|
                                                                                           Pointer.Kind.Ref,
                                                                                           M.deref (|
-                                                                                            M.read (|
-                                                                                              UnsupportedLiteral
-                                                                                            |)
+                                                                                            M.mk_byte_str_ref
+                                                                                              2
+                                                                                              [
+                                                                                                192;
+                                                                                                0
+                                                                                              ]
                                                                                           |)
                                                                                         |);
                                                                                         M.borrow (|
@@ -1914,9 +1917,10 @@ Module acquires_list_verifier.
                                                                                       M.borrow (|
                                                                                         Pointer.Kind.Ref,
                                                                                         M.deref (|
-                                                                                          M.read (|
-                                                                                            UnsupportedLiteral
-                                                                                          |)
+                                                                                          M.mk_byte_str_ref
+                                                                                            2
+                                                                                            [ 192; 0
+                                                                                            ]
                                                                                         |)
                                                                                       |);
                                                                                       M.borrow (|

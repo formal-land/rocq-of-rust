@@ -947,9 +947,9 @@ Module num.
                                                                         M.deref (|
                                                                           M.read (| c |)
                                                                         |),
-                                                                        M.read (|
-                                                                          UnsupportedLiteral
-                                                                        |)
+                                                                        Value.Integer
+                                                                          IntegerKind.U8
+                                                                          48
                                                                       |) in
                                                                     M.alloc (|
                                                                       Ty.tuple [],
@@ -1218,9 +1218,9 @@ Module num.
                                                                           Ty.path "u8",
                                                                           BinOp.Wrap.add,
                                                                           [
-                                                                            M.read (|
-                                                                              UnsupportedLiteral
-                                                                            |);
+                                                                            Value.Integer
+                                                                              IntegerKind.U8
+                                                                              48;
                                                                             M.cast
                                                                               (Ty.path "u8")
                                                                               (M.call_closure (|

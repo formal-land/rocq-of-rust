@@ -175,7 +175,28 @@ Definition inspect (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M 
                             [
                               M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.deref (| M.read (| UnsupportedLiteral |) |)
+                                M.deref (|
+                                  M.mk_byte_str_ref
+                                    16
+                                    [
+                                      9;
+                                      112;
+                                      114;
+                                      101;
+                                      115;
+                                      115;
+                                      101;
+                                      100;
+                                      32;
+                                      39;
+                                      192;
+                                      3;
+                                      39;
+                                      46;
+                                      10;
+                                      0
+                                    ]
+                                |)
                               |);
                               M.borrow (|
                                 Pointer.Kind.Ref,
@@ -246,7 +267,12 @@ Definition inspect (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M 
                             [
                               M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.deref (| M.read (| UnsupportedLiteral |) |)
+                                M.deref (|
+                                  M.mk_byte_str_ref
+                                    15
+                                    [ 8; 112; 97; 115; 116; 101; 100; 32; 34; 192; 3; 34; 46; 10; 0
+                                    ]
+                                |)
                               |);
                               M.borrow (|
                                 Pointer.Kind.Ref,
@@ -346,7 +372,37 @@ Definition inspect (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M 
                                 [
                                   M.borrow (|
                                     Pointer.Kind.Ref,
-                                    M.deref (| M.read (| UnsupportedLiteral |) |)
+                                    M.deref (|
+                                      M.mk_byte_str_ref
+                                        25
+                                        [
+                                          13;
+                                          99;
+                                          108;
+                                          105;
+                                          99;
+                                          107;
+                                          101;
+                                          100;
+                                          32;
+                                          97;
+                                          116;
+                                          32;
+                                          120;
+                                          61;
+                                          192;
+                                          4;
+                                          44;
+                                          32;
+                                          121;
+                                          61;
+                                          192;
+                                          2;
+                                          46;
+                                          10;
+                                          0
+                                        ]
+                                    |)
                                   |);
                                   M.borrow (|
                                     Pointer.Kind.Ref,

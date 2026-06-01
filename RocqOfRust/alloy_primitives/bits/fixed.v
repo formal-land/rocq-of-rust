@@ -5094,12 +5094,12 @@ Module bits.
                   let~ _ : Ty.tuple [] :=
                     M.write (|
                       M.SubPointer.get_array_field (| buf, Value.Integer IntegerKind.Usize 0 |),
-                      M.read (| UnsupportedLiteral |)
+                      Value.Integer IntegerKind.U8 48
                     |) in
                   let~ _ : Ty.tuple [] :=
                     M.write (|
                       M.SubPointer.get_array_field (| buf, Value.Integer IntegerKind.Usize 1 |),
-                      M.read (| UnsupportedLiteral |)
+                      Value.Integer IntegerKind.U8 120
                     |) in
                   let~ _ : Ty.tuple [] :=
                     M.call_closure (|
@@ -7031,7 +7031,67 @@ Module bits.
                                 [
                                   M.borrow (|
                                     Pointer.Kind.Ref,
-                                    M.deref (| M.read (| UnsupportedLiteral |) |)
+                                    M.deref (|
+                                      M.mk_byte_str_ref
+                                        55
+                                        [
+                                          33;
+                                          99;
+                                          97;
+                                          110;
+                                          110;
+                                          111;
+                                          116;
+                                          32;
+                                          99;
+                                          111;
+                                          110;
+                                          118;
+                                          101;
+                                          114;
+                                          116;
+                                          32;
+                                          97;
+                                          32;
+                                          115;
+                                          108;
+                                          105;
+                                          99;
+                                          101;
+                                          32;
+                                          111;
+                                          102;
+                                          32;
+                                          108;
+                                          101;
+                                          110;
+                                          103;
+                                          116;
+                                          104;
+                                          32;
+                                          192;
+                                          15;
+                                          32;
+                                          116;
+                                          111;
+                                          32;
+                                          70;
+                                          105;
+                                          120;
+                                          101;
+                                          100;
+                                          66;
+                                          121;
+                                          116;
+                                          101;
+                                          115;
+                                          60;
+                                          192;
+                                          1;
+                                          62;
+                                          0
+                                        ]
+                                    |)
                                   |);
                                   M.borrow (|
                                     Pointer.Kind.Ref,
@@ -7196,7 +7256,60 @@ Module bits.
                                     [
                                       M.borrow (|
                                         Pointer.Kind.Ref,
-                                        M.deref (| M.read (| UnsupportedLiteral |) |)
+                                        M.deref (|
+                                          M.mk_byte_str_ref
+                                            48
+                                            [
+                                              31;
+                                              115;
+                                              108;
+                                              105;
+                                              99;
+                                              101;
+                                              32;
+                                              105;
+                                              115;
+                                              32;
+                                              116;
+                                              111;
+                                              111;
+                                              32;
+                                              108;
+                                              97;
+                                              114;
+                                              103;
+                                              101;
+                                              46;
+                                              32;
+                                              69;
+                                              120;
+                                              112;
+                                              101;
+                                              99;
+                                              116;
+                                              101;
+                                              100;
+                                              32;
+                                              60;
+                                              61;
+                                              192;
+                                              12;
+                                              32;
+                                              98;
+                                              121;
+                                              116;
+                                              101;
+                                              115;
+                                              44;
+                                              32;
+                                              103;
+                                              111;
+                                              116;
+                                              32;
+                                              192;
+                                              0
+                                            ]
+                                        |)
                                       |);
                                       M.borrow (|
                                         Pointer.Kind.Ref,
@@ -7426,7 +7539,60 @@ Module bits.
                                     [
                                       M.borrow (|
                                         Pointer.Kind.Ref,
-                                        M.deref (| M.read (| UnsupportedLiteral |) |)
+                                        M.deref (|
+                                          M.mk_byte_str_ref
+                                            48
+                                            [
+                                              31;
+                                              115;
+                                              108;
+                                              105;
+                                              99;
+                                              101;
+                                              32;
+                                              105;
+                                              115;
+                                              32;
+                                              116;
+                                              111;
+                                              111;
+                                              32;
+                                              108;
+                                              97;
+                                              114;
+                                              103;
+                                              101;
+                                              46;
+                                              32;
+                                              69;
+                                              120;
+                                              112;
+                                              101;
+                                              99;
+                                              116;
+                                              101;
+                                              100;
+                                              32;
+                                              60;
+                                              61;
+                                              192;
+                                              12;
+                                              32;
+                                              98;
+                                              121;
+                                              116;
+                                              101;
+                                              115;
+                                              44;
+                                              32;
+                                              103;
+                                              111;
+                                              116;
+                                              32;
+                                              192;
+                                              0
+                                            ]
+                                        |)
                                       |);
                                       M.borrow (|
                                         Pointer.Kind.Ref,

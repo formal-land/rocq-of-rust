@@ -3097,7 +3097,7 @@ Module num.
                                                                 Ty.path "u8",
                                                                 BinOp.Wrap.add,
                                                                 [
-                                                                  M.read (| UnsupportedLiteral |);
+                                                                  Value.Integer IntegerKind.U8 48;
                                                                   M.cast
                                                                     (Ty.path "u8")
                                                                     (M.read (| q |))
@@ -3864,7 +3864,7 @@ Module num.
                                                                   Ty.path "u8",
                                                                   BinOp.Wrap.add,
                                                                   [
-                                                                    M.read (| UnsupportedLiteral |);
+                                                                    Value.Integer IntegerKind.U8 48;
                                                                     M.cast
                                                                       (Ty.path "u8")
                                                                       (M.read (| q |))
@@ -4527,9 +4527,9 @@ Module num.
                                                                                 M.read (| last |)
                                                                               |)
                                                                             |);
-                                                                            M.read (|
-                                                                              UnsupportedLiteral
-                                                                            |)
+                                                                            Value.Integer
+                                                                              IntegerKind.U8
+                                                                              48
                                                                           ]
                                                                         |)
                                                                       ]
@@ -6280,7 +6280,7 @@ Module num.
                                                                 Ty.path "u8",
                                                                 BinOp.Wrap.add,
                                                                 [
-                                                                  M.read (| UnsupportedLiteral |);
+                                                                  Value.Integer IntegerKind.U8 48;
                                                                   M.cast
                                                                     (Ty.path "u8")
                                                                     (M.read (| q |))
@@ -7219,9 +7219,9 @@ Module num.
                                                                             Ty.path "u8",
                                                                             BinOp.Wrap.add,
                                                                             [
-                                                                              M.read (|
-                                                                                UnsupportedLiteral
-                                                                              |);
+                                                                              Value.Integer
+                                                                                IntegerKind.U8
+                                                                                48;
                                                                               M.cast
                                                                                 (Ty.path "u8")
                                                                                 (M.read (| q |))

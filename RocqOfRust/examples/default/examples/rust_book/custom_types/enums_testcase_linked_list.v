@@ -349,7 +349,7 @@ Module Impl_enums_testcase_linked_list_List.
                               [
                                 M.borrow (|
                                   Pointer.Kind.Ref,
-                                  M.deref (| M.read (| UnsupportedLiteral |) |)
+                                  M.deref (| M.mk_byte_str_ref 6 [ 192; 2; 44; 32; 192; 0 ] |)
                                 |);
                                 M.borrow (|
                                   Pointer.Kind.Ref,
@@ -542,7 +542,41 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                         [
                           M.borrow (|
                             Pointer.Kind.Ref,
-                            M.deref (| M.read (| UnsupportedLiteral |) |)
+                            M.deref (|
+                              M.mk_byte_str_ref
+                                29
+                                [
+                                  24;
+                                  108;
+                                  105;
+                                  110;
+                                  107;
+                                  101;
+                                  100;
+                                  32;
+                                  108;
+                                  105;
+                                  115;
+                                  116;
+                                  32;
+                                  104;
+                                  97;
+                                  115;
+                                  32;
+                                  108;
+                                  101;
+                                  110;
+                                  103;
+                                  116;
+                                  104;
+                                  58;
+                                  32;
+                                  192;
+                                  1;
+                                  10;
+                                  0
+                                ]
+                            |)
                           |);
                           M.borrow (|
                             Pointer.Kind.Ref,
@@ -624,7 +658,7 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                         [
                           M.borrow (|
                             Pointer.Kind.Ref,
-                            M.deref (| M.read (| UnsupportedLiteral |) |)
+                            M.deref (| M.mk_byte_str_ref 4 [ 192; 1; 10; 0 ] |)
                           |);
                           M.borrow (|
                             Pointer.Kind.Ref,

@@ -79,7 +79,35 @@ Module Impl_core_fmt_Display_for_converting_to_string_Circle.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| UnsupportedLiteral |) |) |);
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.mk_byte_str_ref
+                          20
+                          [
+                            17;
+                            67;
+                            105;
+                            114;
+                            99;
+                            108;
+                            101;
+                            32;
+                            111;
+                            102;
+                            32;
+                            114;
+                            97;
+                            100;
+                            105;
+                            117;
+                            115;
+                            32;
+                            192;
+                            0
+                          ]
+                      |)
+                    |);
                     M.borrow (|
                       Pointer.Kind.Ref,
                       M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)

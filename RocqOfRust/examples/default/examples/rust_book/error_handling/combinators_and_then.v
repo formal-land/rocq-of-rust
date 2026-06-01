@@ -484,7 +484,43 @@ Definition eat (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                             [
                               M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.deref (| M.read (| UnsupportedLiteral |) |)
+                                M.deref (|
+                                  M.mk_byte_str_ref
+                                    31
+                                    [
+                                      8;
+                                      89;
+                                      97;
+                                      121;
+                                      33;
+                                      32;
+                                      79;
+                                      110;
+                                      32;
+                                      192;
+                                      15;
+                                      32;
+                                      119;
+                                      101;
+                                      32;
+                                      103;
+                                      101;
+                                      116;
+                                      32;
+                                      116;
+                                      111;
+                                      32;
+                                      101;
+                                      97;
+                                      116;
+                                      32;
+                                      192;
+                                      2;
+                                      46;
+                                      10;
+                                      0
+                                    ]
+                                |)
                               |);
                               M.borrow (|
                                 Pointer.Kind.Ref,
@@ -554,7 +590,48 @@ Definition eat (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                             [
                               M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.deref (| M.read (| UnsupportedLiteral |) |)
+                                M.deref (|
+                                  M.mk_byte_str_ref
+                                    36
+                                    [
+                                      30;
+                                      79;
+                                      104;
+                                      32;
+                                      110;
+                                      111;
+                                      46;
+                                      32;
+                                      87;
+                                      101;
+                                      32;
+                                      100;
+                                      111;
+                                      110;
+                                      39;
+                                      116;
+                                      32;
+                                      103;
+                                      101;
+                                      116;
+                                      32;
+                                      116;
+                                      111;
+                                      32;
+                                      101;
+                                      97;
+                                      116;
+                                      32;
+                                      111;
+                                      110;
+                                      32;
+                                      192;
+                                      2;
+                                      63;
+                                      10;
+                                      0
+                                    ]
+                                |)
                               |);
                               M.borrow (|
                                 Pointer.Kind.Ref,

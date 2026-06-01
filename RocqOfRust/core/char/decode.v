@@ -1623,7 +1623,41 @@ Module char.
                       [
                         M.borrow (|
                           Pointer.Kind.Ref,
-                          M.deref (| M.read (| UnsupportedLiteral |) |)
+                          M.deref (|
+                            M.mk_byte_str_ref
+                              29
+                              [
+                                26;
+                                117;
+                                110;
+                                112;
+                                97;
+                                105;
+                                114;
+                                101;
+                                100;
+                                32;
+                                115;
+                                117;
+                                114;
+                                114;
+                                111;
+                                103;
+                                97;
+                                116;
+                                101;
+                                32;
+                                102;
+                                111;
+                                117;
+                                110;
+                                100;
+                                58;
+                                32;
+                                192;
+                                0
+                              ]
+                          |)
                         |);
                         M.borrow (|
                           Pointer.Kind.Ref,

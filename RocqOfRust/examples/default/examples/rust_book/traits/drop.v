@@ -90,7 +90,28 @@ Module Impl_core_ops_drop_Drop_for_drop_Droppable.
                           [
                             M.borrow (|
                               Pointer.Kind.Ref,
-                              M.deref (| M.read (| UnsupportedLiteral |) |)
+                              M.deref (|
+                                M.mk_byte_str_ref
+                                  16
+                                  [
+                                    11;
+                                    62;
+                                    32;
+                                    68;
+                                    114;
+                                    111;
+                                    112;
+                                    112;
+                                    105;
+                                    110;
+                                    103;
+                                    32;
+                                    192;
+                                    1;
+                                    10;
+                                    0
+                                  ]
+                              |)
                             |);
                             M.borrow (|
                               Pointer.Kind.Ref,

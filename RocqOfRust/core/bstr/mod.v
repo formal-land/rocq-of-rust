@@ -1182,9 +1182,12 @@ Module bstr.
                                                                                                               M.borrow (|
                                                                                                                 Pointer.Kind.Ref,
                                                                                                                 M.deref (|
-                                                                                                                  M.read (|
-                                                                                                                    UnsupportedLiteral
-                                                                                                                  |)
+                                                                                                                  M.mk_byte_str_ref
+                                                                                                                    2
+                                                                                                                    [
+                                                                                                                      192;
+                                                                                                                      0
+                                                                                                                    ]
                                                                                                                 |)
                                                                                                               |);
                                                                                                               M.borrow (|
@@ -1502,9 +1505,12 @@ Module bstr.
                                                                                                               M.borrow (|
                                                                                                                 Pointer.Kind.Ref,
                                                                                                                 M.deref (|
-                                                                                                                  M.read (|
-                                                                                                                    UnsupportedLiteral
-                                                                                                                  |)
+                                                                                                                  M.mk_byte_str_ref
+                                                                                                                    2
+                                                                                                                    [
+                                                                                                                      192;
+                                                                                                                      0
+                                                                                                                    ]
                                                                                                                 |)
                                                                                                               |);
                                                                                                               M.borrow (|
@@ -1844,9 +1850,9 @@ Module bstr.
                                                                         M.borrow (|
                                                                           Pointer.Kind.Ref,
                                                                           M.deref (|
-                                                                            M.read (|
-                                                                              UnsupportedLiteral
-                                                                            |)
+                                                                            M.mk_byte_str_ref
+                                                                              2
+                                                                              [ 192; 0 ]
                                                                           |)
                                                                         |);
                                                                         M.borrow (|
@@ -2835,9 +2841,12 @@ Module bstr.
                                                                                             M.borrow (|
                                                                                               Pointer.Kind.Ref,
                                                                                               M.deref (|
-                                                                                                M.read (|
-                                                                                                  UnsupportedLiteral
-                                                                                                |)
+                                                                                                M.mk_byte_str_ref
+                                                                                                  2
+                                                                                                  [
+                                                                                                    192;
+                                                                                                    0
+                                                                                                  ]
                                                                                               |)
                                                                                             |);
                                                                                             M.borrow (|
@@ -3385,9 +3394,12 @@ Module bstr.
                                                                                             M.borrow (|
                                                                                               Pointer.Kind.Ref,
                                                                                               M.deref (|
-                                                                                                M.read (|
-                                                                                                  UnsupportedLiteral
-                                                                                                |)
+                                                                                                M.mk_byte_str_ref
+                                                                                                  2
+                                                                                                  [
+                                                                                                    192;
+                                                                                                    0
+                                                                                                  ]
                                                                                               |)
                                                                                             |);
                                                                                             M.borrow (|
@@ -3833,8 +3845,7 @@ Module bstr.
                         (Ty.path "&")
                         []
                         [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| UnsupportedLiteral |) |) |)
-                    ]
+                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.mk_byte_str_ref 0 [] |) |) ]
                   |)
                 ]
               |)

@@ -91,7 +91,7 @@ Module num.
                                     M.call_closure (|
                                       Ty.path "bool",
                                       BinOp.ne,
-                                      [ M.read (| c |); M.read (| UnsupportedLiteral |) ]
+                                      [ M.read (| c |); Value.Integer IntegerKind.U8 57 ]
                                     |)))
                               ]
                             |)))
@@ -171,7 +171,7 @@ Module num.
                               |)
                             |)
                           |);
-                          M.read (| UnsupportedLiteral |)
+                          Value.Integer IntegerKind.U8 48
                         ]
                       |) in
                     M.alloc (|
@@ -201,7 +201,7 @@ Module num.
                     "core::option::Option::Some"
                     []
                     [ Ty.path "u8" ]
-                    [ M.read (| UnsupportedLiteral |) ]));
+                    [ Value.Integer IntegerKind.U8 49 ]));
               fun γ =>
                 ltac:(M.monadic
                   (let _ := M.is_struct_tuple (| γ, "core::option::Option::None" |) in
@@ -212,7 +212,7 @@ Module num.
                           M.deref (| M.read (| d |) |),
                           Value.Integer IntegerKind.Usize 0
                         |),
-                        M.read (| UnsupportedLiteral |)
+                        Value.Integer IntegerKind.U8 49
                       |) in
                     let~ _ : Ty.tuple [] :=
                       M.call_closure (|
@@ -257,7 +257,7 @@ Module num.
                               |)
                             |)
                           |);
-                          M.read (| UnsupportedLiteral |)
+                          Value.Integer IntegerKind.U8 48
                         ]
                       |) in
                     M.alloc (|
@@ -266,7 +266,7 @@ Module num.
                         "core::option::Option::Some"
                         []
                         [ Ty.path "u8" ]
-                        [ M.read (| UnsupportedLiteral |) ]
+                        [ Value.Integer IntegerKind.U8 48 ]
                     |)
                   |)))
             ]
@@ -452,7 +452,7 @@ Module num.
                                       Value.Integer IntegerKind.Usize 0
                                     |)
                                   |);
-                                  M.read (| UnsupportedLiteral |)
+                                  Value.Integer IntegerKind.U8 48
                                 ]
                               |)
                             ]
@@ -609,7 +609,7 @@ Module num.
                                       [
                                         M.borrow (|
                                           Pointer.Kind.Ref,
-                                          M.deref (| M.read (| UnsupportedLiteral |) |)
+                                          M.deref (| M.mk_byte_str_ref 2 [ 48; 46 ] |)
                                         |)
                                       ]
                                     |)
@@ -1204,7 +1204,7 @@ Module num.
                                                   [
                                                     M.borrow (|
                                                       Pointer.Kind.Ref,
-                                                      M.deref (| M.read (| UnsupportedLiteral |) |)
+                                                      M.deref (| M.mk_byte_str_ref 1 [ 46 ] |)
                                                     |)
                                                   ]
                                                 |)
@@ -1842,7 +1842,7 @@ Module num.
                                                                 M.borrow (|
                                                                   Pointer.Kind.Ref,
                                                                   M.deref (|
-                                                                    M.read (| UnsupportedLiteral |)
+                                                                    M.mk_byte_str_ref 1 [ 46 ]
                                                                   |)
                                                                 |)
                                                               ]
@@ -2260,7 +2260,7 @@ Module num.
                                       Value.Integer IntegerKind.Usize 0
                                     |)
                                   |);
-                                  M.read (| UnsupportedLiteral |)
+                                  Value.Integer IntegerKind.U8 48
                                 ]
                               |)
                             ]
@@ -2499,7 +2499,7 @@ Module num.
                                       [
                                         M.borrow (|
                                           Pointer.Kind.Ref,
-                                          M.deref (| M.read (| UnsupportedLiteral |) |)
+                                          M.deref (| M.mk_byte_str_ref 1 [ 46 ] |)
                                         |)
                                       ]
                                     |)
@@ -2796,7 +2796,7 @@ Module num.
                                               [
                                                 M.borrow (|
                                                   Pointer.Kind.Ref,
-                                                  M.deref (| M.read (| UnsupportedLiteral |) |)
+                                                  M.deref (| M.mk_byte_str_ref 2 [ 69; 45 ] |)
                                                 |)
                                               ]
                                             |)));
@@ -2826,7 +2826,7 @@ Module num.
                                               [
                                                 M.borrow (|
                                                   Pointer.Kind.Ref,
-                                                  M.deref (| M.read (| UnsupportedLiteral |) |)
+                                                  M.deref (| M.mk_byte_str_ref 2 [ 101; 45 ] |)
                                                 |)
                                               ]
                                             |)))
@@ -2947,7 +2947,7 @@ Module num.
                                               [
                                                 M.borrow (|
                                                   Pointer.Kind.Ref,
-                                                  M.deref (| M.read (| UnsupportedLiteral |) |)
+                                                  M.deref (| M.mk_byte_str_ref 1 [ 69 ] |)
                                                 |)
                                               ]
                                             |)));
@@ -2977,7 +2977,7 @@ Module num.
                                               [
                                                 M.borrow (|
                                                   Pointer.Kind.Ref,
-                                                  M.deref (| M.read (| UnsupportedLiteral |) |)
+                                                  M.deref (| M.mk_byte_str_ref 1 [ 101 ] |)
                                                 |)
                                               ]
                                             |)))
@@ -3768,7 +3768,9 @@ Module num.
                                                   [
                                                     M.borrow (|
                                                       Pointer.Kind.Ref,
-                                                      M.deref (| M.read (| UnsupportedLiteral |) |)
+                                                      M.deref (|
+                                                        M.mk_byte_str_ref 3 [ 78; 97; 78 ]
+                                                      |)
                                                     |)
                                                   ]
                                                 |)
@@ -3949,7 +3951,9 @@ Module num.
                                                   [
                                                     M.borrow (|
                                                       Pointer.Kind.Ref,
-                                                      M.deref (| M.read (| UnsupportedLiteral |) |)
+                                                      M.deref (|
+                                                        M.mk_byte_str_ref 3 [ 105; 110; 102 ]
+                                                      |)
                                                     |)
                                                   ]
                                                 |)
@@ -4163,7 +4167,7 @@ Module num.
                                                             M.borrow (|
                                                               Pointer.Kind.Ref,
                                                               M.deref (|
-                                                                M.read (| UnsupportedLiteral |)
+                                                                M.mk_byte_str_ref 2 [ 48; 46 ]
                                                               |)
                                                             |)
                                                           ]
@@ -4389,7 +4393,7 @@ Module num.
                                                             M.borrow (|
                                                               Pointer.Kind.Ref,
                                                               M.deref (|
-                                                                M.read (| UnsupportedLiteral |)
+                                                                M.mk_byte_str_ref 1 [ 48 ]
                                                               |)
                                                             |)
                                                           ]
@@ -5036,7 +5040,9 @@ Module num.
                                                   [
                                                     M.borrow (|
                                                       Pointer.Kind.Ref,
-                                                      M.deref (| M.read (| UnsupportedLiteral |) |)
+                                                      M.deref (|
+                                                        M.mk_byte_str_ref 3 [ 78; 97; 78 ]
+                                                      |)
                                                     |)
                                                   ]
                                                 |)
@@ -5217,7 +5223,9 @@ Module num.
                                                   [
                                                     M.borrow (|
                                                       Pointer.Kind.Ref,
-                                                      M.deref (| M.read (| UnsupportedLiteral |) |)
+                                                      M.deref (|
+                                                        M.mk_byte_str_ref 3 [ 105; 110; 102 ]
+                                                      |)
                                                     |)
                                                   ]
                                                 |)
@@ -5461,7 +5469,7 @@ Module num.
                                                             M.borrow (|
                                                               Pointer.Kind.Ref,
                                                               M.deref (|
-                                                                M.read (| UnsupportedLiteral |)
+                                                                M.mk_byte_str_ref 1 [ 48 ]
                                                               |)
                                                             |)
                                                           ]
@@ -5550,9 +5558,9 @@ Module num.
                                                                     M.borrow (|
                                                                       Pointer.Kind.Ref,
                                                                       M.deref (|
-                                                                        M.read (|
-                                                                          UnsupportedLiteral
-                                                                        |)
+                                                                        M.mk_byte_str_ref
+                                                                          3
+                                                                          [ 48; 69; 48 ]
                                                                       |)
                                                                     |)
                                                                   ]
@@ -5597,9 +5605,9 @@ Module num.
                                                                     M.borrow (|
                                                                       Pointer.Kind.Ref,
                                                                       M.deref (|
-                                                                        M.read (|
-                                                                          UnsupportedLiteral
-                                                                        |)
+                                                                        M.mk_byte_str_ref
+                                                                          3
+                                                                          [ 48; 101; 48 ]
                                                                       |)
                                                                     |)
                                                                   ]
@@ -6369,7 +6377,9 @@ Module num.
                                                   [
                                                     M.borrow (|
                                                       Pointer.Kind.Ref,
-                                                      M.deref (| M.read (| UnsupportedLiteral |) |)
+                                                      M.deref (|
+                                                        M.mk_byte_str_ref 3 [ 78; 97; 78 ]
+                                                      |)
                                                     |)
                                                   ]
                                                 |)
@@ -6550,7 +6560,9 @@ Module num.
                                                   [
                                                     M.borrow (|
                                                       Pointer.Kind.Ref,
-                                                      M.deref (| M.read (| UnsupportedLiteral |) |)
+                                                      M.deref (|
+                                                        M.mk_byte_str_ref 3 [ 105; 110; 102 ]
+                                                      |)
                                                     |)
                                                   ]
                                                 |)
@@ -6764,7 +6776,7 @@ Module num.
                                                             M.borrow (|
                                                               Pointer.Kind.Ref,
                                                               M.deref (|
-                                                                M.read (| UnsupportedLiteral |)
+                                                                M.mk_byte_str_ref 2 [ 48; 46 ]
                                                               |)
                                                             |)
                                                           ]
@@ -6897,9 +6909,9 @@ Module num.
                                                                     M.borrow (|
                                                                       Pointer.Kind.Ref,
                                                                       M.deref (|
-                                                                        M.read (|
-                                                                          UnsupportedLiteral
-                                                                        |)
+                                                                        M.mk_byte_str_ref
+                                                                          2
+                                                                          [ 69; 48 ]
                                                                       |)
                                                                     |)
                                                                   ]
@@ -6944,9 +6956,9 @@ Module num.
                                                                     M.borrow (|
                                                                       Pointer.Kind.Ref,
                                                                       M.deref (|
-                                                                        M.read (|
-                                                                          UnsupportedLiteral
-                                                                        |)
+                                                                        M.mk_byte_str_ref
+                                                                          2
+                                                                          [ 101; 48 ]
                                                                       |)
                                                                     |)
                                                                   ]
@@ -7164,9 +7176,9 @@ Module num.
                                                                     M.borrow (|
                                                                       Pointer.Kind.Ref,
                                                                       M.deref (|
-                                                                        M.read (|
-                                                                          UnsupportedLiteral
-                                                                        |)
+                                                                        M.mk_byte_str_ref
+                                                                          3
+                                                                          [ 48; 69; 48 ]
                                                                       |)
                                                                     |)
                                                                   ]
@@ -7211,9 +7223,9 @@ Module num.
                                                                     M.borrow (|
                                                                       Pointer.Kind.Ref,
                                                                       M.deref (|
-                                                                        M.read (|
-                                                                          UnsupportedLiteral
-                                                                        |)
+                                                                        M.mk_byte_str_ref
+                                                                          3
+                                                                          [ 48; 101; 48 ]
                                                                       |)
                                                                     |)
                                                                   ]
@@ -8019,7 +8031,9 @@ Module num.
                                                   [
                                                     M.borrow (|
                                                       Pointer.Kind.Ref,
-                                                      M.deref (| M.read (| UnsupportedLiteral |) |)
+                                                      M.deref (|
+                                                        M.mk_byte_str_ref 3 [ 78; 97; 78 ]
+                                                      |)
                                                     |)
                                                   ]
                                                 |)
@@ -8200,7 +8214,9 @@ Module num.
                                                   [
                                                     M.borrow (|
                                                       Pointer.Kind.Ref,
-                                                      M.deref (| M.read (| UnsupportedLiteral |) |)
+                                                      M.deref (|
+                                                        M.mk_byte_str_ref 3 [ 105; 110; 102 ]
+                                                      |)
                                                     |)
                                                   ]
                                                 |)
@@ -8414,7 +8430,7 @@ Module num.
                                                             M.borrow (|
                                                               Pointer.Kind.Ref,
                                                               M.deref (|
-                                                                M.read (| UnsupportedLiteral |)
+                                                                M.mk_byte_str_ref 2 [ 48; 46 ]
                                                               |)
                                                             |)
                                                           ]
@@ -8640,7 +8656,7 @@ Module num.
                                                             M.borrow (|
                                                               Pointer.Kind.Ref,
                                                               M.deref (|
-                                                                M.read (| UnsupportedLiteral |)
+                                                                M.mk_byte_str_ref 1 [ 48 ]
                                                               |)
                                                             |)
                                                           ]
@@ -9460,9 +9476,9 @@ Module num.
                                                                                     M.borrow (|
                                                                                       Pointer.Kind.Ref,
                                                                                       M.deref (|
-                                                                                        M.read (|
-                                                                                          UnsupportedLiteral
-                                                                                        |)
+                                                                                        M.mk_byte_str_ref
+                                                                                          2
+                                                                                          [ 48; 46 ]
                                                                                       |)
                                                                                     |)
                                                                                   ]
@@ -9748,9 +9764,9 @@ Module num.
                                                                                     M.borrow (|
                                                                                       Pointer.Kind.Ref,
                                                                                       M.deref (|
-                                                                                        M.read (|
-                                                                                          UnsupportedLiteral
-                                                                                        |)
+                                                                                        M.mk_byte_str_ref
+                                                                                          1
+                                                                                          [ 48 ]
                                                                                       |)
                                                                                     |)
                                                                                   ]

@@ -367,7 +367,34 @@ Module Impl_contract_transfer_GiveMe.
                           [
                             M.borrow (|
                               Pointer.Kind.Ref,
-                              M.deref (| M.read (| UnsupportedLiteral |) |)
+                              M.deref (|
+                                M.mk_byte_str_ref
+                                  22
+                                  [
+                                    17;
+                                    114;
+                                    101;
+                                    113;
+                                    117;
+                                    101;
+                                    115;
+                                    116;
+                                    101;
+                                    100;
+                                    32;
+                                    118;
+                                    97;
+                                    108;
+                                    117;
+                                    101;
+                                    58;
+                                    32;
+                                    192;
+                                    1;
+                                    10;
+                                    0
+                                  ]
+                              |)
                             |);
                             M.borrow (|
                               Pointer.Kind.Ref,
@@ -470,7 +497,35 @@ Module Impl_contract_transfer_GiveMe.
                           [
                             M.borrow (|
                               Pointer.Kind.Ref,
-                              M.deref (| M.read (| UnsupportedLiteral |) |)
+                              M.deref (|
+                                M.mk_byte_str_ref
+                                  23
+                                  [
+                                    18;
+                                    99;
+                                    111;
+                                    110;
+                                    116;
+                                    114;
+                                    97;
+                                    99;
+                                    116;
+                                    32;
+                                    98;
+                                    97;
+                                    108;
+                                    97;
+                                    110;
+                                    99;
+                                    101;
+                                    58;
+                                    32;
+                                    192;
+                                    1;
+                                    10;
+                                    0
+                                  ]
+                              |)
                             |);
                             M.borrow (|
                               Pointer.Kind.Ref,
@@ -788,7 +843,35 @@ Module Impl_contract_transfer_GiveMe.
                           [
                             M.borrow (|
                               Pointer.Kind.Ref,
-                              M.deref (| M.read (| UnsupportedLiteral |) |)
+                              M.deref (|
+                                M.mk_byte_str_ref
+                                  23
+                                  [
+                                    18;
+                                    114;
+                                    101;
+                                    99;
+                                    101;
+                                    105;
+                                    118;
+                                    101;
+                                    100;
+                                    32;
+                                    112;
+                                    97;
+                                    121;
+                                    109;
+                                    101;
+                                    110;
+                                    116;
+                                    58;
+                                    32;
+                                    192;
+                                    1;
+                                    10;
+                                    0
+                                  ]
+                              |)
                             |);
                             M.borrow (|
                               Pointer.Kind.Ref,

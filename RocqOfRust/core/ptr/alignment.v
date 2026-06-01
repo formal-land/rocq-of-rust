@@ -739,7 +739,11 @@ Module ptr.
                       [
                         M.borrow (|
                           Pointer.Kind.Ref,
-                          M.deref (| M.read (| UnsupportedLiteral |) |)
+                          M.deref (|
+                            M.mk_byte_str_ref
+                              13
+                              [ 192; 7; 32; 40; 49; 32; 60; 60; 32; 192; 1; 41; 0 ]
+                          |)
                         |);
                         M.borrow (|
                           Pointer.Kind.Ref,

@@ -379,7 +379,9 @@ Module wtf8.
                     [
                       M.borrow (|
                         Pointer.Kind.Ref,
-                        M.deref (| M.read (| UnsupportedLiteral |) |)
+                        M.deref (|
+                          M.mk_byte_str_ref 11 [ 2; 85; 43; 195; 32; 0; 0; 105; 4; 0; 0 ]
+                        |)
                       |);
                       M.borrow (|
                         Pointer.Kind.Ref,
@@ -1677,7 +1679,9 @@ Module wtf8.
                                                           M.borrow (|
                                                             Pointer.Kind.Ref,
                                                             M.deref (|
-                                                              M.read (| UnsupportedLiteral |)
+                                                              M.mk_byte_str_ref
+                                                                8
+                                                                [ 3; 92; 117; 123; 192; 1; 125; 0 ]
                                                             |)
                                                           |);
                                                           M.borrow (|
@@ -4509,7 +4513,55 @@ Module wtf8.
                                       [
                                         M.borrow (|
                                           Pointer.Kind.Ref,
-                                          M.deref (| M.read (| UnsupportedLiteral |) |)
+                                          M.deref (|
+                                            M.mk_byte_str_ref
+                                              43
+                                              [
+                                                11;
+                                                98;
+                                                121;
+                                                116;
+                                                101;
+                                                32;
+                                                105;
+                                                110;
+                                                100;
+                                                101;
+                                                120;
+                                                32;
+                                                192;
+                                                28;
+                                                32;
+                                                105;
+                                                115;
+                                                32;
+                                                110;
+                                                111;
+                                                116;
+                                                32;
+                                                97;
+                                                32;
+                                                99;
+                                                111;
+                                                100;
+                                                101;
+                                                112;
+                                                111;
+                                                105;
+                                                110;
+                                                116;
+                                                32;
+                                                98;
+                                                111;
+                                                117;
+                                                110;
+                                                100;
+                                                97;
+                                                114;
+                                                121;
+                                                0
+                                              ]
+                                          |)
                                         |);
                                         M.borrow (|
                                           Pointer.Kind.Ref,
@@ -4609,7 +4661,44 @@ Module wtf8.
                                       [
                                         M.borrow (|
                                           Pointer.Kind.Ref,
-                                          M.deref (| M.read (| UnsupportedLiteral |) |)
+                                          M.deref (|
+                                            M.mk_byte_str_ref
+                                              32
+                                              [
+                                                11;
+                                                98;
+                                                121;
+                                                116;
+                                                101;
+                                                32;
+                                                105;
+                                                110;
+                                                100;
+                                                101;
+                                                120;
+                                                32;
+                                                192;
+                                                17;
+                                                32;
+                                                105;
+                                                115;
+                                                32;
+                                                111;
+                                                117;
+                                                116;
+                                                32;
+                                                111;
+                                                102;
+                                                32;
+                                                98;
+                                                111;
+                                                117;
+                                                110;
+                                                100;
+                                                115;
+                                                0
+                                              ]
+                                          |)
                                         |);
                                         M.borrow (|
                                           Pointer.Kind.Ref,
@@ -4799,7 +4888,61 @@ Module wtf8.
                                               [
                                                 M.borrow (|
                                                   Pointer.Kind.Ref,
-                                                  M.deref (| M.read (| UnsupportedLiteral |) |)
+                                                  M.deref (|
+                                                    M.mk_byte_str_ref
+                                                      49
+                                                      [
+                                                        11;
+                                                        98;
+                                                        121;
+                                                        116;
+                                                        101;
+                                                        32;
+                                                        105;
+                                                        110;
+                                                        100;
+                                                        101;
+                                                        120;
+                                                        32;
+                                                        192;
+                                                        34;
+                                                        32;
+                                                        108;
+                                                        105;
+                                                        101;
+                                                        115;
+                                                        32;
+                                                        98;
+                                                        101;
+                                                        116;
+                                                        119;
+                                                        101;
+                                                        101;
+                                                        110;
+                                                        32;
+                                                        115;
+                                                        117;
+                                                        114;
+                                                        114;
+                                                        111;
+                                                        103;
+                                                        97;
+                                                        116;
+                                                        101;
+                                                        32;
+                                                        99;
+                                                        111;
+                                                        100;
+                                                        101;
+                                                        112;
+                                                        111;
+                                                        105;
+                                                        110;
+                                                        116;
+                                                        115;
+                                                        0
+                                                      ]
+                                                  |)
                                                 |);
                                                 M.borrow (|
                                                   Pointer.Kind.Ref,
@@ -5578,7 +5721,73 @@ Module wtf8.
                       [
                         M.borrow (|
                           Pointer.Kind.Ref,
-                          M.deref (| M.read (| UnsupportedLiteral |) |)
+                          M.deref (|
+                            M.mk_byte_str_ref
+                              61
+                              [
+                                6;
+                                105;
+                                110;
+                                100;
+                                101;
+                                120;
+                                32;
+                                192;
+                                8;
+                                32;
+                                97;
+                                110;
+                                100;
+                                47;
+                                111;
+                                114;
+                                32;
+                                192;
+                                5;
+                                32;
+                                105;
+                                110;
+                                32;
+                                96;
+                                192;
+                                34;
+                                96;
+                                32;
+                                100;
+                                111;
+                                32;
+                                110;
+                                111;
+                                116;
+                                32;
+                                108;
+                                105;
+                                101;
+                                32;
+                                111;
+                                110;
+                                32;
+                                99;
+                                104;
+                                97;
+                                114;
+                                97;
+                                99;
+                                116;
+                                101;
+                                114;
+                                32;
+                                98;
+                                111;
+                                117;
+                                110;
+                                100;
+                                97;
+                                114;
+                                121;
+                                0
+                              ]
+                          |)
                         |);
                         M.borrow (|
                           Pointer.Kind.Ref,

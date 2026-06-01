@@ -1706,7 +1706,7 @@ Module char.
                                         (M.call_closure (|
                                           Ty.path "u8",
                                           BinOp.Wrap.add,
-                                          [ M.read (| UnsupportedLiteral |); M.read (| num |) ]
+                                          [ Value.Integer IntegerKind.U8 48; M.read (| num |) ]
                                         |))
                                     ]));
                               fun γ =>
@@ -1725,7 +1725,7 @@ Module char.
                                             M.call_closure (|
                                               Ty.path "u8",
                                               BinOp.Wrap.add,
-                                              [ M.read (| UnsupportedLiteral |); M.read (| num |) ]
+                                              [ Value.Integer IntegerKind.U8 97; M.read (| num |) ]
                                             |);
                                             Value.Integer IntegerKind.U8 10
                                           ]

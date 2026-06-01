@@ -1633,7 +1633,7 @@ Module account_address.
                         [
                           M.borrow (|
                             Pointer.Kind.Ref,
-                            M.deref (| M.read (| UnsupportedLiteral |) |)
+                            M.deref (| M.mk_byte_str_ref 5 [ 2; 48; 120; 192; 0 ] |)
                           |);
                           M.borrow (|
                             Pointer.Kind.Ref,
@@ -1879,7 +1879,7 @@ Module account_address.
                         [
                           M.borrow (|
                             Pointer.Kind.Ref,
-                            M.deref (| M.read (| UnsupportedLiteral |) |)
+                            M.deref (| M.mk_byte_str_ref 2 [ 192; 0 ] |)
                           |);
                           M.borrow (|
                             Pointer.Kind.Ref,
@@ -2311,10 +2311,7 @@ Module account_address.
                       []
                     |),
                     [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| M.read (| UnsupportedLiteral |) |)
-                      |);
+                      M.borrow (| Pointer.Kind.Ref, M.deref (| M.mk_byte_str_ref 2 [ 192; 0 ] |) |);
                       M.borrow (|
                         Pointer.Kind.Ref,
                         M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
@@ -2421,10 +2418,7 @@ Module account_address.
                       []
                     |),
                     [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| M.read (| UnsupportedLiteral |) |)
-                      |);
+                      M.borrow (| Pointer.Kind.Ref, M.deref (| M.mk_byte_str_ref 2 [ 192; 0 ] |) |);
                       M.borrow (|
                         Pointer.Kind.Ref,
                         M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
@@ -2921,9 +2915,18 @@ Module account_address.
                                                                         M.borrow (|
                                                                           Pointer.Kind.Ref,
                                                                           M.deref (|
-                                                                            M.read (|
-                                                                              UnsupportedLiteral
-                                                                            |)
+                                                                            M.mk_byte_str_ref
+                                                                              8
+                                                                              [
+                                                                                195;
+                                                                                32;
+                                                                                0;
+                                                                                0;
+                                                                                105;
+                                                                                2;
+                                                                                0;
+                                                                                0
+                                                                              ]
                                                                           |)
                                                                         |);
                                                                         M.borrow (|
@@ -3532,9 +3535,18 @@ Module account_address.
                                                                         M.borrow (|
                                                                           Pointer.Kind.Ref,
                                                                           M.deref (|
-                                                                            M.read (|
-                                                                              UnsupportedLiteral
-                                                                            |)
+                                                                            M.mk_byte_str_ref
+                                                                              8
+                                                                              [
+                                                                                195;
+                                                                                32;
+                                                                                0;
+                                                                                0;
+                                                                                105;
+                                                                                2;
+                                                                                0;
+                                                                                0
+                                                                              ]
                                                                           |)
                                                                         |);
                                                                         M.borrow (|
@@ -5188,7 +5200,78 @@ Module account_address.
                     [
                       M.borrow (|
                         Pointer.Kind.Ref,
-                        M.deref (| M.read (| UnsupportedLiteral |) |)
+                        M.deref (|
+                          M.mk_byte_str_ref
+                            66
+                            [
+                              61;
+                              85;
+                              110;
+                              97;
+                              98;
+                              108;
+                              101;
+                              32;
+                              116;
+                              111;
+                              32;
+                              112;
+                              97;
+                              114;
+                              115;
+                              101;
+                              32;
+                              65;
+                              99;
+                              99;
+                              111;
+                              117;
+                              110;
+                              116;
+                              65;
+                              100;
+                              100;
+                              114;
+                              101;
+                              115;
+                              115;
+                              32;
+                              40;
+                              109;
+                              117;
+                              115;
+                              116;
+                              32;
+                              98;
+                              101;
+                              32;
+                              104;
+                              101;
+                              120;
+                              32;
+                              115;
+                              116;
+                              114;
+                              105;
+                              110;
+                              103;
+                              32;
+                              111;
+                              102;
+                              32;
+                              108;
+                              101;
+                              110;
+                              103;
+                              116;
+                              104;
+                              32;
+                              192;
+                              1;
+                              41;
+                              0
+                            ]
+                        |)
                       |);
                       M.borrow (|
                         Pointer.Kind.Ref,

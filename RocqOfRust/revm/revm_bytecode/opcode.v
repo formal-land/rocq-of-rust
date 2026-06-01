@@ -611,7 +611,33 @@ Module opcode.
                                 [
                                   M.borrow (|
                                     Pointer.Kind.Ref,
-                                    M.deref (| M.read (| UnsupportedLiteral |) |)
+                                    M.deref (|
+                                      M.mk_byte_str_ref
+                                        21
+                                        [
+                                          10;
+                                          85;
+                                          78;
+                                          75;
+                                          78;
+                                          79;
+                                          87;
+                                          78;
+                                          40;
+                                          48;
+                                          120;
+                                          195;
+                                          32;
+                                          0;
+                                          0;
+                                          105;
+                                          2;
+                                          0;
+                                          1;
+                                          41;
+                                          0
+                                        ]
+                                    |)
                                   |);
                                   M.borrow (|
                                     Pointer.Kind.Ref,

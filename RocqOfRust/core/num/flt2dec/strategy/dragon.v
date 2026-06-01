@@ -3101,7 +3101,7 @@ Module num.
                                             M.call_closure (|
                                               Ty.path "u8",
                                               BinOp.Wrap.add,
-                                              [ M.read (| UnsupportedLiteral |); M.read (| d |) ]
+                                              [ Value.Integer IntegerKind.U8 48; M.read (| d |) ]
                                             |)
                                           ]
                                         |)
@@ -5278,9 +5278,9 @@ Module num.
                                                                                                                       []
                                                                                                                     |),
                                                                                                                     [
-                                                                                                                      M.read (|
-                                                                                                                        UnsupportedLiteral
-                                                                                                                      |)
+                                                                                                                      Value.Integer
+                                                                                                                        IntegerKind.U8
+                                                                                                                        48
                                                                                                                     ]
                                                                                                                   |)
                                                                                                                 |) in
@@ -6116,9 +6116,9 @@ Module num.
                                                                         Ty.path "u8",
                                                                         BinOp.Wrap.add,
                                                                         [
-                                                                          M.read (|
-                                                                            UnsupportedLiteral
-                                                                          |);
+                                                                          Value.Integer
+                                                                            IntegerKind.U8
+                                                                            48;
                                                                           M.read (| d |)
                                                                         ]
                                                                       |)

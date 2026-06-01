@@ -573,7 +573,38 @@ Module Impl_associated_functions_and_methods_Pair.
                                   [
                                     M.borrow (|
                                       Pointer.Kind.Ref,
-                                      M.deref (| M.read (| UnsupportedLiteral |) |)
+                                      M.deref (|
+                                        M.mk_byte_str_ref
+                                          26
+                                          [
+                                            16;
+                                            68;
+                                            101;
+                                            115;
+                                            116;
+                                            114;
+                                            111;
+                                            121;
+                                            105;
+                                            110;
+                                            103;
+                                            32;
+                                            80;
+                                            97;
+                                            105;
+                                            114;
+                                            40;
+                                            192;
+                                            2;
+                                            44;
+                                            32;
+                                            192;
+                                            2;
+                                            41;
+                                            10;
+                                            0
+                                          ]
+                                      |)
                                     |);
                                     M.borrow (|
                                       Pointer.Kind.Ref,
@@ -735,7 +766,38 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                         [
                           M.borrow (|
                             Pointer.Kind.Ref,
-                            M.deref (| M.read (| UnsupportedLiteral |) |)
+                            M.deref (|
+                              M.mk_byte_str_ref
+                                26
+                                [
+                                  21;
+                                  82;
+                                  101;
+                                  99;
+                                  116;
+                                  97;
+                                  110;
+                                  103;
+                                  108;
+                                  101;
+                                  32;
+                                  112;
+                                  101;
+                                  114;
+                                  105;
+                                  109;
+                                  101;
+                                  116;
+                                  101;
+                                  114;
+                                  58;
+                                  32;
+                                  192;
+                                  1;
+                                  10;
+                                  0
+                                ]
+                            |)
                           |);
                           M.borrow (|
                             Pointer.Kind.Ref,
@@ -815,7 +877,33 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                         [
                           M.borrow (|
                             Pointer.Kind.Ref,
-                            M.deref (| M.read (| UnsupportedLiteral |) |)
+                            M.deref (|
+                              M.mk_byte_str_ref
+                                21
+                                [
+                                  16;
+                                  82;
+                                  101;
+                                  99;
+                                  116;
+                                  97;
+                                  110;
+                                  103;
+                                  108;
+                                  101;
+                                  32;
+                                  97;
+                                  114;
+                                  101;
+                                  97;
+                                  58;
+                                  32;
+                                  192;
+                                  1;
+                                  10;
+                                  0
+                                ]
+                            |)
                           |);
                           M.borrow (|
                             Pointer.Kind.Ref,

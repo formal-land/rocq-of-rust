@@ -2705,7 +2705,28 @@ Module Impl_mother_Mother.
                           [
                             M.borrow (|
                               Pointer.Kind.Ref,
-                              M.deref (| M.read (| UnsupportedLiteral |) |)
+                              M.deref (|
+                                M.mk_byte_str_ref
+                                  16
+                                  [
+                                    11;
+                                    100;
+                                    101;
+                                    98;
+                                    117;
+                                    103;
+                                    95;
+                                    108;
+                                    111;
+                                    103;
+                                    58;
+                                    32;
+                                    192;
+                                    1;
+                                    10;
+                                    0
+                                  ]
+                              |)
                             |);
                             M.borrow (|
                               Pointer.Kind.Ref,

@@ -668,7 +668,42 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                         [
                           M.borrow (|
                             Pointer.Kind.Ref,
-                            M.deref (| M.read (| UnsupportedLiteral |) |)
+                            M.deref (|
+                              M.mk_byte_str_ref
+                                30
+                                [
+                                  22;
+                                  111;
+                                  110;
+                                  101;
+                                  32;
+                                  102;
+                                  111;
+                                  111;
+                                  116;
+                                  32;
+                                  43;
+                                  32;
+                                  111;
+                                  110;
+                                  101;
+                                  95;
+                                  102;
+                                  111;
+                                  111;
+                                  116;
+                                  32;
+                                  61;
+                                  32;
+                                  192;
+                                  4;
+                                  32;
+                                  105;
+                                  110;
+                                  10;
+                                  0
+                                ]
+                            |)
                           |);
                           M.borrow (|
                             Pointer.Kind.Ref,
@@ -740,7 +775,44 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                         [
                           M.borrow (|
                             Pointer.Kind.Ref,
-                            M.deref (| M.read (| UnsupportedLiteral |) |)
+                            M.deref (|
+                              M.mk_byte_str_ref
+                                32
+                                [
+                                  24;
+                                  111;
+                                  110;
+                                  101;
+                                  32;
+                                  109;
+                                  101;
+                                  116;
+                                  101;
+                                  114;
+                                  32;
+                                  43;
+                                  32;
+                                  111;
+                                  110;
+                                  101;
+                                  95;
+                                  109;
+                                  101;
+                                  116;
+                                  101;
+                                  114;
+                                  32;
+                                  61;
+                                  32;
+                                  192;
+                                  4;
+                                  32;
+                                  109;
+                                  109;
+                                  10;
+                                  0
+                                ]
+                            |)
                           |);
                           M.borrow (|
                             Pointer.Kind.Ref,

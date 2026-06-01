@@ -116,7 +116,27 @@ Definition give_adult (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) :
                             [
                               M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.deref (| M.read (| UnsupportedLiteral |) |)
+                                M.deref (|
+                                  M.mk_byte_str_ref
+                                    15
+                                    [
+                                      192;
+                                      12;
+                                      63;
+                                      32;
+                                      72;
+                                      111;
+                                      119;
+                                      32;
+                                      110;
+                                      105;
+                                      99;
+                                      101;
+                                      46;
+                                      10;
+                                      0
+                                    ]
+                                |)
                               |);
                               M.borrow (|
                                 Pointer.Kind.Ref,
@@ -305,7 +325,30 @@ Definition drink (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                         [
                           M.borrow (|
                             Pointer.Kind.Ref,
-                            M.deref (| M.read (| UnsupportedLiteral |) |)
+                            M.deref (|
+                              M.mk_byte_str_ref
+                                18
+                                [
+                                  7;
+                                  73;
+                                  32;
+                                  108;
+                                  111;
+                                  118;
+                                  101;
+                                  32;
+                                  192;
+                                  7;
+                                  115;
+                                  33;
+                                  33;
+                                  33;
+                                  33;
+                                  33;
+                                  10;
+                                  0
+                                ]
+                            |)
                           |);
                           M.borrow (|
                             Pointer.Kind.Ref,

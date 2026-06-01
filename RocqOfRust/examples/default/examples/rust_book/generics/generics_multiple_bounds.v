@@ -63,7 +63,11 @@ Definition compare_prints (ε : list Value.t) (τ : list Ty.t) (α : list Value.
                         [
                           M.borrow (|
                             Pointer.Kind.Ref,
-                            M.deref (| M.read (| UnsupportedLiteral |) |)
+                            M.deref (|
+                              M.mk_byte_str_ref
+                                14
+                                [ 8; 68; 101; 98; 117; 103; 58; 32; 96; 192; 2; 96; 10; 0 ]
+                            |)
                           |);
                           M.borrow (|
                             Pointer.Kind.Ref,
@@ -127,7 +131,12 @@ Definition compare_prints (ε : list Value.t) (τ : list Ty.t) (α : list Value.
                         [
                           M.borrow (|
                             Pointer.Kind.Ref,
-                            M.deref (| M.read (| UnsupportedLiteral |) |)
+                            M.deref (|
+                              M.mk_byte_str_ref
+                                16
+                                [ 10; 68; 105; 115; 112; 108; 97; 121; 58; 32; 96; 192; 2; 96; 10; 0
+                                ]
+                            |)
                           |);
                           M.borrow (|
                             Pointer.Kind.Ref,
@@ -214,7 +223,9 @@ Definition compare_types (ε : list Value.t) (τ : list Ty.t) (α : list Value.t
                         [
                           M.borrow (|
                             Pointer.Kind.Ref,
-                            M.deref (| M.read (| UnsupportedLiteral |) |)
+                            M.deref (|
+                              M.mk_byte_str_ref 10 [ 4; 116; 58; 32; 96; 192; 2; 96; 10; 0 ]
+                            |)
                           |);
                           M.borrow (|
                             Pointer.Kind.Ref,
@@ -278,7 +289,9 @@ Definition compare_types (ε : list Value.t) (τ : list Ty.t) (α : list Value.t
                         [
                           M.borrow (|
                             Pointer.Kind.Ref,
-                            M.deref (| M.read (| UnsupportedLiteral |) |)
+                            M.deref (|
+                              M.mk_byte_str_ref 10 [ 4; 117; 58; 32; 96; 192; 2; 96; 10; 0 ]
+                            |)
                           |);
                           M.borrow (|
                             Pointer.Kind.Ref,
