@@ -6,79 +6,155 @@ Module random.
   (* Empty module 'RandomSource' *)
   
   (* Trait *)
-  (* Empty module 'Random' *)
+  (* Empty module 'Distribution' *)
   
-  Module Impl_core_random_Random_for_bool.
-    Definition Self : Ty.t := Ty.path "bool".
+  Module Impl_core_random_Distribution_where_core_random_Distribution_DT_T_T_for_ref__DT.
+    Definition Self (T DT : Ty.t) : Ty.t := Ty.apply (Ty.path "&") [] [ DT ].
     
     (*
-        fn random(source: &mut (impl RandomSource + ?Sized)) -> Self {
-            u8::random(source) & 1 == 1
+        fn sample(&self, source: &mut (impl RandomSource + ?Sized)) -> T {
+            ( *self).sample(source)
         }
     *)
-    Definition random (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    Definition sample (T DT : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T DT in
       match ε, τ, α with
-      | [], [ impl_RandomSource__plus___Sized ], [ source ] =>
+      | [], [ impl_RandomSource__plus___Sized ], [ self; source ] =>
         ltac:(M.monadic
-          (let source :=
+          (let self :=
+            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ DT ] ], self |) in
+          let source :=
             M.alloc (|
               Ty.apply (Ty.path "&mut") [] [ impl_RandomSource__plus___Sized ],
               source
             |) in
           M.call_closure (|
-            Ty.path "bool",
-            BinOp.eq,
+            T,
+            M.get_trait_method (|
+              "core::random::Distribution",
+              DT,
+              [],
+              [ T ],
+              "sample",
+              [],
+              [ impl_RandomSource__plus___Sized ]
+            |),
             [
-              M.call_closure (|
-                Ty.path "u8",
-                BinOp.Wrap.bit_and,
-                [
-                  M.call_closure (|
-                    Ty.path "u8",
-                    M.get_trait_method (|
-                      "core::random::Random",
-                      Ty.path "u8",
-                      [],
-                      [],
-                      "random",
-                      [],
-                      [ impl_RandomSource__plus___Sized ]
-                    |),
-                    [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| source |) |) |) ]
-                  |);
-                  Value.Integer IntegerKind.U8 1
-                ]
+              M.borrow (|
+                Pointer.Kind.Ref,
+                M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
               |);
-              Value.Integer IntegerKind.U8 1
+              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| source |) |) |)
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
     Axiom Implements :
+      forall (T DT : Ty.t),
       M.IsTraitInstance
-        "core::random::Random"
+        "core::random::Distribution"
         (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        Self
-        (* Instance *) [ ("random", InstanceField.Method random) ].
-  End Impl_core_random_Random_for_bool.
+        (* Trait polymorphic types *) [ T ]
+        (Self T DT)
+        (* Instance *) [ ("sample", InstanceField.Method (sample T DT)) ].
+  End Impl_core_random_Distribution_where_core_random_Distribution_DT_T_T_for_ref__DT.
   
-  Module Impl_core_random_Random_for_u8.
-    Definition Self : Ty.t := Ty.path "u8".
+  Module Impl_core_random_Distribution_bool_for_core_ops_range_RangeFull.
+    Definition Self : Ty.t := Ty.path "core::ops::range::RangeFull".
     
     (*
-                fn random(source: &mut (impl RandomSource + ?Sized)) -> Self {
-                    let mut bytes = (0 as Self).to_ne_bytes();
+        fn sample(&self, source: &mut (impl RandomSource + ?Sized)) -> bool {
+            let byte: u8 = RangeFull.sample(source);
+            byte & 1 == 1
+        }
+    *)
+    Definition sample (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [ impl_RandomSource__plus___Sized ], [ self; source ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply (Ty.path "&") [] [ Ty.path "core::ops::range::RangeFull" ],
+              self
+            |) in
+          let source :=
+            M.alloc (|
+              Ty.apply (Ty.path "&mut") [] [ impl_RandomSource__plus___Sized ],
+              source
+            |) in
+          M.read (|
+            let~ byte : Ty.path "u8" :=
+              M.call_closure (|
+                Ty.path "u8",
+                M.get_trait_method (|
+                  "core::random::Distribution",
+                  Ty.path "core::ops::range::RangeFull",
+                  [],
+                  [ Ty.path "u8" ],
+                  "sample",
+                  [],
+                  [ impl_RandomSource__plus___Sized ]
+                |),
+                [
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
+                      Ty.path "core::ops::range::RangeFull",
+                      Value.StructTuple "core::ops::range::RangeFull" [] [] []
+                    |)
+                  |);
+                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| source |) |) |)
+                ]
+              |) in
+            M.alloc (|
+              Ty.path "bool",
+              M.call_closure (|
+                Ty.path "bool",
+                BinOp.eq,
+                [
+                  M.call_closure (|
+                    Ty.path "u8",
+                    BinOp.Wrap.bit_and,
+                    [ M.read (| byte |); Value.Integer IntegerKind.U8 1 ]
+                  |);
+                  Value.Integer IntegerKind.U8 1
+                ]
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "core::random::Distribution"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) [ Ty.path "bool" ]
+        Self
+        (* Instance *) [ ("sample", InstanceField.Method sample) ].
+  End Impl_core_random_Distribution_bool_for_core_ops_range_RangeFull.
+  
+  Module Impl_core_random_Distribution_u8_for_core_ops_range_RangeFull.
+    Definition Self : Ty.t := Ty.path "core::ops::range::RangeFull".
+    
+    (*
+                fn sample(&self, source: &mut (impl RandomSource + ?Sized)) -> $t {
+                    let mut bytes = (0 as $t).to_ne_bytes();
                     source.fill_bytes(&mut bytes);
-                    Self::from_ne_bytes(bytes)
+                    <$t>::from_ne_bytes(bytes)
                 }
     *)
-    Definition random (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    Definition sample (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       match ε, τ, α with
-      | [], [ impl_RandomSource__plus___Sized ], [ source ] =>
+      | [], [ impl_RandomSource__plus___Sized ], [ self; source ] =>
         ltac:(M.monadic
-          (let source :=
+          (let self :=
+            M.alloc (|
+              Ty.apply (Ty.path "&") [] [ Ty.path "core::ops::range::RangeFull" ],
+              self
+            |) in
+          let source :=
             M.alloc (|
               Ty.apply (Ty.path "&mut") [] [ impl_RandomSource__plus___Sized ],
               source
@@ -145,28 +221,33 @@ Module random.
     
     Axiom Implements :
       M.IsTraitInstance
-        "core::random::Random"
+        "core::random::Distribution"
         (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
+        (* Trait polymorphic types *) [ Ty.path "u8" ]
         Self
-        (* Instance *) [ ("random", InstanceField.Method random) ].
-  End Impl_core_random_Random_for_u8.
+        (* Instance *) [ ("sample", InstanceField.Method sample) ].
+  End Impl_core_random_Distribution_u8_for_core_ops_range_RangeFull.
   
-  Module Impl_core_random_Random_for_i8.
-    Definition Self : Ty.t := Ty.path "i8".
+  Module Impl_core_random_Distribution_i8_for_core_ops_range_RangeFull.
+    Definition Self : Ty.t := Ty.path "core::ops::range::RangeFull".
     
     (*
-                fn random(source: &mut (impl RandomSource + ?Sized)) -> Self {
-                    let mut bytes = (0 as Self).to_ne_bytes();
+                fn sample(&self, source: &mut (impl RandomSource + ?Sized)) -> $t {
+                    let mut bytes = (0 as $t).to_ne_bytes();
                     source.fill_bytes(&mut bytes);
-                    Self::from_ne_bytes(bytes)
+                    <$t>::from_ne_bytes(bytes)
                 }
     *)
-    Definition random (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    Definition sample (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       match ε, τ, α with
-      | [], [ impl_RandomSource__plus___Sized ], [ source ] =>
+      | [], [ impl_RandomSource__plus___Sized ], [ self; source ] =>
         ltac:(M.monadic
-          (let source :=
+          (let self :=
+            M.alloc (|
+              Ty.apply (Ty.path "&") [] [ Ty.path "core::ops::range::RangeFull" ],
+              self
+            |) in
+          let source :=
             M.alloc (|
               Ty.apply (Ty.path "&mut") [] [ impl_RandomSource__plus___Sized ],
               source
@@ -233,28 +314,33 @@ Module random.
     
     Axiom Implements :
       M.IsTraitInstance
-        "core::random::Random"
+        "core::random::Distribution"
         (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
+        (* Trait polymorphic types *) [ Ty.path "i8" ]
         Self
-        (* Instance *) [ ("random", InstanceField.Method random) ].
-  End Impl_core_random_Random_for_i8.
+        (* Instance *) [ ("sample", InstanceField.Method sample) ].
+  End Impl_core_random_Distribution_i8_for_core_ops_range_RangeFull.
   
-  Module Impl_core_random_Random_for_u16.
-    Definition Self : Ty.t := Ty.path "u16".
+  Module Impl_core_random_Distribution_u16_for_core_ops_range_RangeFull.
+    Definition Self : Ty.t := Ty.path "core::ops::range::RangeFull".
     
     (*
-                fn random(source: &mut (impl RandomSource + ?Sized)) -> Self {
-                    let mut bytes = (0 as Self).to_ne_bytes();
+                fn sample(&self, source: &mut (impl RandomSource + ?Sized)) -> $t {
+                    let mut bytes = (0 as $t).to_ne_bytes();
                     source.fill_bytes(&mut bytes);
-                    Self::from_ne_bytes(bytes)
+                    <$t>::from_ne_bytes(bytes)
                 }
     *)
-    Definition random (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    Definition sample (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       match ε, τ, α with
-      | [], [ impl_RandomSource__plus___Sized ], [ source ] =>
+      | [], [ impl_RandomSource__plus___Sized ], [ self; source ] =>
         ltac:(M.monadic
-          (let source :=
+          (let self :=
+            M.alloc (|
+              Ty.apply (Ty.path "&") [] [ Ty.path "core::ops::range::RangeFull" ],
+              self
+            |) in
+          let source :=
             M.alloc (|
               Ty.apply (Ty.path "&mut") [] [ impl_RandomSource__plus___Sized ],
               source
@@ -322,28 +408,33 @@ Module random.
     
     Axiom Implements :
       M.IsTraitInstance
-        "core::random::Random"
+        "core::random::Distribution"
         (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
+        (* Trait polymorphic types *) [ Ty.path "u16" ]
         Self
-        (* Instance *) [ ("random", InstanceField.Method random) ].
-  End Impl_core_random_Random_for_u16.
+        (* Instance *) [ ("sample", InstanceField.Method sample) ].
+  End Impl_core_random_Distribution_u16_for_core_ops_range_RangeFull.
   
-  Module Impl_core_random_Random_for_i16.
-    Definition Self : Ty.t := Ty.path "i16".
+  Module Impl_core_random_Distribution_i16_for_core_ops_range_RangeFull.
+    Definition Self : Ty.t := Ty.path "core::ops::range::RangeFull".
     
     (*
-                fn random(source: &mut (impl RandomSource + ?Sized)) -> Self {
-                    let mut bytes = (0 as Self).to_ne_bytes();
+                fn sample(&self, source: &mut (impl RandomSource + ?Sized)) -> $t {
+                    let mut bytes = (0 as $t).to_ne_bytes();
                     source.fill_bytes(&mut bytes);
-                    Self::from_ne_bytes(bytes)
+                    <$t>::from_ne_bytes(bytes)
                 }
     *)
-    Definition random (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    Definition sample (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       match ε, τ, α with
-      | [], [ impl_RandomSource__plus___Sized ], [ source ] =>
+      | [], [ impl_RandomSource__plus___Sized ], [ self; source ] =>
         ltac:(M.monadic
-          (let source :=
+          (let self :=
+            M.alloc (|
+              Ty.apply (Ty.path "&") [] [ Ty.path "core::ops::range::RangeFull" ],
+              self
+            |) in
+          let source :=
             M.alloc (|
               Ty.apply (Ty.path "&mut") [] [ impl_RandomSource__plus___Sized ],
               source
@@ -411,28 +502,33 @@ Module random.
     
     Axiom Implements :
       M.IsTraitInstance
-        "core::random::Random"
+        "core::random::Distribution"
         (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
+        (* Trait polymorphic types *) [ Ty.path "i16" ]
         Self
-        (* Instance *) [ ("random", InstanceField.Method random) ].
-  End Impl_core_random_Random_for_i16.
+        (* Instance *) [ ("sample", InstanceField.Method sample) ].
+  End Impl_core_random_Distribution_i16_for_core_ops_range_RangeFull.
   
-  Module Impl_core_random_Random_for_u32.
-    Definition Self : Ty.t := Ty.path "u32".
+  Module Impl_core_random_Distribution_u32_for_core_ops_range_RangeFull.
+    Definition Self : Ty.t := Ty.path "core::ops::range::RangeFull".
     
     (*
-                fn random(source: &mut (impl RandomSource + ?Sized)) -> Self {
-                    let mut bytes = (0 as Self).to_ne_bytes();
+                fn sample(&self, source: &mut (impl RandomSource + ?Sized)) -> $t {
+                    let mut bytes = (0 as $t).to_ne_bytes();
                     source.fill_bytes(&mut bytes);
-                    Self::from_ne_bytes(bytes)
+                    <$t>::from_ne_bytes(bytes)
                 }
     *)
-    Definition random (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    Definition sample (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       match ε, τ, α with
-      | [], [ impl_RandomSource__plus___Sized ], [ source ] =>
+      | [], [ impl_RandomSource__plus___Sized ], [ self; source ] =>
         ltac:(M.monadic
-          (let source :=
+          (let self :=
+            M.alloc (|
+              Ty.apply (Ty.path "&") [] [ Ty.path "core::ops::range::RangeFull" ],
+              self
+            |) in
+          let source :=
             M.alloc (|
               Ty.apply (Ty.path "&mut") [] [ impl_RandomSource__plus___Sized ],
               source
@@ -500,28 +596,33 @@ Module random.
     
     Axiom Implements :
       M.IsTraitInstance
-        "core::random::Random"
+        "core::random::Distribution"
         (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
+        (* Trait polymorphic types *) [ Ty.path "u32" ]
         Self
-        (* Instance *) [ ("random", InstanceField.Method random) ].
-  End Impl_core_random_Random_for_u32.
+        (* Instance *) [ ("sample", InstanceField.Method sample) ].
+  End Impl_core_random_Distribution_u32_for_core_ops_range_RangeFull.
   
-  Module Impl_core_random_Random_for_i32.
-    Definition Self : Ty.t := Ty.path "i32".
+  Module Impl_core_random_Distribution_i32_for_core_ops_range_RangeFull.
+    Definition Self : Ty.t := Ty.path "core::ops::range::RangeFull".
     
     (*
-                fn random(source: &mut (impl RandomSource + ?Sized)) -> Self {
-                    let mut bytes = (0 as Self).to_ne_bytes();
+                fn sample(&self, source: &mut (impl RandomSource + ?Sized)) -> $t {
+                    let mut bytes = (0 as $t).to_ne_bytes();
                     source.fill_bytes(&mut bytes);
-                    Self::from_ne_bytes(bytes)
+                    <$t>::from_ne_bytes(bytes)
                 }
     *)
-    Definition random (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    Definition sample (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       match ε, τ, α with
-      | [], [ impl_RandomSource__plus___Sized ], [ source ] =>
+      | [], [ impl_RandomSource__plus___Sized ], [ self; source ] =>
         ltac:(M.monadic
-          (let source :=
+          (let self :=
+            M.alloc (|
+              Ty.apply (Ty.path "&") [] [ Ty.path "core::ops::range::RangeFull" ],
+              self
+            |) in
+          let source :=
             M.alloc (|
               Ty.apply (Ty.path "&mut") [] [ impl_RandomSource__plus___Sized ],
               source
@@ -589,28 +690,33 @@ Module random.
     
     Axiom Implements :
       M.IsTraitInstance
-        "core::random::Random"
+        "core::random::Distribution"
         (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
+        (* Trait polymorphic types *) [ Ty.path "i32" ]
         Self
-        (* Instance *) [ ("random", InstanceField.Method random) ].
-  End Impl_core_random_Random_for_i32.
+        (* Instance *) [ ("sample", InstanceField.Method sample) ].
+  End Impl_core_random_Distribution_i32_for_core_ops_range_RangeFull.
   
-  Module Impl_core_random_Random_for_u64.
-    Definition Self : Ty.t := Ty.path "u64".
+  Module Impl_core_random_Distribution_u64_for_core_ops_range_RangeFull.
+    Definition Self : Ty.t := Ty.path "core::ops::range::RangeFull".
     
     (*
-                fn random(source: &mut (impl RandomSource + ?Sized)) -> Self {
-                    let mut bytes = (0 as Self).to_ne_bytes();
+                fn sample(&self, source: &mut (impl RandomSource + ?Sized)) -> $t {
+                    let mut bytes = (0 as $t).to_ne_bytes();
                     source.fill_bytes(&mut bytes);
-                    Self::from_ne_bytes(bytes)
+                    <$t>::from_ne_bytes(bytes)
                 }
     *)
-    Definition random (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    Definition sample (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       match ε, τ, α with
-      | [], [ impl_RandomSource__plus___Sized ], [ source ] =>
+      | [], [ impl_RandomSource__plus___Sized ], [ self; source ] =>
         ltac:(M.monadic
-          (let source :=
+          (let self :=
+            M.alloc (|
+              Ty.apply (Ty.path "&") [] [ Ty.path "core::ops::range::RangeFull" ],
+              self
+            |) in
+          let source :=
             M.alloc (|
               Ty.apply (Ty.path "&mut") [] [ impl_RandomSource__plus___Sized ],
               source
@@ -678,28 +784,33 @@ Module random.
     
     Axiom Implements :
       M.IsTraitInstance
-        "core::random::Random"
+        "core::random::Distribution"
         (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
+        (* Trait polymorphic types *) [ Ty.path "u64" ]
         Self
-        (* Instance *) [ ("random", InstanceField.Method random) ].
-  End Impl_core_random_Random_for_u64.
+        (* Instance *) [ ("sample", InstanceField.Method sample) ].
+  End Impl_core_random_Distribution_u64_for_core_ops_range_RangeFull.
   
-  Module Impl_core_random_Random_for_i64.
-    Definition Self : Ty.t := Ty.path "i64".
+  Module Impl_core_random_Distribution_i64_for_core_ops_range_RangeFull.
+    Definition Self : Ty.t := Ty.path "core::ops::range::RangeFull".
     
     (*
-                fn random(source: &mut (impl RandomSource + ?Sized)) -> Self {
-                    let mut bytes = (0 as Self).to_ne_bytes();
+                fn sample(&self, source: &mut (impl RandomSource + ?Sized)) -> $t {
+                    let mut bytes = (0 as $t).to_ne_bytes();
                     source.fill_bytes(&mut bytes);
-                    Self::from_ne_bytes(bytes)
+                    <$t>::from_ne_bytes(bytes)
                 }
     *)
-    Definition random (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    Definition sample (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       match ε, τ, α with
-      | [], [ impl_RandomSource__plus___Sized ], [ source ] =>
+      | [], [ impl_RandomSource__plus___Sized ], [ self; source ] =>
         ltac:(M.monadic
-          (let source :=
+          (let self :=
+            M.alloc (|
+              Ty.apply (Ty.path "&") [] [ Ty.path "core::ops::range::RangeFull" ],
+              self
+            |) in
+          let source :=
             M.alloc (|
               Ty.apply (Ty.path "&mut") [] [ impl_RandomSource__plus___Sized ],
               source
@@ -767,28 +878,33 @@ Module random.
     
     Axiom Implements :
       M.IsTraitInstance
-        "core::random::Random"
+        "core::random::Distribution"
         (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
+        (* Trait polymorphic types *) [ Ty.path "i64" ]
         Self
-        (* Instance *) [ ("random", InstanceField.Method random) ].
-  End Impl_core_random_Random_for_i64.
+        (* Instance *) [ ("sample", InstanceField.Method sample) ].
+  End Impl_core_random_Distribution_i64_for_core_ops_range_RangeFull.
   
-  Module Impl_core_random_Random_for_u128.
-    Definition Self : Ty.t := Ty.path "u128".
+  Module Impl_core_random_Distribution_u128_for_core_ops_range_RangeFull.
+    Definition Self : Ty.t := Ty.path "core::ops::range::RangeFull".
     
     (*
-                fn random(source: &mut (impl RandomSource + ?Sized)) -> Self {
-                    let mut bytes = (0 as Self).to_ne_bytes();
+                fn sample(&self, source: &mut (impl RandomSource + ?Sized)) -> $t {
+                    let mut bytes = (0 as $t).to_ne_bytes();
                     source.fill_bytes(&mut bytes);
-                    Self::from_ne_bytes(bytes)
+                    <$t>::from_ne_bytes(bytes)
                 }
     *)
-    Definition random (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    Definition sample (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       match ε, τ, α with
-      | [], [ impl_RandomSource__plus___Sized ], [ source ] =>
+      | [], [ impl_RandomSource__plus___Sized ], [ self; source ] =>
         ltac:(M.monadic
-          (let source :=
+          (let self :=
+            M.alloc (|
+              Ty.apply (Ty.path "&") [] [ Ty.path "core::ops::range::RangeFull" ],
+              self
+            |) in
+          let source :=
             M.alloc (|
               Ty.apply (Ty.path "&mut") [] [ impl_RandomSource__plus___Sized ],
               source
@@ -862,28 +978,33 @@ Module random.
     
     Axiom Implements :
       M.IsTraitInstance
-        "core::random::Random"
+        "core::random::Distribution"
         (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
+        (* Trait polymorphic types *) [ Ty.path "u128" ]
         Self
-        (* Instance *) [ ("random", InstanceField.Method random) ].
-  End Impl_core_random_Random_for_u128.
+        (* Instance *) [ ("sample", InstanceField.Method sample) ].
+  End Impl_core_random_Distribution_u128_for_core_ops_range_RangeFull.
   
-  Module Impl_core_random_Random_for_i128.
-    Definition Self : Ty.t := Ty.path "i128".
+  Module Impl_core_random_Distribution_i128_for_core_ops_range_RangeFull.
+    Definition Self : Ty.t := Ty.path "core::ops::range::RangeFull".
     
     (*
-                fn random(source: &mut (impl RandomSource + ?Sized)) -> Self {
-                    let mut bytes = (0 as Self).to_ne_bytes();
+                fn sample(&self, source: &mut (impl RandomSource + ?Sized)) -> $t {
+                    let mut bytes = (0 as $t).to_ne_bytes();
                     source.fill_bytes(&mut bytes);
-                    Self::from_ne_bytes(bytes)
+                    <$t>::from_ne_bytes(bytes)
                 }
     *)
-    Definition random (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    Definition sample (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       match ε, τ, α with
-      | [], [ impl_RandomSource__plus___Sized ], [ source ] =>
+      | [], [ impl_RandomSource__plus___Sized ], [ self; source ] =>
         ltac:(M.monadic
-          (let source :=
+          (let self :=
+            M.alloc (|
+              Ty.apply (Ty.path "&") [] [ Ty.path "core::ops::range::RangeFull" ],
+              self
+            |) in
+          let source :=
             M.alloc (|
               Ty.apply (Ty.path "&mut") [] [ impl_RandomSource__plus___Sized ],
               source
@@ -957,28 +1078,33 @@ Module random.
     
     Axiom Implements :
       M.IsTraitInstance
-        "core::random::Random"
+        "core::random::Distribution"
         (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
+        (* Trait polymorphic types *) [ Ty.path "i128" ]
         Self
-        (* Instance *) [ ("random", InstanceField.Method random) ].
-  End Impl_core_random_Random_for_i128.
+        (* Instance *) [ ("sample", InstanceField.Method sample) ].
+  End Impl_core_random_Distribution_i128_for_core_ops_range_RangeFull.
   
-  Module Impl_core_random_Random_for_usize.
-    Definition Self : Ty.t := Ty.path "usize".
+  Module Impl_core_random_Distribution_usize_for_core_ops_range_RangeFull.
+    Definition Self : Ty.t := Ty.path "core::ops::range::RangeFull".
     
     (*
-                fn random(source: &mut (impl RandomSource + ?Sized)) -> Self {
-                    let mut bytes = (0 as Self).to_ne_bytes();
+                fn sample(&self, source: &mut (impl RandomSource + ?Sized)) -> $t {
+                    let mut bytes = (0 as $t).to_ne_bytes();
                     source.fill_bytes(&mut bytes);
-                    Self::from_ne_bytes(bytes)
+                    <$t>::from_ne_bytes(bytes)
                 }
     *)
-    Definition random (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    Definition sample (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       match ε, τ, α with
-      | [], [ impl_RandomSource__plus___Sized ], [ source ] =>
+      | [], [ impl_RandomSource__plus___Sized ], [ self; source ] =>
         ltac:(M.monadic
-          (let source :=
+          (let self :=
+            M.alloc (|
+              Ty.apply (Ty.path "&") [] [ Ty.path "core::ops::range::RangeFull" ],
+              self
+            |) in
+          let source :=
             M.alloc (|
               Ty.apply (Ty.path "&mut") [] [ impl_RandomSource__plus___Sized ],
               source
@@ -1049,28 +1175,33 @@ Module random.
     
     Axiom Implements :
       M.IsTraitInstance
-        "core::random::Random"
+        "core::random::Distribution"
         (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
+        (* Trait polymorphic types *) [ Ty.path "usize" ]
         Self
-        (* Instance *) [ ("random", InstanceField.Method random) ].
-  End Impl_core_random_Random_for_usize.
+        (* Instance *) [ ("sample", InstanceField.Method sample) ].
+  End Impl_core_random_Distribution_usize_for_core_ops_range_RangeFull.
   
-  Module Impl_core_random_Random_for_isize.
-    Definition Self : Ty.t := Ty.path "isize".
+  Module Impl_core_random_Distribution_isize_for_core_ops_range_RangeFull.
+    Definition Self : Ty.t := Ty.path "core::ops::range::RangeFull".
     
     (*
-                fn random(source: &mut (impl RandomSource + ?Sized)) -> Self {
-                    let mut bytes = (0 as Self).to_ne_bytes();
+                fn sample(&self, source: &mut (impl RandomSource + ?Sized)) -> $t {
+                    let mut bytes = (0 as $t).to_ne_bytes();
                     source.fill_bytes(&mut bytes);
-                    Self::from_ne_bytes(bytes)
+                    <$t>::from_ne_bytes(bytes)
                 }
     *)
-    Definition random (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    Definition sample (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       match ε, τ, α with
-      | [], [ impl_RandomSource__plus___Sized ], [ source ] =>
+      | [], [ impl_RandomSource__plus___Sized ], [ self; source ] =>
         ltac:(M.monadic
-          (let source :=
+          (let self :=
+            M.alloc (|
+              Ty.apply (Ty.path "&") [] [ Ty.path "core::ops::range::RangeFull" ],
+              self
+            |) in
+          let source :=
             M.alloc (|
               Ty.apply (Ty.path "&mut") [] [ impl_RandomSource__plus___Sized ],
               source
@@ -1141,10 +1272,10 @@ Module random.
     
     Axiom Implements :
       M.IsTraitInstance
-        "core::random::Random"
+        "core::random::Distribution"
         (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
+        (* Trait polymorphic types *) [ Ty.path "isize" ]
         Self
-        (* Instance *) [ ("random", InstanceField.Method random) ].
-  End Impl_core_random_Random_for_isize.
+        (* Instance *) [ ("sample", InstanceField.Method sample) ].
+  End Impl_core_random_Distribution_isize_for_core_ops_range_RangeFull.
 End random.

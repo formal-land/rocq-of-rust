@@ -1173,25 +1173,24 @@ Module stack_usage_verifier.
                                                                         fun γ =>
                                                                           ltac:(M.monadic
                                                                             (let γ :=
-                                                                              M.use
-                                                                                (M.alloc (|
+                                                                              M.alloc (|
+                                                                                Ty.path "bool",
+                                                                                M.call_closure (|
                                                                                   Ty.path "bool",
-                                                                                  M.call_closure (|
-                                                                                    Ty.path "bool",
-                                                                                    BinOp.gt,
-                                                                                    [
-                                                                                      M.read (|
-                                                                                        overall_push
-                                                                                      |);
-                                                                                      M.cast
-                                                                                        (Ty.path
-                                                                                          "u64")
-                                                                                        (M.read (|
-                                                                                          max_push_size
-                                                                                        |))
-                                                                                    ]
-                                                                                  |)
-                                                                                |)) in
+                                                                                  BinOp.gt,
+                                                                                  [
+                                                                                    M.read (|
+                                                                                      overall_push
+                                                                                    |);
+                                                                                    M.cast
+                                                                                      (Ty.path
+                                                                                        "u64")
+                                                                                      (M.read (|
+                                                                                        max_push_size
+                                                                                      |))
+                                                                                  ]
+                                                                                |)
+                                                                              |) in
                                                                             let _ :=
                                                                               is_constant_or_break_match (|
                                                                                 M.read (| γ |),
@@ -1288,20 +1287,19 @@ Module stack_usage_verifier.
                                                                 fun γ =>
                                                                   ltac:(M.monadic
                                                                     (let γ :=
-                                                                      M.use
-                                                                        (M.alloc (|
+                                                                      M.alloc (|
+                                                                        Ty.path "bool",
+                                                                        M.call_closure (|
                                                                           Ty.path "bool",
-                                                                          M.call_closure (|
-                                                                            Ty.path "bool",
-                                                                            BinOp.lt,
-                                                                            [
-                                                                              M.read (|
-                                                                                stack_size_increment
-                                                                              |);
-                                                                              M.read (| num_pops |)
-                                                                            ]
-                                                                          |)
-                                                                        |)) in
+                                                                          BinOp.lt,
+                                                                          [
+                                                                            M.read (|
+                                                                              stack_size_increment
+                                                                            |);
+                                                                            M.read (| num_pops |)
+                                                                          ]
+                                                                        |)
+                                                                      |) in
                                                                     let _ :=
                                                                       is_constant_or_break_match (|
                                                                         M.read (| γ |),
@@ -1648,32 +1646,31 @@ Module stack_usage_verifier.
                                                                 fun γ =>
                                                                   ltac:(M.monadic
                                                                     (let γ :=
-                                                                      M.use
-                                                                        (M.alloc (|
+                                                                      M.alloc (|
+                                                                        Ty.path "bool",
+                                                                        M.call_closure (|
                                                                           Ty.path "bool",
-                                                                          M.call_closure (|
-                                                                            Ty.path "bool",
-                                                                            BinOp.gt,
-                                                                            [
-                                                                              M.read (|
-                                                                                stack_size_increment
-                                                                              |);
-                                                                              M.cast
-                                                                                (Ty.path "u64")
-                                                                                (M.read (|
-                                                                                  M.SubPointer.get_struct_record_field (|
-                                                                                    M.deref (|
-                                                                                      M.read (|
-                                                                                        config
-                                                                                      |)
-                                                                                    |),
-                                                                                    "move_vm_config::verifier::VerifierConfig",
-                                                                                    "max_value_stack_size"
-                                                                                  |)
-                                                                                |))
-                                                                            ]
-                                                                          |)
-                                                                        |)) in
+                                                                          BinOp.gt,
+                                                                          [
+                                                                            M.read (|
+                                                                              stack_size_increment
+                                                                            |);
+                                                                            M.cast
+                                                                              (Ty.path "u64")
+                                                                              (M.read (|
+                                                                                M.SubPointer.get_struct_record_field (|
+                                                                                  M.deref (|
+                                                                                    M.read (|
+                                                                                      config
+                                                                                    |)
+                                                                                  |),
+                                                                                  "move_vm_config::verifier::VerifierConfig",
+                                                                                  "max_value_stack_size"
+                                                                                |)
+                                                                              |))
+                                                                          ]
+                                                                        |)
+                                                                      |) in
                                                                     let _ :=
                                                                       is_constant_or_break_match (|
                                                                         M.read (| γ |),
@@ -1782,18 +1779,15 @@ Module stack_usage_verifier.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  BinOp.eq,
-                                  [
-                                    M.read (| stack_size_increment |);
-                                    Value.Integer IntegerKind.U64 0
-                                  ]
-                                |)
-                              |)) in
+                                BinOp.eq,
+                                [ M.read (| stack_size_increment |); Value.Integer IntegerKind.U64 0
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           Value.StructTuple

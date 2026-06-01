@@ -1049,20 +1049,19 @@ Module net.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                M.get_associated_function (|
-                                  Ty.apply (Ty.path "core::option::Option") [] [ T ],
-                                  "is_none",
-                                  [],
-                                  []
-                                |),
-                                [ M.borrow (| Pointer.Kind.Ref, result |) ]
-                              |)
-                            |)) in
+                              M.get_associated_function (|
+                                Ty.apply (Ty.path "core::option::Option") [] [ T ],
+                                "is_none",
+                                [],
+                                []
+                              |),
+                              [ M.borrow (| Pointer.Kind.Ref, result |) ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
@@ -1155,33 +1154,32 @@ Module net.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
                                   Ty.path "bool",
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    M.get_associated_function (|
-                                      Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                                      "is_empty",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.read (|
-                                            M.SubPointer.get_struct_record_field (|
-                                              M.deref (| M.read (| self |) |),
-                                              "core::net::parser::Parser",
-                                              "state"
-                                            |)
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                                    "is_empty",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (|
+                                        M.read (|
+                                          M.SubPointer.get_struct_record_field (|
+                                            M.deref (| M.read (| self |) |),
+                                            "core::net::parser::Parser",
+                                            "state"
                                           |)
                                         |)
                                       |)
-                                    ]
-                                  |)
-                                |)) in
+                                    |)
+                                  ]
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.read (| result |)));
@@ -1584,18 +1582,17 @@ Module net.
                                                             fun γ =>
                                                               ltac:(M.monadic
                                                                 (let γ :=
-                                                                  M.use
-                                                                    (M.alloc (|
+                                                                  M.alloc (|
+                                                                    Ty.path "bool",
+                                                                    M.call_closure (|
                                                                       Ty.path "bool",
-                                                                      M.call_closure (|
-                                                                        Ty.path "bool",
-                                                                        BinOp.eq,
-                                                                        [
-                                                                          M.read (| c |);
-                                                                          M.read (| target |)
-                                                                        ]
-                                                                      |)
-                                                                    |)) in
+                                                                      BinOp.eq,
+                                                                      [
+                                                                        M.read (| c |);
+                                                                        M.read (| target |)
+                                                                      ]
+                                                                    |)
+                                                                  |) in
                                                                 let _ :=
                                                                   is_constant_or_break_match (|
                                                                     M.read (| γ |),
@@ -1707,18 +1704,17 @@ Module net.
                                           fun γ =>
                                             ltac:(M.monadic
                                               (let γ :=
-                                                M.use
-                                                  (M.alloc (|
+                                                M.alloc (|
+                                                  Ty.path "bool",
+                                                  M.call_closure (|
                                                     Ty.path "bool",
-                                                    M.call_closure (|
-                                                      Ty.path "bool",
-                                                      BinOp.gt,
-                                                      [
-                                                        M.read (| index |);
-                                                        Value.Integer IntegerKind.Usize 0
-                                                      ]
-                                                    |)
-                                                  |)) in
+                                                    BinOp.gt,
+                                                    [
+                                                      M.read (| index |);
+                                                      Value.Integer IntegerKind.Usize 0
+                                                    ]
+                                                  |)
+                                                |) in
                                               let _ :=
                                                 is_constant_or_break_match (|
                                                   M.read (| γ |),
@@ -2108,11 +2104,10 @@ Module net.
                                                       fun γ =>
                                                         ltac:(M.monadic
                                                           (let γ :=
-                                                            M.use
-                                                              (M.alloc (|
-                                                                Ty.path "bool",
-                                                                Value.Bool true
-                                                              |)) in
+                                                            M.alloc (|
+                                                              Ty.path "bool",
+                                                              Value.Bool true
+                                                            |) in
                                                           let _ :=
                                                             is_constant_or_break_match (|
                                                               M.read (| γ |),
@@ -2130,28 +2125,27 @@ Module net.
                                                                   fun γ =>
                                                                     ltac:(M.monadic
                                                                       (let γ :=
-                                                                        M.use
-                                                                          (M.alloc (|
+                                                                        M.alloc (|
+                                                                          Ty.path "bool",
+                                                                          M.call_closure (|
                                                                             Ty.path "bool",
-                                                                            M.call_closure (|
-                                                                              Ty.path "bool",
-                                                                              UnOp.not,
-                                                                              [
-                                                                                M.call_closure (|
-                                                                                  Ty.path "bool",
-                                                                                  BinOp.lt,
-                                                                                  [
-                                                                                    M.read (|
-                                                                                      max_digits
-                                                                                    |);
-                                                                                    Value.Integer
-                                                                                      IntegerKind.Usize
-                                                                                      10
-                                                                                  ]
-                                                                                |)
-                                                                              ]
-                                                                            |)
-                                                                          |)) in
+                                                                            UnOp.not,
+                                                                            [
+                                                                              M.call_closure (|
+                                                                                Ty.path "bool",
+                                                                                BinOp.lt,
+                                                                                [
+                                                                                  M.read (|
+                                                                                    max_digits
+                                                                                  |);
+                                                                                  Value.Integer
+                                                                                    IntegerKind.Usize
+                                                                                    10
+                                                                                ]
+                                                                              |)
+                                                                            ]
+                                                                          |)
+                                                                        |) in
                                                                       let _ :=
                                                                         is_constant_or_break_match (|
                                                                           M.read (| γ |),
@@ -2561,23 +2555,21 @@ Module net.
                                                                           fun γ =>
                                                                             ltac:(M.monadic
                                                                               (let γ :=
-                                                                                M.use
-                                                                                  (M.alloc (|
+                                                                                M.alloc (|
+                                                                                  Ty.path "bool",
+                                                                                  M.call_closure (|
                                                                                     Ty.path "bool",
-                                                                                    M.call_closure (|
-                                                                                      Ty.path
-                                                                                        "bool",
-                                                                                      BinOp.gt,
-                                                                                      [
-                                                                                        M.read (|
-                                                                                          digit_count
-                                                                                        |);
-                                                                                        M.read (|
-                                                                                          max_digits
-                                                                                        |)
-                                                                                      ]
-                                                                                    |)
-                                                                                  |)) in
+                                                                                    BinOp.gt,
+                                                                                    [
+                                                                                      M.read (|
+                                                                                        digit_count
+                                                                                      |);
+                                                                                      M.read (|
+                                                                                        max_digits
+                                                                                      |)
+                                                                                    ]
+                                                                                  |)
+                                                                                |) in
                                                                               let _ :=
                                                                                 is_constant_or_break_match (|
                                                                                   M.read (| γ |),
@@ -3383,18 +3375,17 @@ Module net.
                                           fun γ =>
                                             ltac:(M.monadic
                                               (let γ :=
-                                                M.use
-                                                  (M.alloc (|
+                                                M.alloc (|
+                                                  Ty.path "bool",
+                                                  M.call_closure (|
                                                     Ty.path "bool",
-                                                    M.call_closure (|
-                                                      Ty.path "bool",
-                                                      BinOp.eq,
-                                                      [
-                                                        M.read (| digit_count |);
-                                                        Value.Integer IntegerKind.Usize 0
-                                                      ]
-                                                    |)
-                                                  |)) in
+                                                    BinOp.eq,
+                                                    [
+                                                      M.read (| digit_count |);
+                                                      Value.Integer IntegerKind.Usize 0
+                                                    ]
+                                                  |)
+                                                |) in
                                               let _ :=
                                                 is_constant_or_break_match (|
                                                   M.read (| γ |),
@@ -3414,32 +3405,37 @@ Module net.
                                                   fun γ =>
                                                     ltac:(M.monadic
                                                       (let γ :=
-                                                        M.use
-                                                          (M.alloc (|
+                                                        M.alloc (|
+                                                          Ty.path "bool",
+                                                          M.call_closure (|
                                                             Ty.path "bool",
-                                                            LogicalOp.and (|
-                                                              LogicalOp.and (|
-                                                                M.call_closure (|
-                                                                  Ty.path "bool",
-                                                                  UnOp.not,
-                                                                  [ M.read (| allow_zero_prefix |) ]
-                                                                |),
-                                                                ltac:(M.monadic
-                                                                  (M.read (| has_leading_zero |)))
-                                                              |),
-                                                              ltac:(M.monadic
-                                                                (M.call_closure (|
-                                                                  Ty.path "bool",
-                                                                  BinOp.gt,
-                                                                  [
-                                                                    M.read (| digit_count |);
-                                                                    Value.Integer
-                                                                      IntegerKind.Usize
-                                                                      1
-                                                                  ]
-                                                                |)))
-                                                            |)
-                                                          |)) in
+                                                            UnOp.not,
+                                                            [ M.read (| allow_zero_prefix |) ]
+                                                          |)
+                                                        |) in
+                                                      let _ :=
+                                                        is_constant_or_break_match (|
+                                                          M.read (| γ |),
+                                                          Value.Bool true
+                                                        |) in
+                                                      let γ := has_leading_zero in
+                                                      let _ :=
+                                                        is_constant_or_break_match (|
+                                                          M.read (| γ |),
+                                                          Value.Bool true
+                                                        |) in
+                                                      let γ :=
+                                                        M.alloc (|
+                                                          Ty.path "bool",
+                                                          M.call_closure (|
+                                                            Ty.path "bool",
+                                                            BinOp.gt,
+                                                            [
+                                                              M.read (| digit_count |);
+                                                              Value.Integer IntegerKind.Usize 1
+                                                            ]
+                                                          |)
+                                                        |) in
                                                       let _ :=
                                                         is_constant_or_break_match (|
                                                           M.read (| γ |),
@@ -4378,20 +4374,17 @@ Module net.
                                                       fun γ =>
                                                         ltac:(M.monadic
                                                           (let γ :=
-                                                            M.use
-                                                              (M.alloc (|
+                                                            M.alloc (|
+                                                              Ty.path "bool",
+                                                              M.call_closure (|
                                                                 Ty.path "bool",
-                                                                M.call_closure (|
-                                                                  Ty.path "bool",
-                                                                  BinOp.eq,
-                                                                  [
-                                                                    M.read (| head_size |);
-                                                                    Value.Integer
-                                                                      IntegerKind.Usize
-                                                                      8
-                                                                  ]
-                                                                |)
-                                                              |)) in
+                                                                BinOp.eq,
+                                                                [
+                                                                  M.read (| head_size |);
+                                                                  Value.Integer IntegerKind.Usize 8
+                                                                ]
+                                                              |)
+                                                            |) in
                                                           let _ :=
                                                             is_constant_or_break_match (|
                                                               M.read (| γ |),
@@ -4446,7 +4439,7 @@ Module net.
                                                     [
                                                       fun γ =>
                                                         ltac:(M.monadic
-                                                          (let γ := M.use head_ipv4 in
+                                                          (let γ := head_ipv4 in
                                                           let _ :=
                                                             is_constant_or_break_match (|
                                                               M.read (| γ |),
@@ -7015,27 +7008,26 @@ Module net.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            BinOp.gt,
-                            [
-                              M.call_closure (|
-                                Ty.path "usize",
-                                M.get_associated_function (|
-                                  Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                                  "len",
-                                  [],
-                                  []
-                                |),
-                                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| b |) |) |) ]
-                              |);
-                              Value.Integer IntegerKind.Usize 15
-                            ]
-                          |)
-                        |)) in
+                          BinOp.gt,
+                          [
+                            M.call_closure (|
+                              Ty.path "usize",
+                              M.get_associated_function (|
+                                Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                                "len",
+                                [],
+                                []
+                              |),
+                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| b |) |) |) ]
+                            |);
+                            Value.Integer IntegerKind.Usize 15
+                          ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     Value.StructTuple
                       "core::result::Result::Err"
@@ -8435,47 +8427,97 @@ Module net.
       Definition Self : Ty.t := Ty.path "core::net::parser::AddrParseError".
       
       (*
-          fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
-              fmt.write_str(self.description())
+          fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+              match self.0 {
+                  AddrKind::Ip => "invalid IP address syntax",
+                  AddrKind::Ipv4 => "invalid IPv4 address syntax",
+                  AddrKind::Ipv6 => "invalid IPv6 address syntax",
+                  AddrKind::Socket => "invalid socket address syntax",
+                  AddrKind::SocketV4 => "invalid IPv4 socket address syntax",
+                  AddrKind::SocketV6 => "invalid IPv6 socket address syntax",
+              }
+              .fmt(f)
           }
       *)
       Definition fmt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
-        | [], [], [ self; fmt ] =>
+        | [], [], [ self; f ] =>
           ltac:(M.monadic
             (let self :=
               M.alloc (|
                 Ty.apply (Ty.path "&") [] [ Ty.path "core::net::parser::AddrParseError" ],
                 self
               |) in
-            let fmt :=
-              M.alloc (| Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ], fmt |) in
+            let f :=
+              M.alloc (| Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ], f |) in
             M.call_closure (|
               Ty.apply
                 (Ty.path "core::result::Result")
                 []
                 [ Ty.tuple []; Ty.path "core::fmt::Error" ],
-              M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_str", [], [] |),
+              M.get_trait_method (| "core::fmt::Display", Ty.path "str", [], [], "fmt", [], [] |),
               [
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| fmt |) |) |);
                 M.borrow (|
                   Pointer.Kind.Ref,
                   M.deref (|
-                    M.call_closure (|
+                    M.match_operator (|
                       Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                      M.get_trait_method (|
-                        "core::error::Error",
-                        Ty.path "core::net::parser::AddrParseError",
-                        [],
-                        [],
-                        "description",
-                        [],
-                        []
+                      M.SubPointer.get_struct_tuple_field (|
+                        M.deref (| M.read (| self |) |),
+                        "core::net::parser::AddrParseError",
+                        0
                       |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let _ :=
+                              M.is_struct_tuple (| γ, "core::net::parser::AddrKind::Ip" |) in
+                            mk_str (| "invalid IP address syntax" |)));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let _ :=
+                              M.is_struct_tuple (| γ, "core::net::parser::AddrKind::Ipv4" |) in
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| mk_str (| "invalid IPv4 address syntax" |) |)
+                            |)));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let _ :=
+                              M.is_struct_tuple (| γ, "core::net::parser::AddrKind::Ipv6" |) in
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| mk_str (| "invalid IPv6 address syntax" |) |)
+                            |)));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let _ :=
+                              M.is_struct_tuple (| γ, "core::net::parser::AddrKind::Socket" |) in
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| mk_str (| "invalid socket address syntax" |) |)
+                            |)));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let _ :=
+                              M.is_struct_tuple (| γ, "core::net::parser::AddrKind::SocketV4" |) in
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| mk_str (| "invalid IPv4 socket address syntax" |) |)
+                            |)));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let _ :=
+                              M.is_struct_tuple (| γ, "core::net::parser::AddrKind::SocketV6" |) in
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| mk_str (| "invalid IPv6 socket address syntax" |) |)
+                            |)))
+                      ]
                     |)
                   |)
-                |)
+                |);
+                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -8493,89 +8535,13 @@ Module net.
     Module Impl_core_error_Error_for_core_net_parser_AddrParseError.
       Definition Self : Ty.t := Ty.path "core::net::parser::AddrParseError".
       
-      (*
-          fn description(&self) -> &str {
-              match self.0 {
-                  AddrKind::Ip => "invalid IP address syntax",
-                  AddrKind::Ipv4 => "invalid IPv4 address syntax",
-                  AddrKind::Ipv6 => "invalid IPv6 address syntax",
-                  AddrKind::Socket => "invalid socket address syntax",
-                  AddrKind::SocketV4 => "invalid IPv4 socket address syntax",
-                  AddrKind::SocketV6 => "invalid IPv6 socket address syntax",
-              }
-          }
-      *)
-      Definition description (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [ self ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (|
-                Ty.apply (Ty.path "&") [] [ Ty.path "core::net::parser::AddrParseError" ],
-                self
-              |) in
-            M.match_operator (|
-              Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-              M.SubPointer.get_struct_tuple_field (|
-                M.deref (| M.read (| self |) |),
-                "core::net::parser::AddrParseError",
-                0
-              |),
-              [
-                fun γ =>
-                  ltac:(M.monadic
-                    (let _ := M.is_struct_tuple (| γ, "core::net::parser::AddrKind::Ip" |) in
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| mk_str (| "invalid IP address syntax" |) |)
-                    |)));
-                fun γ =>
-                  ltac:(M.monadic
-                    (let _ := M.is_struct_tuple (| γ, "core::net::parser::AddrKind::Ipv4" |) in
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| mk_str (| "invalid IPv4 address syntax" |) |)
-                    |)));
-                fun γ =>
-                  ltac:(M.monadic
-                    (let _ := M.is_struct_tuple (| γ, "core::net::parser::AddrKind::Ipv6" |) in
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| mk_str (| "invalid IPv6 address syntax" |) |)
-                    |)));
-                fun γ =>
-                  ltac:(M.monadic
-                    (let _ := M.is_struct_tuple (| γ, "core::net::parser::AddrKind::Socket" |) in
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| mk_str (| "invalid socket address syntax" |) |)
-                    |)));
-                fun γ =>
-                  ltac:(M.monadic
-                    (let _ := M.is_struct_tuple (| γ, "core::net::parser::AddrKind::SocketV4" |) in
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| mk_str (| "invalid IPv4 socket address syntax" |) |)
-                    |)));
-                fun γ =>
-                  ltac:(M.monadic
-                    (let _ := M.is_struct_tuple (| γ, "core::net::parser::AddrKind::SocketV6" |) in
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| mk_str (| "invalid IPv6 socket address syntax" |) |)
-                    |)))
-              ]
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
       Axiom Implements :
         M.IsTraitInstance
           "core::error::Error"
           (* Trait polymorphic consts *) []
           (* Trait polymorphic types *) []
           Self
-          (* Instance *) [ ("description", InstanceField.Method description) ].
+          (* Instance *) [].
     End Impl_core_error_Error_for_core_net_parser_AddrParseError.
   End parser.
 End net.

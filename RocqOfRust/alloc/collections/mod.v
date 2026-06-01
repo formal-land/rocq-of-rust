@@ -558,21 +558,16 @@ Module collections.
                               Ty.path "bool",
                               M.get_trait_method (|
                                 "core::cmp::PartialEq",
-                                Ty.apply (Ty.path "&") [] [ Ty.path "core::alloc::layout::Layout" ],
+                                Ty.apply (Ty.path "&") [] [ Ty.tuple [] ],
                                 [],
-                                [
-                                  Ty.apply
-                                    (Ty.path "&")
-                                    []
-                                    [ Ty.path "core::alloc::layout::Layout" ]
-                                ],
+                                [ Ty.apply (Ty.path "&") [] [ Ty.tuple [] ] ],
                                 "eq",
                                 [],
                                 []
                               |),
                               [
-                                M.borrow (| Pointer.Kind.Ref, __self_0 |);
-                                M.borrow (| Pointer.Kind.Ref, __arg1_0 |)
+                                M.borrow (| Pointer.Kind.Ref, __self_1 |);
+                                M.borrow (| Pointer.Kind.Ref, __arg1_1 |)
                               ]
                             |),
                             ltac:(M.monadic
@@ -580,16 +575,24 @@ Module collections.
                                 Ty.path "bool",
                                 M.get_trait_method (|
                                   "core::cmp::PartialEq",
-                                  Ty.apply (Ty.path "&") [] [ Ty.tuple [] ],
+                                  Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.path "core::alloc::layout::Layout" ],
                                   [],
-                                  [ Ty.apply (Ty.path "&") [] [ Ty.tuple [] ] ],
+                                  [
+                                    Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.path "core::alloc::layout::Layout" ]
+                                  ],
                                   "eq",
                                   [],
                                   []
                                 |),
                                 [
-                                  M.borrow (| Pointer.Kind.Ref, __self_1 |);
-                                  M.borrow (| Pointer.Kind.Ref, __arg1_1 |)
+                                  M.borrow (| Pointer.Kind.Ref, __self_0 |);
+                                  M.borrow (| Pointer.Kind.Ref, __arg1_0 |)
                                 ]
                               |)))
                           |)));

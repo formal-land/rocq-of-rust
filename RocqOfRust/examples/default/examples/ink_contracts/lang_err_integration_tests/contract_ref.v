@@ -48,6 +48,18 @@ Module Impl_core_default_Default_for_contract_ref_AccountId.
       (* Instance *) [ ("default", InstanceField.Method default) ].
 End Impl_core_default_Default_for_contract_ref_AccountId.
 
+Module Impl_core_clone_TrivialClone_for_contract_ref_AccountId.
+  Definition Self : Ty.t := Ty.path "contract_ref::AccountId".
+  
+  Axiom Implements :
+    M.IsTraitInstance
+      "core::clone::TrivialClone"
+      (* Trait polymorphic consts *) []
+      (* Trait polymorphic types *) []
+      Self
+      (* Instance *) [].
+End Impl_core_clone_TrivialClone_for_contract_ref_AccountId.
+
 Module Impl_core_clone_Clone_for_contract_ref_AccountId.
   Definition Self : Ty.t := Ty.path "contract_ref::AccountId".
   
@@ -278,7 +290,7 @@ Module Impl_contract_ref_FlipperRef.
           [
             fun γ =>
               ltac:(M.monadic
-                (let γ := M.use succeed in
+                (let γ := succeed in
                 let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                 Value.StructTuple
                   "core::result::Result::Ok"

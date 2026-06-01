@@ -33,6 +33,18 @@ Module signature.
     Axiom IsDiscriminant_Parity_Parity :
       M.IsDiscriminant "alloy_primitives::signature::parity::Parity::Parity" 2.
     
+    Module Impl_core_clone_TrivialClone_for_alloy_primitives_signature_parity_Parity.
+      Definition Self : Ty.t := Ty.path "alloy_primitives::signature::parity::Parity".
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::clone::TrivialClone"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [].
+    End Impl_core_clone_TrivialClone_for_alloy_primitives_signature_parity_Parity.
+    
     Module Impl_core_clone_Clone_for_alloy_primitives_signature_parity_Parity.
       Definition Self : Ty.t := Ty.path "alloy_primitives::signature::parity::Parity".
       
@@ -1118,22 +1130,21 @@ Module signature.
                             fun γ =>
                               ltac:(M.monadic
                                 (let γ :=
-                                  M.use
-                                    (M.alloc (|
+                                  M.alloc (|
+                                    Ty.path "bool",
+                                    M.call_closure (|
                                       Ty.path "bool",
-                                      M.call_closure (|
-                                        Ty.path "bool",
-                                        BinOp.eq,
-                                        [
-                                          M.call_closure (|
-                                            Ty.path "u64",
-                                            BinOp.Wrap.rem,
-                                            [ M.read (| v |); Value.Integer IntegerKind.U64 2 ]
-                                          |);
-                                          Value.Integer IntegerKind.U64 0
-                                        ]
-                                      |)
-                                    |)) in
+                                      BinOp.eq,
+                                      [
+                                        M.call_closure (|
+                                          Ty.path "u64",
+                                          BinOp.Wrap.rem,
+                                          [ M.read (| v |); Value.Integer IntegerKind.U64 2 ]
+                                        |);
+                                        Value.Integer IntegerKind.U64 0
+                                      ]
+                                    |)
+                                  |) in
                                 let _ :=
                                   is_constant_or_break_match (|
                                     M.read (| γ |),
@@ -1658,22 +1669,21 @@ Module signature.
                             fun γ =>
                               ltac:(M.monadic
                                 (let γ :=
-                                  M.use
-                                    (M.alloc (|
+                                  M.alloc (|
+                                    Ty.path "bool",
+                                    M.call_closure (|
                                       Ty.path "bool",
-                                      M.call_closure (|
-                                        Ty.path "bool",
-                                        BinOp.eq,
-                                        [
-                                          M.call_closure (|
-                                            Ty.path "u64",
-                                            BinOp.Wrap.rem,
-                                            [ M.read (| v |); Value.Integer IntegerKind.U64 2 ]
-                                          |);
-                                          Value.Integer IntegerKind.U64 0
-                                        ]
-                                      |)
-                                    |)) in
+                                      BinOp.eq,
+                                      [
+                                        M.call_closure (|
+                                          Ty.path "u64",
+                                          BinOp.Wrap.rem,
+                                          [ M.read (| v |); Value.Integer IntegerKind.U64 2 ]
+                                        |);
+                                        Value.Integer IntegerKind.U64 0
+                                      ]
+                                    |)
+                                  |) in
                                 let _ :=
                                   is_constant_or_break_match (|
                                     M.read (| γ |),

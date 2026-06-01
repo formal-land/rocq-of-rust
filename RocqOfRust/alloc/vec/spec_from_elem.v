@@ -94,23 +94,22 @@ Module vec.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
                                   Ty.path "bool",
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    M.get_trait_method (|
-                                      "alloc::vec::is_zero::IsZero",
-                                      T,
-                                      [],
-                                      [],
-                                      "is_zero",
-                                      [],
-                                      []
-                                    |),
-                                    [ M.borrow (| Pointer.Kind.Ref, elem |) ]
-                                  |)
-                                |)) in
+                                  M.get_trait_method (|
+                                    "alloc::vec::is_zero::IsZero",
+                                    T,
+                                    [],
+                                    [],
+                                    "is_zero",
+                                    [],
+                                    []
+                                  |),
+                                  [ M.borrow (| Pointer.Kind.Ref, elem |) ]
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.never_to_any (|
@@ -212,15 +211,14 @@ Module vec.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
                                   Ty.path "bool",
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    BinOp.eq,
-                                    [ M.read (| elem |); Value.Integer IntegerKind.I8 0 ]
-                                  |)
-                                |)) in
+                                  BinOp.eq,
+                                  [ M.read (| elem |); Value.Integer IntegerKind.I8 0 ]
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.never_to_any (|
@@ -272,11 +270,7 @@ Module vec.
                       let~ _ : Ty.tuple [] :=
                         M.call_closure (|
                           Ty.tuple [],
-                          M.get_function (|
-                            "core::intrinsics::write_bytes",
-                            [],
-                            [ Ty.path "i8" ]
-                          |),
+                          M.get_function (| "core::ptr::write_bytes", [], [ Ty.path "i8" ] |),
                           [
                             M.call_closure (|
                               Ty.apply (Ty.path "*mut") [] [ Ty.path "i8" ],
@@ -354,15 +348,14 @@ Module vec.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
                                   Ty.path "bool",
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    BinOp.eq,
-                                    [ M.read (| elem |); Value.Integer IntegerKind.U8 0 ]
-                                  |)
-                                |)) in
+                                  BinOp.eq,
+                                  [ M.read (| elem |); Value.Integer IntegerKind.U8 0 ]
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.never_to_any (|
@@ -414,11 +407,7 @@ Module vec.
                       let~ _ : Ty.tuple [] :=
                         M.call_closure (|
                           Ty.tuple [],
-                          M.get_function (|
-                            "core::intrinsics::write_bytes",
-                            [],
-                            [ Ty.path "u8" ]
-                          |),
+                          M.get_function (| "core::ptr::write_bytes", [], [ Ty.path "u8" ] |),
                           [
                             M.call_closure (|
                               Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],

@@ -6,6 +6,72 @@ Module fmt.
     (* Trait *)
     (* Empty module 'GeneralFormat' *)
     
+    Module Impl_core_fmt_float_GeneralFormat_for_f16.
+      Definition Self : Ty.t := Ty.path "f16".
+      
+      (*
+                  fn already_rounded_value_should_use_exponential(&self) -> bool {
+                      let abs = $t::abs( *self);
+                      (abs != 0.0 && abs < 1e-4) || abs >= 1e+16
+                  }
+      *)
+      Definition already_rounded_value_should_use_exponential
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "f16" ], self |) in
+            M.read (|
+              let~ abs : Ty.path "f16" :=
+                M.call_closure (|
+                  Ty.path "f16",
+                  M.get_associated_function (| Ty.path "f16", "abs", [], [] |),
+                  [ M.read (| M.deref (| M.read (| self |) |) |) ]
+                |) in
+              M.alloc (|
+                Ty.path "bool",
+                LogicalOp.or (|
+                  LogicalOp.and (|
+                    M.call_closure (|
+                      Ty.path "bool",
+                      BinOp.ne,
+                      [ M.read (| abs |); M.read (| UnsupportedLiteral |) ]
+                    |),
+                    ltac:(M.monadic
+                      (M.call_closure (|
+                        Ty.path "bool",
+                        BinOp.lt,
+                        [ M.read (| abs |); M.read (| UnsupportedLiteral |) ]
+                      |)))
+                  |),
+                  ltac:(M.monadic
+                    (M.call_closure (|
+                      Ty.path "bool",
+                      BinOp.ge,
+                      [ M.read (| abs |); M.read (| UnsupportedLiteral |) ]
+                    |)))
+                |)
+              |)
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::fmt::float::GeneralFormat"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *)
+          [
+            ("already_rounded_value_should_use_exponential",
+              InstanceField.Method already_rounded_value_should_use_exponential)
+          ].
+    End Impl_core_fmt_float_GeneralFormat_for_f16.
+    
     Module Impl_core_fmt_float_GeneralFormat_for_f32.
       Definition Self : Ty.t := Ty.path "f32".
       
@@ -143,7 +209,7 @@ Module fmt.
         fmt: &mut Formatter<'_>,
         num: &T,
         sign: flt2dec::Sign,
-        precision: usize,
+        precision: u16,
     ) -> Result
     where
         T: flt2dec::DecodableFloat,
@@ -154,7 +220,7 @@ Module fmt.
             flt2dec::strategy::grisu::format_exact,
             *num,
             sign,
-            precision,
+            precision.into(),
             &mut buf,
             &mut parts,
         );
@@ -174,7 +240,7 @@ Module fmt.
             M.alloc (| Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ], fmt |) in
           let num := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], num |) in
           let sign := M.alloc (| Ty.path "core::num::flt2dec::Sign", sign |) in
-          let precision := M.alloc (| Ty.path "usize", precision |) in
+          let precision := M.alloc (| Ty.path "u16", precision |) in
           M.read (|
             let~ buf :
                 Ty.apply
@@ -268,7 +334,19 @@ Module fmt.
                   M.get_function (| "core::num::flt2dec::strategy::grisu::format_exact", [], [] |);
                   M.read (| M.deref (| M.read (| num |) |) |);
                   M.read (| sign |);
-                  M.read (| precision |);
+                  M.call_closure (|
+                    Ty.path "usize",
+                    M.get_trait_method (|
+                      "core::convert::Into",
+                      Ty.path "u16",
+                      [],
+                      [ Ty.path "usize" ],
+                      "into",
+                      [],
+                      []
+                    |),
+                    [ M.read (| precision |) ]
+                  |);
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "&mut")
@@ -416,7 +494,7 @@ Module fmt.
         fmt: &mut Formatter<'_>,
         num: &T,
         sign: flt2dec::Sign,
-        precision: usize,
+        precision: u16,
     ) -> Result
     where
         T: flt2dec::DecodableFloat,
@@ -429,7 +507,7 @@ Module fmt.
             flt2dec::strategy::grisu::format_shortest,
             *num,
             sign,
-            precision,
+            precision.into(),
             &mut buf,
             &mut parts,
         );
@@ -449,7 +527,7 @@ Module fmt.
             M.alloc (| Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ], fmt |) in
           let num := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], num |) in
           let sign := M.alloc (| Ty.path "core::num::flt2dec::Sign", sign |) in
-          let precision := M.alloc (| Ty.path "usize", precision |) in
+          let precision := M.alloc (| Ty.path "u16", precision |) in
           M.read (|
             let~ buf :
                 Ty.apply
@@ -546,7 +624,19 @@ Module fmt.
                   |);
                   M.read (| M.deref (| M.read (| num |) |) |);
                   M.read (| sign |);
-                  M.read (| precision |);
+                  M.call_closure (|
+                    Ty.path "usize",
+                    M.get_trait_method (|
+                      "core::convert::Into",
+                      Ty.path "u16",
+                      [],
+                      [ Ty.path "usize" ],
+                      "into",
+                      [],
+                      []
+                    |),
+                    [ M.read (| precision |) ]
+                  |);
                   M.call_closure (|
                     Ty.apply
                       (Ty.path "&mut")
@@ -700,7 +790,7 @@ Module fmt.
             true => flt2dec::Sign::MinusPlus,
         };
     
-        if let Some(precision) = fmt.precision {
+        if let Some(precision) = fmt.options.get_precision() {
             float_to_decimal_common_exact(fmt, num, sign, precision)
         } else {
             let min_precision = 0;
@@ -752,10 +842,27 @@ Module fmt.
                   fun γ =>
                     ltac:(M.monadic
                       (let γ :=
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| fmt |) |),
-                          "core::fmt::Formatter",
-                          "precision"
+                        M.alloc (|
+                          Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u16" ],
+                          M.call_closure (|
+                            Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u16" ],
+                            M.get_associated_function (|
+                              Ty.path "core::fmt::FormattingOptions",
+                              "get_precision",
+                              [],
+                              []
+                            |),
+                            [
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| fmt |) |),
+                                  "core::fmt::Formatter",
+                                  "options"
+                                |)
+                              |)
+                            ]
+                          |)
                         |) in
                       let γ0_0 :=
                         M.SubPointer.get_struct_tuple_field (|
@@ -763,7 +870,7 @@ Module fmt.
                           "core::option::Option::Some",
                           0
                         |) in
-                      let precision := M.copy (| Ty.path "usize", γ0_0 |) in
+                      let precision := M.copy (| Ty.path "u16", γ0_0 |) in
                       M.call_closure (|
                         Ty.apply
                           (Ty.path "core::result::Result")
@@ -784,7 +891,7 @@ Module fmt.
                   fun γ =>
                     ltac:(M.monadic
                       (M.read (|
-                        let~ min_precision : Ty.path "usize" := Value.Integer IntegerKind.Usize 0 in
+                        let~ min_precision : Ty.path "u16" := Value.Integer IntegerKind.U16 0 in
                         M.alloc (|
                           Ty.apply
                             (Ty.path "core::result::Result")
@@ -826,7 +933,7 @@ Module fmt.
         fmt: &mut Formatter<'_>,
         num: &T,
         sign: flt2dec::Sign,
-        precision: usize,
+        precision: u16,
         upper: bool,
     ) -> Result
     where
@@ -838,7 +945,7 @@ Module fmt.
             flt2dec::strategy::grisu::format_exact,
             *num,
             sign,
-            precision,
+            precision.into(),
             upper,
             &mut buf,
             &mut parts,
@@ -859,7 +966,7 @@ Module fmt.
             M.alloc (| Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ], fmt |) in
           let num := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], num |) in
           let sign := M.alloc (| Ty.path "core::num::flt2dec::Sign", sign |) in
-          let precision := M.alloc (| Ty.path "usize", precision |) in
+          let precision := M.alloc (| Ty.path "u16", precision |) in
           let upper := M.alloc (| Ty.path "bool", upper |) in
           M.read (|
             let~ buf :
@@ -954,7 +1061,19 @@ Module fmt.
                   M.get_function (| "core::num::flt2dec::strategy::grisu::format_exact", [], [] |);
                   M.read (| M.deref (| M.read (| num |) |) |);
                   M.read (| sign |);
-                  M.read (| precision |);
+                  M.call_closure (|
+                    Ty.path "usize",
+                    M.get_trait_method (|
+                      "core::convert::Into",
+                      Ty.path "u16",
+                      [],
+                      [ Ty.path "usize" ],
+                      "into",
+                      [],
+                      []
+                    |),
+                    [ M.read (| precision |) ]
+                  |);
                   M.read (| upper |);
                   M.call_closure (|
                     Ty.apply
@@ -1389,7 +1508,7 @@ Module fmt.
             true => flt2dec::Sign::MinusPlus,
         };
     
-        if let Some(precision) = fmt.precision {
+        if let Some(precision) = fmt.options.get_precision() {
             // 1 integral digit + `precision` fractional digits = `precision + 1` total digits
             float_to_exponential_common_exact(fmt, num, sign, precision + 1, upper)
         } else {
@@ -1446,10 +1565,27 @@ Module fmt.
                   fun γ =>
                     ltac:(M.monadic
                       (let γ :=
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| fmt |) |),
-                          "core::fmt::Formatter",
-                          "precision"
+                        M.alloc (|
+                          Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u16" ],
+                          M.call_closure (|
+                            Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u16" ],
+                            M.get_associated_function (|
+                              Ty.path "core::fmt::FormattingOptions",
+                              "get_precision",
+                              [],
+                              []
+                            |),
+                            [
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| fmt |) |),
+                                  "core::fmt::Formatter",
+                                  "options"
+                                |)
+                              |)
+                            ]
+                          |)
                         |) in
                       let γ0_0 :=
                         M.SubPointer.get_struct_tuple_field (|
@@ -1457,7 +1593,7 @@ Module fmt.
                           "core::option::Option::Some",
                           0
                         |) in
-                      let precision := M.copy (| Ty.path "usize", γ0_0 |) in
+                      let precision := M.copy (| Ty.path "u16", γ0_0 |) in
                       M.call_closure (|
                         Ty.apply
                           (Ty.path "core::result::Result")
@@ -1473,9 +1609,9 @@ Module fmt.
                           M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| num |) |) |);
                           M.read (| sign |);
                           M.call_closure (|
-                            Ty.path "usize",
+                            Ty.path "u16",
                             BinOp.Wrap.add,
-                            [ M.read (| precision |); Value.Integer IntegerKind.Usize 1 ]
+                            [ M.read (| precision |); Value.Integer IntegerKind.U16 1 ]
                           |);
                           M.read (| upper |)
                         ]
@@ -1522,7 +1658,7 @@ Module fmt.
             true => flt2dec::Sign::MinusPlus,
         };
     
-        if let Some(precision) = fmt.precision {
+        if let Some(precision) = fmt.options.get_precision() {
             // this behavior of {:.PREC?} predates exponential formatting for {:?}
             float_to_decimal_common_exact(fmt, num, sign, precision)
         } else {
@@ -1581,10 +1717,27 @@ Module fmt.
                   fun γ =>
                     ltac:(M.monadic
                       (let γ :=
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| fmt |) |),
-                          "core::fmt::Formatter",
-                          "precision"
+                        M.alloc (|
+                          Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u16" ],
+                          M.call_closure (|
+                            Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u16" ],
+                            M.get_associated_function (|
+                              Ty.path "core::fmt::FormattingOptions",
+                              "get_precision",
+                              [],
+                              []
+                            |),
+                            [
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| fmt |) |),
+                                  "core::fmt::Formatter",
+                                  "options"
+                                |)
+                              |)
+                            ]
+                          |)
                         |) in
                       let γ0_0 :=
                         M.SubPointer.get_struct_tuple_field (|
@@ -1592,7 +1745,7 @@ Module fmt.
                           "core::option::Option::Some",
                           0
                         |) in
-                      let precision := M.copy (| Ty.path "usize", γ0_0 |) in
+                      let precision := M.copy (| Ty.path "u16", γ0_0 |) in
                       M.call_closure (|
                         Ty.apply
                           (Ty.path "core::result::Result")
@@ -1622,28 +1775,27 @@ Module fmt.
                           fun γ =>
                             ltac:(M.monadic
                               (let γ :=
-                                M.use
-                                  (M.alloc (|
+                                M.alloc (|
+                                  Ty.path "bool",
+                                  M.call_closure (|
                                     Ty.path "bool",
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      M.get_trait_method (|
-                                        "core::fmt::float::GeneralFormat",
-                                        T,
-                                        [],
-                                        [],
-                                        "already_rounded_value_should_use_exponential",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| num |) |)
-                                        |)
-                                      ]
-                                    |)
-                                  |)) in
+                                    M.get_trait_method (|
+                                      "core::fmt::float::GeneralFormat",
+                                      T,
+                                      [],
+                                      [],
+                                      "already_rounded_value_should_use_exponential",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| num |) |)
+                                      |)
+                                    ]
+                                  |)
+                                |) in
                               let _ :=
                                 is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                               M.read (|
@@ -1681,8 +1833,8 @@ Module fmt.
                           fun γ =>
                             ltac:(M.monadic
                               (M.read (|
-                                let~ min_precision : Ty.path "usize" :=
-                                  Value.Integer IntegerKind.Usize 1 in
+                                let~ min_precision : Ty.path "u16" :=
+                                  Value.Integer IntegerKind.U16 1 in
                                 M.alloc (|
                                   Ty.apply
                                     (Ty.path "core::result::Result")
@@ -2071,232 +2223,30 @@ Module fmt.
       Definition Self : Ty.t := Ty.path "f16".
       
       (*
-          fn fmt(&self, f: &mut Formatter<'_>) -> Result {
-              write!(f, "{:#06x}", self.to_bits())
-          }
+                      fn fmt(&self, fmt: &mut Formatter<'_>) -> Result {
+                          float_to_general_debug(fmt, self)
+                      }
       *)
       Definition fmt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
-        | [], [], [ self; f ] =>
+        | [], [], [ self; fmt ] =>
           ltac:(M.monadic
             (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "f16" ], self |) in
-            let f :=
-              M.alloc (| Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ], f |) in
+            let fmt :=
+              M.alloc (| Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ], fmt |) in
             M.call_closure (|
               Ty.apply
                 (Ty.path "core::result::Result")
                 []
                 [ Ty.tuple []; Ty.path "core::fmt::Error" ],
-              M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_fmt", [], [] |),
+              M.get_function (|
+                "core::fmt::float::float_to_general_debug",
+                [],
+                [ Ty.path "f16" ]
+              |),
               [
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                M.call_closure (|
-                  Ty.path "core::fmt::Arguments",
-                  M.get_associated_function (|
-                    Ty.path "core::fmt::Arguments",
-                    "new_v1_formatted",
-                    [],
-                    []
-                  |),
-                  [
-                    M.call_closure (|
-                      Ty.apply
-                        (Ty.path "&")
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "slice")
-                            []
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                        ],
-                      M.pointer_coercion
-                        M.PointerCoercion.Unsize
-                        (Ty.apply
-                          (Ty.path "&")
-                          []
-                          [
-                            Ty.apply
-                              (Ty.path "array")
-                              [ Value.Integer IntegerKind.Usize 1 ]
-                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                          ])
-                        (Ty.apply
-                          (Ty.path "&")
-                          []
-                          [
-                            Ty.apply
-                              (Ty.path "slice")
-                              []
-                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                          ]),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (|
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.alloc (|
-                                Ty.apply
-                                  (Ty.path "array")
-                                  [ Value.Integer IntegerKind.Usize 1 ]
-                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                Value.Array [ mk_str (| "" |) ]
-                              |)
-                            |)
-                          |)
-                        |)
-                      ]
-                    |);
-                    M.call_closure (|
-                      Ty.apply
-                        (Ty.path "&")
-                        []
-                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "core::fmt::rt::Argument" ] ],
-                      M.pointer_coercion
-                        M.PointerCoercion.Unsize
-                        (Ty.apply
-                          (Ty.path "&")
-                          []
-                          [
-                            Ty.apply
-                              (Ty.path "array")
-                              [ Value.Integer IntegerKind.Usize 1 ]
-                              [ Ty.path "core::fmt::rt::Argument" ]
-                          ])
-                        (Ty.apply
-                          (Ty.path "&")
-                          []
-                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "core::fmt::rt::Argument" ] ]),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (|
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.alloc (|
-                                Ty.apply
-                                  (Ty.path "array")
-                                  [ Value.Integer IntegerKind.Usize 1 ]
-                                  [ Ty.path "core::fmt::rt::Argument" ],
-                                Value.Array
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "core::fmt::rt::Argument",
-                                      M.get_associated_function (|
-                                        Ty.path "core::fmt::rt::Argument",
-                                        "new_lower_hex",
-                                        [],
-                                        [ Ty.path "u16" ]
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (|
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.alloc (|
-                                                Ty.path "u16",
-                                                M.call_closure (|
-                                                  Ty.path "u16",
-                                                  M.get_associated_function (|
-                                                    Ty.path "f16",
-                                                    "to_bits",
-                                                    [],
-                                                    []
-                                                  |),
-                                                  [ M.read (| M.deref (| M.read (| self |) |) |) ]
-                                                |)
-                                              |)
-                                            |)
-                                          |)
-                                        |)
-                                      ]
-                                    |)
-                                  ]
-                              |)
-                            |)
-                          |)
-                        |)
-                      ]
-                    |);
-                    M.call_closure (|
-                      Ty.apply
-                        (Ty.path "&")
-                        []
-                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "core::fmt::rt::Placeholder" ] ],
-                      M.pointer_coercion
-                        M.PointerCoercion.Unsize
-                        (Ty.apply
-                          (Ty.path "&")
-                          []
-                          [
-                            Ty.apply
-                              (Ty.path "array")
-                              [ Value.Integer IntegerKind.Usize 1 ]
-                              [ Ty.path "core::fmt::rt::Placeholder" ]
-                          ])
-                        (Ty.apply
-                          (Ty.path "&")
-                          []
-                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "core::fmt::rt::Placeholder" ]
-                          ]),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (|
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.alloc (|
-                                Ty.apply
-                                  (Ty.path "array")
-                                  [ Value.Integer IntegerKind.Usize 1 ]
-                                  [ Ty.path "core::fmt::rt::Placeholder" ],
-                                Value.Array
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "core::fmt::rt::Placeholder",
-                                      M.get_associated_function (|
-                                        Ty.path "core::fmt::rt::Placeholder",
-                                        "new",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        Value.Integer IntegerKind.Usize 0;
-                                        Value.UnicodeChar 32;
-                                        Value.StructTuple
-                                          "core::fmt::rt::Alignment::Unknown"
-                                          []
-                                          []
-                                          [];
-                                        Value.Integer IntegerKind.U32 12;
-                                        Value.StructTuple "core::fmt::rt::Count::Implied" [] [] [];
-                                        Value.StructTuple
-                                          "core::fmt::rt::Count::Is"
-                                          []
-                                          []
-                                          [ Value.Integer IntegerKind.Usize 6 ]
-                                      ]
-                                    |)
-                                  ]
-                              |)
-                            |)
-                          |)
-                        |)
-                      ]
-                    |);
-                    M.call_closure (|
-                      Ty.path "core::fmt::rt::UnsafeArg",
-                      M.get_associated_function (|
-                        Ty.path "core::fmt::rt::UnsafeArg",
-                        "new",
-                        [],
-                        []
-                      |),
-                      []
-                    |)
-                  ]
-                |)
+                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| fmt |) |) |);
+                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |)
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -2310,6 +2260,134 @@ Module fmt.
           Self
           (* Instance *) [ ("fmt", InstanceField.Method fmt) ].
     End Impl_core_fmt_Debug_for_f16.
+    
+    Module Impl_core_fmt_Display_for_f16.
+      Definition Self : Ty.t := Ty.path "f16".
+      
+      (*
+                      fn fmt(&self, fmt: &mut Formatter<'_>) -> Result {
+                          float_to_decimal_display(fmt, self)
+                      }
+      *)
+      Definition fmt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; fmt ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "f16" ], self |) in
+            let fmt :=
+              M.alloc (| Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ], fmt |) in
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "core::result::Result")
+                []
+                [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+              M.get_function (|
+                "core::fmt::float::float_to_decimal_display",
+                [],
+                [ Ty.path "f16" ]
+              |),
+              [
+                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| fmt |) |) |);
+                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::fmt::Display"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [ ("fmt", InstanceField.Method fmt) ].
+    End Impl_core_fmt_Display_for_f16.
+    
+    Module Impl_core_fmt_LowerExp_for_f16.
+      Definition Self : Ty.t := Ty.path "f16".
+      
+      (*
+                      fn fmt(&self, fmt: &mut Formatter<'_>) -> Result {
+                          float_to_exponential_common(fmt, self, false)
+                      }
+      *)
+      Definition fmt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; fmt ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "f16" ], self |) in
+            let fmt :=
+              M.alloc (| Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ], fmt |) in
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "core::result::Result")
+                []
+                [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+              M.get_function (|
+                "core::fmt::float::float_to_exponential_common",
+                [],
+                [ Ty.path "f16" ]
+              |),
+              [
+                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| fmt |) |) |);
+                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
+                Value.Bool false
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::fmt::LowerExp"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [ ("fmt", InstanceField.Method fmt) ].
+    End Impl_core_fmt_LowerExp_for_f16.
+    
+    Module Impl_core_fmt_UpperExp_for_f16.
+      Definition Self : Ty.t := Ty.path "f16".
+      
+      (*
+                      fn fmt(&self, fmt: &mut Formatter<'_>) -> Result {
+                          float_to_exponential_common(fmt, self, true)
+                      }
+      *)
+      Definition fmt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; fmt ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "f16" ], self |) in
+            let fmt :=
+              M.alloc (| Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ], fmt |) in
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "core::result::Result")
+                []
+                [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+              M.get_function (|
+                "core::fmt::float::float_to_exponential_common",
+                [],
+                [ Ty.path "f16" ]
+              |),
+              [
+                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| fmt |) |) |);
+                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
+                Value.Bool true
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::fmt::UpperExp"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [ ("fmt", InstanceField.Method fmt) ].
+    End Impl_core_fmt_UpperExp_for_f16.
     
     Module Impl_core_fmt_Debug_for_f128.
       Definition Self : Ty.t := Ty.path "f128".
@@ -2334,212 +2412,67 @@ Module fmt.
               M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_fmt", [], [] |),
               [
                 M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                M.call_closure (|
-                  Ty.path "core::fmt::Arguments",
-                  M.get_associated_function (|
+                M.read (|
+                  let~ args : Ty.tuple [ Ty.apply (Ty.path "&") [] [ Ty.path "u128" ] ] :=
+                    Value.Tuple
+                      [
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.alloc (|
+                            Ty.path "u128",
+                            M.call_closure (|
+                              Ty.path "u128",
+                              M.get_associated_function (| Ty.path "f128", "to_bits", [], [] |),
+                              [ M.read (| M.deref (| M.read (| self |) |) |) ]
+                            |)
+                          |)
+                        |)
+                      ] in
+                  let~ args :
+                      Ty.apply
+                        (Ty.path "array")
+                        [ Value.Integer IntegerKind.Usize 1 ]
+                        [ Ty.path "core::fmt::rt::Argument" ] :=
+                    Value.Array
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::rt::Argument",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::rt::Argument",
+                            "new_lower_hex",
+                            [],
+                            [ Ty.path "u128" ]
+                          |),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| M.read (| M.SubPointer.get_tuple_field (| args, 0 |) |) |)
+                            |)
+                          ]
+                        |)
+                      ] in
+                  M.alloc (|
                     Ty.path "core::fmt::Arguments",
-                    "new_v1_formatted",
-                    [],
-                    []
-                  |),
-                  [
                     M.call_closure (|
-                      Ty.apply
-                        (Ty.path "&")
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "slice")
-                            []
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                        ],
-                      M.pointer_coercion
-                        M.PointerCoercion.Unsize
-                        (Ty.apply
-                          (Ty.path "&")
-                          []
-                          [
-                            Ty.apply
-                              (Ty.path "array")
-                              [ Value.Integer IntegerKind.Usize 1 ]
-                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                          ])
-                        (Ty.apply
-                          (Ty.path "&")
-                          []
-                          [
-                            Ty.apply
-                              (Ty.path "slice")
-                              []
-                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                          ]),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (|
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.alloc (|
-                                Ty.apply
-                                  (Ty.path "array")
-                                  [ Value.Integer IntegerKind.Usize 1 ]
-                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                Value.Array [ mk_str (| "" |) ]
-                              |)
-                            |)
-                          |)
-                        |)
-                      ]
-                    |);
-                    M.call_closure (|
-                      Ty.apply
-                        (Ty.path "&")
-                        []
-                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "core::fmt::rt::Argument" ] ],
-                      M.pointer_coercion
-                        M.PointerCoercion.Unsize
-                        (Ty.apply
-                          (Ty.path "&")
-                          []
-                          [
-                            Ty.apply
-                              (Ty.path "array")
-                              [ Value.Integer IntegerKind.Usize 1 ]
-                              [ Ty.path "core::fmt::rt::Argument" ]
-                          ])
-                        (Ty.apply
-                          (Ty.path "&")
-                          []
-                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "core::fmt::rt::Argument" ] ]),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (|
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.alloc (|
-                                Ty.apply
-                                  (Ty.path "array")
-                                  [ Value.Integer IntegerKind.Usize 1 ]
-                                  [ Ty.path "core::fmt::rt::Argument" ],
-                                Value.Array
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "core::fmt::rt::Argument",
-                                      M.get_associated_function (|
-                                        Ty.path "core::fmt::rt::Argument",
-                                        "new_lower_hex",
-                                        [],
-                                        [ Ty.path "u128" ]
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (|
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.alloc (|
-                                                Ty.path "u128",
-                                                M.call_closure (|
-                                                  Ty.path "u128",
-                                                  M.get_associated_function (|
-                                                    Ty.path "f128",
-                                                    "to_bits",
-                                                    [],
-                                                    []
-                                                  |),
-                                                  [ M.read (| M.deref (| M.read (| self |) |) |) ]
-                                                |)
-                                              |)
-                                            |)
-                                          |)
-                                        |)
-                                      ]
-                                    |)
-                                  ]
-                              |)
-                            |)
-                          |)
-                        |)
-                      ]
-                    |);
-                    M.call_closure (|
-                      Ty.apply
-                        (Ty.path "&")
-                        []
-                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "core::fmt::rt::Placeholder" ] ],
-                      M.pointer_coercion
-                        M.PointerCoercion.Unsize
-                        (Ty.apply
-                          (Ty.path "&")
-                          []
-                          [
-                            Ty.apply
-                              (Ty.path "array")
-                              [ Value.Integer IntegerKind.Usize 1 ]
-                              [ Ty.path "core::fmt::rt::Placeholder" ]
-                          ])
-                        (Ty.apply
-                          (Ty.path "&")
-                          []
-                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "core::fmt::rt::Placeholder" ]
-                          ]),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (|
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.alloc (|
-                                Ty.apply
-                                  (Ty.path "array")
-                                  [ Value.Integer IntegerKind.Usize 1 ]
-                                  [ Ty.path "core::fmt::rt::Placeholder" ],
-                                Value.Array
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "core::fmt::rt::Placeholder",
-                                      M.get_associated_function (|
-                                        Ty.path "core::fmt::rt::Placeholder",
-                                        "new",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        Value.Integer IntegerKind.Usize 0;
-                                        Value.UnicodeChar 32;
-                                        Value.StructTuple
-                                          "core::fmt::rt::Alignment::Unknown"
-                                          []
-                                          []
-                                          [];
-                                        Value.Integer IntegerKind.U32 12;
-                                        Value.StructTuple "core::fmt::rt::Count::Implied" [] [] [];
-                                        Value.StructTuple
-                                          "core::fmt::rt::Count::Is"
-                                          []
-                                          []
-                                          [ Value.Integer IntegerKind.Usize 34 ]
-                                      ]
-                                    |)
-                                  ]
-                              |)
-                            |)
-                          |)
-                        |)
-                      ]
-                    |);
-                    M.call_closure (|
-                      Ty.path "core::fmt::rt::UnsafeArg",
+                      Ty.path "core::fmt::Arguments",
                       M.get_associated_function (|
-                        Ty.path "core::fmt::rt::UnsafeArg",
+                        Ty.path "core::fmt::Arguments",
                         "new",
-                        [],
+                        [ Value.Integer IntegerKind.Usize 8; Value.Integer IntegerKind.Usize 1 ],
                         []
                       |),
-                      []
+                      [
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| M.read (| UnsupportedLiteral |) |)
+                        |);
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
+                        |)
+                      ]
                     |)
-                  ]
+                  |)
                 |)
               ]
             |)))

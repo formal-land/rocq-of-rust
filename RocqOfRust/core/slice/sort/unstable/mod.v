@@ -18,10 +18,11 @@ Module slice.
               return;
           }
       
-          cfg_if! {
-              if #[cfg(any(feature = "optimize_for_size", target_pointer_width = "16"))] {
+          cfg_select! {
+              any(feature = "optimize_for_size", target_pointer_width = "16") => {
                   heapsort::heapsort(v, is_less);
-              } else {
+              }
+              _ => {
                   // More advanced sorting methods than insertion sort are faster if called in
                   // a hot loop for small inputs, but for general-purpose code the small
                   // binary size of insertion sort is more important. The instruction cache in
@@ -60,11 +61,10 @@ Module slice.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (get_constant (|
-                                  "core::mem::SizedTypeProperties::IS_ZST",
-                                  Ty.path "bool"
-                                |)) in
+                              get_constant (|
+                                "core::mem::SizedTypeProperties::IS_ZST",
+                                Ty.path "bool"
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.never_to_any (| M.read (| M.return_ (| Value.Tuple [] |) |) |)));
@@ -90,21 +90,20 @@ Module slice.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
                                   Ty.path "bool",
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    M.get_function (| "core::intrinsics::likely", [], [] |),
-                                    [
-                                      M.call_closure (|
-                                        Ty.path "bool",
-                                        BinOp.lt,
-                                        [ M.read (| len |); Value.Integer IntegerKind.Usize 2 ]
-                                      |)
-                                    ]
-                                  |)
-                                |)) in
+                                  M.get_function (| "core::intrinsics::likely", [], [] |),
+                                  [
+                                    M.call_closure (|
+                                      Ty.path "bool",
+                                      BinOp.lt,
+                                      [ M.read (| len |); Value.Integer IntegerKind.Usize 2 ]
+                                    |)
+                                  ]
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.never_to_any (| M.read (| M.return_ (| Value.Tuple [] |) |) |)));
@@ -119,29 +118,28 @@ Module slice.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
                                   Ty.path "bool",
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    M.get_function (| "core::intrinsics::likely", [], [] |),
-                                    [
-                                      M.call_closure (|
-                                        Ty.path "bool",
-                                        BinOp.le,
-                                        [
-                                          M.read (| len |);
-                                          M.read (|
-                                            get_constant (|
-                                              "core::slice::sort::unstable::sort::MAX_LEN_ALWAYS_INSERTION_SORT",
-                                              Ty.path "usize"
-                                            |)
+                                  M.get_function (| "core::intrinsics::likely", [], [] |),
+                                  [
+                                    M.call_closure (|
+                                      Ty.path "bool",
+                                      BinOp.le,
+                                      [
+                                        M.read (| len |);
+                                        M.read (|
+                                          get_constant (|
+                                            "core::slice::sort::unstable::sort::MAX_LEN_ALWAYS_INSERTION_SORT",
+                                            Ty.path "usize"
                                           |)
-                                        ]
-                                      |)
-                                    ]
-                                  |)
-                                |)) in
+                                        |)
+                                      ]
+                                    |)
+                                  ]
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.never_to_any (|
@@ -306,15 +304,14 @@ Module slice.
                                     fun γ =>
                                       ltac:(M.monadic
                                         (let γ :=
-                                          M.use
-                                            (M.alloc (|
+                                          M.alloc (|
+                                            Ty.path "bool",
+                                            M.call_closure (|
                                               Ty.path "bool",
-                                              M.call_closure (|
-                                                Ty.path "bool",
-                                                BinOp.eq,
-                                                [ M.read (| run_len |); M.read (| len |) ]
-                                              |)
-                                            |)) in
+                                              BinOp.eq,
+                                              [ M.read (| run_len |); M.read (| len |) ]
+                                            |)
+                                          |) in
                                         let _ :=
                                           is_constant_or_break_match (|
                                             M.read (| γ |),
@@ -329,7 +326,7 @@ Module slice.
                                                 [
                                                   fun γ =>
                                                     ltac:(M.monadic
-                                                      (let γ := M.use was_reversed in
+                                                      (let γ := was_reversed in
                                                       let _ :=
                                                         is_constant_or_break_match (|
                                                           M.read (| γ |),

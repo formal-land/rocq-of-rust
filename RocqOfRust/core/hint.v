@@ -27,15 +27,14 @@ Module hint.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            M.get_function (| "core::ub_checks::check_language_ub", [], [] |),
-                            []
-                          |)
-                        |)) in
+                          M.get_function (| "core::ub_checks::check_language_ub", [], [] |),
+                          []
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     M.read (|
                       let~ _ : Ty.tuple [] :=
@@ -97,15 +96,14 @@ Module hint.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            M.get_function (| "core::ub_checks::check_language_ub", [], [] |),
-                            []
-                          |)
-                        |)) in
+                          M.get_function (| "core::ub_checks::check_language_ub", [], [] |),
+                          []
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     M.read (|
                       let~ _ : Ty.tuple [] :=
@@ -141,39 +139,29 @@ Module hint.
   
   (*
   pub fn spin_loop() {
-      #[cfg(target_arch = "x86")]
-      {
-          // SAFETY: the `cfg` attr ensures that we only execute this on x86 targets.
-          unsafe { crate::arch::x86::_mm_pause() };
-      }
-  
-      #[cfg(target_arch = "x86_64")]
-      {
-          // SAFETY: the `cfg` attr ensures that we only execute this on x86_64 targets.
-          unsafe { crate::arch::x86_64::_mm_pause() };
-      }
-  
-      #[cfg(target_arch = "riscv32")]
-      {
-          crate::arch::riscv32::pause();
-      }
-  
-      #[cfg(target_arch = "riscv64")]
-      {
-          crate::arch::riscv64::pause();
-      }
-  
-      #[cfg(any(target_arch = "aarch64", target_arch = "arm64ec"))]
-      {
-          // SAFETY: the `cfg` attr ensures that we only execute this on aarch64 targets.
-          unsafe { crate::arch::aarch64::__isb(crate::arch::aarch64::SY) };
-      }
-  
-      #[cfg(all(target_arch = "arm", target_feature = "v6"))]
-      {
-          // SAFETY: the `cfg` attr ensures that we only execute this on arm targets
-          // with support for the v6 feature.
-          unsafe { crate::arch::arm::__yield() };
+      crate::cfg_select! {
+          target_arch = "x86" => {
+              // SAFETY: the `cfg` attr ensures that we only execute this on x86 targets.
+              crate::arch::x86::_mm_pause()
+          }
+          target_arch = "x86_64" => {
+              // SAFETY: the `cfg` attr ensures that we only execute this on x86_64 targets.
+              crate::arch::x86_64::_mm_pause()
+          }
+          target_arch = "riscv32" => crate::arch::riscv32::pause(),
+          target_arch = "riscv64" => crate::arch::riscv64::pause(),
+          any(target_arch = "aarch64", target_arch = "arm64ec") => {
+              // SAFETY: the `cfg` attr ensures that we only execute this on aarch64 targets.
+              unsafe { crate::arch::aarch64::__isb(crate::arch::aarch64::SY) }
+          }
+          all(target_arch = "arm", target_feature = "v6") => {
+              // SAFETY: the `cfg` attr ensures that we only execute this on arm targets
+              // with support for the v6 feature.
+              unsafe { crate::arch::arm::__yield() }
+          }
+          target_arch = "loongarch32" => crate::arch::loongarch32::ibar::<0>(),
+          target_arch = "loongarch64" => crate::arch::loongarch64::ibar::<0>(),
+          _ => { /* do nothing */ }
       }
   }
   *)
@@ -181,14 +169,10 @@ Module hint.
     match ε, τ, α with
     | [], [], [] =>
       ltac:(M.monadic
-        (M.read (|
-          let~ _ : Ty.tuple [] :=
-            M.call_closure (|
-              Ty.tuple [],
-              M.get_function (| "core::core_arch::x86::sse2::_mm_pause", [], [] |),
-              []
-            |) in
-          M.alloc (| Ty.tuple [], Value.Tuple [] |)
+        (M.call_closure (|
+          Ty.tuple [],
+          M.get_function (| "core::core_arch::x86::sse2::_mm_pause", [], [] |),
+          []
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
@@ -236,4 +220,317 @@ Module hint.
   Global Instance Instance_IsFunction_must_use : M.IsFunction.C "core::hint::must_use" must_use.
   Admitted.
   Global Typeclasses Opaque must_use.
+  
+  (*
+  pub const fn likely(b: bool) -> bool {
+      crate::intrinsics::likely(b)
+  }
+  *)
+  Definition likely (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    match ε, τ, α with
+    | [], [], [ b ] =>
+      ltac:(M.monadic
+        (let b := M.alloc (| Ty.path "bool", b |) in
+        M.call_closure (|
+          Ty.path "bool",
+          M.get_function (| "core::intrinsics::likely", [], [] |),
+          [ M.read (| b |) ]
+        |)))
+    | _, _, _ => M.impossible "wrong number of arguments"
+    end.
+  
+  Global Instance Instance_IsFunction_likely : M.IsFunction.C "core::hint::likely" likely.
+  Admitted.
+  Global Typeclasses Opaque likely.
+  
+  (*
+  pub const fn unlikely(b: bool) -> bool {
+      crate::intrinsics::unlikely(b)
+  }
+  *)
+  Definition unlikely (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    match ε, τ, α with
+    | [], [], [ b ] =>
+      ltac:(M.monadic
+        (let b := M.alloc (| Ty.path "bool", b |) in
+        M.call_closure (|
+          Ty.path "bool",
+          M.get_function (| "core::intrinsics::unlikely", [], [] |),
+          [ M.read (| b |) ]
+        |)))
+    | _, _, _ => M.impossible "wrong number of arguments"
+    end.
+  
+  Global Instance Instance_IsFunction_unlikely : M.IsFunction.C "core::hint::unlikely" unlikely.
+  Admitted.
+  Global Typeclasses Opaque unlikely.
+  
+  (*
+  pub const fn cold_path() {
+      crate::intrinsics::cold_path()
+  }
+  *)
+  Definition cold_path (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    match ε, τ, α with
+    | [], [], [] =>
+      ltac:(M.monadic
+        (M.call_closure (|
+          Ty.tuple [],
+          M.get_function (| "core::intrinsics::cold_path", [], [] |),
+          []
+        |)))
+    | _, _, _ => M.impossible "wrong number of arguments"
+    end.
+  
+  Global Instance Instance_IsFunction_cold_path : M.IsFunction.C "core::hint::cold_path" cold_path.
+  Admitted.
+  Global Typeclasses Opaque cold_path.
+  
+  (*
+  pub const fn select_unpredictable<T>(condition: bool, true_val: T, false_val: T) -> T
+  where
+      T: [const] Destruct,
+  {
+      // FIXME(https://github.com/rust-lang/unsafe-code-guidelines/issues/245):
+      // Change this to use ManuallyDrop instead.
+      let mut true_val = MaybeUninit::new(true_val);
+      let mut false_val = MaybeUninit::new(false_val);
+  
+      struct DropOnPanic<T> {
+          // Invariant: valid pointer and points to an initialized value that is not further used,
+          // i.e. it can be dropped by this guard.
+          inner: *mut T,
+      }
+  
+      impl<T> Drop for DropOnPanic<T> {
+          fn drop(&mut self) {
+              // SAFETY: Must be guaranteed on construction of local type `DropOnPanic`.
+              unsafe { self.inner.drop_in_place() }
+          }
+      }
+  
+      let true_ptr = true_val.as_mut_ptr();
+      let false_ptr = false_val.as_mut_ptr();
+  
+      // SAFETY: The value that is not selected is dropped, and the selected one
+      // is returned. This is necessary because the intrinsic doesn't drop the
+      // value that is  not selected.
+      unsafe {
+          // Extract the selected value first, ensure it is dropped as well if dropping the unselected
+          // value panics. We construct a temporary by-pointer guard around the selected value while
+          // dropping the unselected value. Arguments overlap here, so we can not use mutable
+          // reference for these arguments.
+          let guard = crate::intrinsics::select_unpredictable(condition, true_ptr, false_ptr);
+          let drop = crate::intrinsics::select_unpredictable(condition, false_ptr, true_ptr);
+  
+          // SAFETY: both pointers are well-aligned and point to initialized values inside a
+          // `MaybeUninit` each. In both possible values for `condition` the pointer `guard` and
+          // `drop` do not alias (even though the two argument pairs we have selected from did alias
+          // each other).
+          let guard = DropOnPanic { inner: guard };
+          drop.drop_in_place();
+          crate::mem::forget(guard);
+  
+          // Note that it is important to use the values here. Reading from the pointer we got makes
+          // LLVM forget the !unpredictable annotation sometimes (in tests, integer sized values in
+          // particular seemed to confuse it, also observed in llvm/llvm-project #82340).
+          crate::intrinsics::select_unpredictable(condition, true_val, false_val).assume_init()
+      }
+  }
+  *)
+  Definition select_unpredictable (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    match ε, τ, α with
+    | [], [ T ], [ condition; true_val; false_val ] =>
+      ltac:(M.monadic
+        (let condition := M.alloc (| Ty.path "bool", condition |) in
+        let true_val := M.alloc (| T, true_val |) in
+        let false_val := M.alloc (| T, false_val |) in
+        M.read (|
+          let~ true_val : Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] :=
+            M.call_closure (|
+              Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ],
+              M.get_associated_function (|
+                Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ],
+                "new",
+                [],
+                []
+              |),
+              [ M.read (| true_val |) ]
+            |) in
+          let~ false_val : Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] :=
+            M.call_closure (|
+              Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ],
+              M.get_associated_function (|
+                Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ],
+                "new",
+                [],
+                []
+              |),
+              [ M.read (| false_val |) ]
+            |) in
+          let~ true_ptr : Ty.apply (Ty.path "*mut") [] [ T ] :=
+            M.call_closure (|
+              Ty.apply (Ty.path "*mut") [] [ T ],
+              M.get_associated_function (|
+                Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ],
+                "as_mut_ptr",
+                [],
+                []
+              |),
+              [ M.borrow (| Pointer.Kind.MutRef, true_val |) ]
+            |) in
+          let~ false_ptr : Ty.apply (Ty.path "*mut") [] [ T ] :=
+            M.call_closure (|
+              Ty.apply (Ty.path "*mut") [] [ T ],
+              M.get_associated_function (|
+                Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ],
+                "as_mut_ptr",
+                [],
+                []
+              |),
+              [ M.borrow (| Pointer.Kind.MutRef, false_val |) ]
+            |) in
+          let~ guard : Ty.apply (Ty.path "*mut") [] [ T ] :=
+            M.call_closure (|
+              Ty.apply (Ty.path "*mut") [] [ T ],
+              M.get_function (|
+                "core::intrinsics::select_unpredictable",
+                [],
+                [ Ty.apply (Ty.path "*mut") [] [ T ] ]
+              |),
+              [ M.read (| condition |); M.read (| true_ptr |); M.read (| false_ptr |) ]
+            |) in
+          let~ drop : Ty.apply (Ty.path "*mut") [] [ T ] :=
+            M.call_closure (|
+              Ty.apply (Ty.path "*mut") [] [ T ],
+              M.get_function (|
+                "core::intrinsics::select_unpredictable",
+                [],
+                [ Ty.apply (Ty.path "*mut") [] [ T ] ]
+              |),
+              [ M.read (| condition |); M.read (| false_ptr |); M.read (| true_ptr |) ]
+            |) in
+          let~ guard :
+              Ty.apply (Ty.path "core::hint::select_unpredictable::DropOnPanic") [] [ T ] :=
+            Value.mkStructRecord
+              "core::hint::select_unpredictable::DropOnPanic"
+              []
+              [ T ]
+              [ ("inner", M.read (| guard |)) ] in
+          let~ _ : Ty.tuple [] :=
+            M.call_closure (|
+              Ty.tuple [],
+              M.get_associated_function (|
+                Ty.apply (Ty.path "*mut") [] [ T ],
+                "drop_in_place",
+                [],
+                []
+              |),
+              [ M.read (| drop |) ]
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.call_closure (|
+              Ty.tuple [],
+              M.get_function (|
+                "core::mem::forget",
+                [],
+                [ Ty.apply (Ty.path "core::hint::select_unpredictable::DropOnPanic") [] [ T ] ]
+              |),
+              [ M.read (| guard |) ]
+            |) in
+          M.alloc (|
+            T,
+            M.call_closure (|
+              T,
+              M.get_associated_function (|
+                Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ],
+                "assume_init",
+                [],
+                []
+              |),
+              [
+                M.call_closure (|
+                  Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ],
+                  M.get_function (|
+                    "core::intrinsics::select_unpredictable",
+                    [],
+                    [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]
+                  |),
+                  [ M.read (| condition |); M.read (| true_val |); M.read (| false_val |) ]
+                |)
+              ]
+            |)
+          |)
+        |)))
+    | _, _, _ => M.impossible "wrong number of arguments"
+    end.
+  
+  Global Instance Instance_IsFunction_select_unpredictable :
+    M.IsFunction.C "core::hint::select_unpredictable" select_unpredictable.
+  Admitted.
+  Global Typeclasses Opaque select_unpredictable.
+  
+  Module select_unpredictable.
+    (* StructRecord
+      {
+        name := "DropOnPanic";
+        const_params := [];
+        ty_params := [ "T" ];
+        fields := [ ("inner", Ty.apply (Ty.path "*mut") [] [ T ]) ];
+      } *)
+    
+    Module Impl_core_ops_drop_Drop_for_core_hint_select_unpredictable_DropOnPanic_T.
+      Definition Self (T : Ty.t) : Ty.t :=
+        Ty.apply (Ty.path "core::hint::select_unpredictable::DropOnPanic") [] [ T ].
+      
+      (*
+              fn drop(&mut self) {
+                  // SAFETY: Must be guaranteed on construction of local type `DropOnPanic`.
+                  unsafe { self.inner.drop_in_place() }
+              }
+      *)
+      Definition drop (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&mut")
+                  []
+                  [ Ty.apply (Ty.path "core::hint::select_unpredictable::DropOnPanic") [] [ T ] ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.tuple [],
+              M.get_associated_function (|
+                Ty.apply (Ty.path "*mut") [] [ T ],
+                "drop_in_place",
+                [],
+                []
+              |),
+              [
+                M.read (|
+                  M.SubPointer.get_struct_record_field (|
+                    M.deref (| M.read (| self |) |),
+                    "core::hint::select_unpredictable::DropOnPanic",
+                    "inner"
+                  |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Axiom Implements :
+        forall (T : Ty.t),
+        M.IsTraitInstance
+          "core::ops::drop::Drop"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          (Self T)
+          (* Instance *) [ ("drop", InstanceField.Method (drop T)) ].
+    End Impl_core_ops_drop_Drop_for_core_hint_select_unpredictable_DropOnPanic_T.
+  End select_unpredictable.
 End hint.

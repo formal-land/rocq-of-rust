@@ -15,22 +15,23 @@
 //! The precise rules for validity are not determined yet. The guarantees that are
 //! provided at this point are very minimal:
 //!
-//! * For operations of [size zero][zst], *every* pointer is valid, including the [null] pointer.
-//!   The following points are only concerned with non-zero-sized accesses.
+//! * For memory accesses of [size zero][zst], *every* pointer is valid, including the [null]
+//!   pointer. The following points are only concerned with non-zero-sized accesses.
 //! * A [null] pointer is *never* valid.
 //! * For a pointer to be valid, it is necessary, but not always sufficient, that the pointer be
-//!   *dereferenceable*. The [provenance] of the pointer is used to determine which [allocated
-//!   object] it is derived from; a pointer is dereferenceable if the memory range of the given size
-//!   starting at the pointer is entirely contained within the bounds of that allocated object. Note
-//!   that in Rust, every (stack-allocated) variable is considered a separate allocated object.
+//!   *dereferenceable*. The [provenance] of the pointer is used to determine which [allocation]
+//!   it is derived from; a pointer is dereferenceable if the memory range of the given size
+//!   starting at the pointer is entirely contained within the bounds of that allocation. Note
+//!   that in Rust, every (stack-allocated) variable is considered a separate allocation.
 //! * All accesses performed by functions in this module are *non-atomic* in the sense
 //!   of [atomic operations] used to synchronize between threads. This means it is
 //!   undefined behavior to perform two concurrent accesses to the same location from different
 //!   threads unless both accesses only read from memory. Notice that this explicitly
 //!   includes [`read_volatile`] and [`write_volatile`]: Volatile accesses cannot
-//!   be used for inter-thread synchronization.
+//!   be used for inter-thread synchronization, regardless of whether they are acting on
+//!   Rust memory or not.
 //! * The result of casting a reference to a pointer is valid for as long as the
-//!   underlying object is live and no reference (just raw pointers) is used to
+//!   underlying allocation is live and no reference (just raw pointers) is used to
 //!   access the same memory. That is, reference and pointer accesses cannot be
 //!   interleaved.
 //!
@@ -48,7 +49,7 @@
 //!
 //! Valid raw pointers as defined above are not necessarily properly aligned (where
 //! "proper" alignment is defined by the pointee type, i.e., `*const T` must be
-//! aligned to `mem::align_of::<T>()`). However, most functions require their
+//! aligned to `align_of::<T>()`). However, most functions require their
 //! arguments to be properly aligned, and will explicitly state
 //! this requirement in their documentation. Notable exceptions to this are
 //! [`read_unaligned`] and [`write_unaligned`].
@@ -84,7 +85,7 @@
 // ^ we use this term instead of saying that the produced reference must
 // be valid, as the validity of a reference is easily confused for the
 // validity of the thing it refers to, and while the two concepts are
-// closly related, they are not identical.
+// closely related, they are not identical.
 //!
 //! These rules apply even if the result is unused!
 //! (The part about being initialized is not yet fully decided, but until
@@ -95,24 +96,30 @@
 //!
 //! [valid value]: ../../reference/behavior-considered-undefined.html#invalid-values
 //!
-//! ## Allocated object
+//! ## Allocation
 //!
-//! An *allocated object* is a subset of program memory which is addressable
+//! <a id="allocated-object"></a> <!-- keep old URLs working -->
+//!
+//! An *allocation* is a subset of program memory which is addressable
 //! from Rust, and within which pointer arithmetic is possible. Examples of
-//! allocated objects include heap allocations, stack-allocated variables,
+//! allocations include heap allocations, stack-allocated variables,
 //! statics, and consts. The safety preconditions of some Rust operations -
 //! such as `offset` and field projections (`expr.field`) - are defined in
-//! terms of the allocated objects on which they operate.
+//! terms of the allocations on which they operate.
 //!
-//! An allocated object has a base address, a size, and a set of memory
-//! addresses. It is possible for an allocated object to have zero size, but
-//! such an allocated object will still have a base address. The base address
-//! of an allocated object is not necessarily unique. While it is currently the
-//! case that an allocated object always has a set of memory addresses which is
+//! An allocation has a base address, a size, and a set of memory
+//! addresses. It is possible for an allocation to have zero size, but
+//! such an allocation will still have a base address. The base address
+//! of an allocation is not necessarily unique. While it is currently the
+//! case that an allocation always has a set of memory addresses which is
 //! fully contiguous (i.e., has no "holes"), there is no guarantee that this
 //! will not change in the future.
 //!
-//! For any allocated object with `base` address, `size`, and a set of
+//! Allocations must behave like "normal" memory: in particular, reads must not have
+//! side-effects, and writes must become visible to other threads using the usual synchronization
+//! primitives.
+//!
+//! For any allocation with `base` address, `size`, and a set of
 //! `addresses`, the following are guaranteed:
 //! - For all addresses `a` in `addresses`, `a` is in the range `base .. (base +
 //!   size)` (note that this requires `a < base + size`, not `a <= base + size`)
@@ -122,11 +129,11 @@
 //! - `size <= isize::MAX`
 //!
 //! As a consequence of these guarantees, given any address `a` within the set
-//! of addresses of an allocated object:
+//! of addresses of an allocation:
 //! - It is guaranteed that `a - base` does not overflow `isize`
 //! - It is guaranteed that `a - base` is non-negative
 //! - It is guaranteed that, given `o = a - base` (i.e., the offset of `a` within
-//!   the allocated object), `base + o` will not wrap around the address space (in
+//!   the allocation), `base + o` will not wrap around the address space (in
 //!   other words, will not overflow `usize`)
 //!
 //! [`null()`]: null
@@ -138,8 +145,8 @@
 //! and the freed memory gets reallocated before your read/write (in fact this is the
 //! worst-case scenario, UAFs would be much less concerning if this didn't happen!).
 //! As another example, consider that [`wrapping_offset`] is documented to "remember"
-//! the allocated object that the original pointer points to, even if it is offset far
-//! outside the memory range occupied by that allocated object.
+//! the allocation that the original pointer points to, even if it is offset far
+//! outside the memory range occupied by that allocation.
 //! To rationalize claims like this, pointers need to somehow be *more* than just their addresses:
 //! they must have **provenance**.
 //!
@@ -159,12 +166,12 @@
 //!   writes. Note that this can interact with the other components, e.g. a pointer might permit
 //!   mutation only for a subset of addresses, or only for a subset of its maximal timespan.
 //!
-//! When an [allocated object] is created, it has a unique Original Pointer. For alloc
+//! When an [allocation] is created, it has a unique Original Pointer. For alloc
 //! APIs this is literally the pointer the call returns, and for local variables and statics,
 //! this is the name of the variable/static. (This is mildly overloading the term "pointer"
 //! for the sake of brevity/exposition.)
 //!
-//! The Original Pointer for an allocated object has provenance that constrains the *spatial*
+//! The Original Pointer for an allocation has provenance that constrains the *spatial*
 //! permissions of this pointer to the memory range of the allocation, and the *temporal*
 //! permissions to the lifetime of the allocation. Provenance is implicitly inherited by all
 //! pointers transitively derived from the Original Pointer through operations like [`offset`],
@@ -192,15 +199,15 @@
 //!   provenance since they access an empty range of memory.
 //!
 //! * It is undefined behavior to [`offset`] a pointer across a memory range that is not contained
-//!   in the allocated object it is derived from, or to [`offset_from`] two pointers not derived
-//!   from the same allocated object. Provenance is used to say what exactly "derived from" even
+//!   in the allocation it is derived from, or to [`offset_from`] two pointers not derived
+//!   from the same allocation. Provenance is used to say what exactly "derived from" even
 //!   means: the lineage of a pointer is traced back to the Original Pointer it descends from, and
-//!   that identifies the relevant allocated object. In particular, it's always UB to offset a
+//!   that identifies the relevant allocation. In particular, it's always UB to offset a
 //!   pointer derived from something that is now deallocated, except if the offset is 0.
 //!
 //! But it *is* still sound to:
 //!
-//! * Create a pointer without provenance from just an address (see [`ptr::dangling`]). Such a
+//! * Create a pointer without provenance from just an address (see [`without_provenance`]). Such a
 //!   pointer cannot be used for memory accesses (except for zero-sized accesses). This can still be
 //!   useful for sentinel values like `null` *or* to represent a tagged pointer that will never be
 //!   dereferenceable. In general, it is always sound for an integer to pretend to be a pointer "for
@@ -216,7 +223,7 @@
 //! * Compare arbitrary pointers by address. Pointer comparison ignores provenance and addresses
 //!   *are* just integers, so there is always a coherent answer, even if the pointers are dangling
 //!   or from different provenances. Note that if you get "lucky" and notice that a pointer at the
-//!   end of one allocated object is the "same" address as the start of another allocated object,
+//!   end of one allocation is the "same" address as the start of another allocation,
 //!   anything you do with that fact is *probably* going to be gibberish. The scope of that
 //!   gibberish is kept under control by the fact that the two pointers *still* aren't allowed to
 //!   access the other's allocation (bytes), because they still have different provenance.
@@ -278,7 +285,7 @@
 //! ### Using Strict Provenance
 //!
 //! Most code needs no changes to conform to strict provenance, as the only really concerning
-//! operation is casts from usize to a pointer. For code which *does* cast a `usize` to a pointer,
+//! operation is casts from `usize` to a pointer. For code which *does* cast a `usize` to a pointer,
 //! the scope of the change depends on exactly what you're doing.
 //!
 //! In general, you just need to make sure that if you want to convert a `usize` address to a
@@ -297,7 +304,7 @@
 //!
 //!     // Our value, which must have enough alignment to have spare least-significant-bits.
 //!     let my_precious_data: u32 = 17;
-//!     assert!(core::mem::align_of::<u32>() > 1);
+//!     assert!(align_of::<u32>() > 1);
 //!
 //!     // Create a tagged pointer
 //!     let ptr = &my_precious_data as *const u32;
@@ -314,8 +321,8 @@
 //! }
 //! ```
 //!
-//! (Yes, if you've been using AtomicUsize for pointers in concurrent datastructures, you should
-//! be using AtomicPtr instead. If that messes up the way you atomically manipulate pointers,
+//! (Yes, if you've been using [`AtomicUsize`] for pointers in concurrent datastructures, you should
+//! be using [`AtomicPtr`] instead. If that messes up the way you atomically manipulate pointers,
 //! we would like to know why, and what needs to be done to fix it.)
 //!
 //! Situations where a valid pointer *must* be created from just an address, such as baremetal code
@@ -369,7 +376,7 @@
 //! integer-to-pointer casts.
 //!
 //! [aliasing]: ../../nomicon/aliasing.html
-//! [allocated object]: #allocated-object
+//! [allocation]: #allocation
 //! [provenance]: #provenance
 //! [book]: ../../book/ch19-01-unsafe-rust.html#dereferencing-a-raw-pointer
 //! [ub]: ../../reference/behavior-considered-undefined.html
@@ -381,7 +388,8 @@
 //! [`with_addr`]: pointer::with_addr
 //! [`map_addr`]: pointer::map_addr
 //! [`addr`]: pointer::addr
-//! [`ptr::dangling`]: core::ptr::dangling
+//! [`AtomicUsize`]: crate::sync::atomic::AtomicUsize
+//! [`AtomicPtr`]: crate::sync::atomic::AtomicPtr
 //! [`expose_provenance`]: pointer::expose_provenance
 //! [`with_exposed_provenance`]: with_exposed_provenance
 //! [Miri]: https://github.com/rust-lang/miri
@@ -394,23 +402,15 @@
 #![allow(clippy::not_unsafe_ptr_arg_deref)]
 
 use crate::cmp::Ordering;
-use crate::marker::FnPtr;
+use crate::intrinsics::const_eval_select;
+use crate::marker::{Destruct, FnPtr, PointeeSized};
 use crate::mem::{self, MaybeUninit, SizedTypeProperties};
+use crate::num::NonZero;
 use crate::{fmt, hash, intrinsics, ub_checks};
 
 mod alignment;
 #[unstable(feature = "ptr_alignment_type", issue = "102070")]
 pub use alignment::Alignment;
-
-#[stable(feature = "rust1", since = "1.0.0")]
-#[doc(inline)]
-pub use crate::intrinsics::copy;
-#[stable(feature = "rust1", since = "1.0.0")]
-#[doc(inline)]
-pub use crate::intrinsics::copy_nonoverlapping;
-#[stable(feature = "rust1", since = "1.0.0")]
-#[doc(inline)]
-pub use crate::intrinsics::write_bytes;
 
 mod metadata;
 #[unstable(feature = "ptr_metadata", issue = "81513")]
@@ -426,6 +426,289 @@ pub use unique::Unique;
 
 mod const_ptr;
 mod mut_ptr;
+
+// Some functions are defined here because they accidentally got made
+// available in this module on stable. See <https://github.com/rust-lang/rust/issues/15702>.
+// (`transmute` also falls into this category, but it cannot be wrapped due to the
+// check that `T` and `U` have the same size.)
+
+/// Copies `count * size_of::<T>()` bytes from `src` to `dst`. The source
+/// and destination must *not* overlap.
+///
+/// For regions of memory which might overlap, use [`copy`] instead.
+///
+/// `copy_nonoverlapping` is semantically equivalent to C's [`memcpy`], but
+/// with the source and destination arguments swapped,
+/// and `count` counting the number of `T`s instead of bytes.
+///
+/// The copy is "untyped" in the sense that data may be uninitialized or otherwise violate the
+/// requirements of `T`. The initialization state is preserved exactly.
+///
+/// [`memcpy`]: https://en.cppreference.com/w/c/string/byte/memcpy
+///
+/// # Safety
+///
+/// Behavior is undefined if any of the following conditions are violated:
+///
+/// * `src` must be [valid] for reads of `count * size_of::<T>()` bytes.
+///
+/// * `dst` must be [valid] for writes of `count * size_of::<T>()` bytes.
+///
+/// * Both `src` and `dst` must be properly aligned.
+///
+/// * The region of memory beginning at `src` with a size of `count *
+///   size_of::<T>()` bytes must *not* overlap with the region of memory
+///   beginning at `dst` with the same size.
+///
+/// Like [`read`], `copy_nonoverlapping` creates a bitwise copy of `T`, regardless of
+/// whether `T` is [`Copy`]. If `T` is not [`Copy`], using *both* the values
+/// in the region beginning at `*src` and the region beginning at `*dst` can
+/// [violate memory safety][read-ownership].
+///
+/// Note that even if the effectively copied size (`count * size_of::<T>()`) is
+/// `0`, the pointers must be properly aligned.
+///
+/// [`read`]: crate::ptr::read
+/// [read-ownership]: crate::ptr::read#ownership-of-the-returned-value
+/// [valid]: crate::ptr#safety
+///
+/// # Examples
+///
+/// Manually implement [`Vec::append`]:
+///
+/// ```
+/// use std::ptr;
+///
+/// /// Moves all the elements of `src` into `dst`, leaving `src` empty.
+/// fn append<T>(dst: &mut Vec<T>, src: &mut Vec<T>) {
+///     let src_len = src.len();
+///     let dst_len = dst.len();
+///
+///     // Ensure that `dst` has enough capacity to hold all of `src`.
+///     dst.reserve(src_len);
+///
+///     unsafe {
+///         // The call to add is always safe because `Vec` will never
+///         // allocate more than `isize::MAX` bytes.
+///         let dst_ptr = dst.as_mut_ptr().add(dst_len);
+///         let src_ptr = src.as_ptr();
+///
+///         // Truncate `src` without dropping its contents. We do this first,
+///         // to avoid problems in case something further down panics.
+///         src.set_len(0);
+///
+///         // The two regions cannot overlap because mutable references do
+///         // not alias, and two different vectors cannot own the same
+///         // memory.
+///         ptr::copy_nonoverlapping(src_ptr, dst_ptr, src_len);
+///
+///         // Notify `dst` that it now holds the contents of `src`.
+///         dst.set_len(dst_len + src_len);
+///     }
+/// }
+///
+/// let mut a = vec!['r'];
+/// let mut b = vec!['u', 's', 't'];
+///
+/// append(&mut a, &mut b);
+///
+/// assert_eq!(a, &['r', 'u', 's', 't']);
+/// assert!(b.is_empty());
+/// ```
+///
+/// [`Vec::append`]: ../../std/vec/struct.Vec.html#method.append
+#[doc(alias = "memcpy")]
+#[stable(feature = "rust1", since = "1.0.0")]
+#[rustc_const_stable(feature = "const_intrinsic_copy", since = "1.83.0")]
+#[inline(always)]
+#[cfg_attr(miri, track_caller)] // even without panics, this helps for Miri backtraces
+#[rustc_diagnostic_item = "ptr_copy_nonoverlapping"]
+pub const unsafe fn copy_nonoverlapping<T>(src: *const T, dst: *mut T, count: usize) {
+    ub_checks::assert_unsafe_precondition!(
+        check_language_ub,
+        "ptr::copy_nonoverlapping requires that both pointer arguments are aligned and non-null \
+        and the specified memory ranges do not overlap",
+        (
+            src: *const () = src as *const (),
+            dst: *mut () = dst as *mut (),
+            size: usize = size_of::<T>(),
+            align: usize = align_of::<T>(),
+            count: usize = count,
+        ) => {
+            let zero_size = count == 0 || size == 0;
+            ub_checks::maybe_is_aligned_and_not_null(src, align, zero_size)
+                && ub_checks::maybe_is_aligned_and_not_null(dst, align, zero_size)
+                && ub_checks::maybe_is_nonoverlapping(src, dst, size, count)
+        }
+    );
+
+    // SAFETY: the safety contract for `copy_nonoverlapping` must be
+    // upheld by the caller.
+    unsafe { crate::intrinsics::copy_nonoverlapping(src, dst, count) }
+}
+
+/// Copies `count * size_of::<T>()` bytes from `src` to `dst`. The source
+/// and destination may overlap.
+///
+/// If the source and destination will *never* overlap,
+/// [`copy_nonoverlapping`] can be used instead.
+///
+/// `copy` is semantically equivalent to C's [`memmove`], but
+/// with the source and destination arguments swapped,
+/// and `count` counting the number of `T`s instead of bytes.
+/// Copying takes place as if the bytes were copied from `src`
+/// to a temporary array and then copied from the array to `dst`.
+///
+/// The copy is "untyped" in the sense that data may be uninitialized or otherwise violate the
+/// requirements of `T`. The initialization state is preserved exactly.
+///
+/// [`memmove`]: https://en.cppreference.com/w/c/string/byte/memmove
+///
+/// # Safety
+///
+/// Behavior is undefined if any of the following conditions are violated:
+///
+/// * `src` must be [valid] for reads of `count * size_of::<T>()` bytes.
+///
+/// * `dst` must be [valid] for writes of `count * size_of::<T>()` bytes, and must remain valid even
+///   when `src` is read for `count * size_of::<T>()` bytes. (This means if the memory ranges
+///   overlap, the `dst` pointer must not be invalidated by `src` reads.)
+///
+/// * Both `src` and `dst` must be properly aligned.
+///
+/// Like [`read`], `copy` creates a bitwise copy of `T`, regardless of
+/// whether `T` is [`Copy`]. If `T` is not [`Copy`], using both the values
+/// in the region beginning at `*src` and the region beginning at `*dst` can
+/// [violate memory safety][read-ownership].
+///
+/// Note that even if the effectively copied size (`count * size_of::<T>()`) is
+/// `0`, the pointers must be properly aligned.
+///
+/// [`read`]: crate::ptr::read
+/// [read-ownership]: crate::ptr::read#ownership-of-the-returned-value
+/// [valid]: crate::ptr#safety
+///
+/// # Examples
+///
+/// Efficiently create a Rust vector from an unsafe buffer:
+///
+/// ```
+/// use std::ptr;
+///
+/// /// # Safety
+/// ///
+/// /// * `ptr` must be correctly aligned for its type and non-zero.
+/// /// * `ptr` must be valid for reads of `elts` contiguous elements of type `T`.
+/// /// * Those elements must not be used after calling this function unless `T: Copy`.
+/// # #[allow(dead_code)]
+/// unsafe fn from_buf_raw<T>(ptr: *const T, elts: usize) -> Vec<T> {
+///     let mut dst = Vec::with_capacity(elts);
+///
+///     // SAFETY: Our precondition ensures the source is aligned and valid,
+///     // and `Vec::with_capacity` ensures that we have usable space to write them.
+///     unsafe { ptr::copy(ptr, dst.as_mut_ptr(), elts); }
+///
+///     // SAFETY: We created it with this much capacity earlier,
+///     // and the previous `copy` has initialized these elements.
+///     unsafe { dst.set_len(elts); }
+///     dst
+/// }
+/// ```
+#[doc(alias = "memmove")]
+#[stable(feature = "rust1", since = "1.0.0")]
+#[rustc_const_stable(feature = "const_intrinsic_copy", since = "1.83.0")]
+#[inline(always)]
+#[cfg_attr(miri, track_caller)] // even without panics, this helps for Miri backtraces
+#[rustc_diagnostic_item = "ptr_copy"]
+pub const unsafe fn copy<T>(src: *const T, dst: *mut T, count: usize) {
+    // SAFETY: the safety contract for `copy` must be upheld by the caller.
+    unsafe {
+        ub_checks::assert_unsafe_precondition!(
+            check_language_ub,
+            "ptr::copy requires that both pointer arguments are aligned and non-null",
+            (
+                src: *const () = src as *const (),
+                dst: *mut () = dst as *mut (),
+                align: usize = align_of::<T>(),
+                zero_size: bool = T::IS_ZST || count == 0,
+            ) =>
+            ub_checks::maybe_is_aligned_and_not_null(src, align, zero_size)
+                && ub_checks::maybe_is_aligned_and_not_null(dst, align, zero_size)
+        );
+        crate::intrinsics::copy(src, dst, count)
+    }
+}
+
+/// Sets `count * size_of::<T>()` bytes of memory starting at `dst` to
+/// `val`.
+///
+/// `write_bytes` is similar to C's [`memset`], but sets `count *
+/// size_of::<T>()` bytes to `val`.
+///
+/// [`memset`]: https://en.cppreference.com/w/c/string/byte/memset
+///
+/// # Safety
+///
+/// Behavior is undefined if any of the following conditions are violated:
+///
+/// * `dst` must be [valid] for writes of `count * size_of::<T>()` bytes.
+///
+/// * `dst` must be properly aligned.
+///
+/// Note that even if the effectively copied size (`count * size_of::<T>()`) is
+/// `0`, the pointer must be properly aligned.
+///
+/// Additionally, note that changing `*dst` in this way can easily lead to undefined behavior (UB)
+/// later if the written bytes are not a valid representation of some `T`. For instance, the
+/// following is an **incorrect** use of this function:
+///
+/// ```rust,no_run
+/// unsafe {
+///     let mut value: u8 = 0;
+///     let ptr: *mut bool = &mut value as *mut u8 as *mut bool;
+///     let _bool = ptr.read(); // This is fine, `ptr` points to a valid `bool`.
+///     ptr.write_bytes(42u8, 1); // This function itself does not cause UB...
+///     let _bool = ptr.read(); // ...but it makes this operation UB! ⚠️
+/// }
+/// ```
+///
+/// [valid]: crate::ptr#safety
+///
+/// # Examples
+///
+/// Basic usage:
+///
+/// ```
+/// use std::ptr;
+///
+/// let mut vec = vec![0u32; 4];
+/// unsafe {
+///     let vec_ptr = vec.as_mut_ptr();
+///     ptr::write_bytes(vec_ptr, 0xfe, 2);
+/// }
+/// assert_eq!(vec, [0xfefefefe, 0xfefefefe, 0, 0]);
+/// ```
+#[doc(alias = "memset")]
+#[stable(feature = "rust1", since = "1.0.0")]
+#[rustc_const_stable(feature = "const_ptr_write", since = "1.83.0")]
+#[inline(always)]
+#[cfg_attr(miri, track_caller)] // even without panics, this helps for Miri backtraces
+#[rustc_diagnostic_item = "ptr_write_bytes"]
+pub const unsafe fn write_bytes<T>(dst: *mut T, val: u8, count: usize) {
+    // SAFETY: the safety contract for `write_bytes` must be upheld by the caller.
+    unsafe {
+        ub_checks::assert_unsafe_precondition!(
+            check_language_ub,
+            "ptr::write_bytes requires that the destination pointer is aligned and non-null",
+            (
+                addr: *const () = dst as *const (),
+                align: usize = align_of::<T>(),
+                zero_size: bool = T::IS_ZST || count == 0,
+            ) => ub_checks::maybe_is_aligned_and_not_null(addr, align, zero_size)
+        );
+        crate::intrinsics::write_bytes(dst, val, count)
+    }
+}
 
 /// Executes the destructor (if any) of the pointed-to value.
 ///
@@ -518,7 +801,11 @@ mod mut_ptr;
 #[lang = "drop_in_place"]
 #[allow(unconditional_recursion)]
 #[rustc_diagnostic_item = "ptr_drop_in_place"]
-pub unsafe fn drop_in_place<T: ?Sized>(to_drop: *mut T) {
+#[rustc_const_unstable(feature = "const_drop_in_place", issue = "109342")]
+pub const unsafe fn drop_in_place<T: PointeeSized>(to_drop: *mut T)
+where
+    T: [const] Destruct,
+{
     // Code here does not matter - this is replaced by the
     // real drop glue by the compiler.
 
@@ -547,7 +834,7 @@ pub unsafe fn drop_in_place<T: ?Sized>(to_drop: *mut T) {
 #[rustc_promotable]
 #[rustc_const_stable(feature = "const_ptr_null", since = "1.24.0")]
 #[rustc_diagnostic_item = "ptr_null"]
-pub const fn null<T: ?Sized + Thin>() -> *const T {
+pub const fn null<T: PointeeSized + Thin>() -> *const T {
     from_raw_parts(without_provenance::<()>(0), ())
 }
 
@@ -572,7 +859,7 @@ pub const fn null<T: ?Sized + Thin>() -> *const T {
 #[rustc_promotable]
 #[rustc_const_stable(feature = "const_ptr_null", since = "1.24.0")]
 #[rustc_diagnostic_item = "ptr_null_mut"]
-pub const fn null_mut<T: ?Sized + Thin>() -> *mut T {
+pub const fn null_mut<T: PointeeSized + Thin>() -> *mut T {
     from_raw_parts_mut(without_provenance_mut::<()>(0), ())
 }
 
@@ -594,12 +881,7 @@ pub const fn null_mut<T: ?Sized + Thin>() -> *mut T {
 #[stable(feature = "strict_provenance", since = "1.84.0")]
 #[rustc_const_stable(feature = "strict_provenance", since = "1.84.0")]
 pub const fn without_provenance<T>(addr: usize) -> *const T {
-    // An int-to-pointer transmute currently has exactly the intended semantics: it creates a
-    // pointer without provenance. Note that this is *not* a stable guarantee about transmute
-    // semantics, it relies on sysroot crates having special status.
-    // SAFETY: every valid integer is also a valid pointer (as long as you don't dereference that
-    // pointer).
-    unsafe { mem::transmute(addr) }
+    without_provenance_mut(addr)
 }
 
 /// Creates a new pointer that is dangling, but non-null and well-aligned.
@@ -607,16 +889,16 @@ pub const fn without_provenance<T>(addr: usize) -> *const T {
 /// This is useful for initializing types which lazily allocate, like
 /// `Vec::new` does.
 ///
-/// Note that the pointer value may potentially represent a valid pointer to
-/// a `T`, which means this must not be used as a "not yet initialized"
-/// sentinel value. Types that lazily allocate must track initialization by
-/// some other means.
+/// Note that the address of the returned pointer may potentially
+/// be that of a valid pointer, which means this must not be used
+/// as a "not yet initialized" sentinel value.
+/// Types that lazily allocate must track initialization by some other means.
 #[inline(always)]
 #[must_use]
 #[stable(feature = "strict_provenance", since = "1.84.0")]
 #[rustc_const_stable(feature = "strict_provenance", since = "1.84.0")]
 pub const fn dangling<T>() -> *const T {
-    without_provenance(mem::align_of::<T>())
+    dangling_mut()
 }
 
 /// Creates a pointer with the given address and no [provenance][crate::ptr#provenance].
@@ -636,6 +918,7 @@ pub const fn dangling<T>() -> *const T {
 #[must_use]
 #[stable(feature = "strict_provenance", since = "1.84.0")]
 #[rustc_const_stable(feature = "strict_provenance", since = "1.84.0")]
+#[allow(integer_to_ptr_transmutes)] // Expected semantics here.
 pub const fn without_provenance_mut<T>(addr: usize) -> *mut T {
     // An int-to-pointer transmute currently has exactly the intended semantics: it creates a
     // pointer without provenance. Note that this is *not* a stable guarantee about transmute
@@ -650,16 +933,16 @@ pub const fn without_provenance_mut<T>(addr: usize) -> *mut T {
 /// This is useful for initializing types which lazily allocate, like
 /// `Vec::new` does.
 ///
-/// Note that the pointer value may potentially represent a valid pointer to
-/// a `T`, which means this must not be used as a "not yet initialized"
-/// sentinel value. Types that lazily allocate must track initialization by
-/// some other means.
+/// Note that the address of the returned pointer may potentially
+/// be that of a valid pointer, which means this must not be used
+/// as a "not yet initialized" sentinel value.
+/// Types that lazily allocate must track initialization by some other means.
 #[inline(always)]
 #[must_use]
 #[stable(feature = "strict_provenance", since = "1.84.0")]
 #[rustc_const_stable(feature = "strict_provenance", since = "1.84.0")]
 pub const fn dangling_mut<T>() -> *mut T {
-    without_provenance_mut(mem::align_of::<T>())
+    NonNull::dangling().as_ptr()
 }
 
 /// Converts an address back to a pointer, picking up some previously 'exposed'
@@ -696,9 +979,10 @@ pub const fn dangling_mut<T>() -> *mut T {
 #[must_use]
 #[inline(always)]
 #[stable(feature = "exposed_provenance", since = "1.84.0")]
+#[rustc_const_stable(feature = "const_exposed_provenance", since = "1.91.0")]
 #[cfg_attr(miri, track_caller)] // even without panics, this helps for Miri backtraces
 #[allow(fuzzy_provenance_casts)] // this *is* the explicit provenance API one should use instead
-pub fn with_exposed_provenance<T>(addr: usize) -> *const T {
+pub const fn with_exposed_provenance<T>(addr: usize) -> *const T {
     addr as *const T
 }
 
@@ -736,9 +1020,10 @@ pub fn with_exposed_provenance<T>(addr: usize) -> *const T {
 #[must_use]
 #[inline(always)]
 #[stable(feature = "exposed_provenance", since = "1.84.0")]
+#[rustc_const_stable(feature = "const_exposed_provenance", since = "1.91.0")]
 #[cfg_attr(miri, track_caller)] // even without panics, this helps for Miri backtraces
 #[allow(fuzzy_provenance_casts)] // this *is* the explicit provenance API one should use instead
-pub fn with_exposed_provenance_mut<T>(addr: usize) -> *mut T {
+pub const fn with_exposed_provenance_mut<T>(addr: usize) -> *mut T {
     addr as *mut T
 }
 
@@ -775,7 +1060,7 @@ pub fn with_exposed_provenance_mut<T>(addr: usize) -> *mut T {
 /// # type T = i32;
 /// # fn foo() -> T { 42 }
 /// // The temporary holding the return value of `foo` does *not* have its lifetime extended,
-/// // because the surrounding expression involves no function call.
+/// // because the surrounding expression involves a function call.
 /// let p = ptr::from_ref(&foo());
 /// unsafe { p.read() }; // UB! Reading from a dangling pointer ⚠️
 /// ```
@@ -795,7 +1080,7 @@ pub fn with_exposed_provenance_mut<T>(addr: usize) -> *mut T {
 #[rustc_const_stable(feature = "ptr_from_ref", since = "1.76.0")]
 #[rustc_never_returns_null_ptr]
 #[rustc_diagnostic_item = "ptr_from_ref"]
-pub const fn from_ref<T: ?Sized>(r: &T) -> *const T {
+pub const fn from_ref<T: PointeeSized>(r: &T) -> *const T {
     r
 }
 
@@ -826,7 +1111,7 @@ pub const fn from_ref<T: ?Sized>(r: &T) -> *const T {
 /// # type T = i32;
 /// # fn foo() -> T { 42 }
 /// // The temporary holding the return value of `foo` does *not* have its lifetime extended,
-/// // because the surrounding expression involves no function call.
+/// // because the surrounding expression involves a function call.
 /// let p = ptr::from_mut(&mut foo());
 /// unsafe { p.write(T::default()) }; // UB! Writing to a dangling pointer ⚠️
 /// ```
@@ -845,7 +1130,7 @@ pub const fn from_ref<T: ?Sized>(r: &T) -> *const T {
 #[stable(feature = "ptr_from_ref", since = "1.76.0")]
 #[rustc_const_stable(feature = "ptr_from_ref", since = "1.76.0")]
 #[rustc_never_returns_null_ptr]
-pub const fn from_mut<T: ?Sized>(r: &mut T) -> *mut T {
+pub const fn from_mut<T: PointeeSized>(r: &mut T) -> *mut T {
     r
 }
 
@@ -1007,9 +1292,8 @@ pub const fn slice_from_raw_parts_mut<T>(data: *mut T, len: usize) -> *mut [T] {
 /// ```
 #[inline]
 #[stable(feature = "rust1", since = "1.0.0")]
-#[rustc_const_unstable(feature = "const_swap", issue = "83163")]
+#[rustc_const_stable(feature = "const_swap", since = "1.85.0")]
 #[rustc_diagnostic_item = "ptr_swap"]
-#[rustc_const_stable_indirect]
 pub const unsafe fn swap<T>(x: *mut T, y: *mut T) {
     // Give ourselves some scratch space to work with.
     // We do not have to worry about drops: `MaybeUninit` does nothing when dropped.
@@ -1019,7 +1303,7 @@ pub const unsafe fn swap<T>(x: *mut T, y: *mut T) {
     // SAFETY: the caller must guarantee that `x` and `y` are
     // valid for writes and properly aligned. `tmp` cannot be
     // overlapping either `x` or `y` because `tmp` was just allocated
-    // on the stack as a separate allocated object.
+    // on the stack as a separate allocation.
     unsafe {
         copy_nonoverlapping(x, tmp.as_mut_ptr(), 1);
         copy(y, x, 1); // `x` and `y` may overlap
@@ -1070,30 +1354,13 @@ pub const unsafe fn swap<T>(x: *mut T, y: *mut T) {
 /// ```
 #[inline]
 #[stable(feature = "swap_nonoverlapping", since = "1.27.0")]
-#[rustc_const_unstable(feature = "const_swap_nonoverlapping", issue = "133668")]
+#[rustc_const_stable(feature = "const_swap_nonoverlapping", since = "1.88.0")]
 #[rustc_diagnostic_item = "ptr_swap_nonoverlapping"]
+#[rustc_allow_const_fn_unstable(const_eval_select)] // both implementations behave the same
+#[track_caller]
 pub const unsafe fn swap_nonoverlapping<T>(x: *mut T, y: *mut T, count: usize) {
-    #[allow(unused)]
-    macro_rules! attempt_swap_as_chunks {
-        ($ChunkTy:ty) => {
-            if mem::align_of::<T>() >= mem::align_of::<$ChunkTy>()
-                && mem::size_of::<T>() % mem::size_of::<$ChunkTy>() == 0
-            {
-                let x: *mut $ChunkTy = x.cast();
-                let y: *mut $ChunkTy = y.cast();
-                let count = count * (mem::size_of::<T>() / mem::size_of::<$ChunkTy>());
-                // SAFETY: these are the same bytes that the caller promised were
-                // ok, just typed as `MaybeUninit<ChunkTy>`s instead of as `T`s.
-                // The `if` condition above ensures that we're not violating
-                // alignment requirements, and that the division is exact so
-                // that we don't lose any bytes off the end.
-                return unsafe { swap_nonoverlapping_simple_untyped(x, y, count) };
-            }
-        };
-    }
-
     ub_checks::assert_unsafe_precondition!(
-        check_language_ub,
+        check_library_ub,
         "ptr::swap_nonoverlapping requires that both pointer arguments are aligned and non-null \
         and the specified memory ranges do not overlap",
         (
@@ -1110,29 +1377,30 @@ pub const unsafe fn swap_nonoverlapping<T>(x: *mut T, y: *mut T, count: usize) {
         }
     );
 
-    // Split up the slice into small power-of-two-sized chunks that LLVM is able
-    // to vectorize (unless it's a special type with more-than-pointer alignment,
-    // because we don't want to pessimize things like slices of SIMD vectors.)
-    if mem::align_of::<T>() <= mem::size_of::<usize>()
-        && (!mem::size_of::<T>().is_power_of_two()
-            || mem::size_of::<T>() > mem::size_of::<usize>() * 2)
-    {
-        attempt_swap_as_chunks!(usize);
-        attempt_swap_as_chunks!(u8);
-    }
-
-    // SAFETY: Same preconditions as this function
-    unsafe { swap_nonoverlapping_simple_untyped(x, y, count) }
+    const_eval_select!(
+        @capture[T] { x: *mut T, y: *mut T, count: usize }:
+        if const {
+            // At compile-time we don't need all the special code below.
+            // SAFETY: Same preconditions as this function
+            unsafe { swap_nonoverlapping_const(x, y, count) }
+        } else {
+            // Going though a slice here helps codegen know the size fits in `isize`
+            let slice = slice_from_raw_parts_mut(x, count);
+            // SAFETY: This is all readable from the pointer, meaning it's one
+            // allocation, and thus cannot be more than isize::MAX bytes.
+            let bytes = unsafe { mem::size_of_val_raw::<[T]>(slice) };
+            if let Some(bytes) = NonZero::new(bytes) {
+                // SAFETY: These are the same ranges, just expressed in a different
+                // type, so they're still non-overlapping.
+                unsafe { swap_nonoverlapping_bytes(x.cast(), y.cast(), bytes) };
+            }
+        }
+    )
 }
 
 /// Same behavior and safety conditions as [`swap_nonoverlapping`]
-///
-/// LLVM can vectorize this (at least it can for the power-of-two-sized types
-/// `swap_nonoverlapping` tries to use) so no need to manually SIMD it.
 #[inline]
-const unsafe fn swap_nonoverlapping_simple_untyped<T>(x: *mut T, y: *mut T, count: usize) {
-    let x = x.cast::<MaybeUninit<T>>();
-    let y = y.cast::<MaybeUninit<T>>();
+const unsafe fn swap_nonoverlapping_const<T>(x: *mut T, y: *mut T, count: usize) {
     let mut i = 0;
     while i < count {
         // SAFETY: By precondition, `i` is in-bounds because it's below `n`
@@ -1141,23 +1409,88 @@ const unsafe fn swap_nonoverlapping_simple_untyped<T>(x: *mut T, y: *mut T, coun
         // and it's distinct from `x` since the ranges are non-overlapping
         let y = unsafe { y.add(i) };
 
-        // If we end up here, it's because we're using a simple type -- like
-        // a small power-of-two-sized thing -- or a special type with particularly
-        // large alignment, particularly SIMD types.
-        // Thus, we're fine just reading-and-writing it, as either it's small
-        // and that works well anyway or it's special and the type's author
-        // presumably wanted things to be done in the larger chunk.
-
         // SAFETY: we're only ever given pointers that are valid to read/write,
         // including being aligned, and nothing here panics so it's drop-safe.
         unsafe {
-            let a: MaybeUninit<T> = read(x);
-            let b: MaybeUninit<T> = read(y);
-            write(x, b);
-            write(y, a);
+            // Note that it's critical that these use `copy_nonoverlapping`,
+            // rather than `read`/`write`, to avoid #134713 if T has padding.
+            let mut temp = MaybeUninit::<T>::uninit();
+            copy_nonoverlapping(x, temp.as_mut_ptr(), 1);
+            copy_nonoverlapping(y, x, 1);
+            copy_nonoverlapping(temp.as_ptr(), y, 1);
         }
 
         i += 1;
+    }
+}
+
+// Don't let MIR inline this, because we really want it to keep its noalias metadata
+#[rustc_no_mir_inline]
+#[inline]
+fn swap_chunk<const N: usize>(x: &mut MaybeUninit<[u8; N]>, y: &mut MaybeUninit<[u8; N]>) {
+    let a = *x;
+    let b = *y;
+    *x = b;
+    *y = a;
+}
+
+#[inline]
+unsafe fn swap_nonoverlapping_bytes(x: *mut u8, y: *mut u8, bytes: NonZero<usize>) {
+    // Same as `swap_nonoverlapping::<[u8; N]>`.
+    unsafe fn swap_nonoverlapping_chunks<const N: usize>(
+        x: *mut MaybeUninit<[u8; N]>,
+        y: *mut MaybeUninit<[u8; N]>,
+        chunks: NonZero<usize>,
+    ) {
+        let chunks = chunks.get();
+        for i in 0..chunks {
+            // SAFETY: i is in [0, chunks) so the adds and dereferences are in-bounds.
+            unsafe { swap_chunk(&mut *x.add(i), &mut *y.add(i)) };
+        }
+    }
+
+    // Same as `swap_nonoverlapping_bytes`, but accepts at most 1+2+4=7 bytes
+    #[inline]
+    unsafe fn swap_nonoverlapping_short(x: *mut u8, y: *mut u8, bytes: NonZero<usize>) {
+        // Tail handling for auto-vectorized code sometimes has element-at-a-time behaviour,
+        // see <https://github.com/rust-lang/rust/issues/134946>.
+        // By swapping as different sizes, rather than as a loop over bytes,
+        // we make sure not to end up with, say, seven byte-at-a-time copies.
+
+        let bytes = bytes.get();
+        let mut i = 0;
+        macro_rules! swap_prefix {
+            ($($n:literal)+) => {$(
+                if (bytes & $n) != 0 {
+                    // SAFETY: `i` can only have the same bits set as those in bytes,
+                    // so these `add`s are in-bounds of `bytes`.  But the bit for
+                    // `$n` hasn't been set yet, so the `$n` bytes that `swap_chunk`
+                    // will read and write are within the usable range.
+                    unsafe { swap_chunk::<$n>(&mut*x.add(i).cast(), &mut*y.add(i).cast()) };
+                    i |= $n;
+                }
+            )+};
+        }
+        swap_prefix!(4 2 1);
+        debug_assert_eq!(i, bytes);
+    }
+
+    const CHUNK_SIZE: usize = size_of::<*const ()>();
+    let bytes = bytes.get();
+
+    let chunks = bytes / CHUNK_SIZE;
+    let tail = bytes % CHUNK_SIZE;
+    if let Some(chunks) = NonZero::new(chunks) {
+        // SAFETY: this is bytes/CHUNK_SIZE*CHUNK_SIZE bytes, which is <= bytes,
+        // so it's within the range of our non-overlapping bytes.
+        unsafe { swap_nonoverlapping_chunks::<CHUNK_SIZE>(x.cast(), y.cast(), chunks) };
+    }
+    if let Some(tail) = NonZero::new(tail) {
+        const { assert!(CHUNK_SIZE <= 8) };
+        let delta = chunks * CHUNK_SIZE;
+        // SAFETY: the tail length is below CHUNK SIZE because of the remainder,
+        // and CHUNK_SIZE is at most 8 by the const assert, so tail <= 7
+        unsafe { swap_nonoverlapping_short(x.add(delta), y.add(delta), tail) };
     }
 }
 
@@ -1203,11 +1536,12 @@ const unsafe fn swap_nonoverlapping_simple_untyped<T>(x: *mut T, y: *mut T, coun
 #[stable(feature = "rust1", since = "1.0.0")]
 #[rustc_const_stable(feature = "const_replace", since = "1.83.0")]
 #[rustc_diagnostic_item = "ptr_replace"]
+#[track_caller]
 pub const unsafe fn replace<T>(dst: *mut T, src: T) -> T {
     // SAFETY: the caller must guarantee that `dst` is valid to be
     // cast to a mutable reference (valid for writes, aligned, initialized),
     // and cannot overlap `src` since `dst` must point to a distinct
-    // allocated object.
+    // allocation.
     unsafe {
         ub_checks::assert_unsafe_precondition!(
             check_language_ub,
@@ -1330,7 +1664,7 @@ pub const unsafe fn replace<T>(dst: *mut T, src: T) -> T {
 #[inline]
 #[stable(feature = "rust1", since = "1.0.0")]
 #[rustc_const_stable(feature = "const_ptr_read", since = "1.71.0")]
-#[cfg_attr(miri, track_caller)] // even without panics, this helps for Miri backtraces
+#[track_caller]
 #[rustc_diagnostic_item = "ptr_read"]
 pub const unsafe fn read<T>(src: *const T) -> T {
     // It would be semantically correct to implement this via `copy_nonoverlapping`
@@ -1392,8 +1726,6 @@ pub const unsafe fn read<T>(src: *const T) -> T {
 /// whether `T` is [`Copy`]. If `T` is not [`Copy`], using both the returned
 /// value and the value at `*src` can [violate memory safety][read-ownership].
 ///
-/// Note that even if `T` has size `0`, the pointer must be non-null.
-///
 /// [read-ownership]: read#ownership-of-the-returned-value
 /// [valid]: self#safety
 ///
@@ -1439,10 +1771,8 @@ pub const unsafe fn read<T>(src: *const T) -> T {
 /// Read a `usize` value from a byte buffer:
 ///
 /// ```
-/// use std::mem;
-///
 /// fn read_usize(x: &[u8]) -> usize {
-///     assert!(x.len() >= mem::size_of::<usize>());
+///     assert!(x.len() >= size_of::<usize>());
 ///
 ///     let ptr = x.as_ptr() as *const usize;
 ///
@@ -1452,18 +1782,18 @@ pub const unsafe fn read<T>(src: *const T) -> T {
 #[inline]
 #[stable(feature = "ptr_unaligned", since = "1.17.0")]
 #[rustc_const_stable(feature = "const_ptr_read", since = "1.71.0")]
-#[cfg_attr(miri, track_caller)] // even without panics, this helps for Miri backtraces
+#[track_caller]
 #[rustc_diagnostic_item = "ptr_read_unaligned"]
 pub const unsafe fn read_unaligned<T>(src: *const T) -> T {
     let mut tmp = MaybeUninit::<T>::uninit();
     // SAFETY: the caller must guarantee that `src` is valid for reads.
     // `src` cannot overlap `tmp` because `tmp` was just allocated on
-    // the stack as a separate allocated object.
+    // the stack as a separate allocation.
     //
     // Also, since we just wrote a valid value into `tmp`, it is guaranteed
     // to be properly initialized.
     unsafe {
-        copy_nonoverlapping(src as *const u8, tmp.as_mut_ptr() as *mut u8, mem::size_of::<T>());
+        copy_nonoverlapping(src as *const u8, tmp.as_mut_ptr() as *mut u8, size_of::<T>());
         tmp.assume_init()
     }
 }
@@ -1551,7 +1881,7 @@ pub const unsafe fn read_unaligned<T>(src: *const T) -> T {
 #[stable(feature = "rust1", since = "1.0.0")]
 #[rustc_const_stable(feature = "const_ptr_write", since = "1.83.0")]
 #[rustc_diagnostic_item = "ptr_write"]
-#[cfg_attr(miri, track_caller)] // even without panics, this helps for Miri backtraces
+#[track_caller]
 pub const unsafe fn write<T>(dst: *mut T, src: T) {
     // Semantically, it would be fine for this to be implemented as a
     // `copy_nonoverlapping` and appropriate drop suppression of `src`.
@@ -1600,8 +1930,6 @@ pub const unsafe fn write<T>(dst: *mut T, src: T) {
 ///
 /// * `dst` must be [valid] for writes.
 ///
-/// Note that even if `T` has size `0`, the pointer must be non-null.
-///
 /// [valid]: self#safety
 ///
 /// ## On `packed` structs
@@ -1645,10 +1973,8 @@ pub const unsafe fn write<T>(dst: *mut T, src: T) {
 /// Write a `usize` value to a byte buffer:
 ///
 /// ```
-/// use std::mem;
-///
 /// fn write_usize(x: &mut [u8], val: usize) {
-///     assert!(x.len() >= mem::size_of::<usize>());
+///     assert!(x.len() >= size_of::<usize>());
 ///
 ///     let ptr = x.as_mut_ptr() as *mut usize;
 ///
@@ -1659,65 +1985,72 @@ pub const unsafe fn write<T>(dst: *mut T, src: T) {
 #[stable(feature = "ptr_unaligned", since = "1.17.0")]
 #[rustc_const_stable(feature = "const_ptr_write", since = "1.83.0")]
 #[rustc_diagnostic_item = "ptr_write_unaligned"]
-#[cfg_attr(miri, track_caller)] // even without panics, this helps for Miri backtraces
+#[track_caller]
 pub const unsafe fn write_unaligned<T>(dst: *mut T, src: T) {
     // SAFETY: the caller must guarantee that `dst` is valid for writes.
     // `dst` cannot overlap `src` because the caller has mutable access
     // to `dst` while `src` is owned by this function.
     unsafe {
-        copy_nonoverlapping((&raw const src) as *const u8, dst as *mut u8, mem::size_of::<T>());
+        copy_nonoverlapping((&raw const src) as *const u8, dst as *mut u8, size_of::<T>());
         // We are calling the intrinsic directly to avoid function calls in the generated code.
         intrinsics::forget(src);
     }
 }
 
-/// Performs a volatile read of the value from `src` without moving it. This
-/// leaves the memory in `src` unchanged.
+/// Performs a volatile read of the value from `src` without moving it.
 ///
-/// Volatile operations are intended to act on I/O memory, and are guaranteed
-/// to not be elided or reordered by the compiler across other volatile
-/// operations.
+/// Volatile operations are intended to act on I/O memory. As such, they are considered externally
+/// observable events (just like syscalls, but less opaque), and are guaranteed to not be elided or
+/// reordered by the compiler across other externally observable events. With this in mind, there
+/// are two cases of usage that need to be distinguished:
 ///
-/// # Notes
+/// - When a volatile operation is used for memory inside an [allocation], it behaves exactly like
+///   [`read`], except for the additional guarantee that it won't be elided or reordered (see
+///   above). This implies that the operation will actually access memory and not e.g. be lowered to
+///   reusing data from a previous read. Other than that, all the usual rules for memory accesses
+///   apply (including provenance).  In particular, just like in C, whether an operation is volatile
+///   has no bearing whatsoever on questions involving concurrent accesses from multiple threads.
+///   Volatile accesses behave exactly like non-atomic accesses in that regard.
 ///
-/// Rust does not currently have a rigorously and formally defined memory model,
-/// so the precise semantics of what "volatile" means here is subject to change
-/// over time. That being said, the semantics will almost always end up pretty
-/// similar to [C11's definition of volatile][c11].
+/// - Volatile operations, however, may also be used to access memory that is _outside_ of any Rust
+///   allocation. In this use-case, the pointer does *not* have to be [valid] for reads. This is
+///   typically used for CPU and peripheral registers that must be accessed via an I/O memory
+///   mapping, most commonly at fixed addresses reserved by the hardware. These often have special
+///   semantics associated to their manipulation, and cannot be used as general purpose memory.
+///   Here, any address value is possible, including 0 and [`usize::MAX`], so long as the semantics
+///   of such a read are well-defined by the target hardware. The provenance of the pointer is
+///   irrelevant, and it can be created with [`without_provenance`]. The access must not trap. It
+///   can cause side-effects, but those must not affect Rust-allocated memory in any way. This
+///   access is still not considered [atomic], and as such it cannot be used for inter-thread
+///   synchronization.
 ///
-/// The compiler shouldn't change the relative order or number of volatile
-/// memory operations. However, volatile memory operations on zero-sized types
-/// (e.g., if a zero-sized type is passed to `read_volatile`) are noops
-/// and may be ignored.
+/// Note that volatile memory operations where T is a zero-sized type are noops and may be ignored.
 ///
-/// [c11]: http://www.open-std.org/jtc1/sc22/wg14/www/docs/n1570.pdf
+/// [allocation]: crate::ptr#allocated-object
+/// [atomic]: crate::sync::atomic#memory-model-for-atomic-accesses
 ///
 /// # Safety
 ///
+/// Like [`read`], `read_volatile` creates a bitwise copy of `T`, regardless of whether `T` is
+/// [`Copy`]. If `T` is not [`Copy`], using both the returned value and the value at `*src` can
+/// [violate memory safety][read-ownership]. However, storing non-[`Copy`] types in volatile memory
+/// is almost certainly incorrect.
+///
 /// Behavior is undefined if any of the following conditions are violated:
 ///
-/// * `src` must be [valid] for reads.
+/// * `src` must be either [valid] for reads, or it must point to memory outside of all Rust
+///   allocations and reading from that memory must:
+///   - not trap, and
+///   - not cause any memory inside a Rust allocation to be modified.
 ///
 /// * `src` must be properly aligned.
 ///
-/// * `src` must point to a properly initialized value of type `T`.
-///
-/// Like [`read`], `read_volatile` creates a bitwise copy of `T`, regardless of
-/// whether `T` is [`Copy`]. If `T` is not [`Copy`], using both the returned
-/// value and the value at `*src` can [violate memory safety][read-ownership].
-/// However, storing non-[`Copy`] types in volatile memory is almost certainly
-/// incorrect.
+/// * Reading from `src` must produce a properly initialized value of type `T`.
 ///
 /// Note that even if `T` has size `0`, the pointer must be properly aligned.
 ///
 /// [valid]: self#safety
 /// [read-ownership]: read#ownership-of-the-returned-value
-///
-/// Just like in C, whether an operation is volatile has no bearing whatsoever
-/// on questions involving concurrent access from multiple threads. Volatile
-/// accesses behave exactly like non-atomic accesses in that regard. In particular,
-/// a race between a `read_volatile` and any write operation to the same location
-/// is undefined behavior.
 ///
 /// # Examples
 ///
@@ -1733,69 +2066,76 @@ pub const unsafe fn write_unaligned<T>(dst: *mut T, src: T) {
 /// ```
 #[inline]
 #[stable(feature = "volatile", since = "1.9.0")]
-#[cfg_attr(miri, track_caller)] // even without panics, this helps for Miri backtraces
+#[track_caller]
 #[rustc_diagnostic_item = "ptr_read_volatile"]
 pub unsafe fn read_volatile<T>(src: *const T) -> T {
     // SAFETY: the caller must uphold the safety contract for `volatile_load`.
     unsafe {
         ub_checks::assert_unsafe_precondition!(
             check_language_ub,
-            "ptr::read_volatile requires that the pointer argument is aligned and non-null",
+            "ptr::read_volatile requires that the pointer argument is aligned",
             (
                 addr: *const () = src as *const (),
                 align: usize = align_of::<T>(),
-                is_zst: bool = T::IS_ZST,
-            ) => ub_checks::maybe_is_aligned_and_not_null(addr, align, is_zst)
+            ) => ub_checks::maybe_is_aligned(addr, align)
         );
         intrinsics::volatile_load(src)
     }
 }
 
-/// Performs a volatile write of a memory location with the given value without
-/// reading or dropping the old value.
+/// Performs a volatile write of a memory location with the given value without reading or dropping
+/// the old value.
 ///
-/// Volatile operations are intended to act on I/O memory, and are guaranteed
-/// to not be elided or reordered by the compiler across other volatile
-/// operations.
+/// Volatile operations are intended to act on I/O memory. As such, they are considered externally
+/// observable events (just like syscalls), and are guaranteed to not be elided or reordered by the
+/// compiler across other externally observable events. With this in mind, there are two cases of
+/// usage that need to be distinguished:
 ///
-/// `write_volatile` does not drop the contents of `dst`. This is safe, but it
-/// could leak allocations or resources, so care should be taken not to overwrite
-/// an object that should be dropped.
+/// - When a volatile operation is used for memory inside an [allocation], it behaves exactly like
+///   [`write`][write()], except for the additional guarantee that it won't be elided or reordered
+///   (see above). This implies that the operation will actually access memory and not e.g. be
+///   lowered to a register access. Other than that, all the usual rules for memory accesses apply
+///   (including provenance). In particular, just like in C, whether an operation is volatile has no
+///   bearing whatsoever on questions involving concurrent access from multiple threads. Volatile
+///   accesses behave exactly like non-atomic accesses in that regard.
 ///
-/// Additionally, it does not drop `src`. Semantically, `src` is moved into the
-/// location pointed to by `dst`.
+/// - Volatile operations, however, may also be used to access memory that is _outside_ of any Rust
+///   allocation. In this use-case, the pointer does *not* have to be [valid] for writes. This is
+///   typically used for CPU and peripheral registers that must be accessed via an I/O memory
+///   mapping, most commonly at fixed addresses reserved by the hardware. These often have special
+///   semantics associated to their manipulation, and cannot be used as general purpose memory.
+///   Here, any address value is possible, including 0 and [`usize::MAX`], so long as the semantics
+///   of such a write are well-defined by the target hardware. The provenance of the pointer is
+///   irrelevant, and it can be created with [`without_provenance`]. The access must not trap. It
+///   can cause side-effects, but those must not affect Rust-allocated memory in any way. This
+///   access is still not considered [atomic], and as such it cannot be used for inter-thread
+///   synchronization.
 ///
-/// # Notes
+/// Note that volatile memory operations on zero-sized types (e.g., if a zero-sized type is passed
+/// to `write_volatile`) are noops and may be ignored.
 ///
-/// Rust does not currently have a rigorously and formally defined memory model,
-/// so the precise semantics of what "volatile" means here is subject to change
-/// over time. That being said, the semantics will almost always end up pretty
-/// similar to [C11's definition of volatile][c11].
+/// `write_volatile` does not drop the contents of `dst`. This is safe, but it could leak
+/// allocations or resources, so care should be taken not to overwrite an object that should be
+/// dropped when operating on Rust memory. Additionally, it does not drop `src`. Semantically, `src`
+/// is moved into the location pointed to by `dst`.
 ///
-/// The compiler shouldn't change the relative order or number of volatile
-/// memory operations. However, volatile memory operations on zero-sized types
-/// (e.g., if a zero-sized type is passed to `write_volatile`) are noops
-/// and may be ignored.
-///
-/// [c11]: http://www.open-std.org/jtc1/sc22/wg14/www/docs/n1570.pdf
+/// [allocation]: crate::ptr#allocated-object
+/// [atomic]: crate::sync::atomic#memory-model-for-atomic-accesses
 ///
 /// # Safety
 ///
 /// Behavior is undefined if any of the following conditions are violated:
 ///
-/// * `dst` must be [valid] for writes.
+/// * `dst` must be either [valid] for writes, or it must point to memory outside of all Rust
+///   allocations and writing to that memory must:
+///   - not trap, and
+///   - not cause any memory inside a Rust allocation to be modified.
 ///
 /// * `dst` must be properly aligned.
 ///
 /// Note that even if `T` has size `0`, the pointer must be properly aligned.
 ///
 /// [valid]: self#safety
-///
-/// Just like in C, whether an operation is volatile has no bearing whatsoever
-/// on questions involving concurrent access from multiple threads. Volatile
-/// accesses behave exactly like non-atomic accesses in that regard. In particular,
-/// a race between a `write_volatile` and any other operation (reading or writing)
-/// on the same location is undefined behavior.
 ///
 /// # Examples
 ///
@@ -1814,27 +2154,25 @@ pub unsafe fn read_volatile<T>(src: *const T) -> T {
 #[inline]
 #[stable(feature = "volatile", since = "1.9.0")]
 #[rustc_diagnostic_item = "ptr_write_volatile"]
-#[cfg_attr(miri, track_caller)] // even without panics, this helps for Miri backtraces
+#[track_caller]
 pub unsafe fn write_volatile<T>(dst: *mut T, src: T) {
     // SAFETY: the caller must uphold the safety contract for `volatile_store`.
     unsafe {
         ub_checks::assert_unsafe_precondition!(
             check_language_ub,
-            "ptr::write_volatile requires that the pointer argument is aligned and non-null",
+            "ptr::write_volatile requires that the pointer argument is aligned",
             (
                 addr: *mut () = dst as *mut (),
                 align: usize = align_of::<T>(),
-                is_zst: bool = T::IS_ZST,
-            ) => ub_checks::maybe_is_aligned_and_not_null(addr, align, is_zst)
+            ) => ub_checks::maybe_is_aligned(addr, align)
         );
         intrinsics::volatile_store(dst, src);
     }
 }
 
-/// Align pointer `p`.
+/// Calculate an element-offset that increases a pointer's alignment.
 ///
-/// Calculate offset (in terms of elements of `size_of::<T>()` stride) that has to be applied
-/// to pointer `p` so that pointer `p` would get aligned to `a`.
+/// Calculate an element-offset (not byte-offset) that when added to a given pointer `p`, increases `p`'s alignment to at least the given alignment `a`.
 ///
 /// # Safety
 /// `a` must be a power of two.
@@ -1909,7 +2247,7 @@ pub(crate) unsafe fn align_offset<T: Sized>(p: *const T, a: usize) -> usize {
         inverse & m_minus_one
     }
 
-    let stride = mem::size_of::<T>();
+    let stride = size_of::<T>();
 
     let addr: usize = p.addr();
 
@@ -2069,7 +2407,7 @@ pub(crate) unsafe fn align_offset<T: Sized>(p: *const T, a: usize) -> usize {
 #[must_use = "pointer comparison produces a value"]
 #[rustc_diagnostic_item = "ptr_eq"]
 #[allow(ambiguous_wide_pointer_comparisons)] // it's actually clear here
-pub fn eq<T: ?Sized>(a: *const T, b: *const T) -> bool {
+pub fn eq<T: PointeeSized>(a: *const T, b: *const T) -> bool {
     a == b
 }
 
@@ -2093,7 +2431,7 @@ pub fn eq<T: ?Sized>(a: *const T, b: *const T) -> bool {
 #[stable(feature = "ptr_addr_eq", since = "1.76.0")]
 #[inline(always)]
 #[must_use = "pointer comparison produces a value"]
-pub fn addr_eq<T: ?Sized, U: ?Sized>(p: *const T, q: *const U) -> bool {
+pub fn addr_eq<T: PointeeSized, U: PointeeSized>(p: *const T, q: *const U) -> bool {
     (p as *const ()) == (q as *const ())
 }
 
@@ -2143,7 +2481,7 @@ pub fn addr_eq<T: ?Sized, U: ?Sized>(p: *const T, q: *const U) -> bool {
 /// ```
 ///
 /// [subtype]: https://doc.rust-lang.org/reference/subtyping.html
-#[stable(feature = "ptr_fn_addr_eq", since = "CURRENT_RUSTC_VERSION")]
+#[stable(feature = "ptr_fn_addr_eq", since = "1.85.0")]
 #[inline(always)]
 #[must_use = "function pointer comparison produces a value"]
 pub fn fn_addr_eq<T: FnPtr, U: FnPtr>(f: T, g: U) -> bool {
@@ -2176,12 +2514,16 @@ pub fn fn_addr_eq<T: FnPtr, U: FnPtr>(f: T, g: U) -> bool {
 /// assert_eq!(actual, expected);
 /// ```
 #[stable(feature = "ptr_hash", since = "1.35.0")]
-pub fn hash<T: ?Sized, S: hash::Hasher>(hashee: *const T, into: &mut S) {
+pub fn hash<T: PointeeSized, S: hash::Hasher>(hashee: *const T, into: &mut S) {
     use crate::hash::Hash;
     hashee.hash(into);
 }
 
 #[stable(feature = "fnptr_impls", since = "1.4.0")]
+#[diagnostic::on_const(
+    message = "pointers cannot be reliably compared during const eval",
+    note = "see issue #53020 <https://github.com/rust-lang/rust/issues/53020> for more information"
+)]
 impl<F: FnPtr> PartialEq for F {
     #[inline]
     fn eq(&self, other: &Self) -> bool {
@@ -2189,9 +2531,17 @@ impl<F: FnPtr> PartialEq for F {
     }
 }
 #[stable(feature = "fnptr_impls", since = "1.4.0")]
+#[diagnostic::on_const(
+    message = "pointers cannot be reliably compared during const eval",
+    note = "see issue #53020 <https://github.com/rust-lang/rust/issues/53020> for more information"
+)]
 impl<F: FnPtr> Eq for F {}
 
 #[stable(feature = "fnptr_impls", since = "1.4.0")]
+#[diagnostic::on_const(
+    message = "pointers cannot be reliably compared during const eval",
+    note = "see issue #53020 <https://github.com/rust-lang/rust/issues/53020> for more information"
+)]
 impl<F: FnPtr> PartialOrd for F {
     #[inline]
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
@@ -2199,6 +2549,10 @@ impl<F: FnPtr> PartialOrd for F {
     }
 }
 #[stable(feature = "fnptr_impls", since = "1.4.0")]
+#[diagnostic::on_const(
+    message = "pointers cannot be reliably compared during const eval",
+    note = "see issue #53020 <https://github.com/rust-lang/rust/issues/53020> for more information"
+)]
 impl<F: FnPtr> Ord for F {
     #[inline]
     fn cmp(&self, other: &Self) -> Ordering {

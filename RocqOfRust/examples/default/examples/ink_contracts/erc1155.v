@@ -313,6 +313,18 @@ Module Impl_core_default_Default_for_erc1155_AccountId.
       (* Instance *) [ ("default", InstanceField.Method default) ].
 End Impl_core_default_Default_for_erc1155_AccountId.
 
+Module Impl_core_clone_TrivialClone_for_erc1155_AccountId.
+  Definition Self : Ty.t := Ty.path "erc1155::AccountId".
+  
+  Axiom Implements :
+    M.IsTraitInstance
+      "core::clone::TrivialClone"
+      (* Trait polymorphic consts *) []
+      (* Trait polymorphic types *) []
+      Self
+      (* Instance *) [].
+End Impl_core_clone_TrivialClone_for_erc1155_AccountId.
+
 Module Impl_core_clone_Clone_for_erc1155_AccountId.
   Definition Self : Ty.t := Ty.path "erc1155::AccountId".
   
@@ -1133,15 +1145,14 @@ Module Impl_erc1155_Contract.
                               fun γ =>
                                 ltac:(M.monadic
                                   (let γ :=
-                                    M.use
-                                      (M.alloc (|
+                                    M.alloc (|
+                                      Ty.path "bool",
+                                      M.call_closure (|
                                         Ty.path "bool",
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          BinOp.eq,
-                                          [ M.read (| value |); Value.Integer IntegerKind.U128 0 ]
-                                        |)
-                                      |)) in
+                                        BinOp.eq,
+                                        [ M.read (| value |); Value.Integer IntegerKind.U128 0 ]
+                                      |)
+                                    |) in
                                   let _ :=
                                     is_constant_or_break_match (|
                                       M.read (| γ |),
@@ -1229,30 +1240,29 @@ Module Impl_erc1155_Contract.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                UnOp.not,
-                                [
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    BinOp.le,
-                                    [
-                                      M.read (| token_id |);
-                                      M.read (|
-                                        M.SubPointer.get_struct_record_field (|
-                                          M.deref (| M.read (| self |) |),
-                                          "erc1155::Contract",
-                                          "token_id_nonce"
-                                        |)
+                              UnOp.not,
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.le,
+                                  [
+                                    M.read (| token_id |);
+                                    M.read (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "erc1155::Contract",
+                                        "token_id_nonce"
                                       |)
-                                    ]
-                                  |)
-                                ]
-                              |)
-                            |)) in
+                                    |)
+                                  ]
+                                |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.never_to_any (|
                           M.read (|
@@ -1991,26 +2001,25 @@ Module Impl_erc1155_Erc1155_for_erc1155_Contract.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                M.get_trait_method (|
-                                  "core::cmp::PartialEq",
-                                  Ty.path "erc1155::AccountId",
-                                  [],
-                                  [ Ty.path "erc1155::AccountId" ],
-                                  "ne",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (| Pointer.Kind.Ref, caller |);
-                                  M.borrow (| Pointer.Kind.Ref, from |)
-                                ]
-                              |)
-                            |)) in
+                              M.get_trait_method (|
+                                "core::cmp::PartialEq",
+                                Ty.path "erc1155::AccountId",
+                                [],
+                                [ Ty.path "erc1155::AccountId" ],
+                                "ne",
+                                [],
+                                []
+                              |),
+                              [
+                                M.borrow (| Pointer.Kind.Ref, caller |);
+                                M.borrow (| Pointer.Kind.Ref, from |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
@@ -2021,36 +2030,35 @@ Module Impl_erc1155_Erc1155_for_erc1155_Contract.
                                 fun γ =>
                                   ltac:(M.monadic
                                     (let γ :=
-                                      M.use
-                                        (M.alloc (|
+                                      M.alloc (|
+                                        Ty.path "bool",
+                                        M.call_closure (|
                                           Ty.path "bool",
-                                          M.call_closure (|
-                                            Ty.path "bool",
-                                            UnOp.not,
-                                            [
-                                              M.call_closure (|
-                                                Ty.path "bool",
-                                                M.get_trait_method (|
-                                                  "erc1155::Erc1155",
-                                                  Ty.path "erc1155::Contract",
-                                                  [],
-                                                  [],
-                                                  "is_approved_for_all",
-                                                  [],
-                                                  []
-                                                |),
-                                                [
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.deref (| M.read (| self |) |)
-                                                  |);
-                                                  M.read (| from |);
-                                                  M.read (| caller |)
-                                                ]
-                                              |)
-                                            ]
-                                          |)
-                                        |)) in
+                                          UnOp.not,
+                                          [
+                                            M.call_closure (|
+                                              Ty.path "bool",
+                                              M.get_trait_method (|
+                                                "erc1155::Erc1155",
+                                                Ty.path "erc1155::Contract",
+                                                [],
+                                                [],
+                                                "is_approved_for_all",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (| M.read (| self |) |)
+                                                |);
+                                                M.read (| from |);
+                                                M.read (| caller |)
+                                              ]
+                                            |)
+                                          ]
+                                        |)
+                                      |) in
                                     let _ :=
                                       is_constant_or_break_match (|
                                         M.read (| γ |),
@@ -2103,42 +2111,41 @@ Module Impl_erc1155_Erc1155_for_erc1155_Contract.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                UnOp.not,
-                                [
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    M.get_trait_method (|
-                                      "core::cmp::PartialEq",
-                                      Ty.path "erc1155::AccountId",
-                                      [],
-                                      [ Ty.path "erc1155::AccountId" ],
-                                      "ne",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (| Pointer.Kind.Ref, to |);
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.alloc (|
+                              UnOp.not,
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  M.get_trait_method (|
+                                    "core::cmp::PartialEq",
+                                    Ty.path "erc1155::AccountId",
+                                    [],
+                                    [ Ty.path "erc1155::AccountId" ],
+                                    "ne",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.borrow (| Pointer.Kind.Ref, to |);
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.alloc (|
+                                        Ty.path "erc1155::AccountId",
+                                        M.call_closure (|
                                           Ty.path "erc1155::AccountId",
-                                          M.call_closure (|
-                                            Ty.path "erc1155::AccountId",
-                                            M.get_function (| "erc1155::zero_address", [], [] |),
-                                            []
-                                          |)
+                                          M.get_function (| "erc1155::zero_address", [], [] |),
+                                          []
                                         |)
                                       |)
-                                    ]
-                                  |)
-                                ]
-                              |)
-                            |)) in
+                                    |)
+                                  ]
+                                |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.never_to_any (|
                           M.read (|
@@ -2200,21 +2207,20 @@ Module Impl_erc1155_Erc1155_for_erc1155_Contract.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                UnOp.not,
-                                [
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    BinOp.ge,
-                                    [ M.read (| balance |); M.read (| value |) ]
-                                  |)
-                                ]
-                              |)
-                            |)) in
+                              UnOp.not,
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.ge,
+                                  [ M.read (| balance |); M.read (| value |) ]
+                                |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.never_to_any (|
                           M.read (|
@@ -2410,26 +2416,25 @@ Module Impl_erc1155_Erc1155_for_erc1155_Contract.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                M.get_trait_method (|
-                                  "core::cmp::PartialEq",
-                                  Ty.path "erc1155::AccountId",
-                                  [],
-                                  [ Ty.path "erc1155::AccountId" ],
-                                  "ne",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (| Pointer.Kind.Ref, caller |);
-                                  M.borrow (| Pointer.Kind.Ref, from |)
-                                ]
-                              |)
-                            |)) in
+                              M.get_trait_method (|
+                                "core::cmp::PartialEq",
+                                Ty.path "erc1155::AccountId",
+                                [],
+                                [ Ty.path "erc1155::AccountId" ],
+                                "ne",
+                                [],
+                                []
+                              |),
+                              [
+                                M.borrow (| Pointer.Kind.Ref, caller |);
+                                M.borrow (| Pointer.Kind.Ref, from |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
@@ -2440,36 +2445,35 @@ Module Impl_erc1155_Erc1155_for_erc1155_Contract.
                                 fun γ =>
                                   ltac:(M.monadic
                                     (let γ :=
-                                      M.use
-                                        (M.alloc (|
+                                      M.alloc (|
+                                        Ty.path "bool",
+                                        M.call_closure (|
                                           Ty.path "bool",
-                                          M.call_closure (|
-                                            Ty.path "bool",
-                                            UnOp.not,
-                                            [
-                                              M.call_closure (|
-                                                Ty.path "bool",
-                                                M.get_trait_method (|
-                                                  "erc1155::Erc1155",
-                                                  Ty.path "erc1155::Contract",
-                                                  [],
-                                                  [],
-                                                  "is_approved_for_all",
-                                                  [],
-                                                  []
-                                                |),
-                                                [
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.deref (| M.read (| self |) |)
-                                                  |);
-                                                  M.read (| from |);
-                                                  M.read (| caller |)
-                                                ]
-                                              |)
-                                            ]
-                                          |)
-                                        |)) in
+                                          UnOp.not,
+                                          [
+                                            M.call_closure (|
+                                              Ty.path "bool",
+                                              M.get_trait_method (|
+                                                "erc1155::Erc1155",
+                                                Ty.path "erc1155::Contract",
+                                                [],
+                                                [],
+                                                "is_approved_for_all",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (| M.read (| self |) |)
+                                                |);
+                                                M.read (| from |);
+                                                M.read (| caller |)
+                                              ]
+                                            |)
+                                          ]
+                                        |)
+                                      |) in
                                     let _ :=
                                       is_constant_or_break_match (|
                                         M.read (| γ |),
@@ -2522,42 +2526,41 @@ Module Impl_erc1155_Erc1155_for_erc1155_Contract.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                UnOp.not,
-                                [
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    M.get_trait_method (|
-                                      "core::cmp::PartialEq",
-                                      Ty.path "erc1155::AccountId",
-                                      [],
-                                      [ Ty.path "erc1155::AccountId" ],
-                                      "ne",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (| Pointer.Kind.Ref, to |);
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.alloc (|
+                              UnOp.not,
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  M.get_trait_method (|
+                                    "core::cmp::PartialEq",
+                                    Ty.path "erc1155::AccountId",
+                                    [],
+                                    [ Ty.path "erc1155::AccountId" ],
+                                    "ne",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.borrow (| Pointer.Kind.Ref, to |);
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.alloc (|
+                                        Ty.path "erc1155::AccountId",
+                                        M.call_closure (|
                                           Ty.path "erc1155::AccountId",
-                                          M.call_closure (|
-                                            Ty.path "erc1155::AccountId",
-                                            M.get_function (| "erc1155::zero_address", [], [] |),
-                                            []
-                                          |)
+                                          M.get_function (| "erc1155::zero_address", [], [] |),
+                                          []
                                         |)
                                       |)
-                                    ]
-                                  |)
-                                ]
-                              |)
-                            |)) in
+                                    |)
+                                  ]
+                                |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.never_to_any (|
                           M.read (|
@@ -2601,35 +2604,34 @@ Module Impl_erc1155_Erc1155_for_erc1155_Contract.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                UnOp.not,
-                                [
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    UnOp.not,
-                                    [
-                                      M.call_closure (|
-                                        Ty.path "bool",
-                                        M.get_associated_function (|
-                                          Ty.apply
-                                            (Ty.path "alloc::vec::Vec")
-                                            []
-                                            [ Ty.path "u128"; Ty.path "alloc::alloc::Global" ],
-                                          "is_empty",
-                                          [],
+                              UnOp.not,
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  UnOp.not,
+                                  [
+                                    M.call_closure (|
+                                      Ty.path "bool",
+                                      M.get_associated_function (|
+                                        Ty.apply
+                                          (Ty.path "alloc::vec::Vec")
                                           []
-                                        |),
-                                        [ M.borrow (| Pointer.Kind.Ref, token_ids |) ]
-                                      |)
-                                    ]
-                                  |)
-                                ]
-                              |)
-                            |)) in
+                                          [ Ty.path "u128"; Ty.path "alloc::alloc::Global" ],
+                                        "is_empty",
+                                        [],
+                                        []
+                                      |),
+                                      [ M.borrow (| Pointer.Kind.Ref, token_ids |) ]
+                                    |)
+                                  ]
+                                |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.never_to_any (|
                           M.read (|
@@ -2673,48 +2675,47 @@ Module Impl_erc1155_Erc1155_for_erc1155_Contract.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                UnOp.not,
-                                [
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    BinOp.eq,
-                                    [
-                                      M.call_closure (|
-                                        Ty.path "usize",
-                                        M.get_associated_function (|
-                                          Ty.apply
-                                            (Ty.path "alloc::vec::Vec")
-                                            []
-                                            [ Ty.path "u128"; Ty.path "alloc::alloc::Global" ],
-                                          "len",
-                                          [],
+                              UnOp.not,
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [
+                                    M.call_closure (|
+                                      Ty.path "usize",
+                                      M.get_associated_function (|
+                                        Ty.apply
+                                          (Ty.path "alloc::vec::Vec")
                                           []
-                                        |),
-                                        [ M.borrow (| Pointer.Kind.Ref, token_ids |) ]
-                                      |);
-                                      M.call_closure (|
-                                        Ty.path "usize",
-                                        M.get_associated_function (|
-                                          Ty.apply
-                                            (Ty.path "alloc::vec::Vec")
-                                            []
-                                            [ Ty.path "u128"; Ty.path "alloc::alloc::Global" ],
-                                          "len",
-                                          [],
+                                          [ Ty.path "u128"; Ty.path "alloc::alloc::Global" ],
+                                        "len",
+                                        [],
+                                        []
+                                      |),
+                                      [ M.borrow (| Pointer.Kind.Ref, token_ids |) ]
+                                    |);
+                                    M.call_closure (|
+                                      Ty.path "usize",
+                                      M.get_associated_function (|
+                                        Ty.apply
+                                          (Ty.path "alloc::vec::Vec")
                                           []
-                                        |),
-                                        [ M.borrow (| Pointer.Kind.Ref, values |) ]
-                                      |)
-                                    ]
-                                  |)
-                                ]
-                              |)
-                            |)) in
+                                          [ Ty.path "u128"; Ty.path "alloc::alloc::Global" ],
+                                        "len",
+                                        [],
+                                        []
+                                      |),
+                                      [ M.borrow (| Pointer.Kind.Ref, values |) ]
+                                    |)
+                                  ]
+                                |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.never_to_any (|
                           M.read (|
@@ -3063,24 +3064,23 @@ Module Impl_erc1155_Erc1155_for_erc1155_Contract.
                                                       fun γ =>
                                                         ltac:(M.monadic
                                                           (let γ :=
-                                                            M.use
-                                                              (M.alloc (|
+                                                            M.alloc (|
+                                                              Ty.path "bool",
+                                                              M.call_closure (|
                                                                 Ty.path "bool",
-                                                                M.call_closure (|
-                                                                  Ty.path "bool",
-                                                                  UnOp.not,
-                                                                  [
-                                                                    M.call_closure (|
-                                                                      Ty.path "bool",
-                                                                      BinOp.ge,
-                                                                      [
-                                                                        M.read (| balance |);
-                                                                        M.read (| v |)
-                                                                      ]
-                                                                    |)
-                                                                  ]
-                                                                |)
-                                                              |)) in
+                                                                UnOp.not,
+                                                                [
+                                                                  M.call_closure (|
+                                                                    Ty.path "bool",
+                                                                    BinOp.ge,
+                                                                    [
+                                                                      M.read (| balance |);
+                                                                      M.read (| v |)
+                                                                    ]
+                                                                  |)
+                                                                ]
+                                                              |)
+                                                            |) in
                                                           let _ :=
                                                             is_constant_or_break_match (|
                                                               M.read (| γ |),
@@ -3851,32 +3851,31 @@ Module Impl_erc1155_Erc1155_for_erc1155_Contract.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                UnOp.not,
-                                [
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    M.get_trait_method (|
-                                      "core::cmp::PartialEq",
-                                      Ty.path "erc1155::AccountId",
-                                      [],
-                                      [ Ty.path "erc1155::AccountId" ],
-                                      "ne",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (| Pointer.Kind.Ref, operator |);
-                                      M.borrow (| Pointer.Kind.Ref, caller |)
-                                    ]
-                                  |)
-                                ]
-                              |)
-                            |)) in
+                              UnOp.not,
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  M.get_trait_method (|
+                                    "core::cmp::PartialEq",
+                                    Ty.path "erc1155::AccountId",
+                                    [],
+                                    [ Ty.path "erc1155::AccountId" ],
+                                    "ne",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.borrow (| Pointer.Kind.Ref, operator |);
+                                    M.borrow (| Pointer.Kind.Ref, caller |)
+                                  ]
+                                |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.never_to_any (|
                           M.read (|
@@ -3913,7 +3912,7 @@ Module Impl_erc1155_Erc1155_for_erc1155_Contract.
                   [
                     fun γ =>
                       ltac:(M.monadic
-                        (let γ := M.use approved in
+                        (let γ := approved in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.read (|
                           let~ _ : Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u32" ] :=
@@ -4108,57 +4107,13 @@ Module Impl_erc1155_Erc1155TokenReceiver_for_erc1155_Contract.
                 Ty.path "core::fmt::Arguments",
                 M.get_associated_function (|
                   Ty.path "core::fmt::Arguments",
-                  "new_v1",
-                  [ Value.Integer IntegerKind.Usize 1; Value.Integer IntegerKind.Usize 0 ],
+                  "from_str_nonconst",
+                  [],
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply
-                            (Ty.path "array")
-                            [ Value.Integer IntegerKind.Usize 1 ]
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                          Value.Array
-                            [
-                              mk_str (|
-                                "not implemented: This smart contract does not accept token transfer."
-                              |)
-                            ]
-                        |)
-                      |)
-                    |)
-                  |);
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply
-                            (Ty.path "array")
-                            [ Value.Integer IntegerKind.Usize 0 ]
-                            [ Ty.path "core::fmt::rt::Argument" ],
-                          M.call_closure (|
-                            Ty.apply
-                              (Ty.path "array")
-                              [ Value.Integer IntegerKind.Usize 0 ]
-                              [ Ty.path "core::fmt::rt::Argument" ],
-                            M.get_associated_function (|
-                              Ty.path "core::fmt::rt::Argument",
-                              "none",
-                              [],
-                              []
-                            |),
-                            []
-                          |)
-                        |)
-                      |)
-                    |)
+                  mk_str (|
+                    "not implemented: This smart contract does not accept token transfer."
                   |)
                 ]
               |)
@@ -4232,57 +4187,13 @@ Module Impl_erc1155_Erc1155TokenReceiver_for_erc1155_Contract.
                 Ty.path "core::fmt::Arguments",
                 M.get_associated_function (|
                   Ty.path "core::fmt::Arguments",
-                  "new_v1",
-                  [ Value.Integer IntegerKind.Usize 1; Value.Integer IntegerKind.Usize 0 ],
+                  "from_str_nonconst",
+                  [],
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply
-                            (Ty.path "array")
-                            [ Value.Integer IntegerKind.Usize 1 ]
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                          Value.Array
-                            [
-                              mk_str (|
-                                "not implemented: This smart contract does not accept batch token transfers."
-                              |)
-                            ]
-                        |)
-                      |)
-                    |)
-                  |);
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply
-                            (Ty.path "array")
-                            [ Value.Integer IntegerKind.Usize 0 ]
-                            [ Ty.path "core::fmt::rt::Argument" ],
-                          M.call_closure (|
-                            Ty.apply
-                              (Ty.path "array")
-                              [ Value.Integer IntegerKind.Usize 0 ]
-                              [ Ty.path "core::fmt::rt::Argument" ],
-                            M.get_associated_function (|
-                              Ty.path "core::fmt::rt::Argument",
-                              "none",
-                              [],
-                              []
-                            |),
-                            []
-                          |)
-                        |)
-                      |)
-                    |)
+                  mk_str (|
+                    "not implemented: This smart contract does not accept batch token transfers."
                   |)
                 ]
               |)

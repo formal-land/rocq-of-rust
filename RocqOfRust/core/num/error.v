@@ -94,6 +94,18 @@ Module num.
           (* Instance *) [].
     End Impl_core_marker_Copy_for_core_num_error_TryFromIntError.
     
+    Module Impl_core_clone_TrivialClone_for_core_num_error_TryFromIntError.
+      Definition Self : Ty.t := Ty.path "core::num::error::TryFromIntError".
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::clone::TrivialClone"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [].
+    End Impl_core_clone_TrivialClone_for_core_num_error_TryFromIntError.
+    
     Module Impl_core_clone_Clone_for_core_num_error_TryFromIntError.
       Definition Self : Ty.t := Ty.path "core::num::error::TryFromIntError".
       
@@ -235,22 +247,21 @@ Module num.
       Definition Self : Ty.t := Ty.path "core::num::error::TryFromIntError".
       
       (*
-          fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
-              #[allow(deprecated)]
-              self.description().fmt(fmt)
+          fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+              "out of range integral type conversion attempted".fmt(f)
           }
       *)
       Definition fmt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
-        | [], [], [ self; fmt ] =>
+        | [], [], [ self; f ] =>
           ltac:(M.monadic
             (let self :=
               M.alloc (|
                 Ty.apply (Ty.path "&") [] [ Ty.path "core::num::error::TryFromIntError" ],
                 self
               |) in
-            let fmt :=
-              M.alloc (| Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ], fmt |) in
+            let f :=
+              M.alloc (| Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ], f |) in
             M.call_closure (|
               Ty.apply
                 (Ty.path "core::result::Result")
@@ -260,23 +271,9 @@ Module num.
               [
                 M.borrow (|
                   Pointer.Kind.Ref,
-                  M.deref (|
-                    M.call_closure (|
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                      M.get_trait_method (|
-                        "core::error::Error",
-                        Ty.path "core::num::error::TryFromIntError",
-                        [],
-                        [],
-                        "description",
-                        [],
-                        []
-                      |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                    |)
-                  |)
+                  M.deref (| mk_str (| "out of range integral type conversion attempted" |) |)
                 |);
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| fmt |) |) |)
+                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -294,34 +291,13 @@ Module num.
     Module Impl_core_error_Error_for_core_num_error_TryFromIntError.
       Definition Self : Ty.t := Ty.path "core::num::error::TryFromIntError".
       
-      (*
-          fn description(&self) -> &str {
-              "out of range integral type conversion attempted"
-          }
-      *)
-      Definition description (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [ self ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (|
-                Ty.apply (Ty.path "&") [] [ Ty.path "core::num::error::TryFromIntError" ],
-                self
-              |) in
-            M.borrow (|
-              Pointer.Kind.Ref,
-              M.deref (| mk_str (| "out of range integral type conversion attempted" |) |)
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
       Axiom Implements :
         M.IsTraitInstance
           "core::error::Error"
           (* Trait polymorphic consts *) []
           (* Trait polymorphic types *) []
           Self
-          (* Instance *) [ ("description", InstanceField.Method description) ].
+          (* Instance *) [].
     End Impl_core_error_Error_for_core_num_error_TryFromIntError.
     
     Module Impl_core_convert_From_core_convert_Infallible_for_core_num_error_TryFromIntError.
@@ -755,6 +731,18 @@ Module num.
           (* Instance *) [ ("fmt", InstanceField.Method fmt) ].
     End Impl_core_fmt_Debug_for_core_num_error_IntErrorKind.
     
+    Module Impl_core_clone_TrivialClone_for_core_num_error_IntErrorKind.
+      Definition Self : Ty.t := Ty.path "core::num::error::IntErrorKind".
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::clone::TrivialClone"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [].
+    End Impl_core_clone_TrivialClone_for_core_num_error_IntErrorKind.
+    
     Module Impl_core_clone_Clone_for_core_num_error_IntErrorKind.
       Definition Self : Ty.t := Ty.path "core::num::error::IntErrorKind".
       
@@ -768,40 +756,7 @@ Module num.
                 Ty.apply (Ty.path "&") [] [ Ty.path "core::num::error::IntErrorKind" ],
                 self
               |) in
-            M.match_operator (|
-              Ty.path "core::num::error::IntErrorKind",
-              self,
-              [
-                fun γ =>
-                  ltac:(M.monadic
-                    (let γ := M.deref (| M.read (| γ |) |) in
-                    let _ := M.is_struct_tuple (| γ, "core::num::error::IntErrorKind::Empty" |) in
-                    Value.StructTuple "core::num::error::IntErrorKind::Empty" [] [] []));
-                fun γ =>
-                  ltac:(M.monadic
-                    (let γ := M.deref (| M.read (| γ |) |) in
-                    let _ :=
-                      M.is_struct_tuple (| γ, "core::num::error::IntErrorKind::InvalidDigit" |) in
-                    Value.StructTuple "core::num::error::IntErrorKind::InvalidDigit" [] [] []));
-                fun γ =>
-                  ltac:(M.monadic
-                    (let γ := M.deref (| M.read (| γ |) |) in
-                    let _ :=
-                      M.is_struct_tuple (| γ, "core::num::error::IntErrorKind::PosOverflow" |) in
-                    Value.StructTuple "core::num::error::IntErrorKind::PosOverflow" [] [] []));
-                fun γ =>
-                  ltac:(M.monadic
-                    (let γ := M.deref (| M.read (| γ |) |) in
-                    let _ :=
-                      M.is_struct_tuple (| γ, "core::num::error::IntErrorKind::NegOverflow" |) in
-                    Value.StructTuple "core::num::error::IntErrorKind::NegOverflow" [] [] []));
-                fun γ =>
-                  ltac:(M.monadic
-                    (let γ := M.deref (| M.read (| γ |) |) in
-                    let _ := M.is_struct_tuple (| γ, "core::num::error::IntErrorKind::Zero" |) in
-                    Value.StructTuple "core::num::error::IntErrorKind::Zero" [] [] []))
-              ]
-            |)))
+            M.read (| M.deref (| M.read (| self |) |) |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -917,6 +872,78 @@ Module num.
           [ ("assert_receiver_is_total_eq", InstanceField.Method assert_receiver_is_total_eq) ].
     End Impl_core_cmp_Eq_for_core_num_error_IntErrorKind.
     
+    Module Impl_core_marker_Copy_for_core_num_error_IntErrorKind.
+      Definition Self : Ty.t := Ty.path "core::num::error::IntErrorKind".
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::marker::Copy"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [].
+    End Impl_core_marker_Copy_for_core_num_error_IntErrorKind.
+    
+    Module Impl_core_hash_Hash_for_core_num_error_IntErrorKind.
+      Definition Self : Ty.t := Ty.path "core::num::error::IntErrorKind".
+      
+      (* Hash *)
+      Definition hash (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [ __H ], [ self; state ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "&") [] [ Ty.path "core::num::error::IntErrorKind" ],
+                self
+              |) in
+            let state := M.alloc (| Ty.apply (Ty.path "&mut") [] [ __H ], state |) in
+            M.read (|
+              let~ __self_discr : Ty.path "isize" :=
+                M.call_closure (|
+                  Ty.path "isize",
+                  M.get_function (|
+                    "core::intrinsics::discriminant_value",
+                    [],
+                    [ Ty.path "core::num::error::IntErrorKind" ]
+                  |),
+                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                |) in
+              M.alloc (|
+                Ty.tuple [],
+                M.call_closure (|
+                  Ty.tuple [],
+                  M.get_trait_method (|
+                    "core::hash::Hash",
+                    Ty.path "isize",
+                    [],
+                    [],
+                    "hash",
+                    [],
+                    [ __H ]
+                  |),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
+                    |);
+                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                  ]
+                |)
+              |)
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::hash::Hash"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [ ("hash", InstanceField.Method hash) ].
+    End Impl_core_hash_Hash_for_core_num_error_IntErrorKind.
+    
     Module Impl_core_num_error_ParseIntError.
       Definition Self : Ty.t := Ty.path "core::num::error::ParseIntError".
       
@@ -960,8 +987,14 @@ Module num.
       
       (*
           fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-              #[allow(deprecated)]
-              self.description().fmt(f)
+              match self.kind {
+                  IntErrorKind::Empty => "cannot parse integer from empty string",
+                  IntErrorKind::InvalidDigit => "invalid digit found in string",
+                  IntErrorKind::PosOverflow => "number too large to fit in target type",
+                  IntErrorKind::NegOverflow => "number too small to fit in target type",
+                  IntErrorKind::Zero => "number would be zero for non-zero type",
+              }
+              .fmt(f)
           }
       *)
       Definition fmt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -985,18 +1018,61 @@ Module num.
                 M.borrow (|
                   Pointer.Kind.Ref,
                   M.deref (|
-                    M.call_closure (|
+                    M.match_operator (|
                       Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                      M.get_trait_method (|
-                        "core::error::Error",
-                        Ty.path "core::num::error::ParseIntError",
-                        [],
-                        [],
-                        "description",
-                        [],
-                        []
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "core::num::error::ParseIntError",
+                        "kind"
                       |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let _ :=
+                              M.is_struct_tuple (| γ, "core::num::error::IntErrorKind::Empty" |) in
+                            mk_str (| "cannot parse integer from empty string" |)));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let _ :=
+                              M.is_struct_tuple (|
+                                γ,
+                                "core::num::error::IntErrorKind::InvalidDigit"
+                              |) in
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| mk_str (| "invalid digit found in string" |) |)
+                            |)));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let _ :=
+                              M.is_struct_tuple (|
+                                γ,
+                                "core::num::error::IntErrorKind::PosOverflow"
+                              |) in
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| mk_str (| "number too large to fit in target type" |) |)
+                            |)));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let _ :=
+                              M.is_struct_tuple (|
+                                γ,
+                                "core::num::error::IntErrorKind::NegOverflow"
+                              |) in
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| mk_str (| "number too small to fit in target type" |) |)
+                            |)));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let _ :=
+                              M.is_struct_tuple (| γ, "core::num::error::IntErrorKind::Zero" |) in
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| mk_str (| "number would be zero for non-zero type" |) |)
+                            |)))
+                      ]
                     |)
                   |)
                 |);
@@ -1018,84 +1094,13 @@ Module num.
     Module Impl_core_error_Error_for_core_num_error_ParseIntError.
       Definition Self : Ty.t := Ty.path "core::num::error::ParseIntError".
       
-      (*
-          fn description(&self) -> &str {
-              match self.kind {
-                  IntErrorKind::Empty => "cannot parse integer from empty string",
-                  IntErrorKind::InvalidDigit => "invalid digit found in string",
-                  IntErrorKind::PosOverflow => "number too large to fit in target type",
-                  IntErrorKind::NegOverflow => "number too small to fit in target type",
-                  IntErrorKind::Zero => "number would be zero for non-zero type",
-              }
-          }
-      *)
-      Definition description (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [ self ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (|
-                Ty.apply (Ty.path "&") [] [ Ty.path "core::num::error::ParseIntError" ],
-                self
-              |) in
-            M.match_operator (|
-              Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-              M.SubPointer.get_struct_record_field (|
-                M.deref (| M.read (| self |) |),
-                "core::num::error::ParseIntError",
-                "kind"
-              |),
-              [
-                fun γ =>
-                  ltac:(M.monadic
-                    (let _ := M.is_struct_tuple (| γ, "core::num::error::IntErrorKind::Empty" |) in
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| mk_str (| "cannot parse integer from empty string" |) |)
-                    |)));
-                fun γ =>
-                  ltac:(M.monadic
-                    (let _ :=
-                      M.is_struct_tuple (| γ, "core::num::error::IntErrorKind::InvalidDigit" |) in
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| mk_str (| "invalid digit found in string" |) |)
-                    |)));
-                fun γ =>
-                  ltac:(M.monadic
-                    (let _ :=
-                      M.is_struct_tuple (| γ, "core::num::error::IntErrorKind::PosOverflow" |) in
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| mk_str (| "number too large to fit in target type" |) |)
-                    |)));
-                fun γ =>
-                  ltac:(M.monadic
-                    (let _ :=
-                      M.is_struct_tuple (| γ, "core::num::error::IntErrorKind::NegOverflow" |) in
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| mk_str (| "number too small to fit in target type" |) |)
-                    |)));
-                fun γ =>
-                  ltac:(M.monadic
-                    (let _ := M.is_struct_tuple (| γ, "core::num::error::IntErrorKind::Zero" |) in
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| mk_str (| "number would be zero for non-zero type" |) |)
-                    |)))
-              ]
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
       Axiom Implements :
         M.IsTraitInstance
           "core::error::Error"
           (* Trait polymorphic consts *) []
           (* Trait polymorphic types *) []
           Self
-          (* Instance *) [ ("description", InstanceField.Method description) ].
+          (* Instance *) [].
     End Impl_core_error_Error_for_core_num_error_ParseIntError.
   End error.
 End num.

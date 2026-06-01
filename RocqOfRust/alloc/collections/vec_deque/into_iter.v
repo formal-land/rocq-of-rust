@@ -466,15 +466,14 @@ Module collections.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  BinOp.lt,
-                                  [ M.read (| len |); M.read (| n |) ]
-                                |)
-                              |)) in
+                                BinOp.lt,
+                                [ M.read (| len |); M.read (| n |) ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.read (|
@@ -1690,32 +1689,31 @@ Module collections.
                                       fun γ =>
                                         ltac:(M.monadic
                                           (let γ :=
-                                            M.use
-                                              (M.alloc (|
+                                            M.alloc (|
+                                              Ty.path "bool",
+                                              M.call_closure (|
                                                 Ty.path "bool",
-                                                M.call_closure (|
-                                                  Ty.path "bool",
-                                                  BinOp.ge,
-                                                  [
-                                                    M.call_closure (|
-                                                      Ty.path "usize",
-                                                      M.get_associated_function (|
-                                                        Ty.apply (Ty.path "slice") [] [ T ],
-                                                        "len",
-                                                        [],
-                                                        []
-                                                      |),
-                                                      [
-                                                        M.borrow (|
-                                                          Pointer.Kind.Ref,
-                                                          M.deref (| M.read (| head |) |)
-                                                        |)
-                                                      ]
-                                                    |);
-                                                    N
-                                                  ]
-                                                |)
-                                              |)) in
+                                                BinOp.ge,
+                                                [
+                                                  M.call_closure (|
+                                                    Ty.path "usize",
+                                                    M.get_associated_function (|
+                                                      Ty.apply (Ty.path "slice") [] [ T ],
+                                                      "len",
+                                                      [],
+                                                      []
+                                                    |),
+                                                    [
+                                                      M.borrow (|
+                                                        Pointer.Kind.Ref,
+                                                        M.deref (| M.read (| head |) |)
+                                                      |)
+                                                    ]
+                                                  |);
+                                                  N
+                                                ]
+                                              |)
+                                            |) in
                                           let _ :=
                                             is_constant_or_break_match (|
                                               M.read (| γ |),
@@ -1727,7 +1725,7 @@ Module collections.
                                                 M.call_closure (|
                                                   Ty.tuple [],
                                                   M.get_function (|
-                                                    "core::intrinsics::copy_nonoverlapping",
+                                                    "core::ptr::copy_nonoverlapping",
                                                     [],
                                                     [ T ]
                                                   |),
@@ -1869,7 +1867,7 @@ Module collections.
                                   M.call_closure (|
                                     Ty.tuple [],
                                     M.get_function (|
-                                      "core::intrinsics::copy_nonoverlapping",
+                                      "core::ptr::copy_nonoverlapping",
                                       [],
                                       [ T ]
                                     |),
@@ -1951,32 +1949,31 @@ Module collections.
                                       fun γ =>
                                         ltac:(M.monadic
                                           (let γ :=
-                                            M.use
-                                              (M.alloc (|
+                                            M.alloc (|
+                                              Ty.path "bool",
+                                              M.call_closure (|
                                                 Ty.path "bool",
-                                                M.call_closure (|
-                                                  Ty.path "bool",
-                                                  BinOp.ge,
-                                                  [
-                                                    M.call_closure (|
-                                                      Ty.path "usize",
-                                                      M.get_associated_function (|
-                                                        Ty.apply (Ty.path "slice") [] [ T ],
-                                                        "len",
-                                                        [],
-                                                        []
-                                                      |),
-                                                      [
-                                                        M.borrow (|
-                                                          Pointer.Kind.Ref,
-                                                          M.deref (| M.read (| tail |) |)
-                                                        |)
-                                                      ]
-                                                    |);
-                                                    M.read (| remaining |)
-                                                  ]
-                                                |)
-                                              |)) in
+                                                BinOp.ge,
+                                                [
+                                                  M.call_closure (|
+                                                    Ty.path "usize",
+                                                    M.get_associated_function (|
+                                                      Ty.apply (Ty.path "slice") [] [ T ],
+                                                      "len",
+                                                      [],
+                                                      []
+                                                    |),
+                                                    [
+                                                      M.borrow (|
+                                                        Pointer.Kind.Ref,
+                                                        M.deref (| M.read (| tail |) |)
+                                                      |)
+                                                    ]
+                                                  |);
+                                                  M.read (| remaining |)
+                                                ]
+                                              |)
+                                            |) in
                                           let _ :=
                                             is_constant_or_break_match (|
                                               M.read (| γ |),
@@ -1987,7 +1984,7 @@ Module collections.
                                               M.call_closure (|
                                                 Ty.tuple [],
                                                 M.get_function (|
-                                                  "core::intrinsics::copy_nonoverlapping",
+                                                  "core::ptr::copy_nonoverlapping",
                                                   [],
                                                   [ T ]
                                                 |),
@@ -2163,7 +2160,7 @@ Module collections.
                                               M.call_closure (|
                                                 Ty.tuple [],
                                                 M.get_function (|
-                                                  "core::intrinsics::copy_nonoverlapping",
+                                                  "core::ptr::copy_nonoverlapping",
                                                   [],
                                                   [ T ]
                                                 |),
@@ -2487,15 +2484,14 @@ Module collections.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  BinOp.lt,
-                                  [ M.read (| len |); M.read (| n |) ]
-                                |)
-                              |)) in
+                                BinOp.lt,
+                                [ M.read (| len |); M.read (| n |) ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.read (|

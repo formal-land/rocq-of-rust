@@ -42,26 +42,23 @@ Module algorithms.
                   fun γ =>
                     ltac:(M.monadic
                       (let γ :=
-                        M.use
-                          (M.alloc (|
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
                             Ty.path "bool",
-                            M.call_closure (|
-                              Ty.path "bool",
-                              M.get_trait_method (|
-                                "core::cmp::PartialOrd",
-                                Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                [],
-                                [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
-                                "gt",
-                                [],
-                                []
-                              |),
-                              [
-                                M.borrow (| Pointer.Kind.Ref, b |);
-                                M.borrow (| Pointer.Kind.Ref, a |)
-                              ]
-                            |)
-                          |)) in
+                            M.get_trait_method (|
+                              "core::cmp::PartialOrd",
+                              Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                              [],
+                              [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
+                              "gt",
+                              [],
+                              []
+                            |),
+                            [ M.borrow (| Pointer.Kind.Ref, b |); M.borrow (| Pointer.Kind.Ref, a |)
+                            ]
+                          |)
+                        |) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       M.read (|
                         let~ _ : Ty.tuple [] :=
@@ -102,33 +99,32 @@ Module algorithms.
                           fun γ =>
                             ltac:(M.monadic
                               (let γ :=
-                                M.use
-                                  (M.alloc (|
+                                M.alloc (|
+                                  Ty.path "bool",
+                                  M.call_closure (|
                                     Ty.path "bool",
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      M.get_trait_method (|
-                                        "core::cmp::PartialEq",
-                                        Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                        [],
-                                        [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
-                                        "ne",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (| Pointer.Kind.Ref, b |);
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          get_associated_constant (|
-                                            Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                            "ZERO",
-                                            Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []
-                                          |)
+                                    M.get_trait_method (|
+                                      "core::cmp::PartialEq",
+                                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                      [],
+                                      [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
+                                      "ne",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (| Pointer.Kind.Ref, b |);
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        get_associated_constant (|
+                                          Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                          "ZERO",
+                                          Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []
                                         |)
-                                      ]
-                                    |)
-                                  |)) in
+                                      |)
+                                    ]
+                                  |)
+                                |) in
                               let _ :=
                                 is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                               M.read (|
@@ -139,8 +135,7 @@ Module algorithms.
                                     [
                                       fun γ =>
                                         ltac:(M.monadic
-                                          (let γ :=
-                                            M.use (M.alloc (| Ty.path "bool", Value.Bool true |)) in
+                                          (let γ := M.alloc (| Ty.path "bool", Value.Bool true |) in
                                           let _ :=
                                             is_constant_or_break_match (|
                                               M.read (| γ |),
@@ -155,46 +150,42 @@ Module algorithms.
                                                   fun γ =>
                                                     ltac:(M.monadic
                                                       (let γ :=
-                                                        M.use
-                                                          (M.alloc (|
+                                                        M.alloc (|
+                                                          Ty.path "bool",
+                                                          M.call_closure (|
                                                             Ty.path "bool",
-                                                            M.call_closure (|
-                                                              Ty.path "bool",
-                                                              UnOp.not,
-                                                              [
-                                                                M.call_closure (|
-                                                                  Ty.path "bool",
-                                                                  M.get_trait_method (|
-                                                                    "core::cmp::PartialOrd",
+                                                            UnOp.not,
+                                                            [
+                                                              M.call_closure (|
+                                                                Ty.path "bool",
+                                                                M.get_trait_method (|
+                                                                  "core::cmp::PartialOrd",
+                                                                  Ty.apply
+                                                                    (Ty.path "ruint::Uint")
+                                                                    [ BITS; LIMBS ]
+                                                                    [],
+                                                                  [],
+                                                                  [
                                                                     Ty.apply
                                                                       (Ty.path "ruint::Uint")
                                                                       [ BITS; LIMBS ]
-                                                                      [],
-                                                                    [],
-                                                                    [
-                                                                      Ty.apply
-                                                                        (Ty.path "ruint::Uint")
-                                                                        [ BITS; LIMBS ]
-                                                                        []
-                                                                    ],
-                                                                    "ge",
-                                                                    [],
-                                                                    []
-                                                                  |),
-                                                                  [
-                                                                    M.borrow (|
-                                                                      Pointer.Kind.Ref,
-                                                                      a
-                                                                    |);
-                                                                    M.borrow (|
-                                                                      Pointer.Kind.Ref,
-                                                                      b
-                                                                    |)
-                                                                  ]
-                                                                |)
-                                                              ]
-                                                            |)
-                                                          |)) in
+                                                                      []
+                                                                  ],
+                                                                  "ge",
+                                                                  [],
+                                                                  []
+                                                                |),
+                                                                [
+                                                                  M.borrow (|
+                                                                    Pointer.Kind.Ref,
+                                                                    a
+                                                                  |);
+                                                                  M.borrow (| Pointer.Kind.Ref, b |)
+                                                                ]
+                                                              |)
+                                                            ]
+                                                          |)
+                                                        |) in
                                                       let _ :=
                                                         is_constant_or_break_match (|
                                                           M.read (| γ |),
@@ -240,39 +231,35 @@ Module algorithms.
                                       fun γ =>
                                         ltac:(M.monadic
                                           (let γ :=
-                                            M.use
-                                              (M.alloc (|
+                                            M.alloc (|
+                                              Ty.path "bool",
+                                              M.call_closure (|
                                                 Ty.path "bool",
-                                                M.call_closure (|
-                                                  Ty.path "bool",
-                                                  M.get_trait_method (|
-                                                    "core::cmp::PartialEq",
-                                                    Ty.path
-                                                      "ruint::algorithms::gcd::matrix::Matrix",
-                                                    [],
-                                                    [
+                                                M.get_trait_method (|
+                                                  "core::cmp::PartialEq",
+                                                  Ty.path "ruint::algorithms::gcd::matrix::Matrix",
+                                                  [],
+                                                  [ Ty.path "ruint::algorithms::gcd::matrix::Matrix"
+                                                  ],
+                                                  "eq",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.borrow (| Pointer.Kind.Ref, m |);
+                                                  M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    get_associated_constant (|
+                                                      Ty.path
+                                                        "ruint::algorithms::gcd::matrix::Matrix",
+                                                      "IDENTITY",
                                                       Ty.path
                                                         "ruint::algorithms::gcd::matrix::Matrix"
-                                                    ],
-                                                    "eq",
-                                                    [],
-                                                    []
-                                                  |),
-                                                  [
-                                                    M.borrow (| Pointer.Kind.Ref, m |);
-                                                    M.borrow (|
-                                                      Pointer.Kind.Ref,
-                                                      get_associated_constant (|
-                                                        Ty.path
-                                                          "ruint::algorithms::gcd::matrix::Matrix",
-                                                        "IDENTITY",
-                                                        Ty.path
-                                                          "ruint::algorithms::gcd::matrix::Matrix"
-                                                      |)
                                                     |)
-                                                  ]
-                                                |)
-                                              |)) in
+                                                  |)
+                                                ]
+                                              |)
+                                            |) in
                                           let _ :=
                                             is_constant_or_break_match (|
                                               M.read (| γ |),
@@ -476,15 +463,14 @@ Module algorithms.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  BinOp.eq,
-                                  [ BITS; Value.Integer IntegerKind.Usize 0 ]
-                                |)
-                              |)) in
+                                BinOp.eq,
+                                [ BITS; Value.Integer IntegerKind.Usize 0 ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -542,7 +528,7 @@ Module algorithms.
                     [
                       fun γ =>
                         ltac:(M.monadic
-                          (let γ := M.use swapped in
+                          (let γ := swapped in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.read (|
@@ -623,33 +609,32 @@ Module algorithms.
                               fun γ =>
                                 ltac:(M.monadic
                                   (let γ :=
-                                    M.use
-                                      (M.alloc (|
+                                    M.alloc (|
+                                      Ty.path "bool",
+                                      M.call_closure (|
                                         Ty.path "bool",
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          M.get_trait_method (|
-                                            "core::cmp::PartialEq",
-                                            Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                            [],
-                                            [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
-                                            "ne",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            M.borrow (| Pointer.Kind.Ref, b |);
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              get_associated_constant (|
-                                                Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                                "ZERO",
-                                                Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []
-                                              |)
+                                        M.get_trait_method (|
+                                          "core::cmp::PartialEq",
+                                          Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                          [],
+                                          [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
+                                          "ne",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.borrow (| Pointer.Kind.Ref, b |);
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            get_associated_constant (|
+                                              Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                              "ZERO",
+                                              Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []
                                             |)
-                                          ]
-                                        |)
-                                      |)) in
+                                          |)
+                                        ]
+                                      |)
+                                    |) in
                                   let _ :=
                                     is_constant_or_break_match (|
                                       M.read (| γ |),
@@ -664,8 +649,7 @@ Module algorithms.
                                           fun γ =>
                                             ltac:(M.monadic
                                               (let γ :=
-                                                M.use
-                                                  (M.alloc (| Ty.path "bool", Value.Bool true |)) in
+                                                M.alloc (| Ty.path "bool", Value.Bool true |) in
                                               let _ :=
                                                 is_constant_or_break_match (|
                                                   M.read (| γ |),
@@ -680,46 +664,45 @@ Module algorithms.
                                                       fun γ =>
                                                         ltac:(M.monadic
                                                           (let γ :=
-                                                            M.use
-                                                              (M.alloc (|
+                                                            M.alloc (|
+                                                              Ty.path "bool",
+                                                              M.call_closure (|
                                                                 Ty.path "bool",
-                                                                M.call_closure (|
-                                                                  Ty.path "bool",
-                                                                  UnOp.not,
-                                                                  [
-                                                                    M.call_closure (|
-                                                                      Ty.path "bool",
-                                                                      M.get_trait_method (|
-                                                                        "core::cmp::PartialOrd",
+                                                                UnOp.not,
+                                                                [
+                                                                  M.call_closure (|
+                                                                    Ty.path "bool",
+                                                                    M.get_trait_method (|
+                                                                      "core::cmp::PartialOrd",
+                                                                      Ty.apply
+                                                                        (Ty.path "ruint::Uint")
+                                                                        [ BITS; LIMBS ]
+                                                                        [],
+                                                                      [],
+                                                                      [
                                                                         Ty.apply
                                                                           (Ty.path "ruint::Uint")
                                                                           [ BITS; LIMBS ]
-                                                                          [],
-                                                                        [],
-                                                                        [
-                                                                          Ty.apply
-                                                                            (Ty.path "ruint::Uint")
-                                                                            [ BITS; LIMBS ]
-                                                                            []
-                                                                        ],
-                                                                        "ge",
-                                                                        [],
-                                                                        []
-                                                                      |),
-                                                                      [
-                                                                        M.borrow (|
-                                                                          Pointer.Kind.Ref,
-                                                                          a
-                                                                        |);
-                                                                        M.borrow (|
-                                                                          Pointer.Kind.Ref,
-                                                                          b
-                                                                        |)
-                                                                      ]
-                                                                    |)
-                                                                  ]
-                                                                |)
-                                                              |)) in
+                                                                          []
+                                                                      ],
+                                                                      "ge",
+                                                                      [],
+                                                                      []
+                                                                    |),
+                                                                    [
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        a
+                                                                      |);
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        b
+                                                                      |)
+                                                                    ]
+                                                                  |)
+                                                                ]
+                                                              |)
+                                                            |) in
                                                           let _ :=
                                                             is_constant_or_break_match (|
                                                               M.read (| γ |),
@@ -768,39 +751,38 @@ Module algorithms.
                                           fun γ =>
                                             ltac:(M.monadic
                                               (let γ :=
-                                                M.use
-                                                  (M.alloc (|
+                                                M.alloc (|
+                                                  Ty.path "bool",
+                                                  M.call_closure (|
                                                     Ty.path "bool",
-                                                    M.call_closure (|
-                                                      Ty.path "bool",
-                                                      M.get_trait_method (|
-                                                        "core::cmp::PartialEq",
+                                                    M.get_trait_method (|
+                                                      "core::cmp::PartialEq",
+                                                      Ty.path
+                                                        "ruint::algorithms::gcd::matrix::Matrix",
+                                                      [],
+                                                      [
                                                         Ty.path
-                                                          "ruint::algorithms::gcd::matrix::Matrix",
-                                                        [],
-                                                        [
+                                                          "ruint::algorithms::gcd::matrix::Matrix"
+                                                      ],
+                                                      "eq",
+                                                      [],
+                                                      []
+                                                    |),
+                                                    [
+                                                      M.borrow (| Pointer.Kind.Ref, m |);
+                                                      M.borrow (|
+                                                        Pointer.Kind.Ref,
+                                                        get_associated_constant (|
+                                                          Ty.path
+                                                            "ruint::algorithms::gcd::matrix::Matrix",
+                                                          "IDENTITY",
                                                           Ty.path
                                                             "ruint::algorithms::gcd::matrix::Matrix"
-                                                        ],
-                                                        "eq",
-                                                        [],
-                                                        []
-                                                      |),
-                                                      [
-                                                        M.borrow (| Pointer.Kind.Ref, m |);
-                                                        M.borrow (|
-                                                          Pointer.Kind.Ref,
-                                                          get_associated_constant (|
-                                                            Ty.path
-                                                              "ruint::algorithms::gcd::matrix::Matrix",
-                                                            "IDENTITY",
-                                                            Ty.path
-                                                              "ruint::algorithms::gcd::matrix::Matrix"
-                                                          |)
                                                         |)
-                                                      ]
-                                                    |)
-                                                  |)) in
+                                                      |)
+                                                    ]
+                                                  |)
+                                                |) in
                                               let _ :=
                                                 is_constant_or_break_match (|
                                                   M.read (| γ |),
@@ -1208,7 +1190,7 @@ Module algorithms.
                     [
                       fun γ =>
                         ltac:(M.monadic
-                          (let γ := M.use even in
+                          (let γ := even in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.read (|
@@ -1280,7 +1262,7 @@ Module algorithms.
                     [
                       fun γ =>
                         ltac:(M.monadic
-                          (let γ := M.use swapped in
+                          (let γ := swapped in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.read (|
@@ -1403,41 +1385,40 @@ Module algorithms.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
-                                Ty.path "bool",
-                                LogicalOp.or (|
-                                  M.call_closure (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              LogicalOp.or (|
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [ BITS; Value.Integer IntegerKind.Usize 0 ]
+                                |),
+                                ltac:(M.monadic
+                                  (M.call_closure (|
                                     Ty.path "bool",
-                                    BinOp.eq,
-                                    [ BITS; Value.Integer IntegerKind.Usize 0 ]
-                                  |),
-                                  ltac:(M.monadic
-                                    (M.call_closure (|
-                                      Ty.path "bool",
-                                      M.get_trait_method (|
-                                        "core::cmp::PartialEq",
-                                        Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                        [],
-                                        [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
-                                        "eq",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (| Pointer.Kind.Ref, modulus |);
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          get_associated_constant (|
-                                            Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                            "ZERO",
-                                            Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []
-                                          |)
+                                    M.get_trait_method (|
+                                      "core::cmp::PartialEq",
+                                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                      [],
+                                      [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
+                                      "eq",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (| Pointer.Kind.Ref, modulus |);
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        get_associated_constant (|
+                                          Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                          "ZERO",
+                                          Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []
                                         |)
-                                      ]
-                                    |)))
-                                |)
-                              |)) in
+                                      |)
+                                    ]
+                                  |)))
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -1465,26 +1446,25 @@ Module algorithms.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  M.get_trait_method (|
-                                    "core::cmp::PartialOrd",
-                                    Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                    [],
-                                    [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
-                                    "ge",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.borrow (| Pointer.Kind.Ref, b |);
-                                    M.borrow (| Pointer.Kind.Ref, a |)
-                                  ]
-                                |)
-                              |)) in
+                                M.get_trait_method (|
+                                  "core::cmp::PartialOrd",
+                                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                  [],
+                                  [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
+                                  "ge",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.borrow (| Pointer.Kind.Ref, b |);
+                                  M.borrow (| Pointer.Kind.Ref, a |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.read (|
@@ -1515,33 +1495,32 @@ Module algorithms.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  M.get_trait_method (|
-                                    "core::cmp::PartialEq",
-                                    Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                    [],
-                                    [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
-                                    "eq",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.borrow (| Pointer.Kind.Ref, b |);
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      get_associated_constant (|
-                                        Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                        "ZERO",
-                                        Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []
-                                      |)
+                                M.get_trait_method (|
+                                  "core::cmp::PartialEq",
+                                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                  [],
+                                  [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
+                                  "eq",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.borrow (| Pointer.Kind.Ref, b |);
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    get_associated_constant (|
+                                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                      "ZERO",
+                                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []
                                     |)
-                                  ]
-                                |)
-                              |)) in
+                                  |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -1592,33 +1571,32 @@ Module algorithms.
                               fun γ =>
                                 ltac:(M.monadic
                                   (let γ :=
-                                    M.use
-                                      (M.alloc (|
+                                    M.alloc (|
+                                      Ty.path "bool",
+                                      M.call_closure (|
                                         Ty.path "bool",
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          M.get_trait_method (|
-                                            "core::cmp::PartialEq",
-                                            Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                            [],
-                                            [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
-                                            "ne",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            M.borrow (| Pointer.Kind.Ref, b |);
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              get_associated_constant (|
-                                                Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                                "ZERO",
-                                                Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []
-                                              |)
+                                        M.get_trait_method (|
+                                          "core::cmp::PartialEq",
+                                          Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                          [],
+                                          [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
+                                          "ne",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.borrow (| Pointer.Kind.Ref, b |);
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            get_associated_constant (|
+                                              Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                              "ZERO",
+                                              Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []
                                             |)
-                                          ]
-                                        |)
-                                      |)) in
+                                          |)
+                                        ]
+                                      |)
+                                    |) in
                                   let _ :=
                                     is_constant_or_break_match (|
                                       M.read (| γ |),
@@ -1633,8 +1611,7 @@ Module algorithms.
                                           fun γ =>
                                             ltac:(M.monadic
                                               (let γ :=
-                                                M.use
-                                                  (M.alloc (| Ty.path "bool", Value.Bool true |)) in
+                                                M.alloc (| Ty.path "bool", Value.Bool true |) in
                                               let _ :=
                                                 is_constant_or_break_match (|
                                                   M.read (| γ |),
@@ -1649,46 +1626,45 @@ Module algorithms.
                                                       fun γ =>
                                                         ltac:(M.monadic
                                                           (let γ :=
-                                                            M.use
-                                                              (M.alloc (|
+                                                            M.alloc (|
+                                                              Ty.path "bool",
+                                                              M.call_closure (|
                                                                 Ty.path "bool",
-                                                                M.call_closure (|
-                                                                  Ty.path "bool",
-                                                                  UnOp.not,
-                                                                  [
-                                                                    M.call_closure (|
-                                                                      Ty.path "bool",
-                                                                      M.get_trait_method (|
-                                                                        "core::cmp::PartialOrd",
+                                                                UnOp.not,
+                                                                [
+                                                                  M.call_closure (|
+                                                                    Ty.path "bool",
+                                                                    M.get_trait_method (|
+                                                                      "core::cmp::PartialOrd",
+                                                                      Ty.apply
+                                                                        (Ty.path "ruint::Uint")
+                                                                        [ BITS; LIMBS ]
+                                                                        [],
+                                                                      [],
+                                                                      [
                                                                         Ty.apply
                                                                           (Ty.path "ruint::Uint")
                                                                           [ BITS; LIMBS ]
-                                                                          [],
-                                                                        [],
-                                                                        [
-                                                                          Ty.apply
-                                                                            (Ty.path "ruint::Uint")
-                                                                            [ BITS; LIMBS ]
-                                                                            []
-                                                                        ],
-                                                                        "ge",
-                                                                        [],
-                                                                        []
-                                                                      |),
-                                                                      [
-                                                                        M.borrow (|
-                                                                          Pointer.Kind.Ref,
-                                                                          a
-                                                                        |);
-                                                                        M.borrow (|
-                                                                          Pointer.Kind.Ref,
-                                                                          b
-                                                                        |)
-                                                                      ]
-                                                                    |)
-                                                                  ]
-                                                                |)
-                                                              |)) in
+                                                                          []
+                                                                      ],
+                                                                      "ge",
+                                                                      [],
+                                                                      []
+                                                                    |),
+                                                                    [
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        a
+                                                                      |);
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        b
+                                                                      |)
+                                                                    ]
+                                                                  |)
+                                                                ]
+                                                              |)
+                                                            |) in
                                                           let _ :=
                                                             is_constant_or_break_match (|
                                                               M.read (| γ |),
@@ -1737,39 +1713,38 @@ Module algorithms.
                                           fun γ =>
                                             ltac:(M.monadic
                                               (let γ :=
-                                                M.use
-                                                  (M.alloc (|
+                                                M.alloc (|
+                                                  Ty.path "bool",
+                                                  M.call_closure (|
                                                     Ty.path "bool",
-                                                    M.call_closure (|
-                                                      Ty.path "bool",
-                                                      M.get_trait_method (|
-                                                        "core::cmp::PartialEq",
+                                                    M.get_trait_method (|
+                                                      "core::cmp::PartialEq",
+                                                      Ty.path
+                                                        "ruint::algorithms::gcd::matrix::Matrix",
+                                                      [],
+                                                      [
                                                         Ty.path
-                                                          "ruint::algorithms::gcd::matrix::Matrix",
-                                                        [],
-                                                        [
+                                                          "ruint::algorithms::gcd::matrix::Matrix"
+                                                      ],
+                                                      "eq",
+                                                      [],
+                                                      []
+                                                    |),
+                                                    [
+                                                      M.borrow (| Pointer.Kind.Ref, m |);
+                                                      M.borrow (|
+                                                        Pointer.Kind.Ref,
+                                                        get_associated_constant (|
+                                                          Ty.path
+                                                            "ruint::algorithms::gcd::matrix::Matrix",
+                                                          "IDENTITY",
                                                           Ty.path
                                                             "ruint::algorithms::gcd::matrix::Matrix"
-                                                        ],
-                                                        "eq",
-                                                        [],
-                                                        []
-                                                      |),
-                                                      [
-                                                        M.borrow (| Pointer.Kind.Ref, m |);
-                                                        M.borrow (|
-                                                          Pointer.Kind.Ref,
-                                                          get_associated_constant (|
-                                                            Ty.path
-                                                              "ruint::algorithms::gcd::matrix::Matrix",
-                                                            "IDENTITY",
-                                                            Ty.path
-                                                              "ruint::algorithms::gcd::matrix::Matrix"
-                                                          |)
                                                         |)
-                                                      ]
-                                                    |)
-                                                  |)) in
+                                                      |)
+                                                    ]
+                                                  |)
+                                                |) in
                                               let _ :=
                                                 is_constant_or_break_match (|
                                                   M.read (| γ |),
@@ -2083,41 +2058,40 @@ Module algorithms.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  M.get_trait_method (|
-                                    "core::cmp::PartialEq",
-                                    Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                    [],
-                                    [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
-                                    "eq",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.borrow (| Pointer.Kind.Ref, a |);
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.alloc (|
+                                M.get_trait_method (|
+                                  "core::cmp::PartialEq",
+                                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                  [],
+                                  [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
+                                  "eq",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.borrow (| Pointer.Kind.Ref, a |);
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                      M.call_closure (|
                                         Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                        M.call_closure (|
+                                        M.get_associated_function (|
                                           Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                          M.get_associated_function (|
-                                            Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                            "from",
-                                            [],
-                                            [ Ty.path "i32" ]
-                                          |),
-                                          [ Value.Integer IntegerKind.I32 1 ]
-                                        |)
+                                          "from",
+                                          [],
+                                          [ Ty.path "i32" ]
+                                        |),
+                                        [ Value.Integer IntegerKind.I32 1 ]
                                       |)
                                     |)
-                                  ]
-                                |)
-                              |)) in
+                                  |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           Value.StructTuple
@@ -2131,7 +2105,7 @@ Module algorithms.
                                 [
                                   fun γ =>
                                     ltac:(M.monadic
-                                      (let γ := M.use even in
+                                      (let γ := even in
                                       let _ :=
                                         is_constant_or_break_match (|
                                           M.read (| γ |),

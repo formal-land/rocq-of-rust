@@ -569,7 +569,7 @@ Module mem.
       Global Typeclasses Opaque into_inner.
       
       (*
-          pub unsafe fn take(slot: &mut ManuallyDrop<T>) -> T {
+          pub const unsafe fn take(slot: &mut ManuallyDrop<T>) -> T {
               // SAFETY: we are reading from a reference, which is guaranteed
               // to be valid for reads.
               unsafe { ptr::read(&slot.value) }
@@ -616,7 +616,10 @@ Module mem.
       Admitted.
       Global Typeclasses Opaque take.
       (*
-          pub unsafe fn drop(slot: &mut ManuallyDrop<T>) {
+          pub const unsafe fn drop(slot: &mut ManuallyDrop<T>)
+          where
+              T: [const] Destruct,
+          {
               // SAFETY: we are dropping the value pointed to by a mutable reference
               // which is guaranteed to be valid for writes.
               // It is up to the caller to make sure that `slot` isn't dropped again.

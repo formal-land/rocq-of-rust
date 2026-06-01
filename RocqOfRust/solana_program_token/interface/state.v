@@ -25,6 +25,18 @@ Module state.
         ];
     } *)
   
+  Module Impl_core_clone_TrivialClone_for_spl_token_interface_state_Mint.
+    Definition Self : Ty.t := Ty.path "spl_token_interface::state::Mint".
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "core::clone::TrivialClone"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        Self
+        (* Instance *) [].
+  End Impl_core_clone_TrivialClone_for_spl_token_interface_state_Mint.
+  
   Module Impl_core_clone_Clone_for_spl_token_interface_state_Mint.
     Definition Self : Ty.t := Ty.path "spl_token_interface::state::Mint".
     
@@ -440,38 +452,20 @@ Module state.
                 LogicalOp.and (|
                   M.call_closure (|
                     Ty.path "bool",
-                    M.get_trait_method (|
-                      "core::cmp::PartialEq",
-                      Ty.apply
-                        (Ty.path "solana_program_option::COption")
-                        []
-                        [ Ty.path "solana_address::Address" ],
-                      [],
-                      [
-                        Ty.apply
-                          (Ty.path "solana_program_option::COption")
-                          []
-                          [ Ty.path "solana_address::Address" ]
-                      ],
-                      "eq",
-                      [],
-                      []
-                    |),
+                    BinOp.eq,
                     [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
+                      M.read (|
                         M.SubPointer.get_struct_record_field (|
                           M.deref (| M.read (| self |) |),
                           "spl_token_interface::state::Mint",
-                          "mint_authority"
+                          "supply"
                         |)
                       |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
+                      M.read (|
                         M.SubPointer.get_struct_record_field (|
                           M.deref (| M.read (| other |) |),
                           "spl_token_interface::state::Mint",
-                          "mint_authority"
+                          "supply"
                         |)
                       |)
                     ]
@@ -485,14 +479,14 @@ Module state.
                           M.SubPointer.get_struct_record_field (|
                             M.deref (| M.read (| self |) |),
                             "spl_token_interface::state::Mint",
-                            "supply"
+                            "decimals"
                           |)
                         |);
                         M.read (|
                           M.SubPointer.get_struct_record_field (|
                             M.deref (| M.read (| other |) |),
                             "spl_token_interface::state::Mint",
-                            "supply"
+                            "decimals"
                           |)
                         |)
                       ]
@@ -507,14 +501,14 @@ Module state.
                         M.SubPointer.get_struct_record_field (|
                           M.deref (| M.read (| self |) |),
                           "spl_token_interface::state::Mint",
-                          "decimals"
+                          "is_initialized"
                         |)
                       |);
                       M.read (|
                         M.SubPointer.get_struct_record_field (|
                           M.deref (| M.read (| other |) |),
                           "spl_token_interface::state::Mint",
-                          "decimals"
+                          "is_initialized"
                         |)
                       |)
                     ]
@@ -523,20 +517,38 @@ Module state.
               ltac:(M.monadic
                 (M.call_closure (|
                   Ty.path "bool",
-                  BinOp.eq,
+                  M.get_trait_method (|
+                    "core::cmp::PartialEq",
+                    Ty.apply
+                      (Ty.path "solana_program_option::COption")
+                      []
+                      [ Ty.path "solana_address::Address" ],
+                    [],
+                    [
+                      Ty.apply
+                        (Ty.path "solana_program_option::COption")
+                        []
+                        [ Ty.path "solana_address::Address" ]
+                    ],
+                    "eq",
+                    [],
+                    []
+                  |),
                   [
-                    M.read (|
+                    M.borrow (|
+                      Pointer.Kind.Ref,
                       M.SubPointer.get_struct_record_field (|
                         M.deref (| M.read (| self |) |),
                         "spl_token_interface::state::Mint",
-                        "is_initialized"
+                        "mint_authority"
                       |)
                     |);
-                    M.read (|
+                    M.borrow (|
+                      Pointer.Kind.Ref,
                       M.SubPointer.get_struct_record_field (|
                         M.deref (| M.read (| other |) |),
                         "spl_token_interface::state::Mint",
-                        "is_initialized"
+                        "mint_authority"
                       |)
                     |)
                   ]
@@ -1943,6 +1955,18 @@ Module state.
         ];
     } *)
   
+  Module Impl_core_clone_TrivialClone_for_spl_token_interface_state_Account.
+    Definition Self : Ty.t := Ty.path "spl_token_interface::state::Account".
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "core::clone::TrivialClone"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        Self
+        (* Instance *) [].
+  End Impl_core_clone_TrivialClone_for_spl_token_interface_state_Account.
+  
   Module Impl_core_clone_Clone_for_spl_token_interface_state_Account.
     Definition Self : Ty.t := Ty.path "spl_token_interface::state::Account".
     
@@ -2680,6 +2704,49 @@ Module state.
                       LogicalOp.and (|
                         M.call_closure (|
                           Ty.path "bool",
+                          BinOp.eq,
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "spl_token_interface::state::Account",
+                                "amount"
+                              |)
+                            |);
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| other |) |),
+                                "spl_token_interface::state::Account",
+                                "amount"
+                              |)
+                            |)
+                          ]
+                        |),
+                        ltac:(M.monadic
+                          (M.call_closure (|
+                            Ty.path "bool",
+                            BinOp.eq,
+                            [
+                              M.read (|
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "spl_token_interface::state::Account",
+                                  "delegated_amount"
+                                |)
+                              |);
+                              M.read (|
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| other |) |),
+                                  "spl_token_interface::state::Account",
+                                  "delegated_amount"
+                                |)
+                              |)
+                            ]
+                          |)))
+                      |),
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "bool",
                           M.get_trait_method (|
                             "core::cmp::PartialEq",
                             Ty.path "solana_address::Address",
@@ -2707,59 +2774,6 @@ Module state.
                               |)
                             |)
                           ]
-                        |),
-                        ltac:(M.monadic
-                          (M.call_closure (|
-                            Ty.path "bool",
-                            M.get_trait_method (|
-                              "core::cmp::PartialEq",
-                              Ty.path "solana_address::Address",
-                              [],
-                              [ Ty.path "solana_address::Address" ],
-                              "eq",
-                              [],
-                              []
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "spl_token_interface::state::Account",
-                                  "owner"
-                                |)
-                              |);
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| other |) |),
-                                  "spl_token_interface::state::Account",
-                                  "owner"
-                                |)
-                              |)
-                            ]
-                          |)))
-                      |),
-                      ltac:(M.monadic
-                        (M.call_closure (|
-                          Ty.path "bool",
-                          BinOp.eq,
-                          [
-                            M.read (|
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "spl_token_interface::state::Account",
-                                "amount"
-                              |)
-                            |);
-                            M.read (|
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| other |) |),
-                                "spl_token_interface::state::Account",
-                                "amount"
-                              |)
-                            |)
-                          ]
                         |)))
                     |),
                     ltac:(M.monadic
@@ -2767,17 +2781,9 @@ Module state.
                         Ty.path "bool",
                         M.get_trait_method (|
                           "core::cmp::PartialEq",
-                          Ty.apply
-                            (Ty.path "solana_program_option::COption")
-                            []
-                            [ Ty.path "solana_address::Address" ],
+                          Ty.path "solana_address::Address",
                           [],
-                          [
-                            Ty.apply
-                              (Ty.path "solana_program_option::COption")
-                              []
-                              [ Ty.path "solana_address::Address" ]
-                          ],
+                          [ Ty.path "solana_address::Address" ],
                           "eq",
                           [],
                           []
@@ -2788,7 +2794,7 @@ Module state.
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| self |) |),
                               "spl_token_interface::state::Account",
-                              "delegate"
+                              "owner"
                             |)
                           |);
                           M.borrow (|
@@ -2796,7 +2802,7 @@ Module state.
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| other |) |),
                               "spl_token_interface::state::Account",
-                              "delegate"
+                              "owner"
                             |)
                           |)
                         ]
@@ -2807,9 +2813,17 @@ Module state.
                       Ty.path "bool",
                       M.get_trait_method (|
                         "core::cmp::PartialEq",
-                        Ty.path "spl_token_interface::state::AccountState",
+                        Ty.apply
+                          (Ty.path "solana_program_option::COption")
+                          []
+                          [ Ty.path "solana_address::Address" ],
                         [],
-                        [ Ty.path "spl_token_interface::state::AccountState" ],
+                        [
+                          Ty.apply
+                            (Ty.path "solana_program_option::COption")
+                            []
+                            [ Ty.path "solana_address::Address" ]
+                        ],
                         "eq",
                         [],
                         []
@@ -2820,7 +2834,7 @@ Module state.
                           M.SubPointer.get_struct_record_field (|
                             M.deref (| M.read (| self |) |),
                             "spl_token_interface::state::Account",
-                            "state"
+                            "delegate"
                           |)
                         |);
                         M.borrow (|
@@ -2828,7 +2842,7 @@ Module state.
                           M.SubPointer.get_struct_record_field (|
                             M.deref (| M.read (| other |) |),
                             "spl_token_interface::state::Account",
-                            "state"
+                            "delegate"
                           |)
                         |)
                       ]
@@ -2839,9 +2853,9 @@ Module state.
                     Ty.path "bool",
                     M.get_trait_method (|
                       "core::cmp::PartialEq",
-                      Ty.apply (Ty.path "solana_program_option::COption") [] [ Ty.path "u64" ],
+                      Ty.path "spl_token_interface::state::AccountState",
                       [],
-                      [ Ty.apply (Ty.path "solana_program_option::COption") [] [ Ty.path "u64" ] ],
+                      [ Ty.path "spl_token_interface::state::AccountState" ],
                       "eq",
                       [],
                       []
@@ -2852,7 +2866,7 @@ Module state.
                         M.SubPointer.get_struct_record_field (|
                           M.deref (| M.read (| self |) |),
                           "spl_token_interface::state::Account",
-                          "is_native"
+                          "state"
                         |)
                       |);
                       M.borrow (|
@@ -2860,7 +2874,7 @@ Module state.
                         M.SubPointer.get_struct_record_field (|
                           M.deref (| M.read (| other |) |),
                           "spl_token_interface::state::Account",
-                          "is_native"
+                          "state"
                         |)
                       |)
                     ]
@@ -2869,20 +2883,30 @@ Module state.
               ltac:(M.monadic
                 (M.call_closure (|
                   Ty.path "bool",
-                  BinOp.eq,
+                  M.get_trait_method (|
+                    "core::cmp::PartialEq",
+                    Ty.apply (Ty.path "solana_program_option::COption") [] [ Ty.path "u64" ],
+                    [],
+                    [ Ty.apply (Ty.path "solana_program_option::COption") [] [ Ty.path "u64" ] ],
+                    "eq",
+                    [],
+                    []
+                  |),
                   [
-                    M.read (|
+                    M.borrow (|
+                      Pointer.Kind.Ref,
                       M.SubPointer.get_struct_record_field (|
                         M.deref (| M.read (| self |) |),
                         "spl_token_interface::state::Account",
-                        "delegated_amount"
+                        "is_native"
                       |)
                     |);
-                    M.read (|
+                    M.borrow (|
+                      Pointer.Kind.Ref,
                       M.SubPointer.get_struct_record_field (|
                         M.deref (| M.read (| other |) |),
                         "spl_token_interface::state::Account",
-                        "delegated_amount"
+                        "is_native"
                       |)
                     |)
                   ]
@@ -5222,6 +5246,18 @@ Module state.
   Axiom IsDiscriminant_AccountState_Frozen :
     M.IsDiscriminant "spl_token_interface::state::AccountState::Frozen" 2.
   
+  Module Impl_core_clone_TrivialClone_for_spl_token_interface_state_AccountState.
+    Definition Self : Ty.t := Ty.path "spl_token_interface::state::AccountState".
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "core::clone::TrivialClone"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        Self
+        (* Instance *) [].
+  End Impl_core_clone_TrivialClone_for_spl_token_interface_state_AccountState.
+  
   Module Impl_core_clone_Clone_for_spl_token_interface_state_AccountState.
     Definition Self : Ty.t := Ty.path "spl_token_interface::state::AccountState".
     
@@ -5670,6 +5706,18 @@ Module state.
               [ Ty.path "solana_address::Address" ])
         ];
     } *)
+  
+  Module Impl_core_clone_TrivialClone_for_spl_token_interface_state_Multisig.
+    Definition Self : Ty.t := Ty.path "spl_token_interface::state::Multisig".
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "core::clone::TrivialClone"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        Self
+        (* Instance *) [].
+  End Impl_core_clone_TrivialClone_for_spl_token_interface_state_Multisig.
   
   Module Impl_core_clone_Clone_for_spl_token_interface_state_Multisig.
     Definition Self : Ty.t := Ty.path "spl_token_interface::state::Multisig".
@@ -9333,24 +9381,22 @@ Module state.
               fun γ =>
                 ltac:(M.monadic
                   (let γ :=
-                    M.use
-                      (M.alloc (|
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
                         Ty.path "bool",
-                        M.call_closure (|
-                          Ty.path "bool",
-                          M.get_trait_method (|
-                            "spl_token_interface::state::GenericTokenAccount",
-                            Self,
-                            [],
-                            [],
-                            "valid_account_data",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| account_data |) |) |)
-                          ]
-                        |)
-                      |)) in
+                        M.get_trait_method (|
+                          "spl_token_interface::state::GenericTokenAccount",
+                          Self,
+                          [],
+                          [],
+                          "valid_account_data",
+                          [],
+                          []
+                        |),
+                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| account_data |) |) |) ]
+                      |)
+                    |) in
                   let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                   Value.StructTuple
                     "core::option::Option::Some"
@@ -9422,24 +9468,22 @@ Module state.
               fun γ =>
                 ltac:(M.monadic
                   (let γ :=
-                    M.use
-                      (M.alloc (|
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
                         Ty.path "bool",
-                        M.call_closure (|
-                          Ty.path "bool",
-                          M.get_trait_method (|
-                            "spl_token_interface::state::GenericTokenAccount",
-                            Self,
-                            [],
-                            [],
-                            "valid_account_data",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| account_data |) |) |)
-                          ]
-                        |)
-                      |)) in
+                        M.get_trait_method (|
+                          "spl_token_interface::state::GenericTokenAccount",
+                          Self,
+                          [],
+                          [],
+                          "valid_account_data",
+                          [],
+                          []
+                        |),
+                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| account_data |) |) |) ]
+                      |)
+                    |) in
                   let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                   Value.StructTuple
                     "core::option::Option::Some"

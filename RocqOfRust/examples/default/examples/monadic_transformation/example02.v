@@ -51,7 +51,7 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
             [
               fun γ =>
                 ltac:(M.monadic
-                  (let γ := M.use (M.alloc (| Ty.path "bool", Value.Bool true |)) in
+                  (let γ := M.alloc (| Ty.path "bool", Value.Bool true |) in
                   let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                   Value.Integer IntegerKind.I32 0));
               fun γ => ltac:(M.monadic (Value.Integer IntegerKind.I32 1))
@@ -64,7 +64,7 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
             [
               fun γ =>
                 ltac:(M.monadic
-                  (let γ := M.use (M.alloc (| Ty.path "bool", Value.Bool false |)) in
+                  (let γ := M.alloc (| Ty.path "bool", Value.Bool false |) in
                   let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                   Value.Integer IntegerKind.I32 2));
               fun γ =>
@@ -75,7 +75,7 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                     [
                       fun γ =>
                         ltac:(M.monadic
-                          (let γ := M.use (M.alloc (| Ty.path "bool", Value.Bool false |)) in
+                          (let γ := M.alloc (| Ty.path "bool", Value.Bool false |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           Value.Integer IntegerKind.I32 3));
@@ -87,8 +87,7 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                             [
                               fun γ =>
                                 ltac:(M.monadic
-                                  (let γ :=
-                                    M.use (M.alloc (| Ty.path "bool", Value.Bool false |)) in
+                                  (let γ := M.alloc (| Ty.path "bool", Value.Bool false |) in
                                   let _ :=
                                     is_constant_or_break_match (|
                                       M.read (| γ |),

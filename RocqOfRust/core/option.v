@@ -24,19 +24,6 @@ Module option.
   Axiom IsDiscriminant_Option_None : M.IsDiscriminant "core::option::Option::None" 0.
   Axiom IsDiscriminant_Option_Some : M.IsDiscriminant "core::option::Option::Some" 1.
   
-  Module Impl_core_marker_Copy_where_core_marker_Copy_T_for_core_option_Option_T.
-    Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "core::option::Option") [] [ T ].
-    
-    Axiom Implements :
-      forall (T : Ty.t),
-      M.IsTraitInstance
-        "core::marker::Copy"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        (Self T)
-        (* Instance *) [].
-  End Impl_core_marker_Copy_where_core_marker_Copy_T_for_core_option_Option_T.
-  
   Module Impl_core_cmp_Eq_where_core_cmp_Eq_T_for_core_option_Option_T.
     Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "core::option::Option") [] [ T ].
     
@@ -74,6 +61,19 @@ Module option.
         (* Instance *)
         [ ("assert_receiver_is_total_eq", InstanceField.Method (assert_receiver_is_total_eq T)) ].
   End Impl_core_cmp_Eq_where_core_cmp_Eq_T_for_core_option_Option_T.
+  
+  Module Impl_core_marker_Copy_where_core_marker_Copy_T_for_core_option_Option_T.
+    Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "core::option::Option") [] [ T ].
+    
+    Axiom Implements :
+      forall (T : Ty.t),
+      M.IsTraitInstance
+        "core::marker::Copy"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self T)
+        (* Instance *) [].
+  End Impl_core_marker_Copy_where_core_marker_Copy_T_for_core_option_Option_T.
   
   Module Impl_core_fmt_Debug_where_core_fmt_Debug_T_for_core_option_Option_T.
     Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "core::option::Option") [] [ T ].
@@ -299,7 +299,7 @@ Module option.
     Global Typeclasses Opaque is_some.
     
     (*
-        pub fn is_some_and(self, f: impl FnOnce(T) -> bool) -> bool {
+        pub const fn is_some_and(self, f: impl [const] FnOnce(T) -> bool + [const] Destruct) -> bool {
             match self {
                 None => false,
                 Some(x) => f(x),
@@ -309,10 +309,10 @@ Module option.
     Definition is_some_and (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       let Self : Ty.t := Self T in
       match ε, τ, α with
-      | [], [ impl_FnOnce_T__arrow_bool ], [ self; f ] =>
+      | [], [ impl__const__FnOnce_T__arrow_bool__plus___const__Destruct ], [ self; f ] =>
         ltac:(M.monadic
           (let self := M.alloc (| Ty.apply (Ty.path "core::option::Option") [] [ T ], self |) in
-          let f := M.alloc (| impl_FnOnce_T__arrow_bool, f |) in
+          let f := M.alloc (| impl__const__FnOnce_T__arrow_bool__plus___const__Destruct, f |) in
           M.match_operator (|
             Ty.path "bool",
             self,
@@ -330,7 +330,7 @@ Module option.
                     Ty.path "bool",
                     M.get_trait_method (|
                       "core::ops::function::FnOnce",
-                      impl_FnOnce_T__arrow_bool,
+                      impl__const__FnOnce_T__arrow_bool__plus___const__Destruct,
                       [],
                       [ Ty.tuple [ T ] ],
                       "call_once",
@@ -391,7 +391,7 @@ Module option.
     Global Typeclasses Opaque is_none.
     
     (*
-        pub fn is_none_or(self, f: impl FnOnce(T) -> bool) -> bool {
+        pub const fn is_none_or(self, f: impl [const] FnOnce(T) -> bool + [const] Destruct) -> bool {
             match self {
                 None => true,
                 Some(x) => f(x),
@@ -401,10 +401,10 @@ Module option.
     Definition is_none_or (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       let Self : Ty.t := Self T in
       match ε, τ, α with
-      | [], [ impl_FnOnce_T__arrow_bool ], [ self; f ] =>
+      | [], [ impl__const__FnOnce_T__arrow_bool__plus___const__Destruct ], [ self; f ] =>
         ltac:(M.monadic
           (let self := M.alloc (| Ty.apply (Ty.path "core::option::Option") [] [ T ], self |) in
-          let f := M.alloc (| impl_FnOnce_T__arrow_bool, f |) in
+          let f := M.alloc (| impl__const__FnOnce_T__arrow_bool__plus___const__Destruct, f |) in
           M.match_operator (|
             Ty.path "bool",
             self,
@@ -422,7 +422,7 @@ Module option.
                     Ty.path "bool",
                     M.get_trait_method (|
                       "core::ops::function::FnOnce",
-                      impl_FnOnce_T__arrow_bool,
+                      impl__const__FnOnce_T__arrow_bool__plus___const__Destruct,
                       [],
                       [ Ty.tuple [ T ] ],
                       "call_once",
@@ -831,7 +831,7 @@ Module option.
             // just needs to be aligned, which it is because `&self` is aligned and
             // the offset used is a multiple of alignment.
             //
-            // In the new version, the intrinsic always returns a pointer to an
+            // Here we assume that `offset_of!` always returns an offset to an
             // in-bounds and correctly aligned position for a `T` (even if in the
             // `None` case it's just padding).
             unsafe {
@@ -900,8 +900,10 @@ Module option.
                               |))
                           |);
                           M.read (|
-                            (* `OffsetOf` expression are not handled yet *)
-                            M.alloc (| Ty.tuple [], Value.Tuple [] |)
+                            get_constant (|
+                              "core::option::as_slice_discriminant",
+                              Ty.path "usize"
+                            |)
                           |)
                         ]
                       |)
@@ -1016,8 +1018,10 @@ Module option.
                                       |))
                                   |);
                                   M.read (|
-                                    (* `OffsetOf` expression are not handled yet *)
-                                    M.alloc (| Ty.tuple [], Value.Tuple [] |)
+                                    get_constant (|
+                                      "core::option::as_mut_slice_discriminant",
+                                      Ty.path "usize"
+                                    |)
                                   |)
                                 ]
                               |)
@@ -1142,7 +1146,10 @@ Module option.
     Global Typeclasses Opaque unwrap.
     
     (*
-        pub fn unwrap_or(self, default: T) -> T {
+        pub const fn unwrap_or(self, default: T) -> T
+        where
+            T: [const] Destruct,
+        {
             match self {
                 Some(x) => x,
                 None => default,
@@ -1182,9 +1189,9 @@ Module option.
     Global Typeclasses Opaque unwrap_or.
     
     (*
-        pub fn unwrap_or_else<F>(self, f: F) -> T
+        pub const fn unwrap_or_else<F>(self, f: F) -> T
         where
-            F: FnOnce() -> T,
+            F: [const] FnOnce() -> T + [const] Destruct,
         {
             match self {
                 Some(x) => x,
@@ -1242,9 +1249,9 @@ Module option.
     Global Typeclasses Opaque unwrap_or_else.
     
     (*
-        pub fn unwrap_or_default(self) -> T
+        pub const fn unwrap_or_default(self) -> T
         where
-            T: Default,
+            T: [const] Default,
         {
             match self {
                 Some(x) => x,
@@ -1344,9 +1351,9 @@ Module option.
     Global Typeclasses Opaque unwrap_unchecked.
     
     (*
-        pub fn map<U, F>(self, f: F) -> Option<U>
+        pub const fn map<U, F>(self, f: F) -> Option<U>
         where
-            F: FnOnce(T) -> U,
+            F: [const] FnOnce(T) -> U + [const] Destruct,
         {
             match self {
                 Some(x) => Some(f(x)),
@@ -1405,7 +1412,10 @@ Module option.
     Global Typeclasses Opaque map.
     
     (*
-        pub fn inspect<F: FnOnce(&T)>(self, f: F) -> Self {
+        pub const fn inspect<F>(self, f: F) -> Self
+        where
+            F: [const] FnOnce(&T) + [const] Destruct,
+        {
             if let Some(ref x) = self {
                 f(x);
             }
@@ -1472,9 +1482,10 @@ Module option.
     Global Typeclasses Opaque inspect.
     
     (*
-        pub fn map_or<U, F>(self, default: U, f: F) -> U
+        pub const fn map_or<U, F>(self, default: U, f: F) -> U
         where
-            F: FnOnce(T) -> U,
+            F: [const] FnOnce(T) -> U + [const] Destruct,
+            U: [const] Destruct,
         {
             match self {
                 Some(t) => f(t),
@@ -1528,10 +1539,10 @@ Module option.
     Global Typeclasses Opaque map_or.
     
     (*
-        pub fn map_or_else<U, D, F>(self, default: D, f: F) -> U
+        pub const fn map_or_else<U, D, F>(self, default: D, f: F) -> U
         where
-            D: FnOnce() -> U,
-            F: FnOnce(T) -> U,
+            D: [const] FnOnce() -> U + [const] Destruct,
+            F: [const] FnOnce(T) -> U + [const] Destruct,
         {
             match self {
                 Some(t) => f(t),
@@ -1597,7 +1608,72 @@ Module option.
     Global Typeclasses Opaque map_or_else.
     
     (*
-        pub fn ok_or<E>(self, err: E) -> Result<T, E> {
+        pub const fn map_or_default<U, F>(self, f: F) -> U
+        where
+            U: [const] Default,
+            F: [const] FnOnce(T) -> U + [const] Destruct,
+        {
+            match self {
+                Some(t) => f(t),
+                None => U::default(),
+            }
+        }
+    *)
+    Definition map_or_default
+        (T : Ty.t)
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      let Self : Ty.t := Self T in
+      match ε, τ, α with
+      | [], [ U; F ], [ self; f ] =>
+        ltac:(M.monadic
+          (let self := M.alloc (| Ty.apply (Ty.path "core::option::Option") [] [ T ], self |) in
+          let f := M.alloc (| F, f |) in
+          M.match_operator (|
+            U,
+            self,
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ0_0 :=
+                    M.SubPointer.get_struct_tuple_field (| γ, "core::option::Option::Some", 0 |) in
+                  let t := M.copy (| T, γ0_0 |) in
+                  M.call_closure (|
+                    U,
+                    M.get_trait_method (|
+                      "core::ops::function::FnOnce",
+                      F,
+                      [],
+                      [ Ty.tuple [ T ] ],
+                      "call_once",
+                      [],
+                      []
+                    |),
+                    [ M.read (| f |); Value.Tuple [ M.read (| t |) ] ]
+                  |)));
+              fun γ =>
+                ltac:(M.monadic
+                  (let _ := M.is_struct_tuple (| γ, "core::option::Option::None" |) in
+                  M.call_closure (|
+                    U,
+                    M.get_trait_method (| "core::default::Default", U, [], [], "default", [], [] |),
+                    []
+                  |)))
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_map_or_default :
+      forall (T : Ty.t),
+      M.IsAssociatedFunction.C (Self T) "map_or_default" (map_or_default T).
+    Admitted.
+    Global Typeclasses Opaque map_or_default.
+    
+    (*
+        pub const fn ok_or<E: [const] Destruct>(self, err: E) -> Result<T, E> {
             match self {
                 Some(v) => Ok(v),
                 None => Err(err),
@@ -1637,9 +1713,9 @@ Module option.
     Global Typeclasses Opaque ok_or.
     
     (*
-        pub fn ok_or_else<E, F>(self, err: F) -> Result<T, E>
+        pub const fn ok_or_else<E, F>(self, err: F) -> Result<T, E>
         where
-            F: FnOnce() -> E,
+            F: [const] FnOnce() -> E + [const] Destruct,
         {
             match self {
                 Some(v) => Ok(v),
@@ -1698,11 +1774,11 @@ Module option.
     Global Typeclasses Opaque ok_or_else.
     
     (*
-        pub fn as_deref(&self) -> Option<&T::Target>
+        pub const fn as_deref(&self) -> Option<&T::Target>
         where
-            T: Deref,
+            T: [const] Deref,
         {
-            self.as_ref().map(|t| t.deref())
+            self.as_ref().map(Deref::deref)
         }
     *)
     Definition as_deref (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -1753,49 +1829,7 @@ Module option.
                 |),
                 [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
               |);
-              M.closure
-                (fun γ =>
-                  ltac:(M.monadic
-                    match γ with
-                    | [ α0 ] =>
-                      ltac:(M.monadic
-                        (M.match_operator (|
-                          Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.associated_in_trait "core::ops::deref::Deref" [] [] T "Target" ],
-                          M.alloc (| Ty.apply (Ty.path "&") [] [ T ], α0 |),
-                          [
-                            fun γ =>
-                              ltac:(M.monadic
-                                (let t := M.copy (| Ty.apply (Ty.path "&") [] [ T ], γ |) in
-                                M.call_closure (|
-                                  Ty.apply
-                                    (Ty.path "&")
-                                    []
-                                    [
-                                      Ty.associated_in_trait
-                                        "core::ops::deref::Deref"
-                                        []
-                                        []
-                                        T
-                                        "Target"
-                                    ],
-                                  M.get_trait_method (|
-                                    "core::ops::deref::Deref",
-                                    T,
-                                    [],
-                                    [],
-                                    "deref",
-                                    [],
-                                    []
-                                  |),
-                                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| t |) |) |) ]
-                                |)))
-                          ]
-                        |)))
-                    | _ => M.impossible "wrong number of arguments"
-                    end))
+              M.get_trait_method (| "core::ops::deref::Deref", T, [], [], "deref", [], [] |)
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1808,11 +1842,11 @@ Module option.
     Global Typeclasses Opaque as_deref.
     
     (*
-        pub fn as_deref_mut(&mut self) -> Option<&mut T::Target>
+        pub const fn as_deref_mut(&mut self) -> Option<&mut T::Target>
         where
-            T: DerefMut,
+            T: [const] DerefMut,
         {
-            self.as_mut().map(|t| t.deref_mut())
+            self.as_mut().map(DerefMut::deref_mut)
         }
     *)
     Definition as_deref_mut (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -1863,50 +1897,7 @@ Module option.
                 |),
                 [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |) ]
               |);
-              M.closure
-                (fun γ =>
-                  ltac:(M.monadic
-                    match γ with
-                    | [ α0 ] =>
-                      ltac:(M.monadic
-                        (M.match_operator (|
-                          Ty.apply
-                            (Ty.path "&mut")
-                            []
-                            [ Ty.associated_in_trait "core::ops::deref::Deref" [] [] T "Target" ],
-                          M.alloc (| Ty.apply (Ty.path "&mut") [] [ T ], α0 |),
-                          [
-                            fun γ =>
-                              ltac:(M.monadic
-                                (let t := M.copy (| Ty.apply (Ty.path "&mut") [] [ T ], γ |) in
-                                M.call_closure (|
-                                  Ty.apply
-                                    (Ty.path "&mut")
-                                    []
-                                    [
-                                      Ty.associated_in_trait
-                                        "core::ops::deref::Deref"
-                                        []
-                                        []
-                                        T
-                                        "Target"
-                                    ],
-                                  M.get_trait_method (|
-                                    "core::ops::deref::DerefMut",
-                                    T,
-                                    [],
-                                    [],
-                                    "deref_mut",
-                                    [],
-                                    []
-                                  |),
-                                  [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| t |) |) |)
-                                  ]
-                                |)))
-                          ]
-                        |)))
-                    | _ => M.impossible "wrong number of arguments"
-                    end))
+              M.get_trait_method (| "core::ops::deref::DerefMut", T, [], [], "deref_mut", [], [] |)
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2021,7 +2012,11 @@ Module option.
     Global Typeclasses Opaque iter_mut.
     
     (*
-        pub fn and<U>(self, optb: Option<U>) -> Option<U> {
+        pub const fn and<U>(self, optb: Option<U>) -> Option<U>
+        where
+            T: [const] Destruct,
+            U: [const] Destruct,
+        {
             match self {
                 Some(_) => optb,
                 None => None,
@@ -2060,9 +2055,9 @@ Module option.
     Global Typeclasses Opaque and.
     
     (*
-        pub fn and_then<U, F>(self, f: F) -> Option<U>
+        pub const fn and_then<U, F>(self, f: F) -> Option<U>
         where
-            F: FnOnce(T) -> Option<U>,
+            F: [const] FnOnce(T) -> Option<U> + [const] Destruct,
         {
             match self {
                 Some(x) => f(x),
@@ -2115,9 +2110,10 @@ Module option.
     Global Typeclasses Opaque and_then.
     
     (*
-        pub fn filter<P>(self, predicate: P) -> Self
+        pub const fn filter<P>(self, predicate: P) -> Self
         where
-            P: FnOnce(&T) -> bool,
+            P: [const] FnOnce(&T) -> bool + [const] Destruct,
+            T: [const] Destruct,
         {
             if let Some(x) = self {
                 if predicate(&x) {
@@ -2159,32 +2155,31 @@ Module option.
                               fun γ =>
                                 ltac:(M.monadic
                                   (let γ :=
-                                    M.use
-                                      (M.alloc (|
+                                    M.alloc (|
+                                      Ty.path "bool",
+                                      M.call_closure (|
                                         Ty.path "bool",
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          M.get_trait_method (|
-                                            "core::ops::function::FnOnce",
-                                            P,
-                                            [],
-                                            [ Ty.tuple [ Ty.apply (Ty.path "&") [] [ T ] ] ],
-                                            "call_once",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            M.read (| predicate |);
-                                            Value.Tuple
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (| M.borrow (| Pointer.Kind.Ref, x |) |)
-                                                |)
-                                              ]
-                                          ]
-                                        |)
-                                      |)) in
+                                        M.get_trait_method (|
+                                          "core::ops::function::FnOnce",
+                                          P,
+                                          [],
+                                          [ Ty.tuple [ Ty.apply (Ty.path "&") [] [ T ] ] ],
+                                          "call_once",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.read (| predicate |);
+                                          Value.Tuple
+                                            [
+                                              M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.borrow (| Pointer.Kind.Ref, x |) |)
+                                              |)
+                                            ]
+                                        ]
+                                      |)
+                                    |) in
                                   let _ :=
                                     is_constant_or_break_match (|
                                       M.read (| γ |),
@@ -2223,7 +2218,10 @@ Module option.
     Global Typeclasses Opaque filter.
     
     (*
-        pub fn or(self, optb: Option<T>) -> Option<T> {
+        pub const fn or(self, optb: Option<T>) -> Option<T>
+        where
+            T: [const] Destruct,
+        {
             match self {
                 x @ Some(_) => x,
                 None => optb,
@@ -2263,9 +2261,12 @@ Module option.
     Global Typeclasses Opaque or.
     
     (*
-        pub fn or_else<F>(self, f: F) -> Option<T>
+        pub const fn or_else<F>(self, f: F) -> Option<T>
         where
-            F: FnOnce() -> Option<T>,
+            F: [const] FnOnce() -> Option<T> + [const] Destruct,
+            //FIXME(const_hack): this `T: [const] Destruct` is unnecessary, but even precise live drops can't tell
+            // no value of type `T` gets dropped here
+            T: [const] Destruct,
         {
             match self {
                 x @ Some(_) => x,
@@ -2318,7 +2319,10 @@ Module option.
     Global Typeclasses Opaque or_else.
     
     (*
-        pub fn xor(self, optb: Option<T>) -> Option<T> {
+        pub const fn xor(self, optb: Option<T>) -> Option<T>
+        where
+            T: [const] Destruct,
+        {
             match (self, optb) {
                 (a @ Some(_), None) => a,
                 (None, b @ Some(_)) => b,
@@ -2383,7 +2387,10 @@ Module option.
     Global Typeclasses Opaque xor.
     
     (*
-        pub fn insert(&mut self, value: T) -> &mut T {
+        pub const fn insert(&mut self, value: T) -> &mut T
+        where
+            T: [const] Destruct,
+        {
             *self = Some(value);
     
             // SAFETY: the code above just filled the option
@@ -2528,9 +2535,9 @@ Module option.
     Global Typeclasses Opaque get_or_insert.
     
     (*
-        pub fn get_or_insert_default(&mut self) -> &mut T
+        pub const fn get_or_insert_default(&mut self) -> &mut T
         where
-            T: Default,
+            T: [const] Default + [const] Destruct,
         {
             self.get_or_insert_with(T::default)
         }
@@ -2591,9 +2598,10 @@ Module option.
     Global Typeclasses Opaque get_or_insert_default.
     
     (*
-        pub fn get_or_insert_with<F>(&mut self, f: F) -> &mut T
+        pub const fn get_or_insert_with<F>(&mut self, f: F) -> &mut T
         where
-            F: FnOnce() -> T,
+            F: [const] FnOnce() -> T + [const] Destruct,
+            T: [const] Destruct,
         {
             if let None = self {
                 *self = Some(f());
@@ -2758,9 +2766,9 @@ Module option.
     Global Typeclasses Opaque take.
     
     (*
-        pub fn take_if<P>(&mut self, predicate: P) -> Option<T>
+        pub const fn take_if<P>(&mut self, predicate: P) -> Option<T>
         where
-            P: FnOnce(&mut T) -> bool,
+            P: [const] FnOnce(&mut T) -> bool + [const] Destruct,
         {
             if self.as_mut().map_or(false, predicate) { self.take() } else { None }
         }
@@ -2783,40 +2791,38 @@ Module option.
               fun γ =>
                 ltac:(M.monadic
                   (let γ :=
-                    M.use
-                      (M.alloc (|
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
                         Ty.path "bool",
-                        M.call_closure (|
-                          Ty.path "bool",
-                          M.get_associated_function (|
+                        M.get_associated_function (|
+                          Ty.apply
+                            (Ty.path "core::option::Option")
+                            []
+                            [ Ty.apply (Ty.path "&mut") [] [ T ] ],
+                          "map_or",
+                          [],
+                          [ Ty.path "bool"; P ]
+                        |),
+                        [
+                          M.call_closure (|
                             Ty.apply
                               (Ty.path "core::option::Option")
                               []
                               [ Ty.apply (Ty.path "&mut") [] [ T ] ],
-                            "map_or",
-                            [],
-                            [ Ty.path "bool"; P ]
-                          |),
-                          [
-                            M.call_closure (|
-                              Ty.apply
-                                (Ty.path "core::option::Option")
-                                []
-                                [ Ty.apply (Ty.path "&mut") [] [ T ] ],
-                              M.get_associated_function (|
-                                Ty.apply (Ty.path "core::option::Option") [] [ T ],
-                                "as_mut",
-                                [],
-                                []
-                              |),
-                              [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |)
-                              ]
-                            |);
-                            Value.Bool false;
-                            M.read (| predicate |)
-                          ]
-                        |)
-                      |)) in
+                            M.get_associated_function (|
+                              Ty.apply (Ty.path "core::option::Option") [] [ T ],
+                              "as_mut",
+                              [],
+                              []
+                            |),
+                            [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |) ]
+                          |);
+                          Value.Bool false;
+                          M.read (| predicate |)
+                        ]
+                      |)
+                    |) in
                   let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                   M.call_closure (|
                     Ty.apply (Ty.path "core::option::Option") [] [ T ],
@@ -2878,7 +2884,11 @@ Module option.
     Global Typeclasses Opaque replace.
     
     (*
-        pub fn zip<U>(self, other: Option<U>) -> Option<(T, U)> {
+        pub const fn zip<U>(self, other: Option<U>) -> Option<(T, U)>
+        where
+            T: [const] Destruct,
+            U: [const] Destruct,
+        {
             match (self, other) {
                 (Some(a), Some(b)) => Some((a, b)),
                 _ => None,
@@ -2941,9 +2951,11 @@ Module option.
     Global Typeclasses Opaque zip.
     
     (*
-        pub fn zip_with<U, F, R>(self, other: Option<U>, f: F) -> Option<R>
+        pub const fn zip_with<U, F, R>(self, other: Option<U>, f: F) -> Option<R>
         where
-            F: FnOnce(T, U) -> R,
+            F: [const] FnOnce(T, U) -> R + [const] Destruct,
+            T: [const] Destruct,
+            U: [const] Destruct,
         {
             match (self, other) {
                 (Some(a), Some(b)) => Some(f(a, b)),
@@ -3018,7 +3030,216 @@ Module option.
       M.IsAssociatedFunction.C (Self T) "zip_with" (zip_with T).
     Admitted.
     Global Typeclasses Opaque zip_with.
+    
+    (*
+        pub fn reduce<U, R, F>(self, other: Option<U>, f: F) -> Option<R>
+        where
+            T: Into<R>,
+            U: Into<R>,
+            F: FnOnce(T, U) -> R,
+        {
+            match (self, other) {
+                (Some(a), Some(b)) => Some(f(a, b)),
+                (Some(a), _) => Some(a.into()),
+                (_, Some(b)) => Some(b.into()),
+                _ => None,
+            }
+        }
+    *)
+    Definition reduce (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T in
+      match ε, τ, α with
+      | [], [ U; R; F ], [ self; other; f ] =>
+        ltac:(M.monadic
+          (let self := M.alloc (| Ty.apply (Ty.path "core::option::Option") [] [ T ], self |) in
+          let other := M.alloc (| Ty.apply (Ty.path "core::option::Option") [] [ U ], other |) in
+          let f := M.alloc (| F, f |) in
+          M.match_operator (|
+            Ty.apply (Ty.path "core::option::Option") [] [ R ],
+            M.alloc (|
+              Ty.tuple
+                [
+                  Ty.apply (Ty.path "core::option::Option") [] [ T ];
+                  Ty.apply (Ty.path "core::option::Option") [] [ U ]
+                ],
+              Value.Tuple [ M.read (| self |); M.read (| other |) ]
+            |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                  let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                  let γ1_0 :=
+                    M.SubPointer.get_struct_tuple_field (|
+                      γ0_0,
+                      "core::option::Option::Some",
+                      0
+                    |) in
+                  let a := M.copy (| T, γ1_0 |) in
+                  let γ1_0 :=
+                    M.SubPointer.get_struct_tuple_field (|
+                      γ0_1,
+                      "core::option::Option::Some",
+                      0
+                    |) in
+                  let b := M.copy (| U, γ1_0 |) in
+                  Value.StructTuple
+                    "core::option::Option::Some"
+                    []
+                    [ R ]
+                    [
+                      M.call_closure (|
+                        R,
+                        M.get_trait_method (|
+                          "core::ops::function::FnOnce",
+                          F,
+                          [],
+                          [ Ty.tuple [ T; U ] ],
+                          "call_once",
+                          [],
+                          []
+                        |),
+                        [ M.read (| f |); Value.Tuple [ M.read (| a |); M.read (| b |) ] ]
+                      |)
+                    ]));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                  let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                  let γ1_0 :=
+                    M.SubPointer.get_struct_tuple_field (|
+                      γ0_0,
+                      "core::option::Option::Some",
+                      0
+                    |) in
+                  let a := M.copy (| T, γ1_0 |) in
+                  Value.StructTuple
+                    "core::option::Option::Some"
+                    []
+                    [ R ]
+                    [
+                      M.call_closure (|
+                        R,
+                        M.get_trait_method (|
+                          "core::convert::Into",
+                          T,
+                          [],
+                          [ R ],
+                          "into",
+                          [],
+                          []
+                        |),
+                        [ M.read (| a |) ]
+                      |)
+                    ]));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                  let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                  let γ1_0 :=
+                    M.SubPointer.get_struct_tuple_field (|
+                      γ0_1,
+                      "core::option::Option::Some",
+                      0
+                    |) in
+                  let b := M.copy (| U, γ1_0 |) in
+                  Value.StructTuple
+                    "core::option::Option::Some"
+                    []
+                    [ R ]
+                    [
+                      M.call_closure (|
+                        R,
+                        M.get_trait_method (|
+                          "core::convert::Into",
+                          U,
+                          [],
+                          [ R ],
+                          "into",
+                          [],
+                          []
+                        |),
+                        [ M.read (| b |) ]
+                      |)
+                    ]));
+              fun γ => ltac:(M.monadic (Value.StructTuple "core::option::Option::None" [] [ R ] []))
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_reduce :
+      forall (T : Ty.t),
+      M.IsAssociatedFunction.C (Self T) "reduce" (reduce T).
+    Admitted.
+    Global Typeclasses Opaque reduce.
+    (*
+        pub fn into_flat_iter<A>(self) -> OptionFlatten<A>
+        where
+            T: IntoIterator<IntoIter = A>,
+        {
+            OptionFlatten { iter: self.map(IntoIterator::into_iter) }
+        }
+    *)
+    Definition into_flat_iter
+        (T : Ty.t)
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      let Self : Ty.t := Self T in
+      match ε, τ, α with
+      | [], [ A ], [ self ] =>
+        ltac:(M.monadic
+          (let self := M.alloc (| Ty.apply (Ty.path "core::option::Option") [] [ T ], self |) in
+          Value.mkStructRecord
+            "core::option::OptionFlatten"
+            []
+            [ A ]
+            [
+              ("iter",
+                M.call_closure (|
+                  Ty.apply (Ty.path "core::option::Option") [] [ A ],
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "core::option::Option") [] [ T ],
+                    "map",
+                    [],
+                    [
+                      A;
+                      Ty.function
+                        [ T ]
+                        (Ty.associated_in_trait
+                          "core::iter::traits::collect::IntoIterator"
+                          []
+                          []
+                          T
+                          "IntoIter")
+                    ]
+                  |),
+                  [
+                    M.read (| self |);
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::IntoIterator",
+                      T,
+                      [],
+                      [],
+                      "into_iter",
+                      [],
+                      []
+                    |)
+                  ]
+                |))
+            ]))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_into_flat_iter :
+      forall (T : Ty.t),
+      M.IsAssociatedFunction.C (Self T) "into_flat_iter" (into_flat_iter T).
+    Admitted.
+    Global Typeclasses Opaque into_flat_iter.
   End Impl_core_option_Option_T.
+  
   
   Module Impl_core_option_Option_Tuple_T_U_.
     Definition Self (T U : Ty.t) : Ty.t :=
@@ -3435,7 +3656,7 @@ Module option.
   Admitted.
   Global Typeclasses Opaque expect_failed.
   
-  Module Impl_core_clone_Clone_where_core_clone_Clone_T_for_core_option_Option_T.
+  Module Impl_core_clone_Clone_where_core_clone_Clone_T_where_core_marker_Destruct_T_for_core_option_Option_T.
     Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "core::option::Option") [] [ T ].
     
     (*
@@ -3605,7 +3826,33 @@ Module option.
           ("clone", InstanceField.Method (clone T));
           ("clone_from", InstanceField.Method (clone_from T))
         ].
-  End Impl_core_clone_Clone_where_core_clone_Clone_T_for_core_option_Option_T.
+  End Impl_core_clone_Clone_where_core_clone_Clone_T_where_core_marker_Destruct_T_for_core_option_Option_T.
+  
+  Module Impl_core_clone_UseCloned_where_core_clone_UseCloned_T_for_core_option_Option_T.
+    Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "core::option::Option") [] [ T ].
+    
+    Axiom Implements :
+      forall (T : Ty.t),
+      M.IsTraitInstance
+        "core::clone::UseCloned"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self T)
+        (* Instance *) [].
+  End Impl_core_clone_UseCloned_where_core_clone_UseCloned_T_for_core_option_Option_T.
+  
+  Module Impl_core_clone_TrivialClone_where_core_clone_TrivialClone_T_where_core_marker_Destruct_T_for_core_option_Option_T.
+    Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "core::option::Option") [] [ T ].
+    
+    Axiom Implements :
+      forall (T : Ty.t),
+      M.IsTraitInstance
+        "core::clone::TrivialClone"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self T)
+        (* Instance *) [].
+  End Impl_core_clone_TrivialClone_where_core_clone_TrivialClone_T_where_core_marker_Destruct_T_for_core_option_Option_T.
   
   Module Impl_core_default_Default_for_core_option_Option_T.
     Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "core::option::Option") [] [ T ].
@@ -5680,6 +5927,778 @@ Module option.
         (Self A)
         (* Instance *) [].
   End Impl_core_iter_traits_marker_TrustedLen_for_core_option_IntoIter_A.
+  
+  (* StructRecord
+    {
+      name := "OptionFlatten";
+      const_params := [];
+      ty_params := [ "A" ];
+      fields := [ ("iter", Ty.apply (Ty.path "core::option::Option") [] [ A ]) ];
+    } *)
+  
+  Module Impl_core_clone_Clone_where_core_clone_Clone_A_for_core_option_OptionFlatten_A.
+    Definition Self (A : Ty.t) : Ty.t := Ty.apply (Ty.path "core::option::OptionFlatten") [] [ A ].
+    
+    (* Clone *)
+    Definition clone (A : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self A in
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&")
+                []
+                [ Ty.apply (Ty.path "core::option::OptionFlatten") [] [ A ] ],
+              self
+            |) in
+          Value.mkStructRecord
+            "core::option::OptionFlatten"
+            []
+            [ A ]
+            [
+              ("iter",
+                M.call_closure (|
+                  Ty.apply (Ty.path "core::option::Option") [] [ A ],
+                  M.get_trait_method (|
+                    "core::clone::Clone",
+                    Ty.apply (Ty.path "core::option::Option") [] [ A ],
+                    [],
+                    [],
+                    "clone",
+                    [],
+                    []
+                  |),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::option::OptionFlatten",
+                            "iter"
+                          |)
+                        |)
+                      |)
+                    |)
+                  ]
+                |))
+            ]))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (A : Ty.t),
+      M.IsTraitInstance
+        "core::clone::Clone"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self A)
+        (* Instance *) [ ("clone", InstanceField.Method (clone A)) ].
+  End Impl_core_clone_Clone_where_core_clone_Clone_A_for_core_option_OptionFlatten_A.
+  
+  Module Impl_core_fmt_Debug_where_core_fmt_Debug_A_for_core_option_OptionFlatten_A.
+    Definition Self (A : Ty.t) : Ty.t := Ty.apply (Ty.path "core::option::OptionFlatten") [] [ A ].
+    
+    (* Debug *)
+    Definition fmt (A : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self A in
+      match ε, τ, α with
+      | [], [], [ self; f ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&")
+                []
+                [ Ty.apply (Ty.path "core::option::OptionFlatten") [] [ A ] ],
+              self
+            |) in
+          let f :=
+            M.alloc (| Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ], f |) in
+          M.call_closure (|
+            Ty.apply
+              (Ty.path "core::result::Result")
+              []
+              [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+            M.get_associated_function (|
+              Ty.path "core::fmt::Formatter",
+              "debug_struct_field1_finish",
+              [],
+              []
+            |),
+            [
+              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
+              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "OptionFlatten" |) |) |);
+              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "iter" |) |) |);
+              M.call_closure (|
+                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                M.pointer_coercion
+                  M.PointerCoercion.Unsize
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.apply (Ty.path "core::option::Option") [] [ A ] ]
+                    ])
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                [
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.alloc (|
+                          Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "core::option::Option") [] [ A ] ],
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "core::option::OptionFlatten",
+                              "iter"
+                            |)
+                          |)
+                        |)
+                      |)
+                    |)
+                  |)
+                ]
+              |)
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (A : Ty.t),
+      M.IsTraitInstance
+        "core::fmt::Debug"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self A)
+        (* Instance *) [ ("fmt", InstanceField.Method (fmt A)) ].
+  End Impl_core_fmt_Debug_where_core_fmt_Debug_A_for_core_option_OptionFlatten_A.
+  
+  Module Impl_core_iter_traits_iterator_Iterator_where_core_iter_traits_iterator_Iterator_A_for_core_option_OptionFlatten_A.
+    Definition Self (A : Ty.t) : Ty.t := Ty.apply (Ty.path "core::option::OptionFlatten") [] [ A ].
+    
+    (*     type Item = A::Item; *)
+    Definition _Item (A : Ty.t) : Ty.t :=
+      Ty.associated_in_trait "core::iter::traits::iterator::Iterator" [] [] A "Item".
+    
+    (*
+        fn next(&mut self) -> Option<Self::Item> {
+            self.iter.as_mut()?.next()
+        }
+    *)
+    Definition next (A : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self A in
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&mut")
+                []
+                [ Ty.apply (Ty.path "core::option::OptionFlatten") [] [ A ] ],
+              self
+            |) in
+          M.catch_return
+            (Ty.apply
+              (Ty.path "core::option::Option")
+              []
+              [
+                Ty.associated_in_trait
+                  "core::iter::traits::iterator::Iterator"
+                  []
+                  []
+                  (Ty.apply (Ty.path "core::option::OptionFlatten") [] [ A ])
+                  "Item"
+              ]) (|
+            ltac:(M.monadic
+              (M.call_closure (|
+                Ty.apply
+                  (Ty.path "core::option::Option")
+                  []
+                  [ Ty.associated_in_trait "core::iter::traits::iterator::Iterator" [] [] A "Item"
+                  ],
+                M.get_trait_method (|
+                  "core::iter::traits::iterator::Iterator",
+                  A,
+                  [],
+                  [],
+                  "next",
+                  [],
+                  []
+                |),
+                [
+                  M.borrow (|
+                    Pointer.Kind.MutRef,
+                    M.deref (|
+                      M.match_operator (|
+                        Ty.apply (Ty.path "&mut") [] [ A ],
+                        M.alloc (|
+                          Ty.apply
+                            (Ty.path "core::ops::control_flow::ControlFlow")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "core::option::Option")
+                                []
+                                [ Ty.path "core::convert::Infallible" ];
+                              Ty.apply (Ty.path "&mut") [] [ A ]
+                            ],
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "core::ops::control_flow::ControlFlow")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "core::option::Option")
+                                  []
+                                  [ Ty.path "core::convert::Infallible" ];
+                                Ty.apply (Ty.path "&mut") [] [ A ]
+                              ],
+                            M.get_trait_method (|
+                              "core::ops::try_trait::Try",
+                              Ty.apply
+                                (Ty.path "core::option::Option")
+                                []
+                                [ Ty.apply (Ty.path "&mut") [] [ A ] ],
+                              [],
+                              [],
+                              "branch",
+                              [],
+                              []
+                            |),
+                            [
+                              M.call_closure (|
+                                Ty.apply
+                                  (Ty.path "core::option::Option")
+                                  []
+                                  [ Ty.apply (Ty.path "&mut") [] [ A ] ],
+                                M.get_associated_function (|
+                                  Ty.apply (Ty.path "core::option::Option") [] [ A ],
+                                  "as_mut",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "core::option::OptionFlatten",
+                                      "iter"
+                                    |)
+                                  |)
+                                ]
+                              |)
+                            ]
+                          |)
+                        |),
+                        [
+                          fun γ =>
+                            ltac:(M.monadic
+                              (let γ0_0 :=
+                                M.SubPointer.get_struct_tuple_field (|
+                                  γ,
+                                  "core::ops::control_flow::ControlFlow::Break",
+                                  0
+                                |) in
+                              let residual :=
+                                M.copy (|
+                                  Ty.apply
+                                    (Ty.path "core::option::Option")
+                                    []
+                                    [ Ty.path "core::convert::Infallible" ],
+                                  γ0_0
+                                |) in
+                              M.never_to_any (|
+                                M.read (|
+                                  M.return_ (|
+                                    M.call_closure (|
+                                      Ty.apply
+                                        (Ty.path "core::option::Option")
+                                        []
+                                        [
+                                          Ty.associated_in_trait
+                                            "core::iter::traits::iterator::Iterator"
+                                            []
+                                            []
+                                            A
+                                            "Item"
+                                        ],
+                                      M.get_trait_method (|
+                                        "core::ops::try_trait::FromResidual",
+                                        Ty.apply
+                                          (Ty.path "core::option::Option")
+                                          []
+                                          [
+                                            Ty.associated_in_trait
+                                              "core::iter::traits::iterator::Iterator"
+                                              []
+                                              []
+                                              A
+                                              "Item"
+                                          ],
+                                        [],
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::option::Option")
+                                            []
+                                            [ Ty.path "core::convert::Infallible" ]
+                                        ],
+                                        "from_residual",
+                                        [],
+                                        []
+                                      |),
+                                      [ M.read (| residual |) ]
+                                    |)
+                                  |)
+                                |)
+                              |)));
+                          fun γ =>
+                            ltac:(M.monadic
+                              (let γ0_0 :=
+                                M.SubPointer.get_struct_tuple_field (|
+                                  γ,
+                                  "core::ops::control_flow::ControlFlow::Continue",
+                                  0
+                                |) in
+                              let val := M.copy (| Ty.apply (Ty.path "&mut") [] [ A ], γ0_0 |) in
+                              M.read (| val |)))
+                        ]
+                      |)
+                    |)
+                  |)
+                ]
+              |)))
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    (*
+        fn size_hint(&self) -> (usize, Option<usize>) {
+            self.iter.as_ref().map(|i| i.size_hint()).unwrap_or((0, Some(0)))
+        }
+    *)
+    Definition size_hint (A : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self A in
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&")
+                []
+                [ Ty.apply (Ty.path "core::option::OptionFlatten") [] [ A ] ],
+              self
+            |) in
+          M.call_closure (|
+            Ty.tuple
+              [ Ty.path "usize"; Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ] ],
+            M.get_associated_function (|
+              Ty.apply
+                (Ty.path "core::option::Option")
+                []
+                [
+                  Ty.tuple
+                    [
+                      Ty.path "usize";
+                      Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ]
+                    ]
+                ],
+              "unwrap_or",
+              [],
+              []
+            |),
+            [
+              M.call_closure (|
+                Ty.apply
+                  (Ty.path "core::option::Option")
+                  []
+                  [
+                    Ty.tuple
+                      [
+                        Ty.path "usize";
+                        Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ]
+                      ]
+                  ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "core::option::Option") [] [ Ty.apply (Ty.path "&") [] [ A ] ],
+                  "map",
+                  [],
+                  [
+                    Ty.tuple
+                      [
+                        Ty.path "usize";
+                        Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ]
+                      ];
+                    Ty.function
+                      [ Ty.apply (Ty.path "&") [] [ A ] ]
+                      (Ty.tuple
+                        [
+                          Ty.path "usize";
+                          Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ]
+                        ])
+                  ]
+                |),
+                [
+                  M.call_closure (|
+                    Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.apply (Ty.path "&") [] [ A ] ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::option::Option") [] [ A ],
+                      "as_ref",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "core::option::OptionFlatten",
+                          "iter"
+                        |)
+                      |)
+                    ]
+                  |);
+                  M.closure
+                    (fun γ =>
+                      ltac:(M.monadic
+                        match γ with
+                        | [ α0 ] =>
+                          ltac:(M.monadic
+                            (M.match_operator (|
+                              Ty.tuple
+                                [
+                                  Ty.path "usize";
+                                  Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ]
+                                ],
+                              M.alloc (| Ty.apply (Ty.path "&") [] [ A ], α0 |),
+                              [
+                                fun γ =>
+                                  ltac:(M.monadic
+                                    (let i := M.copy (| Ty.apply (Ty.path "&") [] [ A ], γ |) in
+                                    M.call_closure (|
+                                      Ty.tuple
+                                        [
+                                          Ty.path "usize";
+                                          Ty.apply
+                                            (Ty.path "core::option::Option")
+                                            []
+                                            [ Ty.path "usize" ]
+                                        ],
+                                      M.get_trait_method (|
+                                        "core::iter::traits::iterator::Iterator",
+                                        A,
+                                        [],
+                                        [],
+                                        "size_hint",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| i |) |)
+                                        |)
+                                      ]
+                                    |)))
+                              ]
+                            |)))
+                        | _ => M.impossible "wrong number of arguments"
+                        end))
+                ]
+              |);
+              Value.Tuple
+                [
+                  Value.Integer IntegerKind.Usize 0;
+                  Value.StructTuple
+                    "core::option::Option::Some"
+                    []
+                    [ Ty.path "usize" ]
+                    [ Value.Integer IntegerKind.Usize 0 ]
+                ]
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (A : Ty.t),
+      M.IsTraitInstance
+        "core::iter::traits::iterator::Iterator"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self A)
+        (* Instance *)
+        [
+          ("Item", InstanceField.Ty (_Item A));
+          ("next", InstanceField.Method (next A));
+          ("size_hint", InstanceField.Method (size_hint A))
+        ].
+  End Impl_core_iter_traits_iterator_Iterator_where_core_iter_traits_iterator_Iterator_A_for_core_option_OptionFlatten_A.
+  
+  Module Impl_core_iter_traits_double_ended_DoubleEndedIterator_where_core_iter_traits_double_ended_DoubleEndedIterator_A_for_core_option_OptionFlatten_A.
+    Definition Self (A : Ty.t) : Ty.t := Ty.apply (Ty.path "core::option::OptionFlatten") [] [ A ].
+    
+    (*
+        fn next_back(&mut self) -> Option<Self::Item> {
+            self.iter.as_mut()?.next_back()
+        }
+    *)
+    Definition next_back (A : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self A in
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&mut")
+                []
+                [ Ty.apply (Ty.path "core::option::OptionFlatten") [] [ A ] ],
+              self
+            |) in
+          M.catch_return
+            (Ty.apply
+              (Ty.path "core::option::Option")
+              []
+              [
+                Ty.associated_in_trait
+                  "core::iter::traits::iterator::Iterator"
+                  []
+                  []
+                  (Ty.apply (Ty.path "core::option::OptionFlatten") [] [ A ])
+                  "Item"
+              ]) (|
+            ltac:(M.monadic
+              (M.call_closure (|
+                Ty.apply
+                  (Ty.path "core::option::Option")
+                  []
+                  [ Ty.associated_in_trait "core::iter::traits::iterator::Iterator" [] [] A "Item"
+                  ],
+                M.get_trait_method (|
+                  "core::iter::traits::double_ended::DoubleEndedIterator",
+                  A,
+                  [],
+                  [],
+                  "next_back",
+                  [],
+                  []
+                |),
+                [
+                  M.borrow (|
+                    Pointer.Kind.MutRef,
+                    M.deref (|
+                      M.match_operator (|
+                        Ty.apply (Ty.path "&mut") [] [ A ],
+                        M.alloc (|
+                          Ty.apply
+                            (Ty.path "core::ops::control_flow::ControlFlow")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "core::option::Option")
+                                []
+                                [ Ty.path "core::convert::Infallible" ];
+                              Ty.apply (Ty.path "&mut") [] [ A ]
+                            ],
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "core::ops::control_flow::ControlFlow")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "core::option::Option")
+                                  []
+                                  [ Ty.path "core::convert::Infallible" ];
+                                Ty.apply (Ty.path "&mut") [] [ A ]
+                              ],
+                            M.get_trait_method (|
+                              "core::ops::try_trait::Try",
+                              Ty.apply
+                                (Ty.path "core::option::Option")
+                                []
+                                [ Ty.apply (Ty.path "&mut") [] [ A ] ],
+                              [],
+                              [],
+                              "branch",
+                              [],
+                              []
+                            |),
+                            [
+                              M.call_closure (|
+                                Ty.apply
+                                  (Ty.path "core::option::Option")
+                                  []
+                                  [ Ty.apply (Ty.path "&mut") [] [ A ] ],
+                                M.get_associated_function (|
+                                  Ty.apply (Ty.path "core::option::Option") [] [ A ],
+                                  "as_mut",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "core::option::OptionFlatten",
+                                      "iter"
+                                    |)
+                                  |)
+                                ]
+                              |)
+                            ]
+                          |)
+                        |),
+                        [
+                          fun γ =>
+                            ltac:(M.monadic
+                              (let γ0_0 :=
+                                M.SubPointer.get_struct_tuple_field (|
+                                  γ,
+                                  "core::ops::control_flow::ControlFlow::Break",
+                                  0
+                                |) in
+                              let residual :=
+                                M.copy (|
+                                  Ty.apply
+                                    (Ty.path "core::option::Option")
+                                    []
+                                    [ Ty.path "core::convert::Infallible" ],
+                                  γ0_0
+                                |) in
+                              M.never_to_any (|
+                                M.read (|
+                                  M.return_ (|
+                                    M.call_closure (|
+                                      Ty.apply
+                                        (Ty.path "core::option::Option")
+                                        []
+                                        [
+                                          Ty.associated_in_trait
+                                            "core::iter::traits::iterator::Iterator"
+                                            []
+                                            []
+                                            A
+                                            "Item"
+                                        ],
+                                      M.get_trait_method (|
+                                        "core::ops::try_trait::FromResidual",
+                                        Ty.apply
+                                          (Ty.path "core::option::Option")
+                                          []
+                                          [
+                                            Ty.associated_in_trait
+                                              "core::iter::traits::iterator::Iterator"
+                                              []
+                                              []
+                                              A
+                                              "Item"
+                                          ],
+                                        [],
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::option::Option")
+                                            []
+                                            [ Ty.path "core::convert::Infallible" ]
+                                        ],
+                                        "from_residual",
+                                        [],
+                                        []
+                                      |),
+                                      [ M.read (| residual |) ]
+                                    |)
+                                  |)
+                                |)
+                              |)));
+                          fun γ =>
+                            ltac:(M.monadic
+                              (let γ0_0 :=
+                                M.SubPointer.get_struct_tuple_field (|
+                                  γ,
+                                  "core::ops::control_flow::ControlFlow::Continue",
+                                  0
+                                |) in
+                              let val := M.copy (| Ty.apply (Ty.path "&mut") [] [ A ], γ0_0 |) in
+                              M.read (| val |)))
+                        ]
+                      |)
+                    |)
+                  |)
+                ]
+              |)))
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (A : Ty.t),
+      M.IsTraitInstance
+        "core::iter::traits::double_ended::DoubleEndedIterator"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self A)
+        (* Instance *) [ ("next_back", InstanceField.Method (next_back A)) ].
+  End Impl_core_iter_traits_double_ended_DoubleEndedIterator_where_core_iter_traits_double_ended_DoubleEndedIterator_A_for_core_option_OptionFlatten_A.
+  
+  Module Impl_core_iter_traits_exact_size_ExactSizeIterator_where_core_iter_traits_exact_size_ExactSizeIterator_A_for_core_option_OptionFlatten_A.
+    Definition Self (A : Ty.t) : Ty.t := Ty.apply (Ty.path "core::option::OptionFlatten") [] [ A ].
+    
+    Axiom Implements :
+      forall (A : Ty.t),
+      M.IsTraitInstance
+        "core::iter::traits::exact_size::ExactSizeIterator"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self A)
+        (* Instance *) [].
+  End Impl_core_iter_traits_exact_size_ExactSizeIterator_where_core_iter_traits_exact_size_ExactSizeIterator_A_for_core_option_OptionFlatten_A.
+  
+  Module Impl_core_iter_traits_marker_FusedIterator_where_core_iter_traits_marker_FusedIterator_A_for_core_option_OptionFlatten_A.
+    Definition Self (A : Ty.t) : Ty.t := Ty.apply (Ty.path "core::option::OptionFlatten") [] [ A ].
+    
+    Axiom Implements :
+      forall (A : Ty.t),
+      M.IsTraitInstance
+        "core::iter::traits::marker::FusedIterator"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self A)
+        (* Instance *) [].
+  End Impl_core_iter_traits_marker_FusedIterator_where_core_iter_traits_marker_FusedIterator_A_for_core_option_OptionFlatten_A.
+  
+  Module Impl_core_iter_traits_marker_TrustedLen_where_core_iter_traits_marker_TrustedLen_A_for_core_option_OptionFlatten_A.
+    Definition Self (A : Ty.t) : Ty.t := Ty.apply (Ty.path "core::option::OptionFlatten") [] [ A ].
+    
+    Axiom Implements :
+      forall (A : Ty.t),
+      M.IsTraitInstance
+        "core::iter::traits::marker::TrustedLen"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self A)
+        (* Instance *) [].
+  End Impl_core_iter_traits_marker_TrustedLen_where_core_iter_traits_marker_TrustedLen_A_for_core_option_OptionFlatten_A.
   
   Module Impl_core_iter_traits_collect_FromIterator_where_core_iter_traits_collect_FromIterator_V_A_core_option_Option_A_for_core_option_Option_V.
     Definition Self (A V : Ty.t) : Ty.t := Ty.apply (Ty.path "core::option::Option") [] [ V ].

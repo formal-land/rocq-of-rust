@@ -27,6 +27,18 @@ Module bits.
     Axiom IsDiscriminant_AddressError_InvalidChecksum :
       M.IsDiscriminant "alloy_primitives::bits::address::AddressError::InvalidChecksum" 1.
     
+    Module Impl_core_clone_TrivialClone_for_alloy_primitives_bits_address_AddressError.
+      Definition Self : Ty.t := Ty.path "alloy_primitives::bits::address::AddressError".
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::clone::TrivialClone"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [].
+    End Impl_core_clone_TrivialClone_for_alloy_primitives_bits_address_AddressError.
+    
     Module Impl_core_clone_Clone_for_alloy_primitives_bits_address_AddressError.
       Definition Self : Ty.t := Ty.path "alloy_primitives::bits::address::AddressError".
       
@@ -619,21 +631,19 @@ Module bits.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
                                   Ty.path "bool",
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    M.get_associated_function (|
-                                      Ty.path "core::fmt::Formatter",
-                                      "alternate",
-                                      [],
-                                      []
-                                    |),
-                                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| f |) |) |)
-                                    ]
-                                  |)
-                                |)) in
+                                  M.get_associated_function (|
+                                    Ty.path "core::fmt::Formatter",
+                                    "alternate",
+                                    [],
+                                    []
+                                  |),
+                                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| f |) |) |) ]
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.read (|
@@ -3008,24 +3018,23 @@ Module bits.
                             fun γ =>
                               ltac:(M.monadic
                                 (let γ :=
-                                  M.use
-                                    (M.alloc (|
+                                  M.alloc (|
+                                    Ty.path "bool",
+                                    M.call_closure (|
                                       Ty.path "bool",
-                                      M.call_closure (|
-                                        Ty.path "bool",
-                                        UnOp.not,
-                                        [
-                                          M.call_closure (|
-                                            Ty.path "bool",
-                                            BinOp.eq,
-                                            [
-                                              M.read (| M.deref (| M.read (| left_val |) |) |);
-                                              M.read (| M.deref (| M.read (| right_val |) |) |)
-                                            ]
-                                          |)
-                                        ]
-                                      |)
-                                    |)) in
+                                      UnOp.not,
+                                      [
+                                        M.call_closure (|
+                                          Ty.path "bool",
+                                          BinOp.eq,
+                                          [
+                                            M.read (| M.deref (| M.read (| left_val |) |) |);
+                                            M.read (| M.deref (| M.read (| right_val |) |) |)
+                                          ]
+                                        |)
+                                      ]
+                                    |)
+                                  |) in
                                 let _ :=
                                   is_constant_or_break_match (|
                                     M.read (| γ |),
@@ -3077,37 +3086,11 @@ Module bits.
                                                 Ty.path "core::fmt::Arguments",
                                                 M.get_associated_function (|
                                                   Ty.path "core::fmt::Arguments",
-                                                  "new_const",
-                                                  [ Value.Integer IntegerKind.Usize 1 ],
+                                                  "from_str",
+                                                  [],
                                                   []
                                                 |),
-                                                [
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.deref (|
-                                                      M.borrow (|
-                                                        Pointer.Kind.Ref,
-                                                        M.alloc (|
-                                                          Ty.apply
-                                                            (Ty.path "array")
-                                                            [ Value.Integer IntegerKind.Usize 1 ]
-                                                            [
-                                                              Ty.apply
-                                                                (Ty.path "&")
-                                                                []
-                                                                [ Ty.path "str" ]
-                                                            ],
-                                                          Value.Array
-                                                            [
-                                                              mk_str (|
-                                                                "raw public key must be 64 bytes"
-                                                              |)
-                                                            ]
-                                                        |)
-                                                      |)
-                                                    |)
-                                                  |)
-                                                ]
+                                                [ mk_str (| "raw public key must be 64 bytes" |) ]
                                               |)
                                             ]
                                         ]

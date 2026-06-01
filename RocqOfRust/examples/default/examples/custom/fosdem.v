@@ -43,31 +43,30 @@ Module Impl_fosdem_Counter.
             fun γ =>
               ltac:(M.monadic
                 (let γ :=
-                  M.use
-                    (M.alloc (|
+                  M.alloc (|
+                    Ty.path "bool",
+                    M.call_closure (|
                       Ty.path "bool",
-                      M.call_closure (|
-                        Ty.path "bool",
-                        BinOp.gt,
-                        [
-                          M.call_closure (|
-                            Ty.path "u64",
-                            BinOp.Wrap.add,
-                            [
-                              M.read (|
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "fosdem::Counter",
-                                  "value"
-                                |)
-                              |);
-                              M.read (| amount |)
-                            ]
-                          |);
-                          M.read (| get_constant (| "fosdem::MAX_VALUE", Ty.path "u64" |) |)
-                        ]
-                      |)
-                    |)) in
+                      BinOp.gt,
+                      [
+                        M.call_closure (|
+                          Ty.path "u64",
+                          BinOp.Wrap.add,
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "fosdem::Counter",
+                                "value"
+                              |)
+                            |);
+                            M.read (| amount |)
+                          ]
+                        |);
+                        M.read (| get_constant (| "fosdem::MAX_VALUE", Ty.path "u64" |) |)
+                      ]
+                    |)
+                  |) in
                 let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                 M.read (|
                   let~ _ : Ty.tuple [] :=

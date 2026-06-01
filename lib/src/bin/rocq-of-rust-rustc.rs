@@ -8,7 +8,6 @@ use rocq_of_rust_lib::{
     callbacks::*,
     options::{Args, Options, RocqOfRustArgs},
 };
-use rustc_driver::RunCompiler;
 use std::{env, process::Command};
 
 struct DefaultCallbacks;
@@ -50,14 +49,12 @@ fn setup_plugin() {
     let user_asked_for = !is_wrapper || primary_package;
 
     if normal_rustc || !user_asked_for {
-        RunCompiler::new(&args, &mut DefaultCallbacks {})
-            .run()
-            .unwrap()
+        rustc_driver::run_compiler(&args, &mut DefaultCallbacks {});
     } else {
         let opts = Options::from_args(rocq_of_rust);
         let mut callbacks = ToRocq::new(opts);
 
-        RunCompiler::new(&args, &mut callbacks).run().unwrap();
+        rustc_driver::run_compiler(&args, &mut callbacks);
     }
 }
 

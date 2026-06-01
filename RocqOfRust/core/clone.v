@@ -25,6 +25,228 @@ Module clone.
       M.IsProvidedMethod "core::clone::Clone" "clone_from" clone_from.
   End Clone.
   
+  (* Trait *)
+  (* Empty module 'TrivialClone' *)
+  
+  (* Trait *)
+  (* Empty module 'UseCloned' *)
+  
+  Module Impl_core_clone_UseCloned_for_usize.
+    Definition Self : Ty.t := Ty.path "usize".
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "core::clone::UseCloned"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        Self
+        (* Instance *) [].
+  End Impl_core_clone_UseCloned_for_usize.
+  
+  Module Impl_core_clone_UseCloned_for_u8.
+    Definition Self : Ty.t := Ty.path "u8".
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "core::clone::UseCloned"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        Self
+        (* Instance *) [].
+  End Impl_core_clone_UseCloned_for_u8.
+  
+  Module Impl_core_clone_UseCloned_for_u16.
+    Definition Self : Ty.t := Ty.path "u16".
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "core::clone::UseCloned"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        Self
+        (* Instance *) [].
+  End Impl_core_clone_UseCloned_for_u16.
+  
+  Module Impl_core_clone_UseCloned_for_u32.
+    Definition Self : Ty.t := Ty.path "u32".
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "core::clone::UseCloned"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        Self
+        (* Instance *) [].
+  End Impl_core_clone_UseCloned_for_u32.
+  
+  Module Impl_core_clone_UseCloned_for_u64.
+    Definition Self : Ty.t := Ty.path "u64".
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "core::clone::UseCloned"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        Self
+        (* Instance *) [].
+  End Impl_core_clone_UseCloned_for_u64.
+  
+  Module Impl_core_clone_UseCloned_for_u128.
+    Definition Self : Ty.t := Ty.path "u128".
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "core::clone::UseCloned"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        Self
+        (* Instance *) [].
+  End Impl_core_clone_UseCloned_for_u128.
+  
+  Module Impl_core_clone_UseCloned_for_isize.
+    Definition Self : Ty.t := Ty.path "isize".
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "core::clone::UseCloned"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        Self
+        (* Instance *) [].
+  End Impl_core_clone_UseCloned_for_isize.
+  
+  Module Impl_core_clone_UseCloned_for_i8.
+    Definition Self : Ty.t := Ty.path "i8".
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "core::clone::UseCloned"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        Self
+        (* Instance *) [].
+  End Impl_core_clone_UseCloned_for_i8.
+  
+  Module Impl_core_clone_UseCloned_for_i16.
+    Definition Self : Ty.t := Ty.path "i16".
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "core::clone::UseCloned"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        Self
+        (* Instance *) [].
+  End Impl_core_clone_UseCloned_for_i16.
+  
+  Module Impl_core_clone_UseCloned_for_i32.
+    Definition Self : Ty.t := Ty.path "i32".
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "core::clone::UseCloned"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        Self
+        (* Instance *) [].
+  End Impl_core_clone_UseCloned_for_i32.
+  
+  Module Impl_core_clone_UseCloned_for_i64.
+    Definition Self : Ty.t := Ty.path "i64".
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "core::clone::UseCloned"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        Self
+        (* Instance *) [].
+  End Impl_core_clone_UseCloned_for_i64.
+  
+  Module Impl_core_clone_UseCloned_for_i128.
+    Definition Self : Ty.t := Ty.path "i128".
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "core::clone::UseCloned"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        Self
+        (* Instance *) [].
+  End Impl_core_clone_UseCloned_for_i128.
+  
+  Module Impl_core_clone_UseCloned_for_f16.
+    Definition Self : Ty.t := Ty.path "f16".
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "core::clone::UseCloned"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        Self
+        (* Instance *) [].
+  End Impl_core_clone_UseCloned_for_f16.
+  
+  Module Impl_core_clone_UseCloned_for_f32.
+    Definition Self : Ty.t := Ty.path "f32".
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "core::clone::UseCloned"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        Self
+        (* Instance *) [].
+  End Impl_core_clone_UseCloned_for_f32.
+  
+  Module Impl_core_clone_UseCloned_for_f64.
+    Definition Self : Ty.t := Ty.path "f64".
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "core::clone::UseCloned"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        Self
+        (* Instance *) [].
+  End Impl_core_clone_UseCloned_for_f64.
+  
+  Module Impl_core_clone_UseCloned_for_f128.
+    Definition Self : Ty.t := Ty.path "f128".
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "core::clone::UseCloned"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        Self
+        (* Instance *) [].
+  End Impl_core_clone_UseCloned_for_f128.
+  
+  Module Impl_core_clone_UseCloned_for_bool.
+    Definition Self : Ty.t := Ty.path "bool".
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "core::clone::UseCloned"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        Self
+        (* Instance *) [].
+  End Impl_core_clone_UseCloned_for_bool.
+  
+  Module Impl_core_clone_UseCloned_for_char.
+    Definition Self : Ty.t := Ty.path "char".
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "core::clone::UseCloned"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        Self
+        (* Instance *) [].
+  End Impl_core_clone_UseCloned_for_char.
+  
   (* StructRecord
     {
       name := "AssertParamIsClone";
@@ -48,9 +270,9 @@ Module clone.
     Definition Self (T : Ty.t) : Ty.t := T.
     
     (*
-        unsafe fn clone_to_uninit(&self, dst: *mut u8) {
+        unsafe fn clone_to_uninit(&self, dest: *mut u8) {
             // SAFETY: we're calling a specialization with the same contract
-            unsafe { <T as self::uninit::CopySpec>::clone_one(self, dst.cast::<T>()) }
+            unsafe { <T as self::uninit::CopySpec>::clone_one(self, dest.cast::<T>()) }
         }
     *)
     Definition clone_to_uninit
@@ -61,10 +283,10 @@ Module clone.
         : M :=
       let Self : Ty.t := Self T in
       match ε, τ, α with
-      | [], [], [ self; dst ] =>
+      | [], [], [ self; dest ] =>
         ltac:(M.monadic
           (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], self |) in
-          let dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ], dst |) in
+          let dest := M.alloc (| Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ], dest |) in
           M.call_closure (|
             Ty.tuple [],
             M.get_trait_method (|
@@ -86,7 +308,7 @@ Module clone.
                   [],
                   [ T ]
                 |),
-                [ M.read (| dst |) ]
+                [ M.read (| dest |) ]
               |)
             ]
           |)))
@@ -107,10 +329,10 @@ Module clone.
     Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "slice") [] [ T ].
     
     (*
-        unsafe fn clone_to_uninit(&self, dst: *mut u8) {
-            let dst: *mut [T] = dst.with_metadata_of(self);
+        unsafe fn clone_to_uninit(&self, dest: *mut u8) {
+            let dest: *mut [T] = dest.with_metadata_of(self);
             // SAFETY: we're calling a specialization with the same contract
-            unsafe { <T as self::uninit::CopySpec>::clone_slice(self, dst) }
+            unsafe { <T as self::uninit::CopySpec>::clone_slice(self, dest) }
         }
     *)
     Definition clone_to_uninit
@@ -121,13 +343,13 @@ Module clone.
         : M :=
       let Self : Ty.t := Self T in
       match ε, τ, α with
-      | [], [], [ self; dst ] =>
+      | [], [], [ self; dest ] =>
         ltac:(M.monadic
           (let self :=
             M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ], self |) in
-          let dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ], dst |) in
+          let dest := M.alloc (| Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ], dest |) in
           M.read (|
-            let~ dst : Ty.apply (Ty.path "*mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ] :=
+            let~ dest : Ty.apply (Ty.path "*mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ] :=
               M.call_closure (|
                 Ty.apply (Ty.path "*mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
                 M.get_associated_function (|
@@ -137,7 +359,7 @@ Module clone.
                   [ Ty.apply (Ty.path "slice") [] [ T ] ]
                 |),
                 [
-                  M.read (| dst |);
+                  M.read (| dest |);
                   M.borrow (| Pointer.Kind.ConstPointer, M.deref (| M.read (| self |) |) |)
                 ]
               |) in
@@ -154,7 +376,9 @@ Module clone.
                   [],
                   []
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |); M.read (| dst |)
+                [
+                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
+                  M.read (| dest |)
                 ]
               |)
             |)
@@ -176,17 +400,17 @@ Module clone.
     Definition Self : Ty.t := Ty.path "str".
     
     (*
-        unsafe fn clone_to_uninit(&self, dst: *mut u8) {
+        unsafe fn clone_to_uninit(&self, dest: *mut u8) {
             // SAFETY: str is just a [u8] with UTF-8 invariant
-            unsafe { self.as_bytes().clone_to_uninit(dst) }
+            unsafe { self.as_bytes().clone_to_uninit(dest) }
         }
     *)
     Definition clone_to_uninit (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       match ε, τ, α with
-      | [], [], [ self; dst ] =>
+      | [], [], [ self; dest ] =>
         ltac:(M.monadic
           (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "str" ], self |) in
-          let dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ], dst |) in
+          let dest := M.alloc (| Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ], dest |) in
           M.call_closure (|
             Ty.tuple [],
             M.get_trait_method (|
@@ -209,7 +433,7 @@ Module clone.
                   |)
                 |)
               |);
-              M.read (| dst |)
+              M.read (| dest |)
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -228,21 +452,21 @@ Module clone.
     Definition Self : Ty.t := Ty.path "core::ffi::c_str::CStr".
     
     (*
-        unsafe fn clone_to_uninit(&self, dst: *mut u8) {
+        unsafe fn clone_to_uninit(&self, dest: *mut u8) {
             // SAFETY: For now, CStr is just a #[repr(trasnsparent)] [c_char] with some invariants.
             // And we can cast [c_char] to [u8] on all supported platforms (see: to_bytes_with_nul).
             // The pointer metadata properly preserves the length (so NUL is also copied).
             // See: `cstr_metadata_is_length_with_nul` in tests.
-            unsafe { self.to_bytes_with_nul().clone_to_uninit(dst) }
+            unsafe { self.to_bytes_with_nul().clone_to_uninit(dest) }
         }
     *)
     Definition clone_to_uninit (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       match ε, τ, α with
-      | [], [], [ self; dst ] =>
+      | [], [], [ self; dest ] =>
         ltac:(M.monadic
           (let self :=
             M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "core::ffi::c_str::CStr" ], self |) in
-          let dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ], dst |) in
+          let dest := M.alloc (| Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ], dest |) in
           M.call_closure (|
             Ty.tuple [],
             M.get_trait_method (|
@@ -270,7 +494,7 @@ Module clone.
                   |)
                 |)
               |);
-              M.read (| dst |)
+              M.read (| dest |)
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -284,6 +508,64 @@ Module clone.
         Self
         (* Instance *) [ ("clone_to_uninit", InstanceField.Method clone_to_uninit) ].
   End Impl_core_clone_CloneToUninit_for_core_ffi_c_str_CStr.
+  
+  Module Impl_core_clone_CloneToUninit_for_core_bstr_ByteStr.
+    Definition Self : Ty.t := Ty.path "core::bstr::ByteStr".
+    
+    (*
+        unsafe fn clone_to_uninit(&self, dst: *mut u8) {
+            // SAFETY: ByteStr is a `#[repr(transparent)]` wrapper around `[u8]`
+            unsafe { self.as_bytes().clone_to_uninit(dst) }
+        }
+    *)
+    Definition clone_to_uninit (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [], [ self; dst ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "core::bstr::ByteStr" ], self |) in
+          let dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ], dst |) in
+          M.call_closure (|
+            Ty.tuple [],
+            M.get_trait_method (|
+              "core::clone::CloneToUninit",
+              Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+              [],
+              [],
+              "clone_to_uninit",
+              [],
+              []
+            |),
+            [
+              M.borrow (|
+                Pointer.Kind.Ref,
+                M.deref (|
+                  M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                    M.get_associated_function (|
+                      Ty.path "core::bstr::ByteStr",
+                      "as_bytes",
+                      [],
+                      []
+                    |),
+                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                  |)
+                |)
+              |);
+              M.read (| dst |)
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "core::clone::CloneToUninit"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        Self
+        (* Instance *) [ ("clone_to_uninit", InstanceField.Method clone_to_uninit) ].
+  End Impl_core_clone_CloneToUninit_for_core_bstr_ByteStr.
   
   Module impls.
     Module Impl_core_clone_Clone_for_usize.
@@ -312,6 +594,18 @@ Module clone.
           (* Instance *) [ ("clone", InstanceField.Method clone) ].
     End Impl_core_clone_Clone_for_usize.
     
+    Module Impl_core_clone_TrivialClone_for_usize.
+      Definition Self : Ty.t := Ty.path "usize".
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::clone::TrivialClone"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [].
+    End Impl_core_clone_TrivialClone_for_usize.
+    
     Module Impl_core_clone_Clone_for_u8.
       Definition Self : Ty.t := Ty.path "u8".
       
@@ -337,6 +631,18 @@ Module clone.
           Self
           (* Instance *) [ ("clone", InstanceField.Method clone) ].
     End Impl_core_clone_Clone_for_u8.
+    
+    Module Impl_core_clone_TrivialClone_for_u8.
+      Definition Self : Ty.t := Ty.path "u8".
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::clone::TrivialClone"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [].
+    End Impl_core_clone_TrivialClone_for_u8.
     
     Module Impl_core_clone_Clone_for_u16.
       Definition Self : Ty.t := Ty.path "u16".
@@ -364,6 +670,18 @@ Module clone.
           (* Instance *) [ ("clone", InstanceField.Method clone) ].
     End Impl_core_clone_Clone_for_u16.
     
+    Module Impl_core_clone_TrivialClone_for_u16.
+      Definition Self : Ty.t := Ty.path "u16".
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::clone::TrivialClone"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [].
+    End Impl_core_clone_TrivialClone_for_u16.
+    
     Module Impl_core_clone_Clone_for_u32.
       Definition Self : Ty.t := Ty.path "u32".
       
@@ -389,6 +707,18 @@ Module clone.
           Self
           (* Instance *) [ ("clone", InstanceField.Method clone) ].
     End Impl_core_clone_Clone_for_u32.
+    
+    Module Impl_core_clone_TrivialClone_for_u32.
+      Definition Self : Ty.t := Ty.path "u32".
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::clone::TrivialClone"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [].
+    End Impl_core_clone_TrivialClone_for_u32.
     
     Module Impl_core_clone_Clone_for_u64.
       Definition Self : Ty.t := Ty.path "u64".
@@ -416,6 +746,18 @@ Module clone.
           (* Instance *) [ ("clone", InstanceField.Method clone) ].
     End Impl_core_clone_Clone_for_u64.
     
+    Module Impl_core_clone_TrivialClone_for_u64.
+      Definition Self : Ty.t := Ty.path "u64".
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::clone::TrivialClone"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [].
+    End Impl_core_clone_TrivialClone_for_u64.
+    
     Module Impl_core_clone_Clone_for_u128.
       Definition Self : Ty.t := Ty.path "u128".
       
@@ -441,6 +783,18 @@ Module clone.
           Self
           (* Instance *) [ ("clone", InstanceField.Method clone) ].
     End Impl_core_clone_Clone_for_u128.
+    
+    Module Impl_core_clone_TrivialClone_for_u128.
+      Definition Self : Ty.t := Ty.path "u128".
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::clone::TrivialClone"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [].
+    End Impl_core_clone_TrivialClone_for_u128.
     
     Module Impl_core_clone_Clone_for_isize.
       Definition Self : Ty.t := Ty.path "isize".
@@ -468,6 +822,18 @@ Module clone.
           (* Instance *) [ ("clone", InstanceField.Method clone) ].
     End Impl_core_clone_Clone_for_isize.
     
+    Module Impl_core_clone_TrivialClone_for_isize.
+      Definition Self : Ty.t := Ty.path "isize".
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::clone::TrivialClone"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [].
+    End Impl_core_clone_TrivialClone_for_isize.
+    
     Module Impl_core_clone_Clone_for_i8.
       Definition Self : Ty.t := Ty.path "i8".
       
@@ -493,6 +859,18 @@ Module clone.
           Self
           (* Instance *) [ ("clone", InstanceField.Method clone) ].
     End Impl_core_clone_Clone_for_i8.
+    
+    Module Impl_core_clone_TrivialClone_for_i8.
+      Definition Self : Ty.t := Ty.path "i8".
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::clone::TrivialClone"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [].
+    End Impl_core_clone_TrivialClone_for_i8.
     
     Module Impl_core_clone_Clone_for_i16.
       Definition Self : Ty.t := Ty.path "i16".
@@ -520,6 +898,18 @@ Module clone.
           (* Instance *) [ ("clone", InstanceField.Method clone) ].
     End Impl_core_clone_Clone_for_i16.
     
+    Module Impl_core_clone_TrivialClone_for_i16.
+      Definition Self : Ty.t := Ty.path "i16".
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::clone::TrivialClone"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [].
+    End Impl_core_clone_TrivialClone_for_i16.
+    
     Module Impl_core_clone_Clone_for_i32.
       Definition Self : Ty.t := Ty.path "i32".
       
@@ -545,6 +935,18 @@ Module clone.
           Self
           (* Instance *) [ ("clone", InstanceField.Method clone) ].
     End Impl_core_clone_Clone_for_i32.
+    
+    Module Impl_core_clone_TrivialClone_for_i32.
+      Definition Self : Ty.t := Ty.path "i32".
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::clone::TrivialClone"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [].
+    End Impl_core_clone_TrivialClone_for_i32.
     
     Module Impl_core_clone_Clone_for_i64.
       Definition Self : Ty.t := Ty.path "i64".
@@ -572,6 +974,18 @@ Module clone.
           (* Instance *) [ ("clone", InstanceField.Method clone) ].
     End Impl_core_clone_Clone_for_i64.
     
+    Module Impl_core_clone_TrivialClone_for_i64.
+      Definition Self : Ty.t := Ty.path "i64".
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::clone::TrivialClone"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [].
+    End Impl_core_clone_TrivialClone_for_i64.
+    
     Module Impl_core_clone_Clone_for_i128.
       Definition Self : Ty.t := Ty.path "i128".
       
@@ -597,6 +1011,18 @@ Module clone.
           Self
           (* Instance *) [ ("clone", InstanceField.Method clone) ].
     End Impl_core_clone_Clone_for_i128.
+    
+    Module Impl_core_clone_TrivialClone_for_i128.
+      Definition Self : Ty.t := Ty.path "i128".
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::clone::TrivialClone"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [].
+    End Impl_core_clone_TrivialClone_for_i128.
     
     Module Impl_core_clone_Clone_for_f16.
       Definition Self : Ty.t := Ty.path "f16".
@@ -624,6 +1050,18 @@ Module clone.
           (* Instance *) [ ("clone", InstanceField.Method clone) ].
     End Impl_core_clone_Clone_for_f16.
     
+    Module Impl_core_clone_TrivialClone_for_f16.
+      Definition Self : Ty.t := Ty.path "f16".
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::clone::TrivialClone"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [].
+    End Impl_core_clone_TrivialClone_for_f16.
+    
     Module Impl_core_clone_Clone_for_f32.
       Definition Self : Ty.t := Ty.path "f32".
       
@@ -649,6 +1087,18 @@ Module clone.
           Self
           (* Instance *) [ ("clone", InstanceField.Method clone) ].
     End Impl_core_clone_Clone_for_f32.
+    
+    Module Impl_core_clone_TrivialClone_for_f32.
+      Definition Self : Ty.t := Ty.path "f32".
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::clone::TrivialClone"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [].
+    End Impl_core_clone_TrivialClone_for_f32.
     
     Module Impl_core_clone_Clone_for_f64.
       Definition Self : Ty.t := Ty.path "f64".
@@ -676,6 +1126,18 @@ Module clone.
           (* Instance *) [ ("clone", InstanceField.Method clone) ].
     End Impl_core_clone_Clone_for_f64.
     
+    Module Impl_core_clone_TrivialClone_for_f64.
+      Definition Self : Ty.t := Ty.path "f64".
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::clone::TrivialClone"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [].
+    End Impl_core_clone_TrivialClone_for_f64.
+    
     Module Impl_core_clone_Clone_for_f128.
       Definition Self : Ty.t := Ty.path "f128".
       
@@ -701,6 +1163,18 @@ Module clone.
           Self
           (* Instance *) [ ("clone", InstanceField.Method clone) ].
     End Impl_core_clone_Clone_for_f128.
+    
+    Module Impl_core_clone_TrivialClone_for_f128.
+      Definition Self : Ty.t := Ty.path "f128".
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::clone::TrivialClone"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [].
+    End Impl_core_clone_TrivialClone_for_f128.
     
     Module Impl_core_clone_Clone_for_bool.
       Definition Self : Ty.t := Ty.path "bool".
@@ -728,6 +1202,18 @@ Module clone.
           (* Instance *) [ ("clone", InstanceField.Method clone) ].
     End Impl_core_clone_Clone_for_bool.
     
+    Module Impl_core_clone_TrivialClone_for_bool.
+      Definition Self : Ty.t := Ty.path "bool".
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::clone::TrivialClone"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [].
+    End Impl_core_clone_TrivialClone_for_bool.
+    
     Module Impl_core_clone_Clone_for_char.
       Definition Self : Ty.t := Ty.path "char".
       
@@ -753,6 +1239,18 @@ Module clone.
           Self
           (* Instance *) [ ("clone", InstanceField.Method clone) ].
     End Impl_core_clone_Clone_for_char.
+    
+    Module Impl_core_clone_TrivialClone_for_char.
+      Definition Self : Ty.t := Ty.path "char".
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::clone::TrivialClone"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [].
+    End Impl_core_clone_TrivialClone_for_char.
     
     Module Impl_core_clone_Clone_for_never.
       Definition Self : Ty.t := Ty.path "never".
@@ -780,7 +1278,19 @@ Module clone.
           (* Instance *) [ ("clone", InstanceField.Method clone) ].
     End Impl_core_clone_Clone_for_never.
     
-    Module Impl_core_clone_Clone_where_core_marker_Sized_T_for_pointer_const_T.
+    Module Impl_core_clone_TrivialClone_for_never.
+      Definition Self : Ty.t := Ty.path "never".
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::clone::TrivialClone"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [].
+    End Impl_core_clone_TrivialClone_for_never.
+    
+    Module Impl_core_clone_Clone_where_core_marker_PointeeSized_T_for_pointer_const_T.
       Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "*const") [] [ T ].
       
       (*
@@ -810,9 +1320,22 @@ Module clone.
           (* Trait polymorphic types *) []
           (Self T)
           (* Instance *) [ ("clone", InstanceField.Method (clone T)) ].
-    End Impl_core_clone_Clone_where_core_marker_Sized_T_for_pointer_const_T.
+    End Impl_core_clone_Clone_where_core_marker_PointeeSized_T_for_pointer_const_T.
     
-    Module Impl_core_clone_Clone_where_core_marker_Sized_T_for_pointer_mut_T.
+    Module Impl_core_clone_TrivialClone_where_core_marker_PointeeSized_T_for_pointer_const_T.
+      Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "*const") [] [ T ].
+      
+      Axiom Implements :
+        forall (T : Ty.t),
+        M.IsTraitInstance
+          "core::clone::TrivialClone"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          (Self T)
+          (* Instance *) [].
+    End Impl_core_clone_TrivialClone_where_core_marker_PointeeSized_T_for_pointer_const_T.
+    
+    Module Impl_core_clone_Clone_where_core_marker_PointeeSized_T_for_pointer_mut_T.
       Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "*mut") [] [ T ].
       
       (*
@@ -842,14 +1365,27 @@ Module clone.
           (* Trait polymorphic types *) []
           (Self T)
           (* Instance *) [ ("clone", InstanceField.Method (clone T)) ].
-    End Impl_core_clone_Clone_where_core_marker_Sized_T_for_pointer_mut_T.
+    End Impl_core_clone_Clone_where_core_marker_PointeeSized_T_for_pointer_mut_T.
     
-    Module Impl_core_clone_Clone_where_core_marker_Sized_T_for_ref__T.
+    Module Impl_core_clone_TrivialClone_where_core_marker_PointeeSized_T_for_pointer_mut_T.
+      Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "*mut") [] [ T ].
+      
+      Axiom Implements :
+        forall (T : Ty.t),
+        M.IsTraitInstance
+          "core::clone::TrivialClone"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          (Self T)
+          (* Instance *) [].
+    End Impl_core_clone_TrivialClone_where_core_marker_PointeeSized_T_for_pointer_mut_T.
+    
+    Module Impl_core_clone_Clone_where_core_marker_PointeeSized_T_for_ref__T.
       Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "&") [] [ T ].
       
       (*
               fn clone(&self) -> Self {
-                  *self
+                  self
               }
       *)
       Definition clone (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -859,7 +1395,10 @@ Module clone.
           ltac:(M.monadic
             (let self :=
               M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ T ] ], self |) in
-            M.read (| M.deref (| M.read (| self |) |) |)))
+            M.borrow (|
+              Pointer.Kind.Ref,
+              M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+            |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -871,9 +1410,22 @@ Module clone.
           (* Trait polymorphic types *) []
           (Self T)
           (* Instance *) [ ("clone", InstanceField.Method (clone T)) ].
-    End Impl_core_clone_Clone_where_core_marker_Sized_T_for_ref__T.
+    End Impl_core_clone_Clone_where_core_marker_PointeeSized_T_for_ref__T.
     
-    Module Impl_core_clone_Clone_where_core_marker_Sized_T_for_ref_mut_T.
+    Module Impl_core_clone_TrivialClone_where_core_marker_PointeeSized_T_for_ref__T.
+      Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "&") [] [ T ].
+      
+      Axiom Implements :
+        forall (T : Ty.t),
+        M.IsTraitInstance
+          "core::clone::TrivialClone"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          (Self T)
+          (* Instance *) [].
+    End Impl_core_clone_TrivialClone_where_core_marker_PointeeSized_T_for_ref__T.
+    
+    Module Impl_core_clone_Clone_where_core_marker_PointeeSized_T_for_ref_mut_T.
       Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "&mut") [] [ T ].
       
       Axiom Implements :
@@ -884,6 +1436,6 @@ Module clone.
           (* Trait polymorphic types *) []
           (Self T)
           (* Instance *) [].
-    End Impl_core_clone_Clone_where_core_marker_Sized_T_for_ref_mut_T.
+    End Impl_core_clone_Clone_where_core_marker_PointeeSized_T_for_ref_mut_T.
   End impls.
 End clone.

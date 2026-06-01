@@ -42,15 +42,14 @@ Module bits.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  BinOp.ge,
-                                  [ M.read (| index |); BITS ]
-                                |)
-                              |)) in
+                                BinOp.ge,
+                                [ M.read (| index |); BITS ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (| M.read (| M.return_ (| Value.Bool false |) |) |)));
@@ -167,15 +166,14 @@ Module bits.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  BinOp.ge,
-                                  [ M.read (| index |); BITS ]
-                                |)
-                              |)) in
+                                BinOp.ge,
+                                [ M.read (| index |); BITS ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (| M.read (| M.return_ (| Value.Tuple [] |) |) |)));
@@ -215,7 +213,7 @@ Module bits.
                             [
                               fun γ =>
                                 ltac:(M.monadic
-                                  (let γ := M.use value in
+                                  (let γ := value in
                                   let _ :=
                                     is_constant_or_break_match (|
                                       M.read (| γ |),
@@ -555,22 +553,21 @@ Module bits.
                   fun γ =>
                     ltac:(M.monadic
                       (let γ :=
-                        M.use
-                          (M.alloc (|
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
                             Ty.path "bool",
-                            M.call_closure (|
-                              Ty.path "bool",
-                              BinOp.ne,
-                              [
-                                M.call_closure (|
-                                  Ty.path "usize",
-                                  BinOp.Wrap.rem,
-                                  [ BITS; Value.Integer IntegerKind.Usize 64 ]
-                                |);
-                                Value.Integer IntegerKind.Usize 0
-                              ]
-                            |)
-                          |)) in
+                            BinOp.ne,
+                            [
+                              M.call_closure (|
+                                Ty.path "usize",
+                                BinOp.Wrap.rem,
+                                [ BITS; Value.Integer IntegerKind.Usize 64 ]
+                              |);
+                              Value.Integer IntegerKind.Usize 0
+                            ]
+                          |)
+                        |) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       M.read (|
                         let~ _ : Ty.tuple [] :=
@@ -1861,15 +1858,14 @@ Module bits.
                   fun γ =>
                     ltac:(M.monadic
                       (let γ :=
-                        M.use
-                          (M.alloc (|
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
                             Ty.path "bool",
-                            M.call_closure (|
-                              Ty.path "bool",
-                              BinOp.eq,
-                              [ M.read (| first_set_limb |); Value.Integer IntegerKind.Usize 0 ]
-                            |)
-                          |)) in
+                            BinOp.eq,
+                            [ M.read (| first_set_limb |); Value.Integer IntegerKind.Usize 0 ]
+                          |)
+                        |) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       Value.Tuple
                         [
@@ -2030,18 +2026,17 @@ Module bits.
                               fun γ =>
                                 ltac:(M.monadic
                                   (let γ :=
-                                    M.use
-                                      (M.alloc (|
+                                    M.alloc (|
+                                      Ty.path "bool",
+                                      M.call_closure (|
                                         Ty.path "bool",
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          BinOp.gt,
-                                          [
-                                            M.read (| leading_zeros |);
-                                            Value.Integer IntegerKind.U32 0
-                                          ]
-                                        |)
-                                      |)) in
+                                        BinOp.gt,
+                                        [
+                                          M.read (| leading_zeros |);
+                                          Value.Integer IntegerKind.U32 0
+                                        ]
+                                      |)
+                                    |) in
                                   let _ :=
                                     is_constant_or_break_match (|
                                       M.read (| γ |),
@@ -2342,15 +2337,14 @@ Module bits.
                               fun γ =>
                                 ltac:(M.monadic
                                   (let γ :=
-                                    M.use
-                                      (M.alloc (|
+                                    M.alloc (|
+                                      Ty.path "bool",
+                                      M.call_closure (|
                                         Ty.path "bool",
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          BinOp.ge,
-                                          [ M.read (| limbs |); LIMBS ]
-                                        |)
-                                      |)) in
+                                        BinOp.ge,
+                                        [ M.read (| limbs |); LIMBS ]
+                                      |)
+                                    |) in
                                   let _ :=
                                     is_constant_or_break_match (|
                                       M.read (| γ |),
@@ -2417,15 +2411,14 @@ Module bits.
                               fun γ =>
                                 ltac:(M.monadic
                                   (let γ :=
-                                    M.use
-                                      (M.alloc (|
+                                    M.alloc (|
+                                      Ty.path "bool",
+                                      M.call_closure (|
                                         Ty.path "bool",
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          BinOp.eq,
-                                          [ M.read (| bits |); Value.Integer IntegerKind.Usize 0 ]
-                                        |)
-                                      |)) in
+                                        BinOp.eq,
+                                        [ M.read (| bits |); Value.Integer IntegerKind.Usize 0 ]
+                                      |)
+                                    |) in
                                   let _ :=
                                     is_constant_or_break_match (|
                                       M.read (| γ |),
@@ -2616,47 +2609,46 @@ Module bits.
                                             fun γ =>
                                               ltac:(M.monadic
                                                 (let γ :=
-                                                  M.use
-                                                    (M.alloc (|
+                                                  M.alloc (|
+                                                    Ty.path "bool",
+                                                    M.call_closure (|
                                                       Ty.path "bool",
-                                                      M.call_closure (|
-                                                        Ty.path "bool",
-                                                        BinOp.gt,
-                                                        [
-                                                          M.read (|
-                                                            M.SubPointer.get_array_field (|
-                                                              M.SubPointer.get_struct_record_field (|
-                                                                self,
-                                                                "ruint::Uint",
-                                                                "limbs"
-                                                              |),
-                                                              M.call_closure (|
-                                                                Ty.path "usize",
-                                                                BinOp.Wrap.sub,
-                                                                [
-                                                                  M.call_closure (|
-                                                                    Ty.path "usize",
-                                                                    BinOp.Wrap.sub,
-                                                                    [ LIMBS; M.read (| limbs |) ]
-                                                                  |);
-                                                                  Value.Integer IntegerKind.Usize 1
-                                                                ]
-                                                              |)
-                                                            |)
-                                                          |);
-                                                          M.read (|
-                                                            get_associated_constant (|
-                                                              Ty.apply
-                                                                (Ty.path "ruint::Uint")
-                                                                [ BITS; LIMBS ]
-                                                                [],
-                                                              "MASK",
-                                                              Ty.path "u64"
+                                                      BinOp.gt,
+                                                      [
+                                                        M.read (|
+                                                          M.SubPointer.get_array_field (|
+                                                            M.SubPointer.get_struct_record_field (|
+                                                              self,
+                                                              "ruint::Uint",
+                                                              "limbs"
+                                                            |),
+                                                            M.call_closure (|
+                                                              Ty.path "usize",
+                                                              BinOp.Wrap.sub,
+                                                              [
+                                                                M.call_closure (|
+                                                                  Ty.path "usize",
+                                                                  BinOp.Wrap.sub,
+                                                                  [ LIMBS; M.read (| limbs |) ]
+                                                                |);
+                                                                Value.Integer IntegerKind.Usize 1
+                                                              ]
                                                             |)
                                                           |)
-                                                        ]
-                                                      |)
-                                                    |)) in
+                                                        |);
+                                                        M.read (|
+                                                          get_associated_constant (|
+                                                            Ty.apply
+                                                              (Ty.path "ruint::Uint")
+                                                              [ BITS; LIMBS ]
+                                                              [],
+                                                            "MASK",
+                                                            Ty.path "u64"
+                                                          |)
+                                                        |)
+                                                      ]
+                                                    |)
+                                                  |) in
                                                 let _ :=
                                                   is_constant_or_break_match (|
                                                     M.read (| γ |),
@@ -2852,55 +2844,54 @@ Module bits.
                                                                               fun γ =>
                                                                                 ltac:(M.monadic
                                                                                   (let γ :=
-                                                                                    M.use
-                                                                                      (M.alloc (|
+                                                                                    M.alloc (|
+                                                                                      Ty.path
+                                                                                        "bool",
+                                                                                      M.call_closure (|
                                                                                         Ty.path
                                                                                           "bool",
-                                                                                        M.call_closure (|
-                                                                                          Ty.path
-                                                                                            "bool",
-                                                                                          UnOp.not,
-                                                                                          [
-                                                                                            LogicalOp.and (|
-                                                                                              M.call_closure (|
+                                                                                        UnOp.not,
+                                                                                        [
+                                                                                          LogicalOp.and (|
+                                                                                            M.call_closure (|
+                                                                                              Ty.path
+                                                                                                "bool",
+                                                                                              BinOp.ge,
+                                                                                              [
+                                                                                                M.read (|
+                                                                                                  i
+                                                                                                |);
+                                                                                                M.read (|
+                                                                                                  limbs
+                                                                                                |)
+                                                                                              ]
+                                                                                            |),
+                                                                                            ltac:(M.monadic
+                                                                                              (M.call_closure (|
                                                                                                 Ty.path
                                                                                                   "bool",
-                                                                                                BinOp.ge,
+                                                                                                BinOp.lt,
                                                                                                 [
-                                                                                                  M.read (|
-                                                                                                    i
+                                                                                                  M.call_closure (|
+                                                                                                    Ty.path
+                                                                                                      "usize",
+                                                                                                    BinOp.Wrap.sub,
+                                                                                                    [
+                                                                                                      M.read (|
+                                                                                                        i
+                                                                                                      |);
+                                                                                                      M.read (|
+                                                                                                        limbs
+                                                                                                      |)
+                                                                                                    ]
                                                                                                   |);
-                                                                                                  M.read (|
-                                                                                                    limbs
-                                                                                                  |)
+                                                                                                  LIMBS
                                                                                                 ]
-                                                                                              |),
-                                                                                              ltac:(M.monadic
-                                                                                                (M.call_closure (|
-                                                                                                  Ty.path
-                                                                                                    "bool",
-                                                                                                  BinOp.lt,
-                                                                                                  [
-                                                                                                    M.call_closure (|
-                                                                                                      Ty.path
-                                                                                                        "usize",
-                                                                                                      BinOp.Wrap.sub,
-                                                                                                      [
-                                                                                                        M.read (|
-                                                                                                          i
-                                                                                                        |);
-                                                                                                        M.read (|
-                                                                                                          limbs
-                                                                                                        |)
-                                                                                                      ]
-                                                                                                    |);
-                                                                                                    LIMBS
-                                                                                                  ]
-                                                                                                |)))
-                                                                                            |)
-                                                                                          ]
-                                                                                        |)
-                                                                                      |)) in
+                                                                                              |)))
+                                                                                          |)
+                                                                                        ]
+                                                                                      |)
+                                                                                    |) in
                                                                                   let _ :=
                                                                                     is_constant_or_break_match (|
                                                                                       M.read (|
@@ -2928,13 +2919,12 @@ Module bits.
                                                                                               ltac:(M.monadic
                                                                                                 (let
                                                                                                       γ :=
-                                                                                                  M.use
-                                                                                                    (M.alloc (|
-                                                                                                      Ty.path
-                                                                                                        "bool",
-                                                                                                      Value.Bool
-                                                                                                        true
-                                                                                                    |)) in
+                                                                                                  M.alloc (|
+                                                                                                    Ty.path
+                                                                                                      "bool",
+                                                                                                    Value.Bool
+                                                                                                      true
+                                                                                                  |) in
                                                                                                 let
                                                                                                       _ :=
                                                                                                   is_constant_or_break_match (|
@@ -2960,95 +2950,13 @@ Module bits.
                                                                                                         M.get_associated_function (|
                                                                                                           Ty.path
                                                                                                             "core::fmt::Arguments",
-                                                                                                          "new_v1",
-                                                                                                          [
-                                                                                                            Value.Integer
-                                                                                                              IntegerKind.Usize
-                                                                                                              1;
-                                                                                                            Value.Integer
-                                                                                                              IntegerKind.Usize
-                                                                                                              0
-                                                                                                          ],
+                                                                                                          "from_str_nonconst",
+                                                                                                          [],
                                                                                                           []
                                                                                                         |),
                                                                                                         [
-                                                                                                          M.borrow (|
-                                                                                                            Pointer.Kind.Ref,
-                                                                                                            M.deref (|
-                                                                                                              M.borrow (|
-                                                                                                                Pointer.Kind.Ref,
-                                                                                                                M.alloc (|
-                                                                                                                  Ty.apply
-                                                                                                                    (Ty.path
-                                                                                                                      "array")
-                                                                                                                    [
-                                                                                                                      Value.Integer
-                                                                                                                        IntegerKind.Usize
-                                                                                                                        1
-                                                                                                                    ]
-                                                                                                                    [
-                                                                                                                      Ty.apply
-                                                                                                                        (Ty.path
-                                                                                                                          "&")
-                                                                                                                        []
-                                                                                                                        [
-                                                                                                                          Ty.path
-                                                                                                                            "str"
-                                                                                                                        ]
-                                                                                                                    ],
-                                                                                                                  Value.Array
-                                                                                                                    [
-                                                                                                                      mk_str (|
-                                                                                                                        "internal error: entered unreachable code: i >= limbs && i - limbs < LIMBS"
-                                                                                                                      |)
-                                                                                                                    ]
-                                                                                                                |)
-                                                                                                              |)
-                                                                                                            |)
-                                                                                                          |);
-                                                                                                          M.borrow (|
-                                                                                                            Pointer.Kind.Ref,
-                                                                                                            M.deref (|
-                                                                                                              M.borrow (|
-                                                                                                                Pointer.Kind.Ref,
-                                                                                                                M.alloc (|
-                                                                                                                  Ty.apply
-                                                                                                                    (Ty.path
-                                                                                                                      "array")
-                                                                                                                    [
-                                                                                                                      Value.Integer
-                                                                                                                        IntegerKind.Usize
-                                                                                                                        0
-                                                                                                                    ]
-                                                                                                                    [
-                                                                                                                      Ty.path
-                                                                                                                        "core::fmt::rt::Argument"
-                                                                                                                    ],
-                                                                                                                  M.call_closure (|
-                                                                                                                    Ty.apply
-                                                                                                                      (Ty.path
-                                                                                                                        "array")
-                                                                                                                      [
-                                                                                                                        Value.Integer
-                                                                                                                          IntegerKind.Usize
-                                                                                                                          0
-                                                                                                                      ]
-                                                                                                                      [
-                                                                                                                        Ty.path
-                                                                                                                          "core::fmt::rt::Argument"
-                                                                                                                      ],
-                                                                                                                    M.get_associated_function (|
-                                                                                                                      Ty.path
-                                                                                                                        "core::fmt::rt::Argument",
-                                                                                                                      "none",
-                                                                                                                      [],
-                                                                                                                      []
-                                                                                                                    |),
-                                                                                                                    []
-                                                                                                                  |)
-                                                                                                                |)
-                                                                                                              |)
-                                                                                                            |)
+                                                                                                          mk_str (|
+                                                                                                            "internal error: entered unreachable code: i >= limbs && i - limbs < LIMBS"
                                                                                                           |)
                                                                                                         ]
                                                                                                       |)
@@ -3414,52 +3322,51 @@ Module bits.
                               fun γ =>
                                 ltac:(M.monadic
                                   (let γ :=
-                                    M.use
-                                      (M.alloc (|
+                                    M.alloc (|
+                                      Ty.path "bool",
+                                      M.call_closure (|
                                         Ty.path "bool",
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          BinOp.ne,
-                                          [
-                                            M.call_closure (|
-                                              Ty.path "u64",
-                                              BinOp.Wrap.shr,
-                                              [
-                                                M.read (|
-                                                  M.SubPointer.get_array_field (|
-                                                    M.SubPointer.get_struct_record_field (|
-                                                      self,
-                                                      "ruint::Uint",
-                                                      "limbs"
-                                                    |),
-                                                    M.call_closure (|
-                                                      Ty.path "usize",
-                                                      BinOp.Wrap.sub,
-                                                      [
-                                                        M.call_closure (|
-                                                          Ty.path "usize",
-                                                          BinOp.Wrap.sub,
-                                                          [ LIMBS; M.read (| limbs |) ]
-                                                        |);
-                                                        Value.Integer IntegerKind.Usize 1
-                                                      ]
-                                                    |)
+                                        BinOp.ne,
+                                        [
+                                          M.call_closure (|
+                                            Ty.path "u64",
+                                            BinOp.Wrap.shr,
+                                            [
+                                              M.read (|
+                                                M.SubPointer.get_array_field (|
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    self,
+                                                    "ruint::Uint",
+                                                    "limbs"
+                                                  |),
+                                                  M.call_closure (|
+                                                    Ty.path "usize",
+                                                    BinOp.Wrap.sub,
+                                                    [
+                                                      M.call_closure (|
+                                                        Ty.path "usize",
+                                                        BinOp.Wrap.sub,
+                                                        [ LIMBS; M.read (| limbs |) ]
+                                                      |);
+                                                      Value.Integer IntegerKind.Usize 1
+                                                    ]
                                                   |)
-                                                |);
-                                                M.call_closure (|
-                                                  Ty.path "usize",
-                                                  BinOp.Wrap.sub,
-                                                  [
-                                                    Value.Integer IntegerKind.Usize 64;
-                                                    M.read (| bits |)
-                                                  ]
                                                 |)
-                                              ]
-                                            |);
-                                            Value.Integer IntegerKind.U64 0
-                                          ]
-                                        |)
-                                      |)) in
+                                              |);
+                                              M.call_closure (|
+                                                Ty.path "usize",
+                                                BinOp.Wrap.sub,
+                                                [
+                                                  Value.Integer IntegerKind.Usize 64;
+                                                  M.read (| bits |)
+                                                ]
+                                              |)
+                                            ]
+                                          |);
+                                          Value.Integer IntegerKind.U64 0
+                                        ]
+                                      |)
+                                    |) in
                                   let _ :=
                                     is_constant_or_break_match (|
                                       M.read (| γ |),
@@ -3481,51 +3388,50 @@ Module bits.
                               fun γ =>
                                 ltac:(M.monadic
                                   (let γ :=
-                                    M.use
-                                      (M.alloc (|
+                                    M.alloc (|
+                                      Ty.path "bool",
+                                      M.call_closure (|
                                         Ty.path "bool",
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          BinOp.gt,
-                                          [
-                                            M.call_closure (|
-                                              Ty.path "u64",
-                                              BinOp.Wrap.shl,
-                                              [
-                                                M.read (|
-                                                  M.SubPointer.get_array_field (|
-                                                    M.SubPointer.get_struct_record_field (|
-                                                      self,
-                                                      "ruint::Uint",
-                                                      "limbs"
-                                                    |),
-                                                    M.call_closure (|
-                                                      Ty.path "usize",
-                                                      BinOp.Wrap.sub,
-                                                      [
-                                                        M.call_closure (|
-                                                          Ty.path "usize",
-                                                          BinOp.Wrap.sub,
-                                                          [ LIMBS; M.read (| limbs |) ]
-                                                        |);
-                                                        Value.Integer IntegerKind.Usize 1
-                                                      ]
-                                                    |)
+                                        BinOp.gt,
+                                        [
+                                          M.call_closure (|
+                                            Ty.path "u64",
+                                            BinOp.Wrap.shl,
+                                            [
+                                              M.read (|
+                                                M.SubPointer.get_array_field (|
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    self,
+                                                    "ruint::Uint",
+                                                    "limbs"
+                                                  |),
+                                                  M.call_closure (|
+                                                    Ty.path "usize",
+                                                    BinOp.Wrap.sub,
+                                                    [
+                                                      M.call_closure (|
+                                                        Ty.path "usize",
+                                                        BinOp.Wrap.sub,
+                                                        [ LIMBS; M.read (| limbs |) ]
+                                                      |);
+                                                      Value.Integer IntegerKind.Usize 1
+                                                    ]
                                                   |)
-                                                |);
-                                                M.read (| bits |)
-                                              ]
-                                            |);
-                                            M.read (|
-                                              get_associated_constant (|
-                                                Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                                "MASK",
-                                                Ty.path "u64"
-                                              |)
+                                                |)
+                                              |);
+                                              M.read (| bits |)
+                                            ]
+                                          |);
+                                          M.read (|
+                                            get_associated_constant (|
+                                              Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                              "MASK",
+                                              Ty.path "u64"
                                             |)
-                                          ]
-                                        |)
-                                      |)) in
+                                          |)
+                                        ]
+                                      |)
+                                    |) in
                                   let _ :=
                                     is_constant_or_break_match (|
                                       M.read (| γ |),
@@ -3719,15 +3625,34 @@ Module bits.
                                                                 fun γ =>
                                                                   ltac:(M.monadic
                                                                     (let γ :=
-                                                                      M.use
-                                                                        (M.alloc (|
+                                                                      M.alloc (|
+                                                                        Ty.path "bool",
+                                                                        M.call_closure (|
                                                                           Ty.path "bool",
-                                                                          M.call_closure (|
-                                                                            Ty.path "bool",
-                                                                            UnOp.not,
-                                                                            [
-                                                                              LogicalOp.and (|
-                                                                                M.call_closure (|
+                                                                          UnOp.not,
+                                                                          [
+                                                                            LogicalOp.and (|
+                                                                              M.call_closure (|
+                                                                                Ty.path "bool",
+                                                                                BinOp.lt,
+                                                                                [
+                                                                                  M.call_closure (|
+                                                                                    Ty.path "usize",
+                                                                                    BinOp.Wrap.sub,
+                                                                                    [
+                                                                                      M.read (|
+                                                                                        i
+                                                                                      |);
+                                                                                      M.read (|
+                                                                                        limbs
+                                                                                      |)
+                                                                                    ]
+                                                                                  |);
+                                                                                  LIMBS
+                                                                                ]
+                                                                              |),
+                                                                              ltac:(M.monadic
+                                                                                (M.call_closure (|
                                                                                   Ty.path "bool",
                                                                                   BinOp.lt,
                                                                                   [
@@ -3736,52 +3661,31 @@ Module bits.
                                                                                         "usize",
                                                                                       BinOp.Wrap.sub,
                                                                                       [
-                                                                                        M.read (|
-                                                                                          i
+                                                                                        M.call_closure (|
+                                                                                          Ty.path
+                                                                                            "usize",
+                                                                                          BinOp.Wrap.sub,
+                                                                                          [
+                                                                                            M.read (|
+                                                                                              i
+                                                                                            |);
+                                                                                            M.read (|
+                                                                                              limbs
+                                                                                            |)
+                                                                                          ]
                                                                                         |);
-                                                                                        M.read (|
-                                                                                          limbs
-                                                                                        |)
+                                                                                        Value.Integer
+                                                                                          IntegerKind.Usize
+                                                                                          1
                                                                                       ]
                                                                                     |);
                                                                                     LIMBS
                                                                                   ]
-                                                                                |),
-                                                                                ltac:(M.monadic
-                                                                                  (M.call_closure (|
-                                                                                    Ty.path "bool",
-                                                                                    BinOp.lt,
-                                                                                    [
-                                                                                      M.call_closure (|
-                                                                                        Ty.path
-                                                                                          "usize",
-                                                                                        BinOp.Wrap.sub,
-                                                                                        [
-                                                                                          M.call_closure (|
-                                                                                            Ty.path
-                                                                                              "usize",
-                                                                                            BinOp.Wrap.sub,
-                                                                                            [
-                                                                                              M.read (|
-                                                                                                i
-                                                                                              |);
-                                                                                              M.read (|
-                                                                                                limbs
-                                                                                              |)
-                                                                                            ]
-                                                                                          |);
-                                                                                          Value.Integer
-                                                                                            IntegerKind.Usize
-                                                                                            1
-                                                                                        ]
-                                                                                      |);
-                                                                                      LIMBS
-                                                                                    ]
-                                                                                  |)))
-                                                                              |)
-                                                                            ]
-                                                                          |)
-                                                                        |)) in
+                                                                                |)))
+                                                                            |)
+                                                                          ]
+                                                                        |)
+                                                                      |) in
                                                                     let _ :=
                                                                       is_constant_or_break_match (|
                                                                         M.read (| γ |),
@@ -3800,13 +3704,12 @@ Module bits.
                                                                               fun γ =>
                                                                                 ltac:(M.monadic
                                                                                   (let γ :=
-                                                                                    M.use
-                                                                                      (M.alloc (|
-                                                                                        Ty.path
-                                                                                          "bool",
-                                                                                        Value.Bool
-                                                                                          true
-                                                                                      |)) in
+                                                                                    M.alloc (|
+                                                                                      Ty.path
+                                                                                        "bool",
+                                                                                      Value.Bool
+                                                                                        true
+                                                                                    |) in
                                                                                   let _ :=
                                                                                     is_constant_or_break_match (|
                                                                                       M.read (|
@@ -3831,95 +3734,13 @@ Module bits.
                                                                                           M.get_associated_function (|
                                                                                             Ty.path
                                                                                               "core::fmt::Arguments",
-                                                                                            "new_v1",
-                                                                                            [
-                                                                                              Value.Integer
-                                                                                                IntegerKind.Usize
-                                                                                                1;
-                                                                                              Value.Integer
-                                                                                                IntegerKind.Usize
-                                                                                                0
-                                                                                            ],
+                                                                                            "from_str_nonconst",
+                                                                                            [],
                                                                                             []
                                                                                           |),
                                                                                           [
-                                                                                            M.borrow (|
-                                                                                              Pointer.Kind.Ref,
-                                                                                              M.deref (|
-                                                                                                M.borrow (|
-                                                                                                  Pointer.Kind.Ref,
-                                                                                                  M.alloc (|
-                                                                                                    Ty.apply
-                                                                                                      (Ty.path
-                                                                                                        "array")
-                                                                                                      [
-                                                                                                        Value.Integer
-                                                                                                          IntegerKind.Usize
-                                                                                                          1
-                                                                                                      ]
-                                                                                                      [
-                                                                                                        Ty.apply
-                                                                                                          (Ty.path
-                                                                                                            "&")
-                                                                                                          []
-                                                                                                          [
-                                                                                                            Ty.path
-                                                                                                              "str"
-                                                                                                          ]
-                                                                                                      ],
-                                                                                                    Value.Array
-                                                                                                      [
-                                                                                                        mk_str (|
-                                                                                                          "internal error: entered unreachable code: i - limbs < LIMBS && i - limbs - 1 < LIMBS"
-                                                                                                        |)
-                                                                                                      ]
-                                                                                                  |)
-                                                                                                |)
-                                                                                              |)
-                                                                                            |);
-                                                                                            M.borrow (|
-                                                                                              Pointer.Kind.Ref,
-                                                                                              M.deref (|
-                                                                                                M.borrow (|
-                                                                                                  Pointer.Kind.Ref,
-                                                                                                  M.alloc (|
-                                                                                                    Ty.apply
-                                                                                                      (Ty.path
-                                                                                                        "array")
-                                                                                                      [
-                                                                                                        Value.Integer
-                                                                                                          IntegerKind.Usize
-                                                                                                          0
-                                                                                                      ]
-                                                                                                      [
-                                                                                                        Ty.path
-                                                                                                          "core::fmt::rt::Argument"
-                                                                                                      ],
-                                                                                                    M.call_closure (|
-                                                                                                      Ty.apply
-                                                                                                        (Ty.path
-                                                                                                          "array")
-                                                                                                        [
-                                                                                                          Value.Integer
-                                                                                                            IntegerKind.Usize
-                                                                                                            0
-                                                                                                        ]
-                                                                                                        [
-                                                                                                          Ty.path
-                                                                                                            "core::fmt::rt::Argument"
-                                                                                                        ],
-                                                                                                      M.get_associated_function (|
-                                                                                                        Ty.path
-                                                                                                          "core::fmt::rt::Argument",
-                                                                                                        "none",
-                                                                                                        [],
-                                                                                                        []
-                                                                                                      |),
-                                                                                                      []
-                                                                                                    |)
-                                                                                                  |)
-                                                                                                |)
-                                                                                              |)
+                                                                                            mk_str (|
+                                                                                              "internal error: entered unreachable code: i - limbs < LIMBS && i - limbs - 1 < LIMBS"
                                                                                             |)
                                                                                           ]
                                                                                         |)
@@ -4399,15 +4220,14 @@ Module bits.
                               fun γ =>
                                 ltac:(M.monadic
                                   (let γ :=
-                                    M.use
-                                      (M.alloc (|
+                                    M.alloc (|
+                                      Ty.path "bool",
+                                      M.call_closure (|
                                         Ty.path "bool",
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          BinOp.ge,
-                                          [ M.read (| limbs |); LIMBS ]
-                                        |)
-                                      |)) in
+                                        BinOp.ge,
+                                        [ M.read (| limbs |); LIMBS ]
+                                      |)
+                                    |) in
                                   let _ :=
                                     is_constant_or_break_match (|
                                       M.read (| γ |),
@@ -4474,15 +4294,14 @@ Module bits.
                               fun γ =>
                                 ltac:(M.monadic
                                   (let γ :=
-                                    M.use
-                                      (M.alloc (|
+                                    M.alloc (|
+                                      Ty.path "bool",
+                                      M.call_closure (|
                                         Ty.path "bool",
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          BinOp.eq,
-                                          [ M.read (| bits |); Value.Integer IntegerKind.Usize 0 ]
-                                        |)
-                                      |)) in
+                                        BinOp.eq,
+                                        [ M.read (| bits |); Value.Integer IntegerKind.Usize 0 ]
+                                      |)
+                                    |) in
                                   let _ :=
                                     is_constant_or_break_match (|
                                       M.read (| γ |),
@@ -5090,15 +4909,34 @@ Module bits.
                                                                 fun γ =>
                                                                   ltac:(M.monadic
                                                                     (let γ :=
-                                                                      M.use
-                                                                        (M.alloc (|
+                                                                      M.alloc (|
+                                                                        Ty.path "bool",
+                                                                        M.call_closure (|
                                                                           Ty.path "bool",
-                                                                          M.call_closure (|
-                                                                            Ty.path "bool",
-                                                                            UnOp.not,
-                                                                            [
-                                                                              LogicalOp.and (|
-                                                                                M.call_closure (|
+                                                                          UnOp.not,
+                                                                          [
+                                                                            LogicalOp.and (|
+                                                                              M.call_closure (|
+                                                                                Ty.path "bool",
+                                                                                BinOp.lt,
+                                                                                [
+                                                                                  M.call_closure (|
+                                                                                    Ty.path "usize",
+                                                                                    BinOp.Wrap.add,
+                                                                                    [
+                                                                                      M.read (|
+                                                                                        i
+                                                                                      |);
+                                                                                      M.read (|
+                                                                                        limbs
+                                                                                      |)
+                                                                                    ]
+                                                                                  |);
+                                                                                  LIMBS
+                                                                                ]
+                                                                              |),
+                                                                              ltac:(M.monadic
+                                                                                (M.call_closure (|
                                                                                   Ty.path "bool",
                                                                                   BinOp.lt,
                                                                                   [
@@ -5107,52 +4945,31 @@ Module bits.
                                                                                         "usize",
                                                                                       BinOp.Wrap.add,
                                                                                       [
-                                                                                        M.read (|
-                                                                                          i
+                                                                                        M.call_closure (|
+                                                                                          Ty.path
+                                                                                            "usize",
+                                                                                          BinOp.Wrap.add,
+                                                                                          [
+                                                                                            M.read (|
+                                                                                              i
+                                                                                            |);
+                                                                                            M.read (|
+                                                                                              limbs
+                                                                                            |)
+                                                                                          ]
                                                                                         |);
-                                                                                        M.read (|
-                                                                                          limbs
-                                                                                        |)
+                                                                                        Value.Integer
+                                                                                          IntegerKind.Usize
+                                                                                          1
                                                                                       ]
                                                                                     |);
                                                                                     LIMBS
                                                                                   ]
-                                                                                |),
-                                                                                ltac:(M.monadic
-                                                                                  (M.call_closure (|
-                                                                                    Ty.path "bool",
-                                                                                    BinOp.lt,
-                                                                                    [
-                                                                                      M.call_closure (|
-                                                                                        Ty.path
-                                                                                          "usize",
-                                                                                        BinOp.Wrap.add,
-                                                                                        [
-                                                                                          M.call_closure (|
-                                                                                            Ty.path
-                                                                                              "usize",
-                                                                                            BinOp.Wrap.add,
-                                                                                            [
-                                                                                              M.read (|
-                                                                                                i
-                                                                                              |);
-                                                                                              M.read (|
-                                                                                                limbs
-                                                                                              |)
-                                                                                            ]
-                                                                                          |);
-                                                                                          Value.Integer
-                                                                                            IntegerKind.Usize
-                                                                                            1
-                                                                                        ]
-                                                                                      |);
-                                                                                      LIMBS
-                                                                                    ]
-                                                                                  |)))
-                                                                              |)
-                                                                            ]
-                                                                          |)
-                                                                        |)) in
+                                                                                |)))
+                                                                            |)
+                                                                          ]
+                                                                        |)
+                                                                      |) in
                                                                     let _ :=
                                                                       is_constant_or_break_match (|
                                                                         M.read (| γ |),
@@ -5171,13 +4988,12 @@ Module bits.
                                                                               fun γ =>
                                                                                 ltac:(M.monadic
                                                                                   (let γ :=
-                                                                                    M.use
-                                                                                      (M.alloc (|
-                                                                                        Ty.path
-                                                                                          "bool",
-                                                                                        Value.Bool
-                                                                                          true
-                                                                                      |)) in
+                                                                                    M.alloc (|
+                                                                                      Ty.path
+                                                                                        "bool",
+                                                                                      Value.Bool
+                                                                                        true
+                                                                                    |) in
                                                                                   let _ :=
                                                                                     is_constant_or_break_match (|
                                                                                       M.read (|
@@ -5202,95 +5018,13 @@ Module bits.
                                                                                           M.get_associated_function (|
                                                                                             Ty.path
                                                                                               "core::fmt::Arguments",
-                                                                                            "new_v1",
-                                                                                            [
-                                                                                              Value.Integer
-                                                                                                IntegerKind.Usize
-                                                                                                1;
-                                                                                              Value.Integer
-                                                                                                IntegerKind.Usize
-                                                                                                0
-                                                                                            ],
+                                                                                            "from_str_nonconst",
+                                                                                            [],
                                                                                             []
                                                                                           |),
                                                                                           [
-                                                                                            M.borrow (|
-                                                                                              Pointer.Kind.Ref,
-                                                                                              M.deref (|
-                                                                                                M.borrow (|
-                                                                                                  Pointer.Kind.Ref,
-                                                                                                  M.alloc (|
-                                                                                                    Ty.apply
-                                                                                                      (Ty.path
-                                                                                                        "array")
-                                                                                                      [
-                                                                                                        Value.Integer
-                                                                                                          IntegerKind.Usize
-                                                                                                          1
-                                                                                                      ]
-                                                                                                      [
-                                                                                                        Ty.apply
-                                                                                                          (Ty.path
-                                                                                                            "&")
-                                                                                                          []
-                                                                                                          [
-                                                                                                            Ty.path
-                                                                                                              "str"
-                                                                                                          ]
-                                                                                                      ],
-                                                                                                    Value.Array
-                                                                                                      [
-                                                                                                        mk_str (|
-                                                                                                          "internal error: entered unreachable code: i + limbs < LIMBS && i + limbs + 1 < LIMBS"
-                                                                                                        |)
-                                                                                                      ]
-                                                                                                  |)
-                                                                                                |)
-                                                                                              |)
-                                                                                            |);
-                                                                                            M.borrow (|
-                                                                                              Pointer.Kind.Ref,
-                                                                                              M.deref (|
-                                                                                                M.borrow (|
-                                                                                                  Pointer.Kind.Ref,
-                                                                                                  M.alloc (|
-                                                                                                    Ty.apply
-                                                                                                      (Ty.path
-                                                                                                        "array")
-                                                                                                      [
-                                                                                                        Value.Integer
-                                                                                                          IntegerKind.Usize
-                                                                                                          0
-                                                                                                      ]
-                                                                                                      [
-                                                                                                        Ty.path
-                                                                                                          "core::fmt::rt::Argument"
-                                                                                                      ],
-                                                                                                    M.call_closure (|
-                                                                                                      Ty.apply
-                                                                                                        (Ty.path
-                                                                                                          "array")
-                                                                                                        [
-                                                                                                          Value.Integer
-                                                                                                            IntegerKind.Usize
-                                                                                                            0
-                                                                                                        ]
-                                                                                                        [
-                                                                                                          Ty.path
-                                                                                                            "core::fmt::rt::Argument"
-                                                                                                        ],
-                                                                                                      M.get_associated_function (|
-                                                                                                        Ty.path
-                                                                                                          "core::fmt::rt::Argument",
-                                                                                                        "none",
-                                                                                                        [],
-                                                                                                        []
-                                                                                                      |),
-                                                                                                      []
-                                                                                                    |)
-                                                                                                  |)
-                                                                                                |)
-                                                                                              |)
+                                                                                            mk_str (|
+                                                                                              "internal error: entered unreachable code: i + limbs < LIMBS && i + limbs + 1 < LIMBS"
                                                                                             |)
                                                                                           ]
                                                                                         |)
@@ -5644,15 +5378,14 @@ Module bits.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  BinOp.eq,
-                                  [ BITS; Value.Integer IntegerKind.Usize 0 ]
-                                |)
-                              |)) in
+                                BinOp.eq,
+                                [ BITS; Value.Integer IntegerKind.Usize 0 ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -5710,7 +5443,7 @@ Module bits.
                     [
                       fun γ =>
                         ltac:(M.monadic
-                          (let γ := M.use sign in
+                          (let γ := sign in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.read (|
@@ -5810,15 +5543,14 @@ Module bits.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  BinOp.eq,
-                                  [ BITS; Value.Integer IntegerKind.Usize 0 ]
-                                |)
-                              |)) in
+                                BinOp.eq,
+                                [ BITS; Value.Integer IntegerKind.Usize 0 ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -5936,15 +5668,14 @@ Module bits.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  BinOp.eq,
-                                  [ BITS; Value.Integer IntegerKind.Usize 0 ]
-                                |)
-                              |)) in
+                                BinOp.eq,
+                                [ BITS; Value.Integer IntegerKind.Usize 0 ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -6049,15 +5780,14 @@ Module bits.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  BinOp.eq,
-                                  [ BITS; Value.Integer IntegerKind.Usize 0 ]
-                                |)
-                              |)) in
+                                BinOp.eq,
+                                [ BITS; Value.Integer IntegerKind.Usize 0 ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -7944,15 +7674,14 @@ Module bits.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  BinOp.eq,
-                                  [ BITS; Value.Integer IntegerKind.Usize 0 ]
-                                |)
-                              |)) in
+                                BinOp.eq,
+                                [ BITS; Value.Integer IntegerKind.Usize 0 ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (| M.read (| M.return_ (| M.read (| self |) |) |) |)));
@@ -8125,15 +7854,14 @@ Module bits.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  BinOp.eq,
-                                  [ BITS; Value.Integer IntegerKind.Usize 0 ]
-                                |)
-                              |)) in
+                                BinOp.eq,
+                                [ BITS; Value.Integer IntegerKind.Usize 0 ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (| M.read (| M.return_ (| M.read (| self |) |) |) |)));

@@ -280,11 +280,11 @@ Module num.
             fn parse_digits(&self, mut func: impl FnMut(u8)) -> &Self {
                 let mut s = self;
         
-                while let Some((c, s_next)) = s.split_first() {
+                while let Some((c, rest)) = s.split_first() {
                     let c = c.wrapping_sub(b'0');
                     if c < 10 {
                         func(c);
-                        s = s_next;
+                        s = rest;
                     } else {
                         break;
                     }
@@ -373,7 +373,7 @@ Module num.
                                   let γ1_1 := M.SubPointer.get_tuple_field (| γ0_0, 1 |) in
                                   let c :=
                                     M.copy (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ1_0 |) in
-                                  let s_next :=
+                                  let rest :=
                                     M.copy (|
                                       Ty.apply
                                         (Ty.path "&")
@@ -405,18 +405,17 @@ Module num.
                                           fun γ =>
                                             ltac:(M.monadic
                                               (let γ :=
-                                                M.use
-                                                  (M.alloc (|
+                                                M.alloc (|
+                                                  Ty.path "bool",
+                                                  M.call_closure (|
                                                     Ty.path "bool",
-                                                    M.call_closure (|
-                                                      Ty.path "bool",
-                                                      BinOp.lt,
-                                                      [
-                                                        M.read (| c |);
-                                                        Value.Integer IntegerKind.U8 10
-                                                      ]
-                                                    |)
-                                                  |)) in
+                                                    BinOp.lt,
+                                                    [
+                                                      M.read (| c |);
+                                                      Value.Integer IntegerKind.U8 10
+                                                    ]
+                                                  |)
+                                                |) in
                                               let _ :=
                                                 is_constant_or_break_match (|
                                                   M.read (| γ |),
@@ -445,7 +444,7 @@ Module num.
                                                     s,
                                                     M.borrow (|
                                                       Pointer.Kind.Ref,
-                                                      M.deref (| M.read (| s_next |) |)
+                                                      M.deref (| M.read (| rest |) |)
                                                     |)
                                                   |) in
                                                 M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -555,7 +554,7 @@ Module num.
           name := "BiasedFp";
           const_params := [];
           ty_params := [];
-          fields := [ ("f", Ty.path "u64"); ("e", Ty.path "i32") ];
+          fields := [ ("m", Ty.path "u64"); ("p_biased", Ty.path "i32") ];
         } *)
       
       Module Impl_core_fmt_Debug_for_core_num_dec2flt_common_BiasedFp.
@@ -587,7 +586,7 @@ Module num.
                 [
                   M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
                   M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "BiasedFp" |) |) |);
-                  M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "f" |) |) |);
+                  M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "m" |) |) |);
                   M.call_closure (|
                     Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
                     M.pointer_coercion
@@ -603,14 +602,14 @@ Module num.
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| self |) |),
                               "core::num::dec2flt::common::BiasedFp",
-                              "f"
+                              "m"
                             |)
                           |)
                         |)
                       |)
                     ]
                   |);
-                  M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "e" |) |) |);
+                  M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "p_biased" |) |) |);
                   M.call_closure (|
                     Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
                     M.pointer_coercion
@@ -630,7 +629,7 @@ Module num.
                                 M.SubPointer.get_struct_record_field (|
                                   M.deref (| M.read (| self |) |),
                                   "core::num::dec2flt::common::BiasedFp",
-                                  "e"
+                                  "p_biased"
                                 |)
                               |)
                             |)
@@ -664,6 +663,18 @@ Module num.
             Self
             (* Instance *) [].
       End Impl_core_marker_Copy_for_core_num_dec2flt_common_BiasedFp.
+      
+      Module Impl_core_clone_TrivialClone_for_core_num_dec2flt_common_BiasedFp.
+        Definition Self : Ty.t := Ty.path "core::num::dec2flt::common::BiasedFp".
+        
+        Axiom Implements :
+          M.IsTraitInstance
+            "core::clone::TrivialClone"
+            (* Trait polymorphic consts *) []
+            (* Trait polymorphic types *) []
+            Self
+            (* Instance *) [].
+      End Impl_core_clone_TrivialClone_for_core_num_dec2flt_common_BiasedFp.
       
       Module Impl_core_clone_Clone_for_core_num_dec2flt_common_BiasedFp.
         Definition Self : Ty.t := Ty.path "core::num::dec2flt::common::BiasedFp".
@@ -742,14 +753,14 @@ Module num.
                       M.SubPointer.get_struct_record_field (|
                         M.deref (| M.read (| self |) |),
                         "core::num::dec2flt::common::BiasedFp",
-                        "f"
+                        "m"
                       |)
                     |);
                     M.read (|
                       M.SubPointer.get_struct_record_field (|
                         M.deref (| M.read (| other |) |),
                         "core::num::dec2flt::common::BiasedFp",
-                        "f"
+                        "m"
                       |)
                     |)
                   ]
@@ -763,14 +774,14 @@ Module num.
                         M.SubPointer.get_struct_record_field (|
                           M.deref (| M.read (| self |) |),
                           "core::num::dec2flt::common::BiasedFp",
-                          "e"
+                          "p_biased"
                         |)
                       |);
                       M.read (|
                         M.SubPointer.get_struct_record_field (|
                           M.deref (| M.read (| other |) |),
                           "core::num::dec2flt::common::BiasedFp",
-                          "e"
+                          "p_biased"
                         |)
                       |)
                     ]
@@ -844,7 +855,7 @@ Module num.
                 []
                 []
                 [
-                  ("f",
+                  ("m",
                     M.call_closure (|
                       Ty.path "u64",
                       M.get_trait_method (|
@@ -858,7 +869,7 @@ Module num.
                       |),
                       []
                     |));
-                  ("e",
+                  ("p_biased",
                     M.call_closure (|
                       Ty.path "i32",
                       M.get_trait_method (|
@@ -889,20 +900,20 @@ Module num.
         Definition Self : Ty.t := Ty.path "core::num::dec2flt::common::BiasedFp".
         
         (*
-            pub const fn zero_pow2(e: i32) -> Self {
-                Self { f: 0, e }
+            pub const fn zero_pow2(p_biased: i32) -> Self {
+                Self { m: 0, p_biased }
             }
         *)
         Definition zero_pow2 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
           match ε, τ, α with
-          | [], [], [ e ] =>
+          | [], [], [ p_biased ] =>
             ltac:(M.monadic
-              (let e := M.alloc (| Ty.path "i32", e |) in
+              (let p_biased := M.alloc (| Ty.path "i32", p_biased |) in
               Value.mkStructRecord
                 "core::num::dec2flt::common::BiasedFp"
                 []
                 []
-                [ ("f", Value.Integer IntegerKind.U64 0); ("e", M.read (| e |)) ]))
+                [ ("m", Value.Integer IntegerKind.U64 0); ("p_biased", M.read (| p_biased |)) ]))
           | _, _, _ => M.impossible "wrong number of arguments"
           end.
         

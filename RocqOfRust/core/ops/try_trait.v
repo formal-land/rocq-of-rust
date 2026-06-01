@@ -46,6 +46,39 @@ Module ops.
     (* Trait *)
     (* Empty module 'Residual' *)
     
+    (*
+    pub const fn residual_into_try_type<R: [const] Residual<O>, O>(
+        r: R,
+    ) -> <R as Residual<O>>::TryType {
+        FromResidual::from_residual(r)
+    }
+    *)
+    Definition residual_into_try_type (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [ R; _ as O ], [ r ] =>
+        ltac:(M.monadic
+          (let r := M.alloc (| R, r |) in
+          M.call_closure (|
+            Ty.associated_in_trait "core::ops::try_trait::Residual" [] [ O ] R "TryType",
+            M.get_trait_method (|
+              "core::ops::try_trait::FromResidual",
+              Ty.associated_in_trait "core::ops::try_trait::Residual" [] [ O ] R "TryType",
+              [],
+              [ R ],
+              "from_residual",
+              [],
+              []
+            |),
+            [ M.read (| r |) ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance Instance_IsFunction_residual_into_try_type :
+      M.IsFunction.C "core::ops::try_trait::residual_into_try_type" residual_into_try_type.
+    Admitted.
+    Global Typeclasses Opaque residual_into_try_type.
+    
     Axiom ChangeOutputType :
       forall (T V : Ty.t),
       (Ty.apply (Ty.path "core::ops::try_trait::ChangeOutputType") [] [ T; V ]) =
@@ -64,60 +97,191 @@ Module ops.
         fields := [ T ];
       } *)
     
+    (* StructRecord
+      {
+        name := "Wrapped";
+        const_params := [];
+        ty_params := [ "T"; "A"; "F" ];
+        fields :=
+          [ ("f", F); ("p", Ty.apply (Ty.path "core::marker::PhantomData") [] [ Ty.tuple [ T; A ] ])
+          ];
+      } *)
+    
+    Module Impl_core_ops_function_FnOnce_where_core_ops_function_FnMut_F_Tuple_A__where_core_marker_Destruct_F_Tuple_A__for_core_ops_try_trait_Wrapped_T_A_F.
+      Definition Self (T A F : Ty.t) : Ty.t :=
+        Ty.apply (Ty.path "core::ops::try_trait::Wrapped") [] [ T; A; F ].
+      
+      (*     type Output = NeverShortCircuit<T>; *)
+      Definition _Output (T A F : Ty.t) : Ty.t :=
+        Ty.apply (Ty.path "core::ops::try_trait::NeverShortCircuit") [] [ T ].
+      
+      (*
+          extern "rust-call" fn call_once(mut self, args: (A,)) -> Self::Output {
+              self.call_mut(args)
+          }
+      *)
+      Definition call_once
+          (T A F : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T A F in
+        match ε, τ, α with
+        | [], [], [ self; args ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "core::ops::try_trait::Wrapped") [] [ T; A; F ],
+                self
+              |) in
+            let args := M.alloc (| Ty.tuple [ A ], args |) in
+            M.call_closure (|
+              Ty.apply (Ty.path "core::ops::try_trait::NeverShortCircuit") [] [ T ],
+              M.get_trait_method (|
+                "core::ops::function::FnMut",
+                Ty.apply (Ty.path "core::ops::try_trait::Wrapped") [] [ T; A; F ],
+                [],
+                [ Ty.tuple [ A ] ],
+                "call_mut",
+                [],
+                []
+              |),
+              [ M.borrow (| Pointer.Kind.MutRef, self |); M.read (| args |) ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Axiom Implements :
+        forall (T A F : Ty.t),
+        M.IsTraitInstance
+          "core::ops::function::FnOnce"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) [ Ty.tuple [ A ] ]
+          (Self T A F)
+          (* Instance *)
+          [
+            ("Output", InstanceField.Ty (_Output T A F));
+            ("call_once", InstanceField.Method (call_once T A F))
+          ].
+    End Impl_core_ops_function_FnOnce_where_core_ops_function_FnMut_F_Tuple_A__where_core_marker_Destruct_F_Tuple_A__for_core_ops_try_trait_Wrapped_T_A_F.
+    
+    Module Impl_core_ops_function_FnMut_where_core_ops_function_FnMut_F_Tuple_A__Tuple_A__for_core_ops_try_trait_Wrapped_T_A_F.
+      Definition Self (T A F : Ty.t) : Ty.t :=
+        Ty.apply (Ty.path "core::ops::try_trait::Wrapped") [] [ T; A; F ].
+      
+      (*
+          extern "rust-call" fn call_mut(&mut self, (args,): (A,)) -> Self::Output {
+              NeverShortCircuit((self.f)(args))
+          }
+      *)
+      Definition call_mut
+          (T A F : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T A F in
+        match ε, τ, α with
+        | [], [], [ self; β1 ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&mut")
+                  []
+                  [ Ty.apply (Ty.path "core::ops::try_trait::Wrapped") [] [ T; A; F ] ],
+                self
+              |) in
+            let β1 := M.alloc (| Ty.tuple [ A ], β1 |) in
+            M.match_operator (|
+              Ty.associated_in_trait
+                "core::ops::function::FnOnce"
+                []
+                [ Ty.tuple [ A ] ]
+                (Ty.apply (Ty.path "core::ops::try_trait::Wrapped") [] [ T; A; F ])
+                "Output",
+              β1,
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                    let args :=
+                      M.copy (|
+                        Ty.path
+                          "Type for variables in patterns in function parameters is not handled",
+                        γ0_0
+                      |) in
+                    Value.StructTuple
+                      "core::ops::try_trait::NeverShortCircuit"
+                      []
+                      [ T ]
+                      [
+                        M.call_closure (|
+                          T,
+                          M.get_trait_method (|
+                            "core::ops::function::FnMut",
+                            F,
+                            [],
+                            [ Ty.tuple [ A ] ],
+                            "call_mut",
+                            [],
+                            []
+                          |),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.MutRef,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::ops::try_trait::Wrapped",
+                                "f"
+                              |)
+                            |);
+                            Value.Tuple [ M.read (| args |) ]
+                          ]
+                        |)
+                      ]))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Axiom Implements :
+        forall (T A F : Ty.t),
+        M.IsTraitInstance
+          "core::ops::function::FnMut"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) [ Ty.tuple [ A ] ]
+          (Self T A F)
+          (* Instance *) [ ("call_mut", InstanceField.Method (call_mut T A F)) ].
+    End Impl_core_ops_function_FnMut_where_core_ops_function_FnMut_F_Tuple_A__Tuple_A__for_core_ops_try_trait_Wrapped_T_A_F.
+    
     Module Impl_core_ops_try_trait_NeverShortCircuit_T.
       Definition Self (T : Ty.t) : Ty.t :=
         Ty.apply (Ty.path "core::ops::try_trait::NeverShortCircuit") [] [ T ].
       
       (*
-          pub fn wrap_mut_1<A>(mut f: impl FnMut(A) -> T) -> impl FnMut(A) -> NeverShortCircuit<T> {
-              move |a| NeverShortCircuit(f(a))
+          pub(crate) const fn wrap_mut_1<A, F>(f: F) -> Wrapped<T, A, F>
+          where
+              F: [const] FnMut(A) -> T,
+          {
+              Wrapped { f, p: PhantomData }
           }
       *)
       Definition wrap_mut_1 (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         let Self : Ty.t := Self T in
         match ε, τ, α with
-        | [], [ A; impl_FnMut_A__arrow_T ], [ f ] =>
+        | [], [ A; F ], [ f ] =>
           ltac:(M.monadic
-            (let f := M.alloc (| impl_FnMut_A__arrow_T, f |) in
-            M.closure
-              (fun γ =>
-                ltac:(M.monadic
-                  match γ with
-                  | [ α0 ] =>
-                    ltac:(M.monadic
-                      (M.match_operator (|
-                        Ty.apply (Ty.path "core::ops::try_trait::NeverShortCircuit") [] [ T ],
-                        M.alloc (| A, α0 |),
-                        [
-                          fun γ =>
-                            ltac:(M.monadic
-                              (let a := M.copy (| A, γ |) in
-                              Value.StructTuple
-                                "core::ops::try_trait::NeverShortCircuit"
-                                []
-                                [ T ]
-                                [
-                                  M.call_closure (|
-                                    T,
-                                    M.get_trait_method (|
-                                      "core::ops::function::FnMut",
-                                      impl_FnMut_A__arrow_T,
-                                      [],
-                                      [ Ty.tuple [ A ] ],
-                                      "call_mut",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (| Pointer.Kind.MutRef, f |);
-                                      Value.Tuple [ M.read (| a |) ]
-                                    ]
-                                  |)
-                                ]))
-                        ]
-                      |)))
-                  | _ => M.impossible "wrong number of arguments"
-                  end))))
+            (let f := M.alloc (| F, f |) in
+            Value.mkStructRecord
+              "core::ops::try_trait::Wrapped"
+              []
+              [ T; A; F ]
+              [
+                ("f", M.read (| f |));
+                ("p", Value.StructTuple "core::marker::PhantomData" [] [ Ty.tuple [ T; A ] ] [])
+              ]))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -128,7 +292,7 @@ Module ops.
       Global Typeclasses Opaque wrap_mut_1.
       
       (*
-          pub fn wrap_mut_2<A, B>(mut f: impl FnMut(A, B) -> T) -> impl FnMut(A, B) -> Self {
+          pub(crate) fn wrap_mut_2<A, B>(mut f: impl FnMut(A, B) -> T) -> impl FnMut(A, B) -> Self {
               move |a, b| NeverShortCircuit(f(a, b))
           }
       *)
@@ -329,7 +493,7 @@ Module ops.
           (* Instance *) [ ("from_residual", InstanceField.Method (from_residual T)) ].
     End Impl_core_ops_try_trait_FromResidual_associated_in_trait_core_ops_try_trait_Try___core_ops_try_trait_NeverShortCircuit_T_Residual_for_core_ops_try_trait_NeverShortCircuit_T.
     
-    Module Impl_core_ops_try_trait_Residual_T_for_core_ops_try_trait_NeverShortCircuitResidual.
+    Module Impl_core_ops_try_trait_Residual_where_core_marker_Destruct_T_T_for_core_ops_try_trait_NeverShortCircuitResidual.
       Definition Self (T : Ty.t) : Ty.t :=
         Ty.path "core::ops::try_trait::NeverShortCircuitResidual".
       
@@ -345,7 +509,7 @@ Module ops.
           (* Trait polymorphic types *) [ T ]
           (Self T)
           (* Instance *) [ ("TryType", InstanceField.Ty (_TryType T)) ].
-    End Impl_core_ops_try_trait_Residual_T_for_core_ops_try_trait_NeverShortCircuitResidual.
+    End Impl_core_ops_try_trait_Residual_where_core_marker_Destruct_T_T_for_core_ops_try_trait_NeverShortCircuitResidual.
     
     (* StructTuple
       {

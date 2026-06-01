@@ -56,6 +56,20 @@ Module mem.
           (* Instance *) [ ("clone", InstanceField.Method (clone T)) ].
     End Impl_core_clone_Clone_where_core_marker_Copy_T_for_core_mem_maybe_uninit_MaybeUninit_T.
     
+    Module Impl_core_clone_TrivialClone_where_core_clone_Clone_core_mem_maybe_uninit_MaybeUninit_T_for_core_mem_maybe_uninit_MaybeUninit_T.
+      Definition Self (T : Ty.t) : Ty.t :=
+        Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ].
+      
+      Axiom Implements :
+        forall (T : Ty.t),
+        M.IsTraitInstance
+          "core::clone::TrivialClone"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          (Self T)
+          (* Instance *) [].
+    End Impl_core_clone_TrivialClone_where_core_clone_Clone_core_mem_maybe_uninit_MaybeUninit_T_for_core_mem_maybe_uninit_MaybeUninit_T.
+    
     Module Impl_core_fmt_Debug_for_core_mem_maybe_uninit_MaybeUninit_T.
       Definition Self (T : Ty.t) : Ty.t :=
         Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ].
@@ -63,10 +77,9 @@ Module mem.
       (*
           fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
               // NB: there is no `.pad_fmt` so we can't use a simpler `format_args!("MaybeUninit<{..}>").
-              // This needs to be adjusted if `MaybeUninit` moves modules.
               let full_name = type_name::<Self>();
-              let short_name = full_name.split_once("mem::maybe_uninit::").unwrap().1;
-              f.pad(short_name)
+              let prefix_len = full_name.find("MaybeUninit").unwrap();
+              f.pad(&full_name[prefix_len..])
           }
       *)
       Definition fmt (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -95,64 +108,30 @@ Module mem.
                   |),
                   []
                 |) in
-              let~ short_name : Ty.apply (Ty.path "&") [] [ Ty.path "str" ] :=
-                M.read (|
-                  M.SubPointer.get_tuple_field (|
-                    M.alloc (|
-                      Ty.tuple
-                        [
-                          Ty.apply (Ty.path "&") [] [ Ty.path "str" ];
-                          Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                        ],
-                      M.call_closure (|
-                        Ty.tuple
-                          [
-                            Ty.apply (Ty.path "&") [] [ Ty.path "str" ];
-                            Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                          ],
-                        M.get_associated_function (|
-                          Ty.apply
-                            (Ty.path "core::option::Option")
-                            []
-                            [
-                              Ty.tuple
-                                [
-                                  Ty.apply (Ty.path "&") [] [ Ty.path "str" ];
-                                  Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                                ]
-                            ],
-                          "unwrap",
-                          [],
-                          []
-                        |),
-                        [
-                          M.call_closure (|
-                            Ty.apply
-                              (Ty.path "core::option::Option")
-                              []
-                              [
-                                Ty.tuple
-                                  [
-                                    Ty.apply (Ty.path "&") [] [ Ty.path "str" ];
-                                    Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                                  ]
-                              ],
-                            M.get_associated_function (|
-                              Ty.path "str",
-                              "split_once",
-                              [],
-                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                            |),
-                            [
-                              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| full_name |) |) |);
-                              mk_str (| "mem::maybe_uninit::" |)
-                            ]
-                          |)
-                        ]
-                      |)
-                    |),
-                    1
-                  |)
+              let~ prefix_len : Ty.path "usize" :=
+                M.call_closure (|
+                  Ty.path "usize",
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ],
+                    "unwrap",
+                    [],
+                    []
+                  |),
+                  [
+                    M.call_closure (|
+                      Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ],
+                      M.get_associated_function (|
+                        Ty.path "str",
+                        "find",
+                        [],
+                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                      |),
+                      [
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| full_name |) |) |);
+                        mk_str (| "MaybeUninit" |)
+                      ]
+                    |)
+                  ]
                 |) in
               M.alloc (|
                 Ty.apply
@@ -167,7 +146,44 @@ Module mem.
                   M.get_associated_function (| Ty.path "core::fmt::Formatter", "pad", [], [] |),
                   [
                     M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| short_name |) |) |)
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.call_closure (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                              M.get_trait_method (|
+                                "core::ops::index::Index",
+                                Ty.path "str",
+                                [],
+                                [
+                                  Ty.apply
+                                    (Ty.path "core::ops::range::RangeFrom")
+                                    []
+                                    [ Ty.path "usize" ]
+                                ],
+                                "index",
+                                [],
+                                []
+                              |),
+                              [
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (| M.read (| full_name |) |)
+                                |);
+                                Value.mkStructRecord
+                                  "core::ops::range::RangeFrom"
+                                  []
+                                  [ Ty.path "usize" ]
+                                  [ ("start", M.read (| prefix_len |)) ]
+                              ]
+                            |)
+                          |)
+                        |)
+                      |)
+                    |)
                   ]
                 |)
               |)
@@ -249,39 +265,6 @@ Module mem.
         M.IsAssociatedFunction.C (Self T) "uninit" (uninit T).
       Admitted.
       Global Typeclasses Opaque uninit.
-      
-      (*
-          pub const fn uninit_array<const N: usize>() -> [Self; N] {
-              [const { MaybeUninit::uninit() }; N]
-          }
-      *)
-      Definition uninit_array
-          (T : Ty.t)
-          (ε : list Value.t)
-          (τ : list Ty.t)
-          (α : list Value.t)
-          : M :=
-        let Self : Ty.t := Self T in
-        match ε, τ, α with
-        | [ N ], [], [] =>
-          ltac:(M.monadic
-            (lib.repeat (|
-              M.read (|
-                get_constant (|
-                  "core::mem::maybe_uninit::uninit_array_discriminant",
-                  Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ]
-                |)
-              |),
-              N
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Global Instance AssociatedFunction_uninit_array :
-        forall (T : Ty.t),
-        M.IsAssociatedFunction.C (Self T) "uninit_array" (uninit_array T).
-      Admitted.
-      Global Typeclasses Opaque uninit_array.
       
       (*
           pub const fn zeroed() -> MaybeUninit<T> {
@@ -504,7 +487,9 @@ Module mem.
               // This also means that `self` must be a `value` variant.
               unsafe {
                   intrinsics::assert_inhabited::<T>();
-                  ManuallyDrop::into_inner(self.value)
+                  // We do this via a raw ptr read instead of `ManuallyDrop::into_inner` so that there's
+                  // no trace of `ManuallyDrop` in Miri's error messages here.
+                  (&raw const self.value).cast::<T>().read()
               }
           }
       *)
@@ -530,18 +515,33 @@ Module mem.
                 M.call_closure (|
                   T,
                   M.get_associated_function (|
-                    Ty.apply (Ty.path "core::mem::manually_drop::ManuallyDrop") [] [ T ],
-                    "into_inner",
+                    Ty.apply (Ty.path "*const") [] [ T ],
+                    "read",
                     [],
                     []
                   |),
                   [
-                    M.read (|
-                      M.SubPointer.get_struct_record_field (|
-                        self,
-                        "core::mem::maybe_uninit::MaybeUninit",
-                        "value"
-                      |)
+                    M.call_closure (|
+                      Ty.apply (Ty.path "*const") [] [ T ],
+                      M.get_associated_function (|
+                        Ty.apply
+                          (Ty.path "*const")
+                          []
+                          [ Ty.apply (Ty.path "core::mem::manually_drop::ManuallyDrop") [] [ T ] ],
+                        "cast",
+                        [],
+                        [ T ]
+                      |),
+                      [
+                        M.borrow (|
+                          Pointer.Kind.ConstPointer,
+                          M.SubPointer.get_struct_record_field (|
+                            self,
+                            "core::mem::maybe_uninit::MaybeUninit",
+                            "value"
+                          |)
+                        |)
+                      ]
                     |)
                   ]
                 |)
@@ -626,7 +626,10 @@ Module mem.
       Global Typeclasses Opaque assume_init_read.
       
       (*
-          pub unsafe fn assume_init_drop(&mut self) {
+          pub const unsafe fn assume_init_drop(&mut self)
+          where
+              T: [const] Destruct,
+          {
               // SAFETY: the caller must guarantee that `self` is initialized and
               // satisfies all invariants of `T`.
               // Dropping the value in place is safe if that is the case.
@@ -901,89 +904,115 @@ Module mem.
       Global Typeclasses Opaque array_assume_init.
       
       (*
-          pub const unsafe fn slice_assume_init_ref(slice: &[Self]) -> &[T] {
-              // SAFETY: casting `slice` to a `*const [T]` is safe since the caller guarantees that
-              // `slice` is initialized, and `MaybeUninit` is guaranteed to have the same layout as `T`.
-              // The pointer obtained is valid since it refers to memory owned by `slice` which is a
-              // reference and thus guaranteed to be valid for reads.
-              unsafe { &*(slice as *const [Self] as *const [T]) }
+          pub const fn as_bytes(&self) -> &[MaybeUninit<u8>] {
+              // SAFETY: MaybeUninit<u8> is always valid, even for padding bytes
+              unsafe {
+                  slice::from_raw_parts(self.as_ptr().cast::<MaybeUninit<u8>>(), super::size_of::<T>())
+              }
           }
       *)
-      Definition slice_assume_init_ref
-          (T : Ty.t)
-          (ε : list Value.t)
-          (τ : list Ty.t)
-          (α : list Value.t)
-          : M :=
+      Definition as_bytes (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         let Self : Ty.t := Self T in
         match ε, τ, α with
-        | [], [], [ slice ] =>
+        | [], [], [ self ] =>
           ltac:(M.monadic
-            (let slice :=
+            (let self :=
               M.alloc (|
                 Ty.apply
                   (Ty.path "&")
                   []
-                  [
-                    Ty.apply
-                      (Ty.path "slice")
-                      []
-                      [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]
-                  ],
-                slice
+                  [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ],
+                self
               |) in
             M.borrow (|
               Pointer.Kind.Ref,
               M.deref (|
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.cast
-                      (Ty.apply (Ty.path "*const") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
-                      (M.read (|
-                        M.use
-                          (M.alloc (|
-                            Ty.apply
-                              (Ty.path "*const")
-                              []
-                              [
-                                Ty.apply
-                                  (Ty.path "slice")
-                                  []
-                                  [
-                                    Ty.apply
-                                      (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                      []
-                                      [ T ]
-                                  ]
-                              ],
-                            M.borrow (|
-                              Pointer.Kind.ConstPointer,
-                              M.deref (| M.read (| slice |) |)
-                            |)
-                          |))
-                      |))
-                  |)
+                M.call_closure (|
+                  Ty.apply
+                    (Ty.path "&")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "slice")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                            []
+                            [ Ty.path "u8" ]
+                        ]
+                    ],
+                  M.get_function (|
+                    "core::slice::raw::from_raw_parts",
+                    [],
+                    [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ Ty.path "u8" ]
+                    ]
+                  |),
+                  [
+                    M.call_closure (|
+                      Ty.apply
+                        (Ty.path "*const")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                            []
+                            [ Ty.path "u8" ]
+                        ],
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "*const") [] [ T ],
+                        "cast",
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                            []
+                            [ Ty.path "u8" ]
+                        ]
+                      |),
+                      [
+                        M.call_closure (|
+                          Ty.apply (Ty.path "*const") [] [ T ],
+                          M.get_associated_function (|
+                            Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ],
+                            "as_ptr",
+                            [],
+                            []
+                          |),
+                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                        |)
+                      ]
+                    |);
+                    M.call_closure (|
+                      Ty.path "usize",
+                      M.get_function (| "core::mem::size_of", [], [ T ] |),
+                      []
+                    |)
+                  ]
                 |)
               |)
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      Global Instance AssociatedFunction_slice_assume_init_ref :
+      Global Instance AssociatedFunction_as_bytes :
         forall (T : Ty.t),
-        M.IsAssociatedFunction.C (Self T) "slice_assume_init_ref" (slice_assume_init_ref T).
+        M.IsAssociatedFunction.C (Self T) "as_bytes" (as_bytes T).
       Admitted.
-      Global Typeclasses Opaque slice_assume_init_ref.
+      Global Typeclasses Opaque as_bytes.
       
       (*
-          pub const unsafe fn slice_assume_init_mut(slice: &mut [Self]) -> &mut [T] {
-              // SAFETY: similar to safety notes for `slice_get_ref`, but we have a
-              // mutable reference which is also guaranteed to be valid for writes.
-              unsafe { &mut *(slice as *mut [Self] as *mut [T]) }
+          pub const fn as_bytes_mut(&mut self) -> &mut [MaybeUninit<u8>] {
+              // SAFETY: MaybeUninit<u8> is always valid, even for padding bytes
+              unsafe {
+                  slice::from_raw_parts_mut(
+                      self.as_mut_ptr().cast::<MaybeUninit<u8>>(),
+                      super::size_of::<T>(),
+                  )
+              }
           }
       *)
-      Definition slice_assume_init_mut
+      Definition as_bytes_mut
           (T : Ty.t)
           (ε : list Value.t)
           (τ : list Ty.t)
@@ -991,20 +1020,15 @@ Module mem.
           : M :=
         let Self : Ty.t := Self T in
         match ε, τ, α with
-        | [], [], [ slice ] =>
+        | [], [], [ self ] =>
           ltac:(M.monadic
-            (let slice :=
+            (let self :=
               M.alloc (|
                 Ty.apply
                   (Ty.path "&mut")
                   []
-                  [
-                    Ty.apply
-                      (Ty.path "slice")
-                      []
-                      [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]
-                  ],
-                slice
+                  [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ],
+                self
               |) in
             M.borrow (|
               Pointer.Kind.MutRef,
@@ -1015,35 +1039,80 @@ Module mem.
                     M.borrow (|
                       Pointer.Kind.MutRef,
                       M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.MutRef,
-                          M.deref (|
-                            M.cast
-                              (Ty.apply (Ty.path "*mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
-                              (M.read (|
-                                M.use
-                                  (M.alloc (|
+                        M.call_closure (|
+                          Ty.apply
+                            (Ty.path "&mut")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "slice")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                    []
+                                    [ Ty.path "u8" ]
+                                ]
+                            ],
+                          M.get_function (|
+                            "core::slice::raw::from_raw_parts_mut",
+                            [],
+                            [
+                              Ty.apply
+                                (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                []
+                                [ Ty.path "u8" ]
+                            ]
+                          |),
+                          [
+                            M.call_closure (|
+                              Ty.apply
+                                (Ty.path "*mut")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                    []
+                                    [ Ty.path "u8" ]
+                                ],
+                              M.get_associated_function (|
+                                Ty.apply (Ty.path "*mut") [] [ T ],
+                                "cast",
+                                [],
+                                [
+                                  Ty.apply
+                                    (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                    []
+                                    [ Ty.path "u8" ]
+                                ]
+                              |),
+                              [
+                                M.call_closure (|
+                                  Ty.apply (Ty.path "*mut") [] [ T ],
+                                  M.get_associated_function (|
                                     Ty.apply
-                                      (Ty.path "*mut")
+                                      (Ty.path "core::mem::maybe_uninit::MaybeUninit")
                                       []
-                                      [
-                                        Ty.apply
-                                          (Ty.path "slice")
-                                          []
-                                          [
-                                            Ty.apply
-                                              (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                              []
-                                              [ T ]
-                                          ]
-                                      ],
+                                      [ T ],
+                                    "as_mut_ptr",
+                                    [],
+                                    []
+                                  |),
+                                  [
                                     M.borrow (|
-                                      Pointer.Kind.MutPointer,
-                                      M.deref (| M.read (| slice |) |)
+                                      Pointer.Kind.MutRef,
+                                      M.deref (| M.read (| self |) |)
                                     |)
-                                  |))
-                              |))
-                          |)
+                                  ]
+                                |)
+                              ]
+                            |);
+                            M.call_closure (|
+                              Ty.path "usize",
+                              M.get_function (| "core::mem::size_of", [], [ T ] |),
+                              []
+                            |)
+                          ]
                         |)
                       |)
                     |)
@@ -1054,137 +1123,35 @@ Module mem.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      Global Instance AssociatedFunction_slice_assume_init_mut :
+      Global Instance AssociatedFunction_as_bytes_mut :
         forall (T : Ty.t),
-        M.IsAssociatedFunction.C (Self T) "slice_assume_init_mut" (slice_assume_init_mut T).
+        M.IsAssociatedFunction.C (Self T) "as_bytes_mut" (as_bytes_mut T).
       Admitted.
-      Global Typeclasses Opaque slice_assume_init_mut.
+      Global Typeclasses Opaque as_bytes_mut.
+    End Impl_core_mem_maybe_uninit_MaybeUninit_T.
+    
+    Module Impl_slice_core_mem_maybe_uninit_MaybeUninit_T.
+      Definition Self (T : Ty.t) : Ty.t :=
+        Ty.apply
+          (Ty.path "slice")
+          []
+          [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ].
       
       (*
-          pub const fn slice_as_ptr(this: &[MaybeUninit<T>]) -> *const T {
-              this.as_ptr() as *const T
-          }
-      *)
-      Definition slice_as_ptr
-          (T : Ty.t)
-          (ε : list Value.t)
-          (τ : list Ty.t)
-          (α : list Value.t)
-          : M :=
-        let Self : Ty.t := Self T in
-        match ε, τ, α with
-        | [], [], [ this ] =>
-          ltac:(M.monadic
-            (let this :=
-              M.alloc (|
-                Ty.apply
-                  (Ty.path "&")
-                  []
-                  [
-                    Ty.apply
-                      (Ty.path "slice")
-                      []
-                      [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]
-                  ],
-                this
-              |) in
-            M.cast
-              (Ty.apply (Ty.path "*const") [] [ T ])
-              (M.call_closure (|
-                Ty.apply
-                  (Ty.path "*const")
-                  []
-                  [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ],
-                M.get_associated_function (|
-                  Ty.apply
-                    (Ty.path "slice")
-                    []
-                    [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ],
-                  "as_ptr",
-                  [],
-                  []
-                |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| this |) |) |) ]
-              |))))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Global Instance AssociatedFunction_slice_as_ptr :
-        forall (T : Ty.t),
-        M.IsAssociatedFunction.C (Self T) "slice_as_ptr" (slice_as_ptr T).
-      Admitted.
-      Global Typeclasses Opaque slice_as_ptr.
-      
-      (*
-          pub const fn slice_as_mut_ptr(this: &mut [MaybeUninit<T>]) -> *mut T {
-              this.as_mut_ptr() as *mut T
-          }
-      *)
-      Definition slice_as_mut_ptr
-          (T : Ty.t)
-          (ε : list Value.t)
-          (τ : list Ty.t)
-          (α : list Value.t)
-          : M :=
-        let Self : Ty.t := Self T in
-        match ε, τ, α with
-        | [], [], [ this ] =>
-          ltac:(M.monadic
-            (let this :=
-              M.alloc (|
-                Ty.apply
-                  (Ty.path "&mut")
-                  []
-                  [
-                    Ty.apply
-                      (Ty.path "slice")
-                      []
-                      [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]
-                  ],
-                this
-              |) in
-            M.cast
-              (Ty.apply (Ty.path "*mut") [] [ T ])
-              (M.call_closure (|
-                Ty.apply
-                  (Ty.path "*mut")
-                  []
-                  [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ],
-                M.get_associated_function (|
-                  Ty.apply
-                    (Ty.path "slice")
-                    []
-                    [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ],
-                  "as_mut_ptr",
-                  [],
-                  []
-                |),
-                [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| this |) |) |) ]
-              |))))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Global Instance AssociatedFunction_slice_as_mut_ptr :
-        forall (T : Ty.t),
-        M.IsAssociatedFunction.C (Self T) "slice_as_mut_ptr" (slice_as_mut_ptr T).
-      Admitted.
-      Global Typeclasses Opaque slice_as_mut_ptr.
-      
-      (*
-          pub fn copy_from_slice<'a>(this: &'a mut [MaybeUninit<T>], src: &[T]) -> &'a mut [T]
+          pub const fn write_copy_of_slice(&mut self, src: &[T]) -> &mut [T]
           where
               T: Copy,
           {
               // SAFETY: &[T] and &[MaybeUninit<T>] have the same layout
               let uninit_src: &[MaybeUninit<T>] = unsafe { super::transmute(src) };
       
-              this.copy_from_slice(uninit_src);
+              self.copy_from_slice(uninit_src);
       
-              // SAFETY: Valid elements have just been copied into `this` so it is initialized
-              unsafe { MaybeUninit::slice_assume_init_mut(this) }
+              // SAFETY: Valid elements have just been copied into `self` so it is initialized
+              unsafe { self.assume_init_mut() }
           }
       *)
-      Definition copy_from_slice
+      Definition write_copy_of_slice
           (T : Ty.t)
           (ε : list Value.t)
           (τ : list Ty.t)
@@ -1192,9 +1159,9 @@ Module mem.
           : M :=
         let Self : Ty.t := Self T in
         match ε, τ, α with
-        | [], [], [ this; src ] =>
+        | [], [], [ self; src ] =>
           ltac:(M.monadic
-            (let this :=
+            (let self :=
               M.alloc (|
                 Ty.apply
                   (Ty.path "&mut")
@@ -1205,7 +1172,7 @@ Module mem.
                       []
                       [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]
                   ],
-                this
+                self
               |) in
             let src :=
               M.alloc (|
@@ -1268,7 +1235,7 @@ Module mem.
                         []
                       |),
                       [
-                        M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| this |) |) |);
+                        M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
                         M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| uninit_src |) |) |)
                       ]
                     |) in
@@ -1283,12 +1250,20 @@ Module mem.
                             M.call_closure (|
                               Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
                               M.get_associated_function (|
-                                Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ],
-                                "slice_assume_init_mut",
+                                Ty.apply
+                                  (Ty.path "slice")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                      []
+                                      [ T ]
+                                  ],
+                                "assume_init_mut",
                                 [],
                                 []
                               |),
-                              [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| this |) |) |)
+                              [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |)
                               ]
                             |)
                           |)
@@ -1302,29 +1277,30 @@ Module mem.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      Global Instance AssociatedFunction_copy_from_slice :
+      Global Instance AssociatedFunction_write_copy_of_slice :
         forall (T : Ty.t),
-        M.IsAssociatedFunction.C (Self T) "copy_from_slice" (copy_from_slice T).
+        M.IsAssociatedFunction.C (Self T) "write_copy_of_slice" (write_copy_of_slice T).
       Admitted.
-      Global Typeclasses Opaque copy_from_slice.
+      Global Typeclasses Opaque write_copy_of_slice.
       
       (*
-          pub fn clone_from_slice<'a>(this: &'a mut [MaybeUninit<T>], src: &[T]) -> &'a mut [T]
+          pub fn write_clone_of_slice(&mut self, src: &[T]) -> &mut [T]
           where
               T: Clone,
           {
               // unlike copy_from_slice this does not call clone_from_slice on the slice
               // this is because `MaybeUninit<T: Clone>` does not implement Clone.
       
-              assert_eq!(this.len(), src.len(), "destination and source slices have different lengths");
+              assert_eq!(self.len(), src.len(), "destination and source slices have different lengths");
+      
               // NOTE: We need to explicitly slice them to the same length
               // for bounds checking to be elided, and the optimizer will
               // generate memcpy for simple cases (for example T = u8).
-              let len = this.len();
+              let len = self.len();
               let src = &src[..len];
       
               // guard is needed b/c panic might happen during a clone
-              let mut guard = Guard { slice: this, initialized: 0 };
+              let mut guard = Guard { slice: self, initialized: 0 };
       
               for i in 0..len {
                   guard.slice[i].write(src[i].clone());
@@ -1333,11 +1309,11 @@ Module mem.
       
               super::forget(guard);
       
-              // SAFETY: Valid elements have just been written into `this` so it is initialized
-              unsafe { MaybeUninit::slice_assume_init_mut(this) }
+              // SAFETY: Valid elements have just been written into `self` so it is initialized
+              unsafe { self.assume_init_mut() }
           }
       *)
-      Definition clone_from_slice
+      Definition write_clone_of_slice
           (T : Ty.t)
           (ε : list Value.t)
           (τ : list Ty.t)
@@ -1345,9 +1321,9 @@ Module mem.
           : M :=
         let Self : Ty.t := Self T in
         match ε, τ, α with
-        | [], [], [ this; src ] =>
+        | [], [], [ self; src ] =>
           ltac:(M.monadic
-            (let this :=
+            (let self :=
               M.alloc (|
                 Ty.apply
                   (Ty.path "&mut")
@@ -1358,7 +1334,7 @@ Module mem.
                       []
                       [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]
                   ],
-                this
+                self
               |) in
             let src :=
               M.alloc (|
@@ -1400,7 +1376,7 @@ Module mem.
                                     [],
                                     []
                                   |),
-                                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| this |) |) |)
+                                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |)
                                   ]
                                 |)
                               |)
@@ -1440,24 +1416,23 @@ Module mem.
                                 fun γ =>
                                   ltac:(M.monadic
                                     (let γ :=
-                                      M.use
-                                        (M.alloc (|
+                                      M.alloc (|
+                                        Ty.path "bool",
+                                        M.call_closure (|
                                           Ty.path "bool",
-                                          M.call_closure (|
-                                            Ty.path "bool",
-                                            UnOp.not,
-                                            [
-                                              M.call_closure (|
-                                                Ty.path "bool",
-                                                BinOp.eq,
-                                                [
-                                                  M.read (| M.deref (| M.read (| left_val |) |) |);
-                                                  M.read (| M.deref (| M.read (| right_val |) |) |)
-                                                ]
-                                              |)
-                                            ]
-                                          |)
-                                        |)) in
+                                          UnOp.not,
+                                          [
+                                            M.call_closure (|
+                                              Ty.path "bool",
+                                              BinOp.eq,
+                                              [
+                                                M.read (| M.deref (| M.read (| left_val |) |) |);
+                                                M.read (| M.deref (| M.read (| right_val |) |) |)
+                                              ]
+                                            |)
+                                          ]
+                                        |)
+                                      |) in
                                     let _ :=
                                       is_constant_or_break_match (|
                                         M.read (| γ |),
@@ -1509,36 +1484,13 @@ Module mem.
                                                     Ty.path "core::fmt::Arguments",
                                                     M.get_associated_function (|
                                                       Ty.path "core::fmt::Arguments",
-                                                      "new_const",
-                                                      [ Value.Integer IntegerKind.Usize 1 ],
+                                                      "from_str",
+                                                      [],
                                                       []
                                                     |),
                                                     [
-                                                      M.borrow (|
-                                                        Pointer.Kind.Ref,
-                                                        M.deref (|
-                                                          M.borrow (|
-                                                            Pointer.Kind.Ref,
-                                                            M.alloc (|
-                                                              Ty.apply
-                                                                (Ty.path "array")
-                                                                [ Value.Integer IntegerKind.Usize 1
-                                                                ]
-                                                                [
-                                                                  Ty.apply
-                                                                    (Ty.path "&")
-                                                                    []
-                                                                    [ Ty.path "str" ]
-                                                                ],
-                                                              Value.Array
-                                                                [
-                                                                  mk_str (|
-                                                                    "destination and source slices have different lengths"
-                                                                  |)
-                                                                ]
-                                                            |)
-                                                          |)
-                                                        |)
+                                                      mk_str (|
+                                                        "destination and source slices have different lengths"
                                                       |)
                                                     ]
                                                   |)
@@ -1565,7 +1517,7 @@ Module mem.
                         [],
                         []
                       |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| this |) |) |) ]
+                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
                     |) in
                   let~ src : Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ] :=
                     M.borrow (|
@@ -1601,7 +1553,7 @@ Module mem.
                       [ T ]
                       [
                         ("slice",
-                          M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| this |) |) |));
+                          M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |));
                         ("initialized", Value.Integer IntegerKind.Usize 0)
                       ] in
                   let~ _ : Ty.tuple [] :=
@@ -1808,12 +1760,20 @@ Module mem.
                             M.call_closure (|
                               Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
                               M.get_associated_function (|
-                                Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ],
-                                "slice_assume_init_mut",
+                                Ty.apply
+                                  (Ty.path "slice")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                      []
+                                      [ T ]
+                                  ],
+                                "assume_init_mut",
                                 [],
                                 []
                               |),
-                              [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| this |) |) |)
+                              [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |)
                               ]
                             |)
                           |)
@@ -1827,28 +1787,33 @@ Module mem.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      Global Instance AssociatedFunction_clone_from_slice :
+      Global Instance AssociatedFunction_write_clone_of_slice :
         forall (T : Ty.t),
-        M.IsAssociatedFunction.C (Self T) "clone_from_slice" (clone_from_slice T).
+        M.IsAssociatedFunction.C (Self T) "write_clone_of_slice" (write_clone_of_slice T).
       Admitted.
-      Global Typeclasses Opaque clone_from_slice.
+      Global Typeclasses Opaque write_clone_of_slice.
       
       (*
-          pub fn fill<'a>(this: &'a mut [MaybeUninit<T>], value: T) -> &'a mut [T]
+          pub fn write_filled(&mut self, value: T) -> &mut [T]
           where
               T: Clone,
           {
-              SpecFill::spec_fill(this, value);
-              // SAFETY: Valid elements have just been filled into `this` so it is initialized
-              unsafe { MaybeUninit::slice_assume_init_mut(this) }
+              SpecFill::spec_fill(self, value);
+              // SAFETY: Valid elements have just been filled into `self` so it is initialized
+              unsafe { self.assume_init_mut() }
           }
       *)
-      Definition fill (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      Definition write_filled
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
         let Self : Ty.t := Self T in
         match ε, τ, α with
-        | [], [], [ this; value ] =>
+        | [], [], [ self; value ] =>
           ltac:(M.monadic
-            (let this :=
+            (let self :=
               M.alloc (|
                 Ty.apply
                   (Ty.path "&mut")
@@ -1859,7 +1824,7 @@ Module mem.
                       []
                       [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]
                   ],
-                this
+                self
               |) in
             let value := M.alloc (| T, value |) in
             M.borrow (|
@@ -1882,7 +1847,7 @@ Module mem.
                         []
                       |),
                       [
-                        M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| this |) |) |);
+                        M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
                         M.read (| value |)
                       ]
                     |) in
@@ -1897,12 +1862,20 @@ Module mem.
                             M.call_closure (|
                               Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
                               M.get_associated_function (|
-                                Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ],
-                                "slice_assume_init_mut",
+                                Ty.apply
+                                  (Ty.path "slice")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                      []
+                                      [ T ]
+                                  ],
+                                "assume_init_mut",
                                 [],
                                 []
                               |),
-                              [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| this |) |) |)
+                              [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |)
                               ]
                             |)
                           |)
@@ -1916,36 +1889,36 @@ Module mem.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      Global Instance AssociatedFunction_fill :
+      Global Instance AssociatedFunction_write_filled :
         forall (T : Ty.t),
-        M.IsAssociatedFunction.C (Self T) "fill" (fill T).
+        M.IsAssociatedFunction.C (Self T) "write_filled" (write_filled T).
       Admitted.
-      Global Typeclasses Opaque fill.
+      Global Typeclasses Opaque write_filled.
       
       (*
-          pub fn fill_with<'a, F>(this: &'a mut [MaybeUninit<T>], mut f: F) -> &'a mut [T]
+          pub fn write_with<F>(&mut self, mut f: F) -> &mut [T]
           where
-              F: FnMut() -> T,
+              F: FnMut(usize) -> T,
           {
-              let mut guard = Guard { slice: this, initialized: 0 };
+              let mut guard = Guard { slice: self, initialized: 0 };
       
-              for element in guard.slice.iter_mut() {
-                  element.write(f());
+              for (idx, element) in guard.slice.iter_mut().enumerate() {
+                  element.write(f(idx));
                   guard.initialized += 1;
               }
       
               super::forget(guard);
       
               // SAFETY: Valid elements have just been written into `this` so it is initialized
-              unsafe { MaybeUninit::slice_assume_init_mut(this) }
+              unsafe { self.assume_init_mut() }
           }
       *)
-      Definition fill_with (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      Definition write_with (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         let Self : Ty.t := Self T in
         match ε, τ, α with
-        | [], [ F ], [ this; f ] =>
+        | [], [ F ], [ self; f ] =>
           ltac:(M.monadic
-            (let this :=
+            (let self :=
               M.alloc (|
                 Ty.apply
                   (Ty.path "&mut")
@@ -1956,7 +1929,7 @@ Module mem.
                       []
                       [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]
                   ],
-                this
+                self
               |) in
             let f := M.alloc (| F, f |) in
             M.borrow (|
@@ -1970,7 +1943,7 @@ Module mem.
                       [ T ]
                       [
                         ("slice",
-                          M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| this |) |) |));
+                          M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |));
                         ("initialized", Value.Integer IntegerKind.Usize 0)
                       ] in
                   let~ _ : Ty.tuple [] :=
@@ -1982,22 +1955,9 @@ Module mem.
                             Ty.tuple [],
                             M.alloc (|
                               Ty.apply
-                                (Ty.path "core::slice::iter::IterMut")
+                                (Ty.path "core::iter::adapters::enumerate::Enumerate")
                                 []
-                                [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ]
-                                ],
-                              M.call_closure (|
-                                Ty.apply
-                                  (Ty.path "core::slice::iter::IterMut")
-                                  []
-                                  [
-                                    Ty.apply
-                                      (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                      []
-                                      [ T ]
-                                  ],
-                                M.get_trait_method (|
-                                  "core::iter::traits::collect::IntoIterator",
+                                [
                                   Ty.apply
                                     (Ty.path "core::slice::iter::IterMut")
                                     []
@@ -2006,6 +1966,38 @@ Module mem.
                                         (Ty.path "core::mem::maybe_uninit::MaybeUninit")
                                         []
                                         [ T ]
+                                    ]
+                                ],
+                              M.call_closure (|
+                                Ty.apply
+                                  (Ty.path "core::iter::adapters::enumerate::Enumerate")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "core::slice::iter::IterMut")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                          []
+                                          [ T ]
+                                      ]
+                                  ],
+                                M.get_trait_method (|
+                                  "core::iter::traits::collect::IntoIterator",
+                                  Ty.apply
+                                    (Ty.path "core::iter::adapters::enumerate::Enumerate")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::slice::iter::IterMut")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                            []
+                                            [ T ]
+                                        ]
                                     ],
                                   [],
                                   [],
@@ -2016,17 +2008,23 @@ Module mem.
                                 [
                                   M.call_closure (|
                                     Ty.apply
-                                      (Ty.path "core::slice::iter::IterMut")
+                                      (Ty.path "core::iter::adapters::enumerate::Enumerate")
                                       []
                                       [
                                         Ty.apply
-                                          (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                          (Ty.path "core::slice::iter::IterMut")
                                           []
-                                          [ T ]
+                                          [
+                                            Ty.apply
+                                              (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                              []
+                                              [ T ]
+                                          ]
                                       ],
-                                    M.get_associated_function (|
+                                    M.get_trait_method (|
+                                      "core::iter::traits::iterator::Iterator",
                                       Ty.apply
-                                        (Ty.path "slice")
+                                        (Ty.path "core::slice::iter::IterMut")
                                         []
                                         [
                                           Ty.apply
@@ -2034,22 +2032,51 @@ Module mem.
                                             []
                                             [ T ]
                                         ],
-                                      "iter_mut",
+                                      [],
+                                      [],
+                                      "enumerate",
                                       [],
                                       []
                                     |),
                                     [
-                                      M.borrow (|
-                                        Pointer.Kind.MutRef,
-                                        M.deref (|
-                                          M.read (|
-                                            M.SubPointer.get_struct_record_field (|
-                                              guard,
-                                              "core::mem::maybe_uninit::Guard",
-                                              "slice"
+                                      M.call_closure (|
+                                        Ty.apply
+                                          (Ty.path "core::slice::iter::IterMut")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                              []
+                                              [ T ]
+                                          ],
+                                        M.get_associated_function (|
+                                          Ty.apply
+                                            (Ty.path "slice")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                                []
+                                                [ T ]
+                                            ],
+                                          "iter_mut",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.borrow (|
+                                            Pointer.Kind.MutRef,
+                                            M.deref (|
+                                              M.read (|
+                                                M.SubPointer.get_struct_record_field (|
+                                                  guard,
+                                                  "core::mem::maybe_uninit::Guard",
+                                                  "slice"
+                                                |)
+                                              |)
                                             |)
                                           |)
-                                        |)
+                                        ]
                                       |)
                                     ]
                                   |)
@@ -2061,13 +2088,18 @@ Module mem.
                                 ltac:(M.monadic
                                   (let~ iter :
                                       Ty.apply
-                                        (Ty.path "core::slice::iter::IterMut")
+                                        (Ty.path "core::iter::adapters::enumerate::Enumerate")
                                         []
                                         [
                                           Ty.apply
-                                            (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                            (Ty.path "core::slice::iter::IterMut")
                                             []
-                                            [ T ]
+                                            [
+                                              Ty.apply
+                                                (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                                []
+                                                [ T ]
+                                            ]
                                         ] :=
                                     M.read (| γ |) in
                                   M.read (|
@@ -2082,15 +2114,19 @@ Module mem.
                                                 (Ty.path "core::option::Option")
                                                 []
                                                 [
-                                                  Ty.apply
-                                                    (Ty.path "&mut")
-                                                    []
+                                                  Ty.tuple
                                                     [
+                                                      Ty.path "usize";
                                                       Ty.apply
-                                                        (Ty.path
-                                                          "core::mem::maybe_uninit::MaybeUninit")
+                                                        (Ty.path "&mut")
                                                         []
-                                                        [ T ]
+                                                        [
+                                                          Ty.apply
+                                                            (Ty.path
+                                                              "core::mem::maybe_uninit::MaybeUninit")
+                                                            []
+                                                            [ T ]
+                                                        ]
                                                     ]
                                                 ],
                                               M.call_closure (|
@@ -2098,28 +2134,38 @@ Module mem.
                                                   (Ty.path "core::option::Option")
                                                   []
                                                   [
-                                                    Ty.apply
-                                                      (Ty.path "&mut")
-                                                      []
+                                                    Ty.tuple
                                                       [
+                                                        Ty.path "usize";
                                                         Ty.apply
-                                                          (Ty.path
-                                                            "core::mem::maybe_uninit::MaybeUninit")
+                                                          (Ty.path "&mut")
                                                           []
-                                                          [ T ]
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path
+                                                                "core::mem::maybe_uninit::MaybeUninit")
+                                                              []
+                                                              [ T ]
+                                                          ]
                                                       ]
                                                   ],
                                                 M.get_trait_method (|
                                                   "core::iter::traits::iterator::Iterator",
                                                   Ty.apply
-                                                    (Ty.path "core::slice::iter::IterMut")
+                                                    (Ty.path
+                                                      "core::iter::adapters::enumerate::Enumerate")
                                                     []
                                                     [
                                                       Ty.apply
-                                                        (Ty.path
-                                                          "core::mem::maybe_uninit::MaybeUninit")
+                                                        (Ty.path "core::slice::iter::IterMut")
                                                         []
-                                                        [ T ]
+                                                        [
+                                                          Ty.apply
+                                                            (Ty.path
+                                                              "core::mem::maybe_uninit::MaybeUninit")
+                                                            []
+                                                            [ T ]
+                                                        ]
                                                     ],
                                                   [],
                                                   [],
@@ -2154,6 +2200,11 @@ Module mem.
                                                       "core::option::Option::Some",
                                                       0
                                                     |) in
+                                                  let γ1_0 :=
+                                                    M.SubPointer.get_tuple_field (| γ0_0, 0 |) in
+                                                  let γ1_1 :=
+                                                    M.SubPointer.get_tuple_field (| γ0_0, 1 |) in
+                                                  let idx := M.copy (| Ty.path "usize", γ1_0 |) in
                                                   let element :=
                                                     M.copy (|
                                                       Ty.apply
@@ -2166,7 +2217,7 @@ Module mem.
                                                             []
                                                             [ T ]
                                                         ],
-                                                      γ0_0
+                                                      γ1_1
                                                     |) in
                                                   M.read (|
                                                     let~ _ : Ty.apply (Ty.path "&mut") [] [ T ] :=
@@ -2193,14 +2244,14 @@ Module mem.
                                                               "core::ops::function::FnMut",
                                                               F,
                                                               [],
-                                                              [ Ty.tuple [] ],
+                                                              [ Ty.tuple [ Ty.path "usize" ] ],
                                                               "call_mut",
                                                               [],
                                                               []
                                                             |),
                                                             [
                                                               M.borrow (| Pointer.Kind.MutRef, f |);
-                                                              Value.Tuple []
+                                                              Value.Tuple [ M.read (| idx |) ]
                                                             ]
                                                           |)
                                                         ]
@@ -2255,12 +2306,20 @@ Module mem.
                             M.call_closure (|
                               Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
                               M.get_associated_function (|
-                                Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ],
-                                "slice_assume_init_mut",
+                                Ty.apply
+                                  (Ty.path "slice")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                      []
+                                      [ T ]
+                                  ],
+                                "assume_init_mut",
                                 [],
                                 []
                               |),
-                              [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| this |) |) |)
+                              [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |)
                               ]
                             |)
                           |)
@@ -2274,22 +2333,19 @@ Module mem.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      Global Instance AssociatedFunction_fill_with :
+      Global Instance AssociatedFunction_write_with :
         forall (T : Ty.t),
-        M.IsAssociatedFunction.C (Self T) "fill_with" (fill_with T).
+        M.IsAssociatedFunction.C (Self T) "write_with" (write_with T).
       Admitted.
-      Global Typeclasses Opaque fill_with.
+      Global Typeclasses Opaque write_with.
       
       (*
-          pub fn fill_from<'a, I>(
-              this: &'a mut [MaybeUninit<T>],
-              it: I,
-          ) -> (&'a mut [T], &'a mut [MaybeUninit<T>])
+          pub fn write_iter<I>(&mut self, it: I) -> (&mut [T], &mut [MaybeUninit<T>])
           where
               I: IntoIterator<Item = T>,
           {
               let iter = it.into_iter();
-              let mut guard = Guard { slice: this, initialized: 0 };
+              let mut guard = Guard { slice: self, initialized: 0 };
       
               for (element, val) in guard.slice.iter_mut().zip(iter) {
                   element.write(val);
@@ -2299,20 +2355,20 @@ Module mem.
               let initialized_len = guard.initialized;
               super::forget(guard);
       
-              // SAFETY: guard.initialized <= this.len()
-              let (initted, remainder) = unsafe { this.split_at_mut_unchecked(initialized_len) };
+              // SAFETY: guard.initialized <= self.len()
+              let (initted, remainder) = unsafe { self.split_at_mut_unchecked(initialized_len) };
       
               // SAFETY: Valid elements have just been written into `init`, so that portion
               // of `this` is initialized.
-              (unsafe { MaybeUninit::slice_assume_init_mut(initted) }, remainder)
+              (unsafe { initted.assume_init_mut() }, remainder)
           }
       *)
-      Definition fill_from (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      Definition write_iter (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         let Self : Ty.t := Self T in
         match ε, τ, α with
-        | [], [ _ as I ], [ this; it ] =>
+        | [], [ _ as I ], [ self; it ] =>
           ltac:(M.monadic
-            (let this :=
+            (let self :=
               M.alloc (|
                 Ty.apply
                   (Ty.path "&mut")
@@ -2323,7 +2379,7 @@ Module mem.
                       []
                       [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]
                   ],
-                this
+                self
               |) in
             let it := M.alloc (| I, it |) in
             M.read (|
@@ -2358,7 +2414,7 @@ Module mem.
                   []
                   [ T ]
                   [
-                    ("slice", M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| this |) |) |));
+                    ("slice", M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |));
                     ("initialized", Value.Integer IntegerKind.Usize 0)
                   ] in
               let~ _ : Ty.tuple [] :=
@@ -2826,7 +2882,7 @@ Module mem.
                         []
                       |),
                       [
-                        M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| this |) |) |);
+                        M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
                         M.read (| initialized_len |)
                       ]
                     |)
@@ -2887,10 +2943,15 @@ Module mem.
                                         [ Ty.apply (Ty.path "slice") [] [ T ] ],
                                       M.get_associated_function (|
                                         Ty.apply
-                                          (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                          (Ty.path "slice")
                                           []
-                                          [ T ],
-                                        "slice_assume_init_mut",
+                                          [
+                                            Ty.apply
+                                              (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                              []
+                                              [ T ]
+                                          ],
+                                        "assume_init_mut",
                                         [],
                                         []
                                       |),
@@ -2914,17 +2975,17 @@ Module mem.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      Global Instance AssociatedFunction_fill_from :
+      Global Instance AssociatedFunction_write_iter :
         forall (T : Ty.t),
-        M.IsAssociatedFunction.C (Self T) "fill_from" (fill_from T).
+        M.IsAssociatedFunction.C (Self T) "write_iter" (write_iter T).
       Admitted.
-      Global Typeclasses Opaque fill_from.
+      Global Typeclasses Opaque write_iter.
       
       (*
-          pub fn as_bytes(&self) -> &[MaybeUninit<u8>] {
+          pub const fn as_bytes(&self) -> &[MaybeUninit<u8>] {
               // SAFETY: MaybeUninit<u8> is always valid, even for padding bytes
               unsafe {
-                  slice::from_raw_parts(self.as_ptr() as *const MaybeUninit<u8>, mem::size_of::<T>())
+                  slice::from_raw_parts(self.as_ptr().cast::<MaybeUninit<u8>>(), super::size_of_val(self))
               }
           }
       *)
@@ -2938,7 +2999,12 @@ Module mem.
                 Ty.apply
                   (Ty.path "&")
                   []
-                  [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ],
+                  [
+                    Ty.apply
+                      (Ty.path "slice")
+                      []
+                      [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]
+                  ],
                 self
               |) in
             M.borrow (|
@@ -2966,8 +3032,8 @@ Module mem.
                     ]
                   |),
                   [
-                    M.cast
-                      (Ty.apply
+                    M.call_closure (|
+                      Ty.apply
                         (Ty.path "*const")
                         []
                         [
@@ -2975,21 +3041,54 @@ Module mem.
                             (Ty.path "core::mem::maybe_uninit::MaybeUninit")
                             []
                             [ Ty.path "u8" ]
-                        ])
-                      (M.call_closure (|
-                        Ty.apply (Ty.path "*const") [] [ T ],
-                        M.get_associated_function (|
-                          Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ],
-                          "as_ptr",
-                          [],
+                        ],
+                      M.get_associated_function (|
+                        Ty.apply
+                          (Ty.path "*const")
                           []
-                        |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                      |));
+                          [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ],
+                        "cast",
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                            []
+                            [ Ty.path "u8" ]
+                        ]
+                      |),
+                      [
+                        M.call_closure (|
+                          Ty.apply
+                            (Ty.path "*const")
+                            []
+                            [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ],
+                          M.get_associated_function (|
+                            Ty.apply
+                              (Ty.path "slice")
+                              []
+                              [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ]
+                              ],
+                            "as_ptr",
+                            [],
+                            []
+                          |),
+                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                        |)
+                      ]
+                    |);
                     M.call_closure (|
                       Ty.path "usize",
-                      M.get_function (| "core::mem::size_of", [], [ T ] |),
-                      []
+                      M.get_function (|
+                        "core::mem::size_of_val",
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "slice")
+                            []
+                            [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]
+                        ]
+                      |),
+                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
                     |)
                   ]
                 |)
@@ -3005,12 +3104,12 @@ Module mem.
       Global Typeclasses Opaque as_bytes.
       
       (*
-          pub fn as_bytes_mut(&mut self) -> &mut [MaybeUninit<u8>] {
+          pub const fn as_bytes_mut(&mut self) -> &mut [MaybeUninit<u8>] {
               // SAFETY: MaybeUninit<u8> is always valid, even for padding bytes
               unsafe {
                   slice::from_raw_parts_mut(
                       self.as_mut_ptr() as *mut MaybeUninit<u8>,
-                      mem::size_of::<T>(),
+                      super::size_of_val(self),
                   )
               }
           }
@@ -3030,7 +3129,12 @@ Module mem.
                 Ty.apply
                   (Ty.path "&mut")
                   []
-                  [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ],
+                  [
+                    Ty.apply
+                      (Ty.path "slice")
+                      []
+                      [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]
+                  ],
                 self
               |) in
             M.borrow (|
@@ -3079,12 +3183,25 @@ Module mem.
                                     [ Ty.path "u8" ]
                                 ])
                               (M.call_closure (|
-                                Ty.apply (Ty.path "*mut") [] [ T ],
+                                Ty.apply
+                                  (Ty.path "*mut")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                      []
+                                      [ T ]
+                                  ],
                                 M.get_associated_function (|
                                   Ty.apply
-                                    (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                    (Ty.path "slice")
                                     []
-                                    [ T ],
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                        []
+                                        [ T ]
+                                    ],
                                   "as_mut_ptr",
                                   [],
                                   []
@@ -3098,8 +3215,22 @@ Module mem.
                               |));
                             M.call_closure (|
                               Ty.path "usize",
-                              M.get_function (| "core::mem::size_of", [], [ T ] |),
-                              []
+                              M.get_function (|
+                                "core::mem::size_of_val",
+                                [],
+                                [
+                                  Ty.apply
+                                    (Ty.path "slice")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                        []
+                                        [ T ]
+                                    ]
+                                ]
+                              |),
+                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
                             |)
                           ]
                         |)
@@ -3119,13 +3250,19 @@ Module mem.
       Global Typeclasses Opaque as_bytes_mut.
       
       (*
-          pub fn slice_as_bytes(this: &[MaybeUninit<T>]) -> &[MaybeUninit<u8>] {
-              let bytes = mem::size_of_val(this);
-              // SAFETY: MaybeUninit<u8> is always valid, even for padding bytes
-              unsafe { slice::from_raw_parts(this.as_ptr() as *const MaybeUninit<u8>, bytes) }
+          pub const unsafe fn assume_init_drop(&mut self)
+          where
+              T: [const] Destruct,
+          {
+              if !self.is_empty() {
+                  // SAFETY: the caller must guarantee that every element of `self`
+                  // is initialized and satisfies all invariants of `T`.
+                  // Dropping the value in place is safe if that is the case.
+                  unsafe { ptr::drop_in_place(self as *mut [MaybeUninit<T>] as *mut [T]) }
+              }
           }
       *)
-      Definition slice_as_bytes
+      Definition assume_init_drop
           (T : Ty.t)
           (ε : list Value.t)
           (τ : list Ty.t)
@@ -3133,143 +3270,9 @@ Module mem.
           : M :=
         let Self : Ty.t := Self T in
         match ε, τ, α with
-        | [], [], [ this ] =>
+        | [], [], [ self ] =>
           ltac:(M.monadic
-            (let this :=
-              M.alloc (|
-                Ty.apply
-                  (Ty.path "&")
-                  []
-                  [
-                    Ty.apply
-                      (Ty.path "slice")
-                      []
-                      [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]
-                  ],
-                this
-              |) in
-            M.read (|
-              let~ bytes : Ty.path "usize" :=
-                M.call_closure (|
-                  Ty.path "usize",
-                  M.get_function (|
-                    "core::mem::size_of_val",
-                    [],
-                    [
-                      Ty.apply
-                        (Ty.path "slice")
-                        []
-                        [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]
-                    ]
-                  |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| this |) |) |) ]
-                |) in
-              M.alloc (|
-                Ty.apply
-                  (Ty.path "&")
-                  []
-                  [
-                    Ty.apply
-                      (Ty.path "slice")
-                      []
-                      [
-                        Ty.apply
-                          (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                          []
-                          [ Ty.path "u8" ]
-                      ]
-                  ],
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.call_closure (|
-                      Ty.apply
-                        (Ty.path "&")
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "slice")
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                []
-                                [ Ty.path "u8" ]
-                            ]
-                        ],
-                      M.get_function (|
-                        "core::slice::raw::from_raw_parts",
-                        [],
-                        [
-                          Ty.apply
-                            (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                            []
-                            [ Ty.path "u8" ]
-                        ]
-                      |),
-                      [
-                        M.cast
-                          (Ty.apply
-                            (Ty.path "*const")
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                []
-                                [ Ty.path "u8" ]
-                            ])
-                          (M.call_closure (|
-                            Ty.apply
-                              (Ty.path "*const")
-                              []
-                              [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ]
-                              ],
-                            M.get_associated_function (|
-                              Ty.apply
-                                (Ty.path "slice")
-                                []
-                                [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ]
-                                ],
-                              "as_ptr",
-                              [],
-                              []
-                            |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| this |) |) |) ]
-                          |));
-                        M.read (| bytes |)
-                      ]
-                    |)
-                  |)
-                |)
-              |)
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Global Instance AssociatedFunction_slice_as_bytes :
-        forall (T : Ty.t),
-        M.IsAssociatedFunction.C (Self T) "slice_as_bytes" (slice_as_bytes T).
-      Admitted.
-      Global Typeclasses Opaque slice_as_bytes.
-      
-      (*
-          pub fn slice_as_bytes_mut(this: &mut [MaybeUninit<T>]) -> &mut [MaybeUninit<u8>] {
-              let bytes = mem::size_of_val(this);
-              // SAFETY: MaybeUninit<u8> is always valid, even for padding bytes
-              unsafe { slice::from_raw_parts_mut(this.as_mut_ptr() as *mut MaybeUninit<u8>, bytes) }
-          }
-      *)
-      Definition slice_as_bytes_mut
-          (T : Ty.t)
-          (ε : list Value.t)
-          (τ : list Ty.t)
-          (α : list Value.t)
-          : M :=
-        let Self : Ty.t := Self T in
-        match ε, τ, α with
-        | [], [], [ this ] =>
-          ltac:(M.monadic
-            (let this :=
+            (let self :=
               M.alloc (|
                 Ty.apply
                   (Ty.path "&mut")
@@ -3280,118 +3283,233 @@ Module mem.
                       []
                       [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]
                   ],
-                this
+                self
               |) in
-            M.borrow (|
-              Pointer.Kind.MutRef,
-              M.deref (|
-                M.read (|
-                  let~ bytes : Ty.path "usize" :=
-                    M.call_closure (|
-                      Ty.path "usize",
-                      M.get_function (|
-                        "core::mem::size_of_val",
-                        [],
-                        [
-                          Ty.apply
-                            (Ty.path "slice")
-                            []
-                            [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]
-                        ]
-                      |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| this |) |) |) ]
-                    |) in
-                  M.alloc (|
-                    Ty.apply
-                      (Ty.path "&mut")
-                      []
-                      [
-                        Ty.apply
-                          (Ty.path "slice")
-                          []
+            M.match_operator (|
+              Ty.tuple [],
+              M.alloc (| Ty.tuple [], Value.Tuple [] |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ :=
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
+                          Ty.path "bool",
+                          UnOp.not,
                           [
-                            Ty.apply
-                              (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                              []
-                              [ Ty.path "u8" ]
-                          ]
-                      ],
-                    M.borrow (|
-                      Pointer.Kind.MutRef,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.MutRef,
-                          M.deref (|
                             M.call_closure (|
-                              Ty.apply
-                                (Ty.path "&mut")
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "slice")
-                                    []
-                                    [
-                                      Ty.apply
-                                        (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                        []
-                                        [ Ty.path "u8" ]
-                                    ]
-                                ],
-                              M.get_function (|
-                                "core::slice::raw::from_raw_parts_mut",
-                                [],
-                                [
-                                  Ty.apply
-                                    (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                    []
-                                    [ Ty.path "u8" ]
-                                ]
-                              |),
-                              [
-                                M.cast
-                                  (Ty.apply
-                                    (Ty.path "*mut")
-                                    []
-                                    [
-                                      Ty.apply
-                                        (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                        []
-                                        [ Ty.path "u8" ]
-                                    ])
-                                  (M.call_closure (|
+                              Ty.path "bool",
+                              M.get_associated_function (|
+                                Ty.apply
+                                  (Ty.path "slice")
+                                  []
+                                  [
                                     Ty.apply
-                                      (Ty.path "*mut")
+                                      (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                      []
+                                      [ T ]
+                                  ],
+                                "is_empty",
+                                [],
+                                []
+                              |),
+                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                            |)
+                          ]
+                        |)
+                      |) in
+                    let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                    M.call_closure (|
+                      Ty.tuple [],
+                      M.get_function (|
+                        "core::ptr::drop_in_place",
+                        [],
+                        [ Ty.apply (Ty.path "slice") [] [ T ] ]
+                      |),
+                      [
+                        M.cast
+                          (Ty.apply (Ty.path "*mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                          (M.read (|
+                            M.use
+                              (M.alloc (|
+                                Ty.apply
+                                  (Ty.path "*mut")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "slice")
                                       []
                                       [
                                         Ty.apply
                                           (Ty.path "core::mem::maybe_uninit::MaybeUninit")
                                           []
                                           [ T ]
-                                      ],
-                                    M.get_associated_function (|
-                                      Ty.apply
-                                        (Ty.path "slice")
-                                        []
-                                        [
-                                          Ty.apply
-                                            (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                            []
-                                            [ T ]
-                                        ],
-                                      "as_mut_ptr",
-                                      [],
+                                      ]
+                                  ],
+                                M.borrow (|
+                                  Pointer.Kind.MutPointer,
+                                  M.deref (| M.read (| self |) |)
+                                |)
+                              |))
+                          |))
+                      ]
+                    |)));
+                fun γ => ltac:(M.monadic (Value.Tuple []))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_assume_init_drop :
+        forall (T : Ty.t),
+        M.IsAssociatedFunction.C (Self T) "assume_init_drop" (assume_init_drop T).
+      Admitted.
+      Global Typeclasses Opaque assume_init_drop.
+      
+      (*
+          pub const unsafe fn assume_init_ref(&self) -> &[T] {
+              // SAFETY: casting `slice` to a `*const [T]` is safe since the caller guarantees that
+              // `slice` is initialized, and `MaybeUninit` is guaranteed to have the same layout as `T`.
+              // The pointer obtained is valid since it refers to memory owned by `slice` which is a
+              // reference and thus guaranteed to be valid for reads.
+              unsafe { &*(self as *const Self as *const [T]) }
+          }
+      *)
+      Definition assume_init_ref
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [
+                    Ty.apply
+                      (Ty.path "slice")
+                      []
+                      [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]
+                  ],
+                self
+              |) in
+            M.borrow (|
+              Pointer.Kind.Ref,
+              M.deref (|
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.cast
+                      (Ty.apply (Ty.path "*const") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                      (M.read (|
+                        M.use
+                          (M.alloc (|
+                            Ty.apply
+                              (Ty.path "*const")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "slice")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "core::mem::maybe_uninit::MaybeUninit")
                                       []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.MutRef,
-                                        M.deref (| M.read (| this |) |)
-                                      |)
-                                    ]
-                                  |));
-                                M.read (| bytes |)
-                              ]
+                                      [ T ]
+                                  ]
+                              ],
+                            M.borrow (|
+                              Pointer.Kind.ConstPointer,
+                              M.deref (| M.read (| self |) |)
                             |)
+                          |))
+                      |))
+                  |)
+                |)
+              |)
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_assume_init_ref :
+        forall (T : Ty.t),
+        M.IsAssociatedFunction.C (Self T) "assume_init_ref" (assume_init_ref T).
+      Admitted.
+      Global Typeclasses Opaque assume_init_ref.
+      
+      (*
+          pub const unsafe fn assume_init_mut(&mut self) -> &mut [T] {
+              // SAFETY: similar to safety notes for `slice_get_ref`, but we have a
+              // mutable reference which is also guaranteed to be valid for writes.
+              unsafe { &mut *(self as *mut Self as *mut [T]) }
+          }
+      *)
+      Definition assume_init_mut
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&mut")
+                  []
+                  [
+                    Ty.apply
+                      (Ty.path "slice")
+                      []
+                      [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]
+                  ],
+                self
+              |) in
+            M.borrow (|
+              Pointer.Kind.MutRef,
+              M.deref (|
+                M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.deref (|
+                    M.borrow (|
+                      Pointer.Kind.MutRef,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.MutRef,
+                          M.deref (|
+                            M.cast
+                              (Ty.apply (Ty.path "*mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                              (M.read (|
+                                M.use
+                                  (M.alloc (|
+                                    Ty.apply
+                                      (Ty.path "*mut")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "slice")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                              []
+                                              [ T ]
+                                          ]
+                                      ],
+                                    M.borrow (|
+                                      Pointer.Kind.MutPointer,
+                                      M.deref (| M.read (| self |) |)
+                                    |)
+                                  |))
+                              |))
                           |)
                         |)
                       |)
@@ -3403,12 +3521,12 @@ Module mem.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      Global Instance AssociatedFunction_slice_as_bytes_mut :
+      Global Instance AssociatedFunction_assume_init_mut :
         forall (T : Ty.t),
-        M.IsAssociatedFunction.C (Self T) "slice_as_bytes_mut" (slice_as_bytes_mut T).
+        M.IsAssociatedFunction.C (Self T) "assume_init_mut" (assume_init_mut T).
       Admitted.
-      Global Typeclasses Opaque slice_as_bytes_mut.
-    End Impl_core_mem_maybe_uninit_MaybeUninit_T.
+      Global Typeclasses Opaque assume_init_mut.
+    End Impl_slice_core_mem_maybe_uninit_MaybeUninit_T.
     
     Module Impl_core_mem_maybe_uninit_MaybeUninit_array_N_T.
       Definition Self (N : Value.t) (T : Ty.t) : Ty.t :=
@@ -3566,7 +3684,7 @@ Module mem.
               let initialized_part = &mut self.slice[..self.initialized];
               // SAFETY: this raw sub-slice will contain only initialized objects.
               unsafe {
-                  crate::ptr::drop_in_place(MaybeUninit::slice_assume_init_mut(initialized_part));
+                  initialized_part.assume_init_drop();
               }
           }
       *)
@@ -3653,32 +3771,16 @@ Module mem.
               let~ _ : Ty.tuple [] :=
                 M.call_closure (|
                   Ty.tuple [],
-                  M.get_function (|
-                    "core::ptr::drop_in_place",
+                  M.get_associated_function (|
+                    Ty.apply
+                      (Ty.path "slice")
+                      []
+                      [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ],
+                    "assume_init_drop",
                     [],
-                    [ Ty.apply (Ty.path "slice") [] [ T ] ]
+                    []
                   |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.MutPointer,
-                      M.deref (|
-                        M.call_closure (|
-                          Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                          M.get_associated_function (|
-                            Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ],
-                            "slice_assume_init_mut",
-                            [],
-                            []
-                          |),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.MutRef,
-                              M.deref (| M.read (| initialized_part |) |)
-                            |)
-                          ]
-                        |)
-                      |)
-                    |)
+                  [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| initialized_part |) |) |)
                   ]
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -4178,7 +4280,7 @@ Module mem.
           (* Instance *) [ ("spec_fill", InstanceField.Method (spec_fill T)) ].
     End Impl_core_mem_maybe_uninit_SpecFill_where_core_clone_Clone_T_T_for_slice_core_mem_maybe_uninit_MaybeUninit_T.
     
-    Module Impl_core_mem_maybe_uninit_SpecFill_where_core_marker_Copy_T_T_for_slice_core_mem_maybe_uninit_MaybeUninit_T.
+    Module Impl_core_mem_maybe_uninit_SpecFill_where_core_clone_TrivialClone_T_T_for_slice_core_mem_maybe_uninit_MaybeUninit_T.
       Definition Self (T : Ty.t) : Ty.t :=
         Ty.apply
           (Ty.path "slice")
@@ -4187,7 +4289,11 @@ Module mem.
       
       (*
           fn spec_fill(&mut self, value: T) {
-              self.fill(MaybeUninit::new(value));
+              // SAFETY: because `T` is `TrivialClone`, this is equivalent to calling
+              // `T::clone` for every element. Notably, `TrivialClone` also implies
+              // that the `clone` implementation will not panic, so we can avoid
+              // initialization guards and such.
+              self.fill_with(|| MaybeUninit::new(unsafe { ptr::read(&value) }));
           }
       *)
       Definition spec_fill (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -4218,22 +4324,59 @@ Module mem.
                       (Ty.path "slice")
                       []
                       [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ],
-                    "fill",
+                    "fill_with",
                     [],
-                    []
+                    [
+                      Ty.function
+                        []
+                        (Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ])
+                    ]
                   |),
                   [
                     M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                    M.call_closure (|
-                      Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ],
-                      M.get_associated_function (|
-                        Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ],
-                        "new",
-                        [],
-                        []
-                      |),
-                      [ M.read (| value |) ]
-                    |)
+                    M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
+                                Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ],
+                                M.alloc (| Ty.tuple [], α0 |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (M.call_closure (|
+                                        Ty.apply
+                                          (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                          []
+                                          [ T ],
+                                        M.get_associated_function (|
+                                          Ty.apply
+                                            (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                            []
+                                            [ T ],
+                                          "new",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.call_closure (|
+                                            T,
+                                            M.get_function (| "core::ptr::read", [], [ T ] |),
+                                            [
+                                              M.borrow (|
+                                                Pointer.Kind.ConstPointer,
+                                                M.deref (| M.borrow (| Pointer.Kind.Ref, value |) |)
+                                              |)
+                                            ]
+                                          |)
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end))
                   ]
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -4249,6 +4392,6 @@ Module mem.
           (* Trait polymorphic types *) [ T ]
           (Self T)
           (* Instance *) [ ("spec_fill", InstanceField.Method (spec_fill T)) ].
-    End Impl_core_mem_maybe_uninit_SpecFill_where_core_marker_Copy_T_T_for_slice_core_mem_maybe_uninit_MaybeUninit_T.
+    End Impl_core_mem_maybe_uninit_SpecFill_where_core_clone_TrivialClone_T_T_for_slice_core_mem_maybe_uninit_MaybeUninit_T.
   End maybe_uninit.
 End mem.

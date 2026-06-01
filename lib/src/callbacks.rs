@@ -1,7 +1,8 @@
 use crate::options::Options;
 use crate::top_level::*;
 use rustc_driver::{Callbacks, Compilation};
-use rustc_interface::{interface::Compiler, Queries};
+use rustc_interface::interface::Compiler;
+use rustc_middle::ty::TyCtxt;
 use std::fs::File;
 use std::io::Write;
 
@@ -29,30 +30,20 @@ fn get_index_rocq_file_content(file_names: Vec<String>) -> String {
 }
 
 impl Callbacks for ToRocq {
-    fn after_expansion<'tcx>(
-        &mut self,
-        compiler: &Compiler,
-        queries: &'tcx Queries<'tcx>,
-    ) -> Compilation {
+    fn after_expansion<'tcx>(&mut self, compiler: &Compiler, tcx: TyCtxt<'tcx>) -> Compilation {
         let crate::options::Options {
             axiomatize,
             with_json,
             ..
         } = self.opts;
 
-        queries.global_ctxt().unwrap();
+        let current_crate_name = tcx.crate_name(rustc_hir::def_id::LOCAL_CRATE);
+        let current_crate_name_string = current_crate_name.to_string();
 
-        let (crate_name, translation) = queries.global_ctxt().unwrap().enter(|ctxt| {
-            let current_crate_name = ctxt.crate_name(rustc_hir::def_id::LOCAL_CRATE);
-            let current_crate_name_string = current_crate_name.to_string();
+        println!("Compiling crate {current_crate_name_string:}");
 
-            println!("Compiling crate {current_crate_name_string:}");
-
-            (
-                current_crate_name_string.clone(),
-                translate_top_level(&ctxt, TopLevelOptions { axiomatize }),
-            )
-        });
+        let crate_name = current_crate_name_string.clone();
+        let translation = translate_top_level(&tcx, TopLevelOptions { axiomatize });
 
         let mut file = File::create(format!("{crate_name}.v")).unwrap();
         let index_content = get_index_rocq_file_content(translation.keys().cloned().collect());

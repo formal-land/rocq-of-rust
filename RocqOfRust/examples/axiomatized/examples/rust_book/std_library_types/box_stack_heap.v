@@ -23,6 +23,18 @@ Module Impl_core_fmt_Debug_for_box_stack_heap_Point.
       (* Instance *) [ ("fmt", InstanceField.Method fmt) ].
 End Impl_core_fmt_Debug_for_box_stack_heap_Point.
 
+Module Impl_core_clone_TrivialClone_for_box_stack_heap_Point.
+  Definition Self : Ty.t := Ty.path "box_stack_heap::Point".
+  
+  Axiom Implements :
+    M.IsTraitInstance
+      "core::clone::TrivialClone"
+      (* Trait polymorphic consts *) []
+      (* Trait polymorphic types *) []
+      Self
+      (* Instance *) [].
+End Impl_core_clone_TrivialClone_for_box_stack_heap_Point.
+
 Module Impl_core_clone_Clone_for_box_stack_heap_Point.
   Definition Self : Ty.t := Ty.path "box_stack_heap::Point".
   

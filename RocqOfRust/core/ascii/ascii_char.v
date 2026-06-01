@@ -783,17 +783,17 @@ Module ascii.
     Axiom IsDiscriminant_AsciiChar_Delete :
       M.IsDiscriminant "core::ascii::ascii_char::AsciiChar::Delete" 127.
     
-    Module Impl_core_marker_Copy_for_core_ascii_ascii_char_AsciiChar.
+    Module Impl_core_clone_TrivialClone_for_core_ascii_ascii_char_AsciiChar.
       Definition Self : Ty.t := Ty.path "core::ascii::ascii_char::AsciiChar".
       
       Axiom Implements :
         M.IsTraitInstance
-          "core::marker::Copy"
+          "core::clone::TrivialClone"
           (* Trait polymorphic consts *) []
           (* Trait polymorphic types *) []
           Self
           (* Instance *) [].
-    End Impl_core_marker_Copy_for_core_ascii_ascii_char_AsciiChar.
+    End Impl_core_clone_TrivialClone_for_core_ascii_ascii_char_AsciiChar.
     
     Module Impl_core_clone_Clone_for_core_ascii_ascii_char_AsciiChar.
       Definition Self : Ty.t := Ty.path "core::ascii::ascii_char::AsciiChar".
@@ -1070,6 +1070,18 @@ Module ascii.
           (* Instance *) [ ("partial_cmp", InstanceField.Method partial_cmp) ].
     End Impl_core_cmp_PartialOrd_core_ascii_ascii_char_AsciiChar_for_core_ascii_ascii_char_AsciiChar.
     
+    Module Impl_core_marker_Copy_for_core_ascii_ascii_char_AsciiChar.
+      Definition Self : Ty.t := Ty.path "core::ascii::ascii_char::AsciiChar".
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::marker::Copy"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [].
+    End Impl_core_marker_Copy_for_core_ascii_ascii_char_AsciiChar.
+    
     Module Impl_core_hash_Hash_for_core_ascii_ascii_char_AsciiChar.
       Definition Self : Ty.t := Ty.path "core::ascii::ascii_char::AsciiChar".
       
@@ -1133,6 +1145,32 @@ Module ascii.
     Module Impl_core_ascii_ascii_char_AsciiChar.
       Definition Self : Ty.t := Ty.path "core::ascii::ascii_char::AsciiChar".
       
+      (*     pub const MIN: Self = Self::Null; *)
+      (* Ty.path "core::ascii::ascii_char::AsciiChar" *)
+      Definition value_MIN (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        ltac:(M.monadic
+          (M.alloc (|
+            Ty.path "core::ascii::ascii_char::AsciiChar",
+            Value.StructTuple "core::ascii::ascii_char::AsciiChar::Null" [] [] []
+          |))).
+      
+      Global Instance AssociatedConstant_value_MIN : M.IsAssociatedFunction.C Self "MIN" value_MIN.
+      Admitted.
+      Global Typeclasses Opaque value_MIN.
+      
+      (*     pub const MAX: Self = Self::Delete; *)
+      (* Ty.path "core::ascii::ascii_char::AsciiChar" *)
+      Definition value_MAX (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        ltac:(M.monadic
+          (M.alloc (|
+            Ty.path "core::ascii::ascii_char::AsciiChar",
+            Value.StructTuple "core::ascii::ascii_char::AsciiChar::Delete" [] [] []
+          |))).
+      
+      Global Instance AssociatedConstant_value_MAX : M.IsAssociatedFunction.C Self "MAX" value_MAX.
+      Admitted.
+      Global Typeclasses Opaque value_MAX.
+      
       (*
           pub const fn from_u8(b: u8) -> Option<Self> {
               if b <= 127 {
@@ -1158,15 +1196,14 @@ Module ascii.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            BinOp.le,
-                            [ M.read (| b |); Value.Integer IntegerKind.U8 127 ]
-                          |)
-                        |)) in
+                          BinOp.le,
+                          [ M.read (| b |); Value.Integer IntegerKind.U8 127 ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     Value.StructTuple
                       "core::option::Option::Some"
@@ -1253,15 +1290,14 @@ Module ascii.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            BinOp.lt,
-                            [ M.read (| d |); Value.Integer IntegerKind.U8 10 ]
-                          |)
-                        |)) in
+                          BinOp.lt,
+                          [ M.read (| d |); Value.Integer IntegerKind.U8 10 ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     Value.StructTuple
                       "core::option::Option::Some"
@@ -1298,7 +1334,7 @@ Module ascii.
       (*
           pub const unsafe fn digit_unchecked(d: u8) -> Self {
               assert_unsafe_precondition!(
-                  check_language_ub,
+                  check_library_ub,
                   "`ascii::Char::digit_unchecked` input cannot exceed 9.",
                   (d: u8 = d) => d < 10
               );
@@ -1326,15 +1362,14 @@ Module ascii.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                M.get_function (| "core::ub_checks::check_language_ub", [], [] |),
-                                []
-                              |)
-                            |)) in
+                              M.get_function (| "core::intrinsics::ub_checks", [], [] |),
+                              []
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
@@ -1475,6 +1510,745 @@ Module ascii.
       Global Instance AssociatedFunction_as_str : M.IsAssociatedFunction.C Self "as_str" as_str.
       Admitted.
       Global Typeclasses Opaque as_str.
+      
+      (*
+          pub const fn to_uppercase(self) -> Self {
+              let uppercase_byte = self.to_u8().to_ascii_uppercase();
+              // SAFETY: Toggling the 6th bit won't convert ASCII to non-ASCII.
+              unsafe { Self::from_u8_unchecked(uppercase_byte) }
+          }
+      *)
+      Definition to_uppercase (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.path "core::ascii::ascii_char::AsciiChar", self |) in
+            M.read (|
+              let~ uppercase_byte : Ty.path "u8" :=
+                M.call_closure (|
+                  Ty.path "u8",
+                  M.get_associated_function (| Ty.path "u8", "to_ascii_uppercase", [], [] |),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.alloc (|
+                        Ty.path "u8",
+                        M.call_closure (|
+                          Ty.path "u8",
+                          M.get_associated_function (|
+                            Ty.path "core::ascii::ascii_char::AsciiChar",
+                            "to_u8",
+                            [],
+                            []
+                          |),
+                          [ M.read (| self |) ]
+                        |)
+                      |)
+                    |)
+                  ]
+                |) in
+              M.alloc (|
+                Ty.path "core::ascii::ascii_char::AsciiChar",
+                M.call_closure (|
+                  Ty.path "core::ascii::ascii_char::AsciiChar",
+                  M.get_associated_function (|
+                    Ty.path "core::ascii::ascii_char::AsciiChar",
+                    "from_u8_unchecked",
+                    [],
+                    []
+                  |),
+                  [ M.read (| uppercase_byte |) ]
+                |)
+              |)
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_to_uppercase :
+        M.IsAssociatedFunction.C Self "to_uppercase" to_uppercase.
+      Admitted.
+      Global Typeclasses Opaque to_uppercase.
+      
+      (*
+          pub const fn to_lowercase(self) -> Self {
+              let lowercase_byte = self.to_u8().to_ascii_lowercase();
+              // SAFETY: Setting the 6th bit won't convert ASCII to non-ASCII.
+              unsafe { Self::from_u8_unchecked(lowercase_byte) }
+          }
+      *)
+      Definition to_lowercase (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.path "core::ascii::ascii_char::AsciiChar", self |) in
+            M.read (|
+              let~ lowercase_byte : Ty.path "u8" :=
+                M.call_closure (|
+                  Ty.path "u8",
+                  M.get_associated_function (| Ty.path "u8", "to_ascii_lowercase", [], [] |),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.alloc (|
+                        Ty.path "u8",
+                        M.call_closure (|
+                          Ty.path "u8",
+                          M.get_associated_function (|
+                            Ty.path "core::ascii::ascii_char::AsciiChar",
+                            "to_u8",
+                            [],
+                            []
+                          |),
+                          [ M.read (| self |) ]
+                        |)
+                      |)
+                    |)
+                  ]
+                |) in
+              M.alloc (|
+                Ty.path "core::ascii::ascii_char::AsciiChar",
+                M.call_closure (|
+                  Ty.path "core::ascii::ascii_char::AsciiChar",
+                  M.get_associated_function (|
+                    Ty.path "core::ascii::ascii_char::AsciiChar",
+                    "from_u8_unchecked",
+                    [],
+                    []
+                  |),
+                  [ M.read (| lowercase_byte |) ]
+                |)
+              |)
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_to_lowercase :
+        M.IsAssociatedFunction.C Self "to_lowercase" to_lowercase.
+      Admitted.
+      Global Typeclasses Opaque to_lowercase.
+      
+      (*
+          pub const fn eq_ignore_case(self, other: Self) -> bool {
+              // FIXME(const-hack) `arg.to_u8().to_ascii_lowercase()` -> `arg.to_lowercase()`
+              // once `PartialEq` is const for `Self`.
+              self.to_u8().to_ascii_lowercase() == other.to_u8().to_ascii_lowercase()
+          }
+      *)
+      Definition eq_ignore_case (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.path "core::ascii::ascii_char::AsciiChar", self |) in
+            let other := M.alloc (| Ty.path "core::ascii::ascii_char::AsciiChar", other |) in
+            M.call_closure (|
+              Ty.path "bool",
+              BinOp.eq,
+              [
+                M.call_closure (|
+                  Ty.path "u8",
+                  M.get_associated_function (| Ty.path "u8", "to_ascii_lowercase", [], [] |),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.alloc (|
+                        Ty.path "u8",
+                        M.call_closure (|
+                          Ty.path "u8",
+                          M.get_associated_function (|
+                            Ty.path "core::ascii::ascii_char::AsciiChar",
+                            "to_u8",
+                            [],
+                            []
+                          |),
+                          [ M.read (| self |) ]
+                        |)
+                      |)
+                    |)
+                  ]
+                |);
+                M.call_closure (|
+                  Ty.path "u8",
+                  M.get_associated_function (| Ty.path "u8", "to_ascii_lowercase", [], [] |),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.alloc (|
+                        Ty.path "u8",
+                        M.call_closure (|
+                          Ty.path "u8",
+                          M.get_associated_function (|
+                            Ty.path "core::ascii::ascii_char::AsciiChar",
+                            "to_u8",
+                            [],
+                            []
+                          |),
+                          [ M.read (| other |) ]
+                        |)
+                      |)
+                    |)
+                  ]
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_eq_ignore_case :
+        M.IsAssociatedFunction.C Self "eq_ignore_case" eq_ignore_case.
+      Admitted.
+      Global Typeclasses Opaque eq_ignore_case.
+      
+      (*
+          pub const fn make_uppercase(&mut self) {
+              *self = self.to_uppercase();
+          }
+      *)
+      Definition make_uppercase (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "&mut") [] [ Ty.path "core::ascii::ascii_char::AsciiChar" ],
+                self
+              |) in
+            M.read (|
+              let~ _ : Ty.tuple [] :=
+                M.write (|
+                  M.deref (| M.read (| self |) |),
+                  M.call_closure (|
+                    Ty.path "core::ascii::ascii_char::AsciiChar",
+                    M.get_associated_function (|
+                      Ty.path "core::ascii::ascii_char::AsciiChar",
+                      "to_uppercase",
+                      [],
+                      []
+                    |),
+                    [ M.read (| M.deref (| M.read (| self |) |) |) ]
+                  |)
+                |) in
+              M.alloc (| Ty.tuple [], Value.Tuple [] |)
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_make_uppercase :
+        M.IsAssociatedFunction.C Self "make_uppercase" make_uppercase.
+      Admitted.
+      Global Typeclasses Opaque make_uppercase.
+      
+      (*
+          pub const fn make_lowercase(&mut self) {
+              *self = self.to_lowercase();
+          }
+      *)
+      Definition make_lowercase (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "&mut") [] [ Ty.path "core::ascii::ascii_char::AsciiChar" ],
+                self
+              |) in
+            M.read (|
+              let~ _ : Ty.tuple [] :=
+                M.write (|
+                  M.deref (| M.read (| self |) |),
+                  M.call_closure (|
+                    Ty.path "core::ascii::ascii_char::AsciiChar",
+                    M.get_associated_function (|
+                      Ty.path "core::ascii::ascii_char::AsciiChar",
+                      "to_lowercase",
+                      [],
+                      []
+                    |),
+                    [ M.read (| M.deref (| M.read (| self |) |) |) ]
+                  |)
+                |) in
+              M.alloc (| Ty.tuple [], Value.Tuple [] |)
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_make_lowercase :
+        M.IsAssociatedFunction.C Self "make_lowercase" make_lowercase.
+      Admitted.
+      Global Typeclasses Opaque make_lowercase.
+      
+      (*
+          pub const fn is_alphabetic(self) -> bool {
+              self.to_u8().is_ascii_alphabetic()
+          }
+      *)
+      Definition is_alphabetic (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.path "core::ascii::ascii_char::AsciiChar", self |) in
+            M.call_closure (|
+              Ty.path "bool",
+              M.get_associated_function (| Ty.path "u8", "is_ascii_alphabetic", [], [] |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.alloc (|
+                    Ty.path "u8",
+                    M.call_closure (|
+                      Ty.path "u8",
+                      M.get_associated_function (|
+                        Ty.path "core::ascii::ascii_char::AsciiChar",
+                        "to_u8",
+                        [],
+                        []
+                      |),
+                      [ M.read (| self |) ]
+                    |)
+                  |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_is_alphabetic :
+        M.IsAssociatedFunction.C Self "is_alphabetic" is_alphabetic.
+      Admitted.
+      Global Typeclasses Opaque is_alphabetic.
+      
+      (*
+          pub const fn is_uppercase(self) -> bool {
+              self.to_u8().is_ascii_uppercase()
+          }
+      *)
+      Definition is_uppercase (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.path "core::ascii::ascii_char::AsciiChar", self |) in
+            M.call_closure (|
+              Ty.path "bool",
+              M.get_associated_function (| Ty.path "u8", "is_ascii_uppercase", [], [] |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.alloc (|
+                    Ty.path "u8",
+                    M.call_closure (|
+                      Ty.path "u8",
+                      M.get_associated_function (|
+                        Ty.path "core::ascii::ascii_char::AsciiChar",
+                        "to_u8",
+                        [],
+                        []
+                      |),
+                      [ M.read (| self |) ]
+                    |)
+                  |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_is_uppercase :
+        M.IsAssociatedFunction.C Self "is_uppercase" is_uppercase.
+      Admitted.
+      Global Typeclasses Opaque is_uppercase.
+      
+      (*
+          pub const fn is_lowercase(self) -> bool {
+              self.to_u8().is_ascii_lowercase()
+          }
+      *)
+      Definition is_lowercase (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.path "core::ascii::ascii_char::AsciiChar", self |) in
+            M.call_closure (|
+              Ty.path "bool",
+              M.get_associated_function (| Ty.path "u8", "is_ascii_lowercase", [], [] |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.alloc (|
+                    Ty.path "u8",
+                    M.call_closure (|
+                      Ty.path "u8",
+                      M.get_associated_function (|
+                        Ty.path "core::ascii::ascii_char::AsciiChar",
+                        "to_u8",
+                        [],
+                        []
+                      |),
+                      [ M.read (| self |) ]
+                    |)
+                  |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_is_lowercase :
+        M.IsAssociatedFunction.C Self "is_lowercase" is_lowercase.
+      Admitted.
+      Global Typeclasses Opaque is_lowercase.
+      
+      (*
+          pub const fn is_alphanumeric(self) -> bool {
+              self.to_u8().is_ascii_alphanumeric()
+          }
+      *)
+      Definition is_alphanumeric (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.path "core::ascii::ascii_char::AsciiChar", self |) in
+            M.call_closure (|
+              Ty.path "bool",
+              M.get_associated_function (| Ty.path "u8", "is_ascii_alphanumeric", [], [] |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.alloc (|
+                    Ty.path "u8",
+                    M.call_closure (|
+                      Ty.path "u8",
+                      M.get_associated_function (|
+                        Ty.path "core::ascii::ascii_char::AsciiChar",
+                        "to_u8",
+                        [],
+                        []
+                      |),
+                      [ M.read (| self |) ]
+                    |)
+                  |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_is_alphanumeric :
+        M.IsAssociatedFunction.C Self "is_alphanumeric" is_alphanumeric.
+      Admitted.
+      Global Typeclasses Opaque is_alphanumeric.
+      
+      (*
+          pub const fn is_digit(self) -> bool {
+              self.to_u8().is_ascii_digit()
+          }
+      *)
+      Definition is_digit (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.path "core::ascii::ascii_char::AsciiChar", self |) in
+            M.call_closure (|
+              Ty.path "bool",
+              M.get_associated_function (| Ty.path "u8", "is_ascii_digit", [], [] |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.alloc (|
+                    Ty.path "u8",
+                    M.call_closure (|
+                      Ty.path "u8",
+                      M.get_associated_function (|
+                        Ty.path "core::ascii::ascii_char::AsciiChar",
+                        "to_u8",
+                        [],
+                        []
+                      |),
+                      [ M.read (| self |) ]
+                    |)
+                  |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_is_digit :
+        M.IsAssociatedFunction.C Self "is_digit" is_digit.
+      Admitted.
+      Global Typeclasses Opaque is_digit.
+      
+      (*
+          pub const fn is_octdigit(self) -> bool {
+              self.to_u8().is_ascii_octdigit()
+          }
+      *)
+      Definition is_octdigit (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.path "core::ascii::ascii_char::AsciiChar", self |) in
+            M.call_closure (|
+              Ty.path "bool",
+              M.get_associated_function (| Ty.path "u8", "is_ascii_octdigit", [], [] |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.alloc (|
+                    Ty.path "u8",
+                    M.call_closure (|
+                      Ty.path "u8",
+                      M.get_associated_function (|
+                        Ty.path "core::ascii::ascii_char::AsciiChar",
+                        "to_u8",
+                        [],
+                        []
+                      |),
+                      [ M.read (| self |) ]
+                    |)
+                  |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_is_octdigit :
+        M.IsAssociatedFunction.C Self "is_octdigit" is_octdigit.
+      Admitted.
+      Global Typeclasses Opaque is_octdigit.
+      
+      (*
+          pub const fn is_hexdigit(self) -> bool {
+              self.to_u8().is_ascii_hexdigit()
+          }
+      *)
+      Definition is_hexdigit (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.path "core::ascii::ascii_char::AsciiChar", self |) in
+            M.call_closure (|
+              Ty.path "bool",
+              M.get_associated_function (| Ty.path "u8", "is_ascii_hexdigit", [], [] |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.alloc (|
+                    Ty.path "u8",
+                    M.call_closure (|
+                      Ty.path "u8",
+                      M.get_associated_function (|
+                        Ty.path "core::ascii::ascii_char::AsciiChar",
+                        "to_u8",
+                        [],
+                        []
+                      |),
+                      [ M.read (| self |) ]
+                    |)
+                  |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_is_hexdigit :
+        M.IsAssociatedFunction.C Self "is_hexdigit" is_hexdigit.
+      Admitted.
+      Global Typeclasses Opaque is_hexdigit.
+      
+      (*
+          pub const fn is_punctuation(self) -> bool {
+              self.to_u8().is_ascii_punctuation()
+          }
+      *)
+      Definition is_punctuation (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.path "core::ascii::ascii_char::AsciiChar", self |) in
+            M.call_closure (|
+              Ty.path "bool",
+              M.get_associated_function (| Ty.path "u8", "is_ascii_punctuation", [], [] |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.alloc (|
+                    Ty.path "u8",
+                    M.call_closure (|
+                      Ty.path "u8",
+                      M.get_associated_function (|
+                        Ty.path "core::ascii::ascii_char::AsciiChar",
+                        "to_u8",
+                        [],
+                        []
+                      |),
+                      [ M.read (| self |) ]
+                    |)
+                  |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_is_punctuation :
+        M.IsAssociatedFunction.C Self "is_punctuation" is_punctuation.
+      Admitted.
+      Global Typeclasses Opaque is_punctuation.
+      
+      (*
+          pub const fn is_graphic(self) -> bool {
+              self.to_u8().is_ascii_graphic()
+          }
+      *)
+      Definition is_graphic (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.path "core::ascii::ascii_char::AsciiChar", self |) in
+            M.call_closure (|
+              Ty.path "bool",
+              M.get_associated_function (| Ty.path "u8", "is_ascii_graphic", [], [] |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.alloc (|
+                    Ty.path "u8",
+                    M.call_closure (|
+                      Ty.path "u8",
+                      M.get_associated_function (|
+                        Ty.path "core::ascii::ascii_char::AsciiChar",
+                        "to_u8",
+                        [],
+                        []
+                      |),
+                      [ M.read (| self |) ]
+                    |)
+                  |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_is_graphic :
+        M.IsAssociatedFunction.C Self "is_graphic" is_graphic.
+      Admitted.
+      Global Typeclasses Opaque is_graphic.
+      
+      (*
+          pub const fn is_whitespace(self) -> bool {
+              self.to_u8().is_ascii_whitespace()
+          }
+      *)
+      Definition is_whitespace (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.path "core::ascii::ascii_char::AsciiChar", self |) in
+            M.call_closure (|
+              Ty.path "bool",
+              M.get_associated_function (| Ty.path "u8", "is_ascii_whitespace", [], [] |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.alloc (|
+                    Ty.path "u8",
+                    M.call_closure (|
+                      Ty.path "u8",
+                      M.get_associated_function (|
+                        Ty.path "core::ascii::ascii_char::AsciiChar",
+                        "to_u8",
+                        [],
+                        []
+                      |),
+                      [ M.read (| self |) ]
+                    |)
+                  |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_is_whitespace :
+        M.IsAssociatedFunction.C Self "is_whitespace" is_whitespace.
+      Admitted.
+      Global Typeclasses Opaque is_whitespace.
+      
+      (*
+          pub const fn is_control(self) -> bool {
+              self.to_u8().is_ascii_control()
+          }
+      *)
+      Definition is_control (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.path "core::ascii::ascii_char::AsciiChar", self |) in
+            M.call_closure (|
+              Ty.path "bool",
+              M.get_associated_function (| Ty.path "u8", "is_ascii_control", [], [] |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.alloc (|
+                    Ty.path "u8",
+                    M.call_closure (|
+                      Ty.path "u8",
+                      M.get_associated_function (|
+                        Ty.path "core::ascii::ascii_char::AsciiChar",
+                        "to_u8",
+                        [],
+                        []
+                      |),
+                      [ M.read (| self |) ]
+                    |)
+                  |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_is_control :
+        M.IsAssociatedFunction.C Self "is_control" is_control.
+      Admitted.
+      Global Typeclasses Opaque is_control.
+      
+      (*
+          pub fn escape_ascii(self) -> super::EscapeDefault {
+              super::escape_default(self.to_u8())
+          }
+      *)
+      Definition escape_ascii (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.path "core::ascii::ascii_char::AsciiChar", self |) in
+            M.call_closure (|
+              Ty.path "core::ascii::EscapeDefault",
+              M.get_function (| "core::ascii::escape_default", [], [] |),
+              [
+                M.call_closure (|
+                  Ty.path "u8",
+                  M.get_associated_function (|
+                    Ty.path "core::ascii::ascii_char::AsciiChar",
+                    "to_u8",
+                    [],
+                    []
+                  |),
+                  [ M.read (| self |) ]
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_escape_ascii :
+        M.IsAssociatedFunction.C Self "escape_ascii" escape_ascii.
+      Admitted.
+      Global Typeclasses Opaque escape_ascii.
     End Impl_core_ascii_ascii_char_AsciiChar.
     
     Module Impl_core_convert_From_core_ascii_ascii_char_AsciiChar_for_u8.

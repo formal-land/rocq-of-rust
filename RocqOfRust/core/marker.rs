@@ -6,10 +6,22 @@
 
 #![stable(feature = "rust1", since = "1.0.0")]
 
+mod variance;
+
+#[unstable(feature = "phantom_variance_markers", issue = "135806")]
+pub use self::variance::{
+    PhantomContravariant, PhantomContravariantLifetime, PhantomCovariant, PhantomCovariantLifetime,
+    PhantomInvariant, PhantomInvariantLifetime, Variance, variance,
+};
 use crate::cell::UnsafeCell;
+use crate::clone::TrivialClone;
 use crate::cmp;
 use crate::fmt::Debug;
 use crate::hash::{Hash, Hasher};
+use crate::pin::UnsafePinned;
+
+// NOTE: for consistent error messages between `core` and `minicore`, all `diagnostic` attributes
+// should be replicated exactly in `minicore` (if `minicore` defines the item).
 
 /// Implements a given marker trait for multiple types at the same time.
 ///
@@ -75,7 +87,7 @@ macro marker_impls {
 /// [arc]: ../../std/sync/struct.Arc.html
 /// [ub]: ../../reference/behavior-considered-undefined.html
 #[stable(feature = "rust1", since = "1.0.0")]
-#[cfg_attr(not(test), rustc_diagnostic_item = "Send")]
+#[rustc_diagnostic_item = "Send"]
 #[diagnostic::on_unimplemented(
     message = "`{Self}` cannot be sent between threads safely",
     label = "`{Self}` cannot be sent between threads safely"
@@ -85,15 +97,15 @@ pub unsafe auto trait Send {
 }
 
 #[stable(feature = "rust1", since = "1.0.0")]
-impl<T: ?Sized> !Send for *const T {}
+impl<T: PointeeSized> !Send for *const T {}
 #[stable(feature = "rust1", since = "1.0.0")]
-impl<T: ?Sized> !Send for *mut T {}
+impl<T: PointeeSized> !Send for *mut T {}
 
 // Most instances arise automatically, but this instance is needed to link up `T: Sync` with
 // `&T: Send` (and it also removes the unsound default instance `T Send` -> `&T: Send` that would
 // otherwise exist).
 #[stable(feature = "rust1", since = "1.0.0")]
-unsafe impl<T: Sync + ?Sized> Send for &T {}
+unsafe impl<T: Sync + PointeeSized> Send for &T {}
 
 /// Types with a constant size known at compile time.
 ///
@@ -127,8 +139,7 @@ unsafe impl<T: Sync + ?Sized> Send for &T {}
 /// impl Bar for Impl { }
 ///
 /// let x: &dyn Foo = &Impl;    // OK
-/// // let y: &dyn Bar = &Impl; // error: the trait `Bar` cannot
-///                             // be made into an object
+/// // let y: &dyn Bar = &Impl; // error: the trait `Bar` cannot be made into an object
 /// ```
 ///
 /// [trait object]: ../../book/ch17-02-trait-objects.html
@@ -141,10 +152,48 @@ unsafe impl<T: Sync + ?Sized> Send for &T {}
 )]
 #[fundamental] // for Default, for example, which requires that `[T]: !Default` be evaluatable
 #[rustc_specialization_trait]
-#[rustc_deny_explicit_impl(implement_via_object = false)]
+#[rustc_deny_explicit_impl]
+#[rustc_do_not_implement_via_object]
+// `Sized` being coinductive, despite having supertraits, is okay as there are no user-written impls,
+// and we know that the supertraits are always implemented if the subtrait is just by looking at
+// the builtin impls.
 #[rustc_coinductive]
-pub trait Sized {
+pub trait Sized: MetaSized {
     // Empty.
+}
+
+/// Types with a size that can be determined from pointer metadata.
+#[unstable(feature = "sized_hierarchy", issue = "none")]
+#[lang = "meta_sized"]
+#[diagnostic::on_unimplemented(
+    message = "the size for values of type `{Self}` cannot be known",
+    label = "doesn't have a known size"
+)]
+#[fundamental]
+#[rustc_specialization_trait]
+#[rustc_deny_explicit_impl]
+#[rustc_do_not_implement_via_object]
+// `MetaSized` being coinductive, despite having supertraits, is okay for the same reasons as
+// `Sized` above.
+#[rustc_coinductive]
+pub trait MetaSized: PointeeSized {
+    // Empty
+}
+
+/// Types that may or may not have a size.
+#[unstable(feature = "sized_hierarchy", issue = "none")]
+#[lang = "pointee_sized"]
+#[diagnostic::on_unimplemented(
+    message = "values of type `{Self}` may or may not have a size",
+    label = "may or may not have a known size"
+)]
+#[fundamental]
+#[rustc_specialization_trait]
+#[rustc_deny_explicit_impl]
+#[rustc_do_not_implement_via_object]
+#[rustc_coinductive]
+pub trait PointeeSized {
+    // Empty
 }
 
 /// Types that can be "unsized" to a dynamically-sized type.
@@ -161,9 +210,14 @@ pub trait Sized {
 ///   - `Trait` is dyn-compatible[^1].
 ///   - The type is sized.
 ///   - The type outlives `'a`.
+/// - Trait objects `dyn TraitA + AutoA... + 'a` implement `Unsize<dyn TraitB + AutoB... + 'b>`
+///    if all of these conditions are met:
+///   - `TraitB` is a supertrait of `TraitA`.
+///   - `AutoB...` is a subset of `AutoA...`.
+///   - `'a` outlives `'b`.
 /// - Structs `Foo<..., T1, ..., Tn, ...>` implement `Unsize<Foo<..., U1, ..., Un, ...>>`
-/// where any number of (type and const) parameters may be changed if all of these conditions
-/// are met:
+///   where any number of (type and const) parameters may be changed if all of these conditions
+///   are met:
 ///   - Only the last field of `Foo` has a type involving the parameters `T1`, ..., `Tn`.
 ///   - All other parameters of the struct are equal.
 ///   - `Field<T1, ..., Tn>: Unsize<Field<U1, ..., Un>>`, where `Field<...>` stands for the actual
@@ -181,31 +235,27 @@ pub trait Sized {
 /// [^1]: Formerly known as *object safe*.
 #[unstable(feature = "unsize", issue = "18598")]
 #[lang = "unsize"]
-#[rustc_deny_explicit_impl(implement_via_object = false)]
-pub trait Unsize<T: ?Sized> {
+#[rustc_deny_explicit_impl]
+#[rustc_do_not_implement_via_object]
+pub trait Unsize<T: PointeeSized>: PointeeSized {
     // Empty.
 }
 
 /// Required trait for constants used in pattern matches.
 ///
-/// Any type that derives `PartialEq` automatically implements this trait,
-/// *regardless* of whether its type-parameters implement `PartialEq`.
+/// Constants are only allowed as patterns if (a) their type implements
+/// `PartialEq`, and (b) interpreting the value of the constant as a pattern
+/// is equivalent to calling `PartialEq`. This ensures that constants used as
+/// patterns cannot expose implementation details in an unexpected way or
+/// cause semver hazards.
 ///
-/// If a `const` item contains some type that does not implement this trait,
-/// then that type either (1.) does not implement `PartialEq` (which means the
-/// constant will not provide that comparison method, which code generation
-/// assumes is available), or (2.) it implements *its own* version of
-/// `PartialEq` (which we assume does not conform to a structural-equality
-/// comparison).
+/// This trait ensures point (b).
+/// Any type that derives `PartialEq` automatically implements this trait.
 ///
-/// In either of the two scenarios above, we reject usage of such a constant in
-/// a pattern match.
-///
-/// See also the [structural match RFC][RFC1445], and [issue 63438] which
-/// motivated migrating from an attribute-based design to this trait.
-///
-/// [RFC1445]: https://github.com/rust-lang/rfcs/blob/master/text/1445-restrict-constants-in-patterns.md
-/// [issue 63438]: https://github.com/rust-lang/rust/issues/63438
+/// Implementing this trait (which is unstable) is a way for type authors to explicitly allow
+/// comparing const values of this type; that operation will recursively compare all fields
+/// (including private fields), even if that behavior differs from `PartialEq`. This can make it
+/// semver-breaking to add further private fields to a type.
 #[unstable(feature = "structural_match", issue = "31434")]
 #[diagnostic::on_unimplemented(message = "the type `{Self}` does not `#[derive(PartialEq)]`")]
 #[lang = "structural_peq"]
@@ -224,7 +274,7 @@ marker_impls! {
         (),
         {T, const N: usize} [T; N],
         {T} [T],
-        {T: ?Sized} &T,
+        {T: PointeeSized} &T,
 }
 
 /// Types whose values can be duplicated simply by copying bits.
@@ -401,16 +451,12 @@ marker_impls! {
 ///
 /// [`Vec<T>`]: ../../std/vec/struct.Vec.html
 /// [`String`]: ../../std/string/struct.String.html
-/// [`size_of::<T>`]: crate::mem::size_of
+/// [`size_of::<T>`]: size_of
 /// [impls]: #implementors
 #[stable(feature = "rust1", since = "1.0.0")]
 #[lang = "copy"]
-// FIXME(matthewjasper) This allows copying a type that doesn't implement
-// `Copy` because of unsatisfied lifetime bounds (copying `A<'_>` when only
-// `A<'static>: Copy` and `A<'_>: Clone`).
-// We have this attribute here for now only because there are quite a few
-// existing specializations on `Copy` that already exist in the standard
-// library, and there's no way to safely have this behavior right now.
+// This is unsound, but required by `hashbrown`
+// FIXME(joboet): change `hashbrown` to use `TrivialClone`
 #[rustc_unsafe_specialization_marker]
 #[rustc_diagnostic_item = "Copy"]
 pub trait Copy: Clone {
@@ -437,8 +483,8 @@ marker_impls! {
         isize, i8, i16, i32, i64, i128,
         f16, f32, f64, f128,
         bool, char,
-        {T: ?Sized} *const T,
-        {T: ?Sized} *mut T,
+        {T: PointeeSized} *const T,
+        {T: PointeeSized} *mut T,
 
 }
 
@@ -447,7 +493,28 @@ impl Copy for ! {}
 
 /// Shared references can be copied, but mutable references *cannot*!
 #[stable(feature = "rust1", since = "1.0.0")]
-impl<T: ?Sized> Copy for &T {}
+impl<T: PointeeSized> Copy for &T {}
+
+/// Marker trait for the types that are allowed in union fields and unsafe
+/// binder types.
+///
+/// Implemented for:
+/// * `&T`, `&mut T` for all `T`,
+/// * `ManuallyDrop<T>` for all `T`,
+/// * tuples and arrays whose elements implement `BikeshedGuaranteedNoDrop`,
+/// * or otherwise, all types that are `Copy`.
+///
+/// Notably, this doesn't include all trivially-destructible types for semver
+/// reasons.
+///
+/// Bikeshed name for now. This trait does not do anything other than reflect the
+/// set of types that are allowed within unions for field validity.
+#[unstable(feature = "bikeshed_guaranteed_no_drop", issue = "none")]
+#[lang = "bikeshed_guaranteed_no_drop"]
+#[rustc_deny_explicit_impl]
+#[rustc_do_not_implement_via_object]
+#[doc(hidden)]
+pub trait BikeshedGuaranteedNoDrop {}
 
 /// Types for which it is safe to share references between threads.
 ///
@@ -520,76 +587,76 @@ impl<T: ?Sized> Copy for &T {}
 /// [transmute]: crate::mem::transmute
 /// [nomicon-send-and-sync]: ../../nomicon/send-and-sync.html
 #[stable(feature = "rust1", since = "1.0.0")]
-#[cfg_attr(not(test), rustc_diagnostic_item = "Sync")]
+#[rustc_diagnostic_item = "Sync"]
 #[lang = "sync"]
 #[rustc_on_unimplemented(
     on(
-        _Self = "core::cell::once::OnceCell<T>",
+        Self = "core::cell::once::OnceCell<T>",
         note = "if you want to do aliasing and mutation between multiple threads, use `std::sync::OnceLock` instead"
     ),
     on(
-        _Self = "core::cell::Cell<u8>",
+        Self = "core::cell::Cell<u8>",
         note = "if you want to do aliasing and mutation between multiple threads, use `std::sync::RwLock` or `std::sync::atomic::AtomicU8` instead",
     ),
     on(
-        _Self = "core::cell::Cell<u16>",
+        Self = "core::cell::Cell<u16>",
         note = "if you want to do aliasing and mutation between multiple threads, use `std::sync::RwLock` or `std::sync::atomic::AtomicU16` instead",
     ),
     on(
-        _Self = "core::cell::Cell<u32>",
+        Self = "core::cell::Cell<u32>",
         note = "if you want to do aliasing and mutation between multiple threads, use `std::sync::RwLock` or `std::sync::atomic::AtomicU32` instead",
     ),
     on(
-        _Self = "core::cell::Cell<u64>",
+        Self = "core::cell::Cell<u64>",
         note = "if you want to do aliasing and mutation between multiple threads, use `std::sync::RwLock` or `std::sync::atomic::AtomicU64` instead",
     ),
     on(
-        _Self = "core::cell::Cell<usize>",
+        Self = "core::cell::Cell<usize>",
         note = "if you want to do aliasing and mutation between multiple threads, use `std::sync::RwLock` or `std::sync::atomic::AtomicUsize` instead",
     ),
     on(
-        _Self = "core::cell::Cell<i8>",
+        Self = "core::cell::Cell<i8>",
         note = "if you want to do aliasing and mutation between multiple threads, use `std::sync::RwLock` or `std::sync::atomic::AtomicI8` instead",
     ),
     on(
-        _Self = "core::cell::Cell<i16>",
+        Self = "core::cell::Cell<i16>",
         note = "if you want to do aliasing and mutation between multiple threads, use `std::sync::RwLock` or `std::sync::atomic::AtomicI16` instead",
     ),
     on(
-        _Self = "core::cell::Cell<i32>",
+        Self = "core::cell::Cell<i32>",
         note = "if you want to do aliasing and mutation between multiple threads, use `std::sync::RwLock` or `std::sync::atomic::AtomicI32` instead",
     ),
     on(
-        _Self = "core::cell::Cell<i64>",
+        Self = "core::cell::Cell<i64>",
         note = "if you want to do aliasing and mutation between multiple threads, use `std::sync::RwLock` or `std::sync::atomic::AtomicI64` instead",
     ),
     on(
-        _Self = "core::cell::Cell<isize>",
+        Self = "core::cell::Cell<isize>",
         note = "if you want to do aliasing and mutation between multiple threads, use `std::sync::RwLock` or `std::sync::atomic::AtomicIsize` instead",
     ),
     on(
-        _Self = "core::cell::Cell<bool>",
+        Self = "core::cell::Cell<bool>",
         note = "if you want to do aliasing and mutation between multiple threads, use `std::sync::RwLock` or `std::sync::atomic::AtomicBool` instead",
     ),
     on(
         all(
-            _Self = "core::cell::Cell<T>",
-            not(_Self = "core::cell::Cell<u8>"),
-            not(_Self = "core::cell::Cell<u16>"),
-            not(_Self = "core::cell::Cell<u32>"),
-            not(_Self = "core::cell::Cell<u64>"),
-            not(_Self = "core::cell::Cell<usize>"),
-            not(_Self = "core::cell::Cell<i8>"),
-            not(_Self = "core::cell::Cell<i16>"),
-            not(_Self = "core::cell::Cell<i32>"),
-            not(_Self = "core::cell::Cell<i64>"),
-            not(_Self = "core::cell::Cell<isize>"),
-            not(_Self = "core::cell::Cell<bool>")
+            Self = "core::cell::Cell<T>",
+            not(Self = "core::cell::Cell<u8>"),
+            not(Self = "core::cell::Cell<u16>"),
+            not(Self = "core::cell::Cell<u32>"),
+            not(Self = "core::cell::Cell<u64>"),
+            not(Self = "core::cell::Cell<usize>"),
+            not(Self = "core::cell::Cell<i8>"),
+            not(Self = "core::cell::Cell<i16>"),
+            not(Self = "core::cell::Cell<i32>"),
+            not(Self = "core::cell::Cell<i64>"),
+            not(Self = "core::cell::Cell<isize>"),
+            not(Self = "core::cell::Cell<bool>")
         ),
         note = "if you want to do aliasing and mutation between multiple threads, use `std::sync::RwLock`",
     ),
     on(
-        _Self = "core::cell::RefCell<T>",
+        Self = "core::cell::RefCell<T>",
         note = "if you want to do aliasing and mutation between multiple threads, use `std::sync::RwLock` instead",
     ),
     message = "`{Self}` cannot be shared between threads safely",
@@ -610,9 +677,9 @@ pub unsafe auto trait Sync {
 }
 
 #[stable(feature = "rust1", since = "1.0.0")]
-impl<T: ?Sized> !Sync for *const T {}
+impl<T: PointeeSized> !Sync for *const T {}
 #[stable(feature = "rust1", since = "1.0.0")]
-impl<T: ?Sized> !Sync for *mut T {}
+impl<T: PointeeSized> !Sync for *mut T {}
 
 /// Zero-sized type used to mark things that "act like" they own a `T`.
 ///
@@ -710,7 +777,6 @@ impl<T: ?Sized> !Sync for *mut T {}
 /// # }
 /// # fn convert_params(_: ParamType) -> usize { 42 }
 /// use std::marker::PhantomData;
-/// use std::mem;
 ///
 /// struct ExternalResource<R> {
 ///    resource_handle: *mut (),
@@ -719,7 +785,7 @@ impl<T: ?Sized> !Sync for *mut T {}
 ///
 /// impl<R: ResType> ExternalResource<R> {
 ///     fn new() -> Self {
-///         let size_of_res = mem::size_of::<R>();
+///         let size_of_res = size_of::<R>();
 ///         Self {
 ///             resource_handle: foreign_lib::new(size_of_res),
 ///             resource_type: PhantomData,
@@ -750,57 +816,62 @@ impl<T: ?Sized> !Sync for *mut T {}
 /// [drop check]: Drop#drop-check
 #[lang = "phantom_data"]
 #[stable(feature = "rust1", since = "1.0.0")]
-pub struct PhantomData<T: ?Sized>;
+pub struct PhantomData<T: PointeeSized>;
 
 #[stable(feature = "rust1", since = "1.0.0")]
-impl<T: ?Sized> Hash for PhantomData<T> {
+impl<T: PointeeSized> Hash for PhantomData<T> {
     #[inline]
     fn hash<H: Hasher>(&self, _: &mut H) {}
 }
 
 #[stable(feature = "rust1", since = "1.0.0")]
-impl<T: ?Sized> cmp::PartialEq for PhantomData<T> {
+impl<T: PointeeSized> cmp::PartialEq for PhantomData<T> {
     fn eq(&self, _other: &PhantomData<T>) -> bool {
         true
     }
 }
 
 #[stable(feature = "rust1", since = "1.0.0")]
-impl<T: ?Sized> cmp::Eq for PhantomData<T> {}
+impl<T: PointeeSized> cmp::Eq for PhantomData<T> {}
 
 #[stable(feature = "rust1", since = "1.0.0")]
-impl<T: ?Sized> cmp::PartialOrd for PhantomData<T> {
+impl<T: PointeeSized> cmp::PartialOrd for PhantomData<T> {
     fn partial_cmp(&self, _other: &PhantomData<T>) -> Option<cmp::Ordering> {
         Option::Some(cmp::Ordering::Equal)
     }
 }
 
 #[stable(feature = "rust1", since = "1.0.0")]
-impl<T: ?Sized> cmp::Ord for PhantomData<T> {
+impl<T: PointeeSized> cmp::Ord for PhantomData<T> {
     fn cmp(&self, _other: &PhantomData<T>) -> cmp::Ordering {
         cmp::Ordering::Equal
     }
 }
 
 #[stable(feature = "rust1", since = "1.0.0")]
-impl<T: ?Sized> Copy for PhantomData<T> {}
+impl<T: PointeeSized> Copy for PhantomData<T> {}
 
 #[stable(feature = "rust1", since = "1.0.0")]
-impl<T: ?Sized> Clone for PhantomData<T> {
+impl<T: PointeeSized> Clone for PhantomData<T> {
     fn clone(&self) -> Self {
         Self
     }
 }
 
+#[doc(hidden)]
+#[unstable(feature = "trivial_clone", issue = "none")]
+unsafe impl<T: ?Sized> TrivialClone for PhantomData<T> {}
+
 #[stable(feature = "rust1", since = "1.0.0")]
-impl<T: ?Sized> Default for PhantomData<T> {
+#[rustc_const_unstable(feature = "const_default", issue = "143894")]
+impl<T: PointeeSized> const Default for PhantomData<T> {
     fn default() -> Self {
         Self
     }
 }
 
 #[unstable(feature = "structural_match", issue = "31434")]
-impl<T: ?Sized> StructuralPartialEq for PhantomData<T> {}
+impl<T: PointeeSized> StructuralPartialEq for PhantomData<T> {}
 
 /// Compiler-internal trait used to indicate the type of enum discriminants.
 ///
@@ -815,7 +886,8 @@ impl<T: ?Sized> StructuralPartialEq for PhantomData<T> {}
     reason = "this trait is unlikely to ever be stabilized, use `mem::discriminant` instead"
 )]
 #[lang = "discriminant_kind"]
-#[rustc_deny_explicit_impl(implement_via_object = false)]
+#[rustc_deny_explicit_impl]
+#[rustc_do_not_implement_via_object]
 pub trait DiscriminantKind {
     /// The type of the discriminant, which must satisfy the trait
     /// bounds required by `mem::Discriminant`.
@@ -842,16 +914,32 @@ pub trait DiscriminantKind {
 pub unsafe auto trait Freeze {}
 
 #[unstable(feature = "freeze", issue = "121675")]
-impl<T: ?Sized> !Freeze for UnsafeCell<T> {}
+impl<T: PointeeSized> !Freeze for UnsafeCell<T> {}
 marker_impls! {
     #[unstable(feature = "freeze", issue = "121675")]
     unsafe Freeze for
-        {T: ?Sized} PhantomData<T>,
-        {T: ?Sized} *const T,
-        {T: ?Sized} *mut T,
-        {T: ?Sized} &T,
-        {T: ?Sized} &mut T,
+        {T: PointeeSized} PhantomData<T>,
+        {T: PointeeSized} *const T,
+        {T: PointeeSized} *mut T,
+        {T: PointeeSized} &T,
+        {T: PointeeSized} &mut T,
 }
+
+/// Used to determine whether a type contains any `UnsafePinned` (or `PhantomPinned`) internally,
+/// but not through an indirection. This affects, for example, whether we emit `noalias` metadata
+/// for `&mut T` or not.
+///
+/// This is part of [RFC 3467](https://rust-lang.github.io/rfcs/3467-unsafe-pinned.html), and is
+/// tracked by [#125735](https://github.com/rust-lang/rust/issues/125735).
+#[lang = "unsafe_unpin"]
+pub(crate) unsafe auto trait UnsafeUnpin {}
+
+impl<T: ?Sized> !UnsafeUnpin for UnsafePinned<T> {}
+unsafe impl<T: ?Sized> UnsafeUnpin for PhantomData<T> {}
+unsafe impl<T: ?Sized> UnsafeUnpin for *const T {}
+unsafe impl<T: ?Sized> UnsafeUnpin for *mut T {}
+unsafe impl<T: ?Sized> UnsafeUnpin for &T {}
+unsafe impl<T: ?Sized> UnsafeUnpin for &mut T {}
 
 /// Types that do not require any pinning guarantees.
 ///
@@ -928,6 +1016,11 @@ pub auto trait Unpin {}
 /// A marker type which does not implement `Unpin`.
 ///
 /// If a type contains a `PhantomPinned`, it will not implement `Unpin` by default.
+//
+// FIXME(unsafe_pinned): This is *not* a stable guarantee we want to make, at least not yet.
+// Note that for backwards compatibility with the new [`UnsafePinned`] wrapper type, placing this
+// marker in your struct acts as if you wrapped the entire struct in an `UnsafePinned`. This type
+// will likely eventually be deprecated, and all new code should be using `UnsafePinned` instead.
 #[stable(feature = "pin", since = "1.33.0")]
 #[derive(Debug, Default, Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash)]
 pub struct PhantomPinned;
@@ -935,30 +1028,37 @@ pub struct PhantomPinned;
 #[stable(feature = "pin", since = "1.33.0")]
 impl !Unpin for PhantomPinned {}
 
+// This is a small hack to allow existing code which uses PhantomPinned to opt-out of noalias to
+// continue working. Ideally PhantomPinned could just wrap an `UnsafePinned<()>` to get the same
+// effect, but we can't add a new field to an already stable unit struct -- that would be a breaking
+// change.
+impl !UnsafeUnpin for PhantomPinned {}
+
 marker_impls! {
     #[stable(feature = "pin", since = "1.33.0")]
     Unpin for
-        {T: ?Sized} &T,
-        {T: ?Sized} &mut T,
+        {T: PointeeSized} &T,
+        {T: PointeeSized} &mut T,
 }
 
 marker_impls! {
     #[stable(feature = "pin_raw", since = "1.38.0")]
     Unpin for
-        {T: ?Sized} *const T,
-        {T: ?Sized} *mut T,
+        {T: PointeeSized} *const T,
+        {T: PointeeSized} *mut T,
 }
 
 /// A marker for types that can be dropped.
 ///
-/// This should be used for `~const` bounds,
+/// This should be used for `[const]` bounds,
 /// as non-const bounds will always hold for every type.
 #[unstable(feature = "const_destruct", issue = "133214")]
+#[rustc_const_unstable(feature = "const_destruct", issue = "133214")]
 #[lang = "destruct"]
 #[rustc_on_unimplemented(message = "can't drop `{Self}`", append_const_msg)]
-#[rustc_deny_explicit_impl(implement_via_object = false)]
-#[cfg_attr(not(bootstrap), const_trait)]
-pub trait Destruct {}
+#[rustc_deny_explicit_impl]
+#[rustc_do_not_implement_via_object]
+pub const trait Destruct: PointeeSized {}
 
 /// A marker for tuple types.
 ///
@@ -967,32 +1067,9 @@ pub trait Destruct {}
 #[unstable(feature = "tuple_trait", issue = "none")]
 #[lang = "tuple_trait"]
 #[diagnostic::on_unimplemented(message = "`{Self}` is not a tuple")]
-#[rustc_deny_explicit_impl(implement_via_object = false)]
+#[rustc_deny_explicit_impl]
+#[rustc_do_not_implement_via_object]
 pub trait Tuple {}
-
-/// A marker for pointer-like types.
-///
-/// All types that have the same size and alignment as a `usize` or
-/// `*const ()` automatically implement this trait.
-#[unstable(feature = "pointer_like_trait", issue = "none")]
-#[lang = "pointer_like"]
-#[diagnostic::on_unimplemented(
-    message = "`{Self}` needs to have the same ABI as a pointer",
-    label = "`{Self}` needs to be a pointer-like type"
-)]
-pub trait PointerLike {}
-
-#[cfg(not(bootstrap))]
-marker_impls! {
-    #[unstable(feature = "pointer_like_trait", issue = "none")]
-    PointerLike for
-        usize,
-        {T} &T,
-        {T} &mut T,
-        {T} *const T,
-        {T} *mut T,
-        {T: PointerLike} crate::pin::Pin<T>,
-}
 
 /// A marker for types which can be used as types of `const` generic parameters.
 ///
@@ -1007,30 +1084,13 @@ marker_impls! {
 // We name this differently than the derive macro so that the `adt_const_params` can
 // be used independently of `unsized_const_params` without requiring a full path
 // to the derive macro every time it is used. This should be renamed on stabilization.
-pub trait ConstParamTy_: UnsizedConstParamTy + StructuralPartialEq + Eq {}
+pub trait ConstParamTy_: StructuralPartialEq + Eq {}
 
 /// Derive macro generating an impl of the trait `ConstParamTy`.
 #[rustc_builtin_macro]
 #[allow_internal_unstable(unsized_const_params)]
 #[unstable(feature = "adt_const_params", issue = "95174")]
 pub macro ConstParamTy($item:item) {
-    /* compiler built-in */
-}
-
-#[lang = "unsized_const_param_ty"]
-#[unstable(feature = "unsized_const_params", issue = "95174")]
-#[diagnostic::on_unimplemented(message = "`{Self}` can't be used as a const parameter type")]
-/// A marker for types which can be used as types of `const` generic parameters.
-///
-/// Equivalent to [`ConstParamTy_`] except that this is used by
-/// the `unsized_const_params` to allow for fake unstable impls.
-pub trait UnsizedConstParamTy: StructuralPartialEq + Eq {}
-
-/// Derive macro generating an impl of the trait `ConstParamTy`.
-#[rustc_builtin_macro]
-#[allow_internal_unstable(unsized_const_params)]
-#[unstable(feature = "unsized_const_params", issue = "95174")]
-pub macro UnsizedConstParamTy($item:item) {
     /* compiler built-in */
 }
 
@@ -1048,38 +1108,237 @@ marker_impls! {
 
 marker_impls! {
     #[unstable(feature = "unsized_const_params", issue = "95174")]
-    UnsizedConstParamTy for
-        usize, u8, u16, u32, u64, u128,
-        isize, i8, i16, i32, i64, i128,
-        bool,
-        char,
-        (),
-        {T: UnsizedConstParamTy, const N: usize} [T; N],
-
+    #[unstable_feature_bound(unsized_const_params)]
+    ConstParamTy_ for
         str,
-        {T: UnsizedConstParamTy} [T],
-        {T: UnsizedConstParamTy + ?Sized} &T,
+        {T: ConstParamTy_} [T],
+        {T: ConstParamTy_ + ?Sized} &T,
 }
 
 /// A common trait implemented by all function pointers.
+//
+// Note that while the trait is internal and unstable it is nevertheless
+// exposed as a public bound of the stable `core::ptr::fn_addr_eq` function.
 #[unstable(
     feature = "fn_ptr_trait",
     issue = "none",
     reason = "internal trait for implementing various traits for all function pointers"
 )]
 #[lang = "fn_ptr_trait"]
-#[rustc_deny_explicit_impl(implement_via_object = false)]
+#[rustc_deny_explicit_impl]
+#[rustc_do_not_implement_via_object]
 pub trait FnPtr: Copy + Clone {
     /// Returns the address of the function pointer.
     #[lang = "fn_ptr_addr"]
     fn addr(self) -> *const ();
 }
 
-/// Derive macro generating impls of traits related to smart pointers.
+/// Derive macro that makes a smart pointer usable with trait objects.
+///
+/// # What this macro does
+///
+/// This macro is intended to be used with user-defined pointer types, and makes it possible to
+/// perform coercions on the pointee of the user-defined pointer. There are two aspects to this:
+///
+/// ## Unsizing coercions of the pointee
+///
+/// By using the macro, the following example will compile:
+/// ```
+/// #![feature(derive_coerce_pointee)]
+/// use std::marker::CoercePointee;
+/// use std::ops::Deref;
+///
+/// #[derive(CoercePointee)]
+/// #[repr(transparent)]
+/// struct MySmartPointer<T: ?Sized>(Box<T>);
+///
+/// impl<T: ?Sized> Deref for MySmartPointer<T> {
+///     type Target = T;
+///     fn deref(&self) -> &T {
+///         &self.0
+///     }
+/// }
+///
+/// trait MyTrait {}
+///
+/// impl MyTrait for i32 {}
+///
+/// fn main() {
+///     let ptr: MySmartPointer<i32> = MySmartPointer(Box::new(4));
+///
+///     // This coercion would be an error without the derive.
+///     let ptr: MySmartPointer<dyn MyTrait> = ptr;
+/// }
+/// ```
+/// Without the `#[derive(CoercePointee)]` macro, this example would fail with the following error:
+/// ```text
+/// error[E0308]: mismatched types
+///   --> src/main.rs:11:44
+///    |
+/// 11 |     let ptr: MySmartPointer<dyn MyTrait> = ptr;
+///    |              ---------------------------   ^^^ expected `MySmartPointer<dyn MyTrait>`, found `MySmartPointer<i32>`
+///    |              |
+///    |              expected due to this
+///    |
+///    = note: expected struct `MySmartPointer<dyn MyTrait>`
+///               found struct `MySmartPointer<i32>`
+///    = help: `i32` implements `MyTrait` so you could box the found value and coerce it to the trait object `Box<dyn MyTrait>`, you will have to change the expected type as well
+/// ```
+///
+/// ## Dyn compatibility
+///
+/// This macro allows you to dispatch on the user-defined pointer type. That is, traits using the
+/// type as a receiver are dyn-compatible. For example, this compiles:
+///
+/// ```
+/// #![feature(arbitrary_self_types, derive_coerce_pointee)]
+/// use std::marker::CoercePointee;
+/// use std::ops::Deref;
+///
+/// #[derive(CoercePointee)]
+/// #[repr(transparent)]
+/// struct MySmartPointer<T: ?Sized>(Box<T>);
+///
+/// impl<T: ?Sized> Deref for MySmartPointer<T> {
+///     type Target = T;
+///     fn deref(&self) -> &T {
+///         &self.0
+///     }
+/// }
+///
+/// // You can always define this trait. (as long as you have #![feature(arbitrary_self_types)])
+/// trait MyTrait {
+///     fn func(self: MySmartPointer<Self>);
+/// }
+///
+/// // But using `dyn MyTrait` requires #[derive(CoercePointee)].
+/// fn call_func(value: MySmartPointer<dyn MyTrait>) {
+///     value.func();
+/// }
+/// ```
+/// If you remove the `#[derive(CoercePointee)]` annotation from the struct, then the above example
+/// will fail with this error message:
+/// ```text
+/// error[E0038]: the trait `MyTrait` is not dyn compatible
+///   --> src/lib.rs:21:36
+///    |
+/// 17 |     fn func(self: MySmartPointer<Self>);
+///    |                   -------------------- help: consider changing method `func`'s `self` parameter to be `&self`: `&Self`
+/// ...
+/// 21 | fn call_func(value: MySmartPointer<dyn MyTrait>) {
+///    |                                    ^^^^^^^^^^^ `MyTrait` is not dyn compatible
+///    |
+/// note: for a trait to be dyn compatible it needs to allow building a vtable
+///       for more information, visit <https://doc.rust-lang.org/reference/items/traits.html#object-safety>
+///   --> src/lib.rs:17:19
+///    |
+/// 16 | trait MyTrait {
+///    |       ------- this trait is not dyn compatible...
+/// 17 |     fn func(self: MySmartPointer<Self>);
+///    |                   ^^^^^^^^^^^^^^^^^^^^ ...because method `func`'s `self` parameter cannot be dispatched on
+/// ```
+///
+/// # Requirements for using the macro
+///
+/// This macro can only be used if:
+/// * The type is a `#[repr(transparent)]` struct.
+/// * The type of its non-zero-sized field must either be a standard library pointer type
+///   (reference, raw pointer, `NonNull`, `Box`, `Rc`, `Arc`, etc.) or another user-defined type
+///   also using the `#[derive(CoercePointee)]` macro.
+/// * Zero-sized fields must not mention any generic parameters unless the zero-sized field has
+///   type [`PhantomData`].
+///
+/// ## Multiple type parameters
+///
+/// If the type has multiple type parameters, then you must explicitly specify which one should be
+/// used for dynamic dispatch. For example:
+/// ```
+/// # #![feature(derive_coerce_pointee)]
+/// # use std::marker::{CoercePointee, PhantomData};
+/// #[derive(CoercePointee)]
+/// #[repr(transparent)]
+/// struct MySmartPointer<#[pointee] T: ?Sized, U> {
+///     ptr: Box<T>,
+///     _phantom: PhantomData<U>,
+/// }
+/// ```
+/// Specifying `#[pointee]` when the struct has only one type parameter is allowed, but not required.
+///
+/// # Examples
+///
+/// A custom implementation of the `Rc` type:
+/// ```
+/// #![feature(derive_coerce_pointee)]
+/// use std::marker::CoercePointee;
+/// use std::ops::Deref;
+/// use std::ptr::NonNull;
+///
+/// #[derive(CoercePointee)]
+/// #[repr(transparent)]
+/// pub struct Rc<T: ?Sized> {
+///     inner: NonNull<RcInner<T>>,
+/// }
+///
+/// struct RcInner<T: ?Sized> {
+///     refcount: usize,
+///     value: T,
+/// }
+///
+/// impl<T: ?Sized> Deref for Rc<T> {
+///     type Target = T;
+///     fn deref(&self) -> &T {
+///         let ptr = self.inner.as_ptr();
+///         unsafe { &(*ptr).value }
+///     }
+/// }
+///
+/// impl<T> Rc<T> {
+///     pub fn new(value: T) -> Self {
+///         let inner = Box::new(RcInner {
+///             refcount: 1,
+///             value,
+///         });
+///         Self {
+///             inner: NonNull::from(Box::leak(inner)),
+///         }
+///     }
+/// }
+///
+/// impl<T: ?Sized> Clone for Rc<T> {
+///     fn clone(&self) -> Self {
+///         // A real implementation would handle overflow here.
+///         unsafe { (*self.inner.as_ptr()).refcount += 1 };
+///         Self { inner: self.inner }
+///     }
+/// }
+///
+/// impl<T: ?Sized> Drop for Rc<T> {
+///     fn drop(&mut self) {
+///         let ptr = self.inner.as_ptr();
+///         unsafe { (*ptr).refcount -= 1 };
+///         if unsafe { (*ptr).refcount } == 0 {
+///             drop(unsafe { Box::from_raw(ptr) });
+///         }
+///     }
+/// }
+/// ```
 #[rustc_builtin_macro(CoercePointee, attributes(pointee))]
-#[allow_internal_unstable(dispatch_from_dyn, coerce_unsized, unsize)]
+#[allow_internal_unstable(dispatch_from_dyn, coerce_unsized, unsize, coerce_pointee_validated)]
+#[rustc_diagnostic_item = "CoercePointee"]
 #[unstable(feature = "derive_coerce_pointee", issue = "123430")]
-#[cfg(not(bootstrap))]
 pub macro CoercePointee($item:item) {
+    /* compiler built-in */
+}
+
+/// A trait that is implemented for ADTs with `derive(CoercePointee)` so that
+/// the compiler can enforce the derive impls are valid post-expansion, since
+/// the derive has stricter requirements than if the impls were written by hand.
+///
+/// This trait is not intended to be implemented by users or used other than
+/// validation, so it should never be stabilized.
+#[lang = "coerce_pointee_validated"]
+#[unstable(feature = "coerce_pointee_validated", issue = "none")]
+#[doc(hidden)]
+pub trait CoercePointeeValidated {
     /* compiler built-in */
 }

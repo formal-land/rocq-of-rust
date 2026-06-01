@@ -13,6 +13,18 @@ Require Import RocqOfRust.RocqOfRust.
       ];
   } *)
 
+Module Impl_core_clone_TrivialClone_for_unpacking_options_via_question_mark_PhoneNumber.
+  Definition Self : Ty.t := Ty.path "unpacking_options_via_question_mark::PhoneNumber".
+  
+  Axiom Implements :
+    M.IsTraitInstance
+      "core::clone::TrivialClone"
+      (* Trait polymorphic consts *) []
+      (* Trait polymorphic types *) []
+      Self
+      (* Instance *) [].
+End Impl_core_clone_TrivialClone_for_unpacking_options_via_question_mark_PhoneNumber.
+
 Module Impl_core_clone_Clone_for_unpacking_options_via_question_mark_PhoneNumber.
   Definition Self : Ty.t := Ty.path "unpacking_options_via_question_mark::PhoneNumber".
   
@@ -53,6 +65,18 @@ End Impl_core_marker_Copy_for_unpacking_options_via_question_mark_PhoneNumber.
             [ Ty.path "unpacking_options_via_question_mark::PhoneNumber" ])
       ];
   } *)
+
+Module Impl_core_clone_TrivialClone_for_unpacking_options_via_question_mark_Job.
+  Definition Self : Ty.t := Ty.path "unpacking_options_via_question_mark::Job".
+  
+  Axiom Implements :
+    M.IsTraitInstance
+      "core::clone::TrivialClone"
+      (* Trait polymorphic consts *) []
+      (* Trait polymorphic types *) []
+      Self
+      (* Instance *) [].
+End Impl_core_clone_TrivialClone_for_unpacking_options_via_question_mark_Job.
 
 Module Impl_core_clone_Clone_for_unpacking_options_via_question_mark_Job.
   Definition Self : Ty.t := Ty.path "unpacking_options_via_question_mark::Job".

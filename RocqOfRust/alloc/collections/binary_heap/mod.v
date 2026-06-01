@@ -270,9 +270,9 @@ Module collections.
                             |)
                           ]
                         |) in
-                      let~ _ : Ty.tuple [] :=
+                      let~ _ : Ty.path "usize" :=
                         M.call_closure (|
-                          Ty.tuple [],
+                          Ty.path "usize",
                           M.get_associated_function (|
                             Ty.apply
                               (Ty.path "alloc::collections::binary_heap::BinaryHeap")
@@ -351,7 +351,7 @@ Module collections.
                   [
                     fun γ =>
                       ltac:(M.monadic
-                        (let γ := M.use (M.alloc (| Ty.path "bool", Value.Bool true |)) in
+                        (let γ := M.alloc (| Ty.path "bool", Value.Bool true |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
@@ -362,49 +362,48 @@ Module collections.
                                 fun γ =>
                                   ltac:(M.monadic
                                     (let γ :=
-                                      M.use
-                                        (M.alloc (|
+                                      M.alloc (|
+                                        Ty.path "bool",
+                                        M.call_closure (|
                                           Ty.path "bool",
-                                          M.call_closure (|
-                                            Ty.path "bool",
-                                            UnOp.not,
-                                            [
-                                              M.call_closure (|
-                                                Ty.path "bool",
-                                                UnOp.not,
-                                                [
-                                                  M.call_closure (|
-                                                    Ty.path "bool",
-                                                    M.get_associated_function (|
-                                                      Ty.apply
-                                                        (Ty.path
-                                                          "alloc::collections::binary_heap::BinaryHeap")
-                                                        []
-                                                        [ T; A ],
-                                                      "is_empty",
-                                                      [],
+                                          UnOp.not,
+                                          [
+                                            M.call_closure (|
+                                              Ty.path "bool",
+                                              UnOp.not,
+                                              [
+                                                M.call_closure (|
+                                                  Ty.path "bool",
+                                                  M.get_associated_function (|
+                                                    Ty.apply
+                                                      (Ty.path
+                                                        "alloc::collections::binary_heap::BinaryHeap")
                                                       []
-                                                    |),
-                                                    [
-                                                      M.borrow (|
-                                                        Pointer.Kind.Ref,
-                                                        M.deref (|
-                                                          M.read (|
-                                                            M.SubPointer.get_struct_record_field (|
-                                                              M.deref (| M.read (| self |) |),
-                                                              "alloc::collections::binary_heap::PeekMut",
-                                                              "heap"
-                                                            |)
+                                                      [ T; A ],
+                                                    "is_empty",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [
+                                                    M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (|
+                                                        M.read (|
+                                                          M.SubPointer.get_struct_record_field (|
+                                                            M.deref (| M.read (| self |) |),
+                                                            "alloc::collections::binary_heap::PeekMut",
+                                                            "heap"
                                                           |)
                                                         |)
                                                       |)
-                                                    ]
-                                                  |)
-                                                ]
-                                              |)
-                                            ]
-                                          |)
-                                        |)) in
+                                                    |)
+                                                  ]
+                                                |)
+                                              ]
+                                            |)
+                                          ]
+                                        |)
+                                      |) in
                                     let _ :=
                                       is_constant_or_break_match (|
                                         M.read (| γ |),
@@ -551,7 +550,7 @@ Module collections.
                       [
                         fun γ =>
                           ltac:(M.monadic
-                            (let γ := M.use (M.alloc (| Ty.path "bool", Value.Bool true |)) in
+                            (let γ := M.alloc (| Ty.path "bool", Value.Bool true |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.read (|
@@ -563,49 +562,48 @@ Module collections.
                                     fun γ =>
                                       ltac:(M.monadic
                                         (let γ :=
-                                          M.use
-                                            (M.alloc (|
+                                          M.alloc (|
+                                            Ty.path "bool",
+                                            M.call_closure (|
                                               Ty.path "bool",
-                                              M.call_closure (|
-                                                Ty.path "bool",
-                                                UnOp.not,
-                                                [
-                                                  M.call_closure (|
-                                                    Ty.path "bool",
-                                                    UnOp.not,
-                                                    [
-                                                      M.call_closure (|
-                                                        Ty.path "bool",
-                                                        M.get_associated_function (|
-                                                          Ty.apply
-                                                            (Ty.path
-                                                              "alloc::collections::binary_heap::BinaryHeap")
-                                                            []
-                                                            [ T; A ],
-                                                          "is_empty",
-                                                          [],
+                                              UnOp.not,
+                                              [
+                                                M.call_closure (|
+                                                  Ty.path "bool",
+                                                  UnOp.not,
+                                                  [
+                                                    M.call_closure (|
+                                                      Ty.path "bool",
+                                                      M.get_associated_function (|
+                                                        Ty.apply
+                                                          (Ty.path
+                                                            "alloc::collections::binary_heap::BinaryHeap")
                                                           []
-                                                        |),
-                                                        [
-                                                          M.borrow (|
-                                                            Pointer.Kind.Ref,
-                                                            M.deref (|
-                                                              M.read (|
-                                                                M.SubPointer.get_struct_record_field (|
-                                                                  M.deref (| M.read (| self |) |),
-                                                                  "alloc::collections::binary_heap::PeekMut",
-                                                                  "heap"
-                                                                |)
+                                                          [ T; A ],
+                                                        "is_empty",
+                                                        [],
+                                                        []
+                                                      |),
+                                                      [
+                                                        M.borrow (|
+                                                          Pointer.Kind.Ref,
+                                                          M.deref (|
+                                                            M.read (|
+                                                              M.SubPointer.get_struct_record_field (|
+                                                                M.deref (| M.read (| self |) |),
+                                                                "alloc::collections::binary_heap::PeekMut",
+                                                                "heap"
                                                               |)
                                                             |)
                                                           |)
-                                                        ]
-                                                      |)
-                                                    ]
-                                                  |)
-                                                ]
-                                              |)
-                                            |)) in
+                                                        |)
+                                                      ]
+                                                    |)
+                                                  ]
+                                                |)
+                                              ]
+                                            |)
+                                          |) in
                                         let _ :=
                                           is_constant_or_break_match (|
                                             M.read (| γ |),
@@ -662,15 +660,14 @@ Module collections.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
                                   Ty.path "bool",
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    BinOp.gt,
-                                    [ M.read (| len |); Value.Integer IntegerKind.Usize 1 ]
-                                  |)
-                                |)) in
+                                  BinOp.gt,
+                                  [ M.read (| len |); Value.Integer IntegerKind.Usize 1 ]
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.read (|
@@ -825,6 +822,193 @@ Module collections.
     Module Impl_alloc_collections_binary_heap_PeekMut_T_A.
       Definition Self (T A : Ty.t) : Ty.t :=
         Ty.apply (Ty.path "alloc::collections::binary_heap::PeekMut") [] [ T; A ].
+      
+      (*
+          pub fn refresh(&mut self) -> bool {
+              // The length of the underlying heap is unchanged by sifting down. The value stored for leak
+              // amplification thus remains accurate. We erase the leak amplification firstly because the
+              // operation is then equivalent to constructing a new PeekMut and secondly this avoids any
+              // future complication where original_len being non-empty would be interpreted as the heap
+              // having been leak amplified instead of checking the heap itself.
+              if let Some(original_len) = self.original_len.take() {
+                  // SAFETY: This is how many elements were in the Vec at the time of
+                  // the BinaryHeap::peek_mut call.
+                  unsafe { self.heap.data.set_len(original_len.get()) };
+      
+                  // The length of the heap did not change by sifting, upholding our own invariants.
+      
+                  // SAFETY: PeekMut is only instantiated for non-empty heaps.
+                  (unsafe { self.heap.sift_down(0) }) != 0
+              } else {
+                  // The element was not modified.
+                  false
+              }
+          }
+      *)
+      Definition refresh (T A : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        let Self : Ty.t := Self T A in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&mut")
+                  []
+                  [ Ty.apply (Ty.path "alloc::collections::binary_heap::PeekMut") [] [ T; A ] ],
+                self
+              |) in
+            M.match_operator (|
+              Ty.path "bool",
+              M.alloc (| Ty.tuple [], Value.Tuple [] |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ :=
+                      M.alloc (|
+                        Ty.apply
+                          (Ty.path "core::option::Option")
+                          []
+                          [ Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ]
+                          ],
+                        M.call_closure (|
+                          Ty.apply
+                            (Ty.path "core::option::Option")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "core::num::nonzero::NonZero")
+                                []
+                                [ Ty.path "usize" ]
+                            ],
+                          M.get_associated_function (|
+                            Ty.apply
+                              (Ty.path "core::option::Option")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "core::num::nonzero::NonZero")
+                                  []
+                                  [ Ty.path "usize" ]
+                              ],
+                            "take",
+                            [],
+                            []
+                          |),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.MutRef,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "alloc::collections::binary_heap::PeekMut",
+                                "original_len"
+                              |)
+                            |)
+                          ]
+                        |)
+                      |) in
+                    let γ0_0 :=
+                      M.SubPointer.get_struct_tuple_field (|
+                        γ,
+                        "core::option::Option::Some",
+                        0
+                      |) in
+                    let original_len :=
+                      M.copy (|
+                        Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ],
+                        γ0_0
+                      |) in
+                    M.read (|
+                      let~ _ : Ty.tuple [] :=
+                        M.call_closure (|
+                          Ty.tuple [],
+                          M.get_associated_function (|
+                            Ty.apply (Ty.path "alloc::vec::Vec") [] [ T; A ],
+                            "set_len",
+                            [],
+                            []
+                          |),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.MutRef,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (|
+                                  M.read (|
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "alloc::collections::binary_heap::PeekMut",
+                                      "heap"
+                                    |)
+                                  |)
+                                |),
+                                "alloc::collections::binary_heap::BinaryHeap",
+                                "data"
+                              |)
+                            |);
+                            M.call_closure (|
+                              Ty.path "usize",
+                              M.get_associated_function (|
+                                Ty.apply
+                                  (Ty.path "core::num::nonzero::NonZero")
+                                  []
+                                  [ Ty.path "usize" ],
+                                "get",
+                                [],
+                                []
+                              |),
+                              [ M.read (| original_len |) ]
+                            |)
+                          ]
+                        |) in
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
+                          Ty.path "bool",
+                          BinOp.ne,
+                          [
+                            M.call_closure (|
+                              Ty.path "usize",
+                              M.get_associated_function (|
+                                Ty.apply
+                                  (Ty.path "alloc::collections::binary_heap::BinaryHeap")
+                                  []
+                                  [ T; A ],
+                                "sift_down",
+                                [],
+                                []
+                              |),
+                              [
+                                M.borrow (|
+                                  Pointer.Kind.MutRef,
+                                  M.deref (|
+                                    M.read (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "alloc::collections::binary_heap::PeekMut",
+                                        "heap"
+                                      |)
+                                    |)
+                                  |)
+                                |);
+                                Value.Integer IntegerKind.Usize 0
+                              ]
+                            |);
+                            Value.Integer IntegerKind.Usize 0
+                          ]
+                        |)
+                      |)
+                    |)));
+                fun γ => ltac:(M.monadic (Value.Bool false))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_refresh :
+        forall (T A : Ty.t),
+        M.IsAssociatedFunction.C (Self T A) "refresh" (refresh T A).
+      Admitted.
+      Global Typeclasses Opaque refresh.
       
       (*
           pub fn pop(mut this: PeekMut<'a, T, A>) -> T {
@@ -1587,23 +1771,22 @@ Module collections.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            M.get_associated_function (|
-                              Ty.apply
-                                (Ty.path "alloc::collections::binary_heap::BinaryHeap")
-                                []
-                                [ T; A ],
-                              "is_empty",
-                              [],
+                          M.get_associated_function (|
+                            Ty.apply
+                              (Ty.path "alloc::collections::binary_heap::BinaryHeap")
                               []
-                            |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                          |)
-                        |)) in
+                              [ T; A ],
+                            "is_empty",
+                            [],
+                            []
+                          |),
+                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     Value.StructTuple
                       "core::option::Option::None"
@@ -1723,35 +1906,34 @@ Module collections.
                                           fun γ =>
                                             ltac:(M.monadic
                                               (let γ :=
-                                                M.use
-                                                  (M.alloc (|
+                                                M.alloc (|
+                                                  Ty.path "bool",
+                                                  M.call_closure (|
                                                     Ty.path "bool",
-                                                    M.call_closure (|
-                                                      Ty.path "bool",
-                                                      UnOp.not,
-                                                      [
-                                                        M.call_closure (|
-                                                          Ty.path "bool",
-                                                          M.get_associated_function (|
-                                                            Ty.apply
-                                                              (Ty.path
-                                                                "alloc::collections::binary_heap::BinaryHeap")
-                                                              []
-                                                              [ T; A ],
-                                                            "is_empty",
-                                                            [],
+                                                    UnOp.not,
+                                                    [
+                                                      M.call_closure (|
+                                                        Ty.path "bool",
+                                                        M.get_associated_function (|
+                                                          Ty.apply
+                                                            (Ty.path
+                                                              "alloc::collections::binary_heap::BinaryHeap")
                                                             []
-                                                          |),
-                                                          [
-                                                            M.borrow (|
-                                                              Pointer.Kind.Ref,
-                                                              M.deref (| M.read (| self |) |)
-                                                            |)
-                                                          ]
-                                                        |)
-                                                      ]
-                                                    |)
-                                                  |)) in
+                                                            [ T; A ],
+                                                          "is_empty",
+                                                          [],
+                                                          []
+                                                        |),
+                                                        [
+                                                          M.borrow (|
+                                                            Pointer.Kind.Ref,
+                                                            M.deref (| M.read (| self |) |)
+                                                          |)
+                                                        ]
+                                                      |)
+                                                    ]
+                                                  |)
+                                                |) in
                                               let _ :=
                                                 is_constant_or_break_match (|
                                                   M.read (| γ |),
@@ -2000,15 +2182,14 @@ Module collections.
                             fun γ =>
                               ltac:(M.monadic
                                 (let γ :=
-                                  M.use
-                                    (M.alloc (|
+                                  M.alloc (|
+                                    Ty.path "bool",
+                                    M.call_closure (|
                                       Ty.path "bool",
-                                      M.call_closure (|
-                                        Ty.path "bool",
-                                        BinOp.gt,
-                                        [ M.read (| end_ |); Value.Integer IntegerKind.Usize 1 ]
-                                      |)
-                                    |)) in
+                                      BinOp.gt,
+                                      [ M.read (| end_ |); Value.Integer IntegerKind.Usize 1 ]
+                                    |)
+                                  |) in
                                 let _ :=
                                   is_constant_or_break_match (|
                                     M.read (| γ |),
@@ -2067,9 +2248,9 @@ Module collections.
                                         |) in
                                       M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                     |) in
-                                  let~ _ : Ty.tuple [] :=
+                                  let~ _ : Ty.path "usize" :=
                                     M.call_closure (|
-                                      Ty.tuple [],
+                                      Ty.path "usize",
                                       M.get_associated_function (|
                                         Ty.apply
                                           (Ty.path "alloc::collections::binary_heap::BinaryHeap")
@@ -2223,30 +2404,29 @@ Module collections.
                             fun γ =>
                               ltac:(M.monadic
                                 (let γ :=
-                                  M.use
-                                    (M.alloc (|
+                                  M.alloc (|
+                                    Ty.path "bool",
+                                    M.call_closure (|
                                       Ty.path "bool",
-                                      M.call_closure (|
-                                        Ty.path "bool",
-                                        BinOp.gt,
-                                        [
-                                          M.call_closure (|
-                                            Ty.path "usize",
-                                            M.get_associated_function (|
-                                              Ty.apply
-                                                (Ty.path "alloc::collections::binary_heap::Hole")
-                                                []
-                                                [ T ],
-                                              "pos",
-                                              [],
+                                      BinOp.gt,
+                                      [
+                                        M.call_closure (|
+                                          Ty.path "usize",
+                                          M.get_associated_function (|
+                                            Ty.apply
+                                              (Ty.path "alloc::collections::binary_heap::Hole")
                                               []
-                                            |),
-                                            [ M.borrow (| Pointer.Kind.Ref, hole |) ]
-                                          |);
-                                          M.read (| start |)
-                                        ]
-                                      |)
-                                    |)) in
+                                              [ T ],
+                                            "pos",
+                                            [],
+                                            []
+                                          |),
+                                          [ M.borrow (| Pointer.Kind.Ref, hole |) ]
+                                        |);
+                                        M.read (| start |)
+                                      ]
+                                    |)
+                                  |) in
                                 let _ :=
                                   is_constant_or_break_match (|
                                     M.read (| γ |),
@@ -2289,76 +2469,74 @@ Module collections.
                                         fun γ =>
                                           ltac:(M.monadic
                                             (let γ :=
-                                              M.use
-                                                (M.alloc (|
+                                              M.alloc (|
+                                                Ty.path "bool",
+                                                M.call_closure (|
                                                   Ty.path "bool",
-                                                  M.call_closure (|
-                                                    Ty.path "bool",
-                                                    M.get_trait_method (|
-                                                      "core::cmp::PartialOrd",
-                                                      Ty.apply (Ty.path "&") [] [ T ],
-                                                      [],
-                                                      [ Ty.apply (Ty.path "&") [] [ T ] ],
-                                                      "le",
-                                                      [],
-                                                      []
-                                                    |),
-                                                    [
-                                                      M.borrow (|
-                                                        Pointer.Kind.Ref,
-                                                        M.alloc (|
+                                                  M.get_trait_method (|
+                                                    "core::cmp::PartialOrd",
+                                                    Ty.apply (Ty.path "&") [] [ T ],
+                                                    [],
+                                                    [ Ty.apply (Ty.path "&") [] [ T ] ],
+                                                    "le",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [
+                                                    M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.alloc (|
+                                                        Ty.apply (Ty.path "&") [] [ T ],
+                                                        M.call_closure (|
                                                           Ty.apply (Ty.path "&") [] [ T ],
-                                                          M.call_closure (|
-                                                            Ty.apply (Ty.path "&") [] [ T ],
-                                                            M.get_associated_function (|
-                                                              Ty.apply
-                                                                (Ty.path
-                                                                  "alloc::collections::binary_heap::Hole")
-                                                                []
-                                                                [ T ],
-                                                              "element",
-                                                              [],
+                                                          M.get_associated_function (|
+                                                            Ty.apply
+                                                              (Ty.path
+                                                                "alloc::collections::binary_heap::Hole")
                                                               []
-                                                            |),
-                                                            [ M.borrow (| Pointer.Kind.Ref, hole |)
-                                                            ]
-                                                          |)
+                                                              [ T ],
+                                                            "element",
+                                                            [],
+                                                            []
+                                                          |),
+                                                          [ M.borrow (| Pointer.Kind.Ref, hole |) ]
                                                         |)
-                                                      |);
-                                                      M.borrow (|
-                                                        Pointer.Kind.Ref,
-                                                        M.alloc (|
-                                                          Ty.apply (Ty.path "&") [] [ T ],
-                                                          M.borrow (|
-                                                            Pointer.Kind.Ref,
-                                                            M.deref (|
-                                                              M.call_closure (|
-                                                                Ty.apply (Ty.path "&") [] [ T ],
-                                                                M.get_associated_function (|
-                                                                  Ty.apply
-                                                                    (Ty.path
-                                                                      "alloc::collections::binary_heap::Hole")
-                                                                    []
-                                                                    [ T ],
-                                                                  "get",
-                                                                  [],
+                                                      |)
+                                                    |);
+                                                    M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.alloc (|
+                                                        Ty.apply (Ty.path "&") [] [ T ],
+                                                        M.borrow (|
+                                                          Pointer.Kind.Ref,
+                                                          M.deref (|
+                                                            M.call_closure (|
+                                                              Ty.apply (Ty.path "&") [] [ T ],
+                                                              M.get_associated_function (|
+                                                                Ty.apply
+                                                                  (Ty.path
+                                                                    "alloc::collections::binary_heap::Hole")
                                                                   []
-                                                                |),
-                                                                [
-                                                                  M.borrow (|
-                                                                    Pointer.Kind.Ref,
-                                                                    hole
-                                                                  |);
-                                                                  M.read (| parent |)
-                                                                ]
-                                                              |)
+                                                                  [ T ],
+                                                                "get",
+                                                                [],
+                                                                []
+                                                              |),
+                                                              [
+                                                                M.borrow (|
+                                                                  Pointer.Kind.Ref,
+                                                                  hole
+                                                                |);
+                                                                M.read (| parent |)
+                                                              ]
                                                             |)
                                                           |)
                                                         |)
                                                       |)
-                                                    ]
-                                                  |)
-                                                |)) in
+                                                    |)
+                                                  ]
+                                                |)
+                                              |) in
                                             let _ :=
                                               is_constant_or_break_match (|
                                                 M.read (| γ |),
@@ -2425,7 +2603,7 @@ Module collections.
       Global Typeclasses Opaque sift_up.
       
       (*
-          unsafe fn sift_down_range(&mut self, pos: usize, end: usize) {
+          unsafe fn sift_down_range(&mut self, pos: usize, end: usize) -> usize {
               // SAFETY: The caller guarantees that pos < end <= self.len().
               let mut hole = unsafe { Hole::new(&mut self.data, pos) };
               let mut child = 2 * hole.pos() + 1;
@@ -2445,7 +2623,7 @@ Module collections.
                   // SAFETY: child is now either the old child or the old child+1
                   //  We already proven that both are < self.len() and != hole.pos()
                   if hole.element() >= unsafe { hole.get(child) } {
-                      return;
+                      return hole.pos();
                   }
       
                   // SAFETY: same as above.
@@ -2460,6 +2638,8 @@ Module collections.
                   //  child == 2 * hole.pos() + 1 != hole.pos().
                   unsafe { hole.move_to(child) };
               }
+      
+              hole.pos()
           }
       *)
       Definition sift_down_range
@@ -2482,7 +2662,7 @@ Module collections.
               |) in
             let pos := M.alloc (| Ty.path "usize", pos |) in
             let end_ := M.alloc (| Ty.path "usize", end_ |) in
-            M.catch_return (Ty.tuple []) (|
+            M.catch_return (Ty.path "usize") (|
               ltac:(M.monadic
                 (M.read (|
                   let~ hole : Ty.apply (Ty.path "alloc::collections::binary_heap::Hole") [] [ T ] :=
@@ -2569,30 +2749,27 @@ Module collections.
                                 fun γ =>
                                   ltac:(M.monadic
                                     (let γ :=
-                                      M.use
-                                        (M.alloc (|
+                                      M.alloc (|
+                                        Ty.path "bool",
+                                        M.call_closure (|
                                           Ty.path "bool",
-                                          M.call_closure (|
-                                            Ty.path "bool",
-                                            BinOp.le,
-                                            [
-                                              M.read (| child |);
-                                              M.call_closure (|
+                                          BinOp.le,
+                                          [
+                                            M.read (| child |);
+                                            M.call_closure (|
+                                              Ty.path "usize",
+                                              M.get_associated_function (|
                                                 Ty.path "usize",
-                                                M.get_associated_function (|
-                                                  Ty.path "usize",
-                                                  "saturating_sub",
-                                                  [],
-                                                  []
-                                                |),
-                                                [
-                                                  M.read (| end_ |);
-                                                  Value.Integer IntegerKind.Usize 2
-                                                ]
-                                              |)
-                                            ]
-                                          |)
-                                        |)) in
+                                                "saturating_sub",
+                                                [],
+                                                []
+                                              |),
+                                              [ M.read (| end_ |); Value.Integer IntegerKind.Usize 2
+                                              ]
+                                            |)
+                                          ]
+                                        |)
+                                      |) in
                                     let _ :=
                                       is_constant_or_break_match (|
                                         M.read (| γ |),
@@ -2698,87 +2875,103 @@ Module collections.
                                             fun γ =>
                                               ltac:(M.monadic
                                                 (let γ :=
-                                                  M.use
-                                                    (M.alloc (|
+                                                  M.alloc (|
+                                                    Ty.path "bool",
+                                                    M.call_closure (|
                                                       Ty.path "bool",
-                                                      M.call_closure (|
-                                                        Ty.path "bool",
-                                                        M.get_trait_method (|
-                                                          "core::cmp::PartialOrd",
-                                                          Ty.apply (Ty.path "&") [] [ T ],
-                                                          [],
-                                                          [ Ty.apply (Ty.path "&") [] [ T ] ],
-                                                          "ge",
-                                                          [],
-                                                          []
-                                                        |),
-                                                        [
-                                                          M.borrow (|
-                                                            Pointer.Kind.Ref,
-                                                            M.alloc (|
+                                                      M.get_trait_method (|
+                                                        "core::cmp::PartialOrd",
+                                                        Ty.apply (Ty.path "&") [] [ T ],
+                                                        [],
+                                                        [ Ty.apply (Ty.path "&") [] [ T ] ],
+                                                        "ge",
+                                                        [],
+                                                        []
+                                                      |),
+                                                      [
+                                                        M.borrow (|
+                                                          Pointer.Kind.Ref,
+                                                          M.alloc (|
+                                                            Ty.apply (Ty.path "&") [] [ T ],
+                                                            M.call_closure (|
                                                               Ty.apply (Ty.path "&") [] [ T ],
-                                                              M.call_closure (|
-                                                                Ty.apply (Ty.path "&") [] [ T ],
-                                                                M.get_associated_function (|
-                                                                  Ty.apply
-                                                                    (Ty.path
-                                                                      "alloc::collections::binary_heap::Hole")
-                                                                    []
-                                                                    [ T ],
-                                                                  "element",
-                                                                  [],
+                                                              M.get_associated_function (|
+                                                                Ty.apply
+                                                                  (Ty.path
+                                                                    "alloc::collections::binary_heap::Hole")
                                                                   []
-                                                                |),
-                                                                [
-                                                                  M.borrow (|
-                                                                    Pointer.Kind.Ref,
-                                                                    hole
-                                                                  |)
-                                                                ]
-                                                              |)
+                                                                  [ T ],
+                                                                "element",
+                                                                [],
+                                                                []
+                                                              |),
+                                                              [
+                                                                M.borrow (|
+                                                                  Pointer.Kind.Ref,
+                                                                  hole
+                                                                |)
+                                                              ]
                                                             |)
-                                                          |);
-                                                          M.borrow (|
-                                                            Pointer.Kind.Ref,
-                                                            M.alloc (|
-                                                              Ty.apply (Ty.path "&") [] [ T ],
-                                                              M.borrow (|
-                                                                Pointer.Kind.Ref,
-                                                                M.deref (|
-                                                                  M.call_closure (|
-                                                                    Ty.apply (Ty.path "&") [] [ T ],
-                                                                    M.get_associated_function (|
-                                                                      Ty.apply
-                                                                        (Ty.path
-                                                                          "alloc::collections::binary_heap::Hole")
-                                                                        []
-                                                                        [ T ],
-                                                                      "get",
-                                                                      [],
+                                                          |)
+                                                        |);
+                                                        M.borrow (|
+                                                          Pointer.Kind.Ref,
+                                                          M.alloc (|
+                                                            Ty.apply (Ty.path "&") [] [ T ],
+                                                            M.borrow (|
+                                                              Pointer.Kind.Ref,
+                                                              M.deref (|
+                                                                M.call_closure (|
+                                                                  Ty.apply (Ty.path "&") [] [ T ],
+                                                                  M.get_associated_function (|
+                                                                    Ty.apply
+                                                                      (Ty.path
+                                                                        "alloc::collections::binary_heap::Hole")
                                                                       []
-                                                                    |),
-                                                                    [
-                                                                      M.borrow (|
-                                                                        Pointer.Kind.Ref,
-                                                                        hole
-                                                                      |);
-                                                                      M.read (| child |)
-                                                                    ]
-                                                                  |)
+                                                                      [ T ],
+                                                                    "get",
+                                                                    [],
+                                                                    []
+                                                                  |),
+                                                                  [
+                                                                    M.borrow (|
+                                                                      Pointer.Kind.Ref,
+                                                                      hole
+                                                                    |);
+                                                                    M.read (| child |)
+                                                                  ]
                                                                 |)
                                                               |)
                                                             |)
                                                           |)
-                                                        ]
-                                                      |)
-                                                    |)) in
+                                                        |)
+                                                      ]
+                                                    |)
+                                                  |) in
                                                 let _ :=
                                                   is_constant_or_break_match (|
                                                     M.read (| γ |),
                                                     Value.Bool true
                                                   |) in
                                                 M.never_to_any (|
-                                                  M.read (| M.return_ (| Value.Tuple [] |) |)
+                                                  M.read (|
+                                                    M.return_ (|
+                                                      M.call_closure (|
+                                                        Ty.path "usize",
+                                                        M.get_associated_function (|
+                                                          Ty.apply
+                                                            (Ty.path
+                                                              "alloc::collections::binary_heap::Hole")
+                                                            []
+                                                            [ T ],
+                                                          "pos",
+                                                          [],
+                                                          []
+                                                        |),
+                                                        [ M.borrow (| Pointer.Kind.Ref, hole |) ]
+                                                      |)
+                                                    |)
+                                                  |)
                                                 |)));
                                             fun γ => ltac:(M.monadic (Value.Tuple []))
                                           ]
@@ -2848,8 +3041,7 @@ Module collections.
                           |)))
                       |)
                     |) in
-                  M.alloc (|
-                    Ty.tuple [],
+                  let~ _ : Ty.tuple [] :=
                     M.match_operator (|
                       Ty.tuple [],
                       M.alloc (| Ty.tuple [], Value.Tuple [] |),
@@ -2857,87 +3049,87 @@ Module collections.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
                                   Ty.path "bool",
-                                  LogicalOp.and (|
+                                  BinOp.eq,
+                                  [
+                                    M.read (| child |);
                                     M.call_closure (|
-                                      Ty.path "bool",
-                                      BinOp.eq,
-                                      [
-                                        M.read (| child |);
+                                      Ty.path "usize",
+                                      BinOp.Wrap.sub,
+                                      [ M.read (| end_ |); Value.Integer IntegerKind.Usize 1 ]
+                                    |)
+                                  ]
+                                |)
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            let γ :=
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  M.get_trait_method (|
+                                    "core::cmp::PartialOrd",
+                                    Ty.apply (Ty.path "&") [] [ T ],
+                                    [],
+                                    [ Ty.apply (Ty.path "&") [] [ T ] ],
+                                    "lt",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.alloc (|
+                                        Ty.apply (Ty.path "&") [] [ T ],
                                         M.call_closure (|
-                                          Ty.path "usize",
-                                          BinOp.Wrap.sub,
-                                          [ M.read (| end_ |); Value.Integer IntegerKind.Usize 1 ]
-                                        |)
-                                      ]
-                                    |),
-                                    ltac:(M.monadic
-                                      (M.call_closure (|
-                                        Ty.path "bool",
-                                        M.get_trait_method (|
-                                          "core::cmp::PartialOrd",
                                           Ty.apply (Ty.path "&") [] [ T ],
-                                          [],
-                                          [ Ty.apply (Ty.path "&") [] [ T ] ],
-                                          "lt",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.alloc (|
+                                          M.get_associated_function (|
+                                            Ty.apply
+                                              (Ty.path "alloc::collections::binary_heap::Hole")
+                                              []
+                                              [ T ],
+                                            "element",
+                                            [],
+                                            []
+                                          |),
+                                          [ M.borrow (| Pointer.Kind.Ref, hole |) ]
+                                        |)
+                                      |)
+                                    |);
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.alloc (|
+                                        Ty.apply (Ty.path "&") [] [ T ],
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (|
+                                            M.call_closure (|
                                               Ty.apply (Ty.path "&") [] [ T ],
-                                              M.call_closure (|
-                                                Ty.apply (Ty.path "&") [] [ T ],
-                                                M.get_associated_function (|
-                                                  Ty.apply
-                                                    (Ty.path
-                                                      "alloc::collections::binary_heap::Hole")
-                                                    []
-                                                    [ T ],
-                                                  "element",
-                                                  [],
+                                              M.get_associated_function (|
+                                                Ty.apply
+                                                  (Ty.path "alloc::collections::binary_heap::Hole")
                                                   []
-                                                |),
-                                                [ M.borrow (| Pointer.Kind.Ref, hole |) ]
-                                              |)
-                                            |)
-                                          |);
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.alloc (|
-                                              Ty.apply (Ty.path "&") [] [ T ],
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (|
-                                                  M.call_closure (|
-                                                    Ty.apply (Ty.path "&") [] [ T ],
-                                                    M.get_associated_function (|
-                                                      Ty.apply
-                                                        (Ty.path
-                                                          "alloc::collections::binary_heap::Hole")
-                                                        []
-                                                        [ T ],
-                                                      "get",
-                                                      [],
-                                                      []
-                                                    |),
-                                                    [
-                                                      M.borrow (| Pointer.Kind.Ref, hole |);
-                                                      M.read (| child |)
-                                                    ]
-                                                  |)
-                                                |)
-                                              |)
+                                                  [ T ],
+                                                "get",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.borrow (| Pointer.Kind.Ref, hole |);
+                                                M.read (| child |)
+                                              ]
                                             |)
                                           |)
-                                        ]
-                                      |)))
-                                  |)
-                                |)) in
+                                        |)
+                                      |)
+                                    |)
+                                  ]
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.read (|
@@ -2959,6 +3151,18 @@ Module collections.
                             |)));
                         fun γ => ltac:(M.monadic (Value.Tuple []))
                       ]
+                    |) in
+                  M.alloc (|
+                    Ty.path "usize",
+                    M.call_closure (|
+                      Ty.path "usize",
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "alloc::collections::binary_heap::Hole") [] [ T ],
+                        "pos",
+                        [],
+                        []
+                      |),
+                      [ M.borrow (| Pointer.Kind.Ref, hole |) ]
                     |)
                   |)
                 |)))
@@ -2973,11 +3177,11 @@ Module collections.
       Global Typeclasses Opaque sift_down_range.
       
       (*
-          unsafe fn sift_down(&mut self, pos: usize) {
+          unsafe fn sift_down(&mut self, pos: usize) -> usize {
               let len = self.len();
               // SAFETY: pos < len is guaranteed by the caller and
               //  obviously len = self.len() <= self.len().
-              unsafe { self.sift_down_range(pos, len) };
+              unsafe { self.sift_down_range(pos, len) }
           }
       *)
       Definition sift_down (T A : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -3006,9 +3210,10 @@ Module collections.
                   |),
                   [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
                 |) in
-              let~ _ : Ty.tuple [] :=
+              M.alloc (|
+                Ty.path "usize",
                 M.call_closure (|
-                  Ty.tuple [],
+                  Ty.path "usize",
                   M.get_associated_function (|
                     Ty.apply (Ty.path "alloc::collections::binary_heap::BinaryHeap") [] [ T; A ],
                     "sift_down_range",
@@ -3020,8 +3225,8 @@ Module collections.
                     M.read (| pos |);
                     M.read (| len |)
                   ]
-                |) in
-              M.alloc (| Ty.tuple [], Value.Tuple [] |)
+                |)
+              |)
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
@@ -3185,27 +3390,26 @@ Module collections.
                             fun γ =>
                               ltac:(M.monadic
                                 (let γ :=
-                                  M.use
-                                    (M.alloc (|
+                                  M.alloc (|
+                                    Ty.path "bool",
+                                    M.call_closure (|
                                       Ty.path "bool",
-                                      M.call_closure (|
-                                        Ty.path "bool",
-                                        BinOp.le,
-                                        [
-                                          M.read (| child |);
-                                          M.call_closure (|
+                                      BinOp.le,
+                                      [
+                                        M.read (| child |);
+                                        M.call_closure (|
+                                          Ty.path "usize",
+                                          M.get_associated_function (|
                                             Ty.path "usize",
-                                            M.get_associated_function (|
-                                              Ty.path "usize",
-                                              "saturating_sub",
-                                              [],
-                                              []
-                                            |),
-                                            [ M.read (| end_ |); Value.Integer IntegerKind.Usize 2 ]
-                                          |)
-                                        ]
-                                      |)
-                                    |)) in
+                                            "saturating_sub",
+                                            [],
+                                            []
+                                          |),
+                                          [ M.read (| end_ |); Value.Integer IntegerKind.Usize 2 ]
+                                        |)
+                                      ]
+                                    |)
+                                  |) in
                                 let _ :=
                                   is_constant_or_break_match (|
                                     M.read (| γ |),
@@ -3369,22 +3573,21 @@ Module collections.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                BinOp.eq,
-                                [
-                                  M.read (| child |);
-                                  M.call_closure (|
-                                    Ty.path "usize",
-                                    BinOp.Wrap.sub,
-                                    [ M.read (| end_ |); Value.Integer IntegerKind.Usize 1 ]
-                                  |)
-                                ]
-                              |)
-                            |)) in
+                              BinOp.eq,
+                              [
+                                M.read (| child |);
+                                M.call_closure (|
+                                  Ty.path "usize",
+                                  BinOp.Wrap.sub,
+                                  [ M.read (| end_ |); Value.Integer IntegerKind.Usize 1 ]
+                                |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
@@ -3520,35 +3723,34 @@ Module collections.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
                                   Ty.path "bool",
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    BinOp.eq,
-                                    [
-                                      M.read (| start |);
-                                      M.call_closure (|
-                                        Ty.path "usize",
-                                        M.get_associated_function (|
-                                          Ty.apply
-                                            (Ty.path "alloc::collections::binary_heap::BinaryHeap")
-                                            []
-                                            [ T; A ],
-                                          "len",
-                                          [],
+                                  BinOp.eq,
+                                  [
+                                    M.read (| start |);
+                                    M.call_closure (|
+                                      Ty.path "usize",
+                                      M.get_associated_function (|
+                                        Ty.apply
+                                          (Ty.path "alloc::collections::binary_heap::BinaryHeap")
                                           []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| self |) |)
-                                          |)
-                                        ]
-                                      |)
-                                    ]
-                                  |)
-                                |)) in
+                                          [ T; A ],
+                                        "len",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| self |) |)
+                                        |)
+                                      ]
+                                    |)
+                                  ]
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.never_to_any (| M.read (| M.return_ (| Value.Tuple [] |) |) |)));
@@ -3584,15 +3786,14 @@ Module collections.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
                                   Ty.path "bool",
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    BinOp.lt,
-                                    [ M.read (| start |); M.read (| tail_len |) ]
-                                  |)
-                                |)) in
+                                  BinOp.lt,
+                                  [ M.read (| start |); M.read (| tail_len |) ]
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             Value.Bool true));
@@ -3605,36 +3806,35 @@ Module collections.
                                 fun γ =>
                                   ltac:(M.monadic
                                     (let γ :=
-                                      M.use
-                                        (M.alloc (|
+                                      M.alloc (|
+                                        Ty.path "bool",
+                                        M.call_closure (|
                                           Ty.path "bool",
-                                          M.call_closure (|
-                                            Ty.path "bool",
-                                            BinOp.le,
-                                            [
-                                              M.call_closure (|
-                                                Ty.path "usize",
-                                                M.get_associated_function (|
-                                                  Ty.apply
-                                                    (Ty.path
-                                                      "alloc::collections::binary_heap::BinaryHeap")
-                                                    []
-                                                    [ T; A ],
-                                                  "len",
-                                                  [],
+                                          BinOp.le,
+                                          [
+                                            M.call_closure (|
+                                              Ty.path "usize",
+                                              M.get_associated_function (|
+                                                Ty.apply
+                                                  (Ty.path
+                                                    "alloc::collections::binary_heap::BinaryHeap")
                                                   []
-                                                |),
-                                                [
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.deref (| M.read (| self |) |)
-                                                  |)
-                                                ]
-                                              |);
-                                              Value.Integer IntegerKind.Usize 2048
-                                            ]
-                                          |)
-                                        |)) in
+                                                  [ T; A ],
+                                                "len",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (| M.read (| self |) |)
+                                                |)
+                                              ]
+                                            |);
+                                            Value.Integer IntegerKind.Usize 2048
+                                          ]
+                                        |)
+                                      |) in
                                     let _ :=
                                       is_constant_or_break_match (|
                                         M.read (| γ |),
@@ -3743,7 +3943,7 @@ Module collections.
                       [
                         fun γ =>
                           ltac:(M.monadic
-                            (let γ := M.use better_to_rebuild in
+                            (let γ := better_to_rebuild in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.read (|
@@ -4011,15 +4211,14 @@ Module collections.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
                                   Ty.path "bool",
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    BinOp.gt,
-                                    [ M.read (| n |); Value.Integer IntegerKind.Usize 0 ]
-                                  |)
-                                |)) in
+                                  BinOp.gt,
+                                  [ M.read (| n |); Value.Integer IntegerKind.Usize 0 ]
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.read (|
@@ -4033,9 +4232,9 @@ Module collections.
                                     [ M.read (| β |); Value.Integer IntegerKind.Usize 1 ]
                                   |)
                                 |) in
-                              let~ _ : Ty.tuple [] :=
+                              let~ _ : Ty.path "usize" :=
                                 M.call_closure (|
-                                  Ty.tuple [],
+                                  Ty.path "usize",
                                   M.get_associated_function (|
                                     Ty.apply
                                       (Ty.path "alloc::collections::binary_heap::BinaryHeap")
@@ -4121,52 +4320,47 @@ Module collections.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                BinOp.lt,
-                                [
-                                  M.call_closure (|
-                                    Ty.path "usize",
-                                    M.get_associated_function (|
-                                      Ty.apply
-                                        (Ty.path "alloc::collections::binary_heap::BinaryHeap")
-                                        []
-                                        [ T; A ],
-                                      "len",
-                                      [],
+                              BinOp.lt,
+                              [
+                                M.call_closure (|
+                                  Ty.path "usize",
+                                  M.get_associated_function (|
+                                    Ty.apply
+                                      (Ty.path "alloc::collections::binary_heap::BinaryHeap")
                                       []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| self |) |)
-                                      |)
-                                    ]
-                                  |);
-                                  M.call_closure (|
-                                    Ty.path "usize",
-                                    M.get_associated_function (|
-                                      Ty.apply
-                                        (Ty.path "alloc::collections::binary_heap::BinaryHeap")
-                                        []
-                                        [ T; A ],
-                                      "len",
-                                      [],
+                                      [ T; A ],
+                                    "len",
+                                    [],
+                                    []
+                                  |),
+                                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |)
+                                  ]
+                                |);
+                                M.call_closure (|
+                                  Ty.path "usize",
+                                  M.get_associated_function (|
+                                    Ty.apply
+                                      (Ty.path "alloc::collections::binary_heap::BinaryHeap")
                                       []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| other |) |)
-                                      |)
-                                    ]
-                                  |)
-                                ]
-                              |)
-                            |)) in
+                                      [ T; A ],
+                                    "len",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| other |) |)
+                                    |)
+                                  ]
+                                |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
@@ -4437,32 +4631,37 @@ Module collections.
                                               fun γ =>
                                                 ltac:(M.monadic
                                                   (let γ :=
-                                                    M.use
-                                                      (M.alloc (|
+                                                    M.alloc (|
+                                                      Ty.path "bool",
+                                                      M.call_closure (|
                                                         Ty.path "bool",
-                                                        LogicalOp.and (|
-                                                          M.call_closure (|
-                                                            Ty.path "bool",
-                                                            UnOp.not,
-                                                            [ M.read (| keep |) ]
-                                                          |),
-                                                          ltac:(M.monadic
-                                                            (M.call_closure (|
-                                                              Ty.path "bool",
-                                                              BinOp.lt,
-                                                              [
-                                                                M.read (| i |);
-                                                                M.read (|
-                                                                  M.SubPointer.get_struct_record_field (|
-                                                                    guard,
-                                                                    "alloc::collections::binary_heap::RebuildOnDrop",
-                                                                    "rebuild_from"
-                                                                  |)
-                                                                |)
-                                                              ]
-                                                            |)))
-                                                        |)
-                                                      |)) in
+                                                        UnOp.not,
+                                                        [ M.read (| keep |) ]
+                                                      |)
+                                                    |) in
+                                                  let _ :=
+                                                    is_constant_or_break_match (|
+                                                      M.read (| γ |),
+                                                      Value.Bool true
+                                                    |) in
+                                                  let γ :=
+                                                    M.alloc (|
+                                                      Ty.path "bool",
+                                                      M.call_closure (|
+                                                        Ty.path "bool",
+                                                        BinOp.lt,
+                                                        [
+                                                          M.read (| i |);
+                                                          M.read (|
+                                                            M.SubPointer.get_struct_record_field (|
+                                                              guard,
+                                                              "alloc::collections::binary_heap::RebuildOnDrop",
+                                                              "rebuild_from"
+                                                            |)
+                                                          |)
+                                                        ]
+                                                      |)
+                                                    |) in
                                                   let _ :=
                                                     is_constant_or_break_match (|
                                                       M.read (| γ |),
@@ -5423,7 +5622,7 @@ Module collections.
                   [
                     fun γ =>
                       ltac:(M.monadic
-                        (let γ := M.use (M.alloc (| Ty.path "bool", Value.Bool true |)) in
+                        (let γ := M.alloc (| Ty.path "bool", Value.Bool true |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
@@ -5434,38 +5633,37 @@ Module collections.
                                 fun γ =>
                                   ltac:(M.monadic
                                     (let γ :=
-                                      M.use
-                                        (M.alloc (|
+                                      M.alloc (|
+                                        Ty.path "bool",
+                                        M.call_closure (|
                                           Ty.path "bool",
-                                          M.call_closure (|
-                                            Ty.path "bool",
-                                            UnOp.not,
-                                            [
-                                              M.call_closure (|
-                                                Ty.path "bool",
-                                                BinOp.lt,
-                                                [
-                                                  M.read (| pos |);
-                                                  M.call_closure (|
-                                                    Ty.path "usize",
-                                                    M.get_associated_function (|
-                                                      Ty.apply (Ty.path "slice") [] [ T ],
-                                                      "len",
-                                                      [],
-                                                      []
-                                                    |),
-                                                    [
-                                                      M.borrow (|
-                                                        Pointer.Kind.Ref,
-                                                        M.deref (| M.read (| data |) |)
-                                                      |)
-                                                    ]
-                                                  |)
-                                                ]
-                                              |)
-                                            ]
-                                          |)
-                                        |)) in
+                                          UnOp.not,
+                                          [
+                                            M.call_closure (|
+                                              Ty.path "bool",
+                                              BinOp.lt,
+                                              [
+                                                M.read (| pos |);
+                                                M.call_closure (|
+                                                  Ty.path "usize",
+                                                  M.get_associated_function (|
+                                                    Ty.apply (Ty.path "slice") [] [ T ],
+                                                    "len",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [
+                                                    M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (| M.read (| data |) |)
+                                                    |)
+                                                  ]
+                                                |)
+                                              ]
+                                            |)
+                                          ]
+                                        |)
+                                      |) in
                                     let _ :=
                                       is_constant_or_break_match (|
                                         M.read (| γ |),
@@ -5665,7 +5863,7 @@ Module collections.
                   [
                     fun γ =>
                       ltac:(M.monadic
-                        (let γ := M.use (M.alloc (| Ty.path "bool", Value.Bool true |)) in
+                        (let γ := M.alloc (| Ty.path "bool", Value.Bool true |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
@@ -5676,30 +5874,29 @@ Module collections.
                                 fun γ =>
                                   ltac:(M.monadic
                                     (let γ :=
-                                      M.use
-                                        (M.alloc (|
+                                      M.alloc (|
+                                        Ty.path "bool",
+                                        M.call_closure (|
                                           Ty.path "bool",
-                                          M.call_closure (|
-                                            Ty.path "bool",
-                                            UnOp.not,
-                                            [
-                                              M.call_closure (|
-                                                Ty.path "bool",
-                                                BinOp.ne,
-                                                [
-                                                  M.read (| index |);
-                                                  M.read (|
-                                                    M.SubPointer.get_struct_record_field (|
-                                                      M.deref (| M.read (| self |) |),
-                                                      "alloc::collections::binary_heap::Hole",
-                                                      "pos"
-                                                    |)
+                                          UnOp.not,
+                                          [
+                                            M.call_closure (|
+                                              Ty.path "bool",
+                                              BinOp.ne,
+                                              [
+                                                M.read (| index |);
+                                                M.read (|
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (| M.read (| self |) |),
+                                                    "alloc::collections::binary_heap::Hole",
+                                                    "pos"
                                                   |)
-                                                ]
-                                              |)
-                                            ]
-                                          |)
-                                        |)) in
+                                                |)
+                                              ]
+                                            |)
+                                          ]
+                                        |)
+                                      |) in
                                     let _ :=
                                       is_constant_or_break_match (|
                                         M.read (| γ |),
@@ -5727,7 +5924,7 @@ Module collections.
                   [
                     fun γ =>
                       ltac:(M.monadic
-                        (let γ := M.use (M.alloc (| Ty.path "bool", Value.Bool true |)) in
+                        (let γ := M.alloc (| Ty.path "bool", Value.Bool true |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
@@ -5738,46 +5935,45 @@ Module collections.
                                 fun γ =>
                                   ltac:(M.monadic
                                     (let γ :=
-                                      M.use
-                                        (M.alloc (|
+                                      M.alloc (|
+                                        Ty.path "bool",
+                                        M.call_closure (|
                                           Ty.path "bool",
-                                          M.call_closure (|
-                                            Ty.path "bool",
-                                            UnOp.not,
-                                            [
-                                              M.call_closure (|
-                                                Ty.path "bool",
-                                                BinOp.lt,
-                                                [
-                                                  M.read (| index |);
-                                                  M.call_closure (|
-                                                    Ty.path "usize",
-                                                    M.get_associated_function (|
-                                                      Ty.apply (Ty.path "slice") [] [ T ],
-                                                      "len",
-                                                      [],
-                                                      []
-                                                    |),
-                                                    [
-                                                      M.borrow (|
-                                                        Pointer.Kind.Ref,
-                                                        M.deref (|
-                                                          M.read (|
-                                                            M.SubPointer.get_struct_record_field (|
-                                                              M.deref (| M.read (| self |) |),
-                                                              "alloc::collections::binary_heap::Hole",
-                                                              "data"
-                                                            |)
+                                          UnOp.not,
+                                          [
+                                            M.call_closure (|
+                                              Ty.path "bool",
+                                              BinOp.lt,
+                                              [
+                                                M.read (| index |);
+                                                M.call_closure (|
+                                                  Ty.path "usize",
+                                                  M.get_associated_function (|
+                                                    Ty.apply (Ty.path "slice") [] [ T ],
+                                                    "len",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [
+                                                    M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (|
+                                                        M.read (|
+                                                          M.SubPointer.get_struct_record_field (|
+                                                            M.deref (| M.read (| self |) |),
+                                                            "alloc::collections::binary_heap::Hole",
+                                                            "data"
                                                           |)
                                                         |)
                                                       |)
-                                                    ]
-                                                  |)
-                                                ]
-                                              |)
-                                            ]
-                                          |)
-                                        |)) in
+                                                    |)
+                                                  ]
+                                                |)
+                                              ]
+                                            |)
+                                          ]
+                                        |)
+                                      |) in
                                     let _ :=
                                       is_constant_or_break_match (|
                                         M.read (| γ |),
@@ -5875,7 +6071,7 @@ Module collections.
                   [
                     fun γ =>
                       ltac:(M.monadic
-                        (let γ := M.use (M.alloc (| Ty.path "bool", Value.Bool true |)) in
+                        (let γ := M.alloc (| Ty.path "bool", Value.Bool true |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
@@ -5886,30 +6082,29 @@ Module collections.
                                 fun γ =>
                                   ltac:(M.monadic
                                     (let γ :=
-                                      M.use
-                                        (M.alloc (|
+                                      M.alloc (|
+                                        Ty.path "bool",
+                                        M.call_closure (|
                                           Ty.path "bool",
-                                          M.call_closure (|
-                                            Ty.path "bool",
-                                            UnOp.not,
-                                            [
-                                              M.call_closure (|
-                                                Ty.path "bool",
-                                                BinOp.ne,
-                                                [
-                                                  M.read (| index |);
-                                                  M.read (|
-                                                    M.SubPointer.get_struct_record_field (|
-                                                      M.deref (| M.read (| self |) |),
-                                                      "alloc::collections::binary_heap::Hole",
-                                                      "pos"
-                                                    |)
+                                          UnOp.not,
+                                          [
+                                            M.call_closure (|
+                                              Ty.path "bool",
+                                              BinOp.ne,
+                                              [
+                                                M.read (| index |);
+                                                M.read (|
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (| M.read (| self |) |),
+                                                    "alloc::collections::binary_heap::Hole",
+                                                    "pos"
                                                   |)
-                                                ]
-                                              |)
-                                            ]
-                                          |)
-                                        |)) in
+                                                |)
+                                              ]
+                                            |)
+                                          ]
+                                        |)
+                                      |) in
                                     let _ :=
                                       is_constant_or_break_match (|
                                         M.read (| γ |),
@@ -5937,7 +6132,7 @@ Module collections.
                   [
                     fun γ =>
                       ltac:(M.monadic
-                        (let γ := M.use (M.alloc (| Ty.path "bool", Value.Bool true |)) in
+                        (let γ := M.alloc (| Ty.path "bool", Value.Bool true |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
@@ -5948,46 +6143,45 @@ Module collections.
                                 fun γ =>
                                   ltac:(M.monadic
                                     (let γ :=
-                                      M.use
-                                        (M.alloc (|
+                                      M.alloc (|
+                                        Ty.path "bool",
+                                        M.call_closure (|
                                           Ty.path "bool",
-                                          M.call_closure (|
-                                            Ty.path "bool",
-                                            UnOp.not,
-                                            [
-                                              M.call_closure (|
-                                                Ty.path "bool",
-                                                BinOp.lt,
-                                                [
-                                                  M.read (| index |);
-                                                  M.call_closure (|
-                                                    Ty.path "usize",
-                                                    M.get_associated_function (|
-                                                      Ty.apply (Ty.path "slice") [] [ T ],
-                                                      "len",
-                                                      [],
-                                                      []
-                                                    |),
-                                                    [
-                                                      M.borrow (|
-                                                        Pointer.Kind.Ref,
-                                                        M.deref (|
-                                                          M.read (|
-                                                            M.SubPointer.get_struct_record_field (|
-                                                              M.deref (| M.read (| self |) |),
-                                                              "alloc::collections::binary_heap::Hole",
-                                                              "data"
-                                                            |)
+                                          UnOp.not,
+                                          [
+                                            M.call_closure (|
+                                              Ty.path "bool",
+                                              BinOp.lt,
+                                              [
+                                                M.read (| index |);
+                                                M.call_closure (|
+                                                  Ty.path "usize",
+                                                  M.get_associated_function (|
+                                                    Ty.apply (Ty.path "slice") [] [ T ],
+                                                    "len",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [
+                                                    M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (|
+                                                        M.read (|
+                                                          M.SubPointer.get_struct_record_field (|
+                                                            M.deref (| M.read (| self |) |),
+                                                            "alloc::collections::binary_heap::Hole",
+                                                            "data"
                                                           |)
                                                         |)
                                                       |)
-                                                    ]
-                                                  |)
-                                                ]
-                                              |)
-                                            ]
-                                          |)
-                                        |)) in
+                                                    |)
+                                                  ]
+                                                |)
+                                              ]
+                                            |)
+                                          ]
+                                        |)
+                                      |) in
                                     let _ :=
                                       is_constant_or_break_match (|
                                         M.read (| γ |),
@@ -6077,7 +6271,7 @@ Module collections.
                   let~ _ : Ty.tuple [] :=
                     M.call_closure (|
                       Ty.tuple [],
-                      M.get_function (| "core::intrinsics::copy_nonoverlapping", [], [ T ] |),
+                      M.get_function (| "core::ptr::copy_nonoverlapping", [], [ T ] |),
                       [
                         M.read (| index_ptr |);
                         M.read (| hole_ptr |);
@@ -6145,7 +6339,7 @@ Module collections.
               let~ _ : Ty.tuple [] :=
                 M.call_closure (|
                   Ty.tuple [],
-                  M.get_function (| "core::intrinsics::copy_nonoverlapping", [], [ T ] |),
+                  M.get_function (| "core::ptr::copy_nonoverlapping", [], [ T ] |),
                   [
                     M.borrow (|
                       Pointer.Kind.ConstPointer,

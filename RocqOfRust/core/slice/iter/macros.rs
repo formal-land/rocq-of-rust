@@ -30,7 +30,7 @@ macro_rules! if_zst {
             $zst_body
         } else {
             // SAFETY: for non-ZSTs, the type invariant ensures it cannot be null
-            let $end = unsafe { *(&raw const $this.end_or_len).cast::<NonNull<T>>() };
+            let $end = unsafe { mem::transmute::<*const T, NonNull<T>>($this.end_or_len) };
             $other_body
         }
     }};
@@ -54,7 +54,7 @@ macro_rules! len {
                 // To get rid of some bounds checks (see `position`), we use ptr_sub instead of
                 // offset_from (Tested by `codegen/slice-position-bounds-check`.)
                 // SAFETY: by the type invariant pointers are aligned and `start <= end`
-                unsafe { end.sub_ptr($self.ptr) }
+                unsafe { end.offset_from_unsigned($self.ptr) }
             },
         )
     }};
@@ -68,6 +68,7 @@ macro_rules! iterator {
         $raw_mut:tt,
         {$( $mut_:tt )?},
         $into_ref:ident,
+        $array_ref:ident,
         {$($extra:tt)*}
     ) => {
         impl<'a, T> $name<'a, T> {
@@ -154,16 +155,62 @@ macro_rules! iterator {
 
             #[inline]
             fn next(&mut self) -> Option<$elem> {
-                // could be implemented with slices, but this avoids bounds checks
+                // intentionally not using the helpers because this is
+                // one of the most mono'd things in the library.
 
-                // SAFETY: The call to `next_unchecked` is
-                // safe since we check if the iterator is empty first.
+                let ptr = self.ptr;
+                let end_or_len = self.end_or_len;
+                // SAFETY: See inner comments. (For some reason having multiple
+                // block breaks inlining this -- if you can fix that please do!)
                 unsafe {
-                    if is_empty!(self) {
-                        None
+                    if T::IS_ZST {
+                        let len = end_or_len.addr();
+                        if len == 0 {
+                            return None;
+                        }
+                        // SAFETY: just checked that it's not zero, so subtracting one
+                        // cannot wrap.  (Ideally this would be `checked_sub`, which
+                        // does the same thing internally, but as of 2025-02 that
+                        // doesn't optimize quite as small in MIR.)
+                        self.end_or_len = without_provenance_mut(len.unchecked_sub(1));
                     } else {
-                        Some(self.next_unchecked())
+                        // SAFETY: by type invariant, the `end_or_len` field is always
+                        // non-null for a non-ZST pointee.  (This transmute ensures we
+                        // get `!nonnull` metadata on the load of the field.)
+                        if ptr == crate::intrinsics::transmute::<$ptr, NonNull<T>>(end_or_len) {
+                            return None;
+                        }
+                        // SAFETY: since it's not empty, per the check above, moving
+                        // forward one keeps us inside the slice, and this is valid.
+                        self.ptr = ptr.add(1);
                     }
+                    // SAFETY: Now that we know it wasn't empty and we've moved past
+                    // the first one (to avoid giving a duplicate `&mut` next time),
+                    // we can give out a reference to it.
+                    Some({ptr}.$into_ref())
+                }
+            }
+
+            fn next_chunk<const N:usize>(&mut self) -> Result<[$elem; N], crate::array::IntoIter<$elem, N>> {
+                if T::IS_ZST {
+                    return crate::array::iter_next_chunk(self);
+                }
+                let len = len!(self);
+                if len >= N {
+                    // SAFETY: we are just getting an array of [T; N] and moving the pointer over a little
+                    let r = unsafe { self.post_inc_start(N).cast_array().$into_ref() }
+                        .$array_ref(); // must convert &[T; N] to [&T; N]
+                    Ok(r)
+                } else {
+                    // cant use $array_ref because theres no builtin for &mut [MU<T>; N] -> [&mut MU<T>; N]
+                    // cant use copy_nonoverlapping as the $elem is of type &{mut} T instead of T
+                    let mut a = [const { crate::mem::MaybeUninit::<$elem>::uninit() }; N];
+                    for into in (&mut a).into_iter().take(len) {
+                        // SAFETY: take(n) limits to remainder (slice produces worse codegen)
+                        into.write(unsafe { self.post_inc_start(1).$into_ref() });
+                    }
+                    // SAFETY: we just initialized elements 0..len
+                    unsafe { Err(crate::array::IntoIter::new_unchecked(a, 0..len)) }
                 }
             }
 
@@ -327,7 +374,6 @@ macro_rules! iterator {
             // because this simple implementation generates less LLVM IR and is
             // faster to compile. Also, the `assume` avoids a bounds check.
             #[inline]
-            #[rustc_inherit_overflow_checks]
             fn position<P>(&mut self, mut predicate: P) -> Option<usize> where
                 Self: Sized,
                 P: FnMut(Self::Item) -> bool,

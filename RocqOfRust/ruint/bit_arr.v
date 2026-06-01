@@ -103,6 +103,20 @@ Module bit_arr.
         (* Instance *) [ ("fmt", InstanceField.Method (fmt BITS LIMBS)) ].
   End Impl_core_fmt_Debug_for_ruint_bit_arr_Bits_BITS_LIMBS.
   
+  Module Impl_core_clone_TrivialClone_for_ruint_bit_arr_Bits_BITS_LIMBS.
+    Definition Self (BITS LIMBS : Value.t) : Ty.t :=
+      Ty.apply (Ty.path "ruint::bit_arr::Bits") [ BITS; LIMBS ] [].
+    
+    Axiom Implements :
+      forall (BITS LIMBS : Value.t),
+      M.IsTraitInstance
+        "core::clone::TrivialClone"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self BITS LIMBS)
+        (* Instance *) [].
+  End Impl_core_clone_TrivialClone_for_ruint_bit_arr_Bits_BITS_LIMBS.
+  
   Module Impl_core_clone_Clone_for_ruint_bit_arr_Bits_BITS_LIMBS.
     Definition Self (BITS LIMBS : Value.t) : Ty.t :=
       Ty.apply (Ty.path "ruint::bit_arr::Bits") [ BITS; LIMBS ] [].
@@ -2531,30 +2545,29 @@ Module bit_arr.
               fun γ =>
                 ltac:(M.monadic
                   (let γ :=
-                    M.use
-                      (M.alloc (|
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
                         Ty.path "bool",
-                        M.call_closure (|
-                          Ty.path "bool",
-                          M.get_associated_function (|
-                            Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                            "bit",
-                            [],
-                            []
-                          |),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.SubPointer.get_struct_tuple_field (|
-                                M.deref (| M.read (| self |) |),
-                                "ruint::bit_arr::Bits",
-                                0
-                              |)
-                            |);
-                            M.read (| index |)
-                          ]
-                        |)
-                      |)) in
+                        M.get_associated_function (|
+                          Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                          "bit",
+                          [],
+                          []
+                        |),
+                        [
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_tuple_field (|
+                              M.deref (| M.read (| self |) |),
+                              "ruint::bit_arr::Bits",
+                              0
+                            |)
+                          |);
+                          M.read (| index |)
+                        ]
+                      |)
+                    |) in
                   let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                   M.borrow (|
                     Pointer.Kind.Ref,

@@ -429,30 +429,20 @@ Module interpreter_action.
                   LogicalOp.and (|
                     M.call_closure (|
                       Ty.path "bool",
-                      M.get_trait_method (|
-                        "core::cmp::PartialEq",
-                        Ty.path "alloy_primitives::bits::address::Address",
-                        [],
-                        [ Ty.path "alloy_primitives::bits::address::Address" ],
-                        "eq",
-                        [],
-                        []
-                      |),
+                      BinOp.eq,
                       [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
+                        M.read (|
                           M.SubPointer.get_struct_record_field (|
                             M.deref (| M.read (| self |) |),
                             "revm_interpreter::interpreter_action::create_inputs::CreateInputs",
-                            "caller"
+                            "gas_limit"
                           |)
                         |);
-                        M.borrow (|
-                          Pointer.Kind.Ref,
+                        M.read (|
                           M.SubPointer.get_struct_record_field (|
                             M.deref (| M.read (| other |) |),
                             "revm_interpreter::interpreter_action::create_inputs::CreateInputs",
-                            "caller"
+                            "gas_limit"
                           |)
                         |)
                       ]
@@ -462,9 +452,9 @@ Module interpreter_action.
                         Ty.path "bool",
                         M.get_trait_method (|
                           "core::cmp::PartialEq",
-                          Ty.path "revm_context_interface::cfg::CreateScheme",
+                          Ty.path "alloy_primitives::bits::address::Address",
                           [],
-                          [ Ty.path "revm_context_interface::cfg::CreateScheme" ],
+                          [ Ty.path "alloy_primitives::bits::address::Address" ],
                           "eq",
                           [],
                           []
@@ -475,7 +465,7 @@ Module interpreter_action.
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| self |) |),
                               "revm_interpreter::interpreter_action::create_inputs::CreateInputs",
-                              "scheme"
+                              "caller"
                             |)
                           |);
                           M.borrow (|
@@ -483,7 +473,7 @@ Module interpreter_action.
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| other |) |),
                               "revm_interpreter::interpreter_action::create_inputs::CreateInputs",
-                              "scheme"
+                              "caller"
                             |)
                           |)
                         ]
@@ -494,18 +484,9 @@ Module interpreter_action.
                       Ty.path "bool",
                       M.get_trait_method (|
                         "core::cmp::PartialEq",
-                        Ty.apply
-                          (Ty.path "ruint::Uint")
-                          [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
-                          [],
+                        Ty.path "revm_context_interface::cfg::CreateScheme",
                         [],
-                        [
-                          Ty.apply
-                            (Ty.path "ruint::Uint")
-                            [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4
-                            ]
-                            []
-                        ],
+                        [ Ty.path "revm_context_interface::cfg::CreateScheme" ],
                         "eq",
                         [],
                         []
@@ -516,7 +497,7 @@ Module interpreter_action.
                           M.SubPointer.get_struct_record_field (|
                             M.deref (| M.read (| self |) |),
                             "revm_interpreter::interpreter_action::create_inputs::CreateInputs",
-                            "value"
+                            "scheme"
                           |)
                         |);
                         M.borrow (|
@@ -524,7 +505,7 @@ Module interpreter_action.
                           M.SubPointer.get_struct_record_field (|
                             M.deref (| M.read (| other |) |),
                             "revm_interpreter::interpreter_action::create_inputs::CreateInputs",
-                            "value"
+                            "scheme"
                           |)
                         |)
                       ]
@@ -535,9 +516,17 @@ Module interpreter_action.
                     Ty.path "bool",
                     M.get_trait_method (|
                       "core::cmp::PartialEq",
-                      Ty.path "alloy_primitives::bytes_::Bytes",
+                      Ty.apply
+                        (Ty.path "ruint::Uint")
+                        [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                        [],
                       [],
-                      [ Ty.path "alloy_primitives::bytes_::Bytes" ],
+                      [
+                        Ty.apply
+                          (Ty.path "ruint::Uint")
+                          [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                          []
+                      ],
                       "eq",
                       [],
                       []
@@ -548,7 +537,7 @@ Module interpreter_action.
                         M.SubPointer.get_struct_record_field (|
                           M.deref (| M.read (| self |) |),
                           "revm_interpreter::interpreter_action::create_inputs::CreateInputs",
-                          "init_code"
+                          "value"
                         |)
                       |);
                       M.borrow (|
@@ -556,7 +545,7 @@ Module interpreter_action.
                         M.SubPointer.get_struct_record_field (|
                           M.deref (| M.read (| other |) |),
                           "revm_interpreter::interpreter_action::create_inputs::CreateInputs",
-                          "init_code"
+                          "value"
                         |)
                       |)
                     ]
@@ -565,20 +554,30 @@ Module interpreter_action.
               ltac:(M.monadic
                 (M.call_closure (|
                   Ty.path "bool",
-                  BinOp.eq,
+                  M.get_trait_method (|
+                    "core::cmp::PartialEq",
+                    Ty.path "alloy_primitives::bytes_::Bytes",
+                    [],
+                    [ Ty.path "alloy_primitives::bytes_::Bytes" ],
+                    "eq",
+                    [],
+                    []
+                  |),
                   [
-                    M.read (|
+                    M.borrow (|
+                      Pointer.Kind.Ref,
                       M.SubPointer.get_struct_record_field (|
                         M.deref (| M.read (| self |) |),
                         "revm_interpreter::interpreter_action::create_inputs::CreateInputs",
-                        "gas_limit"
+                        "init_code"
                       |)
                     |);
-                    M.read (|
+                    M.borrow (|
+                      Pointer.Kind.Ref,
                       M.SubPointer.get_struct_record_field (|
                         M.deref (| M.read (| other |) |),
                         "revm_interpreter::interpreter_action::create_inputs::CreateInputs",
-                        "gas_limit"
+                        "init_code"
                       |)
                     |)
                   ]

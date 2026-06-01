@@ -175,6 +175,42 @@ Module iter.
           M.IsAssociatedFunction.C (Self I) "new" (new I).
         Admitted.
         Global Typeclasses Opaque new.
+        
+        (*
+            pub fn into_inner(self) -> I {
+                self.it
+            }
+        *)
+        Definition into_inner
+            (I : Ty.t)
+            (ε : list Value.t)
+            (τ : list Ty.t)
+            (α : list Value.t)
+            : M :=
+          let Self : Ty.t := Self I in
+          match ε, τ, α with
+          | [], [], [ self ] =>
+            ltac:(M.monadic
+              (let self :=
+                M.alloc (|
+                  Ty.apply (Ty.path "core::iter::adapters::copied::Copied") [] [ I ],
+                  self
+                |) in
+              M.read (|
+                M.SubPointer.get_struct_record_field (|
+                  self,
+                  "core::iter::adapters::copied::Copied",
+                  "it"
+                |)
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        Global Instance AssociatedFunction_into_inner :
+          forall (I : Ty.t),
+          M.IsAssociatedFunction.C (Self I) "into_inner" (into_inner I).
+        Admitted.
+        Global Typeclasses Opaque into_inner.
       End Impl_core_iter_adapters_copied_Copied_I.
       
       (*
@@ -1523,11 +1559,10 @@ Module iter.
                           fun γ =>
                             ltac:(M.monadic
                               (let γ :=
-                                M.use
-                                  (get_constant (|
-                                    "core::mem::SizedTypeProperties::IS_ZST",
-                                    Ty.path "bool"
-                                  |)) in
+                                get_constant (|
+                                  "core::mem::SizedTypeProperties::IS_ZST",
+                                  Ty.path "bool"
+                                |) in
                               let _ :=
                                 is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                               M.never_to_any (|
@@ -1540,15 +1575,14 @@ Module iter.
                                         fun γ =>
                                           ltac:(M.monadic
                                             (let γ :=
-                                              M.use
-                                                (M.alloc (|
+                                              M.alloc (|
+                                                Ty.path "bool",
+                                                M.call_closure (|
                                                   Ty.path "bool",
-                                                  M.call_closure (|
-                                                    Ty.path "bool",
-                                                    BinOp.lt,
-                                                    [ M.read (| len |); N ]
-                                                  |)
-                                                |)) in
+                                                  BinOp.lt,
+                                                  [ M.read (| len |); N ]
+                                                |)
+                                              |) in
                                             let _ :=
                                               is_constant_or_break_match (|
                                                 M.read (| γ |),
@@ -1753,15 +1787,14 @@ Module iter.
                           fun γ =>
                             ltac:(M.monadic
                               (let γ :=
-                                M.use
-                                  (M.alloc (|
+                                M.alloc (|
+                                  Ty.path "bool",
+                                  M.call_closure (|
                                     Ty.path "bool",
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      BinOp.lt,
-                                      [ M.read (| len |); N ]
-                                    |)
-                                  |)) in
+                                    BinOp.lt,
+                                    [ M.read (| len |); N ]
+                                  |)
+                                |) in
                               let _ :=
                                 is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                               M.never_to_any (|
@@ -1770,7 +1803,7 @@ Module iter.
                                     M.call_closure (|
                                       Ty.tuple [],
                                       M.get_function (|
-                                        "core::intrinsics::copy_nonoverlapping",
+                                        "core::ptr::copy_nonoverlapping",
                                         [],
                                         [ T ]
                                       |),
@@ -1998,7 +2031,7 @@ Module iter.
                     let~ _ : Ty.tuple [] :=
                       M.call_closure (|
                         Ty.tuple [],
-                        M.get_function (| "core::intrinsics::copy_nonoverlapping", [], [ T ] |),
+                        M.get_function (| "core::ptr::copy_nonoverlapping", [], [ T ] |),
                         [
                           M.call_closure (|
                             Ty.apply (Ty.path "*const") [] [ T ],

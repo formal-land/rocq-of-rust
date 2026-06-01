@@ -365,12 +365,28 @@ Module cyclic_dependencies.
                                                   fun γ =>
                                                     ltac:(M.monadic
                                                       (let γ :=
-                                                        M.use
-                                                          (M.alloc (|
+                                                        M.alloc (|
+                                                          Ty.path "bool",
+                                                          M.match_operator (|
                                                             Ty.path "bool",
-                                                            M.match_operator (|
-                                                              Ty.path "bool",
-                                                              M.alloc (|
+                                                            M.alloc (|
+                                                              Ty.apply
+                                                                (Ty.path
+                                                                  "core::ops::control_flow::ControlFlow")
+                                                                []
+                                                                [
+                                                                  Ty.apply
+                                                                    (Ty.path "core::result::Result")
+                                                                    []
+                                                                    [
+                                                                      Ty.path
+                                                                        "core::convert::Infallible";
+                                                                      Ty.path
+                                                                        "move_binary_format::errors::PartialVMError"
+                                                                    ];
+                                                                  Ty.path "bool"
+                                                                ],
+                                                              M.call_closure (|
                                                                 Ty.apply
                                                                   (Ty.path
                                                                     "core::ops::control_flow::ControlFlow")
@@ -388,26 +404,24 @@ Module cyclic_dependencies.
                                                                       ];
                                                                     Ty.path "bool"
                                                                   ],
-                                                                M.call_closure (|
+                                                                M.get_trait_method (|
+                                                                  "core::ops::try_trait::Try",
                                                                   Ty.apply
-                                                                    (Ty.path
-                                                                      "core::ops::control_flow::ControlFlow")
+                                                                    (Ty.path "core::result::Result")
                                                                     []
                                                                     [
-                                                                      Ty.apply
-                                                                        (Ty.path
-                                                                          "core::result::Result")
-                                                                        []
-                                                                        [
-                                                                          Ty.path
-                                                                            "core::convert::Infallible";
-                                                                          Ty.path
-                                                                            "move_binary_format::errors::PartialVMError"
-                                                                        ];
-                                                                      Ty.path "bool"
+                                                                      Ty.path "bool";
+                                                                      Ty.path
+                                                                        "move_binary_format::errors::PartialVMError"
                                                                     ],
-                                                                  M.get_trait_method (|
-                                                                    "core::ops::try_trait::Try",
+                                                                  [],
+                                                                  [],
+                                                                  "branch",
+                                                                  [],
+                                                                  []
+                                                                |),
+                                                                [
+                                                                  M.call_closure (|
                                                                     Ty.apply
                                                                       (Ty.path
                                                                         "core::result::Result")
@@ -417,97 +431,91 @@ Module cyclic_dependencies.
                                                                         Ty.path
                                                                           "move_binary_format::errors::PartialVMError"
                                                                       ],
-                                                                    [],
-                                                                    [],
-                                                                    "branch",
-                                                                    [],
-                                                                    []
-                                                                  |),
-                                                                  [
-                                                                    M.call_closure (|
+                                                                    M.get_function (|
+                                                                      "move_bytecode_verifier::cyclic_dependencies::verify_module_impl.detect_cycles",
+                                                                      [],
+                                                                      []
+                                                                    |),
+                                                                    [
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        M.deref (|
+                                                                          M.borrow (|
+                                                                            Pointer.Kind.Ref,
+                                                                            self_id
+                                                                          |)
+                                                                        |)
+                                                                      |);
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        M.deref (|
+                                                                          M.borrow (|
+                                                                            Pointer.Kind.Ref,
+                                                                            dep
+                                                                          |)
+                                                                        |)
+                                                                      |);
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.MutRef,
+                                                                        M.deref (|
+                                                                          M.borrow (|
+                                                                            Pointer.Kind.MutRef,
+                                                                            visited
+                                                                          |)
+                                                                        |)
+                                                                      |);
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        M.deref (|
+                                                                          M.borrow (|
+                                                                            Pointer.Kind.Ref,
+                                                                            imm_deps
+                                                                          |)
+                                                                        |)
+                                                                      |)
+                                                                    ]
+                                                                  |)
+                                                                ]
+                                                              |)
+                                                            |),
+                                                            [
+                                                              fun γ =>
+                                                                ltac:(M.monadic
+                                                                  (let γ0_0 :=
+                                                                    M.SubPointer.get_struct_tuple_field (|
+                                                                      γ,
+                                                                      "core::ops::control_flow::ControlFlow::Break",
+                                                                      0
+                                                                    |) in
+                                                                  let residual :=
+                                                                    M.copy (|
                                                                       Ty.apply
                                                                         (Ty.path
                                                                           "core::result::Result")
                                                                         []
                                                                         [
-                                                                          Ty.path "bool";
+                                                                          Ty.path
+                                                                            "core::convert::Infallible";
                                                                           Ty.path
                                                                             "move_binary_format::errors::PartialVMError"
                                                                         ],
-                                                                      M.get_function (|
-                                                                        "move_bytecode_verifier::cyclic_dependencies::verify_module_impl.detect_cycles",
-                                                                        [],
-                                                                        []
-                                                                      |),
-                                                                      [
-                                                                        M.borrow (|
-                                                                          Pointer.Kind.Ref,
-                                                                          M.deref (|
-                                                                            M.borrow (|
-                                                                              Pointer.Kind.Ref,
-                                                                              self_id
-                                                                            |)
-                                                                          |)
-                                                                        |);
-                                                                        M.borrow (|
-                                                                          Pointer.Kind.Ref,
-                                                                          M.deref (|
-                                                                            M.borrow (|
-                                                                              Pointer.Kind.Ref,
-                                                                              dep
-                                                                            |)
-                                                                          |)
-                                                                        |);
-                                                                        M.borrow (|
-                                                                          Pointer.Kind.MutRef,
-                                                                          M.deref (|
-                                                                            M.borrow (|
-                                                                              Pointer.Kind.MutRef,
-                                                                              visited
-                                                                            |)
-                                                                          |)
-                                                                        |);
-                                                                        M.borrow (|
-                                                                          Pointer.Kind.Ref,
-                                                                          M.deref (|
-                                                                            M.borrow (|
-                                                                              Pointer.Kind.Ref,
-                                                                              imm_deps
-                                                                            |)
-                                                                          |)
-                                                                        |)
-                                                                      ]
-                                                                    |)
-                                                                  ]
-                                                                |)
-                                                              |),
-                                                              [
-                                                                fun γ =>
-                                                                  ltac:(M.monadic
-                                                                    (let γ0_0 :=
-                                                                      M.SubPointer.get_struct_tuple_field (|
-                                                                        γ,
-                                                                        "core::ops::control_flow::ControlFlow::Break",
-                                                                        0
-                                                                      |) in
-                                                                    let residual :=
-                                                                      M.copy (|
-                                                                        Ty.apply
-                                                                          (Ty.path
-                                                                            "core::result::Result")
-                                                                          []
-                                                                          [
-                                                                            Ty.path
-                                                                              "core::convert::Infallible";
-                                                                            Ty.path
-                                                                              "move_binary_format::errors::PartialVMError"
-                                                                          ],
-                                                                        γ0_0
-                                                                      |) in
-                                                                    M.never_to_any (|
-                                                                      M.read (|
-                                                                        M.return_ (|
-                                                                          M.call_closure (|
+                                                                      γ0_0
+                                                                    |) in
+                                                                  M.never_to_any (|
+                                                                    M.read (|
+                                                                      M.return_ (|
+                                                                        M.call_closure (|
+                                                                          Ty.apply
+                                                                            (Ty.path
+                                                                              "core::result::Result")
+                                                                            []
+                                                                            [
+                                                                              Ty.tuple [];
+                                                                              Ty.path
+                                                                                "move_binary_format::errors::PartialVMError"
+                                                                            ],
+                                                                          M.get_trait_method (|
+                                                                            "core::ops::try_trait::FromResidual",
                                                                             Ty.apply
                                                                               (Ty.path
                                                                                 "core::result::Result")
@@ -517,57 +525,45 @@ Module cyclic_dependencies.
                                                                                 Ty.path
                                                                                   "move_binary_format::errors::PartialVMError"
                                                                               ],
-                                                                            M.get_trait_method (|
-                                                                              "core::ops::try_trait::FromResidual",
+                                                                            [],
+                                                                            [
                                                                               Ty.apply
                                                                                 (Ty.path
                                                                                   "core::result::Result")
                                                                                 []
                                                                                 [
-                                                                                  Ty.tuple [];
+                                                                                  Ty.path
+                                                                                    "core::convert::Infallible";
                                                                                   Ty.path
                                                                                     "move_binary_format::errors::PartialVMError"
-                                                                                ],
-                                                                              [],
-                                                                              [
-                                                                                Ty.apply
-                                                                                  (Ty.path
-                                                                                    "core::result::Result")
-                                                                                  []
-                                                                                  [
-                                                                                    Ty.path
-                                                                                      "core::convert::Infallible";
-                                                                                    Ty.path
-                                                                                      "move_binary_format::errors::PartialVMError"
-                                                                                  ]
-                                                                              ],
-                                                                              "from_residual",
-                                                                              [],
-                                                                              []
-                                                                            |),
-                                                                            [ M.read (| residual |)
-                                                                            ]
-                                                                          |)
+                                                                                ]
+                                                                            ],
+                                                                            "from_residual",
+                                                                            [],
+                                                                            []
+                                                                          |),
+                                                                          [ M.read (| residual |) ]
                                                                         |)
                                                                       |)
-                                                                    |)));
-                                                                fun γ =>
-                                                                  ltac:(M.monadic
-                                                                    (let γ0_0 :=
-                                                                      M.SubPointer.get_struct_tuple_field (|
-                                                                        γ,
-                                                                        "core::ops::control_flow::ControlFlow::Continue",
-                                                                        0
-                                                                      |) in
-                                                                    let val :=
-                                                                      M.copy (|
-                                                                        Ty.path "bool",
-                                                                        γ0_0
-                                                                      |) in
-                                                                    M.read (| val |)))
-                                                              ]
-                                                            |)
-                                                          |)) in
+                                                                    |)
+                                                                  |)));
+                                                              fun γ =>
+                                                                ltac:(M.monadic
+                                                                  (let γ0_0 :=
+                                                                    M.SubPointer.get_struct_tuple_field (|
+                                                                      γ,
+                                                                      "core::ops::control_flow::ControlFlow::Continue",
+                                                                      0
+                                                                    |) in
+                                                                  let val :=
+                                                                    M.copy (|
+                                                                      Ty.path "bool",
+                                                                      γ0_0
+                                                                    |) in
+                                                                  M.read (| val |)))
+                                                            ]
+                                                          |)
+                                                        |) in
                                                       let _ :=
                                                         is_constant_or_break_match (|
                                                           M.read (| γ |),
@@ -714,34 +710,33 @@ Module cyclic_dependencies.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  M.get_trait_method (|
-                                    "core::cmp::PartialEq",
+                                M.get_trait_method (|
+                                  "core::cmp::PartialEq",
+                                  Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.path "move_core_types::language_storage::ModuleId" ],
+                                  [],
+                                  [
                                     Ty.apply
                                       (Ty.path "&")
                                       []
-                                      [ Ty.path "move_core_types::language_storage::ModuleId" ],
-                                    [],
-                                    [
-                                      Ty.apply
-                                        (Ty.path "&")
-                                        []
-                                        [ Ty.path "move_core_types::language_storage::ModuleId" ]
-                                    ],
-                                    "eq",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.borrow (| Pointer.Kind.Ref, cursor |);
-                                    M.borrow (| Pointer.Kind.Ref, target |)
-                                  ]
-                                |)
-                              |)) in
+                                      [ Ty.path "move_core_types::language_storage::ModuleId" ]
+                                  ],
+                                  "eq",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.borrow (| Pointer.Kind.Ref, cursor |);
+                                  M.borrow (| Pointer.Kind.Ref, target |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -769,55 +764,54 @@ Module cyclic_dependencies.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  UnOp.not,
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      M.get_associated_function (|
-                                        Ty.apply
-                                          (Ty.path "alloc::collections::btree::set::BTreeSet")
-                                          []
-                                          [
-                                            Ty.path "move_core_types::language_storage::ModuleId";
-                                            Ty.path "alloc::alloc::Global"
-                                          ],
-                                        "insert",
-                                        [],
+                                UnOp.not,
+                                [
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    M.get_associated_function (|
+                                      Ty.apply
+                                        (Ty.path "alloc::collections::btree::set::BTreeSet")
                                         []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.MutRef,
-                                          M.deref (| M.read (| visited |) |)
-                                        |);
-                                        M.call_closure (|
+                                        [
+                                          Ty.path "move_core_types::language_storage::ModuleId";
+                                          Ty.path "alloc::alloc::Global"
+                                        ],
+                                      "insert",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.MutRef,
+                                        M.deref (| M.read (| visited |) |)
+                                      |);
+                                      M.call_closure (|
+                                        Ty.path "move_core_types::language_storage::ModuleId",
+                                        M.get_trait_method (|
+                                          "core::clone::Clone",
                                           Ty.path "move_core_types::language_storage::ModuleId",
-                                          M.get_trait_method (|
-                                            "core::clone::Clone",
-                                            Ty.path "move_core_types::language_storage::ModuleId",
-                                            [],
-                                            [],
-                                            "clone",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| cursor |) |)
-                                            |)
-                                          ]
-                                        |)
-                                      ]
-                                    |)
-                                  ]
-                                |)
-                              |)) in
+                                          [],
+                                          [],
+                                          "clone",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| cursor |) |)
+                                          |)
+                                        ]
+                                      |)
+                                    ]
+                                  |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.read (|
@@ -1171,12 +1165,29 @@ Module cyclic_dependencies.
                                                             fun γ =>
                                                               ltac:(M.monadic
                                                                 (let γ :=
-                                                                  M.use
-                                                                    (M.alloc (|
+                                                                  M.alloc (|
+                                                                    Ty.path "bool",
+                                                                    M.match_operator (|
                                                                       Ty.path "bool",
-                                                                      M.match_operator (|
-                                                                        Ty.path "bool",
-                                                                        M.alloc (|
+                                                                      M.alloc (|
+                                                                        Ty.apply
+                                                                          (Ty.path
+                                                                            "core::ops::control_flow::ControlFlow")
+                                                                          []
+                                                                          [
+                                                                            Ty.apply
+                                                                              (Ty.path
+                                                                                "core::result::Result")
+                                                                              []
+                                                                              [
+                                                                                Ty.path
+                                                                                  "core::convert::Infallible";
+                                                                                Ty.path
+                                                                                  "move_binary_format::errors::PartialVMError"
+                                                                              ];
+                                                                            Ty.path "bool"
+                                                                          ],
+                                                                        M.call_closure (|
                                                                           Ty.apply
                                                                             (Ty.path
                                                                               "core::ops::control_flow::ControlFlow")
@@ -1194,26 +1205,25 @@ Module cyclic_dependencies.
                                                                                 ];
                                                                               Ty.path "bool"
                                                                             ],
-                                                                          M.call_closure (|
+                                                                          M.get_trait_method (|
+                                                                            "core::ops::try_trait::Try",
                                                                             Ty.apply
                                                                               (Ty.path
-                                                                                "core::ops::control_flow::ControlFlow")
+                                                                                "core::result::Result")
                                                                               []
                                                                               [
-                                                                                Ty.apply
-                                                                                  (Ty.path
-                                                                                    "core::result::Result")
-                                                                                  []
-                                                                                  [
-                                                                                    Ty.path
-                                                                                      "core::convert::Infallible";
-                                                                                    Ty.path
-                                                                                      "move_binary_format::errors::PartialVMError"
-                                                                                  ];
-                                                                                Ty.path "bool"
+                                                                                Ty.path "bool";
+                                                                                Ty.path
+                                                                                  "move_binary_format::errors::PartialVMError"
                                                                               ],
-                                                                            M.get_trait_method (|
-                                                                              "core::ops::try_trait::Try",
+                                                                            [],
+                                                                            [],
+                                                                            "branch",
+                                                                            [],
+                                                                            []
+                                                                          |),
+                                                                          [
+                                                                            M.call_closure (|
                                                                               Ty.apply
                                                                                 (Ty.path
                                                                                   "core::result::Result")
@@ -1223,94 +1233,89 @@ Module cyclic_dependencies.
                                                                                   Ty.path
                                                                                     "move_binary_format::errors::PartialVMError"
                                                                                 ],
-                                                                              [],
-                                                                              [],
-                                                                              "branch",
-                                                                              [],
-                                                                              []
-                                                                            |),
-                                                                            [
-                                                                              M.call_closure (|
+                                                                              M.get_function (|
+                                                                                "move_bytecode_verifier::cyclic_dependencies::verify_module_impl.detect_cycles",
+                                                                                [],
+                                                                                []
+                                                                              |),
+                                                                              [
+                                                                                M.borrow (|
+                                                                                  Pointer.Kind.Ref,
+                                                                                  M.deref (|
+                                                                                    M.read (|
+                                                                                      target
+                                                                                    |)
+                                                                                  |)
+                                                                                |);
+                                                                                M.borrow (|
+                                                                                  Pointer.Kind.Ref,
+                                                                                  M.deref (|
+                                                                                    M.borrow (|
+                                                                                      Pointer.Kind.Ref,
+                                                                                      dep
+                                                                                    |)
+                                                                                  |)
+                                                                                |);
+                                                                                M.borrow (|
+                                                                                  Pointer.Kind.MutRef,
+                                                                                  M.deref (|
+                                                                                    M.read (|
+                                                                                      visited
+                                                                                    |)
+                                                                                  |)
+                                                                                |);
+                                                                                M.borrow (|
+                                                                                  Pointer.Kind.Ref,
+                                                                                  M.deref (|
+                                                                                    M.read (|
+                                                                                      deps
+                                                                                    |)
+                                                                                  |)
+                                                                                |)
+                                                                              ]
+                                                                            |)
+                                                                          ]
+                                                                        |)
+                                                                      |),
+                                                                      [
+                                                                        fun γ =>
+                                                                          ltac:(M.monadic
+                                                                            (let γ0_0 :=
+                                                                              M.SubPointer.get_struct_tuple_field (|
+                                                                                γ,
+                                                                                "core::ops::control_flow::ControlFlow::Break",
+                                                                                0
+                                                                              |) in
+                                                                            let residual :=
+                                                                              M.copy (|
                                                                                 Ty.apply
                                                                                   (Ty.path
                                                                                     "core::result::Result")
                                                                                   []
                                                                                   [
-                                                                                    Ty.path "bool";
+                                                                                    Ty.path
+                                                                                      "core::convert::Infallible";
                                                                                     Ty.path
                                                                                       "move_binary_format::errors::PartialVMError"
                                                                                   ],
-                                                                                M.get_function (|
-                                                                                  "move_bytecode_verifier::cyclic_dependencies::verify_module_impl.detect_cycles",
-                                                                                  [],
-                                                                                  []
-                                                                                |),
-                                                                                [
-                                                                                  M.borrow (|
-                                                                                    Pointer.Kind.Ref,
-                                                                                    M.deref (|
-                                                                                      M.read (|
-                                                                                        target
-                                                                                      |)
-                                                                                    |)
-                                                                                  |);
-                                                                                  M.borrow (|
-                                                                                    Pointer.Kind.Ref,
-                                                                                    M.deref (|
-                                                                                      M.borrow (|
-                                                                                        Pointer.Kind.Ref,
-                                                                                        dep
-                                                                                      |)
-                                                                                    |)
-                                                                                  |);
-                                                                                  M.borrow (|
-                                                                                    Pointer.Kind.MutRef,
-                                                                                    M.deref (|
-                                                                                      M.read (|
-                                                                                        visited
-                                                                                      |)
-                                                                                    |)
-                                                                                  |);
-                                                                                  M.borrow (|
-                                                                                    Pointer.Kind.Ref,
-                                                                                    M.deref (|
-                                                                                      M.read (|
-                                                                                        deps
-                                                                                      |)
-                                                                                    |)
-                                                                                  |)
-                                                                                ]
-                                                                              |)
-                                                                            ]
-                                                                          |)
-                                                                        |),
-                                                                        [
-                                                                          fun γ =>
-                                                                            ltac:(M.monadic
-                                                                              (let γ0_0 :=
-                                                                                M.SubPointer.get_struct_tuple_field (|
-                                                                                  γ,
-                                                                                  "core::ops::control_flow::ControlFlow::Break",
-                                                                                  0
-                                                                                |) in
-                                                                              let residual :=
-                                                                                M.copy (|
-                                                                                  Ty.apply
-                                                                                    (Ty.path
-                                                                                      "core::result::Result")
-                                                                                    []
-                                                                                    [
-                                                                                      Ty.path
-                                                                                        "core::convert::Infallible";
-                                                                                      Ty.path
-                                                                                        "move_binary_format::errors::PartialVMError"
-                                                                                    ],
-                                                                                  γ0_0
-                                                                                |) in
-                                                                              M.never_to_any (|
-                                                                                M.read (|
-                                                                                  M.return_ (|
-                                                                                    M.call_closure (|
+                                                                                γ0_0
+                                                                              |) in
+                                                                            M.never_to_any (|
+                                                                              M.read (|
+                                                                                M.return_ (|
+                                                                                  M.call_closure (|
+                                                                                    Ty.apply
+                                                                                      (Ty.path
+                                                                                        "core::result::Result")
+                                                                                      []
+                                                                                      [
+                                                                                        Ty.path
+                                                                                          "bool";
+                                                                                        Ty.path
+                                                                                          "move_binary_format::errors::PartialVMError"
+                                                                                      ],
+                                                                                    M.get_trait_method (|
+                                                                                      "core::ops::try_trait::FromResidual",
                                                                                       Ty.apply
                                                                                         (Ty.path
                                                                                           "core::result::Result")
@@ -1321,61 +1326,49 @@ Module cyclic_dependencies.
                                                                                           Ty.path
                                                                                             "move_binary_format::errors::PartialVMError"
                                                                                         ],
-                                                                                      M.get_trait_method (|
-                                                                                        "core::ops::try_trait::FromResidual",
+                                                                                      [],
+                                                                                      [
                                                                                         Ty.apply
                                                                                           (Ty.path
                                                                                             "core::result::Result")
                                                                                           []
                                                                                           [
                                                                                             Ty.path
-                                                                                              "bool";
+                                                                                              "core::convert::Infallible";
                                                                                             Ty.path
                                                                                               "move_binary_format::errors::PartialVMError"
-                                                                                          ],
-                                                                                        [],
-                                                                                        [
-                                                                                          Ty.apply
-                                                                                            (Ty.path
-                                                                                              "core::result::Result")
-                                                                                            []
-                                                                                            [
-                                                                                              Ty.path
-                                                                                                "core::convert::Infallible";
-                                                                                              Ty.path
-                                                                                                "move_binary_format::errors::PartialVMError"
-                                                                                            ]
-                                                                                        ],
-                                                                                        "from_residual",
-                                                                                        [],
-                                                                                        []
-                                                                                      |),
-                                                                                      [
-                                                                                        M.read (|
-                                                                                          residual
-                                                                                        |)
-                                                                                      ]
-                                                                                    |)
+                                                                                          ]
+                                                                                      ],
+                                                                                      "from_residual",
+                                                                                      [],
+                                                                                      []
+                                                                                    |),
+                                                                                    [
+                                                                                      M.read (|
+                                                                                        residual
+                                                                                      |)
+                                                                                    ]
                                                                                   |)
                                                                                 |)
-                                                                              |)));
-                                                                          fun γ =>
-                                                                            ltac:(M.monadic
-                                                                              (let γ0_0 :=
-                                                                                M.SubPointer.get_struct_tuple_field (|
-                                                                                  γ,
-                                                                                  "core::ops::control_flow::ControlFlow::Continue",
-                                                                                  0
-                                                                                |) in
-                                                                              let val :=
-                                                                                M.copy (|
-                                                                                  Ty.path "bool",
-                                                                                  γ0_0
-                                                                                |) in
-                                                                              M.read (| val |)))
-                                                                        ]
-                                                                      |)
-                                                                    |)) in
+                                                                              |)
+                                                                            |)));
+                                                                        fun γ =>
+                                                                          ltac:(M.monadic
+                                                                            (let γ0_0 :=
+                                                                              M.SubPointer.get_struct_tuple_field (|
+                                                                                γ,
+                                                                                "core::ops::control_flow::ControlFlow::Continue",
+                                                                                0
+                                                                              |) in
+                                                                            let val :=
+                                                                              M.copy (|
+                                                                                Ty.path "bool",
+                                                                                γ0_0
+                                                                              |) in
+                                                                            M.read (| val |)))
+                                                                      ]
+                                                                    |)
+                                                                  |) in
                                                                 let _ :=
                                                                   is_constant_or_break_match (|
                                                                     M.read (| γ |),

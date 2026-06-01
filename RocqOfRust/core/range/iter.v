@@ -5,15 +5,15 @@ Module range.
   Module iter.
     (* StructTuple
       {
-        name := "IterRange";
+        name := "RangeIter";
         const_params := [];
         ty_params := [ "A" ];
         fields := [ Ty.apply (Ty.path "core::ops::range::Range") [] [ A ] ];
       } *)
     
-    Module Impl_core_fmt_Debug_where_core_fmt_Debug_A_for_core_range_iter_IterRange_A.
+    Module Impl_core_fmt_Debug_where_core_fmt_Debug_A_for_core_range_iter_RangeIter_A.
       Definition Self (A : Ty.t) : Ty.t :=
-        Ty.apply (Ty.path "core::range::iter::IterRange") [] [ A ].
+        Ty.apply (Ty.path "core::range::iter::RangeIter") [] [ A ].
       
       (* Debug *)
       Definition fmt (A : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -26,7 +26,7 @@ Module range.
                 Ty.apply
                   (Ty.path "&")
                   []
-                  [ Ty.apply (Ty.path "core::range::iter::IterRange") [] [ A ] ],
+                  [ Ty.apply (Ty.path "core::range::iter::RangeIter") [] [ A ] ],
                 self
               |) in
             let f :=
@@ -44,7 +44,7 @@ Module range.
               |),
               [
                 M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "IterRange" |) |) |);
+                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "RangeIter" |) |) |);
                 M.call_closure (|
                   Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
                   M.pointer_coercion
@@ -74,7 +74,7 @@ Module range.
                               Pointer.Kind.Ref,
                               M.SubPointer.get_struct_tuple_field (|
                                 M.deref (| M.read (| self |) |),
-                                "core::range::iter::IterRange",
+                                "core::range::iter::RangeIter",
                                 0
                               |)
                             |)
@@ -97,11 +97,11 @@ Module range.
           (* Trait polymorphic types *) []
           (Self A)
           (* Instance *) [ ("fmt", InstanceField.Method (fmt A)) ].
-    End Impl_core_fmt_Debug_where_core_fmt_Debug_A_for_core_range_iter_IterRange_A.
+    End Impl_core_fmt_Debug_where_core_fmt_Debug_A_for_core_range_iter_RangeIter_A.
     
-    Module Impl_core_clone_Clone_where_core_clone_Clone_A_for_core_range_iter_IterRange_A.
+    Module Impl_core_clone_Clone_where_core_clone_Clone_A_for_core_range_iter_RangeIter_A.
       Definition Self (A : Ty.t) : Ty.t :=
-        Ty.apply (Ty.path "core::range::iter::IterRange") [] [ A ].
+        Ty.apply (Ty.path "core::range::iter::RangeIter") [] [ A ].
       
       (* Clone *)
       Definition clone (A : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -114,11 +114,11 @@ Module range.
                 Ty.apply
                   (Ty.path "&")
                   []
-                  [ Ty.apply (Ty.path "core::range::iter::IterRange") [] [ A ] ],
+                  [ Ty.apply (Ty.path "core::range::iter::RangeIter") [] [ A ] ],
                 self
               |) in
             Value.StructTuple
-              "core::range::iter::IterRange"
+              "core::range::iter::RangeIter"
               []
               [ A ]
               [
@@ -141,7 +141,7 @@ Module range.
                           Pointer.Kind.Ref,
                           M.SubPointer.get_struct_tuple_field (|
                             M.deref (| M.read (| self |) |),
-                            "core::range::iter::IterRange",
+                            "core::range::iter::RangeIter",
                             0
                           |)
                         |)
@@ -161,11 +161,11 @@ Module range.
           (* Trait polymorphic types *) []
           (Self A)
           (* Instance *) [ ("clone", InstanceField.Method (clone A)) ].
-    End Impl_core_clone_Clone_where_core_clone_Clone_A_for_core_range_iter_IterRange_A.
+    End Impl_core_clone_Clone_where_core_clone_Clone_A_for_core_range_iter_RangeIter_A.
     
-    Module Impl_core_range_iter_IterRange_A.
+    Module Impl_core_range_iter_RangeIter_A.
       Definition Self (A : Ty.t) : Ty.t :=
-        Ty.apply (Ty.path "core::range::iter::IterRange") [] [ A ].
+        Ty.apply (Ty.path "core::range::iter::RangeIter") [] [ A ].
       
       (*
           pub fn remainder(self) -> Range<A> {
@@ -178,7 +178,7 @@ Module range.
         | [], [], [ self ] =>
           ltac:(M.monadic
             (let self :=
-              M.alloc (| Ty.apply (Ty.path "core::range::iter::IterRange") [] [ A ], self |) in
+              M.alloc (| Ty.apply (Ty.path "core::range::iter::RangeIter") [] [ A ], self |) in
             Value.mkStructRecord
               "core::range::Range"
               []
@@ -189,7 +189,7 @@ Module range.
                     M.SubPointer.get_struct_record_field (|
                       M.SubPointer.get_struct_tuple_field (|
                         self,
-                        "core::range::iter::IterRange",
+                        "core::range::iter::RangeIter",
                         0
                       |),
                       "core::ops::range::Range",
@@ -201,7 +201,7 @@ Module range.
                     M.SubPointer.get_struct_record_field (|
                       M.SubPointer.get_struct_tuple_field (|
                         self,
-                        "core::range::iter::IterRange",
+                        "core::range::iter::RangeIter",
                         0
                       |),
                       "core::ops::range::Range",
@@ -217,11 +217,11 @@ Module range.
         M.IsAssociatedFunction.C (Self A) "remainder" (remainder A).
       Admitted.
       Global Typeclasses Opaque remainder.
-    End Impl_core_range_iter_IterRange_A.
+    End Impl_core_range_iter_RangeIter_A.
     
-    Module Impl_core_iter_adapters_zip_TrustedRandomAccess_for_core_range_iter_IterRange_usize.
+    Module Impl_core_iter_adapters_zip_TrustedRandomAccess_for_core_range_iter_RangeIter_usize.
       Definition Self : Ty.t :=
-        Ty.apply (Ty.path "core::range::iter::IterRange") [] [ Ty.path "usize" ].
+        Ty.apply (Ty.path "core::range::iter::RangeIter") [] [ Ty.path "usize" ].
       
       Axiom Implements :
         M.IsTraitInstance
@@ -230,11 +230,11 @@ Module range.
           (* Trait polymorphic types *) []
           Self
           (* Instance *) [].
-    End Impl_core_iter_adapters_zip_TrustedRandomAccess_for_core_range_iter_IterRange_usize.
+    End Impl_core_iter_adapters_zip_TrustedRandomAccess_for_core_range_iter_RangeIter_usize.
     
-    Module Impl_core_iter_adapters_zip_TrustedRandomAccessNoCoerce_for_core_range_iter_IterRange_usize.
+    Module Impl_core_iter_adapters_zip_TrustedRandomAccessNoCoerce_for_core_range_iter_RangeIter_usize.
       Definition Self : Ty.t :=
-        Ty.apply (Ty.path "core::range::iter::IterRange") [] [ Ty.path "usize" ].
+        Ty.apply (Ty.path "core::range::iter::RangeIter") [] [ Ty.path "usize" ].
       
       (*             const MAY_HAVE_SIDE_EFFECT: bool = false; *)
       (* Ty.path "bool" *)
@@ -253,11 +253,11 @@ Module range.
           Self
           (* Instance *)
           [ ("value_MAY_HAVE_SIDE_EFFECT", InstanceField.Method value_MAY_HAVE_SIDE_EFFECT) ].
-    End Impl_core_iter_adapters_zip_TrustedRandomAccessNoCoerce_for_core_range_iter_IterRange_usize.
+    End Impl_core_iter_adapters_zip_TrustedRandomAccessNoCoerce_for_core_range_iter_RangeIter_usize.
     
-    Module Impl_core_iter_adapters_zip_TrustedRandomAccess_for_core_range_iter_IterRange_u8.
+    Module Impl_core_iter_adapters_zip_TrustedRandomAccess_for_core_range_iter_RangeIter_u8.
       Definition Self : Ty.t :=
-        Ty.apply (Ty.path "core::range::iter::IterRange") [] [ Ty.path "u8" ].
+        Ty.apply (Ty.path "core::range::iter::RangeIter") [] [ Ty.path "u8" ].
       
       Axiom Implements :
         M.IsTraitInstance
@@ -266,11 +266,11 @@ Module range.
           (* Trait polymorphic types *) []
           Self
           (* Instance *) [].
-    End Impl_core_iter_adapters_zip_TrustedRandomAccess_for_core_range_iter_IterRange_u8.
+    End Impl_core_iter_adapters_zip_TrustedRandomAccess_for_core_range_iter_RangeIter_u8.
     
-    Module Impl_core_iter_adapters_zip_TrustedRandomAccessNoCoerce_for_core_range_iter_IterRange_u8.
+    Module Impl_core_iter_adapters_zip_TrustedRandomAccessNoCoerce_for_core_range_iter_RangeIter_u8.
       Definition Self : Ty.t :=
-        Ty.apply (Ty.path "core::range::iter::IterRange") [] [ Ty.path "u8" ].
+        Ty.apply (Ty.path "core::range::iter::RangeIter") [] [ Ty.path "u8" ].
       
       (*             const MAY_HAVE_SIDE_EFFECT: bool = false; *)
       (* Ty.path "bool" *)
@@ -289,11 +289,11 @@ Module range.
           Self
           (* Instance *)
           [ ("value_MAY_HAVE_SIDE_EFFECT", InstanceField.Method value_MAY_HAVE_SIDE_EFFECT) ].
-    End Impl_core_iter_adapters_zip_TrustedRandomAccessNoCoerce_for_core_range_iter_IterRange_u8.
+    End Impl_core_iter_adapters_zip_TrustedRandomAccessNoCoerce_for_core_range_iter_RangeIter_u8.
     
-    Module Impl_core_iter_adapters_zip_TrustedRandomAccess_for_core_range_iter_IterRange_u16.
+    Module Impl_core_iter_adapters_zip_TrustedRandomAccess_for_core_range_iter_RangeIter_u16.
       Definition Self : Ty.t :=
-        Ty.apply (Ty.path "core::range::iter::IterRange") [] [ Ty.path "u16" ].
+        Ty.apply (Ty.path "core::range::iter::RangeIter") [] [ Ty.path "u16" ].
       
       Axiom Implements :
         M.IsTraitInstance
@@ -302,11 +302,11 @@ Module range.
           (* Trait polymorphic types *) []
           Self
           (* Instance *) [].
-    End Impl_core_iter_adapters_zip_TrustedRandomAccess_for_core_range_iter_IterRange_u16.
+    End Impl_core_iter_adapters_zip_TrustedRandomAccess_for_core_range_iter_RangeIter_u16.
     
-    Module Impl_core_iter_adapters_zip_TrustedRandomAccessNoCoerce_for_core_range_iter_IterRange_u16.
+    Module Impl_core_iter_adapters_zip_TrustedRandomAccessNoCoerce_for_core_range_iter_RangeIter_u16.
       Definition Self : Ty.t :=
-        Ty.apply (Ty.path "core::range::iter::IterRange") [] [ Ty.path "u16" ].
+        Ty.apply (Ty.path "core::range::iter::RangeIter") [] [ Ty.path "u16" ].
       
       (*             const MAY_HAVE_SIDE_EFFECT: bool = false; *)
       (* Ty.path "bool" *)
@@ -325,11 +325,11 @@ Module range.
           Self
           (* Instance *)
           [ ("value_MAY_HAVE_SIDE_EFFECT", InstanceField.Method value_MAY_HAVE_SIDE_EFFECT) ].
-    End Impl_core_iter_adapters_zip_TrustedRandomAccessNoCoerce_for_core_range_iter_IterRange_u16.
+    End Impl_core_iter_adapters_zip_TrustedRandomAccessNoCoerce_for_core_range_iter_RangeIter_u16.
     
-    Module Impl_core_iter_adapters_zip_TrustedRandomAccess_for_core_range_iter_IterRange_isize.
+    Module Impl_core_iter_adapters_zip_TrustedRandomAccess_for_core_range_iter_RangeIter_isize.
       Definition Self : Ty.t :=
-        Ty.apply (Ty.path "core::range::iter::IterRange") [] [ Ty.path "isize" ].
+        Ty.apply (Ty.path "core::range::iter::RangeIter") [] [ Ty.path "isize" ].
       
       Axiom Implements :
         M.IsTraitInstance
@@ -338,11 +338,11 @@ Module range.
           (* Trait polymorphic types *) []
           Self
           (* Instance *) [].
-    End Impl_core_iter_adapters_zip_TrustedRandomAccess_for_core_range_iter_IterRange_isize.
+    End Impl_core_iter_adapters_zip_TrustedRandomAccess_for_core_range_iter_RangeIter_isize.
     
-    Module Impl_core_iter_adapters_zip_TrustedRandomAccessNoCoerce_for_core_range_iter_IterRange_isize.
+    Module Impl_core_iter_adapters_zip_TrustedRandomAccessNoCoerce_for_core_range_iter_RangeIter_isize.
       Definition Self : Ty.t :=
-        Ty.apply (Ty.path "core::range::iter::IterRange") [] [ Ty.path "isize" ].
+        Ty.apply (Ty.path "core::range::iter::RangeIter") [] [ Ty.path "isize" ].
       
       (*             const MAY_HAVE_SIDE_EFFECT: bool = false; *)
       (* Ty.path "bool" *)
@@ -361,11 +361,11 @@ Module range.
           Self
           (* Instance *)
           [ ("value_MAY_HAVE_SIDE_EFFECT", InstanceField.Method value_MAY_HAVE_SIDE_EFFECT) ].
-    End Impl_core_iter_adapters_zip_TrustedRandomAccessNoCoerce_for_core_range_iter_IterRange_isize.
+    End Impl_core_iter_adapters_zip_TrustedRandomAccessNoCoerce_for_core_range_iter_RangeIter_isize.
     
-    Module Impl_core_iter_adapters_zip_TrustedRandomAccess_for_core_range_iter_IterRange_i8.
+    Module Impl_core_iter_adapters_zip_TrustedRandomAccess_for_core_range_iter_RangeIter_i8.
       Definition Self : Ty.t :=
-        Ty.apply (Ty.path "core::range::iter::IterRange") [] [ Ty.path "i8" ].
+        Ty.apply (Ty.path "core::range::iter::RangeIter") [] [ Ty.path "i8" ].
       
       Axiom Implements :
         M.IsTraitInstance
@@ -374,11 +374,11 @@ Module range.
           (* Trait polymorphic types *) []
           Self
           (* Instance *) [].
-    End Impl_core_iter_adapters_zip_TrustedRandomAccess_for_core_range_iter_IterRange_i8.
+    End Impl_core_iter_adapters_zip_TrustedRandomAccess_for_core_range_iter_RangeIter_i8.
     
-    Module Impl_core_iter_adapters_zip_TrustedRandomAccessNoCoerce_for_core_range_iter_IterRange_i8.
+    Module Impl_core_iter_adapters_zip_TrustedRandomAccessNoCoerce_for_core_range_iter_RangeIter_i8.
       Definition Self : Ty.t :=
-        Ty.apply (Ty.path "core::range::iter::IterRange") [] [ Ty.path "i8" ].
+        Ty.apply (Ty.path "core::range::iter::RangeIter") [] [ Ty.path "i8" ].
       
       (*             const MAY_HAVE_SIDE_EFFECT: bool = false; *)
       (* Ty.path "bool" *)
@@ -397,11 +397,11 @@ Module range.
           Self
           (* Instance *)
           [ ("value_MAY_HAVE_SIDE_EFFECT", InstanceField.Method value_MAY_HAVE_SIDE_EFFECT) ].
-    End Impl_core_iter_adapters_zip_TrustedRandomAccessNoCoerce_for_core_range_iter_IterRange_i8.
+    End Impl_core_iter_adapters_zip_TrustedRandomAccessNoCoerce_for_core_range_iter_RangeIter_i8.
     
-    Module Impl_core_iter_adapters_zip_TrustedRandomAccess_for_core_range_iter_IterRange_i16.
+    Module Impl_core_iter_adapters_zip_TrustedRandomAccess_for_core_range_iter_RangeIter_i16.
       Definition Self : Ty.t :=
-        Ty.apply (Ty.path "core::range::iter::IterRange") [] [ Ty.path "i16" ].
+        Ty.apply (Ty.path "core::range::iter::RangeIter") [] [ Ty.path "i16" ].
       
       Axiom Implements :
         M.IsTraitInstance
@@ -410,11 +410,11 @@ Module range.
           (* Trait polymorphic types *) []
           Self
           (* Instance *) [].
-    End Impl_core_iter_adapters_zip_TrustedRandomAccess_for_core_range_iter_IterRange_i16.
+    End Impl_core_iter_adapters_zip_TrustedRandomAccess_for_core_range_iter_RangeIter_i16.
     
-    Module Impl_core_iter_adapters_zip_TrustedRandomAccessNoCoerce_for_core_range_iter_IterRange_i16.
+    Module Impl_core_iter_adapters_zip_TrustedRandomAccessNoCoerce_for_core_range_iter_RangeIter_i16.
       Definition Self : Ty.t :=
-        Ty.apply (Ty.path "core::range::iter::IterRange") [] [ Ty.path "i16" ].
+        Ty.apply (Ty.path "core::range::iter::RangeIter") [] [ Ty.path "i16" ].
       
       (*             const MAY_HAVE_SIDE_EFFECT: bool = false; *)
       (* Ty.path "bool" *)
@@ -433,11 +433,11 @@ Module range.
           Self
           (* Instance *)
           [ ("value_MAY_HAVE_SIDE_EFFECT", InstanceField.Method value_MAY_HAVE_SIDE_EFFECT) ].
-    End Impl_core_iter_adapters_zip_TrustedRandomAccessNoCoerce_for_core_range_iter_IterRange_i16.
+    End Impl_core_iter_adapters_zip_TrustedRandomAccessNoCoerce_for_core_range_iter_RangeIter_i16.
     
-    Module Impl_core_iter_adapters_zip_TrustedRandomAccess_for_core_range_iter_IterRange_u32.
+    Module Impl_core_iter_adapters_zip_TrustedRandomAccess_for_core_range_iter_RangeIter_u32.
       Definition Self : Ty.t :=
-        Ty.apply (Ty.path "core::range::iter::IterRange") [] [ Ty.path "u32" ].
+        Ty.apply (Ty.path "core::range::iter::RangeIter") [] [ Ty.path "u32" ].
       
       Axiom Implements :
         M.IsTraitInstance
@@ -446,11 +446,11 @@ Module range.
           (* Trait polymorphic types *) []
           Self
           (* Instance *) [].
-    End Impl_core_iter_adapters_zip_TrustedRandomAccess_for_core_range_iter_IterRange_u32.
+    End Impl_core_iter_adapters_zip_TrustedRandomAccess_for_core_range_iter_RangeIter_u32.
     
-    Module Impl_core_iter_adapters_zip_TrustedRandomAccessNoCoerce_for_core_range_iter_IterRange_u32.
+    Module Impl_core_iter_adapters_zip_TrustedRandomAccessNoCoerce_for_core_range_iter_RangeIter_u32.
       Definition Self : Ty.t :=
-        Ty.apply (Ty.path "core::range::iter::IterRange") [] [ Ty.path "u32" ].
+        Ty.apply (Ty.path "core::range::iter::RangeIter") [] [ Ty.path "u32" ].
       
       (*             const MAY_HAVE_SIDE_EFFECT: bool = false; *)
       (* Ty.path "bool" *)
@@ -469,11 +469,11 @@ Module range.
           Self
           (* Instance *)
           [ ("value_MAY_HAVE_SIDE_EFFECT", InstanceField.Method value_MAY_HAVE_SIDE_EFFECT) ].
-    End Impl_core_iter_adapters_zip_TrustedRandomAccessNoCoerce_for_core_range_iter_IterRange_u32.
+    End Impl_core_iter_adapters_zip_TrustedRandomAccessNoCoerce_for_core_range_iter_RangeIter_u32.
     
-    Module Impl_core_iter_adapters_zip_TrustedRandomAccess_for_core_range_iter_IterRange_i32.
+    Module Impl_core_iter_adapters_zip_TrustedRandomAccess_for_core_range_iter_RangeIter_i32.
       Definition Self : Ty.t :=
-        Ty.apply (Ty.path "core::range::iter::IterRange") [] [ Ty.path "i32" ].
+        Ty.apply (Ty.path "core::range::iter::RangeIter") [] [ Ty.path "i32" ].
       
       Axiom Implements :
         M.IsTraitInstance
@@ -482,11 +482,11 @@ Module range.
           (* Trait polymorphic types *) []
           Self
           (* Instance *) [].
-    End Impl_core_iter_adapters_zip_TrustedRandomAccess_for_core_range_iter_IterRange_i32.
+    End Impl_core_iter_adapters_zip_TrustedRandomAccess_for_core_range_iter_RangeIter_i32.
     
-    Module Impl_core_iter_adapters_zip_TrustedRandomAccessNoCoerce_for_core_range_iter_IterRange_i32.
+    Module Impl_core_iter_adapters_zip_TrustedRandomAccessNoCoerce_for_core_range_iter_RangeIter_i32.
       Definition Self : Ty.t :=
-        Ty.apply (Ty.path "core::range::iter::IterRange") [] [ Ty.path "i32" ].
+        Ty.apply (Ty.path "core::range::iter::RangeIter") [] [ Ty.path "i32" ].
       
       (*             const MAY_HAVE_SIDE_EFFECT: bool = false; *)
       (* Ty.path "bool" *)
@@ -505,11 +505,11 @@ Module range.
           Self
           (* Instance *)
           [ ("value_MAY_HAVE_SIDE_EFFECT", InstanceField.Method value_MAY_HAVE_SIDE_EFFECT) ].
-    End Impl_core_iter_adapters_zip_TrustedRandomAccessNoCoerce_for_core_range_iter_IterRange_i32.
+    End Impl_core_iter_adapters_zip_TrustedRandomAccessNoCoerce_for_core_range_iter_RangeIter_i32.
     
-    Module Impl_core_iter_adapters_zip_TrustedRandomAccess_for_core_range_iter_IterRange_u64.
+    Module Impl_core_iter_adapters_zip_TrustedRandomAccess_for_core_range_iter_RangeIter_u64.
       Definition Self : Ty.t :=
-        Ty.apply (Ty.path "core::range::iter::IterRange") [] [ Ty.path "u64" ].
+        Ty.apply (Ty.path "core::range::iter::RangeIter") [] [ Ty.path "u64" ].
       
       Axiom Implements :
         M.IsTraitInstance
@@ -518,11 +518,11 @@ Module range.
           (* Trait polymorphic types *) []
           Self
           (* Instance *) [].
-    End Impl_core_iter_adapters_zip_TrustedRandomAccess_for_core_range_iter_IterRange_u64.
+    End Impl_core_iter_adapters_zip_TrustedRandomAccess_for_core_range_iter_RangeIter_u64.
     
-    Module Impl_core_iter_adapters_zip_TrustedRandomAccessNoCoerce_for_core_range_iter_IterRange_u64.
+    Module Impl_core_iter_adapters_zip_TrustedRandomAccessNoCoerce_for_core_range_iter_RangeIter_u64.
       Definition Self : Ty.t :=
-        Ty.apply (Ty.path "core::range::iter::IterRange") [] [ Ty.path "u64" ].
+        Ty.apply (Ty.path "core::range::iter::RangeIter") [] [ Ty.path "u64" ].
       
       (*             const MAY_HAVE_SIDE_EFFECT: bool = false; *)
       (* Ty.path "bool" *)
@@ -541,11 +541,11 @@ Module range.
           Self
           (* Instance *)
           [ ("value_MAY_HAVE_SIDE_EFFECT", InstanceField.Method value_MAY_HAVE_SIDE_EFFECT) ].
-    End Impl_core_iter_adapters_zip_TrustedRandomAccessNoCoerce_for_core_range_iter_IterRange_u64.
+    End Impl_core_iter_adapters_zip_TrustedRandomAccessNoCoerce_for_core_range_iter_RangeIter_u64.
     
-    Module Impl_core_iter_adapters_zip_TrustedRandomAccess_for_core_range_iter_IterRange_i64.
+    Module Impl_core_iter_adapters_zip_TrustedRandomAccess_for_core_range_iter_RangeIter_i64.
       Definition Self : Ty.t :=
-        Ty.apply (Ty.path "core::range::iter::IterRange") [] [ Ty.path "i64" ].
+        Ty.apply (Ty.path "core::range::iter::RangeIter") [] [ Ty.path "i64" ].
       
       Axiom Implements :
         M.IsTraitInstance
@@ -554,11 +554,11 @@ Module range.
           (* Trait polymorphic types *) []
           Self
           (* Instance *) [].
-    End Impl_core_iter_adapters_zip_TrustedRandomAccess_for_core_range_iter_IterRange_i64.
+    End Impl_core_iter_adapters_zip_TrustedRandomAccess_for_core_range_iter_RangeIter_i64.
     
-    Module Impl_core_iter_adapters_zip_TrustedRandomAccessNoCoerce_for_core_range_iter_IterRange_i64.
+    Module Impl_core_iter_adapters_zip_TrustedRandomAccessNoCoerce_for_core_range_iter_RangeIter_i64.
       Definition Self : Ty.t :=
-        Ty.apply (Ty.path "core::range::iter::IterRange") [] [ Ty.path "i64" ].
+        Ty.apply (Ty.path "core::range::iter::RangeIter") [] [ Ty.path "i64" ].
       
       (*             const MAY_HAVE_SIDE_EFFECT: bool = false; *)
       (* Ty.path "bool" *)
@@ -577,11 +577,11 @@ Module range.
           Self
           (* Instance *)
           [ ("value_MAY_HAVE_SIDE_EFFECT", InstanceField.Method value_MAY_HAVE_SIDE_EFFECT) ].
-    End Impl_core_iter_adapters_zip_TrustedRandomAccessNoCoerce_for_core_range_iter_IterRange_i64.
+    End Impl_core_iter_adapters_zip_TrustedRandomAccessNoCoerce_for_core_range_iter_RangeIter_i64.
     
-    Module Impl_core_iter_traits_iterator_Iterator_where_core_iter_range_Step_A_for_core_range_iter_IterRange_A.
+    Module Impl_core_iter_traits_iterator_Iterator_where_core_iter_range_Step_A_for_core_range_iter_RangeIter_A.
       Definition Self (A : Ty.t) : Ty.t :=
-        Ty.apply (Ty.path "core::range::iter::IterRange") [] [ A ].
+        Ty.apply (Ty.path "core::range::iter::RangeIter") [] [ A ].
       
       (*     type Item = A; *)
       Definition _Item (A : Ty.t) : Ty.t := A.
@@ -601,7 +601,7 @@ Module range.
                 Ty.apply
                   (Ty.path "&mut")
                   []
-                  [ Ty.apply (Ty.path "core::range::iter::IterRange") [] [ A ] ],
+                  [ Ty.apply (Ty.path "core::range::iter::RangeIter") [] [ A ] ],
                 self
               |) in
             M.call_closure (|
@@ -620,7 +620,7 @@ Module range.
                   Pointer.Kind.MutRef,
                   M.SubPointer.get_struct_tuple_field (|
                     M.deref (| M.read (| self |) |),
-                    "core::range::iter::IterRange",
+                    "core::range::iter::RangeIter",
                     0
                   |)
                 |)
@@ -644,7 +644,7 @@ Module range.
                 Ty.apply
                   (Ty.path "&")
                   []
-                  [ Ty.apply (Ty.path "core::range::iter::IterRange") [] [ A ] ],
+                  [ Ty.apply (Ty.path "core::range::iter::RangeIter") [] [ A ] ],
                 self
               |) in
             M.call_closure (|
@@ -665,7 +665,7 @@ Module range.
                   Pointer.Kind.Ref,
                   M.SubPointer.get_struct_tuple_field (|
                     M.deref (| M.read (| self |) |),
-                    "core::range::iter::IterRange",
+                    "core::range::iter::RangeIter",
                     0
                   |)
                 |)
@@ -685,7 +685,7 @@ Module range.
         | [], [], [ self ] =>
           ltac:(M.monadic
             (let self :=
-              M.alloc (| Ty.apply (Ty.path "core::range::iter::IterRange") [] [ A ], self |) in
+              M.alloc (| Ty.apply (Ty.path "core::range::iter::RangeIter") [] [ A ], self |) in
             M.call_closure (|
               Ty.path "usize",
               M.get_trait_method (|
@@ -699,7 +699,7 @@ Module range.
               |),
               [
                 M.read (|
-                  M.SubPointer.get_struct_tuple_field (| self, "core::range::iter::IterRange", 0 |)
+                  M.SubPointer.get_struct_tuple_field (| self, "core::range::iter::RangeIter", 0 |)
                 |)
               ]
             |)))
@@ -721,7 +721,7 @@ Module range.
                 Ty.apply
                   (Ty.path "&mut")
                   []
-                  [ Ty.apply (Ty.path "core::range::iter::IterRange") [] [ A ] ],
+                  [ Ty.apply (Ty.path "core::range::iter::RangeIter") [] [ A ] ],
                 self
               |) in
             let n := M.alloc (| Ty.path "usize", n |) in
@@ -741,7 +741,7 @@ Module range.
                   Pointer.Kind.MutRef,
                   M.SubPointer.get_struct_tuple_field (|
                     M.deref (| M.read (| self |) |),
-                    "core::range::iter::IterRange",
+                    "core::range::iter::RangeIter",
                     0
                   |)
                 |);
@@ -762,7 +762,7 @@ Module range.
         | [], [], [ self ] =>
           ltac:(M.monadic
             (let self :=
-              M.alloc (| Ty.apply (Ty.path "core::range::iter::IterRange") [] [ A ], self |) in
+              M.alloc (| Ty.apply (Ty.path "core::range::iter::RangeIter") [] [ A ], self |) in
             M.call_closure (|
               Ty.apply (Ty.path "core::option::Option") [] [ A ],
               M.get_trait_method (|
@@ -776,7 +776,7 @@ Module range.
               |),
               [
                 M.read (|
-                  M.SubPointer.get_struct_tuple_field (| self, "core::range::iter::IterRange", 0 |)
+                  M.SubPointer.get_struct_tuple_field (| self, "core::range::iter::RangeIter", 0 |)
                 |)
               ]
             |)))
@@ -797,7 +797,7 @@ Module range.
         | [], [], [ self ] =>
           ltac:(M.monadic
             (let self :=
-              M.alloc (| Ty.apply (Ty.path "core::range::iter::IterRange") [] [ A ], self |) in
+              M.alloc (| Ty.apply (Ty.path "core::range::iter::RangeIter") [] [ A ], self |) in
             M.call_closure (|
               Ty.apply (Ty.path "core::option::Option") [] [ A ],
               M.get_trait_method (|
@@ -811,7 +811,7 @@ Module range.
               |),
               [
                 M.read (|
-                  M.SubPointer.get_struct_tuple_field (| self, "core::range::iter::IterRange", 0 |)
+                  M.SubPointer.get_struct_tuple_field (| self, "core::range::iter::RangeIter", 0 |)
                 |)
               ]
             |)))
@@ -832,7 +832,7 @@ Module range.
         | [], [], [ self ] =>
           ltac:(M.monadic
             (let self :=
-              M.alloc (| Ty.apply (Ty.path "core::range::iter::IterRange") [] [ A ], self |) in
+              M.alloc (| Ty.apply (Ty.path "core::range::iter::RangeIter") [] [ A ], self |) in
             M.call_closure (|
               Ty.apply (Ty.path "core::option::Option") [] [ A ],
               M.get_trait_method (|
@@ -846,7 +846,7 @@ Module range.
               |),
               [
                 M.read (|
-                  M.SubPointer.get_struct_tuple_field (| self, "core::range::iter::IterRange", 0 |)
+                  M.SubPointer.get_struct_tuple_field (| self, "core::range::iter::RangeIter", 0 |)
                 |)
               ]
             |)))
@@ -864,7 +864,7 @@ Module range.
         | [], [], [ self ] =>
           ltac:(M.monadic
             (let self :=
-              M.alloc (| Ty.apply (Ty.path "core::range::iter::IterRange") [] [ A ], self |) in
+              M.alloc (| Ty.apply (Ty.path "core::range::iter::RangeIter") [] [ A ], self |) in
             Value.Bool true))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
@@ -884,7 +884,7 @@ Module range.
                 Ty.apply
                   (Ty.path "&mut")
                   []
-                  [ Ty.apply (Ty.path "core::range::iter::IterRange") [] [ A ] ],
+                  [ Ty.apply (Ty.path "core::range::iter::RangeIter") [] [ A ] ],
                 self
               |) in
             let n := M.alloc (| Ty.path "usize", n |) in
@@ -910,7 +910,7 @@ Module range.
                   Pointer.Kind.MutRef,
                   M.SubPointer.get_struct_tuple_field (|
                     M.deref (| M.read (| self |) |),
-                    "core::range::iter::IterRange",
+                    "core::range::iter::RangeIter",
                     0
                   |)
                 |);
@@ -947,7 +947,7 @@ Module range.
                 Ty.apply
                   (Ty.path "&mut")
                   []
-                  [ Ty.apply (Ty.path "core::range::iter::IterRange") [] [ A ] ],
+                  [ Ty.apply (Ty.path "core::range::iter::RangeIter") [] [ A ] ],
                 self
               |) in
             let idx := M.alloc (| Ty.path "usize", idx |) in
@@ -972,7 +972,7 @@ Module range.
                       M.SubPointer.get_struct_record_field (|
                         M.SubPointer.get_struct_tuple_field (|
                           M.deref (| M.read (| self |) |),
-                          "core::range::iter::IterRange",
+                          "core::range::iter::RangeIter",
                           0
                         |),
                         "core::ops::range::Range",
@@ -1008,11 +1008,11 @@ Module range.
             ("advance_by", InstanceField.Method (advance_by A));
             ("__iterator_get_unchecked", InstanceField.Method (__iterator_get_unchecked A))
           ].
-    End Impl_core_iter_traits_iterator_Iterator_where_core_iter_range_Step_A_for_core_range_iter_IterRange_A.
+    End Impl_core_iter_traits_iterator_Iterator_where_core_iter_range_Step_A_for_core_range_iter_RangeIter_A.
     
-    Module Impl_core_iter_traits_double_ended_DoubleEndedIterator_where_core_iter_range_Step_A_for_core_range_iter_IterRange_A.
+    Module Impl_core_iter_traits_double_ended_DoubleEndedIterator_where_core_iter_range_Step_A_for_core_range_iter_RangeIter_A.
       Definition Self (A : Ty.t) : Ty.t :=
-        Ty.apply (Ty.path "core::range::iter::IterRange") [] [ A ].
+        Ty.apply (Ty.path "core::range::iter::RangeIter") [] [ A ].
       
       (*
           fn next_back(&mut self) -> Option<A> {
@@ -1029,7 +1029,7 @@ Module range.
                 Ty.apply
                   (Ty.path "&mut")
                   []
-                  [ Ty.apply (Ty.path "core::range::iter::IterRange") [] [ A ] ],
+                  [ Ty.apply (Ty.path "core::range::iter::RangeIter") [] [ A ] ],
                 self
               |) in
             M.call_closure (|
@@ -1048,7 +1048,7 @@ Module range.
                   Pointer.Kind.MutRef,
                   M.SubPointer.get_struct_tuple_field (|
                     M.deref (| M.read (| self |) |),
-                    "core::range::iter::IterRange",
+                    "core::range::iter::RangeIter",
                     0
                   |)
                 |)
@@ -1072,7 +1072,7 @@ Module range.
                 Ty.apply
                   (Ty.path "&mut")
                   []
-                  [ Ty.apply (Ty.path "core::range::iter::IterRange") [] [ A ] ],
+                  [ Ty.apply (Ty.path "core::range::iter::RangeIter") [] [ A ] ],
                 self
               |) in
             let n := M.alloc (| Ty.path "usize", n |) in
@@ -1092,7 +1092,7 @@ Module range.
                   Pointer.Kind.MutRef,
                   M.SubPointer.get_struct_tuple_field (|
                     M.deref (| M.read (| self |) |),
-                    "core::range::iter::IterRange",
+                    "core::range::iter::RangeIter",
                     0
                   |)
                 |);
@@ -1122,7 +1122,7 @@ Module range.
                 Ty.apply
                   (Ty.path "&mut")
                   []
-                  [ Ty.apply (Ty.path "core::range::iter::IterRange") [] [ A ] ],
+                  [ Ty.apply (Ty.path "core::range::iter::RangeIter") [] [ A ] ],
                 self
               |) in
             let n := M.alloc (| Ty.path "usize", n |) in
@@ -1148,7 +1148,7 @@ Module range.
                   Pointer.Kind.MutRef,
                   M.SubPointer.get_struct_tuple_field (|
                     M.deref (| M.read (| self |) |),
-                    "core::range::iter::IterRange",
+                    "core::range::iter::RangeIter",
                     0
                   |)
                 |);
@@ -1171,11 +1171,11 @@ Module range.
             ("nth_back", InstanceField.Method (nth_back A));
             ("advance_back_by", InstanceField.Method (advance_back_by A))
           ].
-    End Impl_core_iter_traits_double_ended_DoubleEndedIterator_where_core_iter_range_Step_A_for_core_range_iter_IterRange_A.
+    End Impl_core_iter_traits_double_ended_DoubleEndedIterator_where_core_iter_range_Step_A_for_core_range_iter_RangeIter_A.
     
-    Module Impl_core_iter_traits_marker_TrustedLen_where_core_iter_traits_marker_TrustedStep_A_for_core_range_iter_IterRange_A.
+    Module Impl_core_iter_traits_marker_TrustedLen_where_core_iter_traits_marker_TrustedStep_A_for_core_range_iter_RangeIter_A.
       Definition Self (A : Ty.t) : Ty.t :=
-        Ty.apply (Ty.path "core::range::iter::IterRange") [] [ A ].
+        Ty.apply (Ty.path "core::range::iter::RangeIter") [] [ A ].
       
       Axiom Implements :
         forall (A : Ty.t),
@@ -1185,11 +1185,11 @@ Module range.
           (* Trait polymorphic types *) []
           (Self A)
           (* Instance *) [].
-    End Impl_core_iter_traits_marker_TrustedLen_where_core_iter_traits_marker_TrustedStep_A_for_core_range_iter_IterRange_A.
+    End Impl_core_iter_traits_marker_TrustedLen_where_core_iter_traits_marker_TrustedStep_A_for_core_range_iter_RangeIter_A.
     
-    Module Impl_core_iter_traits_marker_FusedIterator_where_core_iter_range_Step_A_for_core_range_iter_IterRange_A.
+    Module Impl_core_iter_traits_marker_FusedIterator_where_core_iter_range_Step_A_for_core_range_iter_RangeIter_A.
       Definition Self (A : Ty.t) : Ty.t :=
-        Ty.apply (Ty.path "core::range::iter::IterRange") [] [ A ].
+        Ty.apply (Ty.path "core::range::iter::RangeIter") [] [ A ].
       
       Axiom Implements :
         forall (A : Ty.t),
@@ -1199,7 +1199,7 @@ Module range.
           (* Trait polymorphic types *) []
           (Self A)
           (* Instance *) [].
-    End Impl_core_iter_traits_marker_FusedIterator_where_core_iter_range_Step_A_for_core_range_iter_IterRange_A.
+    End Impl_core_iter_traits_marker_FusedIterator_where_core_iter_range_Step_A_for_core_range_iter_RangeIter_A.
     
     Module Impl_core_iter_traits_collect_IntoIterator_where_core_iter_range_Step_A_for_core_range_Range_A.
       Definition Self (A : Ty.t) : Ty.t := Ty.apply (Ty.path "core::range::Range") [] [ A ].
@@ -1207,13 +1207,13 @@ Module range.
       (*     type Item = A; *)
       Definition _Item (A : Ty.t) : Ty.t := A.
       
-      (*     type IntoIter = IterRange<A>; *)
+      (*     type IntoIter = RangeIter<A>; *)
       Definition _IntoIter (A : Ty.t) : Ty.t :=
-        Ty.apply (Ty.path "core::range::iter::IterRange") [] [ A ].
+        Ty.apply (Ty.path "core::range::iter::RangeIter") [] [ A ].
       
       (*
           fn into_iter(self) -> Self::IntoIter {
-              IterRange(self.into())
+              RangeIter(self.into())
           }
       *)
       Definition into_iter (A : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -1223,7 +1223,7 @@ Module range.
           ltac:(M.monadic
             (let self := M.alloc (| Ty.apply (Ty.path "core::range::Range") [] [ A ], self |) in
             Value.StructTuple
-              "core::range::iter::IterRange"
+              "core::range::iter::RangeIter"
               []
               [ A ]
               [
@@ -1261,15 +1261,15 @@ Module range.
     
     (* StructTuple
       {
-        name := "IterRangeInclusive";
+        name := "RangeInclusiveIter";
         const_params := [];
         ty_params := [ "A" ];
         fields := [ Ty.apply (Ty.path "core::ops::range::RangeInclusive") [] [ A ] ];
       } *)
     
-    Module Impl_core_fmt_Debug_where_core_fmt_Debug_A_for_core_range_iter_IterRangeInclusive_A.
+    Module Impl_core_fmt_Debug_where_core_fmt_Debug_A_for_core_range_iter_RangeInclusiveIter_A.
       Definition Self (A : Ty.t) : Ty.t :=
-        Ty.apply (Ty.path "core::range::iter::IterRangeInclusive") [] [ A ].
+        Ty.apply (Ty.path "core::range::iter::RangeInclusiveIter") [] [ A ].
       
       (* Debug *)
       Definition fmt (A : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -1282,7 +1282,7 @@ Module range.
                 Ty.apply
                   (Ty.path "&")
                   []
-                  [ Ty.apply (Ty.path "core::range::iter::IterRangeInclusive") [] [ A ] ],
+                  [ Ty.apply (Ty.path "core::range::iter::RangeInclusiveIter") [] [ A ] ],
                 self
               |) in
             let f :=
@@ -1300,7 +1300,7 @@ Module range.
               |),
               [
                 M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "IterRangeInclusive" |) |) |);
+                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "RangeInclusiveIter" |) |) |);
                 M.call_closure (|
                   Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
                   M.pointer_coercion
@@ -1330,7 +1330,7 @@ Module range.
                               Pointer.Kind.Ref,
                               M.SubPointer.get_struct_tuple_field (|
                                 M.deref (| M.read (| self |) |),
-                                "core::range::iter::IterRangeInclusive",
+                                "core::range::iter::RangeInclusiveIter",
                                 0
                               |)
                             |)
@@ -1353,11 +1353,11 @@ Module range.
           (* Trait polymorphic types *) []
           (Self A)
           (* Instance *) [ ("fmt", InstanceField.Method (fmt A)) ].
-    End Impl_core_fmt_Debug_where_core_fmt_Debug_A_for_core_range_iter_IterRangeInclusive_A.
+    End Impl_core_fmt_Debug_where_core_fmt_Debug_A_for_core_range_iter_RangeInclusiveIter_A.
     
-    Module Impl_core_clone_Clone_where_core_clone_Clone_A_for_core_range_iter_IterRangeInclusive_A.
+    Module Impl_core_clone_Clone_where_core_clone_Clone_A_for_core_range_iter_RangeInclusiveIter_A.
       Definition Self (A : Ty.t) : Ty.t :=
-        Ty.apply (Ty.path "core::range::iter::IterRangeInclusive") [] [ A ].
+        Ty.apply (Ty.path "core::range::iter::RangeInclusiveIter") [] [ A ].
       
       (* Clone *)
       Definition clone (A : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -1370,11 +1370,11 @@ Module range.
                 Ty.apply
                   (Ty.path "&")
                   []
-                  [ Ty.apply (Ty.path "core::range::iter::IterRangeInclusive") [] [ A ] ],
+                  [ Ty.apply (Ty.path "core::range::iter::RangeInclusiveIter") [] [ A ] ],
                 self
               |) in
             Value.StructTuple
-              "core::range::iter::IterRangeInclusive"
+              "core::range::iter::RangeInclusiveIter"
               []
               [ A ]
               [
@@ -1397,7 +1397,7 @@ Module range.
                           Pointer.Kind.Ref,
                           M.SubPointer.get_struct_tuple_field (|
                             M.deref (| M.read (| self |) |),
-                            "core::range::iter::IterRangeInclusive",
+                            "core::range::iter::RangeInclusiveIter",
                             0
                           |)
                         |)
@@ -1417,11 +1417,11 @@ Module range.
           (* Trait polymorphic types *) []
           (Self A)
           (* Instance *) [ ("clone", InstanceField.Method (clone A)) ].
-    End Impl_core_clone_Clone_where_core_clone_Clone_A_for_core_range_iter_IterRangeInclusive_A.
+    End Impl_core_clone_Clone_where_core_clone_Clone_A_for_core_range_iter_RangeInclusiveIter_A.
     
-    Module Impl_core_range_iter_IterRangeInclusive_A.
+    Module Impl_core_range_iter_RangeInclusiveIter_A.
       Definition Self (A : Ty.t) : Ty.t :=
-        Ty.apply (Ty.path "core::range::iter::IterRangeInclusive") [] [ A ].
+        Ty.apply (Ty.path "core::range::iter::RangeInclusiveIter") [] [ A ].
       
       (*
           pub fn remainder(self) -> Option<RangeInclusive<A>> {
@@ -1429,7 +1429,7 @@ Module range.
                   return None;
               }
       
-              Some(RangeInclusive { start: self.0.start, end: self.0.end })
+              Some(RangeInclusive { start: self.0.start, last: self.0.end })
           }
       *)
       Definition remainder (A : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -1439,7 +1439,7 @@ Module range.
           ltac:(M.monadic
             (let self :=
               M.alloc (|
-                Ty.apply (Ty.path "core::range::iter::IterRangeInclusive") [] [ A ],
+                Ty.apply (Ty.path "core::range::iter::RangeInclusiveIter") [] [ A ],
                 self
               |) in
             M.catch_return
@@ -1457,32 +1457,28 @@ Module range.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
                                   Ty.path "bool",
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    M.get_associated_function (|
-                                      Ty.apply
-                                        (Ty.path "core::ops::range::RangeInclusive")
-                                        []
-                                        [ A ],
-                                      "is_empty",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.SubPointer.get_struct_tuple_field (|
-                                          self,
-                                          "core::range::iter::IterRangeInclusive",
-                                          0
-                                        |)
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "core::ops::range::RangeInclusive") [] [ A ],
+                                    "is_empty",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.SubPointer.get_struct_tuple_field (|
+                                        self,
+                                        "core::range::iter::RangeInclusiveIter",
+                                        0
                                       |)
-                                    ]
-                                  |)
-                                |)) in
+                                    |)
+                                  ]
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.never_to_any (|
@@ -1519,19 +1515,19 @@ Module range.
                                 M.SubPointer.get_struct_record_field (|
                                   M.SubPointer.get_struct_tuple_field (|
                                     self,
-                                    "core::range::iter::IterRangeInclusive",
+                                    "core::range::iter::RangeInclusiveIter",
                                     0
                                   |),
                                   "core::ops::range::RangeInclusive",
                                   "start"
                                 |)
                               |));
-                            ("end_",
+                            ("last",
                               M.read (|
                                 M.SubPointer.get_struct_record_field (|
                                   M.SubPointer.get_struct_tuple_field (|
                                     self,
-                                    "core::range::iter::IterRangeInclusive",
+                                    "core::range::iter::RangeInclusiveIter",
                                     0
                                   |),
                                   "core::ops::range::RangeInclusive",
@@ -1551,11 +1547,11 @@ Module range.
         M.IsAssociatedFunction.C (Self A) "remainder" (remainder A).
       Admitted.
       Global Typeclasses Opaque remainder.
-    End Impl_core_range_iter_IterRangeInclusive_A.
+    End Impl_core_range_iter_RangeInclusiveIter_A.
     
-    Module Impl_core_iter_traits_iterator_Iterator_where_core_iter_range_Step_A_for_core_range_iter_IterRangeInclusive_A.
+    Module Impl_core_iter_traits_iterator_Iterator_where_core_iter_range_Step_A_for_core_range_iter_RangeInclusiveIter_A.
       Definition Self (A : Ty.t) : Ty.t :=
-        Ty.apply (Ty.path "core::range::iter::IterRangeInclusive") [] [ A ].
+        Ty.apply (Ty.path "core::range::iter::RangeInclusiveIter") [] [ A ].
       
       (*     type Item = A; *)
       Definition _Item (A : Ty.t) : Ty.t := A.
@@ -1575,7 +1571,7 @@ Module range.
                 Ty.apply
                   (Ty.path "&mut")
                   []
-                  [ Ty.apply (Ty.path "core::range::iter::IterRangeInclusive") [] [ A ] ],
+                  [ Ty.apply (Ty.path "core::range::iter::RangeInclusiveIter") [] [ A ] ],
                 self
               |) in
             M.call_closure (|
@@ -1594,7 +1590,7 @@ Module range.
                   Pointer.Kind.MutRef,
                   M.SubPointer.get_struct_tuple_field (|
                     M.deref (| M.read (| self |) |),
-                    "core::range::iter::IterRangeInclusive",
+                    "core::range::iter::RangeInclusiveIter",
                     0
                   |)
                 |)
@@ -1618,7 +1614,7 @@ Module range.
                 Ty.apply
                   (Ty.path "&")
                   []
-                  [ Ty.apply (Ty.path "core::range::iter::IterRangeInclusive") [] [ A ] ],
+                  [ Ty.apply (Ty.path "core::range::iter::RangeInclusiveIter") [] [ A ] ],
                 self
               |) in
             M.call_closure (|
@@ -1639,7 +1635,7 @@ Module range.
                   Pointer.Kind.Ref,
                   M.SubPointer.get_struct_tuple_field (|
                     M.deref (| M.read (| self |) |),
-                    "core::range::iter::IterRangeInclusive",
+                    "core::range::iter::RangeInclusiveIter",
                     0
                   |)
                 |)
@@ -1660,7 +1656,7 @@ Module range.
           ltac:(M.monadic
             (let self :=
               M.alloc (|
-                Ty.apply (Ty.path "core::range::iter::IterRangeInclusive") [] [ A ],
+                Ty.apply (Ty.path "core::range::iter::RangeInclusiveIter") [] [ A ],
                 self
               |) in
             M.call_closure (|
@@ -1678,7 +1674,7 @@ Module range.
                 M.read (|
                   M.SubPointer.get_struct_tuple_field (|
                     self,
-                    "core::range::iter::IterRangeInclusive",
+                    "core::range::iter::RangeInclusiveIter",
                     0
                   |)
                 |)
@@ -1702,7 +1698,7 @@ Module range.
                 Ty.apply
                   (Ty.path "&mut")
                   []
-                  [ Ty.apply (Ty.path "core::range::iter::IterRangeInclusive") [] [ A ] ],
+                  [ Ty.apply (Ty.path "core::range::iter::RangeInclusiveIter") [] [ A ] ],
                 self
               |) in
             let n := M.alloc (| Ty.path "usize", n |) in
@@ -1722,7 +1718,7 @@ Module range.
                   Pointer.Kind.MutRef,
                   M.SubPointer.get_struct_tuple_field (|
                     M.deref (| M.read (| self |) |),
-                    "core::range::iter::IterRangeInclusive",
+                    "core::range::iter::RangeInclusiveIter",
                     0
                   |)
                 |);
@@ -1744,7 +1740,7 @@ Module range.
           ltac:(M.monadic
             (let self :=
               M.alloc (|
-                Ty.apply (Ty.path "core::range::iter::IterRangeInclusive") [] [ A ],
+                Ty.apply (Ty.path "core::range::iter::RangeInclusiveIter") [] [ A ],
                 self
               |) in
             M.call_closure (|
@@ -1762,7 +1758,7 @@ Module range.
                 M.read (|
                   M.SubPointer.get_struct_tuple_field (|
                     self,
-                    "core::range::iter::IterRangeInclusive",
+                    "core::range::iter::RangeInclusiveIter",
                     0
                   |)
                 |)
@@ -1786,7 +1782,7 @@ Module range.
           ltac:(M.monadic
             (let self :=
               M.alloc (|
-                Ty.apply (Ty.path "core::range::iter::IterRangeInclusive") [] [ A ],
+                Ty.apply (Ty.path "core::range::iter::RangeInclusiveIter") [] [ A ],
                 self
               |) in
             M.call_closure (|
@@ -1804,7 +1800,7 @@ Module range.
                 M.read (|
                   M.SubPointer.get_struct_tuple_field (|
                     self,
-                    "core::range::iter::IterRangeInclusive",
+                    "core::range::iter::RangeInclusiveIter",
                     0
                   |)
                 |)
@@ -1828,7 +1824,7 @@ Module range.
           ltac:(M.monadic
             (let self :=
               M.alloc (|
-                Ty.apply (Ty.path "core::range::iter::IterRangeInclusive") [] [ A ],
+                Ty.apply (Ty.path "core::range::iter::RangeInclusiveIter") [] [ A ],
                 self
               |) in
             M.call_closure (|
@@ -1846,7 +1842,7 @@ Module range.
                 M.read (|
                   M.SubPointer.get_struct_tuple_field (|
                     self,
-                    "core::range::iter::IterRangeInclusive",
+                    "core::range::iter::RangeInclusiveIter",
                     0
                   |)
                 |)
@@ -1867,7 +1863,7 @@ Module range.
           ltac:(M.monadic
             (let self :=
               M.alloc (|
-                Ty.apply (Ty.path "core::range::iter::IterRangeInclusive") [] [ A ],
+                Ty.apply (Ty.path "core::range::iter::RangeInclusiveIter") [] [ A ],
                 self
               |) in
             Value.Bool true))
@@ -1889,7 +1885,7 @@ Module range.
                 Ty.apply
                   (Ty.path "&mut")
                   []
-                  [ Ty.apply (Ty.path "core::range::iter::IterRangeInclusive") [] [ A ] ],
+                  [ Ty.apply (Ty.path "core::range::iter::RangeInclusiveIter") [] [ A ] ],
                 self
               |) in
             let n := M.alloc (| Ty.path "usize", n |) in
@@ -1915,7 +1911,7 @@ Module range.
                   Pointer.Kind.MutRef,
                   M.SubPointer.get_struct_tuple_field (|
                     M.deref (| M.read (| self |) |),
-                    "core::range::iter::IterRangeInclusive",
+                    "core::range::iter::RangeInclusiveIter",
                     0
                   |)
                 |);
@@ -1945,11 +1941,11 @@ Module range.
             ("is_sorted", InstanceField.Method (is_sorted A));
             ("advance_by", InstanceField.Method (advance_by A))
           ].
-    End Impl_core_iter_traits_iterator_Iterator_where_core_iter_range_Step_A_for_core_range_iter_IterRangeInclusive_A.
+    End Impl_core_iter_traits_iterator_Iterator_where_core_iter_range_Step_A_for_core_range_iter_RangeInclusiveIter_A.
     
-    Module Impl_core_iter_traits_double_ended_DoubleEndedIterator_where_core_iter_range_Step_A_for_core_range_iter_IterRangeInclusive_A.
+    Module Impl_core_iter_traits_double_ended_DoubleEndedIterator_where_core_iter_range_Step_A_for_core_range_iter_RangeInclusiveIter_A.
       Definition Self (A : Ty.t) : Ty.t :=
-        Ty.apply (Ty.path "core::range::iter::IterRangeInclusive") [] [ A ].
+        Ty.apply (Ty.path "core::range::iter::RangeInclusiveIter") [] [ A ].
       
       (*
           fn next_back(&mut self) -> Option<A> {
@@ -1966,7 +1962,7 @@ Module range.
                 Ty.apply
                   (Ty.path "&mut")
                   []
-                  [ Ty.apply (Ty.path "core::range::iter::IterRangeInclusive") [] [ A ] ],
+                  [ Ty.apply (Ty.path "core::range::iter::RangeInclusiveIter") [] [ A ] ],
                 self
               |) in
             M.call_closure (|
@@ -1985,7 +1981,7 @@ Module range.
                   Pointer.Kind.MutRef,
                   M.SubPointer.get_struct_tuple_field (|
                     M.deref (| M.read (| self |) |),
-                    "core::range::iter::IterRangeInclusive",
+                    "core::range::iter::RangeInclusiveIter",
                     0
                   |)
                 |)
@@ -2009,7 +2005,7 @@ Module range.
                 Ty.apply
                   (Ty.path "&mut")
                   []
-                  [ Ty.apply (Ty.path "core::range::iter::IterRangeInclusive") [] [ A ] ],
+                  [ Ty.apply (Ty.path "core::range::iter::RangeInclusiveIter") [] [ A ] ],
                 self
               |) in
             let n := M.alloc (| Ty.path "usize", n |) in
@@ -2029,7 +2025,7 @@ Module range.
                   Pointer.Kind.MutRef,
                   M.SubPointer.get_struct_tuple_field (|
                     M.deref (| M.read (| self |) |),
-                    "core::range::iter::IterRangeInclusive",
+                    "core::range::iter::RangeInclusiveIter",
                     0
                   |)
                 |);
@@ -2059,7 +2055,7 @@ Module range.
                 Ty.apply
                   (Ty.path "&mut")
                   []
-                  [ Ty.apply (Ty.path "core::range::iter::IterRangeInclusive") [] [ A ] ],
+                  [ Ty.apply (Ty.path "core::range::iter::RangeInclusiveIter") [] [ A ] ],
                 self
               |) in
             let n := M.alloc (| Ty.path "usize", n |) in
@@ -2085,7 +2081,7 @@ Module range.
                   Pointer.Kind.MutRef,
                   M.SubPointer.get_struct_tuple_field (|
                     M.deref (| M.read (| self |) |),
-                    "core::range::iter::IterRangeInclusive",
+                    "core::range::iter::RangeInclusiveIter",
                     0
                   |)
                 |);
@@ -2108,11 +2104,11 @@ Module range.
             ("nth_back", InstanceField.Method (nth_back A));
             ("advance_back_by", InstanceField.Method (advance_back_by A))
           ].
-    End Impl_core_iter_traits_double_ended_DoubleEndedIterator_where_core_iter_range_Step_A_for_core_range_iter_IterRangeInclusive_A.
+    End Impl_core_iter_traits_double_ended_DoubleEndedIterator_where_core_iter_range_Step_A_for_core_range_iter_RangeInclusiveIter_A.
     
-    Module Impl_core_iter_traits_marker_TrustedLen_where_core_iter_traits_marker_TrustedStep_A_for_core_range_iter_IterRangeInclusive_A.
+    Module Impl_core_iter_traits_marker_TrustedLen_where_core_iter_traits_marker_TrustedStep_A_for_core_range_iter_RangeInclusiveIter_A.
       Definition Self (A : Ty.t) : Ty.t :=
-        Ty.apply (Ty.path "core::range::iter::IterRangeInclusive") [] [ A ].
+        Ty.apply (Ty.path "core::range::iter::RangeInclusiveIter") [] [ A ].
       
       Axiom Implements :
         forall (A : Ty.t),
@@ -2122,11 +2118,11 @@ Module range.
           (* Trait polymorphic types *) []
           (Self A)
           (* Instance *) [].
-    End Impl_core_iter_traits_marker_TrustedLen_where_core_iter_traits_marker_TrustedStep_A_for_core_range_iter_IterRangeInclusive_A.
+    End Impl_core_iter_traits_marker_TrustedLen_where_core_iter_traits_marker_TrustedStep_A_for_core_range_iter_RangeInclusiveIter_A.
     
-    Module Impl_core_iter_traits_marker_FusedIterator_where_core_iter_range_Step_A_for_core_range_iter_IterRangeInclusive_A.
+    Module Impl_core_iter_traits_marker_FusedIterator_where_core_iter_range_Step_A_for_core_range_iter_RangeInclusiveIter_A.
       Definition Self (A : Ty.t) : Ty.t :=
-        Ty.apply (Ty.path "core::range::iter::IterRangeInclusive") [] [ A ].
+        Ty.apply (Ty.path "core::range::iter::RangeInclusiveIter") [] [ A ].
       
       Axiom Implements :
         forall (A : Ty.t),
@@ -2136,7 +2132,7 @@ Module range.
           (* Trait polymorphic types *) []
           (Self A)
           (* Instance *) [].
-    End Impl_core_iter_traits_marker_FusedIterator_where_core_iter_range_Step_A_for_core_range_iter_IterRangeInclusive_A.
+    End Impl_core_iter_traits_marker_FusedIterator_where_core_iter_range_Step_A_for_core_range_iter_RangeInclusiveIter_A.
     
     Module Impl_core_iter_traits_collect_IntoIterator_where_core_iter_range_Step_A_for_core_range_RangeInclusive_A.
       Definition Self (A : Ty.t) : Ty.t :=
@@ -2145,13 +2141,13 @@ Module range.
       (*     type Item = A; *)
       Definition _Item (A : Ty.t) : Ty.t := A.
       
-      (*     type IntoIter = IterRangeInclusive<A>; *)
+      (*     type IntoIter = RangeInclusiveIter<A>; *)
       Definition _IntoIter (A : Ty.t) : Ty.t :=
-        Ty.apply (Ty.path "core::range::iter::IterRangeInclusive") [] [ A ].
+        Ty.apply (Ty.path "core::range::iter::RangeInclusiveIter") [] [ A ].
       
       (*
           fn into_iter(self) -> Self::IntoIter {
-              IterRangeInclusive(self.into())
+              RangeInclusiveIter(self.into())
           }
       *)
       Definition into_iter (A : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -2162,7 +2158,7 @@ Module range.
             (let self :=
               M.alloc (| Ty.apply (Ty.path "core::range::RangeInclusive") [] [ A ], self |) in
             Value.StructTuple
-              "core::range::iter::IterRangeInclusive"
+              "core::range::iter::RangeInclusiveIter"
               []
               [ A ]
               [
@@ -2198,9 +2194,9 @@ Module range.
           ].
     End Impl_core_iter_traits_collect_IntoIterator_where_core_iter_range_Step_A_for_core_range_RangeInclusive_A.
     
-    Module Impl_core_iter_traits_exact_size_ExactSizeIterator_for_core_range_iter_IterRange_usize.
+    Module Impl_core_iter_traits_exact_size_ExactSizeIterator_for_core_range_iter_RangeIter_usize.
       Definition Self : Ty.t :=
-        Ty.apply (Ty.path "core::range::iter::IterRange") [] [ Ty.path "usize" ].
+        Ty.apply (Ty.path "core::range::iter::RangeIter") [] [ Ty.path "usize" ].
       
       Axiom Implements :
         M.IsTraitInstance
@@ -2209,11 +2205,11 @@ Module range.
           (* Trait polymorphic types *) []
           Self
           (* Instance *) [].
-    End Impl_core_iter_traits_exact_size_ExactSizeIterator_for_core_range_iter_IterRange_usize.
+    End Impl_core_iter_traits_exact_size_ExactSizeIterator_for_core_range_iter_RangeIter_usize.
     
-    Module Impl_core_iter_traits_exact_size_ExactSizeIterator_for_core_range_iter_IterRange_u8.
+    Module Impl_core_iter_traits_exact_size_ExactSizeIterator_for_core_range_iter_RangeIter_u8.
       Definition Self : Ty.t :=
-        Ty.apply (Ty.path "core::range::iter::IterRange") [] [ Ty.path "u8" ].
+        Ty.apply (Ty.path "core::range::iter::RangeIter") [] [ Ty.path "u8" ].
       
       Axiom Implements :
         M.IsTraitInstance
@@ -2222,11 +2218,11 @@ Module range.
           (* Trait polymorphic types *) []
           Self
           (* Instance *) [].
-    End Impl_core_iter_traits_exact_size_ExactSizeIterator_for_core_range_iter_IterRange_u8.
+    End Impl_core_iter_traits_exact_size_ExactSizeIterator_for_core_range_iter_RangeIter_u8.
     
-    Module Impl_core_iter_traits_exact_size_ExactSizeIterator_for_core_range_iter_IterRange_u16.
+    Module Impl_core_iter_traits_exact_size_ExactSizeIterator_for_core_range_iter_RangeIter_u16.
       Definition Self : Ty.t :=
-        Ty.apply (Ty.path "core::range::iter::IterRange") [] [ Ty.path "u16" ].
+        Ty.apply (Ty.path "core::range::iter::RangeIter") [] [ Ty.path "u16" ].
       
       Axiom Implements :
         M.IsTraitInstance
@@ -2235,11 +2231,11 @@ Module range.
           (* Trait polymorphic types *) []
           Self
           (* Instance *) [].
-    End Impl_core_iter_traits_exact_size_ExactSizeIterator_for_core_range_iter_IterRange_u16.
+    End Impl_core_iter_traits_exact_size_ExactSizeIterator_for_core_range_iter_RangeIter_u16.
     
-    Module Impl_core_iter_traits_exact_size_ExactSizeIterator_for_core_range_iter_IterRange_isize.
+    Module Impl_core_iter_traits_exact_size_ExactSizeIterator_for_core_range_iter_RangeIter_isize.
       Definition Self : Ty.t :=
-        Ty.apply (Ty.path "core::range::iter::IterRange") [] [ Ty.path "isize" ].
+        Ty.apply (Ty.path "core::range::iter::RangeIter") [] [ Ty.path "isize" ].
       
       Axiom Implements :
         M.IsTraitInstance
@@ -2248,11 +2244,11 @@ Module range.
           (* Trait polymorphic types *) []
           Self
           (* Instance *) [].
-    End Impl_core_iter_traits_exact_size_ExactSizeIterator_for_core_range_iter_IterRange_isize.
+    End Impl_core_iter_traits_exact_size_ExactSizeIterator_for_core_range_iter_RangeIter_isize.
     
-    Module Impl_core_iter_traits_exact_size_ExactSizeIterator_for_core_range_iter_IterRange_i8.
+    Module Impl_core_iter_traits_exact_size_ExactSizeIterator_for_core_range_iter_RangeIter_i8.
       Definition Self : Ty.t :=
-        Ty.apply (Ty.path "core::range::iter::IterRange") [] [ Ty.path "i8" ].
+        Ty.apply (Ty.path "core::range::iter::RangeIter") [] [ Ty.path "i8" ].
       
       Axiom Implements :
         M.IsTraitInstance
@@ -2261,11 +2257,11 @@ Module range.
           (* Trait polymorphic types *) []
           Self
           (* Instance *) [].
-    End Impl_core_iter_traits_exact_size_ExactSizeIterator_for_core_range_iter_IterRange_i8.
+    End Impl_core_iter_traits_exact_size_ExactSizeIterator_for_core_range_iter_RangeIter_i8.
     
-    Module Impl_core_iter_traits_exact_size_ExactSizeIterator_for_core_range_iter_IterRange_i16.
+    Module Impl_core_iter_traits_exact_size_ExactSizeIterator_for_core_range_iter_RangeIter_i16.
       Definition Self : Ty.t :=
-        Ty.apply (Ty.path "core::range::iter::IterRange") [] [ Ty.path "i16" ].
+        Ty.apply (Ty.path "core::range::iter::RangeIter") [] [ Ty.path "i16" ].
       
       Axiom Implements :
         M.IsTraitInstance
@@ -2274,11 +2270,11 @@ Module range.
           (* Trait polymorphic types *) []
           Self
           (* Instance *) [].
-    End Impl_core_iter_traits_exact_size_ExactSizeIterator_for_core_range_iter_IterRange_i16.
+    End Impl_core_iter_traits_exact_size_ExactSizeIterator_for_core_range_iter_RangeIter_i16.
     
-    Module Impl_core_iter_traits_exact_size_ExactSizeIterator_for_core_range_iter_IterRangeInclusive_u8.
+    Module Impl_core_iter_traits_exact_size_ExactSizeIterator_for_core_range_iter_RangeInclusiveIter_u8.
       Definition Self : Ty.t :=
-        Ty.apply (Ty.path "core::range::iter::IterRangeInclusive") [] [ Ty.path "u8" ].
+        Ty.apply (Ty.path "core::range::iter::RangeInclusiveIter") [] [ Ty.path "u8" ].
       
       Axiom Implements :
         M.IsTraitInstance
@@ -2287,11 +2283,11 @@ Module range.
           (* Trait polymorphic types *) []
           Self
           (* Instance *) [].
-    End Impl_core_iter_traits_exact_size_ExactSizeIterator_for_core_range_iter_IterRangeInclusive_u8.
+    End Impl_core_iter_traits_exact_size_ExactSizeIterator_for_core_range_iter_RangeInclusiveIter_u8.
     
-    Module Impl_core_iter_traits_exact_size_ExactSizeIterator_for_core_range_iter_IterRangeInclusive_i8.
+    Module Impl_core_iter_traits_exact_size_ExactSizeIterator_for_core_range_iter_RangeInclusiveIter_i8.
       Definition Self : Ty.t :=
-        Ty.apply (Ty.path "core::range::iter::IterRangeInclusive") [] [ Ty.path "i8" ].
+        Ty.apply (Ty.path "core::range::iter::RangeInclusiveIter") [] [ Ty.path "i8" ].
       
       Axiom Implements :
         M.IsTraitInstance
@@ -2300,19 +2296,19 @@ Module range.
           (* Trait polymorphic types *) []
           Self
           (* Instance *) [].
-    End Impl_core_iter_traits_exact_size_ExactSizeIterator_for_core_range_iter_IterRangeInclusive_i8.
+    End Impl_core_iter_traits_exact_size_ExactSizeIterator_for_core_range_iter_RangeInclusiveIter_i8.
     
-    (* StructTuple
+    (* StructRecord
       {
-        name := "IterRangeFrom";
+        name := "RangeFromIter";
         const_params := [];
         ty_params := [ "A" ];
-        fields := [ Ty.apply (Ty.path "core::ops::range::RangeFrom") [] [ A ] ];
+        fields := [ ("start", A); ("first", Ty.path "bool") ];
       } *)
     
-    Module Impl_core_fmt_Debug_where_core_fmt_Debug_A_for_core_range_iter_IterRangeFrom_A.
+    Module Impl_core_fmt_Debug_where_core_fmt_Debug_A_for_core_range_iter_RangeFromIter_A.
       Definition Self (A : Ty.t) : Ty.t :=
-        Ty.apply (Ty.path "core::range::iter::IterRangeFrom") [] [ A ].
+        Ty.apply (Ty.path "core::range::iter::RangeFromIter") [] [ A ].
       
       (* Debug *)
       Definition fmt (A : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -2325,7 +2321,7 @@ Module range.
                 Ty.apply
                   (Ty.path "&")
                   []
-                  [ Ty.apply (Ty.path "core::range::iter::IterRangeFrom") [] [ A ] ],
+                  [ Ty.apply (Ty.path "core::range::iter::RangeFromIter") [] [ A ] ],
                 self
               |) in
             let f :=
@@ -2337,26 +2333,42 @@ Module range.
                 [ Ty.tuple []; Ty.path "core::fmt::Error" ],
               M.get_associated_function (|
                 Ty.path "core::fmt::Formatter",
-                "debug_tuple_field1_finish",
+                "debug_struct_field2_finish",
                 [],
                 []
               |),
               [
                 M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "IterRangeFrom" |) |) |);
+                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "RangeFromIter" |) |) |);
+                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "start" |) |) |);
                 M.call_closure (|
                   Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
                   M.pointer_coercion
                     M.PointerCoercion.Unsize
-                    (Ty.apply
-                      (Ty.path "&")
-                      []
-                      [
-                        Ty.apply
-                          (Ty.path "&")
-                          []
-                          [ Ty.apply (Ty.path "core::ops::range::RangeFrom") [] [ A ] ]
-                      ])
+                    (Ty.apply (Ty.path "&") [] [ A ])
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::range::iter::RangeFromIter",
+                            "start"
+                          |)
+                        |)
+                      |)
+                    |)
+                  ]
+                |);
+                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "first" |) |) |);
+                M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "bool" ] ])
                     (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
                   [
                     M.borrow (|
@@ -2365,16 +2377,13 @@ Module range.
                         M.borrow (|
                           Pointer.Kind.Ref,
                           M.alloc (|
-                            Ty.apply
-                              (Ty.path "&")
-                              []
-                              [ Ty.apply (Ty.path "core::ops::range::RangeFrom") [] [ A ] ],
+                            Ty.apply (Ty.path "&") [] [ Ty.path "bool" ],
                             M.borrow (|
                               Pointer.Kind.Ref,
-                              M.SubPointer.get_struct_tuple_field (|
+                              M.SubPointer.get_struct_record_field (|
                                 M.deref (| M.read (| self |) |),
-                                "core::range::iter::IterRangeFrom",
-                                0
+                                "core::range::iter::RangeFromIter",
+                                "first"
                               |)
                             |)
                           |)
@@ -2396,11 +2405,11 @@ Module range.
           (* Trait polymorphic types *) []
           (Self A)
           (* Instance *) [ ("fmt", InstanceField.Method (fmt A)) ].
-    End Impl_core_fmt_Debug_where_core_fmt_Debug_A_for_core_range_iter_IterRangeFrom_A.
+    End Impl_core_fmt_Debug_where_core_fmt_Debug_A_for_core_range_iter_RangeFromIter_A.
     
-    Module Impl_core_clone_Clone_where_core_clone_Clone_A_for_core_range_iter_IterRangeFrom_A.
+    Module Impl_core_clone_Clone_where_core_clone_Clone_A_for_core_range_iter_RangeFromIter_A.
       Definition Self (A : Ty.t) : Ty.t :=
-        Ty.apply (Ty.path "core::range::iter::IterRangeFrom") [] [ A ].
+        Ty.apply (Ty.path "core::range::iter::RangeFromIter") [] [ A ].
       
       (* Clone *)
       Definition clone (A : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -2413,41 +2422,62 @@ Module range.
                 Ty.apply
                   (Ty.path "&")
                   []
-                  [ Ty.apply (Ty.path "core::range::iter::IterRangeFrom") [] [ A ] ],
+                  [ Ty.apply (Ty.path "core::range::iter::RangeFromIter") [] [ A ] ],
                 self
               |) in
-            Value.StructTuple
-              "core::range::iter::IterRangeFrom"
+            Value.mkStructRecord
+              "core::range::iter::RangeFromIter"
               []
               [ A ]
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "core::ops::range::RangeFrom") [] [ A ],
-                  M.get_trait_method (|
-                    "core::clone::Clone",
-                    Ty.apply (Ty.path "core::ops::range::RangeFrom") [] [ A ],
-                    [],
-                    [],
-                    "clone",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_tuple_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::range::iter::IterRangeFrom",
-                            0
+                ("start",
+                  M.call_closure (|
+                    A,
+                    M.get_trait_method (| "core::clone::Clone", A, [], [], "clone", [], [] |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "core::range::iter::RangeFromIter",
+                              "start"
+                            |)
                           |)
                         |)
                       |)
-                    |)
-                  ]
-                |)
+                    ]
+                  |));
+                ("first",
+                  M.call_closure (|
+                    Ty.path "bool",
+                    M.get_trait_method (|
+                      "core::clone::Clone",
+                      Ty.path "bool",
+                      [],
+                      [],
+                      "clone",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "core::range::iter::RangeFromIter",
+                              "first"
+                            |)
+                          |)
+                        |)
+                      |)
+                    ]
+                  |))
               ]))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
@@ -2460,15 +2490,21 @@ Module range.
           (* Trait polymorphic types *) []
           (Self A)
           (* Instance *) [ ("clone", InstanceField.Method (clone A)) ].
-    End Impl_core_clone_Clone_where_core_clone_Clone_A_for_core_range_iter_IterRangeFrom_A.
+    End Impl_core_clone_Clone_where_core_clone_Clone_A_for_core_range_iter_RangeFromIter_A.
     
-    Module Impl_core_range_iter_IterRangeFrom_A.
+    Module Impl_core_range_iter_RangeFromIter_A.
       Definition Self (A : Ty.t) : Ty.t :=
-        Ty.apply (Ty.path "core::range::iter::IterRangeFrom") [] [ A ].
+        Ty.apply (Ty.path "core::range::iter::RangeFromIter") [] [ A ].
       
       (*
           pub fn remainder(self) -> RangeFrom<A> {
-              RangeFrom { start: self.0.start }
+              if intrinsics::overflow_checks() {
+                  if !self.first {
+                      return RangeFrom { start: Step::forward(self.start, 1) };
+                  }
+              }
+      
+              RangeFrom { start: self.start }
           }
       *)
       Definition remainder (A : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -2477,25 +2513,116 @@ Module range.
         | [], [], [ self ] =>
           ltac:(M.monadic
             (let self :=
-              M.alloc (| Ty.apply (Ty.path "core::range::iter::IterRangeFrom") [] [ A ], self |) in
-            Value.mkStructRecord
-              "core::range::RangeFrom"
-              []
-              [ A ]
-              [
-                ("start",
-                  M.read (|
-                    M.SubPointer.get_struct_record_field (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::range::iter::IterRangeFrom",
-                        0
-                      |),
-                      "core::ops::range::RangeFrom",
-                      "start"
-                    |)
-                  |))
-              ]))
+              M.alloc (| Ty.apply (Ty.path "core::range::iter::RangeFromIter") [] [ A ], self |) in
+            M.catch_return (Ty.apply (Ty.path "core::range::RangeFrom") [] [ A ]) (|
+              ltac:(M.monadic
+                (M.read (|
+                  let~ _ : Ty.tuple [] :=
+                    M.match_operator (|
+                      Ty.tuple [],
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ :=
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  M.get_function (| "core::intrinsics::overflow_checks", [], [] |),
+                                  []
+                                |)
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            M.match_operator (|
+                              Ty.tuple [],
+                              M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                              [
+                                fun γ =>
+                                  ltac:(M.monadic
+                                    (let γ :=
+                                      M.alloc (|
+                                        Ty.path "bool",
+                                        M.call_closure (|
+                                          Ty.path "bool",
+                                          UnOp.not,
+                                          [
+                                            M.read (|
+                                              M.SubPointer.get_struct_record_field (|
+                                                self,
+                                                "core::range::iter::RangeFromIter",
+                                                "first"
+                                              |)
+                                            |)
+                                          ]
+                                        |)
+                                      |) in
+                                    let _ :=
+                                      is_constant_or_break_match (|
+                                        M.read (| γ |),
+                                        Value.Bool true
+                                      |) in
+                                    M.never_to_any (|
+                                      M.read (|
+                                        M.return_ (|
+                                          Value.mkStructRecord
+                                            "core::range::RangeFrom"
+                                            []
+                                            [ A ]
+                                            [
+                                              ("start",
+                                                M.call_closure (|
+                                                  A,
+                                                  M.get_trait_method (|
+                                                    "core::iter::range::Step",
+                                                    A,
+                                                    [],
+                                                    [],
+                                                    "forward",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [
+                                                    M.read (|
+                                                      M.SubPointer.get_struct_record_field (|
+                                                        self,
+                                                        "core::range::iter::RangeFromIter",
+                                                        "start"
+                                                      |)
+                                                    |);
+                                                    Value.Integer IntegerKind.Usize 1
+                                                  ]
+                                                |))
+                                            ]
+                                        |)
+                                      |)
+                                    |)));
+                                fun γ => ltac:(M.monadic (Value.Tuple []))
+                              ]
+                            |)));
+                        fun γ => ltac:(M.monadic (Value.Tuple []))
+                      ]
+                    |) in
+                  M.alloc (|
+                    Ty.apply (Ty.path "core::range::RangeFrom") [] [ A ],
+                    Value.mkStructRecord
+                      "core::range::RangeFrom"
+                      []
+                      [ A ]
+                      [
+                        ("start",
+                          M.read (|
+                            M.SubPointer.get_struct_record_field (|
+                              self,
+                              "core::range::iter::RangeFromIter",
+                              "start"
+                            |)
+                          |))
+                      ]
+                  |)
+                |)))
+            |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -2504,18 +2631,29 @@ Module range.
         M.IsAssociatedFunction.C (Self A) "remainder" (remainder A).
       Admitted.
       Global Typeclasses Opaque remainder.
-    End Impl_core_range_iter_IterRangeFrom_A.
+    End Impl_core_range_iter_RangeFromIter_A.
     
-    Module Impl_core_iter_traits_iterator_Iterator_where_core_iter_range_Step_A_for_core_range_iter_IterRangeFrom_A.
+    Module Impl_core_iter_traits_iterator_Iterator_where_core_iter_range_Step_A_for_core_range_iter_RangeFromIter_A.
       Definition Self (A : Ty.t) : Ty.t :=
-        Ty.apply (Ty.path "core::range::iter::IterRangeFrom") [] [ A ].
+        Ty.apply (Ty.path "core::range::iter::RangeFromIter") [] [ A ].
       
       (*     type Item = A; *)
       Definition _Item (A : Ty.t) : Ty.t := A.
       
       (*
           fn next(&mut self) -> Option<A> {
-              self.0.next()
+              if intrinsics::overflow_checks() {
+                  if self.first {
+                      self.first = false;
+                      return Some(self.start.clone());
+                  }
+      
+                  self.start = Step::forward(self.start.clone(), 1);
+                  return Some(self.start.clone());
+              }
+      
+              let n = Step::forward(self.start.clone(), 1);
+              Some(mem::replace(&mut self.start, n))
           }
       *)
       Definition next (A : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -2528,37 +2666,243 @@ Module range.
                 Ty.apply
                   (Ty.path "&mut")
                   []
-                  [ Ty.apply (Ty.path "core::range::iter::IterRangeFrom") [] [ A ] ],
+                  [ Ty.apply (Ty.path "core::range::iter::RangeFromIter") [] [ A ] ],
                 self
               |) in
-            M.call_closure (|
-              Ty.apply (Ty.path "core::option::Option") [] [ A ],
-              M.get_trait_method (|
-                "core::iter::traits::iterator::Iterator",
-                Ty.apply (Ty.path "core::ops::range::RangeFrom") [] [ A ],
-                [],
-                [],
-                "next",
-                [],
-                []
-              |),
-              [
-                M.borrow (|
-                  Pointer.Kind.MutRef,
-                  M.SubPointer.get_struct_tuple_field (|
-                    M.deref (| M.read (| self |) |),
-                    "core::range::iter::IterRangeFrom",
-                    0
+            M.catch_return (Ty.apply (Ty.path "core::option::Option") [] [ A ]) (|
+              ltac:(M.monadic
+                (M.read (|
+                  let~ _ : Ty.tuple [] :=
+                    M.match_operator (|
+                      Ty.tuple [],
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ :=
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  M.get_function (| "core::intrinsics::overflow_checks", [], [] |),
+                                  []
+                                |)
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            M.never_to_any (|
+                              M.read (|
+                                let~ _ : Ty.tuple [] :=
+                                  M.match_operator (|
+                                    Ty.tuple [],
+                                    M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                                    [
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let γ :=
+                                            M.SubPointer.get_struct_record_field (|
+                                              M.deref (| M.read (| self |) |),
+                                              "core::range::iter::RangeFromIter",
+                                              "first"
+                                            |) in
+                                          let _ :=
+                                            is_constant_or_break_match (|
+                                              M.read (| γ |),
+                                              Value.Bool true
+                                            |) in
+                                          M.never_to_any (|
+                                            M.read (|
+                                              let~ _ : Ty.tuple [] :=
+                                                M.write (|
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (| M.read (| self |) |),
+                                                    "core::range::iter::RangeFromIter",
+                                                    "first"
+                                                  |),
+                                                  Value.Bool false
+                                                |) in
+                                              M.return_ (|
+                                                Value.StructTuple
+                                                  "core::option::Option::Some"
+                                                  []
+                                                  [ A ]
+                                                  [
+                                                    M.call_closure (|
+                                                      A,
+                                                      M.get_trait_method (|
+                                                        "core::clone::Clone",
+                                                        A,
+                                                        [],
+                                                        [],
+                                                        "clone",
+                                                        [],
+                                                        []
+                                                      |),
+                                                      [
+                                                        M.borrow (|
+                                                          Pointer.Kind.Ref,
+                                                          M.SubPointer.get_struct_record_field (|
+                                                            M.deref (| M.read (| self |) |),
+                                                            "core::range::iter::RangeFromIter",
+                                                            "start"
+                                                          |)
+                                                        |)
+                                                      ]
+                                                    |)
+                                                  ]
+                                              |)
+                                            |)
+                                          |)));
+                                      fun γ => ltac:(M.monadic (Value.Tuple []))
+                                    ]
+                                  |) in
+                                let~ _ : Ty.tuple [] :=
+                                  M.write (|
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "core::range::iter::RangeFromIter",
+                                      "start"
+                                    |),
+                                    M.call_closure (|
+                                      A,
+                                      M.get_trait_method (|
+                                        "core::iter::range::Step",
+                                        A,
+                                        [],
+                                        [],
+                                        "forward",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.call_closure (|
+                                          A,
+                                          M.get_trait_method (|
+                                            "core::clone::Clone",
+                                            A,
+                                            [],
+                                            [],
+                                            "clone",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.SubPointer.get_struct_record_field (|
+                                                M.deref (| M.read (| self |) |),
+                                                "core::range::iter::RangeFromIter",
+                                                "start"
+                                              |)
+                                            |)
+                                          ]
+                                        |);
+                                        Value.Integer IntegerKind.Usize 1
+                                      ]
+                                    |)
+                                  |) in
+                                M.return_ (|
+                                  Value.StructTuple
+                                    "core::option::Option::Some"
+                                    []
+                                    [ A ]
+                                    [
+                                      M.call_closure (|
+                                        A,
+                                        M.get_trait_method (|
+                                          "core::clone::Clone",
+                                          A,
+                                          [],
+                                          [],
+                                          "clone",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.SubPointer.get_struct_record_field (|
+                                              M.deref (| M.read (| self |) |),
+                                              "core::range::iter::RangeFromIter",
+                                              "start"
+                                            |)
+                                          |)
+                                        ]
+                                      |)
+                                    ]
+                                |)
+                              |)
+                            |)));
+                        fun γ => ltac:(M.monadic (Value.Tuple []))
+                      ]
+                    |) in
+                  let~ n : A :=
+                    M.call_closure (|
+                      A,
+                      M.get_trait_method (|
+                        "core::iter::range::Step",
+                        A,
+                        [],
+                        [],
+                        "forward",
+                        [],
+                        []
+                      |),
+                      [
+                        M.call_closure (|
+                          A,
+                          M.get_trait_method (| "core::clone::Clone", A, [], [], "clone", [], [] |),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::range::iter::RangeFromIter",
+                                "start"
+                              |)
+                            |)
+                          ]
+                        |);
+                        Value.Integer IntegerKind.Usize 1
+                      ]
+                    |) in
+                  M.alloc (|
+                    Ty.apply (Ty.path "core::option::Option") [] [ A ],
+                    Value.StructTuple
+                      "core::option::Option::Some"
+                      []
+                      [ A ]
+                      [
+                        M.call_closure (|
+                          A,
+                          M.get_function (| "core::mem::replace", [], [ A ] |),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.MutRef,
+                              M.deref (|
+                                M.borrow (|
+                                  Pointer.Kind.MutRef,
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (| M.read (| self |) |),
+                                    "core::range::iter::RangeFromIter",
+                                    "start"
+                                  |)
+                                |)
+                              |)
+                            |);
+                            M.read (| n |)
+                          ]
+                        |)
+                      ]
                   |)
-                |)
-              ]
+                |)))
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
       (*
           fn size_hint(&self) -> (usize, Option<usize>) {
-              self.0.size_hint()
+              (usize::MAX, None)
           }
       *)
       Definition size_hint (A : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -2571,39 +2915,36 @@ Module range.
                 Ty.apply
                   (Ty.path "&")
                   []
-                  [ Ty.apply (Ty.path "core::range::iter::IterRangeFrom") [] [ A ] ],
+                  [ Ty.apply (Ty.path "core::range::iter::RangeFromIter") [] [ A ] ],
                 self
               |) in
-            M.call_closure (|
-              Ty.tuple
-                [ Ty.path "usize"; Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ]
-                ],
-              M.get_trait_method (|
-                "core::iter::traits::iterator::Iterator",
-                Ty.apply (Ty.path "core::ops::range::RangeFrom") [] [ A ],
-                [],
-                [],
-                "size_hint",
-                [],
-                []
-              |),
+            Value.Tuple
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_tuple_field (|
-                    M.deref (| M.read (| self |) |),
-                    "core::range::iter::IterRangeFrom",
-                    0
-                  |)
-                |)
-              ]
-            |)))
+                M.read (| get_associated_constant (| Ty.path "usize", "MAX", Ty.path "usize" |) |);
+                Value.StructTuple "core::option::Option::None" [] [ Ty.path "usize" ] []
+              ]))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
       (*
           fn nth(&mut self, n: usize) -> Option<A> {
-              self.0.nth(n)
+              if intrinsics::overflow_checks() {
+                  if self.first {
+                      self.first = false;
+      
+                      let plus_n = Step::forward(self.start.clone(), n);
+                      self.start = plus_n.clone();
+                      return Some(plus_n);
+                  }
+      
+                  let plus_n = Step::forward(self.start.clone(), n);
+                  self.start = Step::forward(plus_n.clone(), 1);
+                  return Some(self.start.clone());
+              }
+      
+              let plus_n = Step::forward(self.start.clone(), n);
+              self.start = Step::forward(plus_n.clone(), 1);
+              Some(plus_n)
           }
       *)
       Definition nth (A : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -2616,32 +2957,313 @@ Module range.
                 Ty.apply
                   (Ty.path "&mut")
                   []
-                  [ Ty.apply (Ty.path "core::range::iter::IterRangeFrom") [] [ A ] ],
+                  [ Ty.apply (Ty.path "core::range::iter::RangeFromIter") [] [ A ] ],
                 self
               |) in
             let n := M.alloc (| Ty.path "usize", n |) in
-            M.call_closure (|
-              Ty.apply (Ty.path "core::option::Option") [] [ A ],
-              M.get_trait_method (|
-                "core::iter::traits::iterator::Iterator",
-                Ty.apply (Ty.path "core::ops::range::RangeFrom") [] [ A ],
-                [],
-                [],
-                "nth",
-                [],
-                []
-              |),
-              [
-                M.borrow (|
-                  Pointer.Kind.MutRef,
-                  M.SubPointer.get_struct_tuple_field (|
-                    M.deref (| M.read (| self |) |),
-                    "core::range::iter::IterRangeFrom",
-                    0
+            M.catch_return (Ty.apply (Ty.path "core::option::Option") [] [ A ]) (|
+              ltac:(M.monadic
+                (M.read (|
+                  let~ _ : Ty.tuple [] :=
+                    M.match_operator (|
+                      Ty.tuple [],
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ :=
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  M.get_function (| "core::intrinsics::overflow_checks", [], [] |),
+                                  []
+                                |)
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            M.never_to_any (|
+                              M.read (|
+                                let~ _ : Ty.tuple [] :=
+                                  M.match_operator (|
+                                    Ty.tuple [],
+                                    M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                                    [
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let γ :=
+                                            M.SubPointer.get_struct_record_field (|
+                                              M.deref (| M.read (| self |) |),
+                                              "core::range::iter::RangeFromIter",
+                                              "first"
+                                            |) in
+                                          let _ :=
+                                            is_constant_or_break_match (|
+                                              M.read (| γ |),
+                                              Value.Bool true
+                                            |) in
+                                          M.never_to_any (|
+                                            M.read (|
+                                              let~ _ : Ty.tuple [] :=
+                                                M.write (|
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (| M.read (| self |) |),
+                                                    "core::range::iter::RangeFromIter",
+                                                    "first"
+                                                  |),
+                                                  Value.Bool false
+                                                |) in
+                                              let~ plus_n : A :=
+                                                M.call_closure (|
+                                                  A,
+                                                  M.get_trait_method (|
+                                                    "core::iter::range::Step",
+                                                    A,
+                                                    [],
+                                                    [],
+                                                    "forward",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [
+                                                    M.call_closure (|
+                                                      A,
+                                                      M.get_trait_method (|
+                                                        "core::clone::Clone",
+                                                        A,
+                                                        [],
+                                                        [],
+                                                        "clone",
+                                                        [],
+                                                        []
+                                                      |),
+                                                      [
+                                                        M.borrow (|
+                                                          Pointer.Kind.Ref,
+                                                          M.SubPointer.get_struct_record_field (|
+                                                            M.deref (| M.read (| self |) |),
+                                                            "core::range::iter::RangeFromIter",
+                                                            "start"
+                                                          |)
+                                                        |)
+                                                      ]
+                                                    |);
+                                                    M.read (| n |)
+                                                  ]
+                                                |) in
+                                              let~ _ : Ty.tuple [] :=
+                                                M.write (|
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (| M.read (| self |) |),
+                                                    "core::range::iter::RangeFromIter",
+                                                    "start"
+                                                  |),
+                                                  M.call_closure (|
+                                                    A,
+                                                    M.get_trait_method (|
+                                                      "core::clone::Clone",
+                                                      A,
+                                                      [],
+                                                      [],
+                                                      "clone",
+                                                      [],
+                                                      []
+                                                    |),
+                                                    [ M.borrow (| Pointer.Kind.Ref, plus_n |) ]
+                                                  |)
+                                                |) in
+                                              M.return_ (|
+                                                Value.StructTuple
+                                                  "core::option::Option::Some"
+                                                  []
+                                                  [ A ]
+                                                  [ M.read (| plus_n |) ]
+                                              |)
+                                            |)
+                                          |)));
+                                      fun γ => ltac:(M.monadic (Value.Tuple []))
+                                    ]
+                                  |) in
+                                let~ plus_n : A :=
+                                  M.call_closure (|
+                                    A,
+                                    M.get_trait_method (|
+                                      "core::iter::range::Step",
+                                      A,
+                                      [],
+                                      [],
+                                      "forward",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.call_closure (|
+                                        A,
+                                        M.get_trait_method (|
+                                          "core::clone::Clone",
+                                          A,
+                                          [],
+                                          [],
+                                          "clone",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.SubPointer.get_struct_record_field (|
+                                              M.deref (| M.read (| self |) |),
+                                              "core::range::iter::RangeFromIter",
+                                              "start"
+                                            |)
+                                          |)
+                                        ]
+                                      |);
+                                      M.read (| n |)
+                                    ]
+                                  |) in
+                                let~ _ : Ty.tuple [] :=
+                                  M.write (|
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "core::range::iter::RangeFromIter",
+                                      "start"
+                                    |),
+                                    M.call_closure (|
+                                      A,
+                                      M.get_trait_method (|
+                                        "core::iter::range::Step",
+                                        A,
+                                        [],
+                                        [],
+                                        "forward",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.call_closure (|
+                                          A,
+                                          M.get_trait_method (|
+                                            "core::clone::Clone",
+                                            A,
+                                            [],
+                                            [],
+                                            "clone",
+                                            [],
+                                            []
+                                          |),
+                                          [ M.borrow (| Pointer.Kind.Ref, plus_n |) ]
+                                        |);
+                                        Value.Integer IntegerKind.Usize 1
+                                      ]
+                                    |)
+                                  |) in
+                                M.return_ (|
+                                  Value.StructTuple
+                                    "core::option::Option::Some"
+                                    []
+                                    [ A ]
+                                    [
+                                      M.call_closure (|
+                                        A,
+                                        M.get_trait_method (|
+                                          "core::clone::Clone",
+                                          A,
+                                          [],
+                                          [],
+                                          "clone",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.SubPointer.get_struct_record_field (|
+                                              M.deref (| M.read (| self |) |),
+                                              "core::range::iter::RangeFromIter",
+                                              "start"
+                                            |)
+                                          |)
+                                        ]
+                                      |)
+                                    ]
+                                |)
+                              |)
+                            |)));
+                        fun γ => ltac:(M.monadic (Value.Tuple []))
+                      ]
+                    |) in
+                  let~ plus_n : A :=
+                    M.call_closure (|
+                      A,
+                      M.get_trait_method (|
+                        "core::iter::range::Step",
+                        A,
+                        [],
+                        [],
+                        "forward",
+                        [],
+                        []
+                      |),
+                      [
+                        M.call_closure (|
+                          A,
+                          M.get_trait_method (| "core::clone::Clone", A, [], [], "clone", [], [] |),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::range::iter::RangeFromIter",
+                                "start"
+                              |)
+                            |)
+                          ]
+                        |);
+                        M.read (| n |)
+                      ]
+                    |) in
+                  let~ _ : Ty.tuple [] :=
+                    M.write (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "core::range::iter::RangeFromIter",
+                        "start"
+                      |),
+                      M.call_closure (|
+                        A,
+                        M.get_trait_method (|
+                          "core::iter::range::Step",
+                          A,
+                          [],
+                          [],
+                          "forward",
+                          [],
+                          []
+                        |),
+                        [
+                          M.call_closure (|
+                            A,
+                            M.get_trait_method (|
+                              "core::clone::Clone",
+                              A,
+                              [],
+                              [],
+                              "clone",
+                              [],
+                              []
+                            |),
+                            [ M.borrow (| Pointer.Kind.Ref, plus_n |) ]
+                          |);
+                          Value.Integer IntegerKind.Usize 1
+                        ]
+                      |)
+                    |) in
+                  M.alloc (|
+                    Ty.apply (Ty.path "core::option::Option") [] [ A ],
+                    Value.StructTuple "core::option::Option::Some" [] [ A ] [ M.read (| plus_n |) ]
                   |)
-                |);
-                M.read (| n |)
-              ]
+                |)))
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
@@ -2660,11 +3282,11 @@ Module range.
             ("size_hint", InstanceField.Method (size_hint A));
             ("nth", InstanceField.Method (nth A))
           ].
-    End Impl_core_iter_traits_iterator_Iterator_where_core_iter_range_Step_A_for_core_range_iter_IterRangeFrom_A.
+    End Impl_core_iter_traits_iterator_Iterator_where_core_iter_range_Step_A_for_core_range_iter_RangeFromIter_A.
     
-    Module Impl_core_iter_traits_marker_TrustedLen_where_core_iter_traits_marker_TrustedStep_A_for_core_range_iter_IterRangeFrom_A.
+    Module Impl_core_iter_traits_marker_TrustedLen_where_core_iter_traits_marker_TrustedStep_A_for_core_range_iter_RangeFromIter_A.
       Definition Self (A : Ty.t) : Ty.t :=
-        Ty.apply (Ty.path "core::range::iter::IterRangeFrom") [] [ A ].
+        Ty.apply (Ty.path "core::range::iter::RangeFromIter") [] [ A ].
       
       Axiom Implements :
         forall (A : Ty.t),
@@ -2674,11 +3296,11 @@ Module range.
           (* Trait polymorphic types *) []
           (Self A)
           (* Instance *) [].
-    End Impl_core_iter_traits_marker_TrustedLen_where_core_iter_traits_marker_TrustedStep_A_for_core_range_iter_IterRangeFrom_A.
+    End Impl_core_iter_traits_marker_TrustedLen_where_core_iter_traits_marker_TrustedStep_A_for_core_range_iter_RangeFromIter_A.
     
-    Module Impl_core_iter_traits_marker_FusedIterator_where_core_iter_range_Step_A_for_core_range_iter_IterRangeFrom_A.
+    Module Impl_core_iter_traits_marker_FusedIterator_where_core_iter_range_Step_A_for_core_range_iter_RangeFromIter_A.
       Definition Self (A : Ty.t) : Ty.t :=
-        Ty.apply (Ty.path "core::range::iter::IterRangeFrom") [] [ A ].
+        Ty.apply (Ty.path "core::range::iter::RangeFromIter") [] [ A ].
       
       Axiom Implements :
         forall (A : Ty.t),
@@ -2688,7 +3310,7 @@ Module range.
           (* Trait polymorphic types *) []
           (Self A)
           (* Instance *) [].
-    End Impl_core_iter_traits_marker_FusedIterator_where_core_iter_range_Step_A_for_core_range_iter_IterRangeFrom_A.
+    End Impl_core_iter_traits_marker_FusedIterator_where_core_iter_range_Step_A_for_core_range_iter_RangeFromIter_A.
     
     Module Impl_core_iter_traits_collect_IntoIterator_where_core_iter_range_Step_A_for_core_range_RangeFrom_A.
       Definition Self (A : Ty.t) : Ty.t := Ty.apply (Ty.path "core::range::RangeFrom") [] [ A ].
@@ -2696,13 +3318,13 @@ Module range.
       (*     type Item = A; *)
       Definition _Item (A : Ty.t) : Ty.t := A.
       
-      (*     type IntoIter = IterRangeFrom<A>; *)
+      (*     type IntoIter = RangeFromIter<A>; *)
       Definition _IntoIter (A : Ty.t) : Ty.t :=
-        Ty.apply (Ty.path "core::range::iter::IterRangeFrom") [] [ A ].
+        Ty.apply (Ty.path "core::range::iter::RangeFromIter") [] [ A ].
       
       (*
           fn into_iter(self) -> Self::IntoIter {
-              IterRangeFrom(self.into())
+              RangeFromIter { start: self.start, first: true }
           }
       *)
       Definition into_iter (A : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -2711,24 +3333,20 @@ Module range.
         | [], [], [ self ] =>
           ltac:(M.monadic
             (let self := M.alloc (| Ty.apply (Ty.path "core::range::RangeFrom") [] [ A ], self |) in
-            Value.StructTuple
-              "core::range::iter::IterRangeFrom"
+            Value.mkStructRecord
+              "core::range::iter::RangeFromIter"
               []
               [ A ]
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "core::ops::range::RangeFrom") [] [ A ],
-                  M.get_trait_method (|
-                    "core::convert::Into",
-                    Ty.apply (Ty.path "core::range::RangeFrom") [] [ A ],
-                    [],
-                    [ Ty.apply (Ty.path "core::ops::range::RangeFrom") [] [ A ] ],
-                    "into",
-                    [],
-                    []
-                  |),
-                  [ M.read (| self |) ]
-                |)
+                ("start",
+                  M.read (|
+                    M.SubPointer.get_struct_record_field (|
+                      self,
+                      "core::range::RangeFrom",
+                      "start"
+                    |)
+                  |));
+                ("first", Value.Bool true)
               ]))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.

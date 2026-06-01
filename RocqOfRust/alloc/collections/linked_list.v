@@ -5904,12 +5904,7 @@ Module collections.
       
       (*
           pub fn push_front(&mut self, elt: T) {
-              let node = Box::new_in(Node::new(elt), &self.alloc);
-              let node_ptr = NonNull::from(Box::leak(node));
-              // SAFETY: node_ptr is a unique pointer to a node we boxed with self.alloc and leaked
-              unsafe {
-                  self.push_front_node(node_ptr);
-              }
+              let _ = self.push_front_mut(elt);
           }
       *)
       Definition push_front
@@ -5931,120 +5926,25 @@ Module collections.
                 self
               |) in
             let elt := M.alloc (| T, elt |) in
-            M.read (|
-              let~ node :
-                  Ty.apply
-                    (Ty.path "alloc::boxed::Box")
-                    []
-                    [
-                      Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ];
-                      Ty.apply (Ty.path "&") [] [ A ]
-                    ] :=
+            M.match_operator (|
+              Ty.tuple [],
+              M.alloc (|
+                Ty.apply (Ty.path "&mut") [] [ T ],
                 M.call_closure (|
-                  Ty.apply
-                    (Ty.path "alloc::boxed::Box")
-                    []
-                    [
-                      Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ];
-                      Ty.apply (Ty.path "&") [] [ A ]
-                    ],
-                  M.get_associated_function (|
-                    Ty.apply
-                      (Ty.path "alloc::boxed::Box")
-                      []
-                      [
-                        Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ];
-                        Ty.apply (Ty.path "&") [] [ A ]
-                      ],
-                    "new_in",
-                    [],
-                    []
-                  |),
-                  [
-                    M.call_closure (|
-                      Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ],
-                      M.get_associated_function (|
-                        Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ],
-                        "new",
-                        [],
-                        []
-                      |),
-                      [ M.read (| elt |) ]
-                    |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "alloc::collections::linked_list::LinkedList",
-                        "alloc"
-                      |)
-                    |)
-                  ]
-                |) in
-              let~ node_ptr :
-                  Ty.apply
-                    (Ty.path "core::ptr::non_null::NonNull")
-                    []
-                    [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ] :=
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "core::ptr::non_null::NonNull")
-                    []
-                    [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ],
-                  M.get_trait_method (|
-                    "core::convert::From",
-                    Ty.apply
-                      (Ty.path "core::ptr::non_null::NonNull")
-                      []
-                      [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ],
-                    [],
-                    [
-                      Ty.apply
-                        (Ty.path "&mut")
-                        []
-                        [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
-                    ],
-                    "from",
-                    [],
-                    []
-                  |),
-                  [
-                    M.call_closure (|
-                      Ty.apply
-                        (Ty.path "&mut")
-                        []
-                        [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ],
-                      M.get_associated_function (|
-                        Ty.apply
-                          (Ty.path "alloc::boxed::Box")
-                          []
-                          [
-                            Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ];
-                            Ty.apply (Ty.path "&") [] [ A ]
-                          ],
-                        "leak",
-                        [],
-                        []
-                      |),
-                      [ M.read (| node |) ]
-                    |)
-                  ]
-                |) in
-              let~ _ : Ty.tuple [] :=
-                M.call_closure (|
-                  Ty.tuple [],
+                  Ty.apply (Ty.path "&mut") [] [ T ],
                   M.get_associated_function (|
                     Ty.apply (Ty.path "alloc::collections::linked_list::LinkedList") [] [ T; A ],
-                    "push_front_node",
+                    "push_front_mut",
                     [],
                     []
                   |),
                   [
                     M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                    M.read (| node_ptr |)
+                    M.read (| elt |)
                   ]
-                |) in
-              M.alloc (| Ty.tuple [], Value.Tuple [] |)
+                |)
+              |),
+              [ fun γ => ltac:(M.monadic (Value.Tuple [])) ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
@@ -6054,6 +5954,220 @@ Module collections.
         M.IsAssociatedFunction.C (Self T A) "push_front" (push_front T A).
       Admitted.
       Global Typeclasses Opaque push_front.
+      
+      (*
+          pub fn push_front_mut(&mut self, elt: T) -> &mut T {
+              let node = Box::new_in(Node::new(elt), &self.alloc);
+              let mut node_ptr = NonNull::from(Box::leak(node));
+              // SAFETY: node_ptr is a unique pointer to a node we boxed with self.alloc and leaked
+              unsafe {
+                  self.push_front_node(node_ptr);
+                  &mut node_ptr.as_mut().element
+              }
+          }
+      *)
+      Definition push_front_mut
+          (T A : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T A in
+        match ε, τ, α with
+        | [], [], [ self; elt ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&mut")
+                  []
+                  [ Ty.apply (Ty.path "alloc::collections::linked_list::LinkedList") [] [ T; A ] ],
+                self
+              |) in
+            let elt := M.alloc (| T, elt |) in
+            M.borrow (|
+              Pointer.Kind.MutRef,
+              M.deref (|
+                M.read (|
+                  let~ node :
+                      Ty.apply
+                        (Ty.path "alloc::boxed::Box")
+                        []
+                        [
+                          Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ];
+                          Ty.apply (Ty.path "&") [] [ A ]
+                        ] :=
+                    M.call_closure (|
+                      Ty.apply
+                        (Ty.path "alloc::boxed::Box")
+                        []
+                        [
+                          Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ];
+                          Ty.apply (Ty.path "&") [] [ A ]
+                        ],
+                      M.get_associated_function (|
+                        Ty.apply
+                          (Ty.path "alloc::boxed::Box")
+                          []
+                          [
+                            Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ];
+                            Ty.apply (Ty.path "&") [] [ A ]
+                          ],
+                        "new_in",
+                        [],
+                        []
+                      |),
+                      [
+                        M.call_closure (|
+                          Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ],
+                          M.get_associated_function (|
+                            Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ],
+                            "new",
+                            [],
+                            []
+                          |),
+                          [ M.read (| elt |) ]
+                        |);
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "alloc::collections::linked_list::LinkedList",
+                            "alloc"
+                          |)
+                        |)
+                      ]
+                    |) in
+                  let~ node_ptr :
+                      Ty.apply
+                        (Ty.path "core::ptr::non_null::NonNull")
+                        []
+                        [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ] :=
+                    M.call_closure (|
+                      Ty.apply
+                        (Ty.path "core::ptr::non_null::NonNull")
+                        []
+                        [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ],
+                      M.get_trait_method (|
+                        "core::convert::From",
+                        Ty.apply
+                          (Ty.path "core::ptr::non_null::NonNull")
+                          []
+                          [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "&mut")
+                            []
+                            [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
+                        ],
+                        "from",
+                        [],
+                        []
+                      |),
+                      [
+                        M.call_closure (|
+                          Ty.apply
+                            (Ty.path "&mut")
+                            []
+                            [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ],
+                          M.get_associated_function (|
+                            Ty.apply
+                              (Ty.path "alloc::boxed::Box")
+                              []
+                              [
+                                Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ];
+                                Ty.apply (Ty.path "&") [] [ A ]
+                              ],
+                            "leak",
+                            [],
+                            []
+                          |),
+                          [ M.read (| node |) ]
+                        |)
+                      ]
+                    |) in
+                  M.alloc (|
+                    Ty.apply (Ty.path "&mut") [] [ T ],
+                    M.borrow (|
+                      Pointer.Kind.MutRef,
+                      M.deref (|
+                        M.read (|
+                          let~ _ : Ty.tuple [] :=
+                            M.call_closure (|
+                              Ty.tuple [],
+                              M.get_associated_function (|
+                                Ty.apply
+                                  (Ty.path "alloc::collections::linked_list::LinkedList")
+                                  []
+                                  [ T; A ],
+                                "push_front_node",
+                                [],
+                                []
+                              |),
+                              [
+                                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
+                                M.read (| node_ptr |)
+                              ]
+                            |) in
+                          M.alloc (|
+                            Ty.apply (Ty.path "&mut") [] [ T ],
+                            M.borrow (|
+                              Pointer.Kind.MutRef,
+                              M.deref (|
+                                M.borrow (|
+                                  Pointer.Kind.MutRef,
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (|
+                                      M.call_closure (|
+                                        Ty.apply
+                                          (Ty.path "&mut")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "alloc::collections::linked_list::Node")
+                                              []
+                                              [ T ]
+                                          ],
+                                        M.get_associated_function (|
+                                          Ty.apply
+                                            (Ty.path "core::ptr::non_null::NonNull")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "alloc::collections::linked_list::Node")
+                                                []
+                                                [ T ]
+                                            ],
+                                          "as_mut",
+                                          [],
+                                          []
+                                        |),
+                                        [ M.borrow (| Pointer.Kind.MutRef, node_ptr |) ]
+                                      |)
+                                    |),
+                                    "alloc::collections::linked_list::Node",
+                                    "element"
+                                  |)
+                                |)
+                              |)
+                            |)
+                          |)
+                        |)
+                      |)
+                    |)
+                  |)
+                |)
+              |)
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_push_front_mut :
+        forall (T A : Ty.t),
+        M.IsAssociatedFunction.C (Self T A) "push_front_mut" (push_front_mut T A).
+      Admitted.
+      Global Typeclasses Opaque push_front_mut.
       
       (*
           pub fn pop_front(&mut self) -> Option<T> {
@@ -6146,12 +6260,7 @@ Module collections.
       
       (*
           pub fn push_back(&mut self, elt: T) {
-              let node = Box::new_in(Node::new(elt), &self.alloc);
-              let node_ptr = NonNull::from(Box::leak(node));
-              // SAFETY: node_ptr is a unique pointer to a node we boxed with self.alloc and leaked
-              unsafe {
-                  self.push_back_node(node_ptr);
-              }
+              let _ = self.push_back_mut(elt);
           }
       *)
       Definition push_back (T A : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -6168,120 +6277,25 @@ Module collections.
                 self
               |) in
             let elt := M.alloc (| T, elt |) in
-            M.read (|
-              let~ node :
-                  Ty.apply
-                    (Ty.path "alloc::boxed::Box")
-                    []
-                    [
-                      Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ];
-                      Ty.apply (Ty.path "&") [] [ A ]
-                    ] :=
+            M.match_operator (|
+              Ty.tuple [],
+              M.alloc (|
+                Ty.apply (Ty.path "&mut") [] [ T ],
                 M.call_closure (|
-                  Ty.apply
-                    (Ty.path "alloc::boxed::Box")
-                    []
-                    [
-                      Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ];
-                      Ty.apply (Ty.path "&") [] [ A ]
-                    ],
-                  M.get_associated_function (|
-                    Ty.apply
-                      (Ty.path "alloc::boxed::Box")
-                      []
-                      [
-                        Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ];
-                        Ty.apply (Ty.path "&") [] [ A ]
-                      ],
-                    "new_in",
-                    [],
-                    []
-                  |),
-                  [
-                    M.call_closure (|
-                      Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ],
-                      M.get_associated_function (|
-                        Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ],
-                        "new",
-                        [],
-                        []
-                      |),
-                      [ M.read (| elt |) ]
-                    |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "alloc::collections::linked_list::LinkedList",
-                        "alloc"
-                      |)
-                    |)
-                  ]
-                |) in
-              let~ node_ptr :
-                  Ty.apply
-                    (Ty.path "core::ptr::non_null::NonNull")
-                    []
-                    [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ] :=
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "core::ptr::non_null::NonNull")
-                    []
-                    [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ],
-                  M.get_trait_method (|
-                    "core::convert::From",
-                    Ty.apply
-                      (Ty.path "core::ptr::non_null::NonNull")
-                      []
-                      [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ],
-                    [],
-                    [
-                      Ty.apply
-                        (Ty.path "&mut")
-                        []
-                        [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
-                    ],
-                    "from",
-                    [],
-                    []
-                  |),
-                  [
-                    M.call_closure (|
-                      Ty.apply
-                        (Ty.path "&mut")
-                        []
-                        [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ],
-                      M.get_associated_function (|
-                        Ty.apply
-                          (Ty.path "alloc::boxed::Box")
-                          []
-                          [
-                            Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ];
-                            Ty.apply (Ty.path "&") [] [ A ]
-                          ],
-                        "leak",
-                        [],
-                        []
-                      |),
-                      [ M.read (| node |) ]
-                    |)
-                  ]
-                |) in
-              let~ _ : Ty.tuple [] :=
-                M.call_closure (|
-                  Ty.tuple [],
+                  Ty.apply (Ty.path "&mut") [] [ T ],
                   M.get_associated_function (|
                     Ty.apply (Ty.path "alloc::collections::linked_list::LinkedList") [] [ T; A ],
-                    "push_back_node",
+                    "push_back_mut",
                     [],
                     []
                   |),
                   [
                     M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                    M.read (| node_ptr |)
+                    M.read (| elt |)
                   ]
-                |) in
-              M.alloc (| Ty.tuple [], Value.Tuple [] |)
+                |)
+              |),
+              [ fun γ => ltac:(M.monadic (Value.Tuple [])) ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
@@ -6291,6 +6305,220 @@ Module collections.
         M.IsAssociatedFunction.C (Self T A) "push_back" (push_back T A).
       Admitted.
       Global Typeclasses Opaque push_back.
+      
+      (*
+          pub fn push_back_mut(&mut self, elt: T) -> &mut T {
+              let node = Box::new_in(Node::new(elt), &self.alloc);
+              let mut node_ptr = NonNull::from(Box::leak(node));
+              // SAFETY: node_ptr is a unique pointer to a node we boxed with self.alloc and leaked
+              unsafe {
+                  self.push_back_node(node_ptr);
+                  &mut node_ptr.as_mut().element
+              }
+          }
+      *)
+      Definition push_back_mut
+          (T A : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T A in
+        match ε, τ, α with
+        | [], [], [ self; elt ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&mut")
+                  []
+                  [ Ty.apply (Ty.path "alloc::collections::linked_list::LinkedList") [] [ T; A ] ],
+                self
+              |) in
+            let elt := M.alloc (| T, elt |) in
+            M.borrow (|
+              Pointer.Kind.MutRef,
+              M.deref (|
+                M.read (|
+                  let~ node :
+                      Ty.apply
+                        (Ty.path "alloc::boxed::Box")
+                        []
+                        [
+                          Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ];
+                          Ty.apply (Ty.path "&") [] [ A ]
+                        ] :=
+                    M.call_closure (|
+                      Ty.apply
+                        (Ty.path "alloc::boxed::Box")
+                        []
+                        [
+                          Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ];
+                          Ty.apply (Ty.path "&") [] [ A ]
+                        ],
+                      M.get_associated_function (|
+                        Ty.apply
+                          (Ty.path "alloc::boxed::Box")
+                          []
+                          [
+                            Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ];
+                            Ty.apply (Ty.path "&") [] [ A ]
+                          ],
+                        "new_in",
+                        [],
+                        []
+                      |),
+                      [
+                        M.call_closure (|
+                          Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ],
+                          M.get_associated_function (|
+                            Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ],
+                            "new",
+                            [],
+                            []
+                          |),
+                          [ M.read (| elt |) ]
+                        |);
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "alloc::collections::linked_list::LinkedList",
+                            "alloc"
+                          |)
+                        |)
+                      ]
+                    |) in
+                  let~ node_ptr :
+                      Ty.apply
+                        (Ty.path "core::ptr::non_null::NonNull")
+                        []
+                        [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ] :=
+                    M.call_closure (|
+                      Ty.apply
+                        (Ty.path "core::ptr::non_null::NonNull")
+                        []
+                        [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ],
+                      M.get_trait_method (|
+                        "core::convert::From",
+                        Ty.apply
+                          (Ty.path "core::ptr::non_null::NonNull")
+                          []
+                          [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "&mut")
+                            []
+                            [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
+                        ],
+                        "from",
+                        [],
+                        []
+                      |),
+                      [
+                        M.call_closure (|
+                          Ty.apply
+                            (Ty.path "&mut")
+                            []
+                            [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ],
+                          M.get_associated_function (|
+                            Ty.apply
+                              (Ty.path "alloc::boxed::Box")
+                              []
+                              [
+                                Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ];
+                                Ty.apply (Ty.path "&") [] [ A ]
+                              ],
+                            "leak",
+                            [],
+                            []
+                          |),
+                          [ M.read (| node |) ]
+                        |)
+                      ]
+                    |) in
+                  M.alloc (|
+                    Ty.apply (Ty.path "&mut") [] [ T ],
+                    M.borrow (|
+                      Pointer.Kind.MutRef,
+                      M.deref (|
+                        M.read (|
+                          let~ _ : Ty.tuple [] :=
+                            M.call_closure (|
+                              Ty.tuple [],
+                              M.get_associated_function (|
+                                Ty.apply
+                                  (Ty.path "alloc::collections::linked_list::LinkedList")
+                                  []
+                                  [ T; A ],
+                                "push_back_node",
+                                [],
+                                []
+                              |),
+                              [
+                                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
+                                M.read (| node_ptr |)
+                              ]
+                            |) in
+                          M.alloc (|
+                            Ty.apply (Ty.path "&mut") [] [ T ],
+                            M.borrow (|
+                              Pointer.Kind.MutRef,
+                              M.deref (|
+                                M.borrow (|
+                                  Pointer.Kind.MutRef,
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (|
+                                      M.call_closure (|
+                                        Ty.apply
+                                          (Ty.path "&mut")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "alloc::collections::linked_list::Node")
+                                              []
+                                              [ T ]
+                                          ],
+                                        M.get_associated_function (|
+                                          Ty.apply
+                                            (Ty.path "core::ptr::non_null::NonNull")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "alloc::collections::linked_list::Node")
+                                                []
+                                                [ T ]
+                                            ],
+                                          "as_mut",
+                                          [],
+                                          []
+                                        |),
+                                        [ M.borrow (| Pointer.Kind.MutRef, node_ptr |) ]
+                                      |)
+                                    |),
+                                    "alloc::collections::linked_list::Node",
+                                    "element"
+                                  |)
+                                |)
+                              |)
+                            |)
+                          |)
+                        |)
+                      |)
+                    |)
+                  |)
+                |)
+              |)
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_push_back_mut :
+        forall (T A : Ty.t),
+        M.IsAssociatedFunction.C (Self T A) "push_back_mut" (push_back_mut T A).
+      Admitted.
+      Global Typeclasses Opaque push_back_mut.
       
       (*
           pub fn pop_back(&mut self) -> Option<T> {
@@ -6456,21 +6684,20 @@ Module collections.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
                                   Ty.path "bool",
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    UnOp.not,
-                                    [
-                                      M.call_closure (|
-                                        Ty.path "bool",
-                                        BinOp.le,
-                                        [ M.read (| at_ |); M.read (| len |) ]
-                                      |)
-                                    ]
-                                  |)
-                                |)) in
+                                  UnOp.not,
+                                  [
+                                    M.call_closure (|
+                                      Ty.path "bool",
+                                      BinOp.le,
+                                      [ M.read (| at_ |); M.read (| len |) ]
+                                    |)
+                                  ]
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.never_to_any (|
@@ -6482,32 +6709,11 @@ Module collections.
                                     Ty.path "core::fmt::Arguments",
                                     M.get_associated_function (|
                                       Ty.path "core::fmt::Arguments",
-                                      "new_const",
-                                      [ Value.Integer IntegerKind.Usize 1 ],
+                                      "from_str",
+                                      [],
                                       []
                                     |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.alloc (|
-                                              Ty.apply
-                                                (Ty.path "array")
-                                                [ Value.Integer IntegerKind.Usize 1 ]
-                                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                              Value.Array
-                                                [
-                                                  mk_str (|
-                                                    "Cannot split off at a nonexistent index"
-                                                  |)
-                                                ]
-                                            |)
-                                          |)
-                                        |)
-                                      |)
-                                    ]
+                                    [ mk_str (| "Cannot split off at a nonexistent index" |) ]
                                   |)
                                 ]
                               |)
@@ -6523,15 +6729,14 @@ Module collections.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
                                   Ty.path "bool",
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    BinOp.eq,
-                                    [ M.read (| at_ |); Value.Integer IntegerKind.Usize 0 ]
-                                  |)
-                                |)) in
+                                  BinOp.eq,
+                                  [ M.read (| at_ |); Value.Integer IntegerKind.Usize 0 ]
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.never_to_any (|
@@ -6610,15 +6815,14 @@ Module collections.
                                 fun γ =>
                                   ltac:(M.monadic
                                     (let γ :=
-                                      M.use
-                                        (M.alloc (|
+                                      M.alloc (|
+                                        Ty.path "bool",
+                                        M.call_closure (|
                                           Ty.path "bool",
-                                          M.call_closure (|
-                                            Ty.path "bool",
-                                            BinOp.eq,
-                                            [ M.read (| at_ |); M.read (| len |) ]
-                                          |)
-                                        |)) in
+                                          BinOp.eq,
+                                          [ M.read (| at_ |); M.read (| len |) ]
+                                        |)
+                                      |) in
                                     let _ :=
                                       is_constant_or_break_match (|
                                         M.read (| γ |),
@@ -6701,37 +6905,36 @@ Module collections.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
                                   Ty.path "bool",
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    BinOp.le,
-                                    [
-                                      M.call_closure (|
-                                        Ty.path "usize",
-                                        BinOp.Wrap.sub,
-                                        [ M.read (| at_ |); Value.Integer IntegerKind.Usize 1 ]
-                                      |);
-                                      M.call_closure (|
-                                        Ty.path "usize",
-                                        BinOp.Wrap.sub,
-                                        [
-                                          M.call_closure (|
-                                            Ty.path "usize",
-                                            BinOp.Wrap.sub,
-                                            [ M.read (| len |); Value.Integer IntegerKind.Usize 1 ]
-                                          |);
-                                          M.call_closure (|
-                                            Ty.path "usize",
-                                            BinOp.Wrap.sub,
-                                            [ M.read (| at_ |); Value.Integer IntegerKind.Usize 1 ]
-                                          |)
-                                        ]
-                                      |)
-                                    ]
-                                  |)
-                                |)) in
+                                  BinOp.le,
+                                  [
+                                    M.call_closure (|
+                                      Ty.path "usize",
+                                      BinOp.Wrap.sub,
+                                      [ M.read (| at_ |); Value.Integer IntegerKind.Usize 1 ]
+                                    |);
+                                    M.call_closure (|
+                                      Ty.path "usize",
+                                      BinOp.Wrap.sub,
+                                      [
+                                        M.call_closure (|
+                                          Ty.path "usize",
+                                          BinOp.Wrap.sub,
+                                          [ M.read (| len |); Value.Integer IntegerKind.Usize 1 ]
+                                        |);
+                                        M.call_closure (|
+                                          Ty.path "usize",
+                                          BinOp.Wrap.sub,
+                                          [ M.read (| at_ |); Value.Integer IntegerKind.Usize 1 ]
+                                        |)
+                                      ]
+                                    |)
+                                  ]
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.read (|
@@ -7258,21 +7461,20 @@ Module collections.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                UnOp.not,
-                                [
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    BinOp.lt,
-                                    [ M.read (| at_ |); M.read (| len |) ]
-                                  |)
-                                ]
-                              |)
-                            |)) in
+                              UnOp.not,
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.lt,
+                                  [ M.read (| at_ |); M.read (| len |) ]
+                                |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.never_to_any (|
                           M.call_closure (|
@@ -7283,30 +7485,13 @@ Module collections.
                                 Ty.path "core::fmt::Arguments",
                                 M.get_associated_function (|
                                   Ty.path "core::fmt::Arguments",
-                                  "new_const",
-                                  [ Value.Integer IntegerKind.Usize 1 ],
+                                  "from_str",
+                                  [],
                                   []
                                 |),
                                 [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.alloc (|
-                                          Ty.apply
-                                            (Ty.path "array")
-                                            [ Value.Integer IntegerKind.Usize 1 ]
-                                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                          Value.Array
-                                            [
-                                              mk_str (|
-                                                "Cannot remove at an index outside of the list bounds"
-                                              |)
-                                            ]
-                                        |)
-                                      |)
-                                    |)
+                                  mk_str (|
+                                    "Cannot remove at an index outside of the list bounds"
                                   |)
                                 ]
                               |)
@@ -7338,15 +7523,14 @@ Module collections.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                BinOp.le,
-                                [ M.read (| at_ |); M.read (| offset_from_end |) ]
-                              |)
-                            |)) in
+                              BinOp.le,
+                              [ M.read (| at_ |); M.read (| offset_from_end |) ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.read (|
                           let~ cursor :
@@ -7760,93 +7944,6 @@ Module collections.
       (*
           pub fn retain<F>(&mut self, mut f: F)
           where
-              F: FnMut(&T) -> bool,
-          {
-              self.retain_mut(|elem| f(elem));
-          }
-      *)
-      Definition retain (T A : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        let Self : Ty.t := Self T A in
-        match ε, τ, α with
-        | [], [ F ], [ self; f ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (|
-                Ty.apply
-                  (Ty.path "&mut")
-                  []
-                  [ Ty.apply (Ty.path "alloc::collections::linked_list::LinkedList") [] [ T; A ] ],
-                self
-              |) in
-            let f := M.alloc (| F, f |) in
-            M.read (|
-              let~ _ : Ty.tuple [] :=
-                M.call_closure (|
-                  Ty.tuple [],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "alloc::collections::linked_list::LinkedList") [] [ T; A ],
-                    "retain_mut",
-                    [],
-                    [ Ty.function [ Ty.apply (Ty.path "&mut") [] [ T ] ] (Ty.path "bool") ]
-                  |),
-                  [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                    M.closure
-                      (fun γ =>
-                        ltac:(M.monadic
-                          match γ with
-                          | [ α0 ] =>
-                            ltac:(M.monadic
-                              (M.match_operator (|
-                                Ty.path "bool",
-                                M.alloc (| Ty.apply (Ty.path "&mut") [] [ T ], α0 |),
-                                [
-                                  fun γ =>
-                                    ltac:(M.monadic
-                                      (let elem :=
-                                        M.copy (| Ty.apply (Ty.path "&mut") [] [ T ], γ |) in
-                                      M.call_closure (|
-                                        Ty.path "bool",
-                                        M.get_trait_method (|
-                                          "core::ops::function::FnMut",
-                                          F,
-                                          [],
-                                          [ Ty.tuple [ Ty.apply (Ty.path "&") [] [ T ] ] ],
-                                          "call_mut",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (| Pointer.Kind.MutRef, f |);
-                                          Value.Tuple
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (| M.read (| elem |) |)
-                                              |)
-                                            ]
-                                        ]
-                                      |)))
-                                ]
-                              |)))
-                          | _ => M.impossible "wrong number of arguments"
-                          end))
-                  ]
-                |) in
-              M.alloc (| Ty.tuple [], Value.Tuple [] |)
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Global Instance AssociatedFunction_retain :
-        forall (T A : Ty.t),
-        M.IsAssociatedFunction.C (Self T A) "retain" (retain T A).
-      Admitted.
-      Global Typeclasses Opaque retain.
-      
-      (*
-          pub fn retain_mut<F>(&mut self, mut f: F)
-          where
               F: FnMut(&mut T) -> bool,
           {
               let mut cursor = self.cursor_front_mut();
@@ -7859,12 +7956,7 @@ Module collections.
               }
           }
       *)
-      Definition retain_mut
-          (T A : Ty.t)
-          (ε : list Value.t)
-          (τ : list Ty.t)
-          (α : list Value.t)
-          : M :=
+      Definition retain (T A : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         let Self : Ty.t := Self T A in
         match ε, τ, α with
         | [], [ F ], [ self; f ] =>
@@ -7939,39 +8031,37 @@ Module collections.
                                 fun γ =>
                                   ltac:(M.monadic
                                     (let γ :=
-                                      M.use
-                                        (M.alloc (|
+                                      M.alloc (|
+                                        Ty.path "bool",
+                                        M.call_closure (|
                                           Ty.path "bool",
-                                          M.call_closure (|
-                                            Ty.path "bool",
-                                            UnOp.not,
-                                            [
-                                              M.call_closure (|
-                                                Ty.path "bool",
-                                                M.get_trait_method (|
-                                                  "core::ops::function::FnMut",
-                                                  F,
-                                                  [],
-                                                  [ Ty.tuple [ Ty.apply (Ty.path "&mut") [] [ T ] ]
-                                                  ],
-                                                  "call_mut",
-                                                  [],
-                                                  []
-                                                |),
-                                                [
-                                                  M.borrow (| Pointer.Kind.MutRef, f |);
-                                                  Value.Tuple
-                                                    [
-                                                      M.borrow (|
-                                                        Pointer.Kind.MutRef,
-                                                        M.deref (| M.read (| node |) |)
-                                                      |)
-                                                    ]
-                                                ]
-                                              |)
-                                            ]
-                                          |)
-                                        |)) in
+                                          UnOp.not,
+                                          [
+                                            M.call_closure (|
+                                              Ty.path "bool",
+                                              M.get_trait_method (|
+                                                "core::ops::function::FnMut",
+                                                F,
+                                                [],
+                                                [ Ty.tuple [ Ty.apply (Ty.path "&mut") [] [ T ] ] ],
+                                                "call_mut",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.borrow (| Pointer.Kind.MutRef, f |);
+                                                Value.Tuple
+                                                  [
+                                                    M.borrow (|
+                                                      Pointer.Kind.MutRef,
+                                                      M.deref (| M.read (| node |) |)
+                                                    |)
+                                                  ]
+                                              ]
+                                            |)
+                                          ]
+                                        |)
+                                      |) in
                                     let _ :=
                                       is_constant_or_break_match (|
                                         M.read (| γ |),
@@ -8044,11 +8134,11 @@ Module collections.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      Global Instance AssociatedFunction_retain_mut :
+      Global Instance AssociatedFunction_retain :
         forall (T A : Ty.t),
-        M.IsAssociatedFunction.C (Self T A) "retain_mut" (retain_mut T A).
+        M.IsAssociatedFunction.C (Self T A) "retain" (retain T A).
       Admitted.
-      Global Typeclasses Opaque retain_mut.
+      Global Typeclasses Opaque retain.
       
       (*
           pub fn extract_if<F>(&mut self, filter: F) -> ExtractIf<'_, T, F, A>
@@ -8705,36 +8795,51 @@ Module collections.
                             fun γ =>
                               ltac:(M.monadic
                                 (let γ :=
-                                  M.use
-                                    (M.alloc (|
+                                  M.alloc (|
+                                    Ty.path "bool",
+                                    M.call_closure (|
                                       Ty.path "bool",
-                                      M.call_closure (|
-                                        Ty.path "bool",
-                                        M.get_associated_function (|
-                                          Ty.apply
-                                            (Ty.path "core::option::Option")
-                                            []
-                                            [
-                                              Ty.apply
-                                                (Ty.path "alloc::boxed::Box")
-                                                []
-                                                [
-                                                  Ty.apply
-                                                    (Ty.path
-                                                      "alloc::collections::linked_list::Node")
-                                                    []
-                                                    [ T ];
-                                                  Ty.apply (Ty.path "&") [] [ A ]
-                                                ]
-                                            ],
-                                          "is_some",
-                                          [],
+                                      M.get_associated_function (|
+                                        Ty.apply
+                                          (Ty.path "core::option::Option")
                                           []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.alloc (|
+                                          [
+                                            Ty.apply
+                                              (Ty.path "alloc::boxed::Box")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "alloc::collections::linked_list::Node")
+                                                  []
+                                                  [ T ];
+                                                Ty.apply (Ty.path "&") [] [ A ]
+                                              ]
+                                          ],
+                                        "is_some",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.alloc (|
+                                            Ty.apply
+                                              (Ty.path "core::option::Option")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "alloc::boxed::Box")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path
+                                                        "alloc::collections::linked_list::Node")
+                                                      []
+                                                      [ T ];
+                                                    Ty.apply (Ty.path "&") [] [ A ]
+                                                  ]
+                                              ],
+                                            M.call_closure (|
                                               Ty.apply
                                                 (Ty.path "core::option::Option")
                                                 []
@@ -8751,53 +8856,36 @@ Module collections.
                                                       Ty.apply (Ty.path "&") [] [ A ]
                                                     ]
                                                 ],
-                                              M.call_closure (|
+                                              M.get_associated_function (|
                                                 Ty.apply
-                                                  (Ty.path "core::option::Option")
+                                                  (Ty.path
+                                                    "alloc::collections::linked_list::LinkedList")
                                                   []
-                                                  [
-                                                    Ty.apply
-                                                      (Ty.path "alloc::boxed::Box")
-                                                      []
-                                                      [
-                                                        Ty.apply
-                                                          (Ty.path
-                                                            "alloc::collections::linked_list::Node")
-                                                          []
-                                                          [ T ];
-                                                        Ty.apply (Ty.path "&") [] [ A ]
-                                                      ]
-                                                  ],
-                                                M.get_associated_function (|
-                                                  Ty.apply
-                                                    (Ty.path
-                                                      "alloc::collections::linked_list::LinkedList")
-                                                    []
-                                                    [ T; A ],
-                                                  "pop_front_node",
-                                                  [],
-                                                  []
-                                                |),
-                                                [
-                                                  M.borrow (|
-                                                    Pointer.Kind.MutRef,
-                                                    M.deref (|
-                                                      M.read (|
-                                                        M.SubPointer.get_struct_tuple_field (|
-                                                          guard,
-                                                          "alloc::collections::linked_list::drop::DropGuard",
-                                                          0
-                                                        |)
+                                                  [ T; A ],
+                                                "pop_front_node",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.borrow (|
+                                                  Pointer.Kind.MutRef,
+                                                  M.deref (|
+                                                    M.read (|
+                                                      M.SubPointer.get_struct_tuple_field (|
+                                                        guard,
+                                                        "alloc::collections::linked_list::drop::DropGuard",
+                                                        0
                                                       |)
                                                     |)
                                                   |)
-                                                ]
-                                              |)
+                                                |)
+                                              ]
                                             |)
                                           |)
-                                        ]
-                                      |)
-                                    |)) in
+                                        |)
+                                      ]
+                                    |)
+                                  |) in
                                 let _ :=
                                   is_constant_or_break_match (|
                                     M.read (| γ |),
@@ -8890,24 +8978,23 @@ Module collections.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            BinOp.eq,
-                            [
-                              M.read (|
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "alloc::collections::linked_list::Iter",
-                                  "len"
-                                |)
-                              |);
-                              Value.Integer IntegerKind.Usize 0
-                            ]
-                          |)
-                        |)) in
+                          BinOp.eq,
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "alloc::collections::linked_list::Iter",
+                                "len"
+                              |)
+                            |);
+                            Value.Integer IntegerKind.Usize 0
+                          ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     Value.StructTuple
                       "core::option::Option::None"
@@ -9227,24 +9314,23 @@ Module collections.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            BinOp.eq,
-                            [
-                              M.read (|
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "alloc::collections::linked_list::Iter",
-                                  "len"
-                                |)
-                              |);
-                              Value.Integer IntegerKind.Usize 0
-                            ]
-                          |)
-                        |)) in
+                          BinOp.eq,
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "alloc::collections::linked_list::Iter",
+                                "len"
+                              |)
+                            |);
+                            Value.Integer IntegerKind.Usize 0
+                          ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     Value.StructTuple
                       "core::option::Option::None"
@@ -9600,24 +9686,23 @@ Module collections.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            BinOp.eq,
-                            [
-                              M.read (|
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "alloc::collections::linked_list::IterMut",
-                                  "len"
-                                |)
-                              |);
-                              Value.Integer IntegerKind.Usize 0
-                            ]
-                          |)
-                        |)) in
+                          BinOp.eq,
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "alloc::collections::linked_list::IterMut",
+                                "len"
+                              |)
+                            |);
+                            Value.Integer IntegerKind.Usize 0
+                          ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     Value.StructTuple
                       "core::option::Option::None"
@@ -9942,24 +10027,23 @@ Module collections.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            BinOp.eq,
-                            [
-                              M.read (|
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "alloc::collections::linked_list::IterMut",
-                                  "len"
-                                |)
-                              |);
-                              Value.Integer IntegerKind.Usize 0
-                            ]
-                          |)
-                        |)) in
+                          BinOp.eq,
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "alloc::collections::linked_list::IterMut",
+                                "len"
+                              |)
+                            |);
+                            Value.Integer IntegerKind.Usize 0
+                          ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     Value.StructTuple
                       "core::option::Option::None"
@@ -14065,42 +14149,41 @@ Module collections.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                M.get_associated_function (|
-                                  Ty.apply
-                                    (Ty.path "core::option::Option")
-                                    []
-                                    [
-                                      Ty.apply
-                                        (Ty.path "core::ptr::non_null::NonNull")
-                                        []
-                                        [
-                                          Ty.apply
-                                            (Ty.path "alloc::collections::linked_list::Node")
-                                            []
-                                            [ T ]
-                                        ]
-                                    ],
-                                  "is_none",
-                                  [],
+                              M.get_associated_function (|
+                                Ty.apply
+                                  (Ty.path "core::option::Option")
                                   []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| self |) |),
-                                      "alloc::collections::linked_list::CursorMut",
-                                      "current"
-                                    |)
+                                  [
+                                    Ty.apply
+                                      (Ty.path "core::ptr::non_null::NonNull")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "alloc::collections::linked_list::Node")
+                                          []
+                                          [ T ]
+                                      ]
+                                  ],
+                                "is_none",
+                                [],
+                                []
+                              |),
+                              [
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (| M.read (| self |) |),
+                                    "alloc::collections::linked_list::CursorMut",
+                                    "current"
                                   |)
-                                ]
-                              |)
-                            |)) in
+                                |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
@@ -15293,38 +15376,37 @@ Module collections.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                BinOp.eq,
-                                [
-                                  M.read (|
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| self |) |),
-                                      "alloc::collections::linked_list::CursorMut",
-                                      "index"
-                                    |)
-                                  |);
-                                  M.read (|
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (|
-                                        M.read (|
-                                          M.SubPointer.get_struct_record_field (|
-                                            M.deref (| M.read (| self |) |),
-                                            "alloc::collections::linked_list::CursorMut",
-                                            "list"
-                                          |)
-                                        |)
-                                      |),
-                                      "alloc::collections::linked_list::LinkedList",
-                                      "len"
-                                    |)
+                              BinOp.eq,
+                              [
+                                M.read (|
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (| M.read (| self |) |),
+                                    "alloc::collections::linked_list::CursorMut",
+                                    "index"
                                   |)
-                                ]
-                              |)
-                            |)) in
+                                |);
+                                M.read (|
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (|
+                                      M.read (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "alloc::collections::linked_list::CursorMut",
+                                          "list"
+                                        |)
+                                      |)
+                                    |),
+                                    "alloc::collections::linked_list::LinkedList",
+                                    "len"
+                                  |)
+                                |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         Value.Integer IntegerKind.Usize 0));
                     fun γ =>
@@ -15353,38 +15435,37 @@ Module collections.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                BinOp.eq,
-                                [
-                                  M.read (|
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| self |) |),
-                                      "alloc::collections::linked_list::CursorMut",
-                                      "index"
-                                    |)
-                                  |);
-                                  M.read (|
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (|
-                                        M.read (|
-                                          M.SubPointer.get_struct_record_field (|
-                                            M.deref (| M.read (| self |) |),
-                                            "alloc::collections::linked_list::CursorMut",
-                                            "list"
-                                          |)
-                                        |)
-                                      |),
-                                      "alloc::collections::linked_list::LinkedList",
-                                      "len"
-                                    |)
+                              BinOp.eq,
+                              [
+                                M.read (|
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (| M.read (| self |) |),
+                                    "alloc::collections::linked_list::CursorMut",
+                                    "index"
                                   |)
-                                ]
-                              |)
-                            |)) in
+                                |);
+                                M.read (|
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (|
+                                      M.read (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "alloc::collections::linked_list::CursorMut",
+                                          "list"
+                                        |)
+                                      |)
+                                    |),
+                                    "alloc::collections::linked_list::LinkedList",
+                                    "len"
+                                  |)
+                                |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
@@ -15677,54 +15758,53 @@ Module collections.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                M.get_associated_function (|
-                                  Ty.apply
-                                    (Ty.path "core::option::Option")
-                                    []
-                                    [ Ty.apply (Ty.path "&mut") [] [ T ] ],
-                                  "is_none",
-                                  [],
+                              M.get_associated_function (|
+                                Ty.apply
+                                  (Ty.path "core::option::Option")
                                   []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.alloc (|
+                                  [ Ty.apply (Ty.path "&mut") [] [ T ] ],
+                                "is_none",
+                                [],
+                                []
+                              |),
+                              [
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.alloc (|
+                                    Ty.apply
+                                      (Ty.path "core::option::Option")
+                                      []
+                                      [ Ty.apply (Ty.path "&mut") [] [ T ] ],
+                                    M.call_closure (|
                                       Ty.apply
                                         (Ty.path "core::option::Option")
                                         []
                                         [ Ty.apply (Ty.path "&mut") [] [ T ] ],
-                                      M.call_closure (|
+                                      M.get_associated_function (|
                                         Ty.apply
-                                          (Ty.path "core::option::Option")
+                                          (Ty.path "alloc::collections::linked_list::CursorMut")
                                           []
-                                          [ Ty.apply (Ty.path "&mut") [] [ T ] ],
-                                        M.get_associated_function (|
-                                          Ty.apply
-                                            (Ty.path "alloc::collections::linked_list::CursorMut")
-                                            []
-                                            [ T; A ],
-                                          "current",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.MutRef,
-                                            M.deref (| M.read (| self |) |)
-                                          |)
-                                        ]
-                                      |)
+                                          [ T; A ],
+                                        "current",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.borrow (|
+                                          Pointer.Kind.MutRef,
+                                          M.deref (| M.read (| self |) |)
+                                        |)
+                                      ]
                                     |)
                                   |)
-                                ]
-                              |)
-                            |)) in
+                                |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
@@ -15799,36 +15879,35 @@ Module collections.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            M.get_associated_function (|
-                              Ty.apply
-                                (Ty.path "alloc::collections::linked_list::LinkedList")
-                                []
-                                [ T; A ],
-                              "is_empty",
-                              [],
+                          M.get_associated_function (|
+                            Ty.apply
+                              (Ty.path "alloc::collections::linked_list::LinkedList")
                               []
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.read (|
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| self |) |),
-                                      "alloc::collections::linked_list::CursorMut",
-                                      "list"
-                                    |)
+                              [ T; A ],
+                            "is_empty",
+                            [],
+                            []
+                          |),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (|
+                                M.read (|
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (| M.read (| self |) |),
+                                    "alloc::collections::linked_list::CursorMut",
+                                    "list"
                                   |)
                                 |)
                               |)
-                            ]
-                          |)
-                        |)) in
+                            |)
+                          ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     Value.StructTuple "core::option::Option::None" [] [ T ] []));
                 fun γ =>
@@ -15842,13 +15921,28 @@ Module collections.
                             fun γ =>
                               ltac:(M.monadic
                                 (let γ :=
-                                  M.use
-                                    (M.alloc (|
+                                  M.alloc (|
+                                    Ty.path "bool",
+                                    M.call_closure (|
                                       Ty.path "bool",
-                                      M.call_closure (|
-                                        Ty.path "bool",
-                                        M.get_trait_method (|
-                                          "core::cmp::PartialEq",
+                                      M.get_trait_method (|
+                                        "core::cmp::PartialEq",
+                                        Ty.apply
+                                          (Ty.path "core::option::Option")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "core::ptr::non_null::NonNull")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "alloc::collections::linked_list::Node")
+                                                  []
+                                                  [ T ]
+                                              ]
+                                          ],
+                                        [],
+                                        [
                                           Ty.apply
                                             (Ty.path "core::option::Option")
                                             []
@@ -15863,57 +15957,40 @@ Module collections.
                                                     []
                                                     [ T ]
                                                 ]
-                                            ],
-                                          [],
-                                          [
-                                            Ty.apply
-                                              (Ty.path "core::option::Option")
-                                              []
-                                              [
-                                                Ty.apply
-                                                  (Ty.path "core::ptr::non_null::NonNull")
-                                                  []
-                                                  [
-                                                    Ty.apply
-                                                      (Ty.path
-                                                        "alloc::collections::linked_list::Node")
-                                                      []
-                                                      [ T ]
-                                                  ]
-                                              ]
-                                          ],
-                                          "eq",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.SubPointer.get_struct_record_field (|
-                                              M.deref (|
-                                                M.read (|
-                                                  M.SubPointer.get_struct_record_field (|
-                                                    M.deref (| M.read (| self |) |),
-                                                    "alloc::collections::linked_list::CursorMut",
-                                                    "list"
-                                                  |)
+                                            ]
+                                        ],
+                                        "eq",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.SubPointer.get_struct_record_field (|
+                                            M.deref (|
+                                              M.read (|
+                                                M.SubPointer.get_struct_record_field (|
+                                                  M.deref (| M.read (| self |) |),
+                                                  "alloc::collections::linked_list::CursorMut",
+                                                  "list"
                                                 |)
-                                              |),
-                                              "alloc::collections::linked_list::LinkedList",
-                                              "head"
-                                            |)
-                                          |);
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.SubPointer.get_struct_record_field (|
-                                              M.deref (| M.read (| self |) |),
-                                              "alloc::collections::linked_list::CursorMut",
-                                              "current"
-                                            |)
+                                              |)
+                                            |),
+                                            "alloc::collections::linked_list::LinkedList",
+                                            "head"
                                           |)
-                                        ]
-                                      |)
-                                    |)) in
+                                        |);
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.SubPointer.get_struct_record_field (|
+                                            M.deref (| M.read (| self |) |),
+                                            "alloc::collections::linked_list::CursorMut",
+                                            "current"
+                                          |)
+                                        |)
+                                      ]
+                                    |)
+                                  |) in
                                 let _ :=
                                   is_constant_or_break_match (|
                                     M.read (| γ |),
@@ -16041,36 +16118,35 @@ Module collections.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            M.get_associated_function (|
-                              Ty.apply
-                                (Ty.path "alloc::collections::linked_list::LinkedList")
-                                []
-                                [ T; A ],
-                              "is_empty",
-                              [],
+                          M.get_associated_function (|
+                            Ty.apply
+                              (Ty.path "alloc::collections::linked_list::LinkedList")
                               []
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.read (|
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| self |) |),
-                                      "alloc::collections::linked_list::CursorMut",
-                                      "list"
-                                    |)
+                              [ T; A ],
+                            "is_empty",
+                            [],
+                            []
+                          |),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (|
+                                M.read (|
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (| M.read (| self |) |),
+                                    "alloc::collections::linked_list::CursorMut",
+                                    "list"
                                   |)
                                 |)
                               |)
-                            ]
-                          |)
-                        |)) in
+                            |)
+                          ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     Value.StructTuple "core::option::Option::None" [] [ T ] []));
                 fun γ =>
@@ -16084,13 +16160,28 @@ Module collections.
                             fun γ =>
                               ltac:(M.monadic
                                 (let γ :=
-                                  M.use
-                                    (M.alloc (|
+                                  M.alloc (|
+                                    Ty.path "bool",
+                                    M.call_closure (|
                                       Ty.path "bool",
-                                      M.call_closure (|
-                                        Ty.path "bool",
-                                        M.get_trait_method (|
-                                          "core::cmp::PartialEq",
+                                      M.get_trait_method (|
+                                        "core::cmp::PartialEq",
+                                        Ty.apply
+                                          (Ty.path "core::option::Option")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "core::ptr::non_null::NonNull")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "alloc::collections::linked_list::Node")
+                                                  []
+                                                  [ T ]
+                                              ]
+                                          ],
+                                        [],
+                                        [
                                           Ty.apply
                                             (Ty.path "core::option::Option")
                                             []
@@ -16105,57 +16196,40 @@ Module collections.
                                                     []
                                                     [ T ]
                                                 ]
-                                            ],
-                                          [],
-                                          [
-                                            Ty.apply
-                                              (Ty.path "core::option::Option")
-                                              []
-                                              [
-                                                Ty.apply
-                                                  (Ty.path "core::ptr::non_null::NonNull")
-                                                  []
-                                                  [
-                                                    Ty.apply
-                                                      (Ty.path
-                                                        "alloc::collections::linked_list::Node")
-                                                      []
-                                                      [ T ]
-                                                  ]
-                                              ]
-                                          ],
-                                          "eq",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.SubPointer.get_struct_record_field (|
-                                              M.deref (|
-                                                M.read (|
-                                                  M.SubPointer.get_struct_record_field (|
-                                                    M.deref (| M.read (| self |) |),
-                                                    "alloc::collections::linked_list::CursorMut",
-                                                    "list"
-                                                  |)
+                                            ]
+                                        ],
+                                        "eq",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.SubPointer.get_struct_record_field (|
+                                            M.deref (|
+                                              M.read (|
+                                                M.SubPointer.get_struct_record_field (|
+                                                  M.deref (| M.read (| self |) |),
+                                                  "alloc::collections::linked_list::CursorMut",
+                                                  "list"
                                                 |)
-                                              |),
-                                              "alloc::collections::linked_list::LinkedList",
-                                              "tail"
-                                            |)
-                                          |);
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.SubPointer.get_struct_record_field (|
-                                              M.deref (| M.read (| self |) |),
-                                              "alloc::collections::linked_list::CursorMut",
-                                              "current"
-                                            |)
+                                              |)
+                                            |),
+                                            "alloc::collections::linked_list::LinkedList",
+                                            "tail"
                                           |)
-                                        ]
-                                      |)
-                                    |)) in
+                                        |);
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.SubPointer.get_struct_record_field (|
+                                            M.deref (| M.read (| self |) |),
+                                            "alloc::collections::linked_list::CursorMut",
+                                            "current"
+                                          |)
+                                        |)
+                                      ]
+                                    |)
+                                  |) in
                                 let _ :=
                                   is_constant_or_break_match (|
                                     M.read (| γ |),
@@ -16196,43 +16270,42 @@ Module collections.
                                     fun γ =>
                                       ltac:(M.monadic
                                         (let γ :=
-                                          M.use
-                                            (M.alloc (|
+                                          M.alloc (|
+                                            Ty.path "bool",
+                                            M.call_closure (|
                                               Ty.path "bool",
-                                              M.call_closure (|
-                                                Ty.path "bool",
-                                                M.get_associated_function (|
-                                                  Ty.apply
-                                                    (Ty.path "core::option::Option")
-                                                    []
-                                                    [
-                                                      Ty.apply
-                                                        (Ty.path "core::ptr::non_null::NonNull")
-                                                        []
-                                                        [
-                                                          Ty.apply
-                                                            (Ty.path
-                                                              "alloc::collections::linked_list::Node")
-                                                            []
-                                                            [ T ]
-                                                        ]
-                                                    ],
-                                                  "is_none",
-                                                  [],
+                                              M.get_associated_function (|
+                                                Ty.apply
+                                                  (Ty.path "core::option::Option")
                                                   []
-                                                |),
-                                                [
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.SubPointer.get_struct_record_field (|
-                                                      M.deref (| M.read (| self |) |),
-                                                      "alloc::collections::linked_list::CursorMut",
-                                                      "current"
-                                                    |)
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "core::ptr::non_null::NonNull")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path
+                                                            "alloc::collections::linked_list::Node")
+                                                          []
+                                                          [ T ]
+                                                      ]
+                                                  ],
+                                                "is_none",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (| M.read (| self |) |),
+                                                    "alloc::collections::linked_list::CursorMut",
+                                                    "current"
                                                   |)
-                                                ]
-                                              |)
-                                            |)) in
+                                                |)
+                                              ]
+                                            |)
+                                          |) in
                                         let _ :=
                                           is_constant_or_break_match (|
                                             M.read (| γ |),
@@ -16901,43 +16974,42 @@ Module collections.
                                 fun γ =>
                                   ltac:(M.monadic
                                     (let γ :=
-                                      M.use
-                                        (M.alloc (|
+                                      M.alloc (|
+                                        Ty.path "bool",
+                                        M.call_closure (|
                                           Ty.path "bool",
-                                          M.call_closure (|
-                                            Ty.path "bool",
-                                            M.get_associated_function (|
-                                              Ty.apply
-                                                (Ty.path "core::option::Option")
-                                                []
-                                                [
-                                                  Ty.apply
-                                                    (Ty.path "core::ptr::non_null::NonNull")
-                                                    []
-                                                    [
-                                                      Ty.apply
-                                                        (Ty.path
-                                                          "alloc::collections::linked_list::Node")
-                                                        []
-                                                        [ T ]
-                                                    ]
-                                                ],
-                                              "is_none",
-                                              [],
+                                          M.get_associated_function (|
+                                            Ty.apply
+                                              (Ty.path "core::option::Option")
                                               []
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| self |) |),
-                                                  "alloc::collections::linked_list::CursorMut",
-                                                  "current"
-                                                |)
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "core::ptr::non_null::NonNull")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path
+                                                        "alloc::collections::linked_list::Node")
+                                                      []
+                                                      [ T ]
+                                                  ]
+                                              ],
+                                            "is_none",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.SubPointer.get_struct_record_field (|
+                                                M.deref (| M.read (| self |) |),
+                                                "alloc::collections::linked_list::CursorMut",
+                                                "current"
                                               |)
-                                            ]
-                                          |)
-                                        |)) in
+                                            |)
+                                          ]
+                                        |)
+                                      |) in
                                     let _ :=
                                       is_constant_or_break_match (|
                                         M.read (| γ |),
@@ -17556,44 +17628,55 @@ Module collections.
                                             fun γ =>
                                               ltac:(M.monadic
                                                 (let γ :=
-                                                  M.use
-                                                    (M.alloc (|
+                                                  M.alloc (|
+                                                    Ty.path "bool",
+                                                    M.call_closure (|
                                                       Ty.path "bool",
-                                                      M.call_closure (|
-                                                        Ty.path "bool",
-                                                        M.get_trait_method (|
-                                                          "core::ops::function::FnMut",
-                                                          F,
-                                                          [],
-                                                          [
-                                                            Ty.tuple
-                                                              [ Ty.apply (Ty.path "&mut") [] [ T ] ]
-                                                          ],
-                                                          "call_mut",
-                                                          [],
-                                                          []
-                                                        |),
+                                                      M.get_trait_method (|
+                                                        "core::ops::function::FnMut",
+                                                        F,
+                                                        [],
                                                         [
-                                                          M.borrow (|
-                                                            Pointer.Kind.MutRef,
-                                                            M.SubPointer.get_struct_record_field (|
-                                                              M.deref (| M.read (| self |) |),
-                                                              "alloc::collections::linked_list::ExtractIf",
-                                                              "pred"
-                                                            |)
-                                                          |);
-                                                          Value.Tuple
-                                                            [
-                                                              M.borrow (|
-                                                                Pointer.Kind.MutRef,
-                                                                M.deref (|
-                                                                  M.borrow (|
-                                                                    Pointer.Kind.MutRef,
-                                                                    M.SubPointer.get_struct_record_field (|
-                                                                      M.deref (|
-                                                                        M.call_closure (|
+                                                          Ty.tuple
+                                                            [ Ty.apply (Ty.path "&mut") [] [ T ] ]
+                                                        ],
+                                                        "call_mut",
+                                                        [],
+                                                        []
+                                                      |),
+                                                      [
+                                                        M.borrow (|
+                                                          Pointer.Kind.MutRef,
+                                                          M.SubPointer.get_struct_record_field (|
+                                                            M.deref (| M.read (| self |) |),
+                                                            "alloc::collections::linked_list::ExtractIf",
+                                                            "pred"
+                                                          |)
+                                                        |);
+                                                        Value.Tuple
+                                                          [
+                                                            M.borrow (|
+                                                              Pointer.Kind.MutRef,
+                                                              M.deref (|
+                                                                M.borrow (|
+                                                                  Pointer.Kind.MutRef,
+                                                                  M.SubPointer.get_struct_record_field (|
+                                                                    M.deref (|
+                                                                      M.call_closure (|
+                                                                        Ty.apply
+                                                                          (Ty.path "&mut")
+                                                                          []
+                                                                          [
+                                                                            Ty.apply
+                                                                              (Ty.path
+                                                                                "alloc::collections::linked_list::Node")
+                                                                              []
+                                                                              [ T ]
+                                                                          ],
+                                                                        M.get_associated_function (|
                                                                           Ty.apply
-                                                                            (Ty.path "&mut")
+                                                                            (Ty.path
+                                                                              "core::ptr::non_null::NonNull")
                                                                             []
                                                                             [
                                                                               Ty.apply
@@ -17602,40 +17685,28 @@ Module collections.
                                                                                 []
                                                                                 [ T ]
                                                                             ],
-                                                                          M.get_associated_function (|
-                                                                            Ty.apply
-                                                                              (Ty.path
-                                                                                "core::ptr::non_null::NonNull")
-                                                                              []
-                                                                              [
-                                                                                Ty.apply
-                                                                                  (Ty.path
-                                                                                    "alloc::collections::linked_list::Node")
-                                                                                  []
-                                                                                  [ T ]
-                                                                              ],
-                                                                            "as_mut",
-                                                                            [],
-                                                                            []
-                                                                          |),
-                                                                          [
-                                                                            M.borrow (|
-                                                                              Pointer.Kind.MutRef,
-                                                                              node
-                                                                            |)
-                                                                          ]
-                                                                        |)
-                                                                      |),
-                                                                      "alloc::collections::linked_list::Node",
-                                                                      "element"
-                                                                    |)
+                                                                          "as_mut",
+                                                                          [],
+                                                                          []
+                                                                        |),
+                                                                        [
+                                                                          M.borrow (|
+                                                                            Pointer.Kind.MutRef,
+                                                                            node
+                                                                          |)
+                                                                        ]
+                                                                      |)
+                                                                    |),
+                                                                    "alloc::collections::linked_list::Node",
+                                                                    "element"
                                                                   |)
                                                                 |)
                                                               |)
-                                                            ]
-                                                        ]
-                                                      |)
-                                                    |)) in
+                                                            |)
+                                                          ]
+                                                      ]
+                                                    |)
+                                                  |) in
                                                 let _ :=
                                                   is_constant_or_break_match (|
                                                     M.read (| γ |),
@@ -17874,20 +17945,18 @@ Module collections.
           ].
     End Impl_core_iter_traits_iterator_Iterator_where_core_alloc_Allocator_A_where_core_ops_function_FnMut_F_Tuple_ref_mut_T__for_alloc_collections_linked_list_ExtractIf_T_F_A.
     
-    Module Impl_core_fmt_Debug_where_core_fmt_Debug_T_where_core_ops_function_FnMut_F_Tuple_ref_mut_T__for_alloc_collections_linked_list_ExtractIf_T_F_alloc_alloc_Global.
-      Definition Self (T F : Ty.t) : Ty.t :=
-        Ty.apply
-          (Ty.path "alloc::collections::linked_list::ExtractIf")
-          []
-          [ T; F; Ty.path "alloc::alloc::Global" ].
+    Module Impl_core_fmt_Debug_where_core_fmt_Debug_T_where_core_alloc_Allocator_A_for_alloc_collections_linked_list_ExtractIf_T_F_A.
+      Definition Self (T F A : Ty.t) : Ty.t :=
+        Ty.apply (Ty.path "alloc::collections::linked_list::ExtractIf") [] [ T; F; A ].
       
       (*
           fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-              f.debug_tuple("ExtractIf").field(&self.list).finish()
+              let peek = self.it.map(|node| unsafe { &node.as_ref().element });
+              f.debug_struct("ExtractIf").field("peek", &peek).finish_non_exhaustive()
           }
       *)
-      Definition fmt (T F : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        let Self : Ty.t := Self T F in
+      Definition fmt (T F A : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        let Self : Ty.t := Self T F A in
         match ε, τ, α with
         | [], [], [ self; f ] =>
           ltac:(M.monadic
@@ -17896,118 +17965,236 @@ Module collections.
                 Ty.apply
                   (Ty.path "&")
                   []
-                  [
-                    Ty.apply
-                      (Ty.path "alloc::collections::linked_list::ExtractIf")
-                      []
-                      [ T; F; Ty.path "alloc::alloc::Global" ]
+                  [ Ty.apply (Ty.path "alloc::collections::linked_list::ExtractIf") [] [ T; F; A ]
                   ],
                 self
               |) in
             let f :=
               M.alloc (| Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ], f |) in
-            M.call_closure (|
-              Ty.apply
-                (Ty.path "core::result::Result")
-                []
-                [ Ty.tuple []; Ty.path "core::fmt::Error" ],
-              M.get_associated_function (|
-                Ty.path "core::fmt::builders::DebugTuple",
-                "finish",
-                [],
-                []
-              |),
-              [
-                M.borrow (|
-                  Pointer.Kind.MutRef,
-                  M.deref (|
-                    M.call_closure (|
-                      Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::builders::DebugTuple" ],
-                      M.get_associated_function (|
-                        Ty.path "core::fmt::builders::DebugTuple",
-                        "field",
-                        [],
-                        []
-                      |),
+            M.read (|
+              let~ peek :
+                  Ty.apply
+                    (Ty.path "core::option::Option")
+                    []
+                    [ Ty.apply (Ty.path "&") [] [ T ] ] :=
+                M.call_closure (|
+                  Ty.apply (Ty.path "core::option::Option") [] [ Ty.apply (Ty.path "&") [] [ T ] ],
+                  M.get_associated_function (|
+                    Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
                       [
-                        M.borrow (|
-                          Pointer.Kind.MutRef,
-                          M.alloc (|
-                            Ty.path "core::fmt::builders::DebugTuple",
-                            M.call_closure (|
-                              Ty.path "core::fmt::builders::DebugTuple",
-                              M.get_associated_function (|
-                                Ty.path "core::fmt::Formatter",
-                                "debug_tuple",
-                                [],
-                                []
-                              |),
-                              [
-                                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (| mk_str (| "ExtractIf" |) |)
-                                |)
-                              ]
-                            |)
-                          |)
-                        |);
+                        Ty.apply
+                          (Ty.path "core::ptr::non_null::NonNull")
+                          []
+                          [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
+                      ],
+                    "map",
+                    [],
+                    [
+                      Ty.apply (Ty.path "&") [] [ T ];
+                      Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "core::ptr::non_null::NonNull")
+                            []
+                            [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
+                        ]
+                        (Ty.apply (Ty.path "&") [] [ T ])
+                    ]
+                  |),
+                  [
+                    M.read (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "alloc::collections::linked_list::ExtractIf",
+                        "it"
+                      |)
+                    |);
+                    M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
+                                Ty.apply (Ty.path "&") [] [ T ],
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "core::ptr::non_null::NonNull")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "alloc::collections::linked_list::Node")
+                                        []
+                                        [ T ]
+                                    ],
+                                  α0
+                                |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let node :=
+                                        M.copy (|
+                                          Ty.apply
+                                            (Ty.path "core::ptr::non_null::NonNull")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "alloc::collections::linked_list::Node")
+                                                []
+                                                [ T ]
+                                            ],
+                                          γ
+                                        |) in
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (|
+                                            M.call_closure (|
+                                              Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path
+                                                      "alloc::collections::linked_list::Node")
+                                                    []
+                                                    [ T ]
+                                                ],
+                                              M.get_associated_function (|
+                                                Ty.apply
+                                                  (Ty.path "core::ptr::non_null::NonNull")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path
+                                                        "alloc::collections::linked_list::Node")
+                                                      []
+                                                      [ T ]
+                                                  ],
+                                                "as_ref",
+                                                [],
+                                                []
+                                              |),
+                                              [ M.borrow (| Pointer.Kind.Ref, node |) ]
+                                            |)
+                                          |),
+                                          "alloc::collections::linked_list::Node",
+                                          "element"
+                                        |)
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end))
+                  ]
+                |) in
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "core::result::Result")
+                  []
+                  [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                M.call_closure (|
+                  Ty.apply
+                    (Ty.path "core::result::Result")
+                    []
+                    [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                  M.get_associated_function (|
+                    Ty.path "core::fmt::builders::DebugStruct",
+                    "finish_non_exhaustive",
+                    [],
+                    []
+                  |),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.MutRef,
+                      M.deref (|
                         M.call_closure (|
-                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                          M.pointer_coercion
-                            M.PointerCoercion.Unsize
-                            (Ty.apply
-                              (Ty.path "&")
-                              []
-                              [
-                                Ty.apply
-                                  (Ty.path "&mut")
+                          Ty.apply
+                            (Ty.path "&mut")
+                            []
+                            [ Ty.path "core::fmt::builders::DebugStruct" ],
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::builders::DebugStruct",
+                            "field",
+                            [],
+                            []
+                          |),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.MutRef,
+                              M.alloc (|
+                                Ty.path "core::fmt::builders::DebugStruct",
+                                M.call_closure (|
+                                  Ty.path "core::fmt::builders::DebugStruct",
+                                  M.get_associated_function (|
+                                    Ty.path "core::fmt::Formatter",
+                                    "debug_struct",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.MutRef,
+                                      M.deref (| M.read (| f |) |)
+                                    |);
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "ExtractIf" |) |)
+                                    |)
+                                  ]
+                                |)
+                              |)
+                            |);
+                            M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "peek" |) |) |);
+                            M.call_closure (|
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                              M.pointer_coercion
+                                M.PointerCoercion.Unsize
+                                (Ty.apply
+                                  (Ty.path "&")
                                   []
                                   [
                                     Ty.apply
-                                      (Ty.path "alloc::collections::linked_list::LinkedList")
+                                      (Ty.path "core::option::Option")
                                       []
-                                      [ T; Ty.path "alloc::alloc::Global" ]
-                                  ]
-                              ])
-                            (Ty.apply
-                              (Ty.path "&")
-                              []
-                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
+                                      [ Ty.apply (Ty.path "&") [] [ T ] ]
+                                  ])
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                              [
                                 M.borrow (|
                                   Pointer.Kind.Ref,
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "alloc::collections::linked_list::ExtractIf",
-                                    "list"
-                                  |)
+                                  M.deref (| M.borrow (| Pointer.Kind.Ref, peek |) |)
                                 |)
-                              |)
+                              ]
                             |)
                           ]
                         |)
-                      ]
+                      |)
                     |)
-                  |)
+                  ]
                 |)
-              ]
+              |)
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
       Axiom Implements :
-        forall (T F : Ty.t),
+        forall (T F A : Ty.t),
         M.IsTraitInstance
           "core::fmt::Debug"
           (* Trait polymorphic consts *) []
           (* Trait polymorphic types *) []
-          (Self T F)
-          (* Instance *) [ ("fmt", InstanceField.Method (fmt T F)) ].
-    End Impl_core_fmt_Debug_where_core_fmt_Debug_T_where_core_ops_function_FnMut_F_Tuple_ref_mut_T__for_alloc_collections_linked_list_ExtractIf_T_F_alloc_alloc_Global.
+          (Self T F A)
+          (* Instance *) [ ("fmt", InstanceField.Method (fmt T F A)) ].
+    End Impl_core_fmt_Debug_where_core_fmt_Debug_T_where_core_alloc_Allocator_A_for_alloc_collections_linked_list_ExtractIf_T_F_A.
     
     Module Impl_core_iter_traits_iterator_Iterator_where_core_alloc_Allocator_A_for_alloc_collections_linked_list_IntoIter_T_A.
       Definition Self (T A : Ty.t) : Ty.t :=
@@ -19602,52 +19789,47 @@ Module collections.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                BinOp.gt,
-                                [
-                                  M.call_closure (|
-                                    Ty.path "usize",
-                                    M.get_associated_function (|
-                                      Ty.apply
-                                        (Ty.path "alloc::collections::linked_list::LinkedList")
-                                        []
-                                        [ T; A ],
-                                      "len",
-                                      [],
+                              BinOp.gt,
+                              [
+                                M.call_closure (|
+                                  Ty.path "usize",
+                                  M.get_associated_function (|
+                                    Ty.apply
+                                      (Ty.path "alloc::collections::linked_list::LinkedList")
                                       []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| self |) |)
-                                      |)
-                                    ]
-                                  |);
-                                  M.call_closure (|
-                                    Ty.path "usize",
-                                    M.get_associated_function (|
-                                      Ty.apply
-                                        (Ty.path "alloc::collections::linked_list::LinkedList")
-                                        []
-                                        [ T; A ],
-                                      "len",
-                                      [],
+                                      [ T; A ],
+                                    "len",
+                                    [],
+                                    []
+                                  |),
+                                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |)
+                                  ]
+                                |);
+                                M.call_closure (|
+                                  Ty.path "usize",
+                                  M.get_associated_function (|
+                                    Ty.apply
+                                      (Ty.path "alloc::collections::linked_list::LinkedList")
                                       []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| source |) |)
-                                      |)
-                                    ]
-                                  |)
-                                ]
-                              |)
-                            |)) in
+                                      [ T; A ],
+                                    "len",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| source |) |)
+                                    |)
+                                  ]
+                                |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.read (|
                           let~ _ :
@@ -20002,32 +20184,31 @@ Module collections.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                UnOp.not,
-                                [
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    M.get_trait_method (|
-                                      "core::iter::traits::exact_size::ExactSizeIterator",
-                                      Ty.apply
-                                        (Ty.path "alloc::collections::linked_list::Iter")
-                                        []
-                                        [ T ],
-                                      [],
-                                      [],
-                                      "is_empty",
-                                      [],
+                              UnOp.not,
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  M.get_trait_method (|
+                                    "core::iter::traits::exact_size::ExactSizeIterator",
+                                    Ty.apply
+                                      (Ty.path "alloc::collections::linked_list::Iter")
                                       []
-                                    |),
-                                    [ M.borrow (| Pointer.Kind.Ref, source_iter |) ]
-                                  |)
-                                ]
-                              |)
-                            |)) in
+                                      [ T ],
+                                    [],
+                                    [],
+                                    "is_empty",
+                                    [],
+                                    []
+                                  |),
+                                  [ M.borrow (| Pointer.Kind.Ref, source_iter |) ]
+                                |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=

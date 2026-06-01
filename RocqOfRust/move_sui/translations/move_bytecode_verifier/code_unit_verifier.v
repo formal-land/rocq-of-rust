@@ -1229,15 +1229,14 @@ Module code_unit_verifier.
                               fun γ =>
                                 ltac:(M.monadic
                                   (let γ :=
-                                    M.use
-                                      (M.alloc (|
+                                    M.alloc (|
+                                      Ty.path "bool",
+                                      M.call_closure (|
                                         Ty.path "bool",
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          BinOp.gt,
-                                          [ M.read (| total_back_edges |); M.read (| limit |) ]
-                                        |)
-                                      |)) in
+                                        BinOp.gt,
+                                        [ M.read (| total_back_edges |); M.read (| limit |) ]
+                                      |)
+                                    |) in
                                   let _ :=
                                     is_constant_or_break_match (|
                                       M.read (| γ |),
@@ -1763,28 +1762,33 @@ Module code_unit_verifier.
                               fun γ =>
                                 ltac:(M.monadic
                                   (let γ :=
-                                    M.use
-                                      (M.alloc (|
+                                    M.alloc (|
+                                      Ty.path "bool",
+                                      M.call_closure (|
                                         Ty.path "bool",
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          BinOp.gt,
-                                          [
-                                            M.call_closure (|
-                                              Ty.path "usize",
-                                              M.get_associated_function (|
-                                                Ty.apply
-                                                  (Ty.path "alloc::vec::Vec")
-                                                  []
-                                                  [ Ty.path "u16"; Ty.path "alloc::alloc::Global" ],
-                                                "len",
-                                                [],
+                                        BinOp.gt,
+                                        [
+                                          M.call_closure (|
+                                            Ty.path "usize",
+                                            M.get_associated_function (|
+                                              Ty.apply
+                                                (Ty.path "alloc::vec::Vec")
                                                 []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.alloc (|
+                                                [ Ty.path "u16"; Ty.path "alloc::alloc::Global" ],
+                                              "len",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.alloc (|
+                                                  Ty.apply
+                                                    (Ty.path "alloc::vec::Vec")
+                                                    []
+                                                    [ Ty.path "u16"; Ty.path "alloc::alloc::Global"
+                                                    ],
+                                                  M.call_closure (|
                                                     Ty.apply
                                                       (Ty.path "alloc::vec::Vec")
                                                       []
@@ -1792,62 +1796,54 @@ Module code_unit_verifier.
                                                         Ty.path "u16";
                                                         Ty.path "alloc::alloc::Global"
                                                       ],
-                                                    M.call_closure (|
-                                                      Ty.apply
-                                                        (Ty.path "alloc::vec::Vec")
-                                                        []
-                                                        [
-                                                          Ty.path "u16";
-                                                          Ty.path "alloc::alloc::Global"
-                                                        ],
-                                                      M.get_trait_method (|
-                                                        "move_binary_format::control_flow_graph::ControlFlowGraph",
-                                                        Ty.path
-                                                          "move_binary_format::control_flow_graph::VMControlFlowGraph",
-                                                        [],
-                                                        [],
-                                                        "blocks",
-                                                        [],
-                                                        []
-                                                      |),
-                                                      [
-                                                        M.borrow (|
-                                                          Pointer.Kind.Ref,
-                                                          M.deref (|
-                                                            M.call_closure (|
-                                                              Ty.apply
-                                                                (Ty.path "&")
-                                                                []
-                                                                [
-                                                                  Ty.path
-                                                                    "move_binary_format::control_flow_graph::VMControlFlowGraph"
-                                                                ],
-                                                              M.get_associated_function (|
-                                                                Ty.path
-                                                                  "move_bytecode_verifier::absint::FunctionContext",
-                                                                "cfg",
-                                                                [],
-                                                                []
-                                                              |),
+                                                    M.get_trait_method (|
+                                                      "move_binary_format::control_flow_graph::ControlFlowGraph",
+                                                      Ty.path
+                                                        "move_binary_format::control_flow_graph::VMControlFlowGraph",
+                                                      [],
+                                                      [],
+                                                      "blocks",
+                                                      [],
+                                                      []
+                                                    |),
+                                                    [
+                                                      M.borrow (|
+                                                        Pointer.Kind.Ref,
+                                                        M.deref (|
+                                                          M.call_closure (|
+                                                            Ty.apply
+                                                              (Ty.path "&")
+                                                              []
                                                               [
-                                                                M.borrow (|
-                                                                  Pointer.Kind.Ref,
-                                                                  function_context
-                                                                |)
-                                                              ]
-                                                            |)
+                                                                Ty.path
+                                                                  "move_binary_format::control_flow_graph::VMControlFlowGraph"
+                                                              ],
+                                                            M.get_associated_function (|
+                                                              Ty.path
+                                                                "move_bytecode_verifier::absint::FunctionContext",
+                                                              "cfg",
+                                                              [],
+                                                              []
+                                                            |),
+                                                            [
+                                                              M.borrow (|
+                                                                Pointer.Kind.Ref,
+                                                                function_context
+                                                              |)
+                                                            ]
                                                           |)
                                                         |)
-                                                      ]
-                                                    |)
+                                                      |)
+                                                    ]
                                                   |)
                                                 |)
-                                              ]
-                                            |);
-                                            M.read (| limit |)
-                                          ]
-                                        |)
-                                      |)) in
+                                              |)
+                                            ]
+                                          |);
+                                          M.read (| limit |)
+                                        ]
+                                      |)
+                                    |) in
                                   let _ :=
                                     is_constant_or_break_match (|
                                       M.read (| γ |),
@@ -1967,15 +1963,14 @@ Module code_unit_verifier.
                               fun γ =>
                                 ltac:(M.monadic
                                   (let γ :=
-                                    M.use
-                                      (M.alloc (|
+                                    M.alloc (|
+                                      Ty.path "bool",
+                                      M.call_closure (|
                                         Ty.path "bool",
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          BinOp.gt,
-                                          [ M.read (| num_back_edges |); M.read (| limit |) ]
-                                        |)
-                                      |)) in
+                                        BinOp.gt,
+                                        [ M.read (| num_back_edges |); M.read (| limit |) ]
+                                      |)
+                                    |) in
                                   let _ :=
                                     is_constant_or_break_match (|
                                       M.read (| γ |),

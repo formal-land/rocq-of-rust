@@ -199,46 +199,45 @@ Module collections.
                                                       fun γ =>
                                                         ltac:(M.monadic
                                                           (let γ :=
-                                                            M.use
-                                                              (M.alloc (|
+                                                            M.alloc (|
+                                                              Ty.path "bool",
+                                                              M.call_closure (|
                                                                 Ty.path "bool",
-                                                                M.call_closure (|
-                                                                  Ty.path "bool",
-                                                                  BinOp.lt,
-                                                                  [
-                                                                    M.read (|
-                                                                      M.SubPointer.get_struct_record_field (|
+                                                                BinOp.lt,
+                                                                [
+                                                                  M.read (|
+                                                                    M.SubPointer.get_struct_record_field (|
+                                                                      M.deref (|
+                                                                        M.read (| self |)
+                                                                      |),
+                                                                      "alloc::collections::vec_deque::VecDeque",
+                                                                      "len"
+                                                                    |)
+                                                                  |);
+                                                                  M.call_closure (|
+                                                                    Ty.path "usize",
+                                                                    M.get_associated_function (|
+                                                                      Ty.apply
+                                                                        (Ty.path
+                                                                          "alloc::collections::vec_deque::VecDeque")
+                                                                        []
+                                                                        [ T; A ],
+                                                                      "capacity",
+                                                                      [],
+                                                                      []
+                                                                    |),
+                                                                    [
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
                                                                         M.deref (|
                                                                           M.read (| self |)
-                                                                        |),
-                                                                        "alloc::collections::vec_deque::VecDeque",
-                                                                        "len"
-                                                                      |)
-                                                                    |);
-                                                                    M.call_closure (|
-                                                                      Ty.path "usize",
-                                                                      M.get_associated_function (|
-                                                                        Ty.apply
-                                                                          (Ty.path
-                                                                            "alloc::collections::vec_deque::VecDeque")
-                                                                          []
-                                                                          [ T; A ],
-                                                                        "capacity",
-                                                                        [],
-                                                                        []
-                                                                      |),
-                                                                      [
-                                                                        M.borrow (|
-                                                                          Pointer.Kind.Ref,
-                                                                          M.deref (|
-                                                                            M.read (| self |)
-                                                                          |)
                                                                         |)
-                                                                      ]
-                                                                    |)
-                                                                  ]
-                                                                |)
-                                                              |)) in
+                                                                      |)
+                                                                    ]
+                                                                  |)
+                                                                ]
+                                                              |)
+                                                            |) in
                                                           let _ :=
                                                             is_constant_or_break_match (|
                                                               M.read (| γ |),
@@ -482,8 +481,7 @@ Module collections.
                                     [
                                       fun γ =>
                                         ltac:(M.monadic
-                                          (let γ :=
-                                            M.use (M.alloc (| Ty.path "bool", Value.Bool true |)) in
+                                          (let γ := M.alloc (| Ty.path "bool", Value.Bool true |) in
                                           let _ :=
                                             is_constant_or_break_match (|
                                               M.read (| γ |),
@@ -535,36 +533,31 @@ Module collections.
                                                           fun γ =>
                                                             ltac:(M.monadic
                                                               (let γ :=
-                                                                M.use
-                                                                  (M.alloc (|
+                                                                M.alloc (|
+                                                                  Ty.path "bool",
+                                                                  M.call_closure (|
                                                                     Ty.path "bool",
-                                                                    M.call_closure (|
-                                                                      Ty.path "bool",
-                                                                      UnOp.not,
-                                                                      [
-                                                                        M.call_closure (|
-                                                                          Ty.path "bool",
-                                                                          BinOp.eq,
-                                                                          [
-                                                                            M.read (|
-                                                                              M.deref (|
-                                                                                M.read (|
-                                                                                  left_val
-                                                                                |)
-                                                                              |)
-                                                                            |);
-                                                                            M.read (|
-                                                                              M.deref (|
-                                                                                M.read (|
-                                                                                  right_val
-                                                                                |)
-                                                                              |)
+                                                                    UnOp.not,
+                                                                    [
+                                                                      M.call_closure (|
+                                                                        Ty.path "bool",
+                                                                        BinOp.eq,
+                                                                        [
+                                                                          M.read (|
+                                                                            M.deref (|
+                                                                              M.read (| left_val |)
                                                                             |)
-                                                                          ]
-                                                                        |)
-                                                                      ]
-                                                                    |)
-                                                                  |)) in
+                                                                          |);
+                                                                          M.read (|
+                                                                            M.deref (|
+                                                                              M.read (| right_val |)
+                                                                            |)
+                                                                          |)
+                                                                        ]
+                                                                      |)
+                                                                    ]
+                                                                  |)
+                                                                |) in
                                                               let _ :=
                                                                 is_constant_or_break_match (|
                                                                   M.read (| γ |),
@@ -628,143 +621,155 @@ Module collections.
                                                                               "core::fmt::Arguments"
                                                                           ]
                                                                           [
-                                                                            M.call_closure (|
-                                                                              Ty.path
-                                                                                "core::fmt::Arguments",
-                                                                              M.get_associated_function (|
-                                                                                Ty.path
-                                                                                  "core::fmt::Arguments",
-                                                                                "new_v1",
-                                                                                [
-                                                                                  Value.Integer
-                                                                                    IntegerKind.Usize
-                                                                                    1;
-                                                                                  Value.Integer
-                                                                                    IntegerKind.Usize
-                                                                                    1
-                                                                                ],
-                                                                                []
-                                                                              |),
-                                                                              [
-                                                                                M.borrow (|
-                                                                                  Pointer.Kind.Ref,
-                                                                                  M.deref (|
+                                                                            M.read (|
+                                                                              let~ args :
+                                                                                  Ty.tuple
+                                                                                    [
+                                                                                      Ty.apply
+                                                                                        (Ty.path
+                                                                                          "&")
+                                                                                        []
+                                                                                        [
+                                                                                          Ty.tuple
+                                                                                            [
+                                                                                              Ty.path
+                                                                                                "usize";
+                                                                                              Ty.apply
+                                                                                                (Ty.path
+                                                                                                  "core::option::Option")
+                                                                                                []
+                                                                                                [
+                                                                                                  Ty.path
+                                                                                                    "usize"
+                                                                                                ]
+                                                                                            ]
+                                                                                        ]
+                                                                                    ] :=
+                                                                                Value.Tuple
+                                                                                  [
                                                                                     M.borrow (|
                                                                                       Pointer.Kind.Ref,
                                                                                       M.alloc (|
-                                                                                        Ty.apply
-                                                                                          (Ty.path
-                                                                                            "array")
+                                                                                        Ty.tuple
                                                                                           [
-                                                                                            Value.Integer
-                                                                                              IntegerKind.Usize
-                                                                                              1
-                                                                                          ]
-                                                                                          [
+                                                                                            Ty.path
+                                                                                              "usize";
                                                                                             Ty.apply
                                                                                               (Ty.path
-                                                                                                "&")
+                                                                                                "core::option::Option")
                                                                                               []
                                                                                               [
                                                                                                 Ty.path
-                                                                                                  "str"
+                                                                                                  "usize"
                                                                                               ]
                                                                                           ],
-                                                                                        Value.Array
+                                                                                        Value.Tuple
                                                                                           [
-                                                                                            mk_str (|
-                                                                                              "TrustedLen iterator's size hint is not exact: "
+                                                                                            M.read (|
+                                                                                              low
+                                                                                            |);
+                                                                                            M.read (|
+                                                                                              high
                                                                                             |)
                                                                                           ]
                                                                                       |)
                                                                                     |)
-                                                                                  |)
-                                                                                |);
-                                                                                M.borrow (|
-                                                                                  Pointer.Kind.Ref,
-                                                                                  M.deref (|
+                                                                                  ] in
+                                                                              let~ args :
+                                                                                  Ty.apply
+                                                                                    (Ty.path
+                                                                                      "array")
+                                                                                    [
+                                                                                      Value.Integer
+                                                                                        IntegerKind.Usize
+                                                                                        1
+                                                                                    ]
+                                                                                    [
+                                                                                      Ty.path
+                                                                                        "core::fmt::rt::Argument"
+                                                                                    ] :=
+                                                                                Value.Array
+                                                                                  [
+                                                                                    M.call_closure (|
+                                                                                      Ty.path
+                                                                                        "core::fmt::rt::Argument",
+                                                                                      M.get_associated_function (|
+                                                                                        Ty.path
+                                                                                          "core::fmt::rt::Argument",
+                                                                                        "new_debug",
+                                                                                        [],
+                                                                                        [
+                                                                                          Ty.tuple
+                                                                                            [
+                                                                                              Ty.path
+                                                                                                "usize";
+                                                                                              Ty.apply
+                                                                                                (Ty.path
+                                                                                                  "core::option::Option")
+                                                                                                []
+                                                                                                [
+                                                                                                  Ty.path
+                                                                                                    "usize"
+                                                                                                ]
+                                                                                            ]
+                                                                                        ]
+                                                                                      |),
+                                                                                      [
+                                                                                        M.borrow (|
+                                                                                          Pointer.Kind.Ref,
+                                                                                          M.deref (|
+                                                                                            M.read (|
+                                                                                              M.SubPointer.get_tuple_field (|
+                                                                                                args,
+                                                                                                0
+                                                                                              |)
+                                                                                            |)
+                                                                                          |)
+                                                                                        |)
+                                                                                      ]
+                                                                                    |)
+                                                                                  ] in
+                                                                              M.alloc (|
+                                                                                Ty.path
+                                                                                  "core::fmt::Arguments",
+                                                                                M.call_closure (|
+                                                                                  Ty.path
+                                                                                    "core::fmt::Arguments",
+                                                                                  M.get_associated_function (|
+                                                                                    Ty.path
+                                                                                      "core::fmt::Arguments",
+                                                                                    "new",
+                                                                                    [
+                                                                                      Value.Integer
+                                                                                        IntegerKind.Usize
+                                                                                        49;
+                                                                                      Value.Integer
+                                                                                        IntegerKind.Usize
+                                                                                        1
+                                                                                    ],
+                                                                                    []
+                                                                                  |),
+                                                                                  [
                                                                                     M.borrow (|
                                                                                       Pointer.Kind.Ref,
-                                                                                      M.alloc (|
-                                                                                        Ty.apply
-                                                                                          (Ty.path
-                                                                                            "array")
-                                                                                          [
-                                                                                            Value.Integer
-                                                                                              IntegerKind.Usize
-                                                                                              1
-                                                                                          ]
-                                                                                          [
-                                                                                            Ty.path
-                                                                                              "core::fmt::rt::Argument"
-                                                                                          ],
-                                                                                        Value.Array
-                                                                                          [
-                                                                                            M.call_closure (|
-                                                                                              Ty.path
-                                                                                                "core::fmt::rt::Argument",
-                                                                                              M.get_associated_function (|
-                                                                                                Ty.path
-                                                                                                  "core::fmt::rt::Argument",
-                                                                                                "new_debug",
-                                                                                                [],
-                                                                                                [
-                                                                                                  Ty.tuple
-                                                                                                    [
-                                                                                                      Ty.path
-                                                                                                        "usize";
-                                                                                                      Ty.apply
-                                                                                                        (Ty.path
-                                                                                                          "core::option::Option")
-                                                                                                        []
-                                                                                                        [
-                                                                                                          Ty.path
-                                                                                                            "usize"
-                                                                                                        ]
-                                                                                                    ]
-                                                                                                ]
-                                                                                              |),
-                                                                                              [
-                                                                                                M.borrow (|
-                                                                                                  Pointer.Kind.Ref,
-                                                                                                  M.deref (|
-                                                                                                    M.borrow (|
-                                                                                                      Pointer.Kind.Ref,
-                                                                                                      M.alloc (|
-                                                                                                        Ty.tuple
-                                                                                                          [
-                                                                                                            Ty.path
-                                                                                                              "usize";
-                                                                                                            Ty.apply
-                                                                                                              (Ty.path
-                                                                                                                "core::option::Option")
-                                                                                                              []
-                                                                                                              [
-                                                                                                                Ty.path
-                                                                                                                  "usize"
-                                                                                                              ]
-                                                                                                          ],
-                                                                                                        Value.Tuple
-                                                                                                          [
-                                                                                                            M.read (|
-                                                                                                              low
-                                                                                                            |);
-                                                                                                            M.read (|
-                                                                                                              high
-                                                                                                            |)
-                                                                                                          ]
-                                                                                                      |)
-                                                                                                    |)
-                                                                                                  |)
-                                                                                                |)
-                                                                                              ]
-                                                                                            |)
-                                                                                          ]
+                                                                                      M.deref (|
+                                                                                        M.read (|
+                                                                                          UnsupportedLiteral
+                                                                                        |)
+                                                                                      |)
+                                                                                    |);
+                                                                                    M.borrow (|
+                                                                                      Pointer.Kind.Ref,
+                                                                                      M.deref (|
+                                                                                        M.borrow (|
+                                                                                          Pointer.Kind.Ref,
+                                                                                          args
+                                                                                        |)
                                                                                       |)
                                                                                     |)
-                                                                                  |)
+                                                                                  ]
                                                                                 |)
-                                                                              ]
+                                                                              |)
                                                                             |)
                                                                           ]
                                                                       ]
@@ -855,8 +860,7 @@ Module collections.
                                     [
                                       fun γ =>
                                         ltac:(M.monadic
-                                          (let γ :=
-                                            M.use (M.alloc (| Ty.path "bool", Value.Bool true |)) in
+                                          (let γ := M.alloc (| Ty.path "bool", Value.Bool true |) in
                                           let _ :=
                                             is_constant_or_break_match (|
                                               M.read (| γ |),
@@ -908,36 +912,31 @@ Module collections.
                                                           fun γ =>
                                                             ltac:(M.monadic
                                                               (let γ :=
-                                                                M.use
-                                                                  (M.alloc (|
+                                                                M.alloc (|
+                                                                  Ty.path "bool",
+                                                                  M.call_closure (|
                                                                     Ty.path "bool",
-                                                                    M.call_closure (|
-                                                                      Ty.path "bool",
-                                                                      UnOp.not,
-                                                                      [
-                                                                        M.call_closure (|
-                                                                          Ty.path "bool",
-                                                                          BinOp.eq,
-                                                                          [
-                                                                            M.read (|
-                                                                              M.deref (|
-                                                                                M.read (|
-                                                                                  left_val
-                                                                                |)
-                                                                              |)
-                                                                            |);
-                                                                            M.read (|
-                                                                              M.deref (|
-                                                                                M.read (|
-                                                                                  right_val
-                                                                                |)
-                                                                              |)
+                                                                    UnOp.not,
+                                                                    [
+                                                                      M.call_closure (|
+                                                                        Ty.path "bool",
+                                                                        BinOp.eq,
+                                                                        [
+                                                                          M.read (|
+                                                                            M.deref (|
+                                                                              M.read (| left_val |)
                                                                             |)
-                                                                          ]
-                                                                        |)
-                                                                      ]
-                                                                    |)
-                                                                  |)) in
+                                                                          |);
+                                                                          M.read (|
+                                                                            M.deref (|
+                                                                              M.read (| right_val |)
+                                                                            |)
+                                                                          |)
+                                                                        ]
+                                                                      |)
+                                                                    ]
+                                                                  |)
+                                                                |) in
                                                               let _ :=
                                                                 is_constant_or_break_match (|
                                                                   M.read (| γ |),
@@ -1007,48 +1006,13 @@ Module collections.
                                                                               M.get_associated_function (|
                                                                                 Ty.path
                                                                                   "core::fmt::Arguments",
-                                                                                "new_const",
-                                                                                [
-                                                                                  Value.Integer
-                                                                                    IntegerKind.Usize
-                                                                                    1
-                                                                                ],
+                                                                                "from_str",
+                                                                                [],
                                                                                 []
                                                                               |),
                                                                               [
-                                                                                M.borrow (|
-                                                                                  Pointer.Kind.Ref,
-                                                                                  M.deref (|
-                                                                                    M.borrow (|
-                                                                                      Pointer.Kind.Ref,
-                                                                                      M.alloc (|
-                                                                                        Ty.apply
-                                                                                          (Ty.path
-                                                                                            "array")
-                                                                                          [
-                                                                                            Value.Integer
-                                                                                              IntegerKind.Usize
-                                                                                              1
-                                                                                          ]
-                                                                                          [
-                                                                                            Ty.apply
-                                                                                              (Ty.path
-                                                                                                "&")
-                                                                                              []
-                                                                                              [
-                                                                                                Ty.path
-                                                                                                  "str"
-                                                                                              ]
-                                                                                          ],
-                                                                                        Value.Array
-                                                                                          [
-                                                                                            mk_str (|
-                                                                                              "The number of items written to VecDeque doesn't match the TrustedLen size hint"
-                                                                                            |)
-                                                                                          ]
-                                                                                      |)
-                                                                                    |)
-                                                                                  |)
+                                                                                mk_str (|
+                                                                                  "The number of items written to VecDeque doesn't match the TrustedLen size hint"
                                                                                 |)
                                                                               ]
                                                                             |)
@@ -1081,27 +1045,11 @@ Module collections.
                                       Ty.path "core::fmt::Arguments",
                                       M.get_associated_function (|
                                         Ty.path "core::fmt::Arguments",
-                                        "new_const",
-                                        [ Value.Integer IntegerKind.Usize 1 ],
+                                        "from_str",
+                                        [],
                                         []
                                       |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (|
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.alloc (|
-                                                Ty.apply
-                                                  (Ty.path "array")
-                                                  [ Value.Integer IntegerKind.Usize 1 ]
-                                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                                Value.Array [ mk_str (| "capacity overflow" |) ]
-                                              |)
-                                            |)
-                                          |)
-                                        |)
-                                      ]
+                                      [ mk_str (| "capacity overflow" |) ]
                                     |)
                                   ]
                                 |)
@@ -1521,6 +1469,1148 @@ Module collections.
             (Self T A)
             (* Instance *) [ ("spec_extend", InstanceField.Method (spec_extend T A)) ].
       End Impl_alloc_collections_vec_deque_spec_extend_SpecExtend_where_core_alloc_Allocator_A_where_core_marker_Copy_T_ref__T_core_slice_iter_Iter_T_for_alloc_collections_vec_deque_VecDeque_T_A.
+      
+      (* Trait *)
+      (* Empty module 'SpecExtendFront' *)
+      
+      Module Impl_alloc_collections_vec_deque_spec_extend_SpecExtendFront_where_core_alloc_Allocator_A_where_core_iter_traits_iterator_Iterator_I_T_I_for_alloc_collections_vec_deque_VecDeque_T_A.
+        Definition Self (T I A : Ty.t) : Ty.t :=
+          Ty.apply (Ty.path "alloc::collections::vec_deque::VecDeque") [] [ T; A ].
+        
+        (*
+            default fn spec_extend_front(&mut self, mut iter: I) {
+                // This function should be the moral equivalent of:
+                //
+                // for item in iter {
+                //     self.push_front(item);
+                // }
+        
+                while let Some(element) = iter.next() {
+                    let (lower, _) = iter.size_hint();
+                    self.reserve(lower.saturating_add(1));
+        
+                    // SAFETY: We just reserved space for at least one element.
+                    unsafe { self.push_front_unchecked(element) };
+        
+                    // Inner loop to avoid repeatedly calling `reserve`.
+                    while self.len < self.capacity() {
+                        let Some(element) = iter.next() else {
+                            return;
+                        };
+                        // SAFETY: The loop condition guarantees that `self.len() < self.capacity()`.
+                        unsafe { self.push_front_unchecked(element) };
+                    }
+                }
+            }
+        *)
+        Definition spec_extend_front
+            (T I A : Ty.t)
+            (ε : list Value.t)
+            (τ : list Ty.t)
+            (α : list Value.t)
+            : M :=
+          let Self : Ty.t := Self T I A in
+          match ε, τ, α with
+          | [], [], [ self; iter ] =>
+            ltac:(M.monadic
+              (let self :=
+                M.alloc (|
+                  Ty.apply
+                    (Ty.path "&mut")
+                    []
+                    [ Ty.apply (Ty.path "alloc::collections::vec_deque::VecDeque") [] [ T; A ] ],
+                  self
+                |) in
+              let iter := M.alloc (| I, iter |) in
+              M.catch_return (Ty.tuple []) (|
+                ltac:(M.monadic
+                  (M.read (|
+                    M.loop (|
+                      Ty.tuple [],
+                      ltac:(M.monadic
+                        (M.alloc (|
+                          Ty.tuple [],
+                          M.match_operator (|
+                            Ty.tuple [],
+                            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                            [
+                              fun γ =>
+                                ltac:(M.monadic
+                                  (let γ :=
+                                    M.alloc (|
+                                      Ty.apply (Ty.path "core::option::Option") [] [ T ],
+                                      M.call_closure (|
+                                        Ty.apply (Ty.path "core::option::Option") [] [ T ],
+                                        M.get_trait_method (|
+                                          "core::iter::traits::iterator::Iterator",
+                                          I,
+                                          [],
+                                          [],
+                                          "next",
+                                          [],
+                                          []
+                                        |),
+                                        [ M.borrow (| Pointer.Kind.MutRef, iter |) ]
+                                      |)
+                                    |) in
+                                  let γ0_0 :=
+                                    M.SubPointer.get_struct_tuple_field (|
+                                      γ,
+                                      "core::option::Option::Some",
+                                      0
+                                    |) in
+                                  let element := M.copy (| T, γ0_0 |) in
+                                  M.match_operator (|
+                                    Ty.tuple [],
+                                    M.alloc (|
+                                      Ty.tuple
+                                        [
+                                          Ty.path "usize";
+                                          Ty.apply
+                                            (Ty.path "core::option::Option")
+                                            []
+                                            [ Ty.path "usize" ]
+                                        ],
+                                      M.call_closure (|
+                                        Ty.tuple
+                                          [
+                                            Ty.path "usize";
+                                            Ty.apply
+                                              (Ty.path "core::option::Option")
+                                              []
+                                              [ Ty.path "usize" ]
+                                          ],
+                                        M.get_trait_method (|
+                                          "core::iter::traits::iterator::Iterator",
+                                          I,
+                                          [],
+                                          [],
+                                          "size_hint",
+                                          [],
+                                          []
+                                        |),
+                                        [ M.borrow (| Pointer.Kind.Ref, iter |) ]
+                                      |)
+                                    |),
+                                    [
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                                          let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                                          let lower := M.copy (| Ty.path "usize", γ0_0 |) in
+                                          M.read (|
+                                            let~ _ : Ty.tuple [] :=
+                                              M.call_closure (|
+                                                Ty.tuple [],
+                                                M.get_associated_function (|
+                                                  Ty.apply
+                                                    (Ty.path
+                                                      "alloc::collections::vec_deque::VecDeque")
+                                                    []
+                                                    [ T; A ],
+                                                  "reserve",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.borrow (|
+                                                    Pointer.Kind.MutRef,
+                                                    M.deref (| M.read (| self |) |)
+                                                  |);
+                                                  M.call_closure (|
+                                                    Ty.path "usize",
+                                                    M.get_associated_function (|
+                                                      Ty.path "usize",
+                                                      "saturating_add",
+                                                      [],
+                                                      []
+                                                    |),
+                                                    [
+                                                      M.read (| lower |);
+                                                      Value.Integer IntegerKind.Usize 1
+                                                    ]
+                                                  |)
+                                                ]
+                                              |) in
+                                            let~ _ : Ty.tuple [] :=
+                                              M.call_closure (|
+                                                Ty.tuple [],
+                                                M.get_associated_function (|
+                                                  Ty.apply
+                                                    (Ty.path
+                                                      "alloc::collections::vec_deque::VecDeque")
+                                                    []
+                                                    [ T; A ],
+                                                  "push_front_unchecked",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.borrow (|
+                                                    Pointer.Kind.MutRef,
+                                                    M.deref (| M.read (| self |) |)
+                                                  |);
+                                                  M.read (| element |)
+                                                ]
+                                              |) in
+                                            M.loop (|
+                                              Ty.tuple [],
+                                              ltac:(M.monadic
+                                                (M.alloc (|
+                                                  Ty.tuple [],
+                                                  M.match_operator (|
+                                                    Ty.tuple [],
+                                                    M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                                                    [
+                                                      fun γ =>
+                                                        ltac:(M.monadic
+                                                          (let γ :=
+                                                            M.alloc (|
+                                                              Ty.path "bool",
+                                                              M.call_closure (|
+                                                                Ty.path "bool",
+                                                                BinOp.lt,
+                                                                [
+                                                                  M.read (|
+                                                                    M.SubPointer.get_struct_record_field (|
+                                                                      M.deref (|
+                                                                        M.read (| self |)
+                                                                      |),
+                                                                      "alloc::collections::vec_deque::VecDeque",
+                                                                      "len"
+                                                                    |)
+                                                                  |);
+                                                                  M.call_closure (|
+                                                                    Ty.path "usize",
+                                                                    M.get_associated_function (|
+                                                                      Ty.apply
+                                                                        (Ty.path
+                                                                          "alloc::collections::vec_deque::VecDeque")
+                                                                        []
+                                                                        [ T; A ],
+                                                                      "capacity",
+                                                                      [],
+                                                                      []
+                                                                    |),
+                                                                    [
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        M.deref (|
+                                                                          M.read (| self |)
+                                                                        |)
+                                                                      |)
+                                                                    ]
+                                                                  |)
+                                                                ]
+                                                              |)
+                                                            |) in
+                                                          let _ :=
+                                                            is_constant_or_break_match (|
+                                                              M.read (| γ |),
+                                                              Value.Bool true
+                                                            |) in
+                                                          M.match_operator (|
+                                                            Ty.tuple [],
+                                                            M.alloc (|
+                                                              Ty.apply
+                                                                (Ty.path "core::option::Option")
+                                                                []
+                                                                [ T ],
+                                                              M.call_closure (|
+                                                                Ty.apply
+                                                                  (Ty.path "core::option::Option")
+                                                                  []
+                                                                  [ T ],
+                                                                M.get_trait_method (|
+                                                                  "core::iter::traits::iterator::Iterator",
+                                                                  I,
+                                                                  [],
+                                                                  [],
+                                                                  "next",
+                                                                  [],
+                                                                  []
+                                                                |),
+                                                                [
+                                                                  M.borrow (|
+                                                                    Pointer.Kind.MutRef,
+                                                                    iter
+                                                                  |)
+                                                                ]
+                                                              |)
+                                                            |),
+                                                            [
+                                                              fun γ =>
+                                                                ltac:(M.monadic
+                                                                  (let γ0_0 :=
+                                                                    M.SubPointer.get_struct_tuple_field (|
+                                                                      γ,
+                                                                      "core::option::Option::Some",
+                                                                      0
+                                                                    |) in
+                                                                  let element :=
+                                                                    M.copy (| T, γ0_0 |) in
+                                                                  M.read (|
+                                                                    let~ _ : Ty.tuple [] :=
+                                                                      M.call_closure (|
+                                                                        Ty.tuple [],
+                                                                        M.get_associated_function (|
+                                                                          Ty.apply
+                                                                            (Ty.path
+                                                                              "alloc::collections::vec_deque::VecDeque")
+                                                                            []
+                                                                            [ T; A ],
+                                                                          "push_front_unchecked",
+                                                                          [],
+                                                                          []
+                                                                        |),
+                                                                        [
+                                                                          M.borrow (|
+                                                                            Pointer.Kind.MutRef,
+                                                                            M.deref (|
+                                                                              M.read (| self |)
+                                                                            |)
+                                                                          |);
+                                                                          M.read (| element |)
+                                                                        ]
+                                                                      |) in
+                                                                    M.alloc (|
+                                                                      Ty.tuple [],
+                                                                      Value.Tuple []
+                                                                    |)
+                                                                  |)));
+                                                              fun γ =>
+                                                                ltac:(M.monadic
+                                                                  (M.read (|
+                                                                    M.return_ (| Value.Tuple [] |)
+                                                                  |)))
+                                                            ]
+                                                          |)));
+                                                      fun γ =>
+                                                        ltac:(M.monadic
+                                                          (M.never_to_any (|
+                                                            M.read (|
+                                                              let~ _ : Ty.tuple [] :=
+                                                                M.never_to_any (|
+                                                                  M.read (| M.break (||) |)
+                                                                |) in
+                                                              M.alloc (|
+                                                                Ty.tuple [],
+                                                                Value.Tuple []
+                                                              |)
+                                                            |)
+                                                          |)))
+                                                    ]
+                                                  |)
+                                                |)))
+                                            |)
+                                          |)))
+                                    ]
+                                  |)));
+                              fun γ =>
+                                ltac:(M.monadic
+                                  (M.never_to_any (|
+                                    M.read (|
+                                      let~ _ : Ty.tuple [] :=
+                                        M.never_to_any (| M.read (| M.break (||) |) |) in
+                                      M.alloc (| Ty.tuple [], Value.Tuple [] |)
+                                    |)
+                                  |)))
+                            ]
+                          |)
+                        |)))
+                    |)
+                  |)))
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        Axiom Implements :
+          forall (T I A : Ty.t),
+          M.IsTraitInstance
+            "alloc::collections::vec_deque::spec_extend::SpecExtendFront"
+            (* Trait polymorphic consts *) []
+            (* Trait polymorphic types *) [ T; I ]
+            (Self T I A)
+            (* Instance *)
+            [ ("spec_extend_front", InstanceField.Method (spec_extend_front T I A)) ].
+      End Impl_alloc_collections_vec_deque_spec_extend_SpecExtendFront_where_core_alloc_Allocator_A_where_core_iter_traits_iterator_Iterator_I_T_I_for_alloc_collections_vec_deque_VecDeque_T_A.
+      
+      Module Impl_alloc_collections_vec_deque_spec_extend_SpecExtendFront_where_core_alloc_Allocator_A_T_alloc_vec_into_iter_IntoIter_T_alloc_alloc_Global_for_alloc_collections_vec_deque_VecDeque_T_A.
+        Definition Self (T A : Ty.t) : Ty.t :=
+          Ty.apply (Ty.path "alloc::collections::vec_deque::VecDeque") [] [ T; A ].
+        
+        (*
+            fn spec_extend_front(&mut self, mut iterator: vec::IntoIter<T>) {
+                let slice = iterator.as_slice();
+                // SAFETY: elements in the slice are forgotten after this call
+                unsafe { prepend_reversed(self, slice) };
+                iterator.forget_remaining_elements();
+            }
+        *)
+        Definition spec_extend_front
+            (T A : Ty.t)
+            (ε : list Value.t)
+            (τ : list Ty.t)
+            (α : list Value.t)
+            : M :=
+          let Self : Ty.t := Self T A in
+          match ε, τ, α with
+          | [], [], [ self; iterator ] =>
+            ltac:(M.monadic
+              (let self :=
+                M.alloc (|
+                  Ty.apply
+                    (Ty.path "&mut")
+                    []
+                    [ Ty.apply (Ty.path "alloc::collections::vec_deque::VecDeque") [] [ T; A ] ],
+                  self
+                |) in
+              let iterator :=
+                M.alloc (|
+                  Ty.apply
+                    (Ty.path "alloc::vec::into_iter::IntoIter")
+                    []
+                    [ T; Ty.path "alloc::alloc::Global" ],
+                  iterator
+                |) in
+              M.read (|
+                let~ slice : Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ] :=
+                  M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                    M.get_associated_function (|
+                      Ty.apply
+                        (Ty.path "alloc::vec::into_iter::IntoIter")
+                        []
+                        [ T; Ty.path "alloc::alloc::Global" ],
+                      "as_slice",
+                      [],
+                      []
+                    |),
+                    [ M.borrow (| Pointer.Kind.Ref, iterator |) ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_function (|
+                      "alloc::collections::vec_deque::spec_extend::prepend_reversed",
+                      [],
+                      [ T; A ]
+                    |),
+                    [
+                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
+                      M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_associated_function (|
+                      Ty.apply
+                        (Ty.path "alloc::vec::into_iter::IntoIter")
+                        []
+                        [ T; Ty.path "alloc::alloc::Global" ],
+                      "forget_remaining_elements",
+                      [],
+                      []
+                    |),
+                    [ M.borrow (| Pointer.Kind.MutRef, iterator |) ]
+                  |) in
+                M.alloc (| Ty.tuple [], Value.Tuple [] |)
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        Axiom Implements :
+          forall (T A : Ty.t),
+          M.IsTraitInstance
+            "alloc::collections::vec_deque::spec_extend::SpecExtendFront"
+            (* Trait polymorphic consts *) []
+            (* Trait polymorphic types *)
+            [
+              T;
+              Ty.apply
+                (Ty.path "alloc::vec::into_iter::IntoIter")
+                []
+                [ T; Ty.path "alloc::alloc::Global" ]
+            ]
+            (Self T A)
+            (* Instance *) [ ("spec_extend_front", InstanceField.Method (spec_extend_front T A)) ].
+      End Impl_alloc_collections_vec_deque_spec_extend_SpecExtendFront_where_core_alloc_Allocator_A_T_alloc_vec_into_iter_IntoIter_T_alloc_alloc_Global_for_alloc_collections_vec_deque_VecDeque_T_A.
+      
+      Module Impl_alloc_collections_vec_deque_spec_extend_SpecExtendFront_where_core_alloc_Allocator_A_T_core_iter_adapters_rev_Rev_alloc_vec_into_iter_IntoIter_T_alloc_alloc_Global_for_alloc_collections_vec_deque_VecDeque_T_A.
+        Definition Self (T A : Ty.t) : Ty.t :=
+          Ty.apply (Ty.path "alloc::collections::vec_deque::VecDeque") [] [ T; A ].
+        
+        (*
+            fn spec_extend_front(&mut self, iterator: Rev<vec::IntoIter<T>>) {
+                let mut iterator = iterator.into_inner();
+                let slice = iterator.as_slice();
+                // SAFETY: elements in the slice are forgotten after this call
+                unsafe { prepend(self, slice) };
+                iterator.forget_remaining_elements();
+            }
+        *)
+        Definition spec_extend_front
+            (T A : Ty.t)
+            (ε : list Value.t)
+            (τ : list Ty.t)
+            (α : list Value.t)
+            : M :=
+          let Self : Ty.t := Self T A in
+          match ε, τ, α with
+          | [], [], [ self; iterator ] =>
+            ltac:(M.monadic
+              (let self :=
+                M.alloc (|
+                  Ty.apply
+                    (Ty.path "&mut")
+                    []
+                    [ Ty.apply (Ty.path "alloc::collections::vec_deque::VecDeque") [] [ T; A ] ],
+                  self
+                |) in
+              let iterator :=
+                M.alloc (|
+                  Ty.apply
+                    (Ty.path "core::iter::adapters::rev::Rev")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "alloc::vec::into_iter::IntoIter")
+                        []
+                        [ T; Ty.path "alloc::alloc::Global" ]
+                    ],
+                  iterator
+                |) in
+              M.read (|
+                let~ iterator :
+                    Ty.apply
+                      (Ty.path "alloc::vec::into_iter::IntoIter")
+                      []
+                      [ T; Ty.path "alloc::alloc::Global" ] :=
+                  M.call_closure (|
+                    Ty.apply
+                      (Ty.path "alloc::vec::into_iter::IntoIter")
+                      []
+                      [ T; Ty.path "alloc::alloc::Global" ],
+                    M.get_associated_function (|
+                      Ty.apply
+                        (Ty.path "core::iter::adapters::rev::Rev")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "alloc::vec::into_iter::IntoIter")
+                            []
+                            [ T; Ty.path "alloc::alloc::Global" ]
+                        ],
+                      "into_inner",
+                      [],
+                      []
+                    |),
+                    [ M.read (| iterator |) ]
+                  |) in
+                let~ slice : Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ] :=
+                  M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                    M.get_associated_function (|
+                      Ty.apply
+                        (Ty.path "alloc::vec::into_iter::IntoIter")
+                        []
+                        [ T; Ty.path "alloc::alloc::Global" ],
+                      "as_slice",
+                      [],
+                      []
+                    |),
+                    [ M.borrow (| Pointer.Kind.Ref, iterator |) ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_function (|
+                      "alloc::collections::vec_deque::spec_extend::prepend",
+                      [],
+                      [ T; A ]
+                    |),
+                    [
+                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
+                      M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_associated_function (|
+                      Ty.apply
+                        (Ty.path "alloc::vec::into_iter::IntoIter")
+                        []
+                        [ T; Ty.path "alloc::alloc::Global" ],
+                      "forget_remaining_elements",
+                      [],
+                      []
+                    |),
+                    [ M.borrow (| Pointer.Kind.MutRef, iterator |) ]
+                  |) in
+                M.alloc (| Ty.tuple [], Value.Tuple [] |)
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        Axiom Implements :
+          forall (T A : Ty.t),
+          M.IsTraitInstance
+            "alloc::collections::vec_deque::spec_extend::SpecExtendFront"
+            (* Trait polymorphic consts *) []
+            (* Trait polymorphic types *)
+            [
+              T;
+              Ty.apply
+                (Ty.path "core::iter::adapters::rev::Rev")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "alloc::vec::into_iter::IntoIter")
+                    []
+                    [ T; Ty.path "alloc::alloc::Global" ]
+                ]
+            ]
+            (Self T A)
+            (* Instance *) [ ("spec_extend_front", InstanceField.Method (spec_extend_front T A)) ].
+      End Impl_alloc_collections_vec_deque_spec_extend_SpecExtendFront_where_core_alloc_Allocator_A_T_core_iter_adapters_rev_Rev_alloc_vec_into_iter_IntoIter_T_alloc_alloc_Global_for_alloc_collections_vec_deque_VecDeque_T_A.
+      
+      Module Impl_alloc_collections_vec_deque_spec_extend_SpecExtendFront_where_core_alloc_Allocator_A_where_core_iter_traits_iterator_Iterator_core_iter_adapters_copied_Copied_core_slice_iter_Iter_T_T_core_iter_adapters_copied_Copied_core_slice_iter_Iter_T_for_alloc_collections_vec_deque_VecDeque_T_A.
+        Definition Self (T A : Ty.t) : Ty.t :=
+          Ty.apply (Ty.path "alloc::collections::vec_deque::VecDeque") [] [ T; A ].
+        
+        (*
+            fn spec_extend_front(&mut self, iter: Copied<slice::Iter<'a, T>>) {
+                let slice = iter.into_inner().as_slice();
+                // SAFETY: T is Copy because Copied<slice::Iter<'a, T>> is Iterator
+                unsafe { prepend_reversed(self, slice) };
+            }
+        *)
+        Definition spec_extend_front
+            (T A : Ty.t)
+            (ε : list Value.t)
+            (τ : list Ty.t)
+            (α : list Value.t)
+            : M :=
+          let Self : Ty.t := Self T A in
+          match ε, τ, α with
+          | [], [], [ self; iter ] =>
+            ltac:(M.monadic
+              (let self :=
+                M.alloc (|
+                  Ty.apply
+                    (Ty.path "&mut")
+                    []
+                    [ Ty.apply (Ty.path "alloc::collections::vec_deque::VecDeque") [] [ T; A ] ],
+                  self
+                |) in
+              let iter :=
+                M.alloc (|
+                  Ty.apply
+                    (Ty.path "core::iter::adapters::copied::Copied")
+                    []
+                    [ Ty.apply (Ty.path "core::slice::iter::Iter") [] [ T ] ],
+                  iter
+                |) in
+              M.read (|
+                let~ slice : Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ] :=
+                  M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::slice::iter::Iter") [] [ T ],
+                      "as_slice",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.alloc (|
+                          Ty.apply (Ty.path "core::slice::iter::Iter") [] [ T ],
+                          M.call_closure (|
+                            Ty.apply (Ty.path "core::slice::iter::Iter") [] [ T ],
+                            M.get_associated_function (|
+                              Ty.apply
+                                (Ty.path "core::iter::adapters::copied::Copied")
+                                []
+                                [ Ty.apply (Ty.path "core::slice::iter::Iter") [] [ T ] ],
+                              "into_inner",
+                              [],
+                              []
+                            |),
+                            [ M.read (| iter |) ]
+                          |)
+                        |)
+                      |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_function (|
+                      "alloc::collections::vec_deque::spec_extend::prepend_reversed",
+                      [],
+                      [ T; A ]
+                    |),
+                    [
+                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
+                      M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |)
+                    ]
+                  |) in
+                M.alloc (| Ty.tuple [], Value.Tuple [] |)
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        Axiom Implements :
+          forall (T A : Ty.t),
+          M.IsTraitInstance
+            "alloc::collections::vec_deque::spec_extend::SpecExtendFront"
+            (* Trait polymorphic consts *) []
+            (* Trait polymorphic types *)
+            [
+              T;
+              Ty.apply
+                (Ty.path "core::iter::adapters::copied::Copied")
+                []
+                [ Ty.apply (Ty.path "core::slice::iter::Iter") [] [ T ] ]
+            ]
+            (Self T A)
+            (* Instance *) [ ("spec_extend_front", InstanceField.Method (spec_extend_front T A)) ].
+      End Impl_alloc_collections_vec_deque_spec_extend_SpecExtendFront_where_core_alloc_Allocator_A_where_core_iter_traits_iterator_Iterator_core_iter_adapters_copied_Copied_core_slice_iter_Iter_T_T_core_iter_adapters_copied_Copied_core_slice_iter_Iter_T_for_alloc_collections_vec_deque_VecDeque_T_A.
+      
+      Module Impl_alloc_collections_vec_deque_spec_extend_SpecExtendFront_where_core_alloc_Allocator_A_where_core_iter_traits_iterator_Iterator_core_iter_adapters_rev_Rev_core_iter_adapters_copied_Copied_core_slice_iter_Iter_T_T_core_iter_adapters_rev_Rev_core_iter_adapters_copied_Copied_core_slice_iter_Iter_T_for_alloc_collections_vec_deque_VecDeque_T_A.
+        Definition Self (T A : Ty.t) : Ty.t :=
+          Ty.apply (Ty.path "alloc::collections::vec_deque::VecDeque") [] [ T; A ].
+        
+        (*
+            fn spec_extend_front(&mut self, iter: Rev<Copied<slice::Iter<'a, T>>>) {
+                let slice = iter.into_inner().into_inner().as_slice();
+                // SAFETY: T is Copy because Rev<Copied<slice::Iter<'a, T>>> is Iterator
+                unsafe { prepend(self, slice) };
+            }
+        *)
+        Definition spec_extend_front
+            (T A : Ty.t)
+            (ε : list Value.t)
+            (τ : list Ty.t)
+            (α : list Value.t)
+            : M :=
+          let Self : Ty.t := Self T A in
+          match ε, τ, α with
+          | [], [], [ self; iter ] =>
+            ltac:(M.monadic
+              (let self :=
+                M.alloc (|
+                  Ty.apply
+                    (Ty.path "&mut")
+                    []
+                    [ Ty.apply (Ty.path "alloc::collections::vec_deque::VecDeque") [] [ T; A ] ],
+                  self
+                |) in
+              let iter :=
+                M.alloc (|
+                  Ty.apply
+                    (Ty.path "core::iter::adapters::rev::Rev")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "core::iter::adapters::copied::Copied")
+                        []
+                        [ Ty.apply (Ty.path "core::slice::iter::Iter") [] [ T ] ]
+                    ],
+                  iter
+                |) in
+              M.read (|
+                let~ slice : Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ] :=
+                  M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::slice::iter::Iter") [] [ T ],
+                      "as_slice",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.alloc (|
+                          Ty.apply (Ty.path "core::slice::iter::Iter") [] [ T ],
+                          M.call_closure (|
+                            Ty.apply (Ty.path "core::slice::iter::Iter") [] [ T ],
+                            M.get_associated_function (|
+                              Ty.apply
+                                (Ty.path "core::iter::adapters::copied::Copied")
+                                []
+                                [ Ty.apply (Ty.path "core::slice::iter::Iter") [] [ T ] ],
+                              "into_inner",
+                              [],
+                              []
+                            |),
+                            [
+                              M.call_closure (|
+                                Ty.apply
+                                  (Ty.path "core::iter::adapters::copied::Copied")
+                                  []
+                                  [ Ty.apply (Ty.path "core::slice::iter::Iter") [] [ T ] ],
+                                M.get_associated_function (|
+                                  Ty.apply
+                                    (Ty.path "core::iter::adapters::rev::Rev")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::iter::adapters::copied::Copied")
+                                        []
+                                        [ Ty.apply (Ty.path "core::slice::iter::Iter") [] [ T ] ]
+                                    ],
+                                  "into_inner",
+                                  [],
+                                  []
+                                |),
+                                [ M.read (| iter |) ]
+                              |)
+                            ]
+                          |)
+                        |)
+                      |)
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.call_closure (|
+                    Ty.tuple [],
+                    M.get_function (|
+                      "alloc::collections::vec_deque::spec_extend::prepend",
+                      [],
+                      [ T; A ]
+                    |),
+                    [
+                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
+                      M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |)
+                    ]
+                  |) in
+                M.alloc (| Ty.tuple [], Value.Tuple [] |)
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        Axiom Implements :
+          forall (T A : Ty.t),
+          M.IsTraitInstance
+            "alloc::collections::vec_deque::spec_extend::SpecExtendFront"
+            (* Trait polymorphic consts *) []
+            (* Trait polymorphic types *)
+            [
+              T;
+              Ty.apply
+                (Ty.path "core::iter::adapters::rev::Rev")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "core::iter::adapters::copied::Copied")
+                    []
+                    [ Ty.apply (Ty.path "core::slice::iter::Iter") [] [ T ] ]
+                ]
+            ]
+            (Self T A)
+            (* Instance *) [ ("spec_extend_front", InstanceField.Method (spec_extend_front T A)) ].
+      End Impl_alloc_collections_vec_deque_spec_extend_SpecExtendFront_where_core_alloc_Allocator_A_where_core_iter_traits_iterator_Iterator_core_iter_adapters_rev_Rev_core_iter_adapters_copied_Copied_core_slice_iter_Iter_T_T_core_iter_adapters_rev_Rev_core_iter_adapters_copied_Copied_core_slice_iter_Iter_T_for_alloc_collections_vec_deque_VecDeque_T_A.
+      
+      (*
+      unsafe fn prepend<T, A: Allocator>(deque: &mut VecDeque<T, A>, slice: &[T]) {
+          deque.reserve(slice.len());
+      
+          unsafe {
+              deque.head = deque.wrap_sub(deque.head, slice.len());
+              deque.copy_slice(deque.head, slice);
+              deque.len += slice.len();
+          }
+      }
+      *)
+      Definition prepend (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [ T; A ], [ deque; slice ] =>
+          ltac:(M.monadic
+            (let deque :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&mut")
+                  []
+                  [ Ty.apply (Ty.path "alloc::collections::vec_deque::VecDeque") [] [ T; A ] ],
+                deque
+              |) in
+            let slice :=
+              M.alloc (|
+                Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                slice
+              |) in
+            M.read (|
+              let~ _ : Ty.tuple [] :=
+                M.call_closure (|
+                  Ty.tuple [],
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "alloc::collections::vec_deque::VecDeque") [] [ T; A ],
+                    "reserve",
+                    [],
+                    []
+                  |),
+                  [
+                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| deque |) |) |);
+                    M.call_closure (|
+                      Ty.path "usize",
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "slice") [] [ T ],
+                        "len",
+                        [],
+                        []
+                      |),
+                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |) ]
+                    |)
+                  ]
+                |) in
+              let~ _ : Ty.tuple [] :=
+                M.write (|
+                  M.SubPointer.get_struct_record_field (|
+                    M.deref (| M.read (| deque |) |),
+                    "alloc::collections::vec_deque::VecDeque",
+                    "head"
+                  |),
+                  M.call_closure (|
+                    Ty.path "usize",
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "alloc::collections::vec_deque::VecDeque") [] [ T; A ],
+                      "wrap_sub",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| deque |) |) |);
+                      M.read (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| deque |) |),
+                          "alloc::collections::vec_deque::VecDeque",
+                          "head"
+                        |)
+                      |);
+                      M.call_closure (|
+                        Ty.path "usize",
+                        M.get_associated_function (|
+                          Ty.apply (Ty.path "slice") [] [ T ],
+                          "len",
+                          [],
+                          []
+                        |),
+                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |) ]
+                      |)
+                    ]
+                  |)
+                |) in
+              let~ _ : Ty.tuple [] :=
+                M.call_closure (|
+                  Ty.tuple [],
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "alloc::collections::vec_deque::VecDeque") [] [ T; A ],
+                    "copy_slice",
+                    [],
+                    []
+                  |),
+                  [
+                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| deque |) |) |);
+                    M.read (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| deque |) |),
+                        "alloc::collections::vec_deque::VecDeque",
+                        "head"
+                      |)
+                    |);
+                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |)
+                  ]
+                |) in
+              let~ _ : Ty.tuple [] :=
+                let β :=
+                  M.SubPointer.get_struct_record_field (|
+                    M.deref (| M.read (| deque |) |),
+                    "alloc::collections::vec_deque::VecDeque",
+                    "len"
+                  |) in
+                M.write (|
+                  β,
+                  M.call_closure (|
+                    Ty.path "usize",
+                    BinOp.Wrap.add,
+                    [
+                      M.read (| β |);
+                      M.call_closure (|
+                        Ty.path "usize",
+                        M.get_associated_function (|
+                          Ty.apply (Ty.path "slice") [] [ T ],
+                          "len",
+                          [],
+                          []
+                        |),
+                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |) ]
+                      |)
+                    ]
+                  |)
+                |) in
+              M.alloc (| Ty.tuple [], Value.Tuple [] |)
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance Instance_IsFunction_prepend :
+        M.IsFunction.C "alloc::collections::vec_deque::spec_extend::prepend" prepend.
+      Admitted.
+      Global Typeclasses Opaque prepend.
+      
+      (*
+      unsafe fn prepend_reversed<T, A: Allocator>(deque: &mut VecDeque<T, A>, slice: &[T]) {
+          deque.reserve(slice.len());
+      
+          unsafe {
+              deque.head = deque.wrap_sub(deque.head, slice.len());
+              deque.copy_slice_reversed(deque.head, slice);
+              deque.len += slice.len();
+          }
+      }
+      *)
+      Definition prepend_reversed (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [ T; A ], [ deque; slice ] =>
+          ltac:(M.monadic
+            (let deque :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&mut")
+                  []
+                  [ Ty.apply (Ty.path "alloc::collections::vec_deque::VecDeque") [] [ T; A ] ],
+                deque
+              |) in
+            let slice :=
+              M.alloc (|
+                Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                slice
+              |) in
+            M.read (|
+              let~ _ : Ty.tuple [] :=
+                M.call_closure (|
+                  Ty.tuple [],
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "alloc::collections::vec_deque::VecDeque") [] [ T; A ],
+                    "reserve",
+                    [],
+                    []
+                  |),
+                  [
+                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| deque |) |) |);
+                    M.call_closure (|
+                      Ty.path "usize",
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "slice") [] [ T ],
+                        "len",
+                        [],
+                        []
+                      |),
+                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |) ]
+                    |)
+                  ]
+                |) in
+              let~ _ : Ty.tuple [] :=
+                M.write (|
+                  M.SubPointer.get_struct_record_field (|
+                    M.deref (| M.read (| deque |) |),
+                    "alloc::collections::vec_deque::VecDeque",
+                    "head"
+                  |),
+                  M.call_closure (|
+                    Ty.path "usize",
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "alloc::collections::vec_deque::VecDeque") [] [ T; A ],
+                      "wrap_sub",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| deque |) |) |);
+                      M.read (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| deque |) |),
+                          "alloc::collections::vec_deque::VecDeque",
+                          "head"
+                        |)
+                      |);
+                      M.call_closure (|
+                        Ty.path "usize",
+                        M.get_associated_function (|
+                          Ty.apply (Ty.path "slice") [] [ T ],
+                          "len",
+                          [],
+                          []
+                        |),
+                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |) ]
+                      |)
+                    ]
+                  |)
+                |) in
+              let~ _ : Ty.tuple [] :=
+                M.call_closure (|
+                  Ty.tuple [],
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "alloc::collections::vec_deque::VecDeque") [] [ T; A ],
+                    "copy_slice_reversed",
+                    [],
+                    []
+                  |),
+                  [
+                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| deque |) |) |);
+                    M.read (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| deque |) |),
+                        "alloc::collections::vec_deque::VecDeque",
+                        "head"
+                      |)
+                    |);
+                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |)
+                  ]
+                |) in
+              let~ _ : Ty.tuple [] :=
+                let β :=
+                  M.SubPointer.get_struct_record_field (|
+                    M.deref (| M.read (| deque |) |),
+                    "alloc::collections::vec_deque::VecDeque",
+                    "len"
+                  |) in
+                M.write (|
+                  β,
+                  M.call_closure (|
+                    Ty.path "usize",
+                    BinOp.Wrap.add,
+                    [
+                      M.read (| β |);
+                      M.call_closure (|
+                        Ty.path "usize",
+                        M.get_associated_function (|
+                          Ty.apply (Ty.path "slice") [] [ T ],
+                          "len",
+                          [],
+                          []
+                        |),
+                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |) ]
+                      |)
+                    ]
+                  |)
+                |) in
+              M.alloc (| Ty.tuple [], Value.Tuple [] |)
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance Instance_IsFunction_prepend_reversed :
+        M.IsFunction.C
+          "alloc::collections::vec_deque::spec_extend::prepend_reversed"
+          prepend_reversed.
+      Admitted.
+      Global Typeclasses Opaque prepend_reversed.
     End spec_extend.
   End vec_deque.
 End collections.

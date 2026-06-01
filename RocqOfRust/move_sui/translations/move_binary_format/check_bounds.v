@@ -101,64 +101,62 @@ Module check_bounds.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  M.get_associated_function (|
-                                    Ty.apply
-                                      (Ty.path "slice")
-                                      []
-                                      [ Ty.path "move_binary_format::file_format::ModuleHandle" ],
-                                    "is_empty",
-                                    [],
+                                M.get_associated_function (|
+                                  Ty.apply
+                                    (Ty.path "slice")
                                     []
-                                  |),
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (|
-                                        M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "&")
-                                            []
-                                            [
-                                              Ty.apply
-                                                (Ty.path "slice")
-                                                []
-                                                [
-                                                  Ty.path
-                                                    "move_binary_format::file_format::ModuleHandle"
-                                                ]
-                                            ],
-                                          M.get_associated_function (|
-                                            Ty.path
-                                              "move_binary_format::file_format::CompiledModule",
-                                            "module_handles",
-                                            [],
-                                            []
-                                          |),
+                                    [ Ty.path "move_binary_format::file_format::ModuleHandle" ],
+                                  "is_empty",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (|
+                                      M.call_closure (|
+                                        Ty.apply
+                                          (Ty.path "&")
+                                          []
                                           [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (|
-                                                M.read (|
-                                                  M.SubPointer.get_struct_record_field (|
-                                                    bounds_check,
-                                                    "move_binary_format::check_bounds::BoundsChecker",
-                                                    "module"
-                                                  |)
+                                            Ty.apply
+                                              (Ty.path "slice")
+                                              []
+                                              [
+                                                Ty.path
+                                                  "move_binary_format::file_format::ModuleHandle"
+                                              ]
+                                          ],
+                                        M.get_associated_function (|
+                                          Ty.path "move_binary_format::file_format::CompiledModule",
+                                          "module_handles",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (|
+                                              M.read (|
+                                                M.SubPointer.get_struct_record_field (|
+                                                  bounds_check,
+                                                  "move_binary_format::check_bounds::BoundsChecker",
+                                                  "module"
                                                 |)
                                               |)
                                             |)
-                                          ]
-                                        |)
+                                          |)
+                                        ]
                                       |)
                                     |)
-                                  ]
-                                |)
-                              |)) in
+                                  |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -9425,26 +9423,25 @@ Module check_bounds.
                                   fun γ =>
                                     ltac:(M.monadic
                                       (let γ :=
-                                        M.use
-                                          (M.alloc (|
+                                        M.alloc (|
+                                          Ty.path "bool",
+                                          M.call_closure (|
                                             Ty.path "bool",
-                                            M.call_closure (|
-                                              Ty.path "bool",
-                                              BinOp.ge,
-                                              [
-                                                M.cast
-                                                  (Ty.path "usize")
-                                                  (M.read (|
-                                                    M.SubPointer.get_struct_record_field (|
-                                                      M.deref (| M.read (| field_handle |) |),
-                                                      "move_binary_format::file_format::FieldHandle",
-                                                      "field"
-                                                    |)
-                                                  |));
-                                                M.read (| fields_count |)
-                                              ]
-                                            |)
-                                          |)) in
+                                            BinOp.ge,
+                                            [
+                                              M.cast
+                                                (Ty.path "usize")
+                                                (M.read (|
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (| M.read (| field_handle |) |),
+                                                    "move_binary_format::file_format::FieldHandle",
+                                                    "field"
+                                                  |)
+                                                |));
+                                              M.read (| fields_count |)
+                                            ]
+                                          |)
+                                        |) in
                                       let _ :=
                                         is_constant_or_break_match (|
                                           M.read (| γ |),
@@ -12792,95 +12789,92 @@ Module check_bounds.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  BinOp.ge,
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "usize",
-                                      M.get_trait_method (|
-                                        "move_binary_format::internals::ModuleIndex",
-                                        Ty.path
-                                          "move_binary_format::file_format::FunctionHandleIndex",
-                                        [],
-                                        [],
-                                        "into_index",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.read (|
-                                          M.SubPointer.get_struct_record_field (|
-                                            M.deref (| M.read (| function_def |) |),
-                                            "move_binary_format::file_format::FunctionDefinition",
-                                            "function"
-                                          |)
+                                BinOp.ge,
+                                [
+                                  M.call_closure (|
+                                    Ty.path "usize",
+                                    M.get_trait_method (|
+                                      "move_binary_format::internals::ModuleIndex",
+                                      Ty.path
+                                        "move_binary_format::file_format::FunctionHandleIndex",
+                                      [],
+                                      [],
+                                      "into_index",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.read (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| function_def |) |),
+                                          "move_binary_format::file_format::FunctionDefinition",
+                                          "function"
                                         |)
-                                      ]
-                                    |);
-                                    M.call_closure (|
-                                      Ty.path "usize",
-                                      M.get_associated_function (|
-                                        Ty.apply
-                                          (Ty.path "slice")
-                                          []
-                                          [
-                                            Ty.path
-                                              "move_binary_format::file_format::FunctionHandle"
-                                          ],
-                                        "len",
-                                        [],
+                                      |)
+                                    ]
+                                  |);
+                                  M.call_closure (|
+                                    Ty.path "usize",
+                                    M.get_associated_function (|
+                                      Ty.apply
+                                        (Ty.path "slice")
                                         []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (|
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "&")
-                                                []
-                                                [
-                                                  Ty.apply
-                                                    (Ty.path "slice")
-                                                    []
-                                                    [
-                                                      Ty.path
-                                                        "move_binary_format::file_format::FunctionHandle"
-                                                    ]
-                                                ],
-                                              M.get_associated_function (|
-                                                Ty.path
-                                                  "move_binary_format::file_format::CompiledModule",
-                                                "function_handles",
-                                                [],
-                                                []
-                                              |),
+                                        [ Ty.path "move_binary_format::file_format::FunctionHandle"
+                                        ],
+                                      "len",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "&")
+                                              []
                                               [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (|
-                                                    M.read (|
-                                                      M.SubPointer.get_struct_record_field (|
-                                                        M.deref (| M.read (| self |) |),
-                                                        "move_binary_format::check_bounds::BoundsChecker",
-                                                        "module"
-                                                      |)
+                                                Ty.apply
+                                                  (Ty.path "slice")
+                                                  []
+                                                  [
+                                                    Ty.path
+                                                      "move_binary_format::file_format::FunctionHandle"
+                                                  ]
+                                              ],
+                                            M.get_associated_function (|
+                                              Ty.path
+                                                "move_binary_format::file_format::CompiledModule",
+                                              "function_handles",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (|
+                                                  M.read (|
+                                                    M.SubPointer.get_struct_record_field (|
+                                                      M.deref (| M.read (| self |) |),
+                                                      "move_binary_format::check_bounds::BoundsChecker",
+                                                      "module"
                                                     |)
                                                   |)
                                                 |)
-                                              ]
-                                            |)
+                                              |)
+                                            ]
                                           |)
                                         |)
-                                      ]
-                                    |)
-                                  ]
-                                |)
-                              |)) in
+                                      |)
+                                    ]
+                                  |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -12994,91 +12988,90 @@ Module check_bounds.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  BinOp.ge,
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "usize",
-                                      M.get_trait_method (|
-                                        "move_binary_format::internals::ModuleIndex",
-                                        Ty.path "move_binary_format::file_format::SignatureIndex",
-                                        [],
-                                        [],
-                                        "into_index",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.read (|
-                                          M.SubPointer.get_struct_record_field (|
-                                            M.deref (| M.read (| function_handle |) |),
-                                            "move_binary_format::file_format::FunctionHandle",
-                                            "parameters"
-                                          |)
+                                BinOp.ge,
+                                [
+                                  M.call_closure (|
+                                    Ty.path "usize",
+                                    M.get_trait_method (|
+                                      "move_binary_format::internals::ModuleIndex",
+                                      Ty.path "move_binary_format::file_format::SignatureIndex",
+                                      [],
+                                      [],
+                                      "into_index",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.read (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| function_handle |) |),
+                                          "move_binary_format::file_format::FunctionHandle",
+                                          "parameters"
                                         |)
-                                      ]
-                                    |);
-                                    M.call_closure (|
-                                      Ty.path "usize",
-                                      M.get_associated_function (|
-                                        Ty.apply
-                                          (Ty.path "slice")
-                                          []
-                                          [ Ty.path "move_binary_format::file_format::Signature" ],
-                                        "len",
-                                        [],
+                                      |)
+                                    ]
+                                  |);
+                                  M.call_closure (|
+                                    Ty.path "usize",
+                                    M.get_associated_function (|
+                                      Ty.apply
+                                        (Ty.path "slice")
                                         []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (|
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "&")
-                                                []
-                                                [
-                                                  Ty.apply
-                                                    (Ty.path "slice")
-                                                    []
-                                                    [
-                                                      Ty.path
-                                                        "move_binary_format::file_format::Signature"
-                                                    ]
-                                                ],
-                                              M.get_associated_function (|
-                                                Ty.path
-                                                  "move_binary_format::file_format::CompiledModule",
-                                                "signatures",
-                                                [],
-                                                []
-                                              |),
+                                        [ Ty.path "move_binary_format::file_format::Signature" ],
+                                      "len",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "&")
+                                              []
                                               [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (|
-                                                    M.read (|
-                                                      M.SubPointer.get_struct_record_field (|
-                                                        M.deref (| M.read (| self |) |),
-                                                        "move_binary_format::check_bounds::BoundsChecker",
-                                                        "module"
-                                                      |)
+                                                Ty.apply
+                                                  (Ty.path "slice")
+                                                  []
+                                                  [
+                                                    Ty.path
+                                                      "move_binary_format::file_format::Signature"
+                                                  ]
+                                              ],
+                                            M.get_associated_function (|
+                                              Ty.path
+                                                "move_binary_format::file_format::CompiledModule",
+                                              "signatures",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (|
+                                                  M.read (|
+                                                    M.SubPointer.get_struct_record_field (|
+                                                      M.deref (| M.read (| self |) |),
+                                                      "move_binary_format::check_bounds::BoundsChecker",
+                                                      "module"
                                                     |)
                                                   |)
                                                 |)
-                                              ]
-                                            |)
+                                              |)
+                                            ]
                                           |)
                                         |)
-                                      ]
-                                    |)
-                                  ]
-                                |)
-                              |)) in
+                                      |)
+                                    ]
+                                  |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -13913,26 +13906,25 @@ Module check_bounds.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  BinOp.gt,
-                                  [
-                                    M.read (| locals_count |);
-                                    M.cast
-                                      (Ty.path "usize")
-                                      (M.read (|
-                                        get_associated_constant (|
-                                          Ty.path "u8",
-                                          "MAX",
-                                          Ty.path "u8"
-                                        |)
-                                      |))
-                                  ]
-                                |)
-                              |)) in
+                                BinOp.gt,
+                                [
+                                  M.read (| locals_count |);
+                                  M.cast
+                                    (Ty.path "usize")
+                                    (M.read (|
+                                      get_associated_constant (|
+                                        Ty.path "u8",
+                                        "MAX",
+                                        Ty.path "u8"
+                                      |)
+                                    |))
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -18983,23 +18975,21 @@ Module check_bounds.
                                                                           fun γ =>
                                                                             ltac:(M.monadic
                                                                               (let γ :=
-                                                                                M.use
-                                                                                  (M.alloc (|
+                                                                                M.alloc (|
+                                                                                  Ty.path "bool",
+                                                                                  M.call_closure (|
                                                                                     Ty.path "bool",
-                                                                                    M.call_closure (|
-                                                                                      Ty.path
-                                                                                        "bool",
-                                                                                      BinOp.ge,
-                                                                                      [
-                                                                                        M.read (|
-                                                                                          offset
-                                                                                        |);
-                                                                                        M.read (|
-                                                                                          code_len
-                                                                                        |)
-                                                                                      ]
-                                                                                    |)
-                                                                                  |)) in
+                                                                                    BinOp.ge,
+                                                                                    [
+                                                                                      M.read (|
+                                                                                        offset
+                                                                                      |);
+                                                                                      M.read (|
+                                                                                        code_len
+                                                                                      |)
+                                                                                    ]
+                                                                                  |)
+                                                                                |) in
                                                                               let _ :=
                                                                                 is_constant_or_break_match (|
                                                                                   M.read (| γ |),
@@ -19210,23 +19200,21 @@ Module check_bounds.
                                                                           fun γ =>
                                                                             ltac:(M.monadic
                                                                               (let γ :=
-                                                                                M.use
-                                                                                  (M.alloc (|
+                                                                                M.alloc (|
+                                                                                  Ty.path "bool",
+                                                                                  M.call_closure (|
                                                                                     Ty.path "bool",
-                                                                                    M.call_closure (|
-                                                                                      Ty.path
-                                                                                        "bool",
-                                                                                      BinOp.ge,
-                                                                                      [
-                                                                                        M.read (|
-                                                                                          idx
-                                                                                        |);
-                                                                                        M.read (|
-                                                                                          locals_count
-                                                                                        |)
-                                                                                      ]
-                                                                                    |)
-                                                                                  |)) in
+                                                                                    BinOp.ge,
+                                                                                    [
+                                                                                      M.read (|
+                                                                                        idx
+                                                                                      |);
+                                                                                      M.read (|
+                                                                                        locals_count
+                                                                                      |)
+                                                                                    ]
+                                                                                  |)
+                                                                                |) in
                                                                               let _ :=
                                                                                 is_constant_or_break_match (|
                                                                                   M.read (| γ |),
@@ -21523,49 +21511,48 @@ Module check_bounds.
                                                                         fun γ =>
                                                                           ltac:(M.monadic
                                                                             (let γ :=
-                                                                              M.use
-                                                                                (M.alloc (|
+                                                                              M.alloc (|
+                                                                                Ty.path "bool",
+                                                                                M.call_closure (|
                                                                                   Ty.path "bool",
-                                                                                  M.call_closure (|
-                                                                                    Ty.path "bool",
-                                                                                    UnOp.not,
-                                                                                    [
-                                                                                      M.call_closure (|
-                                                                                        Ty.path
-                                                                                          "bool",
-                                                                                        M.get_associated_function (|
-                                                                                          Ty.apply
-                                                                                            (Ty.path
-                                                                                              "alloc::vec::Vec")
-                                                                                            []
-                                                                                            [
-                                                                                              Ty.path
-                                                                                                "move_binary_format::file_format::StructTypeParameter";
-                                                                                              Ty.path
-                                                                                                "alloc::alloc::Global"
-                                                                                            ],
-                                                                                          "is_empty",
-                                                                                          [],
+                                                                                  UnOp.not,
+                                                                                  [
+                                                                                    M.call_closure (|
+                                                                                      Ty.path
+                                                                                        "bool",
+                                                                                      M.get_associated_function (|
+                                                                                        Ty.apply
+                                                                                          (Ty.path
+                                                                                            "alloc::vec::Vec")
                                                                                           []
-                                                                                        |),
-                                                                                        [
-                                                                                          M.borrow (|
-                                                                                            Pointer.Kind.Ref,
-                                                                                            M.SubPointer.get_struct_record_field (|
-                                                                                              M.deref (|
-                                                                                                M.read (|
-                                                                                                  sh
-                                                                                                |)
-                                                                                              |),
-                                                                                              "move_binary_format::file_format::StructHandle",
-                                                                                              "type_parameters"
-                                                                                            |)
+                                                                                          [
+                                                                                            Ty.path
+                                                                                              "move_binary_format::file_format::StructTypeParameter";
+                                                                                            Ty.path
+                                                                                              "alloc::alloc::Global"
+                                                                                          ],
+                                                                                        "is_empty",
+                                                                                        [],
+                                                                                        []
+                                                                                      |),
+                                                                                      [
+                                                                                        M.borrow (|
+                                                                                          Pointer.Kind.Ref,
+                                                                                          M.SubPointer.get_struct_record_field (|
+                                                                                            M.deref (|
+                                                                                              M.read (|
+                                                                                                sh
+                                                                                              |)
+                                                                                            |),
+                                                                                            "move_binary_format::file_format::StructHandle",
+                                                                                            "type_parameters"
                                                                                           |)
-                                                                                        ]
-                                                                                      |)
-                                                                                    ]
-                                                                                  |)
-                                                                                |)) in
+                                                                                        |)
+                                                                                      ]
+                                                                                    |)
+                                                                                  ]
+                                                                                |)
+                                                                              |) in
                                                                             let _ :=
                                                                               is_constant_or_break_match (|
                                                                                 M.read (| γ |),
@@ -21624,31 +21611,130 @@ Module check_bounds.
                                                                                               ]
                                                                                             |),
                                                                                             [
-                                                                                              M.read (|
-                                                                                                let~
-                                                                                                      res :
-                                                                                                    Ty.path
-                                                                                                      "alloc::string::String" :=
-                                                                                                  M.call_closure (|
-                                                                                                    Ty.path
-                                                                                                      "alloc::string::String",
-                                                                                                    M.get_function (|
-                                                                                                      "alloc::fmt::format",
-                                                                                                      [],
-                                                                                                      []
-                                                                                                    |),
-                                                                                                    [
+                                                                                              M.call_closure (|
+                                                                                                Ty.path
+                                                                                                  "alloc::string::String",
+                                                                                                M.get_function (|
+                                                                                                  "alloc::fmt::format",
+                                                                                                  [],
+                                                                                                  []
+                                                                                                |),
+                                                                                                [
+                                                                                                  M.read (|
+                                                                                                    let~
+                                                                                                          args :
+                                                                                                        Ty.tuple
+                                                                                                          [
+                                                                                                            Ty.apply
+                                                                                                              (Ty.path
+                                                                                                                "&")
+                                                                                                              []
+                                                                                                              [
+                                                                                                                Ty.path
+                                                                                                                  "usize"
+                                                                                                              ]
+                                                                                                          ] :=
+                                                                                                      Value.Tuple
+                                                                                                        [
+                                                                                                          M.borrow (|
+                                                                                                            Pointer.Kind.Ref,
+                                                                                                            M.alloc (|
+                                                                                                              Ty.path
+                                                                                                                "usize",
+                                                                                                              M.call_closure (|
+                                                                                                                Ty.path
+                                                                                                                  "usize",
+                                                                                                                M.get_associated_function (|
+                                                                                                                  Ty.apply
+                                                                                                                    (Ty.path
+                                                                                                                      "alloc::vec::Vec")
+                                                                                                                    []
+                                                                                                                    [
+                                                                                                                      Ty.path
+                                                                                                                        "move_binary_format::file_format::StructTypeParameter";
+                                                                                                                      Ty.path
+                                                                                                                        "alloc::alloc::Global"
+                                                                                                                    ],
+                                                                                                                  "len",
+                                                                                                                  [],
+                                                                                                                  []
+                                                                                                                |),
+                                                                                                                [
+                                                                                                                  M.borrow (|
+                                                                                                                    Pointer.Kind.Ref,
+                                                                                                                    M.SubPointer.get_struct_record_field (|
+                                                                                                                      M.deref (|
+                                                                                                                        M.read (|
+                                                                                                                          sh
+                                                                                                                        |)
+                                                                                                                      |),
+                                                                                                                      "move_binary_format::file_format::StructHandle",
+                                                                                                                      "type_parameters"
+                                                                                                                    |)
+                                                                                                                  |)
+                                                                                                                ]
+                                                                                                              |)
+                                                                                                            |)
+                                                                                                          |)
+                                                                                                        ] in
+                                                                                                    let~
+                                                                                                          args :
+                                                                                                        Ty.apply
+                                                                                                          (Ty.path
+                                                                                                            "array")
+                                                                                                          [
+                                                                                                            Value.Integer
+                                                                                                              IntegerKind.Usize
+                                                                                                              1
+                                                                                                          ]
+                                                                                                          [
+                                                                                                            Ty.path
+                                                                                                              "core::fmt::rt::Argument"
+                                                                                                          ] :=
+                                                                                                      Value.Array
+                                                                                                        [
+                                                                                                          M.call_closure (|
+                                                                                                            Ty.path
+                                                                                                              "core::fmt::rt::Argument",
+                                                                                                            M.get_associated_function (|
+                                                                                                              Ty.path
+                                                                                                                "core::fmt::rt::Argument",
+                                                                                                              "new_display",
+                                                                                                              [],
+                                                                                                              [
+                                                                                                                Ty.path
+                                                                                                                  "usize"
+                                                                                                              ]
+                                                                                                            |),
+                                                                                                            [
+                                                                                                              M.borrow (|
+                                                                                                                Pointer.Kind.Ref,
+                                                                                                                M.deref (|
+                                                                                                                  M.read (|
+                                                                                                                    M.SubPointer.get_tuple_field (|
+                                                                                                                      args,
+                                                                                                                      0
+                                                                                                                    |)
+                                                                                                                  |)
+                                                                                                                |)
+                                                                                                              |)
+                                                                                                            ]
+                                                                                                          |)
+                                                                                                        ] in
+                                                                                                    M.alloc (|
+                                                                                                      Ty.path
+                                                                                                        "core::fmt::Arguments",
                                                                                                       M.call_closure (|
                                                                                                         Ty.path
                                                                                                           "core::fmt::Arguments",
                                                                                                         M.get_associated_function (|
                                                                                                           Ty.path
                                                                                                             "core::fmt::Arguments",
-                                                                                                          "new_v1",
+                                                                                                          "new",
                                                                                                           [
                                                                                                             Value.Integer
                                                                                                               IntegerKind.Usize
-                                                                                                              2;
+                                                                                                              44;
                                                                                                             Value.Integer
                                                                                                               IntegerKind.Usize
                                                                                                               1
@@ -21659,37 +21745,8 @@ Module check_bounds.
                                                                                                           M.borrow (|
                                                                                                             Pointer.Kind.Ref,
                                                                                                             M.deref (|
-                                                                                                              M.borrow (|
-                                                                                                                Pointer.Kind.Ref,
-                                                                                                                M.alloc (|
-                                                                                                                  Ty.apply
-                                                                                                                    (Ty.path
-                                                                                                                      "array")
-                                                                                                                    [
-                                                                                                                      Value.Integer
-                                                                                                                        IntegerKind.Usize
-                                                                                                                        2
-                                                                                                                    ]
-                                                                                                                    [
-                                                                                                                      Ty.apply
-                                                                                                                        (Ty.path
-                                                                                                                          "&")
-                                                                                                                        []
-                                                                                                                        [
-                                                                                                                          Ty.path
-                                                                                                                            "str"
-                                                                                                                        ]
-                                                                                                                    ],
-                                                                                                                  Value.Array
-                                                                                                                    [
-                                                                                                                      mk_str (|
-                                                                                                                        "expected "
-                                                                                                                      |);
-                                                                                                                      mk_str (|
-                                                                                                                        " type parameters got 0 (Struct)"
-                                                                                                                      |)
-                                                                                                                    ]
-                                                                                                                |)
+                                                                                                              M.read (|
+                                                                                                                UnsupportedLiteral
                                                                                                               |)
                                                                                                             |)
                                                                                                           |);
@@ -21698,92 +21755,15 @@ Module check_bounds.
                                                                                                             M.deref (|
                                                                                                               M.borrow (|
                                                                                                                 Pointer.Kind.Ref,
-                                                                                                                M.alloc (|
-                                                                                                                  Ty.apply
-                                                                                                                    (Ty.path
-                                                                                                                      "array")
-                                                                                                                    [
-                                                                                                                      Value.Integer
-                                                                                                                        IntegerKind.Usize
-                                                                                                                        1
-                                                                                                                    ]
-                                                                                                                    [
-                                                                                                                      Ty.path
-                                                                                                                        "core::fmt::rt::Argument"
-                                                                                                                    ],
-                                                                                                                  Value.Array
-                                                                                                                    [
-                                                                                                                      M.call_closure (|
-                                                                                                                        Ty.path
-                                                                                                                          "core::fmt::rt::Argument",
-                                                                                                                        M.get_associated_function (|
-                                                                                                                          Ty.path
-                                                                                                                            "core::fmt::rt::Argument",
-                                                                                                                          "new_display",
-                                                                                                                          [],
-                                                                                                                          [
-                                                                                                                            Ty.path
-                                                                                                                              "usize"
-                                                                                                                          ]
-                                                                                                                        |),
-                                                                                                                        [
-                                                                                                                          M.borrow (|
-                                                                                                                            Pointer.Kind.Ref,
-                                                                                                                            M.deref (|
-                                                                                                                              M.borrow (|
-                                                                                                                                Pointer.Kind.Ref,
-                                                                                                                                M.alloc (|
-                                                                                                                                  Ty.path
-                                                                                                                                    "usize",
-                                                                                                                                  M.call_closure (|
-                                                                                                                                    Ty.path
-                                                                                                                                      "usize",
-                                                                                                                                    M.get_associated_function (|
-                                                                                                                                      Ty.apply
-                                                                                                                                        (Ty.path
-                                                                                                                                          "alloc::vec::Vec")
-                                                                                                                                        []
-                                                                                                                                        [
-                                                                                                                                          Ty.path
-                                                                                                                                            "move_binary_format::file_format::StructTypeParameter";
-                                                                                                                                          Ty.path
-                                                                                                                                            "alloc::alloc::Global"
-                                                                                                                                        ],
-                                                                                                                                      "len",
-                                                                                                                                      [],
-                                                                                                                                      []
-                                                                                                                                    |),
-                                                                                                                                    [
-                                                                                                                                      M.borrow (|
-                                                                                                                                        Pointer.Kind.Ref,
-                                                                                                                                        M.SubPointer.get_struct_record_field (|
-                                                                                                                                          M.deref (|
-                                                                                                                                            M.read (|
-                                                                                                                                              sh
-                                                                                                                                            |)
-                                                                                                                                          |),
-                                                                                                                                          "move_binary_format::file_format::StructHandle",
-                                                                                                                                          "type_parameters"
-                                                                                                                                        |)
-                                                                                                                                      |)
-                                                                                                                                    ]
-                                                                                                                                  |)
-                                                                                                                                |)
-                                                                                                                              |)
-                                                                                                                            |)
-                                                                                                                          |)
-                                                                                                                        ]
-                                                                                                                      |)
-                                                                                                                    ]
-                                                                                                                |)
+                                                                                                                args
                                                                                                               |)
                                                                                                             |)
                                                                                                           |)
                                                                                                         ]
                                                                                                       |)
-                                                                                                    ]
-                                                                                                  |) in
-                                                                                                res
+                                                                                                    |)
+                                                                                                  |)
+                                                                                                ]
                                                                                               |)
                                                                                             ]
                                                                                           |)
@@ -22303,80 +22283,79 @@ Module check_bounds.
                                                                                 fun γ =>
                                                                                   ltac:(M.monadic
                                                                                     (let γ :=
-                                                                                      M.use
-                                                                                        (M.alloc (|
+                                                                                      M.alloc (|
+                                                                                        Ty.path
+                                                                                          "bool",
+                                                                                        M.call_closure (|
                                                                                           Ty.path
                                                                                             "bool",
-                                                                                          M.call_closure (|
-                                                                                            Ty.path
-                                                                                              "bool",
-                                                                                            BinOp.ne,
-                                                                                            [
-                                                                                              M.call_closure (|
-                                                                                                Ty.path
-                                                                                                  "usize",
-                                                                                                M.get_associated_function (|
-                                                                                                  Ty.apply
-                                                                                                    (Ty.path
-                                                                                                      "alloc::vec::Vec")
-                                                                                                    []
-                                                                                                    [
-                                                                                                      Ty.path
-                                                                                                        "move_binary_format::file_format::StructTypeParameter";
-                                                                                                      Ty.path
-                                                                                                        "alloc::alloc::Global"
-                                                                                                    ],
-                                                                                                  "len",
-                                                                                                  [],
+                                                                                          BinOp.ne,
+                                                                                          [
+                                                                                            M.call_closure (|
+                                                                                              Ty.path
+                                                                                                "usize",
+                                                                                              M.get_associated_function (|
+                                                                                                Ty.apply
+                                                                                                  (Ty.path
+                                                                                                    "alloc::vec::Vec")
                                                                                                   []
-                                                                                                |),
-                                                                                                [
-                                                                                                  M.borrow (|
-                                                                                                    Pointer.Kind.Ref,
-                                                                                                    M.SubPointer.get_struct_record_field (|
-                                                                                                      M.deref (|
-                                                                                                        M.read (|
-                                                                                                          sh
-                                                                                                        |)
-                                                                                                      |),
-                                                                                                      "move_binary_format::file_format::StructHandle",
-                                                                                                      "type_parameters"
-                                                                                                    |)
-                                                                                                  |)
-                                                                                                ]
-                                                                                              |);
-                                                                                              M.call_closure (|
-                                                                                                Ty.path
-                                                                                                  "usize",
-                                                                                                M.get_associated_function (|
-                                                                                                  Ty.apply
-                                                                                                    (Ty.path
-                                                                                                      "alloc::vec::Vec")
-                                                                                                    []
-                                                                                                    [
-                                                                                                      Ty.path
-                                                                                                        "move_binary_format::file_format::SignatureToken";
-                                                                                                      Ty.path
-                                                                                                        "alloc::alloc::Global"
-                                                                                                    ],
-                                                                                                  "len",
-                                                                                                  [],
-                                                                                                  []
-                                                                                                |),
-                                                                                                [
-                                                                                                  M.borrow (|
-                                                                                                    Pointer.Kind.Ref,
+                                                                                                  [
+                                                                                                    Ty.path
+                                                                                                      "move_binary_format::file_format::StructTypeParameter";
+                                                                                                    Ty.path
+                                                                                                      "alloc::alloc::Global"
+                                                                                                  ],
+                                                                                                "len",
+                                                                                                [],
+                                                                                                []
+                                                                                              |),
+                                                                                              [
+                                                                                                M.borrow (|
+                                                                                                  Pointer.Kind.Ref,
+                                                                                                  M.SubPointer.get_struct_record_field (|
                                                                                                     M.deref (|
                                                                                                       M.read (|
-                                                                                                        type_params
+                                                                                                        sh
                                                                                                       |)
+                                                                                                    |),
+                                                                                                    "move_binary_format::file_format::StructHandle",
+                                                                                                    "type_parameters"
+                                                                                                  |)
+                                                                                                |)
+                                                                                              ]
+                                                                                            |);
+                                                                                            M.call_closure (|
+                                                                                              Ty.path
+                                                                                                "usize",
+                                                                                              M.get_associated_function (|
+                                                                                                Ty.apply
+                                                                                                  (Ty.path
+                                                                                                    "alloc::vec::Vec")
+                                                                                                  []
+                                                                                                  [
+                                                                                                    Ty.path
+                                                                                                      "move_binary_format::file_format::SignatureToken";
+                                                                                                    Ty.path
+                                                                                                      "alloc::alloc::Global"
+                                                                                                  ],
+                                                                                                "len",
+                                                                                                [],
+                                                                                                []
+                                                                                              |),
+                                                                                              [
+                                                                                                M.borrow (|
+                                                                                                  Pointer.Kind.Ref,
+                                                                                                  M.deref (|
+                                                                                                    M.read (|
+                                                                                                      type_params
                                                                                                     |)
                                                                                                   |)
-                                                                                                ]
-                                                                                              |)
-                                                                                            ]
-                                                                                          |)
-                                                                                        |)) in
+                                                                                                |)
+                                                                                              ]
+                                                                                            |)
+                                                                                          ]
+                                                                                        |)
+                                                                                      |) in
                                                                                     let _ :=
                                                                                       is_constant_or_break_match (|
                                                                                         M.read (|
@@ -22439,31 +22418,201 @@ Module check_bounds.
                                                                                                       ]
                                                                                                     |),
                                                                                                     [
-                                                                                                      M.read (|
-                                                                                                        let~
-                                                                                                              res :
-                                                                                                            Ty.path
-                                                                                                              "alloc::string::String" :=
-                                                                                                          M.call_closure (|
-                                                                                                            Ty.path
-                                                                                                              "alloc::string::String",
-                                                                                                            M.get_function (|
-                                                                                                              "alloc::fmt::format",
-                                                                                                              [],
-                                                                                                              []
-                                                                                                            |),
-                                                                                                            [
+                                                                                                      M.call_closure (|
+                                                                                                        Ty.path
+                                                                                                          "alloc::string::String",
+                                                                                                        M.get_function (|
+                                                                                                          "alloc::fmt::format",
+                                                                                                          [],
+                                                                                                          []
+                                                                                                        |),
+                                                                                                        [
+                                                                                                          M.read (|
+                                                                                                            let~
+                                                                                                                  args :
+                                                                                                                Ty.tuple
+                                                                                                                  [
+                                                                                                                    Ty.apply
+                                                                                                                      (Ty.path
+                                                                                                                        "&")
+                                                                                                                      []
+                                                                                                                      [
+                                                                                                                        Ty.path
+                                                                                                                          "usize"
+                                                                                                                      ];
+                                                                                                                    Ty.apply
+                                                                                                                      (Ty.path
+                                                                                                                        "&")
+                                                                                                                      []
+                                                                                                                      [
+                                                                                                                        Ty.path
+                                                                                                                          "usize"
+                                                                                                                      ]
+                                                                                                                  ] :=
+                                                                                                              Value.Tuple
+                                                                                                                [
+                                                                                                                  M.borrow (|
+                                                                                                                    Pointer.Kind.Ref,
+                                                                                                                    M.alloc (|
+                                                                                                                      Ty.path
+                                                                                                                        "usize",
+                                                                                                                      M.call_closure (|
+                                                                                                                        Ty.path
+                                                                                                                          "usize",
+                                                                                                                        M.get_associated_function (|
+                                                                                                                          Ty.apply
+                                                                                                                            (Ty.path
+                                                                                                                              "alloc::vec::Vec")
+                                                                                                                            []
+                                                                                                                            [
+                                                                                                                              Ty.path
+                                                                                                                                "move_binary_format::file_format::StructTypeParameter";
+                                                                                                                              Ty.path
+                                                                                                                                "alloc::alloc::Global"
+                                                                                                                            ],
+                                                                                                                          "len",
+                                                                                                                          [],
+                                                                                                                          []
+                                                                                                                        |),
+                                                                                                                        [
+                                                                                                                          M.borrow (|
+                                                                                                                            Pointer.Kind.Ref,
+                                                                                                                            M.SubPointer.get_struct_record_field (|
+                                                                                                                              M.deref (|
+                                                                                                                                M.read (|
+                                                                                                                                  sh
+                                                                                                                                |)
+                                                                                                                              |),
+                                                                                                                              "move_binary_format::file_format::StructHandle",
+                                                                                                                              "type_parameters"
+                                                                                                                            |)
+                                                                                                                          |)
+                                                                                                                        ]
+                                                                                                                      |)
+                                                                                                                    |)
+                                                                                                                  |);
+                                                                                                                  M.borrow (|
+                                                                                                                    Pointer.Kind.Ref,
+                                                                                                                    M.alloc (|
+                                                                                                                      Ty.path
+                                                                                                                        "usize",
+                                                                                                                      M.call_closure (|
+                                                                                                                        Ty.path
+                                                                                                                          "usize",
+                                                                                                                        M.get_associated_function (|
+                                                                                                                          Ty.apply
+                                                                                                                            (Ty.path
+                                                                                                                              "alloc::vec::Vec")
+                                                                                                                            []
+                                                                                                                            [
+                                                                                                                              Ty.path
+                                                                                                                                "move_binary_format::file_format::SignatureToken";
+                                                                                                                              Ty.path
+                                                                                                                                "alloc::alloc::Global"
+                                                                                                                            ],
+                                                                                                                          "len",
+                                                                                                                          [],
+                                                                                                                          []
+                                                                                                                        |),
+                                                                                                                        [
+                                                                                                                          M.borrow (|
+                                                                                                                            Pointer.Kind.Ref,
+                                                                                                                            M.deref (|
+                                                                                                                              M.read (|
+                                                                                                                                type_params
+                                                                                                                              |)
+                                                                                                                            |)
+                                                                                                                          |)
+                                                                                                                        ]
+                                                                                                                      |)
+                                                                                                                    |)
+                                                                                                                  |)
+                                                                                                                ] in
+                                                                                                            let~
+                                                                                                                  args :
+                                                                                                                Ty.apply
+                                                                                                                  (Ty.path
+                                                                                                                    "array")
+                                                                                                                  [
+                                                                                                                    Value.Integer
+                                                                                                                      IntegerKind.Usize
+                                                                                                                      2
+                                                                                                                  ]
+                                                                                                                  [
+                                                                                                                    Ty.path
+                                                                                                                      "core::fmt::rt::Argument"
+                                                                                                                  ] :=
+                                                                                                              Value.Array
+                                                                                                                [
+                                                                                                                  M.call_closure (|
+                                                                                                                    Ty.path
+                                                                                                                      "core::fmt::rt::Argument",
+                                                                                                                    M.get_associated_function (|
+                                                                                                                      Ty.path
+                                                                                                                        "core::fmt::rt::Argument",
+                                                                                                                      "new_display",
+                                                                                                                      [],
+                                                                                                                      [
+                                                                                                                        Ty.path
+                                                                                                                          "usize"
+                                                                                                                      ]
+                                                                                                                    |),
+                                                                                                                    [
+                                                                                                                      M.borrow (|
+                                                                                                                        Pointer.Kind.Ref,
+                                                                                                                        M.deref (|
+                                                                                                                          M.read (|
+                                                                                                                            M.SubPointer.get_tuple_field (|
+                                                                                                                              args,
+                                                                                                                              0
+                                                                                                                            |)
+                                                                                                                          |)
+                                                                                                                        |)
+                                                                                                                      |)
+                                                                                                                    ]
+                                                                                                                  |);
+                                                                                                                  M.call_closure (|
+                                                                                                                    Ty.path
+                                                                                                                      "core::fmt::rt::Argument",
+                                                                                                                    M.get_associated_function (|
+                                                                                                                      Ty.path
+                                                                                                                        "core::fmt::rt::Argument",
+                                                                                                                      "new_display",
+                                                                                                                      [],
+                                                                                                                      [
+                                                                                                                        Ty.path
+                                                                                                                          "usize"
+                                                                                                                      ]
+                                                                                                                    |),
+                                                                                                                    [
+                                                                                                                      M.borrow (|
+                                                                                                                        Pointer.Kind.Ref,
+                                                                                                                        M.deref (|
+                                                                                                                          M.read (|
+                                                                                                                            M.SubPointer.get_tuple_field (|
+                                                                                                                              args,
+                                                                                                                              1
+                                                                                                                            |)
+                                                                                                                          |)
+                                                                                                                        |)
+                                                                                                                      |)
+                                                                                                                    ]
+                                                                                                                  |)
+                                                                                                                ] in
+                                                                                                            M.alloc (|
+                                                                                                              Ty.path
+                                                                                                                "core::fmt::Arguments",
                                                                                                               M.call_closure (|
                                                                                                                 Ty.path
                                                                                                                   "core::fmt::Arguments",
                                                                                                                 M.get_associated_function (|
                                                                                                                   Ty.path
                                                                                                                     "core::fmt::Arguments",
-                                                                                                                  "new_v1",
+                                                                                                                  "new",
                                                                                                                   [
                                                                                                                     Value.Integer
                                                                                                                       IntegerKind.Usize
-                                                                                                                      2;
+                                                                                                                      35;
                                                                                                                     Value.Integer
                                                                                                                       IntegerKind.Usize
                                                                                                                       2
@@ -22474,37 +22623,8 @@ Module check_bounds.
                                                                                                                   M.borrow (|
                                                                                                                     Pointer.Kind.Ref,
                                                                                                                     M.deref (|
-                                                                                                                      M.borrow (|
-                                                                                                                        Pointer.Kind.Ref,
-                                                                                                                        M.alloc (|
-                                                                                                                          Ty.apply
-                                                                                                                            (Ty.path
-                                                                                                                              "array")
-                                                                                                                            [
-                                                                                                                              Value.Integer
-                                                                                                                                IntegerKind.Usize
-                                                                                                                                2
-                                                                                                                            ]
-                                                                                                                            [
-                                                                                                                              Ty.apply
-                                                                                                                                (Ty.path
-                                                                                                                                  "&")
-                                                                                                                                []
-                                                                                                                                [
-                                                                                                                                  Ty.path
-                                                                                                                                    "str"
-                                                                                                                                ]
-                                                                                                                            ],
-                                                                                                                          Value.Array
-                                                                                                                            [
-                                                                                                                              mk_str (|
-                                                                                                                                "expected "
-                                                                                                                              |);
-                                                                                                                              mk_str (|
-                                                                                                                                " type parameters got "
-                                                                                                                              |)
-                                                                                                                            ]
-                                                                                                                        |)
+                                                                                                                      M.read (|
+                                                                                                                        UnsupportedLiteral
                                                                                                                       |)
                                                                                                                     |)
                                                                                                                   |);
@@ -22513,149 +22633,15 @@ Module check_bounds.
                                                                                                                     M.deref (|
                                                                                                                       M.borrow (|
                                                                                                                         Pointer.Kind.Ref,
-                                                                                                                        M.alloc (|
-                                                                                                                          Ty.apply
-                                                                                                                            (Ty.path
-                                                                                                                              "array")
-                                                                                                                            [
-                                                                                                                              Value.Integer
-                                                                                                                                IntegerKind.Usize
-                                                                                                                                2
-                                                                                                                            ]
-                                                                                                                            [
-                                                                                                                              Ty.path
-                                                                                                                                "core::fmt::rt::Argument"
-                                                                                                                            ],
-                                                                                                                          Value.Array
-                                                                                                                            [
-                                                                                                                              M.call_closure (|
-                                                                                                                                Ty.path
-                                                                                                                                  "core::fmt::rt::Argument",
-                                                                                                                                M.get_associated_function (|
-                                                                                                                                  Ty.path
-                                                                                                                                    "core::fmt::rt::Argument",
-                                                                                                                                  "new_display",
-                                                                                                                                  [],
-                                                                                                                                  [
-                                                                                                                                    Ty.path
-                                                                                                                                      "usize"
-                                                                                                                                  ]
-                                                                                                                                |),
-                                                                                                                                [
-                                                                                                                                  M.borrow (|
-                                                                                                                                    Pointer.Kind.Ref,
-                                                                                                                                    M.deref (|
-                                                                                                                                      M.borrow (|
-                                                                                                                                        Pointer.Kind.Ref,
-                                                                                                                                        M.alloc (|
-                                                                                                                                          Ty.path
-                                                                                                                                            "usize",
-                                                                                                                                          M.call_closure (|
-                                                                                                                                            Ty.path
-                                                                                                                                              "usize",
-                                                                                                                                            M.get_associated_function (|
-                                                                                                                                              Ty.apply
-                                                                                                                                                (Ty.path
-                                                                                                                                                  "alloc::vec::Vec")
-                                                                                                                                                []
-                                                                                                                                                [
-                                                                                                                                                  Ty.path
-                                                                                                                                                    "move_binary_format::file_format::StructTypeParameter";
-                                                                                                                                                  Ty.path
-                                                                                                                                                    "alloc::alloc::Global"
-                                                                                                                                                ],
-                                                                                                                                              "len",
-                                                                                                                                              [],
-                                                                                                                                              []
-                                                                                                                                            |),
-                                                                                                                                            [
-                                                                                                                                              M.borrow (|
-                                                                                                                                                Pointer.Kind.Ref,
-                                                                                                                                                M.SubPointer.get_struct_record_field (|
-                                                                                                                                                  M.deref (|
-                                                                                                                                                    M.read (|
-                                                                                                                                                      sh
-                                                                                                                                                    |)
-                                                                                                                                                  |),
-                                                                                                                                                  "move_binary_format::file_format::StructHandle",
-                                                                                                                                                  "type_parameters"
-                                                                                                                                                |)
-                                                                                                                                              |)
-                                                                                                                                            ]
-                                                                                                                                          |)
-                                                                                                                                        |)
-                                                                                                                                      |)
-                                                                                                                                    |)
-                                                                                                                                  |)
-                                                                                                                                ]
-                                                                                                                              |);
-                                                                                                                              M.call_closure (|
-                                                                                                                                Ty.path
-                                                                                                                                  "core::fmt::rt::Argument",
-                                                                                                                                M.get_associated_function (|
-                                                                                                                                  Ty.path
-                                                                                                                                    "core::fmt::rt::Argument",
-                                                                                                                                  "new_display",
-                                                                                                                                  [],
-                                                                                                                                  [
-                                                                                                                                    Ty.path
-                                                                                                                                      "usize"
-                                                                                                                                  ]
-                                                                                                                                |),
-                                                                                                                                [
-                                                                                                                                  M.borrow (|
-                                                                                                                                    Pointer.Kind.Ref,
-                                                                                                                                    M.deref (|
-                                                                                                                                      M.borrow (|
-                                                                                                                                        Pointer.Kind.Ref,
-                                                                                                                                        M.alloc (|
-                                                                                                                                          Ty.path
-                                                                                                                                            "usize",
-                                                                                                                                          M.call_closure (|
-                                                                                                                                            Ty.path
-                                                                                                                                              "usize",
-                                                                                                                                            M.get_associated_function (|
-                                                                                                                                              Ty.apply
-                                                                                                                                                (Ty.path
-                                                                                                                                                  "alloc::vec::Vec")
-                                                                                                                                                []
-                                                                                                                                                [
-                                                                                                                                                  Ty.path
-                                                                                                                                                    "move_binary_format::file_format::SignatureToken";
-                                                                                                                                                  Ty.path
-                                                                                                                                                    "alloc::alloc::Global"
-                                                                                                                                                ],
-                                                                                                                                              "len",
-                                                                                                                                              [],
-                                                                                                                                              []
-                                                                                                                                            |),
-                                                                                                                                            [
-                                                                                                                                              M.borrow (|
-                                                                                                                                                Pointer.Kind.Ref,
-                                                                                                                                                M.deref (|
-                                                                                                                                                  M.read (|
-                                                                                                                                                    type_params
-                                                                                                                                                  |)
-                                                                                                                                                |)
-                                                                                                                                              |)
-                                                                                                                                            ]
-                                                                                                                                          |)
-                                                                                                                                        |)
-                                                                                                                                      |)
-                                                                                                                                    |)
-                                                                                                                                  |)
-                                                                                                                                ]
-                                                                                                                              |)
-                                                                                                                            ]
-                                                                                                                        |)
+                                                                                                                        args
                                                                                                                       |)
                                                                                                                     |)
                                                                                                                   |)
                                                                                                                 ]
                                                                                                               |)
-                                                                                                            ]
-                                                                                                          |) in
-                                                                                                        res
+                                                                                                            |)
+                                                                                                          |)
+                                                                                                        ]
                                                                                                       |)
                                                                                                     ]
                                                                                                   |)
@@ -22934,26 +22920,25 @@ Module check_bounds.
                                                             fun γ =>
                                                               ltac:(M.monadic
                                                                 (let γ :=
-                                                                  M.use
-                                                                    (M.alloc (|
+                                                                  M.alloc (|
+                                                                    Ty.path "bool",
+                                                                    M.call_closure (|
                                                                       Ty.path "bool",
-                                                                      M.call_closure (|
-                                                                        Ty.path "bool",
-                                                                        BinOp.ge,
-                                                                        [
-                                                                          M.cast
-                                                                            (Ty.path "usize")
-                                                                            (M.read (|
-                                                                              M.deref (|
-                                                                                M.read (| idx |)
-                                                                              |)
-                                                                            |));
-                                                                          M.read (|
-                                                                            type_param_count
-                                                                          |)
-                                                                        ]
-                                                                      |)
-                                                                    |)) in
+                                                                      BinOp.ge,
+                                                                      [
+                                                                        M.cast
+                                                                          (Ty.path "usize")
+                                                                          (M.read (|
+                                                                            M.deref (|
+                                                                              M.read (| idx |)
+                                                                            |)
+                                                                          |));
+                                                                        M.read (|
+                                                                          type_param_count
+                                                                        |)
+                                                                      ]
+                                                                    |)
+                                                                  |) in
                                                                 let _ :=
                                                                   is_constant_or_break_match (|
                                                                     M.read (| γ |),
@@ -23282,15 +23267,14 @@ Module check_bounds.
                   fun γ =>
                     ltac:(M.monadic
                       (let γ :=
-                        M.use
-                          (M.alloc (|
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
                             Ty.path "bool",
-                            M.call_closure (|
-                              Ty.path "bool",
-                              BinOp.ge,
-                              [ M.read (| idx |); M.read (| len |) ]
-                            |)
-                          |)) in
+                            BinOp.ge,
+                            [ M.read (| idx |); M.read (| len |) ]
+                          |)
+                        |) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       Value.StructTuple
                         "core::result::Result::Err"
@@ -23735,19 +23719,51 @@ Module check_bounds.
                           [ Ty.path "alloc::string::String" ]
                         |),
                         [
-                          M.read (|
-                            let~ res : Ty.path "alloc::string::String" :=
-                              M.call_closure (|
-                                Ty.path "alloc::string::String",
-                                M.get_function (| "alloc::fmt::format", [], [] |),
-                                [
+                          M.call_closure (|
+                            Ty.path "alloc::string::String",
+                            M.get_function (| "alloc::fmt::format", [], [] |),
+                            [
+                              M.read (|
+                                let~ args :
+                                    Ty.tuple [ Ty.apply (Ty.path "&") [] [ Ty.path "u16" ] ] :=
+                                  Value.Tuple
+                                    [ M.borrow (| Pointer.Kind.Ref, cur_bytecode_offset |) ] in
+                                let~ args :
+                                    Ty.apply
+                                      (Ty.path "array")
+                                      [ Value.Integer IntegerKind.Usize 1 ]
+                                      [ Ty.path "core::fmt::rt::Argument" ] :=
+                                  Value.Array
+                                    [
+                                      M.call_closure (|
+                                        Ty.path "core::fmt::rt::Argument",
+                                        M.get_associated_function (|
+                                          Ty.path "core::fmt::rt::Argument",
+                                          "new_display",
+                                          [],
+                                          [ Ty.path "u16" ]
+                                        |),
+                                        [
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (|
+                                              M.read (|
+                                                M.SubPointer.get_tuple_field (| args, 0 |)
+                                              |)
+                                            |)
+                                          |)
+                                        ]
+                                      |)
+                                    ] in
+                                M.alloc (|
+                                  Ty.path "core::fmt::Arguments",
                                   M.call_closure (|
                                     Ty.path "core::fmt::Arguments",
                                     M.get_associated_function (|
                                       Ty.path "core::fmt::Arguments",
-                                      "new_v1",
+                                      "new",
                                       [
-                                        Value.Integer IntegerKind.Usize 2;
+                                        Value.Integer IntegerKind.Usize 85;
                                         Value.Integer IntegerKind.Usize 1
                                       ],
                                       []
@@ -23755,67 +23771,17 @@ Module check_bounds.
                                     [
                                       M.borrow (|
                                         Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.alloc (|
-                                              Ty.apply
-                                                (Ty.path "array")
-                                                [ Value.Integer IntegerKind.Usize 2 ]
-                                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                              Value.Array
-                                                [
-                                                  mk_str (| "Indexing into bytecode " |);
-                                                  mk_str (|
-                                                    " during bounds checking but 'current_function' was not set"
-                                                  |)
-                                                ]
-                                            |)
-                                          |)
-                                        |)
+                                        M.deref (| M.read (| UnsupportedLiteral |) |)
                                       |);
                                       M.borrow (|
                                         Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.alloc (|
-                                              Ty.apply
-                                                (Ty.path "array")
-                                                [ Value.Integer IntegerKind.Usize 1 ]
-                                                [ Ty.path "core::fmt::rt::Argument" ],
-                                              Value.Array
-                                                [
-                                                  M.call_closure (|
-                                                    Ty.path "core::fmt::rt::Argument",
-                                                    M.get_associated_function (|
-                                                      Ty.path "core::fmt::rt::Argument",
-                                                      "new_display",
-                                                      [],
-                                                      [ Ty.path "u16" ]
-                                                    |),
-                                                    [
-                                                      M.borrow (|
-                                                        Pointer.Kind.Ref,
-                                                        M.deref (|
-                                                          M.borrow (|
-                                                            Pointer.Kind.Ref,
-                                                            cur_bytecode_offset
-                                                          |)
-                                                        |)
-                                                      |)
-                                                    ]
-                                                  |)
-                                                ]
-                                            |)
-                                          |)
-                                        |)
+                                        M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
                                       |)
                                     ]
                                   |)
-                                ]
-                              |) in
-                            res
+                                |)
+                              |)
+                            ]
                           |)
                         ]
                       |) in
@@ -23949,15 +23915,14 @@ Module check_bounds.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            BinOp.ge,
-                            [ M.read (| idx |); M.read (| len |) ]
-                          |)
-                        |)) in
+                          BinOp.ge,
+                          [ M.read (| idx |); M.read (| len |) ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     Value.StructTuple
                       "core::result::Result::Err"

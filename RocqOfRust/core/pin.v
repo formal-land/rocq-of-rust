@@ -7,7 +7,7 @@ Module pin.
       name := "Pin";
       const_params := [];
       ty_params := [ "Ptr" ];
-      fields := [ ("__pointer", Ptr) ];
+      fields := [ ("pointer", Ptr) ];
     } *)
   
   Module Impl_core_marker_Copy_where_core_marker_Copy_Ptr_for_core_pin_Pin_Ptr.
@@ -42,7 +42,7 @@ Module pin.
             []
             [ Ptr ]
             [
-              ("__pointer",
+              ("pointer",
                 M.call_closure (|
                   Ptr,
                   M.get_trait_method (| "core::clone::Clone", Ptr, [], [], "clone", [], [] |),
@@ -55,7 +55,7 @@ Module pin.
                           M.SubPointer.get_struct_record_field (|
                             M.deref (| M.read (| self |) |),
                             "core::pin::Pin",
-                            "__pointer"
+                            "pointer"
                           |)
                         |)
                       |)
@@ -882,7 +882,7 @@ Module pin.
     
     (*
         pub const fn into_inner(pin: Pin<Ptr>) -> Ptr {
-            pin.__pointer
+            pin.pointer
         }
     *)
     Definition into_inner (Ptr : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -891,9 +891,7 @@ Module pin.
       | [], [], [ pin ] =>
         ltac:(M.monadic
           (let pin := M.alloc (| Ty.apply (Ty.path "core::pin::Pin") [] [ Ptr ], pin |) in
-          M.read (|
-            M.SubPointer.get_struct_record_field (| pin, "core::pin::Pin", "__pointer" |)
-          |)))
+          M.read (| M.SubPointer.get_struct_record_field (| pin, "core::pin::Pin", "pointer" |) |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -904,7 +902,7 @@ Module pin.
     Global Typeclasses Opaque into_inner.
     (*
         pub const unsafe fn new_unchecked(pointer: Ptr) -> Pin<Ptr> {
-            Pin { __pointer: pointer }
+            Pin { pointer }
         }
     *)
     Definition new_unchecked
@@ -918,7 +916,7 @@ Module pin.
       | [], [], [ pointer ] =>
         ltac:(M.monadic
           (let pointer := M.alloc (| Ptr, pointer |) in
-          Value.mkStructRecord "core::pin::Pin" [] [ Ptr ] [ ("__pointer", M.read (| pointer |)) ]))
+          Value.mkStructRecord "core::pin::Pin" [] [ Ptr ] [ ("pointer", M.read (| pointer |)) ]))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -929,9 +927,12 @@ Module pin.
     Global Typeclasses Opaque new_unchecked.
     
     (*
-        pub fn as_ref(&self) -> Pin<&Ptr::Target> {
+        pub const fn as_ref(&self) -> Pin<&Ptr::Target>
+        where
+            Ptr: [const] Deref,
+        {
             // SAFETY: see documentation on this function
-            unsafe { Pin::new_unchecked(&*self.__pointer) }
+            unsafe { Pin::new_unchecked(&*self.pointer) }
         }
     *)
     Definition as_ref (Ptr : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -995,7 +996,7 @@ Module pin.
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| self |) |),
                               "core::pin::Pin",
-                              "__pointer"
+                              "pointer"
                             |)
                           |)
                         ]
@@ -1015,9 +1016,12 @@ Module pin.
     Admitted.
     Global Typeclasses Opaque as_ref.
     (*
-        pub fn as_mut(&mut self) -> Pin<&mut Ptr::Target> {
+        pub const fn as_mut(&mut self) -> Pin<&mut Ptr::Target>
+        where
+            Ptr: [const] DerefMut,
+        {
             // SAFETY: see documentation on this function
-            unsafe { Pin::new_unchecked(&mut *self.__pointer) }
+            unsafe { Pin::new_unchecked(&mut *self.pointer) }
         }
     *)
     Definition as_mut (Ptr : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -1081,7 +1085,7 @@ Module pin.
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| self |) |),
                               "core::pin::Pin",
-                              "__pointer"
+                              "pointer"
                             |)
                           |)
                         ]
@@ -1102,7 +1106,10 @@ Module pin.
     Global Typeclasses Opaque as_mut.
     
     (*
-        pub fn as_deref_mut(self: Pin<&mut Pin<Ptr>>) -> Pin<&mut Ptr::Target> {
+        pub const fn as_deref_mut(self: Pin<&mut Self>) -> Pin<&mut Ptr::Target>
+        where
+            Ptr: [const] DerefMut,
+        {
             // SAFETY: What we're asserting here is that going from
             //
             //     Pin<&mut Pin<Ptr>>
@@ -1204,7 +1211,7 @@ Module pin.
         where
             Ptr::Target: Sized,
         {
-            *(self.__pointer) = value;
+            *(self.pointer) = value;
         }
     *)
     Definition set (Ptr : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -1246,7 +1253,7 @@ Module pin.
                         M.SubPointer.get_struct_record_field (|
                           M.deref (| M.read (| self |) |),
                           "core::pin::Pin",
-                          "__pointer"
+                          "pointer"
                         |)
                       |)
                     ]
@@ -1266,7 +1273,7 @@ Module pin.
     Global Typeclasses Opaque set.
     (*
         pub const unsafe fn into_inner_unchecked(pin: Pin<Ptr>) -> Ptr {
-            pin.__pointer
+            pin.pointer
         }
     *)
     Definition into_inner_unchecked
@@ -1280,9 +1287,7 @@ Module pin.
       | [], [], [ pin ] =>
         ltac:(M.monadic
           (let pin := M.alloc (| Ty.apply (Ty.path "core::pin::Pin") [] [ Ptr ], pin |) in
-          M.read (|
-            M.SubPointer.get_struct_record_field (| pin, "core::pin::Pin", "__pointer" |)
-          |)))
+          M.read (| M.SubPointer.get_struct_record_field (| pin, "core::pin::Pin", "pointer" |) |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -1306,7 +1311,7 @@ Module pin.
             U: ?Sized,
             F: FnOnce(&T) -> &U,
         {
-            let pointer = &*self.__pointer;
+            let pointer = &*self.pointer;
             let new_pointer = func(pointer);
     
             // SAFETY: the safety contract for `new_unchecked` must be
@@ -1331,7 +1336,7 @@ Module pin.
                 Pointer.Kind.Ref,
                 M.deref (|
                   M.read (|
-                    M.SubPointer.get_struct_record_field (| self, "core::pin::Pin", "__pointer" |)
+                    M.SubPointer.get_struct_record_field (| self, "core::pin::Pin", "pointer" |)
                   |)
                 |)
               |) in
@@ -1378,7 +1383,7 @@ Module pin.
     
     (*
         pub const fn get_ref(self) -> &'a T {
-            self.__pointer
+            self.pointer
         }
     *)
     Definition get_ref (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -1392,7 +1397,7 @@ Module pin.
               self
             |) in
           M.read (|
-            M.SubPointer.get_struct_record_field (| self, "core::pin::Pin", "__pointer" |)
+            M.SubPointer.get_struct_record_field (| self, "core::pin::Pin", "pointer" |)
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -1441,7 +1446,7 @@ Module pin.
     
     (*
         pub const fn into_ref(self) -> Pin<&'a T> {
-            Pin { __pointer: self.__pointer }
+            Pin { pointer: self.pointer }
         }
     *)
     Definition into_ref (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -1459,12 +1464,12 @@ Module pin.
             []
             [ Ty.apply (Ty.path "&") [] [ T ] ]
             [
-              ("__pointer",
+              ("pointer",
                 M.borrow (|
                   Pointer.Kind.Ref,
                   M.deref (|
                     M.read (|
-                      M.SubPointer.get_struct_record_field (| self, "core::pin::Pin", "__pointer" |)
+                      M.SubPointer.get_struct_record_field (| self, "core::pin::Pin", "pointer" |)
                     |)
                   |)
                 |))
@@ -1483,7 +1488,7 @@ Module pin.
         where
             T: Unpin,
         {
-            self.__pointer
+            self.pointer
         }
     *)
     Definition get_mut (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -1503,7 +1508,7 @@ Module pin.
                 Pointer.Kind.MutRef,
                 M.deref (|
                   M.read (|
-                    M.SubPointer.get_struct_record_field (| self, "core::pin::Pin", "__pointer" |)
+                    M.SubPointer.get_struct_record_field (| self, "core::pin::Pin", "pointer" |)
                   |)
                 |)
               |)
@@ -1520,7 +1525,7 @@ Module pin.
     
     (*
         pub const unsafe fn get_unchecked_mut(self) -> &'a mut T {
-            self.__pointer
+            self.pointer
         }
     *)
     Definition get_unchecked_mut
@@ -1545,7 +1550,7 @@ Module pin.
                 Pointer.Kind.MutRef,
                 M.deref (|
                   M.read (|
-                    M.SubPointer.get_struct_record_field (| self, "core::pin::Pin", "__pointer" |)
+                    M.SubPointer.get_struct_record_field (| self, "core::pin::Pin", "pointer" |)
                   |)
                 |)
               |)
@@ -1764,12 +1769,112 @@ Module pin.
         [ ("Target", InstanceField.Ty (_Target Ptr)); ("deref", InstanceField.Method (deref Ptr)) ].
   End Impl_core_ops_deref_Deref_where_core_ops_deref_Deref_Ptr_for_core_pin_Pin_Ptr.
   
-  Module Impl_core_ops_deref_DerefMut_where_core_ops_deref_DerefMut_Ptr_for_core_pin_Pin_Ptr.
+  Module helper.
+    (* StructRecord
+      {
+        name := "PinHelper";
+        const_params := [];
+        ty_params := [ "Ptr" ];
+        fields := [ ("pointer", Ptr) ];
+      } *)
+    
+    (* Trait *)
+    (* Empty module 'PinDerefMutHelper' *)
+    
+    Module Impl_core_pin_helper_PinDerefMutHelper_where_core_ops_deref_DerefMut_Ptr_where_core_marker_Unpin_associated_in_trait_core_ops_deref_Deref___Ptr_Target_for_core_pin_helper_PinHelper_Ptr.
+      Definition Self (Ptr : Ty.t) : Ty.t :=
+        Ty.apply (Ty.path "core::pin::helper::PinHelper") [] [ Ptr ].
+      
+      (*         type Target = Ptr::Target; *)
+      Definition _Target (Ptr : Ty.t) : Ty.t :=
+        Ty.associated_in_trait "core::ops::deref::Deref" [] [] Ptr "Target".
+      
+      (*
+              fn deref_mut(&mut self) -> &mut Ptr::Target {
+                  &mut self.pointer
+              }
+      *)
+      Definition deref_mut (Ptr : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        let Self : Ty.t := Self Ptr in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&mut")
+                  []
+                  [ Ty.apply (Ty.path "core::pin::helper::PinHelper") [] [ Ptr ] ],
+                self
+              |) in
+            M.borrow (|
+              Pointer.Kind.MutRef,
+              M.deref (|
+                M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [ Ty.associated_in_trait "core::ops::deref::Deref" [] [] Ptr "Target" ],
+                      M.get_trait_method (|
+                        "core::ops::deref::DerefMut",
+                        Ptr,
+                        [],
+                        [],
+                        "deref_mut",
+                        [],
+                        []
+                      |),
+                      [
+                        M.borrow (|
+                          Pointer.Kind.MutRef,
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.MutRef,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::pin::helper::PinHelper",
+                                "pointer"
+                              |)
+                            |)
+                          |)
+                        |)
+                      ]
+                    |)
+                  |)
+                |)
+              |)
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Axiom Implements :
+        forall (Ptr : Ty.t),
+        M.IsTraitInstance
+          "core::pin::helper::PinDerefMutHelper"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          (Self Ptr)
+          (* Instance *)
+          [
+            ("Target", InstanceField.Ty (_Target Ptr));
+            ("deref_mut", InstanceField.Method (deref_mut Ptr))
+          ].
+    End Impl_core_pin_helper_PinDerefMutHelper_where_core_ops_deref_DerefMut_Ptr_where_core_marker_Unpin_associated_in_trait_core_ops_deref_Deref___Ptr_Target_for_core_pin_helper_PinHelper_Ptr.
+  End helper.
+  
+  Module Impl_core_ops_deref_DerefMut_where_core_ops_deref_Deref_Ptr_where_core_pin_helper_PinDerefMutHelper_core_pin_helper_PinHelper_Ptr_for_core_pin_Pin_Ptr.
     Definition Self (Ptr : Ty.t) : Ty.t := Ty.apply (Ty.path "core::pin::Pin") [] [ Ptr ].
     
     (*
         fn deref_mut(&mut self) -> &mut Ptr::Target {
-            Pin::get_mut(Pin::as_mut(self))
+            // SAFETY: Pin and PinHelper have the same layout, so this is equivalent to
+            // `&mut self.pointer` which is safe because `Target: Unpin`.
+            helper::PinDerefMutHelper::deref_mut(unsafe {
+                &mut *(self as *mut Pin<Ptr> as *mut helper::PinHelper<Ptr>)
+            })
         }
     *)
     Definition deref_mut (Ptr : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -1793,39 +1898,49 @@ Module pin.
                       (Ty.path "&mut")
                       []
                       [ Ty.associated_in_trait "core::ops::deref::Deref" [] [] Ptr "Target" ],
-                    M.get_associated_function (|
-                      Ty.apply
-                        (Ty.path "core::pin::Pin")
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "&mut")
-                            []
-                            [ Ty.associated_in_trait "core::ops::deref::Deref" [] [] Ptr "Target" ]
-                        ],
-                      "get_mut",
+                    M.get_trait_method (|
+                      "core::pin::helper::PinDerefMutHelper",
+                      Ty.apply (Ty.path "core::pin::helper::PinHelper") [] [ Ptr ],
+                      [],
+                      [],
+                      "deref_mut",
                       [],
                       []
                     |),
                     [
-                      M.call_closure (|
-                        Ty.apply
-                          (Ty.path "core::pin::Pin")
-                          []
-                          [
-                            Ty.apply
-                              (Ty.path "&mut")
-                              []
-                              [ Ty.associated_in_trait "core::ops::deref::Deref" [] [] Ptr "Target"
-                              ]
-                          ],
-                        M.get_associated_function (|
-                          Ty.apply (Ty.path "core::pin::Pin") [] [ Ptr ],
-                          "as_mut",
-                          [],
-                          []
-                        |),
-                        [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |) ]
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.MutRef,
+                            M.deref (|
+                              M.borrow (|
+                                Pointer.Kind.MutRef,
+                                M.deref (|
+                                  M.cast
+                                    (Ty.apply
+                                      (Ty.path "*mut")
+                                      []
+                                      [ Ty.apply (Ty.path "core::pin::helper::PinHelper") [] [ Ptr ]
+                                      ])
+                                    (M.read (|
+                                      M.use
+                                        (M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "*mut")
+                                            []
+                                            [ Ty.apply (Ty.path "core::pin::Pin") [] [ Ptr ] ],
+                                          M.borrow (|
+                                            Pointer.Kind.MutPointer,
+                                            M.deref (| M.read (| self |) |)
+                                          |)
+                                        |))
+                                    |))
+                                |)
+                              |)
+                            |)
+                          |)
+                        |)
                       |)
                     ]
                   |)
@@ -1844,7 +1959,7 @@ Module pin.
         (* Trait polymorphic types *) []
         (Self Ptr)
         (* Instance *) [ ("deref_mut", InstanceField.Method (deref_mut Ptr)) ].
-  End Impl_core_ops_deref_DerefMut_where_core_ops_deref_DerefMut_Ptr_for_core_pin_Pin_Ptr.
+  End Impl_core_ops_deref_DerefMut_where_core_ops_deref_Deref_Ptr_where_core_pin_helper_PinDerefMutHelper_core_pin_helper_PinHelper_Ptr_for_core_pin_Pin_Ptr.
   
   Module Impl_core_ops_deref_DerefPure_where_core_ops_deref_DerefPure_Ptr_for_core_pin_Pin_Ptr.
     Definition Self (Ptr : Ty.t) : Ty.t := Ty.apply (Ty.path "core::pin::Pin") [] [ Ptr ].
@@ -1877,7 +1992,7 @@ Module pin.
     
     (*
         fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-            fmt::Debug::fmt(&self.__pointer, f)
+            fmt::Debug::fmt(&self.pointer, f)
         }
     *)
     Definition fmt (Ptr : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -1907,7 +2022,7 @@ Module pin.
                     M.SubPointer.get_struct_record_field (|
                       M.deref (| M.read (| self |) |),
                       "core::pin::Pin",
-                      "__pointer"
+                      "pointer"
                     |)
                   |)
                 |)
@@ -1933,7 +2048,7 @@ Module pin.
     
     (*
         fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-            fmt::Display::fmt(&self.__pointer, f)
+            fmt::Display::fmt(&self.pointer, f)
         }
     *)
     Definition fmt (Ptr : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -1963,7 +2078,7 @@ Module pin.
                     M.SubPointer.get_struct_record_field (|
                       M.deref (| M.read (| self |) |),
                       "core::pin::Pin",
-                      "__pointer"
+                      "pointer"
                     |)
                   |)
                 |)
@@ -1989,7 +2104,7 @@ Module pin.
     
     (*
         fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-            fmt::Pointer::fmt(&self.__pointer, f)
+            fmt::Pointer::fmt(&self.pointer, f)
         }
     *)
     Definition fmt (Ptr : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -2019,7 +2134,7 @@ Module pin.
                     M.SubPointer.get_struct_record_field (|
                       M.deref (| M.read (| self |) |),
                       "core::pin::Pin",
-                      "__pointer"
+                      "pointer"
                     |)
                   |)
                 |)

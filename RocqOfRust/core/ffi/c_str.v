@@ -160,13 +160,41 @@ Module ffi.
           (* Instance *) [ ("hash", InstanceField.Method hash) ].
     End Impl_core_hash_Hash_for_core_ffi_c_str_CStr.
     
-    (* StructRecord
-      {
-        name := "FromBytesWithNulError";
-        const_params := [];
-        ty_params := [];
-        fields := [ ("kind", Ty.path "core::ffi::c_str::FromBytesWithNulErrorKind") ];
-      } *)
+    (*
+    Enum FromBytesWithNulError
+    {
+      const_params := [];
+      ty_params := [];
+      variants :=
+        [
+          {
+            name := "InteriorNul";
+            item := StructRecord [ ("position", Ty.path "usize") ];
+          };
+          {
+            name := "NotNulTerminated";
+            item := StructTuple [];
+          }
+        ];
+    }
+    *)
+    
+    Axiom IsDiscriminant_FromBytesWithNulError_InteriorNul :
+      M.IsDiscriminant "core::ffi::c_str::FromBytesWithNulError::InteriorNul" 0.
+    Axiom IsDiscriminant_FromBytesWithNulError_NotNulTerminated :
+      M.IsDiscriminant "core::ffi::c_str::FromBytesWithNulError::NotNulTerminated" 1.
+    
+    Module Impl_core_clone_TrivialClone_for_core_ffi_c_str_FromBytesWithNulError.
+      Definition Self : Ty.t := Ty.path "core::ffi::c_str::FromBytesWithNulError".
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::clone::TrivialClone"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [].
+    End Impl_core_clone_TrivialClone_for_core_ffi_c_str_FromBytesWithNulError.
     
     Module Impl_core_clone_Clone_for_core_ffi_c_str_FromBytesWithNulError.
       Definition Self : Ty.t := Ty.path "core::ffi::c_str::FromBytesWithNulError".
@@ -181,40 +209,11 @@ Module ffi.
                 Ty.apply (Ty.path "&") [] [ Ty.path "core::ffi::c_str::FromBytesWithNulError" ],
                 self
               |) in
-            Value.mkStructRecord
-              "core::ffi::c_str::FromBytesWithNulError"
-              []
-              []
-              [
-                ("kind",
-                  M.call_closure (|
-                    Ty.path "core::ffi::c_str::FromBytesWithNulErrorKind",
-                    M.get_trait_method (|
-                      "core::clone::Clone",
-                      Ty.path "core::ffi::c_str::FromBytesWithNulErrorKind",
-                      [],
-                      [],
-                      "clone",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "core::ffi::c_str::FromBytesWithNulError",
-                              "kind"
-                            |)
-                          |)
-                        |)
-                      |)
-                    ]
-                  |))
-              ]))
+            M.match_operator (|
+              Ty.path "core::ffi::c_str::FromBytesWithNulError",
+              Value.DeclaredButUndefined,
+              [ fun γ => ltac:(M.monadic (M.read (| M.deref (| M.read (| self |) |) |))) ]
+            |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -226,6 +225,18 @@ Module ffi.
           Self
           (* Instance *) [ ("clone", InstanceField.Method clone) ].
     End Impl_core_clone_Clone_for_core_ffi_c_str_FromBytesWithNulError.
+    
+    Module Impl_core_marker_Copy_for_core_ffi_c_str_FromBytesWithNulError.
+      Definition Self : Ty.t := Ty.path "core::ffi::c_str::FromBytesWithNulError".
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::marker::Copy"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [].
+    End Impl_core_marker_Copy_for_core_ffi_c_str_FromBytesWithNulError.
     
     Module Impl_core_marker_StructuralPartialEq_for_core_ffi_c_str_FromBytesWithNulError.
       Definition Self : Ty.t := Ty.path "core::ffi::c_str::FromBytesWithNulError".
@@ -257,35 +268,96 @@ Module ffi.
                 Ty.apply (Ty.path "&") [] [ Ty.path "core::ffi::c_str::FromBytesWithNulError" ],
                 other
               |) in
-            M.call_closure (|
-              Ty.path "bool",
-              M.get_trait_method (|
-                "core::cmp::PartialEq",
-                Ty.path "core::ffi::c_str::FromBytesWithNulErrorKind",
-                [],
-                [ Ty.path "core::ffi::c_str::FromBytesWithNulErrorKind" ],
-                "eq",
-                [],
-                []
-              |),
-              [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "core::ffi::c_str::FromBytesWithNulError",
-                    "kind"
-                  |)
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| other |) |),
-                    "core::ffi::c_str::FromBytesWithNulError",
-                    "kind"
-                  |)
+            M.read (|
+              let~ __self_discr : Ty.path "isize" :=
+                M.call_closure (|
+                  Ty.path "isize",
+                  M.get_function (|
+                    "core::intrinsics::discriminant_value",
+                    [],
+                    [ Ty.path "core::ffi::c_str::FromBytesWithNulError" ]
+                  |),
+                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                |) in
+              let~ __arg1_discr : Ty.path "isize" :=
+                M.call_closure (|
+                  Ty.path "isize",
+                  M.get_function (|
+                    "core::intrinsics::discriminant_value",
+                    [],
+                    [ Ty.path "core::ffi::c_str::FromBytesWithNulError" ]
+                  |),
+                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                |) in
+              M.alloc (|
+                Ty.path "bool",
+                LogicalOp.and (|
+                  M.call_closure (|
+                    Ty.path "bool",
+                    BinOp.eq,
+                    [ M.read (| __self_discr |); M.read (| __arg1_discr |) ]
+                  |),
+                  ltac:(M.monadic
+                    (M.match_operator (|
+                      Ty.path "bool",
+                      M.alloc (|
+                        Ty.tuple
+                          [
+                            Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.path "core::ffi::c_str::FromBytesWithNulError" ];
+                            Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.path "core::ffi::c_str::FromBytesWithNulError" ]
+                          ],
+                        Value.Tuple [ M.read (| self |); M.read (| other |) ]
+                      |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                            let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                            let γ0_0 := M.deref (| M.read (| γ0_0 |) |) in
+                            let γ2_0 :=
+                              M.SubPointer.get_struct_record_field (|
+                                γ0_0,
+                                "core::ffi::c_str::FromBytesWithNulError::InteriorNul",
+                                "position"
+                              |) in
+                            let __self_0 :=
+                              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ2_0 |) in
+                            let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
+                            let γ2_0 :=
+                              M.SubPointer.get_struct_record_field (|
+                                γ0_1,
+                                "core::ffi::c_str::FromBytesWithNulError::InteriorNul",
+                                "position"
+                              |) in
+                            let __arg1_0 :=
+                              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ2_0 |) in
+                            M.call_closure (|
+                              Ty.path "bool",
+                              M.get_trait_method (|
+                                "core::cmp::PartialEq",
+                                Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
+                                [],
+                                [ Ty.apply (Ty.path "&") [] [ Ty.path "usize" ] ],
+                                "eq",
+                                [],
+                                []
+                              |),
+                              [
+                                M.borrow (| Pointer.Kind.Ref, __self_0 |);
+                                M.borrow (| Pointer.Kind.Ref, __arg1_0 |)
+                              ]
+                            |)));
+                        fun γ => ltac:(M.monadic (Value.Bool true))
+                      ]
+                    |)))
                 |)
-              ]
+              |)
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
@@ -349,355 +421,6 @@ Module ffi.
               |) in
             let f :=
               M.alloc (| Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ], f |) in
-            M.call_closure (|
-              Ty.apply
-                (Ty.path "core::result::Result")
-                []
-                [ Ty.tuple []; Ty.path "core::fmt::Error" ],
-              M.get_associated_function (|
-                Ty.path "core::fmt::Formatter",
-                "debug_struct_field1_finish",
-                [],
-                []
-              |),
-              [
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "FromBytesWithNulError" |) |) |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "kind" |) |) |);
-                M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                  M.pointer_coercion
-                    M.PointerCoercion.Unsize
-                    (Ty.apply
-                      (Ty.path "&")
-                      []
-                      [
-                        Ty.apply
-                          (Ty.path "&")
-                          []
-                          [ Ty.path "core::ffi::c_str::FromBytesWithNulErrorKind" ]
-                      ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.alloc (|
-                            Ty.apply
-                              (Ty.path "&")
-                              []
-                              [ Ty.path "core::ffi::c_str::FromBytesWithNulErrorKind" ],
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "core::ffi::c_str::FromBytesWithNulError",
-                                "kind"
-                              |)
-                            |)
-                          |)
-                        |)
-                      |)
-                    |)
-                  ]
-                |)
-              ]
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Axiom Implements :
-        M.IsTraitInstance
-          "core::fmt::Debug"
-          (* Trait polymorphic consts *) []
-          (* Trait polymorphic types *) []
-          Self
-          (* Instance *) [ ("fmt", InstanceField.Method fmt) ].
-    End Impl_core_fmt_Debug_for_core_ffi_c_str_FromBytesWithNulError.
-    
-    (*
-    Enum FromBytesWithNulErrorKind
-    {
-      const_params := [];
-      ty_params := [];
-      variants :=
-        [
-          {
-            name := "InteriorNul";
-            item := StructTuple [ Ty.path "usize" ];
-          };
-          {
-            name := "NotNulTerminated";
-            item := StructTuple [];
-          }
-        ];
-    }
-    *)
-    
-    Axiom IsDiscriminant_FromBytesWithNulErrorKind_InteriorNul :
-      M.IsDiscriminant "core::ffi::c_str::FromBytesWithNulErrorKind::InteriorNul" 0.
-    Axiom IsDiscriminant_FromBytesWithNulErrorKind_NotNulTerminated :
-      M.IsDiscriminant "core::ffi::c_str::FromBytesWithNulErrorKind::NotNulTerminated" 1.
-    
-    Module Impl_core_clone_Clone_for_core_ffi_c_str_FromBytesWithNulErrorKind.
-      Definition Self : Ty.t := Ty.path "core::ffi::c_str::FromBytesWithNulErrorKind".
-      
-      (* Clone *)
-      Definition clone (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [ self ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (|
-                Ty.apply (Ty.path "&") [] [ Ty.path "core::ffi::c_str::FromBytesWithNulErrorKind" ],
-                self
-              |) in
-            M.match_operator (|
-              Ty.path "core::ffi::c_str::FromBytesWithNulErrorKind",
-              self,
-              [
-                fun γ =>
-                  ltac:(M.monadic
-                    (let γ := M.deref (| M.read (| γ |) |) in
-                    let γ1_0 :=
-                      M.SubPointer.get_struct_tuple_field (|
-                        γ,
-                        "core::ffi::c_str::FromBytesWithNulErrorKind::InteriorNul",
-                        0
-                      |) in
-                    let __self_0 :=
-                      M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ1_0 |) in
-                    Value.StructTuple
-                      "core::ffi::c_str::FromBytesWithNulErrorKind::InteriorNul"
-                      []
-                      []
-                      [
-                        M.call_closure (|
-                          Ty.path "usize",
-                          M.get_trait_method (|
-                            "core::clone::Clone",
-                            Ty.path "usize",
-                            [],
-                            [],
-                            "clone",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
-                        |)
-                      ]));
-                fun γ =>
-                  ltac:(M.monadic
-                    (let γ := M.deref (| M.read (| γ |) |) in
-                    let _ :=
-                      M.is_struct_tuple (|
-                        γ,
-                        "core::ffi::c_str::FromBytesWithNulErrorKind::NotNulTerminated"
-                      |) in
-                    Value.StructTuple
-                      "core::ffi::c_str::FromBytesWithNulErrorKind::NotNulTerminated"
-                      []
-                      []
-                      []))
-              ]
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Axiom Implements :
-        M.IsTraitInstance
-          "core::clone::Clone"
-          (* Trait polymorphic consts *) []
-          (* Trait polymorphic types *) []
-          Self
-          (* Instance *) [ ("clone", InstanceField.Method clone) ].
-    End Impl_core_clone_Clone_for_core_ffi_c_str_FromBytesWithNulErrorKind.
-    
-    Module Impl_core_marker_StructuralPartialEq_for_core_ffi_c_str_FromBytesWithNulErrorKind.
-      Definition Self : Ty.t := Ty.path "core::ffi::c_str::FromBytesWithNulErrorKind".
-      
-      Axiom Implements :
-        M.IsTraitInstance
-          "core::marker::StructuralPartialEq"
-          (* Trait polymorphic consts *) []
-          (* Trait polymorphic types *) []
-          Self
-          (* Instance *) [].
-    End Impl_core_marker_StructuralPartialEq_for_core_ffi_c_str_FromBytesWithNulErrorKind.
-    
-    Module Impl_core_cmp_PartialEq_core_ffi_c_str_FromBytesWithNulErrorKind_for_core_ffi_c_str_FromBytesWithNulErrorKind.
-      Definition Self : Ty.t := Ty.path "core::ffi::c_str::FromBytesWithNulErrorKind".
-      
-      (* PartialEq *)
-      Definition eq (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [ self; other ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (|
-                Ty.apply (Ty.path "&") [] [ Ty.path "core::ffi::c_str::FromBytesWithNulErrorKind" ],
-                self
-              |) in
-            let other :=
-              M.alloc (|
-                Ty.apply (Ty.path "&") [] [ Ty.path "core::ffi::c_str::FromBytesWithNulErrorKind" ],
-                other
-              |) in
-            M.read (|
-              let~ __self_discr : Ty.path "isize" :=
-                M.call_closure (|
-                  Ty.path "isize",
-                  M.get_function (|
-                    "core::intrinsics::discriminant_value",
-                    [],
-                    [ Ty.path "core::ffi::c_str::FromBytesWithNulErrorKind" ]
-                  |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                |) in
-              let~ __arg1_discr : Ty.path "isize" :=
-                M.call_closure (|
-                  Ty.path "isize",
-                  M.get_function (|
-                    "core::intrinsics::discriminant_value",
-                    [],
-                    [ Ty.path "core::ffi::c_str::FromBytesWithNulErrorKind" ]
-                  |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
-                |) in
-              M.alloc (|
-                Ty.path "bool",
-                LogicalOp.and (|
-                  M.call_closure (|
-                    Ty.path "bool",
-                    BinOp.eq,
-                    [ M.read (| __self_discr |); M.read (| __arg1_discr |) ]
-                  |),
-                  ltac:(M.monadic
-                    (M.match_operator (|
-                      Ty.path "bool",
-                      M.alloc (|
-                        Ty.tuple
-                          [
-                            Ty.apply
-                              (Ty.path "&")
-                              []
-                              [ Ty.path "core::ffi::c_str::FromBytesWithNulErrorKind" ];
-                            Ty.apply
-                              (Ty.path "&")
-                              []
-                              [ Ty.path "core::ffi::c_str::FromBytesWithNulErrorKind" ]
-                          ],
-                        Value.Tuple [ M.read (| self |); M.read (| other |) ]
-                      |),
-                      [
-                        fun γ =>
-                          ltac:(M.monadic
-                            (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
-                            let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
-                            let γ0_0 := M.deref (| M.read (| γ0_0 |) |) in
-                            let γ2_0 :=
-                              M.SubPointer.get_struct_tuple_field (|
-                                γ0_0,
-                                "core::ffi::c_str::FromBytesWithNulErrorKind::InteriorNul",
-                                0
-                              |) in
-                            let __self_0 :=
-                              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ2_0 |) in
-                            let γ0_1 := M.deref (| M.read (| γ0_1 |) |) in
-                            let γ2_0 :=
-                              M.SubPointer.get_struct_tuple_field (|
-                                γ0_1,
-                                "core::ffi::c_str::FromBytesWithNulErrorKind::InteriorNul",
-                                0
-                              |) in
-                            let __arg1_0 :=
-                              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ2_0 |) in
-                            M.call_closure (|
-                              Ty.path "bool",
-                              M.get_trait_method (|
-                                "core::cmp::PartialEq",
-                                Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
-                                [],
-                                [ Ty.apply (Ty.path "&") [] [ Ty.path "usize" ] ],
-                                "eq",
-                                [],
-                                []
-                              |),
-                              [
-                                M.borrow (| Pointer.Kind.Ref, __self_0 |);
-                                M.borrow (| Pointer.Kind.Ref, __arg1_0 |)
-                              ]
-                            |)));
-                        fun γ => ltac:(M.monadic (Value.Bool true))
-                      ]
-                    |)))
-                |)
-              |)
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Axiom Implements :
-        M.IsTraitInstance
-          "core::cmp::PartialEq"
-          (* Trait polymorphic consts *) []
-          (* Trait polymorphic types *) [ Ty.path "core::ffi::c_str::FromBytesWithNulErrorKind" ]
-          Self
-          (* Instance *) [ ("eq", InstanceField.Method eq) ].
-    End Impl_core_cmp_PartialEq_core_ffi_c_str_FromBytesWithNulErrorKind_for_core_ffi_c_str_FromBytesWithNulErrorKind.
-    
-    Module Impl_core_cmp_Eq_for_core_ffi_c_str_FromBytesWithNulErrorKind.
-      Definition Self : Ty.t := Ty.path "core::ffi::c_str::FromBytesWithNulErrorKind".
-      
-      (* Eq *)
-      Definition assert_receiver_is_total_eq
-          (ε : list Value.t)
-          (τ : list Ty.t)
-          (α : list Value.t)
-          : M :=
-        match ε, τ, α with
-        | [], [], [ self ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (|
-                Ty.apply (Ty.path "&") [] [ Ty.path "core::ffi::c_str::FromBytesWithNulErrorKind" ],
-                self
-              |) in
-            M.match_operator (|
-              Ty.tuple [],
-              Value.DeclaredButUndefined,
-              [ fun γ => ltac:(M.monadic (Value.Tuple [])) ]
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Axiom Implements :
-        M.IsTraitInstance
-          "core::cmp::Eq"
-          (* Trait polymorphic consts *) []
-          (* Trait polymorphic types *) []
-          Self
-          (* Instance *)
-          [ ("assert_receiver_is_total_eq", InstanceField.Method assert_receiver_is_total_eq) ].
-    End Impl_core_cmp_Eq_for_core_ffi_c_str_FromBytesWithNulErrorKind.
-    
-    Module Impl_core_fmt_Debug_for_core_ffi_c_str_FromBytesWithNulErrorKind.
-      Definition Self : Ty.t := Ty.path "core::ffi::c_str::FromBytesWithNulErrorKind".
-      
-      (* Debug *)
-      Definition fmt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [ self; f ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (|
-                Ty.apply (Ty.path "&") [] [ Ty.path "core::ffi::c_str::FromBytesWithNulErrorKind" ],
-                self
-              |) in
-            let f :=
-              M.alloc (| Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ], f |) in
             M.match_operator (|
               Ty.apply
                 (Ty.path "core::result::Result")
@@ -709,10 +432,10 @@ Module ffi.
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
                     let γ1_0 :=
-                      M.SubPointer.get_struct_tuple_field (|
+                      M.SubPointer.get_struct_record_field (|
                         γ,
-                        "core::ffi::c_str::FromBytesWithNulErrorKind::InteriorNul",
-                        0
+                        "core::ffi::c_str::FromBytesWithNulError::InteriorNul",
+                        "position"
                       |) in
                     let __self_0 :=
                       M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ1_0 |) in
@@ -723,13 +446,14 @@ Module ffi.
                         [ Ty.tuple []; Ty.path "core::fmt::Error" ],
                       M.get_associated_function (|
                         Ty.path "core::fmt::Formatter",
-                        "debug_tuple_field1_finish",
+                        "debug_struct_field1_finish",
                         [],
                         []
                       |),
                       [
                         M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
                         M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "InteriorNul" |) |) |);
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "position" |) |) |);
                         M.call_closure (|
                           Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
                           M.pointer_coercion
@@ -757,7 +481,7 @@ Module ffi.
                     let _ :=
                       M.is_struct_tuple (|
                         γ,
-                        "core::ffi::c_str::FromBytesWithNulErrorKind::NotNulTerminated"
+                        "core::ffi::c_str::FromBytesWithNulError::NotNulTerminated"
                       |) in
                     M.call_closure (|
                       Ty.apply
@@ -790,122 +514,158 @@ Module ffi.
           (* Trait polymorphic types *) []
           Self
           (* Instance *) [ ("fmt", InstanceField.Method fmt) ].
-    End Impl_core_fmt_Debug_for_core_ffi_c_str_FromBytesWithNulErrorKind.
+    End Impl_core_fmt_Debug_for_core_ffi_c_str_FromBytesWithNulError.
     
-    Module Impl_core_ffi_c_str_FromBytesWithNulError.
+    Module Impl_core_fmt_Display_for_core_ffi_c_str_FromBytesWithNulError.
       Definition Self : Ty.t := Ty.path "core::ffi::c_str::FromBytesWithNulError".
       
       (*
-          const fn interior_nul(pos: usize) -> FromBytesWithNulError {
-              FromBytesWithNulError { kind: FromBytesWithNulErrorKind::InteriorNul(pos) }
-          }
-      *)
-      Definition interior_nul (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [ pos ] =>
-          ltac:(M.monadic
-            (let pos := M.alloc (| Ty.path "usize", pos |) in
-            Value.mkStructRecord
-              "core::ffi::c_str::FromBytesWithNulError"
-              []
-              []
-              [
-                ("kind",
-                  Value.StructTuple
-                    "core::ffi::c_str::FromBytesWithNulErrorKind::InteriorNul"
-                    []
-                    []
-                    [ M.read (| pos |) ])
-              ]))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Global Instance AssociatedFunction_interior_nul :
-        M.IsAssociatedFunction.C Self "interior_nul" interior_nul.
-      Admitted.
-      Global Typeclasses Opaque interior_nul.
-      
-      (*
-          const fn not_nul_terminated() -> FromBytesWithNulError {
-              FromBytesWithNulError { kind: FromBytesWithNulErrorKind::NotNulTerminated }
-          }
-      *)
-      Definition not_nul_terminated (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [] =>
-          ltac:(M.monadic
-            (Value.mkStructRecord
-              "core::ffi::c_str::FromBytesWithNulError"
-              []
-              []
-              [
-                ("kind",
-                  Value.StructTuple
-                    "core::ffi::c_str::FromBytesWithNulErrorKind::NotNulTerminated"
-                    []
-                    []
-                    [])
-              ]))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Global Instance AssociatedFunction_not_nul_terminated :
-        M.IsAssociatedFunction.C Self "not_nul_terminated" not_nul_terminated.
-      Admitted.
-      Global Typeclasses Opaque not_nul_terminated.
-    End Impl_core_ffi_c_str_FromBytesWithNulError.
-    
-    Module Impl_core_error_Error_for_core_ffi_c_str_FromBytesWithNulError.
-      Definition Self : Ty.t := Ty.path "core::ffi::c_str::FromBytesWithNulError".
-      
-      (*
-          fn description(&self) -> &str {
-              match self.kind {
-                  FromBytesWithNulErrorKind::InteriorNul(..) => {
-                      "data provided contains an interior nul byte"
+          fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+              match self {
+                  Self::InteriorNul { position } => {
+                      write!(f, "data provided contains an interior nul byte at byte position {position}")
                   }
-                  FromBytesWithNulErrorKind::NotNulTerminated => "data provided is not nul terminated",
+                  Self::NotNulTerminated => write!(f, "data provided is not nul terminated"),
               }
           }
       *)
-      Definition description (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      Definition fmt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
-        | [], [], [ self ] =>
+        | [], [], [ self; f ] =>
           ltac:(M.monadic
             (let self :=
               M.alloc (|
                 Ty.apply (Ty.path "&") [] [ Ty.path "core::ffi::c_str::FromBytesWithNulError" ],
                 self
               |) in
+            let f :=
+              M.alloc (| Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ], f |) in
             M.match_operator (|
-              Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-              M.SubPointer.get_struct_record_field (|
-                M.deref (| M.read (| self |) |),
-                "core::ffi::c_str::FromBytesWithNulError",
-                "kind"
-              |),
+              Ty.apply
+                (Ty.path "core::result::Result")
+                []
+                [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+              self,
               [
                 fun γ =>
                   ltac:(M.monadic
-                    (let _ :=
-                      M.is_struct_tuple (|
+                    (let γ := M.deref (| M.read (| γ |) |) in
+                    let γ1_0 :=
+                      M.SubPointer.get_struct_record_field (|
                         γ,
-                        "core::ffi::c_str::FromBytesWithNulErrorKind::InteriorNul"
+                        "core::ffi::c_str::FromBytesWithNulError::InteriorNul",
+                        "position"
                       |) in
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| mk_str (| "data provided contains an interior nul byte" |) |)
+                    let position :=
+                      M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ1_0 |) in
+                    M.call_closure (|
+                      Ty.apply
+                        (Ty.path "core::result::Result")
+                        []
+                        [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                      M.get_associated_function (|
+                        Ty.path "core::fmt::Formatter",
+                        "write_fmt",
+                        [],
+                        []
+                      |),
+                      [
+                        M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
+                        M.read (|
+                          let~ args :
+                              Ty.tuple
+                                [
+                                  Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "usize" ] ]
+                                ] :=
+                            Value.Tuple [ M.borrow (| Pointer.Kind.Ref, position |) ] in
+                          let~ args :
+                              Ty.apply
+                                (Ty.path "array")
+                                [ Value.Integer IntegerKind.Usize 1 ]
+                                [ Ty.path "core::fmt::rt::Argument" ] :=
+                            Value.Array
+                              [
+                                M.call_closure (|
+                                  Ty.path "core::fmt::rt::Argument",
+                                  M.get_associated_function (|
+                                    Ty.path "core::fmt::rt::Argument",
+                                    "new_display",
+                                    [],
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "usize" ] ]
+                                  |),
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (|
+                                        M.read (| M.SubPointer.get_tuple_field (| args, 0 |) |)
+                                      |)
+                                    |)
+                                  ]
+                                |)
+                              ] in
+                          M.alloc (|
+                            Ty.path "core::fmt::Arguments",
+                            M.call_closure (|
+                              Ty.path "core::fmt::Arguments",
+                              M.get_associated_function (|
+                                Ty.path "core::fmt::Arguments",
+                                "new",
+                                [
+                                  Value.Integer IntegerKind.Usize 64;
+                                  Value.Integer IntegerKind.Usize 1
+                                ],
+                                []
+                              |),
+                              [
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (| M.read (| UnsupportedLiteral |) |)
+                                |);
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
+                                |)
+                              ]
+                            |)
+                          |)
+                        |)
+                      ]
                     |)));
                 fun γ =>
                   ltac:(M.monadic
-                    (let _ :=
+                    (let γ := M.deref (| M.read (| γ |) |) in
+                    let _ :=
                       M.is_struct_tuple (|
                         γ,
-                        "core::ffi::c_str::FromBytesWithNulErrorKind::NotNulTerminated"
+                        "core::ffi::c_str::FromBytesWithNulError::NotNulTerminated"
                       |) in
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| mk_str (| "data provided is not nul terminated" |) |)
+                    M.call_closure (|
+                      Ty.apply
+                        (Ty.path "core::result::Result")
+                        []
+                        [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                      M.get_associated_function (|
+                        Ty.path "core::fmt::Formatter",
+                        "write_fmt",
+                        [],
+                        []
+                      |),
+                      [
+                        M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "data provided is not nul terminated" |) ]
+                        |)
+                      ]
                     |)))
               ]
             |)))
@@ -914,11 +674,23 @@ Module ffi.
       
       Axiom Implements :
         M.IsTraitInstance
+          "core::fmt::Display"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [ ("fmt", InstanceField.Method fmt) ].
+    End Impl_core_fmt_Display_for_core_ffi_c_str_FromBytesWithNulError.
+    
+    Module Impl_core_error_Error_for_core_ffi_c_str_FromBytesWithNulError.
+      Definition Self : Ty.t := Ty.path "core::ffi::c_str::FromBytesWithNulError".
+      
+      Axiom Implements :
+        M.IsTraitInstance
           "core::error::Error"
           (* Trait polymorphic consts *) []
           (* Trait polymorphic types *) []
           Self
-          (* Instance *) [ ("description", InstanceField.Method description) ].
+          (* Instance *) [].
     End Impl_core_error_Error_for_core_ffi_c_str_FromBytesWithNulError.
     
     (* StructTuple
@@ -1199,27 +971,11 @@ Module ffi.
                   Ty.path "core::fmt::Arguments",
                   M.get_associated_function (|
                     Ty.path "core::fmt::Arguments",
-                    "new_const",
-                    [ Value.Integer IntegerKind.Usize 1 ],
+                    "from_str",
+                    [],
                     []
                   |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.alloc (|
-                            Ty.apply
-                              (Ty.path "array")
-                              [ Value.Integer IntegerKind.Usize 1 ]
-                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                            Value.Array [ mk_str (| "data provided does not contain a nul" |) ]
-                          |)
-                        |)
-                      |)
-                    |)
-                  ]
+                  [ mk_str (| "data provided does not contain a nul" |) ]
                 |)
               ]
             |)))
@@ -1240,7 +996,7 @@ Module ffi.
       
       (*
           fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-              write!(f, "\"{}\"", self.to_bytes().escape_ascii())
+              fmt::Debug::fmt(crate::bstr::ByteStr::from_bytes(self.to_bytes()), f)
           }
       *)
       Definition fmt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -1256,113 +1012,51 @@ Module ffi.
                 (Ty.path "core::result::Result")
                 []
                 [ Ty.tuple []; Ty.path "core::fmt::Error" ],
-              M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_fmt", [], [] |),
+              M.get_trait_method (|
+                "core::fmt::Debug",
+                Ty.path "core::bstr::ByteStr",
+                [],
+                [],
+                "fmt",
+                [],
+                []
+              |),
               [
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                M.call_closure (|
-                  Ty.path "core::fmt::Arguments",
-                  M.get_associated_function (|
-                    Ty.path "core::fmt::Arguments",
-                    "new_v1",
-                    [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 1 ],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "core::bstr::ByteStr" ],
+                      M.get_associated_function (|
+                        Ty.path "core::bstr::ByteStr",
+                        "from_bytes",
+                        [],
+                        []
+                      |),
+                      [
                         M.borrow (|
                           Pointer.Kind.Ref,
-                          M.alloc (|
-                            Ty.apply
-                              (Ty.path "array")
-                              [ Value.Integer IntegerKind.Usize 2 ]
-                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                            Value.Array [ mk_str (| """" |); mk_str (| """" |) ]
+                          M.deref (|
+                            M.call_closure (|
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                              M.get_associated_function (|
+                                Ty.path "core::ffi::c_str::CStr",
+                                "to_bytes",
+                                [],
+                                []
+                              |),
+                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                            |)
                           |)
                         |)
-                      |)
-                    |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.alloc (|
-                            Ty.apply
-                              (Ty.path "array")
-                              [ Value.Integer IntegerKind.Usize 1 ]
-                              [ Ty.path "core::fmt::rt::Argument" ],
-                            Value.Array
-                              [
-                                M.call_closure (|
-                                  Ty.path "core::fmt::rt::Argument",
-                                  M.get_associated_function (|
-                                    Ty.path "core::fmt::rt::Argument",
-                                    "new_display",
-                                    [],
-                                    [ Ty.path "core::slice::ascii::EscapeAscii" ]
-                                  |),
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (|
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.alloc (|
-                                            Ty.path "core::slice::ascii::EscapeAscii",
-                                            M.call_closure (|
-                                              Ty.path "core::slice::ascii::EscapeAscii",
-                                              M.get_associated_function (|
-                                                Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                                                "escape_ascii",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (|
-                                                    M.call_closure (|
-                                                      Ty.apply
-                                                        (Ty.path "&")
-                                                        []
-                                                        [
-                                                          Ty.apply
-                                                            (Ty.path "slice")
-                                                            []
-                                                            [ Ty.path "u8" ]
-                                                        ],
-                                                      M.get_associated_function (|
-                                                        Ty.path "core::ffi::c_str::CStr",
-                                                        "to_bytes",
-                                                        [],
-                                                        []
-                                                      |),
-                                                      [
-                                                        M.borrow (|
-                                                          Pointer.Kind.Ref,
-                                                          M.deref (| M.read (| self |) |)
-                                                        |)
-                                                      ]
-                                                    |)
-                                                  |)
-                                                |)
-                                              ]
-                                            |)
-                                          |)
-                                        |)
-                                      |)
-                                    |)
-                                  ]
-                                |)
-                              ]
-                          |)
-                        |)
-                      |)
+                      ]
                     |)
-                  ]
-                |)
+                  |)
+                |);
+                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -1382,56 +1076,14 @@ Module ffi.
       
       (*
           fn default() -> Self {
-              const SLICE: &[c_char] = &[0];
-              // SAFETY: `SLICE` is indeed pointing to a valid nul-terminated string.
-              unsafe { CStr::from_ptr(SLICE.as_ptr()) }
+              c""
           }
       *)
       Definition default (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [] =>
           ltac:(M.monadic
-            (M.borrow (|
-              Pointer.Kind.Ref,
-              M.deref (|
-                M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.path "core::ffi::c_str::CStr" ],
-                  M.get_associated_function (|
-                    Ty.path "core::ffi::c_str::CStr",
-                    "from_ptr",
-                    [],
-                    []
-                  |),
-                  [
-                    M.call_closure (|
-                      Ty.apply (Ty.path "*const") [] [ Ty.path "i8" ],
-                      M.get_associated_function (|
-                        Ty.apply (Ty.path "slice") [] [ Ty.path "i8" ],
-                        "as_ptr",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (|
-                            M.read (|
-                              get_constant (|
-                                "core::ffi::c_str::default::SLICE",
-                                Ty.apply
-                                  (Ty.path "&")
-                                  []
-                                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "i8" ] ]
-                              |)
-                            |)
-                          |)
-                        |)
-                      ]
-                    |)
-                  ]
-                |)
-              |)
-            |)))
+            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| UnsupportedLiteral |) |) |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -1443,430 +1095,6 @@ Module ffi.
           Self
           (* Instance *) [ ("default", InstanceField.Method default) ].
     End Impl_core_default_Default_for_ref__core_ffi_c_str_CStr.
-    
-    Module Impl_core_fmt_Display_for_core_ffi_c_str_FromBytesWithNulError.
-      Definition Self : Ty.t := Ty.path "core::ffi::c_str::FromBytesWithNulError".
-      
-      (*
-          fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-              f.write_str(self.description())?;
-              if let FromBytesWithNulErrorKind::InteriorNul(pos) = self.kind {
-                  write!(f, " at byte pos {pos}")?;
-              }
-              Ok(())
-          }
-      *)
-      Definition fmt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [ self; f ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (|
-                Ty.apply (Ty.path "&") [] [ Ty.path "core::ffi::c_str::FromBytesWithNulError" ],
-                self
-              |) in
-            let f :=
-              M.alloc (| Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ], f |) in
-            M.catch_return
-              (Ty.apply
-                (Ty.path "core::result::Result")
-                []
-                [ Ty.tuple []; Ty.path "core::fmt::Error" ]) (|
-              ltac:(M.monadic
-                (M.read (|
-                  let~ _ : Ty.tuple [] :=
-                    M.match_operator (|
-                      Ty.tuple [],
-                      M.alloc (|
-                        Ty.apply
-                          (Ty.path "core::ops::control_flow::ControlFlow")
-                          []
-                          [
-                            Ty.apply
-                              (Ty.path "core::result::Result")
-                              []
-                              [ Ty.path "core::convert::Infallible"; Ty.path "core::fmt::Error" ];
-                            Ty.tuple []
-                          ],
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "core::ops::control_flow::ControlFlow")
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "core::result::Result")
-                                []
-                                [ Ty.path "core::convert::Infallible"; Ty.path "core::fmt::Error" ];
-                              Ty.tuple []
-                            ],
-                          M.get_trait_method (|
-                            "core::ops::try_trait::Try",
-                            Ty.apply
-                              (Ty.path "core::result::Result")
-                              []
-                              [ Ty.tuple []; Ty.path "core::fmt::Error" ],
-                            [],
-                            [],
-                            "branch",
-                            [],
-                            []
-                          |),
-                          [
-                            M.call_closure (|
-                              Ty.apply
-                                (Ty.path "core::result::Result")
-                                []
-                                [ Ty.tuple []; Ty.path "core::fmt::Error" ],
-                              M.get_associated_function (|
-                                Ty.path "core::fmt::Formatter",
-                                "write_str",
-                                [],
-                                []
-                              |),
-                              [
-                                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.call_closure (|
-                                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                                      M.get_trait_method (|
-                                        "core::error::Error",
-                                        Ty.path "core::ffi::c_str::FromBytesWithNulError",
-                                        [],
-                                        [],
-                                        "description",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| self |) |)
-                                        |)
-                                      ]
-                                    |)
-                                  |)
-                                |)
-                              ]
-                            |)
-                          ]
-                        |)
-                      |),
-                      [
-                        fun γ =>
-                          ltac:(M.monadic
-                            (let γ0_0 :=
-                              M.SubPointer.get_struct_tuple_field (|
-                                γ,
-                                "core::ops::control_flow::ControlFlow::Break",
-                                0
-                              |) in
-                            let residual :=
-                              M.copy (|
-                                Ty.apply
-                                  (Ty.path "core::result::Result")
-                                  []
-                                  [ Ty.path "core::convert::Infallible"; Ty.path "core::fmt::Error"
-                                  ],
-                                γ0_0
-                              |) in
-                            M.never_to_any (|
-                              M.read (|
-                                M.return_ (|
-                                  M.call_closure (|
-                                    Ty.apply
-                                      (Ty.path "core::result::Result")
-                                      []
-                                      [ Ty.tuple []; Ty.path "core::fmt::Error" ],
-                                    M.get_trait_method (|
-                                      "core::ops::try_trait::FromResidual",
-                                      Ty.apply
-                                        (Ty.path "core::result::Result")
-                                        []
-                                        [ Ty.tuple []; Ty.path "core::fmt::Error" ],
-                                      [],
-                                      [
-                                        Ty.apply
-                                          (Ty.path "core::result::Result")
-                                          []
-                                          [
-                                            Ty.path "core::convert::Infallible";
-                                            Ty.path "core::fmt::Error"
-                                          ]
-                                      ],
-                                      "from_residual",
-                                      [],
-                                      []
-                                    |),
-                                    [ M.read (| residual |) ]
-                                  |)
-                                |)
-                              |)
-                            |)));
-                        fun γ =>
-                          ltac:(M.monadic
-                            (let γ0_0 :=
-                              M.SubPointer.get_struct_tuple_field (|
-                                γ,
-                                "core::ops::control_flow::ControlFlow::Continue",
-                                0
-                              |) in
-                            let val := M.copy (| Ty.tuple [], γ0_0 |) in
-                            M.read (| val |)))
-                      ]
-                    |) in
-                  let~ _ : Ty.tuple [] :=
-                    M.match_operator (|
-                      Ty.tuple [],
-                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
-                      [
-                        fun γ =>
-                          ltac:(M.monadic
-                            (let γ :=
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "core::ffi::c_str::FromBytesWithNulError",
-                                "kind"
-                              |) in
-                            let γ0_0 :=
-                              M.SubPointer.get_struct_tuple_field (|
-                                γ,
-                                "core::ffi::c_str::FromBytesWithNulErrorKind::InteriorNul",
-                                0
-                              |) in
-                            let pos := M.copy (| Ty.path "usize", γ0_0 |) in
-                            M.read (|
-                              let~ _ : Ty.tuple [] :=
-                                M.match_operator (|
-                                  Ty.tuple [],
-                                  M.alloc (|
-                                    Ty.apply
-                                      (Ty.path "core::ops::control_flow::ControlFlow")
-                                      []
-                                      [
-                                        Ty.apply
-                                          (Ty.path "core::result::Result")
-                                          []
-                                          [
-                                            Ty.path "core::convert::Infallible";
-                                            Ty.path "core::fmt::Error"
-                                          ];
-                                        Ty.tuple []
-                                      ],
-                                    M.call_closure (|
-                                      Ty.apply
-                                        (Ty.path "core::ops::control_flow::ControlFlow")
-                                        []
-                                        [
-                                          Ty.apply
-                                            (Ty.path "core::result::Result")
-                                            []
-                                            [
-                                              Ty.path "core::convert::Infallible";
-                                              Ty.path "core::fmt::Error"
-                                            ];
-                                          Ty.tuple []
-                                        ],
-                                      M.get_trait_method (|
-                                        "core::ops::try_trait::Try",
-                                        Ty.apply
-                                          (Ty.path "core::result::Result")
-                                          []
-                                          [ Ty.tuple []; Ty.path "core::fmt::Error" ],
-                                        [],
-                                        [],
-                                        "branch",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "core::result::Result")
-                                            []
-                                            [ Ty.tuple []; Ty.path "core::fmt::Error" ],
-                                          M.get_associated_function (|
-                                            Ty.path "core::fmt::Formatter",
-                                            "write_fmt",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.MutRef,
-                                              M.deref (| M.read (| f |) |)
-                                            |);
-                                            M.call_closure (|
-                                              Ty.path "core::fmt::Arguments",
-                                              M.get_associated_function (|
-                                                Ty.path "core::fmt::Arguments",
-                                                "new_v1",
-                                                [
-                                                  Value.Integer IntegerKind.Usize 1;
-                                                  Value.Integer IntegerKind.Usize 1
-                                                ],
-                                                []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (|
-                                                    M.borrow (|
-                                                      Pointer.Kind.Ref,
-                                                      M.alloc (|
-                                                        Ty.apply
-                                                          (Ty.path "array")
-                                                          [ Value.Integer IntegerKind.Usize 1 ]
-                                                          [
-                                                            Ty.apply
-                                                              (Ty.path "&")
-                                                              []
-                                                              [ Ty.path "str" ]
-                                                          ],
-                                                        Value.Array [ mk_str (| " at byte pos " |) ]
-                                                      |)
-                                                    |)
-                                                  |)
-                                                |);
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (|
-                                                    M.borrow (|
-                                                      Pointer.Kind.Ref,
-                                                      M.alloc (|
-                                                        Ty.apply
-                                                          (Ty.path "array")
-                                                          [ Value.Integer IntegerKind.Usize 1 ]
-                                                          [ Ty.path "core::fmt::rt::Argument" ],
-                                                        Value.Array
-                                                          [
-                                                            M.call_closure (|
-                                                              Ty.path "core::fmt::rt::Argument",
-                                                              M.get_associated_function (|
-                                                                Ty.path "core::fmt::rt::Argument",
-                                                                "new_display",
-                                                                [],
-                                                                [ Ty.path "usize" ]
-                                                              |),
-                                                              [
-                                                                M.borrow (|
-                                                                  Pointer.Kind.Ref,
-                                                                  M.deref (|
-                                                                    M.borrow (|
-                                                                      Pointer.Kind.Ref,
-                                                                      pos
-                                                                    |)
-                                                                  |)
-                                                                |)
-                                                              ]
-                                                            |)
-                                                          ]
-                                                      |)
-                                                    |)
-                                                  |)
-                                                |)
-                                              ]
-                                            |)
-                                          ]
-                                        |)
-                                      ]
-                                    |)
-                                  |),
-                                  [
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let γ0_0 :=
-                                          M.SubPointer.get_struct_tuple_field (|
-                                            γ,
-                                            "core::ops::control_flow::ControlFlow::Break",
-                                            0
-                                          |) in
-                                        let residual :=
-                                          M.copy (|
-                                            Ty.apply
-                                              (Ty.path "core::result::Result")
-                                              []
-                                              [
-                                                Ty.path "core::convert::Infallible";
-                                                Ty.path "core::fmt::Error"
-                                              ],
-                                            γ0_0
-                                          |) in
-                                        M.never_to_any (|
-                                          M.read (|
-                                            M.return_ (|
-                                              M.call_closure (|
-                                                Ty.apply
-                                                  (Ty.path "core::result::Result")
-                                                  []
-                                                  [ Ty.tuple []; Ty.path "core::fmt::Error" ],
-                                                M.get_trait_method (|
-                                                  "core::ops::try_trait::FromResidual",
-                                                  Ty.apply
-                                                    (Ty.path "core::result::Result")
-                                                    []
-                                                    [ Ty.tuple []; Ty.path "core::fmt::Error" ],
-                                                  [],
-                                                  [
-                                                    Ty.apply
-                                                      (Ty.path "core::result::Result")
-                                                      []
-                                                      [
-                                                        Ty.path "core::convert::Infallible";
-                                                        Ty.path "core::fmt::Error"
-                                                      ]
-                                                  ],
-                                                  "from_residual",
-                                                  [],
-                                                  []
-                                                |),
-                                                [ M.read (| residual |) ]
-                                              |)
-                                            |)
-                                          |)
-                                        |)));
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let γ0_0 :=
-                                          M.SubPointer.get_struct_tuple_field (|
-                                            γ,
-                                            "core::ops::control_flow::ControlFlow::Continue",
-                                            0
-                                          |) in
-                                        let val := M.copy (| Ty.tuple [], γ0_0 |) in
-                                        M.read (| val |)))
-                                  ]
-                                |) in
-                              M.alloc (| Ty.tuple [], Value.Tuple [] |)
-                            |)));
-                        fun γ => ltac:(M.monadic (Value.Tuple []))
-                      ]
-                    |) in
-                  M.alloc (|
-                    Ty.apply
-                      (Ty.path "core::result::Result")
-                      []
-                      [ Ty.tuple []; Ty.path "core::fmt::Error" ],
-                    Value.StructTuple
-                      "core::result::Result::Ok"
-                      []
-                      [ Ty.tuple []; Ty.path "core::fmt::Error" ]
-                      [ Value.Tuple [] ]
-                  |)
-                |)))
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Axiom Implements :
-        M.IsTraitInstance
-          "core::fmt::Display"
-          (* Trait polymorphic consts *) []
-          (* Trait polymorphic types *) []
-          Self
-          (* Instance *) [ ("fmt", InstanceField.Method fmt) ].
-    End Impl_core_fmt_Display_for_core_ffi_c_str_FromBytesWithNulError.
     
     Module Impl_core_ffi_c_str_CStr.
       Definition Self : Ty.t := Ty.path "core::ffi::c_str::CStr".
@@ -2140,8 +1368,8 @@ Module ffi.
                       // of the byte slice.
                       Ok(unsafe { Self::from_bytes_with_nul_unchecked(bytes) })
                   }
-                  Some(nul_pos) => Err(FromBytesWithNulError::interior_nul(nul_pos)),
-                  None => Err(FromBytesWithNulError::not_nul_terminated()),
+                  Some(position) => Err(FromBytesWithNulError::InteriorNul { position }),
+                  None => Err(FromBytesWithNulError::NotNulTerminated),
               }
           }
       *)
@@ -2259,7 +1487,7 @@ Module ffi.
                             "core::option::Option::Some",
                             0
                           |) in
-                        let nul_pos := M.copy (| Ty.path "usize", γ0_0 |) in
+                        let position := M.copy (| Ty.path "usize", γ0_0 |) in
                         Value.StructTuple
                           "core::result::Result::Err"
                           []
@@ -2268,16 +1496,11 @@ Module ffi.
                             Ty.path "core::ffi::c_str::FromBytesWithNulError"
                           ]
                           [
-                            M.call_closure (|
-                              Ty.path "core::ffi::c_str::FromBytesWithNulError",
-                              M.get_associated_function (|
-                                Ty.path "core::ffi::c_str::FromBytesWithNulError",
-                                "interior_nul",
-                                [],
-                                []
-                              |),
-                              [ M.read (| nul_pos |) ]
-                            |)
+                            Value.mkStructRecord
+                              "core::ffi::c_str::FromBytesWithNulError::InteriorNul"
+                              []
+                              []
+                              [ ("position", M.read (| position |)) ]
                           ]));
                     fun γ =>
                       ltac:(M.monadic
@@ -2290,16 +1513,11 @@ Module ffi.
                             Ty.path "core::ffi::c_str::FromBytesWithNulError"
                           ]
                           [
-                            M.call_closure (|
-                              Ty.path "core::ffi::c_str::FromBytesWithNulError",
-                              M.get_associated_function (|
-                                Ty.path "core::ffi::c_str::FromBytesWithNulError",
-                                "not_nul_terminated",
-                                [],
-                                []
-                              |),
+                            Value.StructTuple
+                              "core::ffi::c_str::FromBytesWithNulError::NotNulTerminated"
                               []
-                            |)
+                              []
+                              []
                           ]))
                   ]
                 |)
@@ -2824,7 +2042,141 @@ Module ffi.
       Global Instance AssociatedFunction_to_str : M.IsAssociatedFunction.C Self "to_str" to_str.
       Admitted.
       Global Typeclasses Opaque to_str.
+      
+      (*
+          pub fn display(&self) -> impl fmt::Display {
+              crate::bstr::ByteStr::from_bytes(self.to_bytes())
+          }
+      *)
+      Definition display (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "core::ffi::c_str::CStr" ], self |) in
+            M.call_closure (|
+              Ty.apply (Ty.path "&") [] [ Ty.path "core::bstr::ByteStr" ],
+              M.get_associated_function (| Ty.path "core::bstr::ByteStr", "from_bytes", [], [] |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                      M.get_associated_function (|
+                        Ty.path "core::ffi::c_str::CStr",
+                        "to_bytes",
+                        [],
+                        []
+                      |),
+                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                    |)
+                  |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_display : M.IsAssociatedFunction.C Self "display" display.
+      Admitted.
+      Global Typeclasses Opaque display.
     End Impl_core_ffi_c_str_CStr.
+    
+    Module Impl_core_cmp_PartialEq_ref__core_ffi_c_str_CStr_for_core_ffi_c_str_CStr.
+      Definition Self : Ty.t := Ty.path "core::ffi::c_str::CStr".
+      
+      (*
+          fn eq(&self, other: &&Self) -> bool {
+              *self == **other
+          }
+      *)
+      Definition eq (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "core::ffi::c_str::CStr" ], self |) in
+            let other :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "&") [] [ Ty.path "core::ffi::c_str::CStr" ] ],
+                other
+              |) in
+            M.call_closure (|
+              Ty.path "bool",
+              M.get_trait_method (|
+                "core::cmp::PartialEq",
+                Ty.path "core::ffi::c_str::CStr",
+                [],
+                [ Ty.path "core::ffi::c_str::CStr" ],
+                "eq",
+                [],
+                []
+              |),
+              [
+                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| other |) |) |) |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*
+          fn ne(&self, other: &&Self) -> bool {
+              *self != **other
+          }
+      *)
+      Definition ne (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "core::ffi::c_str::CStr" ], self |) in
+            let other :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "&") [] [ Ty.path "core::ffi::c_str::CStr" ] ],
+                other
+              |) in
+            M.call_closure (|
+              Ty.path "bool",
+              M.get_trait_method (|
+                "core::cmp::PartialEq",
+                Ty.path "core::ffi::c_str::CStr",
+                [],
+                [ Ty.path "core::ffi::c_str::CStr" ],
+                "ne",
+                [],
+                []
+              |),
+              [
+                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| other |) |) |) |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::cmp::PartialEq"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *)
+          [ Ty.apply (Ty.path "&") [] [ Ty.path "core::ffi::c_str::CStr" ] ]
+          Self
+          (* Instance *) [ ("eq", InstanceField.Method eq); ("ne", InstanceField.Method ne) ].
+    End Impl_core_cmp_PartialEq_ref__core_ffi_c_str_CStr_for_core_ffi_c_str_CStr.
     
     Module Impl_core_cmp_PartialOrd_core_ffi_c_str_CStr_for_core_ffi_c_str_CStr.
       Definition Self : Ty.t := Ty.path "core::ffi::c_str::CStr".
@@ -3059,38 +2411,37 @@ Module ffi.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                BinOp.lt,
-                                [
-                                  M.read (|
-                                    M.SubPointer.get_struct_record_field (|
-                                      index,
-                                      "core::ops::range::RangeFrom",
-                                      "start"
-                                    |)
-                                  |);
-                                  M.call_closure (|
-                                    Ty.path "usize",
-                                    M.get_associated_function (|
-                                      Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                                      "len",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| bytes |) |)
-                                      |)
-                                    ]
+                              BinOp.lt,
+                              [
+                                M.read (|
+                                  M.SubPointer.get_struct_record_field (|
+                                    index,
+                                    "core::ops::range::RangeFrom",
+                                    "start"
                                   |)
-                                ]
-                              |)
-                            |)) in
+                                |);
+                                M.call_closure (|
+                                  Ty.path "usize",
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                                    "len",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| bytes |) |)
+                                    |)
+                                  ]
+                                |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.borrow (|
                           Pointer.Kind.Ref,
@@ -3165,119 +2516,116 @@ Module ffi.
                             Ty.path "never",
                             M.get_function (| "core::panicking::panic_fmt", [], [] |),
                             [
-                              M.call_closure (|
-                                Ty.path "core::fmt::Arguments",
-                                M.get_associated_function (|
-                                  Ty.path "core::fmt::Arguments",
-                                  "new_v1",
-                                  [
-                                    Value.Integer IntegerKind.Usize 2;
-                                    Value.Integer IntegerKind.Usize 2
-                                  ],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
+                              M.read (|
+                                let~ args :
+                                    Ty.tuple
+                                      [
+                                        Ty.apply (Ty.path "&") [] [ Ty.path "usize" ];
+                                        Ty.apply (Ty.path "&") [] [ Ty.path "usize" ]
+                                      ] :=
+                                  Value.Tuple
+                                    [
                                       M.borrow (|
                                         Pointer.Kind.Ref,
                                         M.alloc (|
-                                          Ty.apply
-                                            (Ty.path "array")
-                                            [ Value.Integer IntegerKind.Usize 2 ]
-                                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                          Value.Array
+                                          Ty.path "usize",
+                                          M.call_closure (|
+                                            Ty.path "usize",
+                                            M.get_associated_function (|
+                                              Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                                              "len",
+                                              [],
+                                              []
+                                            |),
                                             [
-                                              mk_str (| "index out of bounds: the len is " |);
-                                              mk_str (| " but the index is " |)
-                                            ]
-                                        |)
-                                      |)
-                                    |)
-                                  |);
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.alloc (|
-                                          Ty.apply
-                                            (Ty.path "array")
-                                            [ Value.Integer IntegerKind.Usize 2 ]
-                                            [ Ty.path "core::fmt::rt::Argument" ],
-                                          Value.Array
-                                            [
-                                              M.call_closure (|
-                                                Ty.path "core::fmt::rt::Argument",
-                                                M.get_associated_function (|
-                                                  Ty.path "core::fmt::rt::Argument",
-                                                  "new_display",
-                                                  [],
-                                                  [ Ty.path "usize" ]
-                                                |),
-                                                [
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.deref (|
-                                                      M.borrow (|
-                                                        Pointer.Kind.Ref,
-                                                        M.alloc (|
-                                                          Ty.path "usize",
-                                                          M.call_closure (|
-                                                            Ty.path "usize",
-                                                            M.get_associated_function (|
-                                                              Ty.apply
-                                                                (Ty.path "slice")
-                                                                []
-                                                                [ Ty.path "u8" ],
-                                                              "len",
-                                                              [],
-                                                              []
-                                                            |),
-                                                            [
-                                                              M.borrow (|
-                                                                Pointer.Kind.Ref,
-                                                                M.deref (| M.read (| bytes |) |)
-                                                              |)
-                                                            ]
-                                                          |)
-                                                        |)
-                                                      |)
-                                                    |)
-                                                  |)
-                                                ]
-                                              |);
-                                              M.call_closure (|
-                                                Ty.path "core::fmt::rt::Argument",
-                                                M.get_associated_function (|
-                                                  Ty.path "core::fmt::rt::Argument",
-                                                  "new_display",
-                                                  [],
-                                                  [ Ty.path "usize" ]
-                                                |),
-                                                [
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.deref (|
-                                                      M.borrow (|
-                                                        Pointer.Kind.Ref,
-                                                        M.SubPointer.get_struct_record_field (|
-                                                          index,
-                                                          "core::ops::range::RangeFrom",
-                                                          "start"
-                                                        |)
-                                                      |)
-                                                    |)
-                                                  |)
-                                                ]
+                                              M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| bytes |) |)
                                               |)
                                             ]
+                                          |)
+                                        |)
+                                      |);
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.SubPointer.get_struct_record_field (|
+                                          index,
+                                          "core::ops::range::RangeFrom",
+                                          "start"
                                         |)
                                       |)
-                                    |)
+                                    ] in
+                                let~ args :
+                                    Ty.apply
+                                      (Ty.path "array")
+                                      [ Value.Integer IntegerKind.Usize 2 ]
+                                      [ Ty.path "core::fmt::rt::Argument" ] :=
+                                  Value.Array
+                                    [
+                                      M.call_closure (|
+                                        Ty.path "core::fmt::rt::Argument",
+                                        M.get_associated_function (|
+                                          Ty.path "core::fmt::rt::Argument",
+                                          "new_display",
+                                          [],
+                                          [ Ty.path "usize" ]
+                                        |),
+                                        [
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (|
+                                              M.read (|
+                                                M.SubPointer.get_tuple_field (| args, 0 |)
+                                              |)
+                                            |)
+                                          |)
+                                        ]
+                                      |);
+                                      M.call_closure (|
+                                        Ty.path "core::fmt::rt::Argument",
+                                        M.get_associated_function (|
+                                          Ty.path "core::fmt::rt::Argument",
+                                          "new_display",
+                                          [],
+                                          [ Ty.path "usize" ]
+                                        |),
+                                        [
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (|
+                                              M.read (|
+                                                M.SubPointer.get_tuple_field (| args, 1 |)
+                                              |)
+                                            |)
+                                          |)
+                                        ]
+                                      |)
+                                    ] in
+                                M.alloc (|
+                                  Ty.path "core::fmt::Arguments",
+                                  M.call_closure (|
+                                    Ty.path "core::fmt::Arguments",
+                                    M.get_associated_function (|
+                                      Ty.path "core::fmt::Arguments",
+                                      "new",
+                                      [
+                                        Value.Integer IntegerKind.Usize 55;
+                                        Value.Integer IntegerKind.Usize 2
+                                      ],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| UnsupportedLiteral |) |)
+                                      |);
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
+                                      |)
+                                    ]
                                   |)
-                                ]
+                                |)
                               |)
                             ]
                           |)
@@ -3341,7 +2689,7 @@ Module ffi.
     
                 len
             } else {
-                extern "C" {
+                unsafe extern "C" {
                     /// Provided by libc or compiler_builtins.
                     fn strlen(s: *const c_char) -> usize;
                 }
@@ -3820,15 +3168,14 @@ Module ffi.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                BinOp.eq,
-                                [ M.read (| ret |); Value.Integer IntegerKind.U8 0 ]
-                              |)
-                            |)) in
+                              BinOp.eq,
+                              [ M.read (| ret |); Value.Integer IntegerKind.U8 0 ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         Value.StructTuple "core::option::Option::None" [] [ Ty.path "u8" ] []));
                     fun γ =>
@@ -3903,20 +3250,19 @@ Module ffi.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            M.get_associated_function (|
-                              Ty.path "core::ffi::c_str::Bytes",
-                              "is_empty",
-                              [],
-                              []
-                            |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                          |)
-                        |)) in
+                          M.get_associated_function (|
+                            Ty.path "core::ffi::c_str::Bytes",
+                            "is_empty",
+                            [],
+                            []
+                          |),
+                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     Value.Tuple
                       [

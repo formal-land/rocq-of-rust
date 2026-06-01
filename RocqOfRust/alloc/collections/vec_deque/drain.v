@@ -801,7 +801,7 @@ Module collections.
                             // this branch is never taken.
                             // We use `#[cold]` instead of `#[inline(never)]`, because inlining this
                             // function into the general case (`.drain(n..m)`) is fine.
-                            // See `tests/codegen/vecdeque-drain.rs` for a test.
+                            // See `tests/codegen-llvm/vecdeque-drain.rs` for a test.
                             #[cold]
                             fn join_head_and_tail_wrapping<T, A: Allocator>(
                                 source_deque: &mut VecDeque<T, A>,
@@ -873,40 +873,42 @@ Module collections.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                LogicalOp.and (|
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    M.get_function (| "core::mem::needs_drop", [], [ T ] |),
-                                    []
-                                  |),
-                                  ltac:(M.monadic
-                                    (M.call_closure (|
-                                      Ty.path "bool",
-                                      BinOp.ne,
-                                      [
+                                M.get_function (| "core::mem::needs_drop", [], [ T ] |),
+                                []
+                              |)
+                            |) in
+                          let _ :=
+                            is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                          let γ :=
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.ne,
+                                [
+                                  M.read (|
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (|
                                         M.read (|
-                                          M.SubPointer.get_struct_record_field (|
-                                            M.deref (|
-                                              M.read (|
-                                                M.SubPointer.get_struct_tuple_field (|
-                                                  guard,
-                                                  "alloc::collections::vec_deque::drain::drop::DropGuard",
-                                                  0
-                                                |)
-                                              |)
-                                            |),
-                                            "alloc::collections::vec_deque::drain::Drain",
-                                            "remaining"
+                                          M.SubPointer.get_struct_tuple_field (|
+                                            guard,
+                                            "alloc::collections::vec_deque::drain::drop::DropGuard",
+                                            0
                                           |)
-                                        |);
-                                        Value.Integer IntegerKind.Usize 0
-                                      ]
-                                    |)))
-                                |)
-                              |)) in
+                                        |)
+                                      |),
+                                      "alloc::collections::vec_deque::drain::Drain",
+                                      "remaining"
+                                    |)
+                                  |);
+                                  Value.Integer IntegerKind.Usize 0
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.match_operator (|
@@ -1160,24 +1162,23 @@ Module collections.
                           fun γ =>
                             ltac:(M.monadic
                               (let γ :=
-                                M.use
-                                  (M.alloc (|
+                                M.alloc (|
+                                  Ty.path "bool",
+                                  M.call_closure (|
                                     Ty.path "bool",
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      BinOp.eq,
-                                      [
-                                        M.read (|
-                                          M.SubPointer.get_struct_record_field (|
-                                            M.deref (| M.read (| self |) |),
-                                            "alloc::collections::vec_deque::drain::Drain",
-                                            "remaining"
-                                          |)
-                                        |);
-                                        Value.Integer IntegerKind.Usize 0
-                                      ]
-                                    |)
-                                  |)) in
+                                    BinOp.eq,
+                                    [
+                                      M.read (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "alloc::collections::vec_deque::drain::Drain",
+                                          "remaining"
+                                        |)
+                                      |);
+                                      Value.Integer IntegerKind.Usize 0
+                                    ]
+                                  |)
+                                |) in
                               let _ :=
                                 is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                               M.never_to_any (|
@@ -1461,24 +1462,23 @@ Module collections.
                           fun γ =>
                             ltac:(M.monadic
                               (let γ :=
-                                M.use
-                                  (M.alloc (|
+                                M.alloc (|
+                                  Ty.path "bool",
+                                  M.call_closure (|
                                     Ty.path "bool",
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      BinOp.eq,
-                                      [
-                                        M.read (|
-                                          M.SubPointer.get_struct_record_field (|
-                                            M.deref (| M.read (| self |) |),
-                                            "alloc::collections::vec_deque::drain::Drain",
-                                            "remaining"
-                                          |)
-                                        |);
-                                        Value.Integer IntegerKind.Usize 0
-                                      ]
-                                    |)
-                                  |)) in
+                                    BinOp.eq,
+                                    [
+                                      M.read (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "alloc::collections::vec_deque::drain::Drain",
+                                          "remaining"
+                                        |)
+                                      |);
+                                      Value.Integer IntegerKind.Usize 0
+                                    ]
+                                  |)
+                                |) in
                               let _ :=
                                 is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                               M.never_to_any (|

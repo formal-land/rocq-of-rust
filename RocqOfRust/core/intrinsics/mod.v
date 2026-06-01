@@ -2,10 +2,10 @@
 Require Import RocqOfRust.RocqOfRust.
 
 Module num.
-  Module from_str_radix_panic.
+  Module from_ascii_radix_panic.
     Module do_panic.
       (*
-              fn runtime($($arg: $ty),* ) $( -> $ret )? {
+              fn runtime$(<$($binders)*>)?($($arg: $ty),* ) $( -> $ret )? {
                   $runtime
               }
       *)
@@ -18,68 +18,54 @@ Module num.
               Ty.path "never",
               M.get_function (| "core::panicking::panic_fmt", [], [] |),
               [
-                M.call_closure (|
-                  Ty.path "core::fmt::Arguments",
-                  M.get_associated_function (|
+                M.read (|
+                  let~ args : Ty.tuple [ Ty.apply (Ty.path "&") [] [ Ty.path "u32" ] ] :=
+                    Value.Tuple [ M.borrow (| Pointer.Kind.Ref, radix |) ] in
+                  let~ args :
+                      Ty.apply
+                        (Ty.path "array")
+                        [ Value.Integer IntegerKind.Usize 1 ]
+                        [ Ty.path "core::fmt::rt::Argument" ] :=
+                    Value.Array
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::rt::Argument",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::rt::Argument",
+                            "new_display",
+                            [],
+                            [ Ty.path "u32" ]
+                          |),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| M.read (| M.SubPointer.get_tuple_field (| args, 0 |) |) |)
+                            |)
+                          ]
+                        |)
+                      ] in
+                  M.alloc (|
                     Ty.path "core::fmt::Arguments",
-                    "new_v1",
-                    [ Value.Integer IntegerKind.Usize 1; Value.Integer IntegerKind.Usize 1 ],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
+                    M.call_closure (|
+                      Ty.path "core::fmt::Arguments",
+                      M.get_associated_function (|
+                        Ty.path "core::fmt::Arguments",
+                        "new",
+                        [ Value.Integer IntegerKind.Usize 67; Value.Integer IntegerKind.Usize 1 ],
+                        []
+                      |),
+                      [
                         M.borrow (|
                           Pointer.Kind.Ref,
-                          M.alloc (|
-                            Ty.apply
-                              (Ty.path "array")
-                              [ Value.Integer IntegerKind.Usize 1 ]
-                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                            Value.Array
-                              [
-                                mk_str (|
-                                  "from_str_radix_int: must lie in the range `[2, 36]` - found "
-                                |)
-                              ]
-                          |)
-                        |)
-                      |)
-                    |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
+                          M.deref (| M.read (| UnsupportedLiteral |) |)
+                        |);
                         M.borrow (|
                           Pointer.Kind.Ref,
-                          M.alloc (|
-                            Ty.apply
-                              (Ty.path "array")
-                              [ Value.Integer IntegerKind.Usize 1 ]
-                              [ Ty.path "core::fmt::rt::Argument" ],
-                            Value.Array
-                              [
-                                M.call_closure (|
-                                  Ty.path "core::fmt::rt::Argument",
-                                  M.get_associated_function (|
-                                    Ty.path "core::fmt::rt::Argument",
-                                    "new_display",
-                                    [],
-                                    [ Ty.path "u32" ]
-                                  |),
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (| M.borrow (| Pointer.Kind.Ref, radix |) |)
-                                    |)
-                                  ]
-                                |)
-                              ]
-                          |)
+                          M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
                         |)
-                      |)
+                      ]
                     |)
-                  ]
+                  |)
                 |)
               ]
             |)))
@@ -87,12 +73,12 @@ Module num.
         end.
       
       Global Instance Instance_IsFunction_runtime :
-        M.IsFunction.C "core::num::from_str_radix_panic::do_panic::runtime" runtime.
+        M.IsFunction.C "core::num::from_ascii_radix_panic::do_panic::runtime" runtime.
       Admitted.
       Global Typeclasses Opaque runtime.
       
       (*
-              const fn compiletime($($arg: $ty),* ) $( -> $ret )? {
+              const fn compiletime$(<$($binders)*>)?($($arg: $ty),* ) $( -> $ret )? {
                   // Don't warn if one of the arguments is unused.
                   $(let _ = $arg;)*
       
@@ -118,32 +104,11 @@ Module num.
                           Ty.path "core::fmt::Arguments",
                           M.get_associated_function (|
                             Ty.path "core::fmt::Arguments",
-                            "new_const",
-                            [ Value.Integer IntegerKind.Usize 1 ],
+                            "from_str",
+                            [],
                             []
                           |),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.alloc (|
-                                    Ty.apply
-                                      (Ty.path "array")
-                                      [ Value.Integer IntegerKind.Usize 1 ]
-                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                    Value.Array
-                                      [
-                                        mk_str (|
-                                          "from_str_radix_int: must lie in the range `[2, 36]`"
-                                        |)
-                                      ]
-                                  |)
-                                |)
-                              |)
-                            |)
-                          ]
+                          [ mk_str (| "from_ascii_radix: radix must lie in the range `[2, 36]`" |) ]
                         |)
                       ]
                     |)))
@@ -153,2910 +118,664 @@ Module num.
         end.
       
       Global Instance Instance_IsFunction_compiletime :
-        M.IsFunction.C "core::num::from_str_radix_panic::do_panic::compiletime" compiletime.
+        M.IsFunction.C "core::num::from_ascii_radix_panic::do_panic::compiletime" compiletime.
       Admitted.
       Global Typeclasses Opaque compiletime.
     End do_panic.
-  End from_str_radix_panic.
+  End from_ascii_radix_panic.
 End num.
 
 Module intrinsics.
   (*
-  pub unsafe fn drop_in_place<T: ?Sized>(to_drop: *mut T) {
-      // SAFETY: see `ptr::drop_in_place`
-      unsafe { crate::ptr::drop_in_place(to_drop) }
+  Enum AtomicOrdering
+  {
+    const_params := [];
+    ty_params := [];
+    variants :=
+      [
+        {
+          name := "Relaxed";
+          item := StructTuple [];
+        };
+        {
+          name := "Release";
+          item := StructTuple [];
+        };
+        {
+          name := "Acquire";
+          item := StructTuple [];
+        };
+        {
+          name := "AcqRel";
+          item := StructTuple [];
+        };
+        {
+          name := "SeqCst";
+          item := StructTuple [];
+        }
+      ];
   }
   *)
-  Definition drop_in_place (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [], [ T ], [ to_drop ] =>
-      ltac:(M.monadic
-        (let to_drop := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], to_drop |) in
-        M.call_closure (|
-          Ty.tuple [],
-          M.get_function (| "core::ptr::drop_in_place", [], [ T ] |),
-          [ M.read (| to_drop |) ]
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
   
-  Global Instance Instance_IsFunction_drop_in_place :
-    M.IsFunction.C "core::intrinsics::drop_in_place" drop_in_place.
-  Admitted.
-  Global Typeclasses Opaque drop_in_place.
+  Axiom IsDiscriminant_AtomicOrdering_Relaxed :
+    M.IsDiscriminant "core::intrinsics::AtomicOrdering::Relaxed" 0.
+  Axiom IsDiscriminant_AtomicOrdering_Release :
+    M.IsDiscriminant "core::intrinsics::AtomicOrdering::Release" 1.
+  Axiom IsDiscriminant_AtomicOrdering_Acquire :
+    M.IsDiscriminant "core::intrinsics::AtomicOrdering::Acquire" 2.
+  Axiom IsDiscriminant_AtomicOrdering_AcqRel :
+    M.IsDiscriminant "core::intrinsics::AtomicOrdering::AcqRel" 3.
+  Axiom IsDiscriminant_AtomicOrdering_SeqCst :
+    M.IsDiscriminant "core::intrinsics::AtomicOrdering::SeqCst" 4.
+  
+  Module Impl_core_fmt_Debug_for_core_intrinsics_AtomicOrdering.
+    Definition Self : Ty.t := Ty.path "core::intrinsics::AtomicOrdering".
+    
+    (* Debug *)
+    Definition fmt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [], [ self; f ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply (Ty.path "&") [] [ Ty.path "core::intrinsics::AtomicOrdering" ],
+              self
+            |) in
+          let f :=
+            M.alloc (| Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ], f |) in
+          M.call_closure (|
+            Ty.apply
+              (Ty.path "core::result::Result")
+              []
+              [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+            M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_str", [], [] |),
+            [
+              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
+              M.match_operator (|
+                Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                self,
+                [
+                  fun γ =>
+                    ltac:(M.monadic
+                      (let γ := M.deref (| M.read (| γ |) |) in
+                      let _ :=
+                        M.is_struct_tuple (| γ, "core::intrinsics::AtomicOrdering::Relaxed" |) in
+                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Relaxed" |) |) |)));
+                  fun γ =>
+                    ltac:(M.monadic
+                      (let γ := M.deref (| M.read (| γ |) |) in
+                      let _ :=
+                        M.is_struct_tuple (| γ, "core::intrinsics::AtomicOrdering::Release" |) in
+                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Release" |) |) |)));
+                  fun γ =>
+                    ltac:(M.monadic
+                      (let γ := M.deref (| M.read (| γ |) |) in
+                      let _ :=
+                        M.is_struct_tuple (| γ, "core::intrinsics::AtomicOrdering::Acquire" |) in
+                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Acquire" |) |) |)));
+                  fun γ =>
+                    ltac:(M.monadic
+                      (let γ := M.deref (| M.read (| γ |) |) in
+                      let _ :=
+                        M.is_struct_tuple (| γ, "core::intrinsics::AtomicOrdering::AcqRel" |) in
+                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "AcqRel" |) |) |)));
+                  fun γ =>
+                    ltac:(M.monadic
+                      (let γ := M.deref (| M.read (| γ |) |) in
+                      let _ :=
+                        M.is_struct_tuple (| γ, "core::intrinsics::AtomicOrdering::SeqCst" |) in
+                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "SeqCst" |) |) |)))
+                ]
+              |)
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "core::fmt::Debug"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        Self
+        (* Instance *) [ ("fmt", InstanceField.Method fmt) ].
+  End Impl_core_fmt_Debug_for_core_intrinsics_AtomicOrdering.
+  
+  Module Impl_core_marker_ConstParamTy__for_core_intrinsics_AtomicOrdering.
+    Definition Self : Ty.t := Ty.path "core::intrinsics::AtomicOrdering".
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "core::marker::ConstParamTy_"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        Self
+        (* Instance *) [].
+  End Impl_core_marker_ConstParamTy__for_core_intrinsics_AtomicOrdering.
+  
+  Module Impl_core_marker_StructuralPartialEq_for_core_intrinsics_AtomicOrdering.
+    Definition Self : Ty.t := Ty.path "core::intrinsics::AtomicOrdering".
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "core::marker::StructuralPartialEq"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        Self
+        (* Instance *) [].
+  End Impl_core_marker_StructuralPartialEq_for_core_intrinsics_AtomicOrdering.
+  
+  Module Impl_core_cmp_PartialEq_core_intrinsics_AtomicOrdering_for_core_intrinsics_AtomicOrdering.
+    Definition Self : Ty.t := Ty.path "core::intrinsics::AtomicOrdering".
+    
+    (* PartialEq *)
+    Definition eq (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [], [ self; other ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply (Ty.path "&") [] [ Ty.path "core::intrinsics::AtomicOrdering" ],
+              self
+            |) in
+          let other :=
+            M.alloc (|
+              Ty.apply (Ty.path "&") [] [ Ty.path "core::intrinsics::AtomicOrdering" ],
+              other
+            |) in
+          M.read (|
+            let~ __self_discr : Ty.path "isize" :=
+              M.call_closure (|
+                Ty.path "isize",
+                M.get_function (|
+                  "core::intrinsics::discriminant_value",
+                  [],
+                  [ Ty.path "core::intrinsics::AtomicOrdering" ]
+                |),
+                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+              |) in
+            let~ __arg1_discr : Ty.path "isize" :=
+              M.call_closure (|
+                Ty.path "isize",
+                M.get_function (|
+                  "core::intrinsics::discriminant_value",
+                  [],
+                  [ Ty.path "core::intrinsics::AtomicOrdering" ]
+                |),
+                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+              |) in
+            M.alloc (|
+              Ty.path "bool",
+              M.call_closure (|
+                Ty.path "bool",
+                BinOp.eq,
+                [ M.read (| __self_discr |); M.read (| __arg1_discr |) ]
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "core::cmp::PartialEq"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) [ Ty.path "core::intrinsics::AtomicOrdering" ]
+        Self
+        (* Instance *) [ ("eq", InstanceField.Method eq) ].
+  End Impl_core_cmp_PartialEq_core_intrinsics_AtomicOrdering_for_core_intrinsics_AtomicOrdering.
+  
+  Module Impl_core_cmp_Eq_for_core_intrinsics_AtomicOrdering.
+    Definition Self : Ty.t := Ty.path "core::intrinsics::AtomicOrdering".
+    
+    (* Eq *)
+    Definition assert_receiver_is_total_eq
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply (Ty.path "&") [] [ Ty.path "core::intrinsics::AtomicOrdering" ],
+              self
+            |) in
+          Value.Tuple []))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "core::cmp::Eq"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        Self
+        (* Instance *)
+        [ ("assert_receiver_is_total_eq", InstanceField.Method assert_receiver_is_total_eq) ].
+  End Impl_core_cmp_Eq_for_core_intrinsics_AtomicOrdering.
   
   (*
-  pub unsafe fn atomic_cxchg_relaxed_relaxed<T: Copy>(_dst: *mut T, _old: T, _src: T) -> (T, bool) {
-      unreachable!()
-  }
+  pub unsafe fn atomic_cxchg<
+      T: Copy,
+      const ORD_SUCC: AtomicOrdering,
+      const ORD_FAIL: AtomicOrdering,
+  >(
+      dst: *mut T,
+      old: T,
+      src: T,
+  ) -> (T, bool);
   *)
-  Definition atomic_cxchg_relaxed_relaxed
-      (ε : list Value.t)
-      (τ : list Ty.t)
-      (α : list Value.t)
-      : M :=
+  Definition atomic_cxchg (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [ T ], [ _dst; _old; _src ] =>
+    | [ ORD_SUCC; ORD_FAIL ], [ T ], [ dst; old; src ] =>
       ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _old := M.alloc (| T, _old |) in
-        let _src := M.alloc (| T, _src |) in
+        (let dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], dst |) in
+        let old := M.alloc (| T, old |) in
+        let src := M.alloc (| T, src |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
-  Global Instance Instance_IsFunction_atomic_cxchg_relaxed_relaxed :
-    M.IsFunction.C "core::intrinsics::atomic_cxchg_relaxed_relaxed" atomic_cxchg_relaxed_relaxed.
+  Global Instance Instance_IsFunction_atomic_cxchg :
+    M.IsFunction.C "core::intrinsics::atomic_cxchg" atomic_cxchg.
   Admitted.
-  Global Typeclasses Opaque atomic_cxchg_relaxed_relaxed.
+  Global Typeclasses Opaque atomic_cxchg.
   
   (*
-  pub unsafe fn atomic_cxchg_relaxed_acquire<T: Copy>(_dst: *mut T, _old: T, _src: T) -> (T, bool) {
-      unreachable!()
-  }
-  *)
-  Definition atomic_cxchg_relaxed_acquire
-      (ε : list Value.t)
-      (τ : list Ty.t)
-      (α : list Value.t)
-      : M :=
-    match ε, τ, α with
-    | [], [ T ], [ _dst; _old; _src ] =>
-      ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _old := M.alloc (| T, _old |) in
-        let _src := M.alloc (| T, _src |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_cxchg_relaxed_acquire :
-    M.IsFunction.C "core::intrinsics::atomic_cxchg_relaxed_acquire" atomic_cxchg_relaxed_acquire.
-  Admitted.
-  Global Typeclasses Opaque atomic_cxchg_relaxed_acquire.
-  
-  (*
-  pub unsafe fn atomic_cxchg_relaxed_seqcst<T: Copy>(_dst: *mut T, _old: T, _src: T) -> (T, bool) {
-      unreachable!()
-  }
-  *)
-  Definition atomic_cxchg_relaxed_seqcst
-      (ε : list Value.t)
-      (τ : list Ty.t)
-      (α : list Value.t)
-      : M :=
-    match ε, τ, α with
-    | [], [ T ], [ _dst; _old; _src ] =>
-      ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _old := M.alloc (| T, _old |) in
-        let _src := M.alloc (| T, _src |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_cxchg_relaxed_seqcst :
-    M.IsFunction.C "core::intrinsics::atomic_cxchg_relaxed_seqcst" atomic_cxchg_relaxed_seqcst.
-  Admitted.
-  Global Typeclasses Opaque atomic_cxchg_relaxed_seqcst.
-  
-  (*
-  pub unsafe fn atomic_cxchg_acquire_relaxed<T: Copy>(_dst: *mut T, _old: T, _src: T) -> (T, bool) {
-      unreachable!()
-  }
-  *)
-  Definition atomic_cxchg_acquire_relaxed
-      (ε : list Value.t)
-      (τ : list Ty.t)
-      (α : list Value.t)
-      : M :=
-    match ε, τ, α with
-    | [], [ T ], [ _dst; _old; _src ] =>
-      ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _old := M.alloc (| T, _old |) in
-        let _src := M.alloc (| T, _src |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_cxchg_acquire_relaxed :
-    M.IsFunction.C "core::intrinsics::atomic_cxchg_acquire_relaxed" atomic_cxchg_acquire_relaxed.
-  Admitted.
-  Global Typeclasses Opaque atomic_cxchg_acquire_relaxed.
-  
-  (*
-  pub unsafe fn atomic_cxchg_acquire_acquire<T: Copy>(_dst: *mut T, _old: T, _src: T) -> (T, bool) {
-      unreachable!()
-  }
-  *)
-  Definition atomic_cxchg_acquire_acquire
-      (ε : list Value.t)
-      (τ : list Ty.t)
-      (α : list Value.t)
-      : M :=
-    match ε, τ, α with
-    | [], [ T ], [ _dst; _old; _src ] =>
-      ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _old := M.alloc (| T, _old |) in
-        let _src := M.alloc (| T, _src |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_cxchg_acquire_acquire :
-    M.IsFunction.C "core::intrinsics::atomic_cxchg_acquire_acquire" atomic_cxchg_acquire_acquire.
-  Admitted.
-  Global Typeclasses Opaque atomic_cxchg_acquire_acquire.
-  
-  (*
-  pub unsafe fn atomic_cxchg_acquire_seqcst<T: Copy>(_dst: *mut T, _old: T, _src: T) -> (T, bool) {
-      unreachable!()
-  }
-  *)
-  Definition atomic_cxchg_acquire_seqcst
-      (ε : list Value.t)
-      (τ : list Ty.t)
-      (α : list Value.t)
-      : M :=
-    match ε, τ, α with
-    | [], [ T ], [ _dst; _old; _src ] =>
-      ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _old := M.alloc (| T, _old |) in
-        let _src := M.alloc (| T, _src |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_cxchg_acquire_seqcst :
-    M.IsFunction.C "core::intrinsics::atomic_cxchg_acquire_seqcst" atomic_cxchg_acquire_seqcst.
-  Admitted.
-  Global Typeclasses Opaque atomic_cxchg_acquire_seqcst.
-  
-  (*
-  pub unsafe fn atomic_cxchg_release_relaxed<T: Copy>(_dst: *mut T, _old: T, _src: T) -> (T, bool) {
-      unreachable!()
-  }
-  *)
-  Definition atomic_cxchg_release_relaxed
-      (ε : list Value.t)
-      (τ : list Ty.t)
-      (α : list Value.t)
-      : M :=
-    match ε, τ, α with
-    | [], [ T ], [ _dst; _old; _src ] =>
-      ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _old := M.alloc (| T, _old |) in
-        let _src := M.alloc (| T, _src |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_cxchg_release_relaxed :
-    M.IsFunction.C "core::intrinsics::atomic_cxchg_release_relaxed" atomic_cxchg_release_relaxed.
-  Admitted.
-  Global Typeclasses Opaque atomic_cxchg_release_relaxed.
-  
-  (*
-  pub unsafe fn atomic_cxchg_release_acquire<T: Copy>(_dst: *mut T, _old: T, _src: T) -> (T, bool) {
-      unreachable!()
-  }
-  *)
-  Definition atomic_cxchg_release_acquire
-      (ε : list Value.t)
-      (τ : list Ty.t)
-      (α : list Value.t)
-      : M :=
-    match ε, τ, α with
-    | [], [ T ], [ _dst; _old; _src ] =>
-      ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _old := M.alloc (| T, _old |) in
-        let _src := M.alloc (| T, _src |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_cxchg_release_acquire :
-    M.IsFunction.C "core::intrinsics::atomic_cxchg_release_acquire" atomic_cxchg_release_acquire.
-  Admitted.
-  Global Typeclasses Opaque atomic_cxchg_release_acquire.
-  
-  (*
-  pub unsafe fn atomic_cxchg_release_seqcst<T: Copy>(_dst: *mut T, _old: T, _src: T) -> (T, bool) {
-      unreachable!()
-  }
-  *)
-  Definition atomic_cxchg_release_seqcst
-      (ε : list Value.t)
-      (τ : list Ty.t)
-      (α : list Value.t)
-      : M :=
-    match ε, τ, α with
-    | [], [ T ], [ _dst; _old; _src ] =>
-      ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _old := M.alloc (| T, _old |) in
-        let _src := M.alloc (| T, _src |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_cxchg_release_seqcst :
-    M.IsFunction.C "core::intrinsics::atomic_cxchg_release_seqcst" atomic_cxchg_release_seqcst.
-  Admitted.
-  Global Typeclasses Opaque atomic_cxchg_release_seqcst.
-  
-  (*
-  pub unsafe fn atomic_cxchg_acqrel_relaxed<T: Copy>(_dst: *mut T, _old: T, _src: T) -> (T, bool) {
-      unreachable!()
-  }
-  *)
-  Definition atomic_cxchg_acqrel_relaxed
-      (ε : list Value.t)
-      (τ : list Ty.t)
-      (α : list Value.t)
-      : M :=
-    match ε, τ, α with
-    | [], [ T ], [ _dst; _old; _src ] =>
-      ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _old := M.alloc (| T, _old |) in
-        let _src := M.alloc (| T, _src |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_cxchg_acqrel_relaxed :
-    M.IsFunction.C "core::intrinsics::atomic_cxchg_acqrel_relaxed" atomic_cxchg_acqrel_relaxed.
-  Admitted.
-  Global Typeclasses Opaque atomic_cxchg_acqrel_relaxed.
-  
-  (*
-  pub unsafe fn atomic_cxchg_acqrel_acquire<T: Copy>(_dst: *mut T, _old: T, _src: T) -> (T, bool) {
-      unreachable!()
-  }
-  *)
-  Definition atomic_cxchg_acqrel_acquire
-      (ε : list Value.t)
-      (τ : list Ty.t)
-      (α : list Value.t)
-      : M :=
-    match ε, τ, α with
-    | [], [ T ], [ _dst; _old; _src ] =>
-      ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _old := M.alloc (| T, _old |) in
-        let _src := M.alloc (| T, _src |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_cxchg_acqrel_acquire :
-    M.IsFunction.C "core::intrinsics::atomic_cxchg_acqrel_acquire" atomic_cxchg_acqrel_acquire.
-  Admitted.
-  Global Typeclasses Opaque atomic_cxchg_acqrel_acquire.
-  
-  (*
-  pub unsafe fn atomic_cxchg_acqrel_seqcst<T: Copy>(_dst: *mut T, _old: T, _src: T) -> (T, bool) {
-      unreachable!()
-  }
-  *)
-  Definition atomic_cxchg_acqrel_seqcst (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [], [ T ], [ _dst; _old; _src ] =>
-      ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _old := M.alloc (| T, _old |) in
-        let _src := M.alloc (| T, _src |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_cxchg_acqrel_seqcst :
-    M.IsFunction.C "core::intrinsics::atomic_cxchg_acqrel_seqcst" atomic_cxchg_acqrel_seqcst.
-  Admitted.
-  Global Typeclasses Opaque atomic_cxchg_acqrel_seqcst.
-  
-  (*
-  pub unsafe fn atomic_cxchg_seqcst_relaxed<T: Copy>(_dst: *mut T, _old: T, _src: T) -> (T, bool) {
-      unreachable!()
-  }
-  *)
-  Definition atomic_cxchg_seqcst_relaxed
-      (ε : list Value.t)
-      (τ : list Ty.t)
-      (α : list Value.t)
-      : M :=
-    match ε, τ, α with
-    | [], [ T ], [ _dst; _old; _src ] =>
-      ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _old := M.alloc (| T, _old |) in
-        let _src := M.alloc (| T, _src |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_cxchg_seqcst_relaxed :
-    M.IsFunction.C "core::intrinsics::atomic_cxchg_seqcst_relaxed" atomic_cxchg_seqcst_relaxed.
-  Admitted.
-  Global Typeclasses Opaque atomic_cxchg_seqcst_relaxed.
-  
-  (*
-  pub unsafe fn atomic_cxchg_seqcst_acquire<T: Copy>(_dst: *mut T, _old: T, _src: T) -> (T, bool) {
-      unreachable!()
-  }
-  *)
-  Definition atomic_cxchg_seqcst_acquire
-      (ε : list Value.t)
-      (τ : list Ty.t)
-      (α : list Value.t)
-      : M :=
-    match ε, τ, α with
-    | [], [ T ], [ _dst; _old; _src ] =>
-      ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _old := M.alloc (| T, _old |) in
-        let _src := M.alloc (| T, _src |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_cxchg_seqcst_acquire :
-    M.IsFunction.C "core::intrinsics::atomic_cxchg_seqcst_acquire" atomic_cxchg_seqcst_acquire.
-  Admitted.
-  Global Typeclasses Opaque atomic_cxchg_seqcst_acquire.
-  
-  (*
-  pub unsafe fn atomic_cxchg_seqcst_seqcst<T: Copy>(_dst: *mut T, _old: T, _src: T) -> (T, bool) {
-      unreachable!()
-  }
-  *)
-  Definition atomic_cxchg_seqcst_seqcst (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [], [ T ], [ _dst; _old; _src ] =>
-      ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _old := M.alloc (| T, _old |) in
-        let _src := M.alloc (| T, _src |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_cxchg_seqcst_seqcst :
-    M.IsFunction.C "core::intrinsics::atomic_cxchg_seqcst_seqcst" atomic_cxchg_seqcst_seqcst.
-  Admitted.
-  Global Typeclasses Opaque atomic_cxchg_seqcst_seqcst.
-  
-  (*
-  pub unsafe fn atomic_cxchgweak_relaxed_relaxed<T: Copy>(
+  pub unsafe fn atomic_cxchgweak<
+      T: Copy,
+      const ORD_SUCC: AtomicOrdering,
+      const ORD_FAIL: AtomicOrdering,
+  >(
       _dst: *mut T,
       _old: T,
       _src: T,
-  ) -> (T, bool) {
-      unreachable!()
-  }
+  ) -> (T, bool);
   *)
-  Definition atomic_cxchgweak_relaxed_relaxed
-      (ε : list Value.t)
-      (τ : list Ty.t)
-      (α : list Value.t)
-      : M :=
+  Definition atomic_cxchgweak (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [ T ], [ _dst; _old; _src ] =>
+    | [ ORD_SUCC; ORD_FAIL ], [ T ], [ _dst; _old; _src ] =>
       ltac:(M.monadic
         (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
         let _old := M.alloc (| T, _old |) in
         let _src := M.alloc (| T, _src |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
-  Global Instance Instance_IsFunction_atomic_cxchgweak_relaxed_relaxed :
-    M.IsFunction.C
-      "core::intrinsics::atomic_cxchgweak_relaxed_relaxed"
-      atomic_cxchgweak_relaxed_relaxed.
+  Global Instance Instance_IsFunction_atomic_cxchgweak :
+    M.IsFunction.C "core::intrinsics::atomic_cxchgweak" atomic_cxchgweak.
   Admitted.
-  Global Typeclasses Opaque atomic_cxchgweak_relaxed_relaxed.
+  Global Typeclasses Opaque atomic_cxchgweak.
   
-  (*
-  pub unsafe fn atomic_cxchgweak_relaxed_acquire<T: Copy>(
-      _dst: *mut T,
-      _old: T,
-      _src: T,
-  ) -> (T, bool) {
-      unreachable!()
-  }
-  *)
-  Definition atomic_cxchgweak_relaxed_acquire
-      (ε : list Value.t)
-      (τ : list Ty.t)
-      (α : list Value.t)
-      : M :=
+  (* pub unsafe fn atomic_load<T: Copy, const ORD: AtomicOrdering>(src: *const T) -> T; *)
+  Definition atomic_load (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [ T ], [ _dst; _old; _src ] =>
+    | [ ORD ], [ T ], [ src ] =>
       ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _old := M.alloc (| T, _old |) in
-        let _src := M.alloc (| T, _src |) in
+        (let src := M.alloc (| Ty.apply (Ty.path "*const") [] [ T ], src |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
-  Global Instance Instance_IsFunction_atomic_cxchgweak_relaxed_acquire :
-    M.IsFunction.C
-      "core::intrinsics::atomic_cxchgweak_relaxed_acquire"
-      atomic_cxchgweak_relaxed_acquire.
+  Global Instance Instance_IsFunction_atomic_load :
+    M.IsFunction.C "core::intrinsics::atomic_load" atomic_load.
   Admitted.
-  Global Typeclasses Opaque atomic_cxchgweak_relaxed_acquire.
+  Global Typeclasses Opaque atomic_load.
   
-  (*
-  pub unsafe fn atomic_cxchgweak_relaxed_seqcst<T: Copy>(
-      _dst: *mut T,
-      _old: T,
-      _src: T,
-  ) -> (T, bool) {
-      unreachable!()
-  }
-  *)
-  Definition atomic_cxchgweak_relaxed_seqcst
-      (ε : list Value.t)
-      (τ : list Ty.t)
-      (α : list Value.t)
-      : M :=
+  (* pub unsafe fn atomic_store<T: Copy, const ORD: AtomicOrdering>(dst: *mut T, val: T); *)
+  Definition atomic_store (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [ T ], [ _dst; _old; _src ] =>
+    | [ ORD ], [ T ], [ dst; val ] =>
       ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _old := M.alloc (| T, _old |) in
-        let _src := M.alloc (| T, _src |) in
+        (let dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], dst |) in
+        let val := M.alloc (| T, val |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
-  Global Instance Instance_IsFunction_atomic_cxchgweak_relaxed_seqcst :
-    M.IsFunction.C
-      "core::intrinsics::atomic_cxchgweak_relaxed_seqcst"
-      atomic_cxchgweak_relaxed_seqcst.
+  Global Instance Instance_IsFunction_atomic_store :
+    M.IsFunction.C "core::intrinsics::atomic_store" atomic_store.
   Admitted.
-  Global Typeclasses Opaque atomic_cxchgweak_relaxed_seqcst.
+  Global Typeclasses Opaque atomic_store.
   
-  (*
-  pub unsafe fn atomic_cxchgweak_acquire_relaxed<T: Copy>(
-      _dst: *mut T,
-      _old: T,
-      _src: T,
-  ) -> (T, bool) {
-      unreachable!()
-  }
-  *)
-  Definition atomic_cxchgweak_acquire_relaxed
-      (ε : list Value.t)
-      (τ : list Ty.t)
-      (α : list Value.t)
-      : M :=
+  (* pub unsafe fn atomic_xchg<T: Copy, const ORD: AtomicOrdering>(dst: *mut T, src: T) -> T; *)
+  Definition atomic_xchg (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [ T ], [ _dst; _old; _src ] =>
+    | [ ORD ], [ T ], [ dst; src ] =>
       ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _old := M.alloc (| T, _old |) in
-        let _src := M.alloc (| T, _src |) in
+        (let dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], dst |) in
+        let src := M.alloc (| T, src |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
-  Global Instance Instance_IsFunction_atomic_cxchgweak_acquire_relaxed :
-    M.IsFunction.C
-      "core::intrinsics::atomic_cxchgweak_acquire_relaxed"
-      atomic_cxchgweak_acquire_relaxed.
+  Global Instance Instance_IsFunction_atomic_xchg :
+    M.IsFunction.C "core::intrinsics::atomic_xchg" atomic_xchg.
   Admitted.
-  Global Typeclasses Opaque atomic_cxchgweak_acquire_relaxed.
+  Global Typeclasses Opaque atomic_xchg.
   
-  (*
-  pub unsafe fn atomic_cxchgweak_acquire_acquire<T: Copy>(
-      _dst: *mut T,
-      _old: T,
-      _src: T,
-  ) -> (T, bool) {
-      unreachable!()
-  }
-  *)
-  Definition atomic_cxchgweak_acquire_acquire
-      (ε : list Value.t)
-      (τ : list Ty.t)
-      (α : list Value.t)
-      : M :=
+  (* pub unsafe fn atomic_xadd<T: Copy, U: Copy, const ORD: AtomicOrdering>(dst: *mut T, src: U) -> T; *)
+  Definition atomic_xadd (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [ T ], [ _dst; _old; _src ] =>
+    | [ ORD ], [ T; U ], [ dst; src ] =>
       ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _old := M.alloc (| T, _old |) in
-        let _src := M.alloc (| T, _src |) in
+        (let dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], dst |) in
+        let src := M.alloc (| U, src |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
-  Global Instance Instance_IsFunction_atomic_cxchgweak_acquire_acquire :
-    M.IsFunction.C
-      "core::intrinsics::atomic_cxchgweak_acquire_acquire"
-      atomic_cxchgweak_acquire_acquire.
+  Global Instance Instance_IsFunction_atomic_xadd :
+    M.IsFunction.C "core::intrinsics::atomic_xadd" atomic_xadd.
   Admitted.
-  Global Typeclasses Opaque atomic_cxchgweak_acquire_acquire.
+  Global Typeclasses Opaque atomic_xadd.
   
-  (*
-  pub unsafe fn atomic_cxchgweak_acquire_seqcst<T: Copy>(
-      _dst: *mut T,
-      _old: T,
-      _src: T,
-  ) -> (T, bool) {
-      unreachable!()
-  }
-  *)
-  Definition atomic_cxchgweak_acquire_seqcst
-      (ε : list Value.t)
-      (τ : list Ty.t)
-      (α : list Value.t)
-      : M :=
+  (* pub unsafe fn atomic_xsub<T: Copy, U: Copy, const ORD: AtomicOrdering>(dst: *mut T, src: U) -> T; *)
+  Definition atomic_xsub (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [ T ], [ _dst; _old; _src ] =>
+    | [ ORD ], [ T; U ], [ dst; src ] =>
       ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _old := M.alloc (| T, _old |) in
-        let _src := M.alloc (| T, _src |) in
+        (let dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], dst |) in
+        let src := M.alloc (| U, src |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
-  Global Instance Instance_IsFunction_atomic_cxchgweak_acquire_seqcst :
-    M.IsFunction.C
-      "core::intrinsics::atomic_cxchgweak_acquire_seqcst"
-      atomic_cxchgweak_acquire_seqcst.
+  Global Instance Instance_IsFunction_atomic_xsub :
+    M.IsFunction.C "core::intrinsics::atomic_xsub" atomic_xsub.
   Admitted.
-  Global Typeclasses Opaque atomic_cxchgweak_acquire_seqcst.
+  Global Typeclasses Opaque atomic_xsub.
   
-  (*
-  pub unsafe fn atomic_cxchgweak_release_relaxed<T: Copy>(
-      _dst: *mut T,
-      _old: T,
-      _src: T,
-  ) -> (T, bool) {
-      unreachable!()
-  }
-  *)
-  Definition atomic_cxchgweak_release_relaxed
-      (ε : list Value.t)
-      (τ : list Ty.t)
-      (α : list Value.t)
-      : M :=
+  (* pub unsafe fn atomic_and<T: Copy, U: Copy, const ORD: AtomicOrdering>(dst: *mut T, src: U) -> T; *)
+  Definition atomic_and (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [ T ], [ _dst; _old; _src ] =>
+    | [ ORD ], [ T; U ], [ dst; src ] =>
       ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _old := M.alloc (| T, _old |) in
-        let _src := M.alloc (| T, _src |) in
+        (let dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], dst |) in
+        let src := M.alloc (| U, src |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
-  Global Instance Instance_IsFunction_atomic_cxchgweak_release_relaxed :
-    M.IsFunction.C
-      "core::intrinsics::atomic_cxchgweak_release_relaxed"
-      atomic_cxchgweak_release_relaxed.
+  Global Instance Instance_IsFunction_atomic_and :
+    M.IsFunction.C "core::intrinsics::atomic_and" atomic_and.
   Admitted.
-  Global Typeclasses Opaque atomic_cxchgweak_release_relaxed.
+  Global Typeclasses Opaque atomic_and.
   
-  (*
-  pub unsafe fn atomic_cxchgweak_release_acquire<T: Copy>(
-      _dst: *mut T,
-      _old: T,
-      _src: T,
-  ) -> (T, bool) {
-      unreachable!()
-  }
-  *)
-  Definition atomic_cxchgweak_release_acquire
-      (ε : list Value.t)
-      (τ : list Ty.t)
-      (α : list Value.t)
-      : M :=
+  (* pub unsafe fn atomic_nand<T: Copy, U: Copy, const ORD: AtomicOrdering>(dst: *mut T, src: U) -> T; *)
+  Definition atomic_nand (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [ T ], [ _dst; _old; _src ] =>
+    | [ ORD ], [ T; U ], [ dst; src ] =>
       ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _old := M.alloc (| T, _old |) in
-        let _src := M.alloc (| T, _src |) in
+        (let dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], dst |) in
+        let src := M.alloc (| U, src |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
-  Global Instance Instance_IsFunction_atomic_cxchgweak_release_acquire :
-    M.IsFunction.C
-      "core::intrinsics::atomic_cxchgweak_release_acquire"
-      atomic_cxchgweak_release_acquire.
+  Global Instance Instance_IsFunction_atomic_nand :
+    M.IsFunction.C "core::intrinsics::atomic_nand" atomic_nand.
   Admitted.
-  Global Typeclasses Opaque atomic_cxchgweak_release_acquire.
+  Global Typeclasses Opaque atomic_nand.
   
-  (*
-  pub unsafe fn atomic_cxchgweak_release_seqcst<T: Copy>(
-      _dst: *mut T,
-      _old: T,
-      _src: T,
-  ) -> (T, bool) {
-      unreachable!()
-  }
-  *)
-  Definition atomic_cxchgweak_release_seqcst
-      (ε : list Value.t)
-      (τ : list Ty.t)
-      (α : list Value.t)
-      : M :=
+  (* pub unsafe fn atomic_or<T: Copy, U: Copy, const ORD: AtomicOrdering>(dst: *mut T, src: U) -> T; *)
+  Definition atomic_or (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [ T ], [ _dst; _old; _src ] =>
+    | [ ORD ], [ T; U ], [ dst; src ] =>
       ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _old := M.alloc (| T, _old |) in
-        let _src := M.alloc (| T, _src |) in
+        (let dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], dst |) in
+        let src := M.alloc (| U, src |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
-  Global Instance Instance_IsFunction_atomic_cxchgweak_release_seqcst :
-    M.IsFunction.C
-      "core::intrinsics::atomic_cxchgweak_release_seqcst"
-      atomic_cxchgweak_release_seqcst.
+  Global Instance Instance_IsFunction_atomic_or :
+    M.IsFunction.C "core::intrinsics::atomic_or" atomic_or.
   Admitted.
-  Global Typeclasses Opaque atomic_cxchgweak_release_seqcst.
+  Global Typeclasses Opaque atomic_or.
   
-  (*
-  pub unsafe fn atomic_cxchgweak_acqrel_relaxed<T: Copy>(
-      _dst: *mut T,
-      _old: T,
-      _src: T,
-  ) -> (T, bool) {
-      unreachable!()
-  }
-  *)
-  Definition atomic_cxchgweak_acqrel_relaxed
-      (ε : list Value.t)
-      (τ : list Ty.t)
-      (α : list Value.t)
-      : M :=
+  (* pub unsafe fn atomic_xor<T: Copy, U: Copy, const ORD: AtomicOrdering>(dst: *mut T, src: U) -> T; *)
+  Definition atomic_xor (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [ T ], [ _dst; _old; _src ] =>
+    | [ ORD ], [ T; U ], [ dst; src ] =>
       ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _old := M.alloc (| T, _old |) in
-        let _src := M.alloc (| T, _src |) in
+        (let dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], dst |) in
+        let src := M.alloc (| U, src |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
-  Global Instance Instance_IsFunction_atomic_cxchgweak_acqrel_relaxed :
-    M.IsFunction.C
-      "core::intrinsics::atomic_cxchgweak_acqrel_relaxed"
-      atomic_cxchgweak_acqrel_relaxed.
+  Global Instance Instance_IsFunction_atomic_xor :
+    M.IsFunction.C "core::intrinsics::atomic_xor" atomic_xor.
   Admitted.
-  Global Typeclasses Opaque atomic_cxchgweak_acqrel_relaxed.
+  Global Typeclasses Opaque atomic_xor.
   
-  (*
-  pub unsafe fn atomic_cxchgweak_acqrel_acquire<T: Copy>(
-      _dst: *mut T,
-      _old: T,
-      _src: T,
-  ) -> (T, bool) {
-      unreachable!()
-  }
-  *)
-  Definition atomic_cxchgweak_acqrel_acquire
-      (ε : list Value.t)
-      (τ : list Ty.t)
-      (α : list Value.t)
-      : M :=
+  (* pub unsafe fn atomic_max<T: Copy, const ORD: AtomicOrdering>(dst: *mut T, src: T) -> T; *)
+  Definition atomic_max (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [ T ], [ _dst; _old; _src ] =>
+    | [ ORD ], [ T ], [ dst; src ] =>
       ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _old := M.alloc (| T, _old |) in
-        let _src := M.alloc (| T, _src |) in
+        (let dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], dst |) in
+        let src := M.alloc (| T, src |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
-  Global Instance Instance_IsFunction_atomic_cxchgweak_acqrel_acquire :
-    M.IsFunction.C
-      "core::intrinsics::atomic_cxchgweak_acqrel_acquire"
-      atomic_cxchgweak_acqrel_acquire.
+  Global Instance Instance_IsFunction_atomic_max :
+    M.IsFunction.C "core::intrinsics::atomic_max" atomic_max.
   Admitted.
-  Global Typeclasses Opaque atomic_cxchgweak_acqrel_acquire.
+  Global Typeclasses Opaque atomic_max.
   
-  (*
-  pub unsafe fn atomic_cxchgweak_acqrel_seqcst<T: Copy>(_dst: *mut T, _old: T, _src: T) -> (T, bool) {
-      unreachable!()
-  }
-  *)
-  Definition atomic_cxchgweak_acqrel_seqcst
-      (ε : list Value.t)
-      (τ : list Ty.t)
-      (α : list Value.t)
-      : M :=
+  (* pub unsafe fn atomic_min<T: Copy, const ORD: AtomicOrdering>(dst: *mut T, src: T) -> T; *)
+  Definition atomic_min (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [ T ], [ _dst; _old; _src ] =>
+    | [ ORD ], [ T ], [ dst; src ] =>
       ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _old := M.alloc (| T, _old |) in
-        let _src := M.alloc (| T, _src |) in
+        (let dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], dst |) in
+        let src := M.alloc (| T, src |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
-  Global Instance Instance_IsFunction_atomic_cxchgweak_acqrel_seqcst :
-    M.IsFunction.C
-      "core::intrinsics::atomic_cxchgweak_acqrel_seqcst"
-      atomic_cxchgweak_acqrel_seqcst.
+  Global Instance Instance_IsFunction_atomic_min :
+    M.IsFunction.C "core::intrinsics::atomic_min" atomic_min.
   Admitted.
-  Global Typeclasses Opaque atomic_cxchgweak_acqrel_seqcst.
+  Global Typeclasses Opaque atomic_min.
   
-  (*
-  pub unsafe fn atomic_cxchgweak_seqcst_relaxed<T: Copy>(
-      _dst: *mut T,
-      _old: T,
-      _src: T,
-  ) -> (T, bool) {
-      unreachable!()
-  }
-  *)
-  Definition atomic_cxchgweak_seqcst_relaxed
-      (ε : list Value.t)
-      (τ : list Ty.t)
-      (α : list Value.t)
-      : M :=
+  (* pub unsafe fn atomic_umin<T: Copy, const ORD: AtomicOrdering>(dst: *mut T, src: T) -> T; *)
+  Definition atomic_umin (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [ T ], [ _dst; _old; _src ] =>
+    | [ ORD ], [ T ], [ dst; src ] =>
       ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _old := M.alloc (| T, _old |) in
-        let _src := M.alloc (| T, _src |) in
+        (let dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], dst |) in
+        let src := M.alloc (| T, src |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
-  Global Instance Instance_IsFunction_atomic_cxchgweak_seqcst_relaxed :
-    M.IsFunction.C
-      "core::intrinsics::atomic_cxchgweak_seqcst_relaxed"
-      atomic_cxchgweak_seqcst_relaxed.
+  Global Instance Instance_IsFunction_atomic_umin :
+    M.IsFunction.C "core::intrinsics::atomic_umin" atomic_umin.
   Admitted.
-  Global Typeclasses Opaque atomic_cxchgweak_seqcst_relaxed.
+  Global Typeclasses Opaque atomic_umin.
   
-  (*
-  pub unsafe fn atomic_cxchgweak_seqcst_acquire<T: Copy>(
-      _dst: *mut T,
-      _old: T,
-      _src: T,
-  ) -> (T, bool) {
-      unreachable!()
-  }
-  *)
-  Definition atomic_cxchgweak_seqcst_acquire
-      (ε : list Value.t)
-      (τ : list Ty.t)
-      (α : list Value.t)
-      : M :=
+  (* pub unsafe fn atomic_umax<T: Copy, const ORD: AtomicOrdering>(dst: *mut T, src: T) -> T; *)
+  Definition atomic_umax (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [ T ], [ _dst; _old; _src ] =>
+    | [ ORD ], [ T ], [ dst; src ] =>
       ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _old := M.alloc (| T, _old |) in
-        let _src := M.alloc (| T, _src |) in
+        (let dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], dst |) in
+        let src := M.alloc (| T, src |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
-  Global Instance Instance_IsFunction_atomic_cxchgweak_seqcst_acquire :
-    M.IsFunction.C
-      "core::intrinsics::atomic_cxchgweak_seqcst_acquire"
-      atomic_cxchgweak_seqcst_acquire.
+  Global Instance Instance_IsFunction_atomic_umax :
+    M.IsFunction.C "core::intrinsics::atomic_umax" atomic_umax.
   Admitted.
-  Global Typeclasses Opaque atomic_cxchgweak_seqcst_acquire.
+  Global Typeclasses Opaque atomic_umax.
   
-  (*
-  pub unsafe fn atomic_cxchgweak_seqcst_seqcst<T: Copy>(_dst: *mut T, _old: T, _src: T) -> (T, bool) {
-      unreachable!()
-  }
-  *)
-  Definition atomic_cxchgweak_seqcst_seqcst
-      (ε : list Value.t)
-      (τ : list Ty.t)
-      (α : list Value.t)
-      : M :=
+  (* pub unsafe fn atomic_fence<const ORD: AtomicOrdering>(); *)
+  Definition atomic_fence (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [ T ], [ _dst; _old; _src ] =>
-      ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _old := M.alloc (| T, _old |) in
-        let _src := M.alloc (| T, _src |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_cxchgweak_seqcst_seqcst :
-    M.IsFunction.C
-      "core::intrinsics::atomic_cxchgweak_seqcst_seqcst"
-      atomic_cxchgweak_seqcst_seqcst.
-  Admitted.
-  Global Typeclasses Opaque atomic_cxchgweak_seqcst_seqcst.
-  
-  (*
-  pub unsafe fn atomic_load_seqcst<T: Copy>(_src: *const T) -> T {
-      unreachable!()
-  }
-  *)
-  Definition atomic_load_seqcst (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [], [ T ], [ _src ] =>
-      ltac:(M.monadic
-        (let _src := M.alloc (| Ty.apply (Ty.path "*const") [] [ T ], _src |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_load_seqcst :
-    M.IsFunction.C "core::intrinsics::atomic_load_seqcst" atomic_load_seqcst.
-  Admitted.
-  Global Typeclasses Opaque atomic_load_seqcst.
-  
-  (*
-  pub unsafe fn atomic_load_acquire<T: Copy>(_src: *const T) -> T {
-      unreachable!()
-  }
-  *)
-  Definition atomic_load_acquire (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [], [ T ], [ _src ] =>
-      ltac:(M.monadic
-        (let _src := M.alloc (| Ty.apply (Ty.path "*const") [] [ T ], _src |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_load_acquire :
-    M.IsFunction.C "core::intrinsics::atomic_load_acquire" atomic_load_acquire.
-  Admitted.
-  Global Typeclasses Opaque atomic_load_acquire.
-  
-  (*
-  pub unsafe fn atomic_load_relaxed<T: Copy>(_src: *const T) -> T {
-      unreachable!()
-  }
-  *)
-  Definition atomic_load_relaxed (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [], [ T ], [ _src ] =>
-      ltac:(M.monadic
-        (let _src := M.alloc (| Ty.apply (Ty.path "*const") [] [ T ], _src |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_load_relaxed :
-    M.IsFunction.C "core::intrinsics::atomic_load_relaxed" atomic_load_relaxed.
-  Admitted.
-  Global Typeclasses Opaque atomic_load_relaxed.
-  
-  (*
-  pub unsafe fn atomic_load_unordered<T: Copy>(_src: *const T) -> T {
-      unreachable!()
-  }
-  *)
-  Definition atomic_load_unordered (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [], [ T ], [ _src ] =>
-      ltac:(M.monadic
-        (let _src := M.alloc (| Ty.apply (Ty.path "*const") [] [ T ], _src |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_load_unordered :
-    M.IsFunction.C "core::intrinsics::atomic_load_unordered" atomic_load_unordered.
-  Admitted.
-  Global Typeclasses Opaque atomic_load_unordered.
-  
-  (*
-  pub unsafe fn atomic_store_seqcst<T: Copy>(_dst: *mut T, _val: T) {
-      unreachable!()
-  }
-  *)
-  Definition atomic_store_seqcst (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [], [ T ], [ _dst; _val ] =>
-      ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _val := M.alloc (| T, _val |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_store_seqcst :
-    M.IsFunction.C "core::intrinsics::atomic_store_seqcst" atomic_store_seqcst.
-  Admitted.
-  Global Typeclasses Opaque atomic_store_seqcst.
-  
-  (*
-  pub unsafe fn atomic_store_release<T: Copy>(_dst: *mut T, _val: T) {
-      unreachable!()
-  }
-  *)
-  Definition atomic_store_release (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [], [ T ], [ _dst; _val ] =>
-      ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _val := M.alloc (| T, _val |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_store_release :
-    M.IsFunction.C "core::intrinsics::atomic_store_release" atomic_store_release.
-  Admitted.
-  Global Typeclasses Opaque atomic_store_release.
-  
-  (*
-  pub unsafe fn atomic_store_relaxed<T: Copy>(_dst: *mut T, _val: T) {
-      unreachable!()
-  }
-  *)
-  Definition atomic_store_relaxed (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [], [ T ], [ _dst; _val ] =>
-      ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _val := M.alloc (| T, _val |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_store_relaxed :
-    M.IsFunction.C "core::intrinsics::atomic_store_relaxed" atomic_store_relaxed.
-  Admitted.
-  Global Typeclasses Opaque atomic_store_relaxed.
-  
-  (*
-  pub unsafe fn atomic_store_unordered<T: Copy>(_dst: *mut T, _val: T) {
-      unreachable!()
-  }
-  *)
-  Definition atomic_store_unordered (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [], [ T ], [ _dst; _val ] =>
-      ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _val := M.alloc (| T, _val |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_store_unordered :
-    M.IsFunction.C "core::intrinsics::atomic_store_unordered" atomic_store_unordered.
-  Admitted.
-  Global Typeclasses Opaque atomic_store_unordered.
-  
-  (*
-  pub unsafe fn atomic_xchg_seqcst<T: Copy>(_dst: *mut T, _src: T) -> T {
-      unreachable!()
-  }
-  *)
-  Definition atomic_xchg_seqcst (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [], [ T ], [ _dst; _src ] =>
-      ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _src := M.alloc (| T, _src |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_xchg_seqcst :
-    M.IsFunction.C "core::intrinsics::atomic_xchg_seqcst" atomic_xchg_seqcst.
-  Admitted.
-  Global Typeclasses Opaque atomic_xchg_seqcst.
-  
-  (*
-  pub unsafe fn atomic_xchg_acquire<T: Copy>(_dst: *mut T, _src: T) -> T {
-      unreachable!()
-  }
-  *)
-  Definition atomic_xchg_acquire (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [], [ T ], [ _dst; _src ] =>
-      ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _src := M.alloc (| T, _src |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_xchg_acquire :
-    M.IsFunction.C "core::intrinsics::atomic_xchg_acquire" atomic_xchg_acquire.
-  Admitted.
-  Global Typeclasses Opaque atomic_xchg_acquire.
-  
-  (*
-  pub unsafe fn atomic_xchg_release<T: Copy>(_dst: *mut T, _src: T) -> T {
-      unreachable!()
-  }
-  *)
-  Definition atomic_xchg_release (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [], [ T ], [ _dst; _src ] =>
-      ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _src := M.alloc (| T, _src |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_xchg_release :
-    M.IsFunction.C "core::intrinsics::atomic_xchg_release" atomic_xchg_release.
-  Admitted.
-  Global Typeclasses Opaque atomic_xchg_release.
-  
-  (*
-  pub unsafe fn atomic_xchg_acqrel<T: Copy>(_dst: *mut T, _src: T) -> T {
-      unreachable!()
-  }
-  *)
-  Definition atomic_xchg_acqrel (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [], [ T ], [ _dst; _src ] =>
-      ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _src := M.alloc (| T, _src |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_xchg_acqrel :
-    M.IsFunction.C "core::intrinsics::atomic_xchg_acqrel" atomic_xchg_acqrel.
-  Admitted.
-  Global Typeclasses Opaque atomic_xchg_acqrel.
-  
-  (*
-  pub unsafe fn atomic_xchg_relaxed<T: Copy>(_dst: *mut T, _src: T) -> T {
-      unreachable!()
-  }
-  *)
-  Definition atomic_xchg_relaxed (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [], [ T ], [ _dst; _src ] =>
-      ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _src := M.alloc (| T, _src |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_xchg_relaxed :
-    M.IsFunction.C "core::intrinsics::atomic_xchg_relaxed" atomic_xchg_relaxed.
-  Admitted.
-  Global Typeclasses Opaque atomic_xchg_relaxed.
-  
-  (*
-  pub unsafe fn atomic_xadd_seqcst<T: Copy>(_dst: *mut T, _src: T) -> T {
-      unreachable!()
-  }
-  *)
-  Definition atomic_xadd_seqcst (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [], [ T ], [ _dst; _src ] =>
-      ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _src := M.alloc (| T, _src |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_xadd_seqcst :
-    M.IsFunction.C "core::intrinsics::atomic_xadd_seqcst" atomic_xadd_seqcst.
-  Admitted.
-  Global Typeclasses Opaque atomic_xadd_seqcst.
-  
-  (*
-  pub unsafe fn atomic_xadd_acquire<T: Copy>(_dst: *mut T, _src: T) -> T {
-      unreachable!()
-  }
-  *)
-  Definition atomic_xadd_acquire (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [], [ T ], [ _dst; _src ] =>
-      ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _src := M.alloc (| T, _src |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_xadd_acquire :
-    M.IsFunction.C "core::intrinsics::atomic_xadd_acquire" atomic_xadd_acquire.
-  Admitted.
-  Global Typeclasses Opaque atomic_xadd_acquire.
-  
-  (*
-  pub unsafe fn atomic_xadd_release<T: Copy>(_dst: *mut T, _src: T) -> T {
-      unreachable!()
-  }
-  *)
-  Definition atomic_xadd_release (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [], [ T ], [ _dst; _src ] =>
-      ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _src := M.alloc (| T, _src |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_xadd_release :
-    M.IsFunction.C "core::intrinsics::atomic_xadd_release" atomic_xadd_release.
-  Admitted.
-  Global Typeclasses Opaque atomic_xadd_release.
-  
-  (*
-  pub unsafe fn atomic_xadd_acqrel<T: Copy>(_dst: *mut T, _src: T) -> T {
-      unreachable!()
-  }
-  *)
-  Definition atomic_xadd_acqrel (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [], [ T ], [ _dst; _src ] =>
-      ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _src := M.alloc (| T, _src |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_xadd_acqrel :
-    M.IsFunction.C "core::intrinsics::atomic_xadd_acqrel" atomic_xadd_acqrel.
-  Admitted.
-  Global Typeclasses Opaque atomic_xadd_acqrel.
-  
-  (*
-  pub unsafe fn atomic_xadd_relaxed<T: Copy>(_dst: *mut T, _src: T) -> T {
-      unreachable!()
-  }
-  *)
-  Definition atomic_xadd_relaxed (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [], [ T ], [ _dst; _src ] =>
-      ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _src := M.alloc (| T, _src |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_xadd_relaxed :
-    M.IsFunction.C "core::intrinsics::atomic_xadd_relaxed" atomic_xadd_relaxed.
-  Admitted.
-  Global Typeclasses Opaque atomic_xadd_relaxed.
-  
-  (*
-  pub unsafe fn atomic_xsub_seqcst<T: Copy>(_dst: *mut T, _src: T) -> T {
-      unreachable!()
-  }
-  *)
-  Definition atomic_xsub_seqcst (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [], [ T ], [ _dst; _src ] =>
-      ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _src := M.alloc (| T, _src |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_xsub_seqcst :
-    M.IsFunction.C "core::intrinsics::atomic_xsub_seqcst" atomic_xsub_seqcst.
-  Admitted.
-  Global Typeclasses Opaque atomic_xsub_seqcst.
-  
-  (*
-  pub unsafe fn atomic_xsub_acquire<T: Copy>(_dst: *mut T, _src: T) -> T {
-      unreachable!()
-  }
-  *)
-  Definition atomic_xsub_acquire (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [], [ T ], [ _dst; _src ] =>
-      ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _src := M.alloc (| T, _src |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_xsub_acquire :
-    M.IsFunction.C "core::intrinsics::atomic_xsub_acquire" atomic_xsub_acquire.
-  Admitted.
-  Global Typeclasses Opaque atomic_xsub_acquire.
-  
-  (*
-  pub unsafe fn atomic_xsub_release<T: Copy>(_dst: *mut T, _src: T) -> T {
-      unreachable!()
-  }
-  *)
-  Definition atomic_xsub_release (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [], [ T ], [ _dst; _src ] =>
-      ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _src := M.alloc (| T, _src |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_xsub_release :
-    M.IsFunction.C "core::intrinsics::atomic_xsub_release" atomic_xsub_release.
-  Admitted.
-  Global Typeclasses Opaque atomic_xsub_release.
-  
-  (*
-  pub unsafe fn atomic_xsub_acqrel<T: Copy>(_dst: *mut T, _src: T) -> T {
-      unreachable!()
-  }
-  *)
-  Definition atomic_xsub_acqrel (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [], [ T ], [ _dst; _src ] =>
-      ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _src := M.alloc (| T, _src |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_xsub_acqrel :
-    M.IsFunction.C "core::intrinsics::atomic_xsub_acqrel" atomic_xsub_acqrel.
-  Admitted.
-  Global Typeclasses Opaque atomic_xsub_acqrel.
-  
-  (*
-  pub unsafe fn atomic_xsub_relaxed<T: Copy>(_dst: *mut T, _src: T) -> T {
-      unreachable!()
-  }
-  *)
-  Definition atomic_xsub_relaxed (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [], [ T ], [ _dst; _src ] =>
-      ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _src := M.alloc (| T, _src |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_xsub_relaxed :
-    M.IsFunction.C "core::intrinsics::atomic_xsub_relaxed" atomic_xsub_relaxed.
-  Admitted.
-  Global Typeclasses Opaque atomic_xsub_relaxed.
-  
-  (*
-  pub unsafe fn atomic_and_seqcst<T: Copy>(_dst: *mut T, _src: T) -> T {
-      unreachable!()
-  }
-  *)
-  Definition atomic_and_seqcst (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [], [ T ], [ _dst; _src ] =>
-      ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _src := M.alloc (| T, _src |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_and_seqcst :
-    M.IsFunction.C "core::intrinsics::atomic_and_seqcst" atomic_and_seqcst.
-  Admitted.
-  Global Typeclasses Opaque atomic_and_seqcst.
-  
-  (*
-  pub unsafe fn atomic_and_acquire<T: Copy>(_dst: *mut T, _src: T) -> T {
-      unreachable!()
-  }
-  *)
-  Definition atomic_and_acquire (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [], [ T ], [ _dst; _src ] =>
-      ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _src := M.alloc (| T, _src |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_and_acquire :
-    M.IsFunction.C "core::intrinsics::atomic_and_acquire" atomic_and_acquire.
-  Admitted.
-  Global Typeclasses Opaque atomic_and_acquire.
-  
-  (*
-  pub unsafe fn atomic_and_release<T: Copy>(_dst: *mut T, _src: T) -> T {
-      unreachable!()
-  }
-  *)
-  Definition atomic_and_release (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [], [ T ], [ _dst; _src ] =>
-      ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _src := M.alloc (| T, _src |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_and_release :
-    M.IsFunction.C "core::intrinsics::atomic_and_release" atomic_and_release.
-  Admitted.
-  Global Typeclasses Opaque atomic_and_release.
-  
-  (*
-  pub unsafe fn atomic_and_acqrel<T: Copy>(_dst: *mut T, _src: T) -> T {
-      unreachable!()
-  }
-  *)
-  Definition atomic_and_acqrel (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [], [ T ], [ _dst; _src ] =>
-      ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _src := M.alloc (| T, _src |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_and_acqrel :
-    M.IsFunction.C "core::intrinsics::atomic_and_acqrel" atomic_and_acqrel.
-  Admitted.
-  Global Typeclasses Opaque atomic_and_acqrel.
-  
-  (*
-  pub unsafe fn atomic_and_relaxed<T: Copy>(_dst: *mut T, _src: T) -> T {
-      unreachable!()
-  }
-  *)
-  Definition atomic_and_relaxed (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [], [ T ], [ _dst; _src ] =>
-      ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _src := M.alloc (| T, _src |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_and_relaxed :
-    M.IsFunction.C "core::intrinsics::atomic_and_relaxed" atomic_and_relaxed.
-  Admitted.
-  Global Typeclasses Opaque atomic_and_relaxed.
-  
-  (*
-  pub unsafe fn atomic_nand_seqcst<T: Copy>(_dst: *mut T, _src: T) -> T {
-      unreachable!()
-  }
-  *)
-  Definition atomic_nand_seqcst (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [], [ T ], [ _dst; _src ] =>
-      ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _src := M.alloc (| T, _src |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_nand_seqcst :
-    M.IsFunction.C "core::intrinsics::atomic_nand_seqcst" atomic_nand_seqcst.
-  Admitted.
-  Global Typeclasses Opaque atomic_nand_seqcst.
-  
-  (*
-  pub unsafe fn atomic_nand_acquire<T: Copy>(_dst: *mut T, _src: T) -> T {
-      unreachable!()
-  }
-  *)
-  Definition atomic_nand_acquire (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [], [ T ], [ _dst; _src ] =>
-      ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _src := M.alloc (| T, _src |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_nand_acquire :
-    M.IsFunction.C "core::intrinsics::atomic_nand_acquire" atomic_nand_acquire.
-  Admitted.
-  Global Typeclasses Opaque atomic_nand_acquire.
-  
-  (*
-  pub unsafe fn atomic_nand_release<T: Copy>(_dst: *mut T, _src: T) -> T {
-      unreachable!()
-  }
-  *)
-  Definition atomic_nand_release (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [], [ T ], [ _dst; _src ] =>
-      ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _src := M.alloc (| T, _src |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_nand_release :
-    M.IsFunction.C "core::intrinsics::atomic_nand_release" atomic_nand_release.
-  Admitted.
-  Global Typeclasses Opaque atomic_nand_release.
-  
-  (*
-  pub unsafe fn atomic_nand_acqrel<T: Copy>(_dst: *mut T, _src: T) -> T {
-      unreachable!()
-  }
-  *)
-  Definition atomic_nand_acqrel (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [], [ T ], [ _dst; _src ] =>
-      ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _src := M.alloc (| T, _src |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_nand_acqrel :
-    M.IsFunction.C "core::intrinsics::atomic_nand_acqrel" atomic_nand_acqrel.
-  Admitted.
-  Global Typeclasses Opaque atomic_nand_acqrel.
-  
-  (*
-  pub unsafe fn atomic_nand_relaxed<T: Copy>(_dst: *mut T, _src: T) -> T {
-      unreachable!()
-  }
-  *)
-  Definition atomic_nand_relaxed (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [], [ T ], [ _dst; _src ] =>
-      ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _src := M.alloc (| T, _src |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_nand_relaxed :
-    M.IsFunction.C "core::intrinsics::atomic_nand_relaxed" atomic_nand_relaxed.
-  Admitted.
-  Global Typeclasses Opaque atomic_nand_relaxed.
-  
-  (*
-  pub unsafe fn atomic_or_seqcst<T: Copy>(_dst: *mut T, _src: T) -> T {
-      unreachable!()
-  }
-  *)
-  Definition atomic_or_seqcst (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [], [ T ], [ _dst; _src ] =>
-      ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _src := M.alloc (| T, _src |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_or_seqcst :
-    M.IsFunction.C "core::intrinsics::atomic_or_seqcst" atomic_or_seqcst.
-  Admitted.
-  Global Typeclasses Opaque atomic_or_seqcst.
-  
-  (*
-  pub unsafe fn atomic_or_acquire<T: Copy>(_dst: *mut T, _src: T) -> T {
-      unreachable!()
-  }
-  *)
-  Definition atomic_or_acquire (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [], [ T ], [ _dst; _src ] =>
-      ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _src := M.alloc (| T, _src |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_or_acquire :
-    M.IsFunction.C "core::intrinsics::atomic_or_acquire" atomic_or_acquire.
-  Admitted.
-  Global Typeclasses Opaque atomic_or_acquire.
-  
-  (*
-  pub unsafe fn atomic_or_release<T: Copy>(_dst: *mut T, _src: T) -> T {
-      unreachable!()
-  }
-  *)
-  Definition atomic_or_release (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [], [ T ], [ _dst; _src ] =>
-      ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _src := M.alloc (| T, _src |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_or_release :
-    M.IsFunction.C "core::intrinsics::atomic_or_release" atomic_or_release.
-  Admitted.
-  Global Typeclasses Opaque atomic_or_release.
-  
-  (*
-  pub unsafe fn atomic_or_acqrel<T: Copy>(_dst: *mut T, _src: T) -> T {
-      unreachable!()
-  }
-  *)
-  Definition atomic_or_acqrel (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [], [ T ], [ _dst; _src ] =>
-      ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _src := M.alloc (| T, _src |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_or_acqrel :
-    M.IsFunction.C "core::intrinsics::atomic_or_acqrel" atomic_or_acqrel.
-  Admitted.
-  Global Typeclasses Opaque atomic_or_acqrel.
-  
-  (*
-  pub unsafe fn atomic_or_relaxed<T: Copy>(_dst: *mut T, _src: T) -> T {
-      unreachable!()
-  }
-  *)
-  Definition atomic_or_relaxed (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [], [ T ], [ _dst; _src ] =>
-      ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _src := M.alloc (| T, _src |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_or_relaxed :
-    M.IsFunction.C "core::intrinsics::atomic_or_relaxed" atomic_or_relaxed.
-  Admitted.
-  Global Typeclasses Opaque atomic_or_relaxed.
-  
-  (*
-  pub unsafe fn atomic_xor_seqcst<T: Copy>(_dst: *mut T, _src: T) -> T {
-      unreachable!()
-  }
-  *)
-  Definition atomic_xor_seqcst (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [], [ T ], [ _dst; _src ] =>
-      ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _src := M.alloc (| T, _src |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_xor_seqcst :
-    M.IsFunction.C "core::intrinsics::atomic_xor_seqcst" atomic_xor_seqcst.
-  Admitted.
-  Global Typeclasses Opaque atomic_xor_seqcst.
-  
-  (*
-  pub unsafe fn atomic_xor_acquire<T: Copy>(_dst: *mut T, _src: T) -> T {
-      unreachable!()
-  }
-  *)
-  Definition atomic_xor_acquire (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [], [ T ], [ _dst; _src ] =>
-      ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _src := M.alloc (| T, _src |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_xor_acquire :
-    M.IsFunction.C "core::intrinsics::atomic_xor_acquire" atomic_xor_acquire.
-  Admitted.
-  Global Typeclasses Opaque atomic_xor_acquire.
-  
-  (*
-  pub unsafe fn atomic_xor_release<T: Copy>(_dst: *mut T, _src: T) -> T {
-      unreachable!()
-  }
-  *)
-  Definition atomic_xor_release (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [], [ T ], [ _dst; _src ] =>
-      ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _src := M.alloc (| T, _src |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_xor_release :
-    M.IsFunction.C "core::intrinsics::atomic_xor_release" atomic_xor_release.
-  Admitted.
-  Global Typeclasses Opaque atomic_xor_release.
-  
-  (*
-  pub unsafe fn atomic_xor_acqrel<T: Copy>(_dst: *mut T, _src: T) -> T {
-      unreachable!()
-  }
-  *)
-  Definition atomic_xor_acqrel (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [], [ T ], [ _dst; _src ] =>
-      ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _src := M.alloc (| T, _src |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_xor_acqrel :
-    M.IsFunction.C "core::intrinsics::atomic_xor_acqrel" atomic_xor_acqrel.
-  Admitted.
-  Global Typeclasses Opaque atomic_xor_acqrel.
-  
-  (*
-  pub unsafe fn atomic_xor_relaxed<T: Copy>(_dst: *mut T, _src: T) -> T {
-      unreachable!()
-  }
-  *)
-  Definition atomic_xor_relaxed (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [], [ T ], [ _dst; _src ] =>
-      ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _src := M.alloc (| T, _src |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_xor_relaxed :
-    M.IsFunction.C "core::intrinsics::atomic_xor_relaxed" atomic_xor_relaxed.
-  Admitted.
-  Global Typeclasses Opaque atomic_xor_relaxed.
-  
-  (*
-  pub unsafe fn atomic_max_seqcst<T: Copy>(_dst: *mut T, _src: T) -> T {
-      unreachable!()
-  }
-  *)
-  Definition atomic_max_seqcst (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [], [ T ], [ _dst; _src ] =>
-      ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _src := M.alloc (| T, _src |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_max_seqcst :
-    M.IsFunction.C "core::intrinsics::atomic_max_seqcst" atomic_max_seqcst.
-  Admitted.
-  Global Typeclasses Opaque atomic_max_seqcst.
-  
-  (*
-  pub unsafe fn atomic_max_acquire<T: Copy>(_dst: *mut T, _src: T) -> T {
-      unreachable!()
-  }
-  *)
-  Definition atomic_max_acquire (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [], [ T ], [ _dst; _src ] =>
-      ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _src := M.alloc (| T, _src |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_max_acquire :
-    M.IsFunction.C "core::intrinsics::atomic_max_acquire" atomic_max_acquire.
-  Admitted.
-  Global Typeclasses Opaque atomic_max_acquire.
-  
-  (*
-  pub unsafe fn atomic_max_release<T: Copy>(_dst: *mut T, _src: T) -> T {
-      unreachable!()
-  }
-  *)
-  Definition atomic_max_release (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [], [ T ], [ _dst; _src ] =>
-      ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _src := M.alloc (| T, _src |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_max_release :
-    M.IsFunction.C "core::intrinsics::atomic_max_release" atomic_max_release.
-  Admitted.
-  Global Typeclasses Opaque atomic_max_release.
-  
-  (*
-  pub unsafe fn atomic_max_acqrel<T: Copy>(_dst: *mut T, _src: T) -> T {
-      unreachable!()
-  }
-  *)
-  Definition atomic_max_acqrel (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [], [ T ], [ _dst; _src ] =>
-      ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _src := M.alloc (| T, _src |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_max_acqrel :
-    M.IsFunction.C "core::intrinsics::atomic_max_acqrel" atomic_max_acqrel.
-  Admitted.
-  Global Typeclasses Opaque atomic_max_acqrel.
-  
-  (*
-  pub unsafe fn atomic_max_relaxed<T: Copy>(_dst: *mut T, _src: T) -> T {
-      unreachable!()
-  }
-  *)
-  Definition atomic_max_relaxed (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [], [ T ], [ _dst; _src ] =>
-      ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _src := M.alloc (| T, _src |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_max_relaxed :
-    M.IsFunction.C "core::intrinsics::atomic_max_relaxed" atomic_max_relaxed.
-  Admitted.
-  Global Typeclasses Opaque atomic_max_relaxed.
-  
-  (*
-  pub unsafe fn atomic_min_seqcst<T: Copy>(_dst: *mut T, _src: T) -> T {
-      unreachable!()
-  }
-  *)
-  Definition atomic_min_seqcst (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [], [ T ], [ _dst; _src ] =>
-      ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _src := M.alloc (| T, _src |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_min_seqcst :
-    M.IsFunction.C "core::intrinsics::atomic_min_seqcst" atomic_min_seqcst.
-  Admitted.
-  Global Typeclasses Opaque atomic_min_seqcst.
-  
-  (*
-  pub unsafe fn atomic_min_acquire<T: Copy>(_dst: *mut T, _src: T) -> T {
-      unreachable!()
-  }
-  *)
-  Definition atomic_min_acquire (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [], [ T ], [ _dst; _src ] =>
-      ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _src := M.alloc (| T, _src |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_min_acquire :
-    M.IsFunction.C "core::intrinsics::atomic_min_acquire" atomic_min_acquire.
-  Admitted.
-  Global Typeclasses Opaque atomic_min_acquire.
-  
-  (*
-  pub unsafe fn atomic_min_release<T: Copy>(_dst: *mut T, _src: T) -> T {
-      unreachable!()
-  }
-  *)
-  Definition atomic_min_release (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [], [ T ], [ _dst; _src ] =>
-      ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _src := M.alloc (| T, _src |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_min_release :
-    M.IsFunction.C "core::intrinsics::atomic_min_release" atomic_min_release.
-  Admitted.
-  Global Typeclasses Opaque atomic_min_release.
-  
-  (*
-  pub unsafe fn atomic_min_acqrel<T: Copy>(_dst: *mut T, _src: T) -> T {
-      unreachable!()
-  }
-  *)
-  Definition atomic_min_acqrel (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [], [ T ], [ _dst; _src ] =>
-      ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _src := M.alloc (| T, _src |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_min_acqrel :
-    M.IsFunction.C "core::intrinsics::atomic_min_acqrel" atomic_min_acqrel.
-  Admitted.
-  Global Typeclasses Opaque atomic_min_acqrel.
-  
-  (*
-  pub unsafe fn atomic_min_relaxed<T: Copy>(_dst: *mut T, _src: T) -> T {
-      unreachable!()
-  }
-  *)
-  Definition atomic_min_relaxed (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [], [ T ], [ _dst; _src ] =>
-      ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _src := M.alloc (| T, _src |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_min_relaxed :
-    M.IsFunction.C "core::intrinsics::atomic_min_relaxed" atomic_min_relaxed.
-  Admitted.
-  Global Typeclasses Opaque atomic_min_relaxed.
-  
-  (*
-  pub unsafe fn atomic_umin_seqcst<T: Copy>(_dst: *mut T, _src: T) -> T {
-      unreachable!()
-  }
-  *)
-  Definition atomic_umin_seqcst (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [], [ T ], [ _dst; _src ] =>
-      ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _src := M.alloc (| T, _src |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_umin_seqcst :
-    M.IsFunction.C "core::intrinsics::atomic_umin_seqcst" atomic_umin_seqcst.
-  Admitted.
-  Global Typeclasses Opaque atomic_umin_seqcst.
-  
-  (*
-  pub unsafe fn atomic_umin_acquire<T: Copy>(_dst: *mut T, _src: T) -> T {
-      unreachable!()
-  }
-  *)
-  Definition atomic_umin_acquire (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [], [ T ], [ _dst; _src ] =>
-      ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _src := M.alloc (| T, _src |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_umin_acquire :
-    M.IsFunction.C "core::intrinsics::atomic_umin_acquire" atomic_umin_acquire.
-  Admitted.
-  Global Typeclasses Opaque atomic_umin_acquire.
-  
-  (*
-  pub unsafe fn atomic_umin_release<T: Copy>(_dst: *mut T, _src: T) -> T {
-      unreachable!()
-  }
-  *)
-  Definition atomic_umin_release (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [], [ T ], [ _dst; _src ] =>
-      ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _src := M.alloc (| T, _src |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_umin_release :
-    M.IsFunction.C "core::intrinsics::atomic_umin_release" atomic_umin_release.
-  Admitted.
-  Global Typeclasses Opaque atomic_umin_release.
-  
-  (*
-  pub unsafe fn atomic_umin_acqrel<T: Copy>(_dst: *mut T, _src: T) -> T {
-      unreachable!()
-  }
-  *)
-  Definition atomic_umin_acqrel (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [], [ T ], [ _dst; _src ] =>
-      ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _src := M.alloc (| T, _src |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_umin_acqrel :
-    M.IsFunction.C "core::intrinsics::atomic_umin_acqrel" atomic_umin_acqrel.
-  Admitted.
-  Global Typeclasses Opaque atomic_umin_acqrel.
-  
-  (*
-  pub unsafe fn atomic_umin_relaxed<T: Copy>(_dst: *mut T, _src: T) -> T {
-      unreachable!()
-  }
-  *)
-  Definition atomic_umin_relaxed (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [], [ T ], [ _dst; _src ] =>
-      ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _src := M.alloc (| T, _src |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_umin_relaxed :
-    M.IsFunction.C "core::intrinsics::atomic_umin_relaxed" atomic_umin_relaxed.
-  Admitted.
-  Global Typeclasses Opaque atomic_umin_relaxed.
-  
-  (*
-  pub unsafe fn atomic_umax_seqcst<T: Copy>(_dst: *mut T, _src: T) -> T {
-      unreachable!()
-  }
-  *)
-  Definition atomic_umax_seqcst (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [], [ T ], [ _dst; _src ] =>
-      ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _src := M.alloc (| T, _src |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_umax_seqcst :
-    M.IsFunction.C "core::intrinsics::atomic_umax_seqcst" atomic_umax_seqcst.
-  Admitted.
-  Global Typeclasses Opaque atomic_umax_seqcst.
-  
-  (*
-  pub unsafe fn atomic_umax_acquire<T: Copy>(_dst: *mut T, _src: T) -> T {
-      unreachable!()
-  }
-  *)
-  Definition atomic_umax_acquire (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [], [ T ], [ _dst; _src ] =>
-      ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _src := M.alloc (| T, _src |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_umax_acquire :
-    M.IsFunction.C "core::intrinsics::atomic_umax_acquire" atomic_umax_acquire.
-  Admitted.
-  Global Typeclasses Opaque atomic_umax_acquire.
-  
-  (*
-  pub unsafe fn atomic_umax_release<T: Copy>(_dst: *mut T, _src: T) -> T {
-      unreachable!()
-  }
-  *)
-  Definition atomic_umax_release (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [], [ T ], [ _dst; _src ] =>
-      ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _src := M.alloc (| T, _src |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_umax_release :
-    M.IsFunction.C "core::intrinsics::atomic_umax_release" atomic_umax_release.
-  Admitted.
-  Global Typeclasses Opaque atomic_umax_release.
-  
-  (*
-  pub unsafe fn atomic_umax_acqrel<T: Copy>(_dst: *mut T, _src: T) -> T {
-      unreachable!()
-  }
-  *)
-  Definition atomic_umax_acqrel (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [], [ T ], [ _dst; _src ] =>
-      ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _src := M.alloc (| T, _src |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_umax_acqrel :
-    M.IsFunction.C "core::intrinsics::atomic_umax_acqrel" atomic_umax_acqrel.
-  Admitted.
-  Global Typeclasses Opaque atomic_umax_acqrel.
-  
-  (*
-  pub unsafe fn atomic_umax_relaxed<T: Copy>(_dst: *mut T, _src: T) -> T {
-      unreachable!()
-  }
-  *)
-  Definition atomic_umax_relaxed (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [], [ T ], [ _dst; _src ] =>
-      ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _src := M.alloc (| T, _src |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_umax_relaxed :
-    M.IsFunction.C "core::intrinsics::atomic_umax_relaxed" atomic_umax_relaxed.
-  Admitted.
-  Global Typeclasses Opaque atomic_umax_relaxed.
-  
-  (*
-  pub unsafe fn atomic_fence_seqcst() {
-      unreachable!()
-  }
-  *)
-  Definition atomic_fence_seqcst (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [], [], [] =>
+    | [ ORD ], [], [] =>
       ltac:(M.monadic
         (M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
-  Global Instance Instance_IsFunction_atomic_fence_seqcst :
-    M.IsFunction.C "core::intrinsics::atomic_fence_seqcst" atomic_fence_seqcst.
+  Global Instance Instance_IsFunction_atomic_fence :
+    M.IsFunction.C "core::intrinsics::atomic_fence" atomic_fence.
   Admitted.
-  Global Typeclasses Opaque atomic_fence_seqcst.
+  Global Typeclasses Opaque atomic_fence.
   
-  (*
-  pub unsafe fn atomic_fence_acquire() {
-      unreachable!()
-  }
-  *)
-  Definition atomic_fence_acquire (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+  (* pub unsafe fn atomic_singlethreadfence<const ORD: AtomicOrdering>(); *)
+  Definition atomic_singlethreadfence (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [] =>
+    | [ ORD ], [], [] =>
       ltac:(M.monadic
         (M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
-  Global Instance Instance_IsFunction_atomic_fence_acquire :
-    M.IsFunction.C "core::intrinsics::atomic_fence_acquire" atomic_fence_acquire.
+  Global Instance Instance_IsFunction_atomic_singlethreadfence :
+    M.IsFunction.C "core::intrinsics::atomic_singlethreadfence" atomic_singlethreadfence.
   Admitted.
-  Global Typeclasses Opaque atomic_fence_acquire.
+  Global Typeclasses Opaque atomic_singlethreadfence.
   
   (*
-  pub unsafe fn atomic_fence_release() {
-      unreachable!()
-  }
-  *)
-  Definition atomic_fence_release (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [], [], [] =>
-      ltac:(M.monadic
-        (M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_fence_release :
-    M.IsFunction.C "core::intrinsics::atomic_fence_release" atomic_fence_release.
-  Admitted.
-  Global Typeclasses Opaque atomic_fence_release.
-  
-  (*
-  pub unsafe fn atomic_fence_acqrel() {
-      unreachable!()
-  }
-  *)
-  Definition atomic_fence_acqrel (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [], [], [] =>
-      ltac:(M.monadic
-        (M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_fence_acqrel :
-    M.IsFunction.C "core::intrinsics::atomic_fence_acqrel" atomic_fence_acqrel.
-  Admitted.
-  Global Typeclasses Opaque atomic_fence_acqrel.
-  
-  (*
-  pub unsafe fn atomic_singlethreadfence_seqcst() {
-      unreachable!()
-  }
-  *)
-  Definition atomic_singlethreadfence_seqcst
-      (ε : list Value.t)
-      (τ : list Ty.t)
-      (α : list Value.t)
-      : M :=
-    match ε, τ, α with
-    | [], [], [] =>
-      ltac:(M.monadic
-        (M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_singlethreadfence_seqcst :
-    M.IsFunction.C
-      "core::intrinsics::atomic_singlethreadfence_seqcst"
-      atomic_singlethreadfence_seqcst.
-  Admitted.
-  Global Typeclasses Opaque atomic_singlethreadfence_seqcst.
-  
-  (*
-  pub unsafe fn atomic_singlethreadfence_acquire() {
-      unreachable!()
-  }
-  *)
-  Definition atomic_singlethreadfence_acquire
-      (ε : list Value.t)
-      (τ : list Ty.t)
-      (α : list Value.t)
-      : M :=
-    match ε, τ, α with
-    | [], [], [] =>
-      ltac:(M.monadic
-        (M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_singlethreadfence_acquire :
-    M.IsFunction.C
-      "core::intrinsics::atomic_singlethreadfence_acquire"
-      atomic_singlethreadfence_acquire.
-  Admitted.
-  Global Typeclasses Opaque atomic_singlethreadfence_acquire.
-  
-  (*
-  pub unsafe fn atomic_singlethreadfence_release() {
-      unreachable!()
-  }
-  *)
-  Definition atomic_singlethreadfence_release
-      (ε : list Value.t)
-      (τ : list Ty.t)
-      (α : list Value.t)
-      : M :=
-    match ε, τ, α with
-    | [], [], [] =>
-      ltac:(M.monadic
-        (M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_singlethreadfence_release :
-    M.IsFunction.C
-      "core::intrinsics::atomic_singlethreadfence_release"
-      atomic_singlethreadfence_release.
-  Admitted.
-  Global Typeclasses Opaque atomic_singlethreadfence_release.
-  
-  (*
-  pub unsafe fn atomic_singlethreadfence_acqrel() {
-      unreachable!()
-  }
-  *)
-  Definition atomic_singlethreadfence_acqrel
-      (ε : list Value.t)
-      (τ : list Ty.t)
-      (α : list Value.t)
-      : M :=
-    match ε, τ, α with
-    | [], [], [] =>
-      ltac:(M.monadic
-        (M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_atomic_singlethreadfence_acqrel :
-    M.IsFunction.C
-      "core::intrinsics::atomic_singlethreadfence_acqrel"
-      atomic_singlethreadfence_acqrel.
-  Admitted.
-  Global Typeclasses Opaque atomic_singlethreadfence_acqrel.
-  
-  (*
-  pub unsafe fn prefetch_read_data<T>(_data: *const T, _locality: i32) {
-      unreachable!()
+  pub const fn prefetch_read_data<T, const LOCALITY: i32>(data: *const T) {
+      // This operation is a no-op, unless it is overridden by the backend.
+      let _ = data;
   }
   *)
   Definition prefetch_read_data (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [ T ], [ _data; _locality ] =>
+    | [ LOCALITY ], [ T ], [ data ] =>
       ltac:(M.monadic
-        (let _data := M.alloc (| Ty.apply (Ty.path "*const") [] [ T ], _data |) in
-        let _locality := M.alloc (| Ty.path "i32", _locality |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
+        (let data := M.alloc (| Ty.apply (Ty.path "*const") [] [ T ], data |) in
+        M.match_operator (| Ty.tuple [], data, [ fun γ => ltac:(M.monadic (Value.Tuple [])) ] |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -3066,23 +785,17 @@ Module intrinsics.
   Global Typeclasses Opaque prefetch_read_data.
   
   (*
-  pub unsafe fn prefetch_write_data<T>(_data: *const T, _locality: i32) {
-      unreachable!()
+  pub const fn prefetch_write_data<T, const LOCALITY: i32>(data: *const T) {
+      // This operation is a no-op, unless it is overridden by the backend.
+      let _ = data;
   }
   *)
   Definition prefetch_write_data (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [ T ], [ _data; _locality ] =>
+    | [ LOCALITY ], [ T ], [ data ] =>
       ltac:(M.monadic
-        (let _data := M.alloc (| Ty.apply (Ty.path "*const") [] [ T ], _data |) in
-        let _locality := M.alloc (| Ty.path "i32", _locality |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
+        (let data := M.alloc (| Ty.apply (Ty.path "*const") [] [ T ], data |) in
+        M.match_operator (| Ty.tuple [], data, [ fun γ => ltac:(M.monadic (Value.Tuple [])) ] |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -3092,23 +805,17 @@ Module intrinsics.
   Global Typeclasses Opaque prefetch_write_data.
   
   (*
-  pub unsafe fn prefetch_read_instruction<T>(_data: *const T, _locality: i32) {
-      unreachable!()
+  pub const fn prefetch_read_instruction<T, const LOCALITY: i32>(data: *const T) {
+      // This operation is a no-op, unless it is overridden by the backend.
+      let _ = data;
   }
   *)
   Definition prefetch_read_instruction (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [ T ], [ _data; _locality ] =>
+    | [ LOCALITY ], [ T ], [ data ] =>
       ltac:(M.monadic
-        (let _data := M.alloc (| Ty.apply (Ty.path "*const") [] [ T ], _data |) in
-        let _locality := M.alloc (| Ty.path "i32", _locality |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
+        (let data := M.alloc (| Ty.apply (Ty.path "*const") [] [ T ], data |) in
+        M.match_operator (| Ty.tuple [], data, [ fun γ => ltac:(M.monadic (Value.Tuple [])) ] |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -3118,23 +825,17 @@ Module intrinsics.
   Global Typeclasses Opaque prefetch_read_instruction.
   
   (*
-  pub unsafe fn prefetch_write_instruction<T>(_data: *const T, _locality: i32) {
-      unreachable!()
+  pub const fn prefetch_write_instruction<T, const LOCALITY: i32>(data: *const T) {
+      // This operation is a no-op, unless it is overridden by the backend.
+      let _ = data;
   }
   *)
   Definition prefetch_write_instruction (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [ T ], [ _data; _locality ] =>
+    | [ LOCALITY ], [ T ], [ data ] =>
       ltac:(M.monadic
-        (let _data := M.alloc (| Ty.apply (Ty.path "*const") [] [ T ], _data |) in
-        let _locality := M.alloc (| Ty.path "i32", _locality |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
+        (let data := M.alloc (| Ty.apply (Ty.path "*const") [] [ T ], data |) in
+        M.match_operator (| Ty.tuple [], data, [ fun γ => ltac:(M.monadic (Value.Tuple [])) ] |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -3143,20 +844,17 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque prefetch_write_instruction.
   
-  (*
-  pub fn breakpoint() {
-      unreachable!()
-  }
-  *)
+  (* pub fn breakpoint(); *)
   Definition breakpoint (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
     | [], [], [] =>
       ltac:(M.monadic
         (M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -3167,11 +865,7 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque breakpoint.
   
-  (*
-  pub fn rustc_peek<T>(_: T) -> T {
-      unreachable!()
-  }
-  *)
+  (* pub fn rustc_peek<T>(_: T) -> T; *)
   Definition rustc_peek (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
     | [], [ T ], [ β0 ] =>
@@ -3184,10 +878,11 @@ Module intrinsics.
             fun γ =>
               ltac:(M.monadic
                 (M.never_to_any (|
-                  M.call_closure (|
-                    Ty.path "never",
-                    M.get_function (| "core::panicking::panic", [], [] |),
-                    [ mk_str (| "internal error: entered unreachable code" |) ]
+                  M.read (|
+                    M.loop (|
+                      Ty.path "never",
+                      ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+                    |)
                   |)
                 |)))
           ]
@@ -3200,19 +895,13 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque rustc_peek.
   
-  (*
-  pub fn abort() -> ! {
-      unreachable!()
-  }
-  *)
+  (* pub fn abort() -> !; *)
   Definition abort (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
     | [], [], [] =>
       ltac:(M.monadic
-        (M.call_closure (|
-          Ty.path "never",
-          M.get_function (| "core::panicking::panic", [], [] |),
-          [ mk_str (| "internal error: entered unreachable code" |) ]
+        (M.read (|
+          M.loop (| Ty.path "never", ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |))) |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
@@ -3221,19 +910,13 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque abort.
   
-  (*
-  pub const unsafe fn unreachable() -> ! {
-      unreachable!()
-  }
-  *)
+  (* pub const unsafe fn unreachable() -> !; *)
   Definition unreachable (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
     | [], [], [] =>
       ltac:(M.monadic
-        (M.call_closure (|
-          Ty.path "never",
-          M.get_function (| "core::panicking::panic", [], [] |),
-          [ mk_str (| "internal error: entered unreachable code" |) ]
+        (M.read (|
+          M.loop (| Ty.path "never", ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |))) |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
@@ -3263,11 +946,10 @@ Module intrinsics.
             fun γ =>
               ltac:(M.monadic
                 (let γ :=
-                  M.use
-                    (M.alloc (|
-                      Ty.path "bool",
-                      M.call_closure (| Ty.path "bool", UnOp.not, [ M.read (| b |) ] |)
-                    |)) in
+                  M.alloc (|
+                    Ty.path "bool",
+                    M.call_closure (| Ty.path "bool", UnOp.not, [ M.read (| b |) ] |)
+                  |) in
                 let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                 M.never_to_any (|
                   M.call_closure (|
@@ -3319,7 +1001,7 @@ Module intrinsics.
           [
             fun γ =>
               ltac:(M.monadic
-                (let γ := M.use b in
+                (let γ := b in
                 let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                 Value.Bool true));
             fun γ =>
@@ -3363,7 +1045,7 @@ Module intrinsics.
           [
             fun γ =>
               ltac:(M.monadic
-                (let γ := M.use b in
+                (let γ := b in
                 let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                 M.read (|
                   let~ _ : Ty.tuple [] :=
@@ -3386,7 +1068,10 @@ Module intrinsics.
   Global Typeclasses Opaque unlikely.
   
   (*
-  pub fn select_unpredictable<T>(b: bool, true_val: T, false_val: T) -> T {
+  pub const fn select_unpredictable<T>(b: bool, true_val: T, false_val: T) -> T
+  where
+      T: [const] Destruct,
+  {
       if b { true_val } else { false_val }
   }
   *)
@@ -3403,7 +1088,7 @@ Module intrinsics.
           [
             fun γ =>
               ltac:(M.monadic
-                (let γ := M.use b in
+                (let γ := b in
                 let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                 M.read (| true_val |)));
             fun γ => ltac:(M.monadic (M.read (| false_val |)))
@@ -3417,20 +1102,17 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque select_unpredictable.
   
-  (*
-  pub const fn assert_inhabited<T>() {
-      unreachable!()
-  }
-  *)
+  (* pub const fn assert_inhabited<T>(); *)
   Definition assert_inhabited (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
     | [], [ T ], [] =>
       ltac:(M.monadic
         (M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -3441,20 +1123,17 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque assert_inhabited.
   
-  (*
-  pub const fn assert_zero_valid<T>() {
-      unreachable!()
-  }
-  *)
+  (* pub const fn assert_zero_valid<T>(); *)
   Definition assert_zero_valid (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
     | [], [ T ], [] =>
       ltac:(M.monadic
         (M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -3465,11 +1144,7 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque assert_zero_valid.
   
-  (*
-  pub const fn assert_mem_uninitialized_valid<T>() {
-      unreachable!()
-  }
-  *)
+  (* pub const fn assert_mem_uninitialized_valid<T>(); *)
   Definition assert_mem_uninitialized_valid
       (ε : list Value.t)
       (τ : list Ty.t)
@@ -3479,10 +1154,11 @@ Module intrinsics.
     | [], [ T ], [] =>
       ltac:(M.monadic
         (M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -3495,20 +1171,17 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque assert_mem_uninitialized_valid.
   
-  (*
-  pub const fn caller_location() -> &'static crate::panic::Location<'static> {
-      unreachable!()
-  }
-  *)
+  (* pub const fn caller_location() -> &'static crate::panic::Location<'static>; *)
   Definition caller_location (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
     | [], [], [] =>
       ltac:(M.monadic
         (M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -3519,11 +1192,7 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque caller_location.
   
-  (*
-  pub const fn forget<T: ?Sized>(_: T) {
-      unreachable!()
-  }
-  *)
+  (* pub const fn forget<T: ?Sized>(_: T); *)
   Definition forget (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
     | [], [ T ], [ β0 ] =>
@@ -3536,10 +1205,11 @@ Module intrinsics.
             fun γ =>
               ltac:(M.monadic
                 (M.never_to_any (|
-                  M.call_closure (|
-                    Ty.path "never",
-                    M.get_function (| "core::panicking::panic", [], [] |),
-                    [ mk_str (| "internal error: entered unreachable code" |) ]
+                  M.read (|
+                    M.loop (|
+                      Ty.path "never",
+                      ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+                    |)
                   |)
                 |)))
           ]
@@ -3551,21 +1221,18 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque forget.
   
-  (*
-  pub const unsafe fn transmute<Src, Dst>(_src: Src) -> Dst {
-      unreachable!()
-  }
-  *)
+  (* pub const unsafe fn transmute<Src, Dst>(src: Src) -> Dst; *)
   Definition transmute (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [ Src; Dst ], [ _src ] =>
+    | [], [ Src; Dst ], [ src ] =>
       ltac:(M.monadic
-        (let _src := M.alloc (| Src, _src |) in
+        (let src := M.alloc (| Src, src |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -3576,21 +1243,18 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque transmute.
   
-  (*
-  pub const unsafe fn transmute_unchecked<Src, Dst>(_src: Src) -> Dst {
-      unreachable!()
-  }
-  *)
+  (* pub const unsafe fn transmute_unchecked<Src, Dst>(src: Src) -> Dst; *)
   Definition transmute_unchecked (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [ Src; Dst ], [ _src ] =>
+    | [], [ Src; Dst ], [ src ] =>
       ltac:(M.monadic
-        (let _src := M.alloc (| Src, _src |) in
+        (let src := M.alloc (| Src, src |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -3601,20 +1265,17 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque transmute_unchecked.
   
-  (*
-  pub const fn needs_drop<T: ?Sized>() -> bool {
-      unreachable!()
-  }
-  *)
+  (* pub const fn needs_drop<T: ?Sized>() -> bool; *)
   Definition needs_drop (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
     | [], [ T ], [] =>
       ltac:(M.monadic
         (M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -3625,22 +1286,19 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque needs_drop.
   
-  (*
-  pub const unsafe fn offset<Ptr, Delta>(_dst: Ptr, _offset: Delta) -> Ptr {
-      unreachable!()
-  }
-  *)
+  (* pub const unsafe fn offset<Ptr: bounds::BuiltinDeref, Delta>(dst: Ptr, offset: Delta) -> Ptr; *)
   Definition offset (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [ Ptr; Delta ], [ _dst; _offset ] =>
+    | [], [ Ptr; Delta ], [ dst; offset ] =>
       ltac:(M.monadic
-        (let _dst := M.alloc (| Ptr, _dst |) in
-        let _offset := M.alloc (| Delta, _offset |) in
+        (let dst := M.alloc (| Ptr, dst |) in
+        let offset := M.alloc (| Delta, offset |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -3650,22 +1308,19 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque offset.
   
-  (*
-  pub const unsafe fn arith_offset<T>(_dst: *const T, _offset: isize) -> *const T {
-      unreachable!()
-  }
-  *)
+  (* pub const unsafe fn arith_offset<T>(dst: *const T, offset: isize) -> *const T; *)
   Definition arith_offset (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [ T ], [ _dst; _offset ] =>
+    | [], [ T ], [ dst; offset ] =>
       ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*const") [] [ T ], _dst |) in
-        let _offset := M.alloc (| Ty.path "isize", _offset |) in
+        (let dst := M.alloc (| Ty.apply (Ty.path "*const") [] [ T ], dst |) in
+        let offset := M.alloc (| Ty.path "isize", offset |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -3677,21 +1332,50 @@ Module intrinsics.
   Global Typeclasses Opaque arith_offset.
   
   (*
-  pub fn ptr_mask<T>(_ptr: *const T, _mask: usize) -> *const T {
-      unreachable!()
-  }
+  pub const unsafe fn slice_get_unchecked<
+      ItemPtr: bounds::ChangePointee<[T], Pointee = T, Output = SlicePtr>,
+      SlicePtr,
+      T,
+  >(
+      slice_ptr: SlicePtr,
+      index: usize,
+  ) -> ItemPtr;
   *)
+  Definition slice_get_unchecked (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    match ε, τ, α with
+    | [], [ ItemPtr; SlicePtr; T ], [ slice_ptr; index ] =>
+      ltac:(M.monadic
+        (let slice_ptr := M.alloc (| SlicePtr, slice_ptr |) in
+        let index := M.alloc (| Ty.path "usize", index |) in
+        M.never_to_any (|
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
+          |)
+        |)))
+    | _, _, _ => M.impossible "wrong number of arguments"
+    end.
+  
+  Global Instance Instance_IsFunction_slice_get_unchecked :
+    M.IsFunction.C "core::intrinsics::slice_get_unchecked" slice_get_unchecked.
+  Admitted.
+  Global Typeclasses Opaque slice_get_unchecked.
+  
+  (* pub fn ptr_mask<T>(ptr: *const T, mask: usize) -> *const T; *)
   Definition ptr_mask (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [ T ], [ _ptr; _mask ] =>
+    | [], [ T ], [ ptr; mask ] =>
       ltac:(M.monadic
-        (let _ptr := M.alloc (| Ty.apply (Ty.path "*const") [] [ T ], _ptr |) in
-        let _mask := M.alloc (| Ty.path "usize", _mask |) in
+        (let ptr := M.alloc (| Ty.apply (Ty.path "*const") [] [ T ], ptr |) in
+        let mask := M.alloc (| Ty.path "usize", mask |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -3702,27 +1386,24 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque ptr_mask.
   
-  (*
-  pub unsafe fn volatile_copy_nonoverlapping_memory<T>(_dst: *mut T, _src: *const T, _count: usize) {
-      unreachable!()
-  }
-  *)
+  (* pub unsafe fn volatile_copy_nonoverlapping_memory<T>(dst: *mut T, src: *const T, count: usize); *)
   Definition volatile_copy_nonoverlapping_memory
       (ε : list Value.t)
       (τ : list Ty.t)
       (α : list Value.t)
       : M :=
     match ε, τ, α with
-    | [], [ T ], [ _dst; _src; _count ] =>
+    | [], [ T ], [ dst; src; count ] =>
       ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _src := M.alloc (| Ty.apply (Ty.path "*const") [] [ T ], _src |) in
-        let _count := M.alloc (| Ty.path "usize", _count |) in
+        (let dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], dst |) in
+        let src := M.alloc (| Ty.apply (Ty.path "*const") [] [ T ], src |) in
+        let count := M.alloc (| Ty.path "usize", count |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -3735,23 +1416,20 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque volatile_copy_nonoverlapping_memory.
   
-  (*
-  pub unsafe fn volatile_copy_memory<T>(_dst: *mut T, _src: *const T, _count: usize) {
-      unreachable!()
-  }
-  *)
+  (* pub unsafe fn volatile_copy_memory<T>(dst: *mut T, src: *const T, count: usize); *)
   Definition volatile_copy_memory (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [ T ], [ _dst; _src; _count ] =>
+    | [], [ T ], [ dst; src; count ] =>
       ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _src := M.alloc (| Ty.apply (Ty.path "*const") [] [ T ], _src |) in
-        let _count := M.alloc (| Ty.path "usize", _count |) in
+        (let dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], dst |) in
+        let src := M.alloc (| Ty.apply (Ty.path "*const") [] [ T ], src |) in
+        let count := M.alloc (| Ty.path "usize", count |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -3762,23 +1440,20 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque volatile_copy_memory.
   
-  (*
-  pub unsafe fn volatile_set_memory<T>(_dst: *mut T, _val: u8, _count: usize) {
-      unreachable!()
-  }
-  *)
+  (* pub unsafe fn volatile_set_memory<T>(dst: *mut T, val: u8, count: usize); *)
   Definition volatile_set_memory (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [ T ], [ _dst; _val; _count ] =>
+    | [], [ T ], [ dst; val; count ] =>
       ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _val := M.alloc (| Ty.path "u8", _val |) in
-        let _count := M.alloc (| Ty.path "usize", _count |) in
+        (let dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], dst |) in
+        let val := M.alloc (| Ty.path "u8", val |) in
+        let count := M.alloc (| Ty.path "usize", count |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -3789,21 +1464,18 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque volatile_set_memory.
   
-  (*
-  pub unsafe fn volatile_load<T>(_src: *const T) -> T {
-      unreachable!()
-  }
-  *)
+  (* pub unsafe fn volatile_load<T>(src: *const T) -> T; *)
   Definition volatile_load (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [ T ], [ _src ] =>
+    | [], [ T ], [ src ] =>
       ltac:(M.monadic
-        (let _src := M.alloc (| Ty.apply (Ty.path "*const") [] [ T ], _src |) in
+        (let src := M.alloc (| Ty.apply (Ty.path "*const") [] [ T ], src |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -3814,22 +1486,19 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque volatile_load.
   
-  (*
-  pub unsafe fn volatile_store<T>(_dst: *mut T, _val: T) {
-      unreachable!()
-  }
-  *)
+  (* pub unsafe fn volatile_store<T>(dst: *mut T, val: T); *)
   Definition volatile_store (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [ T ], [ _dst; _val ] =>
+    | [], [ T ], [ dst; val ] =>
       ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _val := M.alloc (| T, _val |) in
+        (let dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], dst |) in
+        let val := M.alloc (| T, val |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -3840,21 +1509,18 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque volatile_store.
   
-  (*
-  pub unsafe fn unaligned_volatile_load<T>(_src: *const T) -> T {
-      unreachable!()
-  }
-  *)
+  (* pub unsafe fn unaligned_volatile_load<T>(src: *const T) -> T; *)
   Definition unaligned_volatile_load (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [ T ], [ _src ] =>
+    | [], [ T ], [ src ] =>
       ltac:(M.monadic
-        (let _src := M.alloc (| Ty.apply (Ty.path "*const") [] [ T ], _src |) in
+        (let src := M.alloc (| Ty.apply (Ty.path "*const") [] [ T ], src |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -3865,22 +1531,19 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque unaligned_volatile_load.
   
-  (*
-  pub unsafe fn unaligned_volatile_store<T>(_dst: *mut T, _val: T) {
-      unreachable!()
-  }
-  *)
+  (* pub unsafe fn unaligned_volatile_store<T>(dst: *mut T, val: T); *)
   Definition unaligned_volatile_store (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [ T ], [ _dst; _val ] =>
+    | [], [ T ], [ dst; val ] =>
       ltac:(M.monadic
-        (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-        let _val := M.alloc (| T, _val |) in
+        (let dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], dst |) in
+        let val := M.alloc (| T, val |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -3891,21 +1554,18 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque unaligned_volatile_store.
   
-  (*
-  pub unsafe fn sqrtf16(_x: f16) -> f16 {
-      unreachable!()
-  }
-  *)
+  (* pub fn sqrtf16(x: f16) -> f16; *)
   Definition sqrtf16 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _x ] =>
+    | [], [], [ x ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| Ty.path "f16", _x |) in
+        (let x := M.alloc (| Ty.path "f16", x |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -3915,21 +1575,18 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque sqrtf16.
   
-  (*
-  pub unsafe fn sqrtf32(_x: f32) -> f32 {
-      unreachable!()
-  }
-  *)
+  (* pub fn sqrtf32(x: f32) -> f32; *)
   Definition sqrtf32 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _x ] =>
+    | [], [], [ x ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| Ty.path "f32", _x |) in
+        (let x := M.alloc (| Ty.path "f32", x |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -3939,21 +1596,18 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque sqrtf32.
   
-  (*
-  pub unsafe fn sqrtf64(_x: f64) -> f64 {
-      unreachable!()
-  }
-  *)
+  (* pub fn sqrtf64(x: f64) -> f64; *)
   Definition sqrtf64 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _x ] =>
+    | [], [], [ x ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| Ty.path "f64", _x |) in
+        (let x := M.alloc (| Ty.path "f64", x |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -3963,21 +1617,18 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque sqrtf64.
   
-  (*
-  pub unsafe fn sqrtf128(_x: f128) -> f128 {
-      unreachable!()
-  }
-  *)
+  (* pub fn sqrtf128(x: f128) -> f128; *)
   Definition sqrtf128 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _x ] =>
+    | [], [], [ x ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| Ty.path "f128", _x |) in
+        (let x := M.alloc (| Ty.path "f128", x |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -3988,22 +1639,19 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque sqrtf128.
   
-  (*
-  pub unsafe fn powif16(_a: f16, _x: i32) -> f16 {
-      unreachable!()
-  }
-  *)
+  (* pub fn powif16(a: f16, x: i32) -> f16; *)
   Definition powif16 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _a; _x ] =>
+    | [], [], [ a; x ] =>
       ltac:(M.monadic
-        (let _a := M.alloc (| Ty.path "f16", _a |) in
-        let _x := M.alloc (| Ty.path "i32", _x |) in
+        (let a := M.alloc (| Ty.path "f16", a |) in
+        let x := M.alloc (| Ty.path "i32", x |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4013,22 +1661,19 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque powif16.
   
-  (*
-  pub unsafe fn powif32(_a: f32, _x: i32) -> f32 {
-      unreachable!()
-  }
-  *)
+  (* pub fn powif32(a: f32, x: i32) -> f32; *)
   Definition powif32 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _a; _x ] =>
+    | [], [], [ a; x ] =>
       ltac:(M.monadic
-        (let _a := M.alloc (| Ty.path "f32", _a |) in
-        let _x := M.alloc (| Ty.path "i32", _x |) in
+        (let a := M.alloc (| Ty.path "f32", a |) in
+        let x := M.alloc (| Ty.path "i32", x |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4038,22 +1683,19 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque powif32.
   
-  (*
-  pub unsafe fn powif64(_a: f64, _x: i32) -> f64 {
-      unreachable!()
-  }
-  *)
+  (* pub fn powif64(a: f64, x: i32) -> f64; *)
   Definition powif64 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _a; _x ] =>
+    | [], [], [ a; x ] =>
       ltac:(M.monadic
-        (let _a := M.alloc (| Ty.path "f64", _a |) in
-        let _x := M.alloc (| Ty.path "i32", _x |) in
+        (let a := M.alloc (| Ty.path "f64", a |) in
+        let x := M.alloc (| Ty.path "i32", x |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4063,22 +1705,19 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque powif64.
   
-  (*
-  pub unsafe fn powif128(_a: f128, _x: i32) -> f128 {
-      unreachable!()
-  }
-  *)
+  (* pub fn powif128(a: f128, x: i32) -> f128; *)
   Definition powif128 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _a; _x ] =>
+    | [], [], [ a; x ] =>
       ltac:(M.monadic
-        (let _a := M.alloc (| Ty.path "f128", _a |) in
-        let _x := M.alloc (| Ty.path "i32", _x |) in
+        (let a := M.alloc (| Ty.path "f128", a |) in
+        let x := M.alloc (| Ty.path "i32", x |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4089,21 +1728,18 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque powif128.
   
-  (*
-  pub unsafe fn sinf16(_x: f16) -> f16 {
-      unreachable!()
-  }
-  *)
+  (* pub fn sinf16(x: f16) -> f16; *)
   Definition sinf16 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _x ] =>
+    | [], [], [ x ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| Ty.path "f16", _x |) in
+        (let x := M.alloc (| Ty.path "f16", x |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4113,21 +1749,18 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque sinf16.
   
-  (*
-  pub unsafe fn sinf32(_x: f32) -> f32 {
-      unreachable!()
-  }
-  *)
+  (* pub fn sinf32(x: f32) -> f32; *)
   Definition sinf32 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _x ] =>
+    | [], [], [ x ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| Ty.path "f32", _x |) in
+        (let x := M.alloc (| Ty.path "f32", x |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4137,21 +1770,18 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque sinf32.
   
-  (*
-  pub unsafe fn sinf64(_x: f64) -> f64 {
-      unreachable!()
-  }
-  *)
+  (* pub fn sinf64(x: f64) -> f64; *)
   Definition sinf64 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _x ] =>
+    | [], [], [ x ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| Ty.path "f64", _x |) in
+        (let x := M.alloc (| Ty.path "f64", x |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4161,21 +1791,18 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque sinf64.
   
-  (*
-  pub unsafe fn sinf128(_x: f128) -> f128 {
-      unreachable!()
-  }
-  *)
+  (* pub fn sinf128(x: f128) -> f128; *)
   Definition sinf128 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _x ] =>
+    | [], [], [ x ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| Ty.path "f128", _x |) in
+        (let x := M.alloc (| Ty.path "f128", x |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4185,21 +1812,18 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque sinf128.
   
-  (*
-  pub unsafe fn cosf16(_x: f16) -> f16 {
-      unreachable!()
-  }
-  *)
+  (* pub fn cosf16(x: f16) -> f16; *)
   Definition cosf16 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _x ] =>
+    | [], [], [ x ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| Ty.path "f16", _x |) in
+        (let x := M.alloc (| Ty.path "f16", x |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4209,21 +1833,18 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque cosf16.
   
-  (*
-  pub unsafe fn cosf32(_x: f32) -> f32 {
-      unreachable!()
-  }
-  *)
+  (* pub fn cosf32(x: f32) -> f32; *)
   Definition cosf32 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _x ] =>
+    | [], [], [ x ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| Ty.path "f32", _x |) in
+        (let x := M.alloc (| Ty.path "f32", x |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4233,21 +1854,18 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque cosf32.
   
-  (*
-  pub unsafe fn cosf64(_x: f64) -> f64 {
-      unreachable!()
-  }
-  *)
+  (* pub fn cosf64(x: f64) -> f64; *)
   Definition cosf64 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _x ] =>
+    | [], [], [ x ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| Ty.path "f64", _x |) in
+        (let x := M.alloc (| Ty.path "f64", x |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4257,21 +1875,18 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque cosf64.
   
-  (*
-  pub unsafe fn cosf128(_x: f128) -> f128 {
-      unreachable!()
-  }
-  *)
+  (* pub fn cosf128(x: f128) -> f128; *)
   Definition cosf128 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _x ] =>
+    | [], [], [ x ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| Ty.path "f128", _x |) in
+        (let x := M.alloc (| Ty.path "f128", x |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4281,22 +1896,19 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque cosf128.
   
-  (*
-  pub unsafe fn powf16(_a: f16, _x: f16) -> f16 {
-      unreachable!()
-  }
-  *)
+  (* pub fn powf16(a: f16, x: f16) -> f16; *)
   Definition powf16 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _a; _x ] =>
+    | [], [], [ a; x ] =>
       ltac:(M.monadic
-        (let _a := M.alloc (| Ty.path "f16", _a |) in
-        let _x := M.alloc (| Ty.path "f16", _x |) in
+        (let a := M.alloc (| Ty.path "f16", a |) in
+        let x := M.alloc (| Ty.path "f16", x |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4306,22 +1918,19 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque powf16.
   
-  (*
-  pub unsafe fn powf32(_a: f32, _x: f32) -> f32 {
-      unreachable!()
-  }
-  *)
+  (* pub fn powf32(a: f32, x: f32) -> f32; *)
   Definition powf32 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _a; _x ] =>
+    | [], [], [ a; x ] =>
       ltac:(M.monadic
-        (let _a := M.alloc (| Ty.path "f32", _a |) in
-        let _x := M.alloc (| Ty.path "f32", _x |) in
+        (let a := M.alloc (| Ty.path "f32", a |) in
+        let x := M.alloc (| Ty.path "f32", x |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4331,22 +1940,19 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque powf32.
   
-  (*
-  pub unsafe fn powf64(_a: f64, _x: f64) -> f64 {
-      unreachable!()
-  }
-  *)
+  (* pub fn powf64(a: f64, x: f64) -> f64; *)
   Definition powf64 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _a; _x ] =>
+    | [], [], [ a; x ] =>
       ltac:(M.monadic
-        (let _a := M.alloc (| Ty.path "f64", _a |) in
-        let _x := M.alloc (| Ty.path "f64", _x |) in
+        (let a := M.alloc (| Ty.path "f64", a |) in
+        let x := M.alloc (| Ty.path "f64", x |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4356,22 +1962,19 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque powf64.
   
-  (*
-  pub unsafe fn powf128(_a: f128, _x: f128) -> f128 {
-      unreachable!()
-  }
-  *)
+  (* pub fn powf128(a: f128, x: f128) -> f128; *)
   Definition powf128 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _a; _x ] =>
+    | [], [], [ a; x ] =>
       ltac:(M.monadic
-        (let _a := M.alloc (| Ty.path "f128", _a |) in
-        let _x := M.alloc (| Ty.path "f128", _x |) in
+        (let a := M.alloc (| Ty.path "f128", a |) in
+        let x := M.alloc (| Ty.path "f128", x |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4381,21 +1984,18 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque powf128.
   
-  (*
-  pub unsafe fn expf16(_x: f16) -> f16 {
-      unreachable!()
-  }
-  *)
+  (* pub fn expf16(x: f16) -> f16; *)
   Definition expf16 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _x ] =>
+    | [], [], [ x ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| Ty.path "f16", _x |) in
+        (let x := M.alloc (| Ty.path "f16", x |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4405,21 +2005,18 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque expf16.
   
-  (*
-  pub unsafe fn expf32(_x: f32) -> f32 {
-      unreachable!()
-  }
-  *)
+  (* pub fn expf32(x: f32) -> f32; *)
   Definition expf32 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _x ] =>
+    | [], [], [ x ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| Ty.path "f32", _x |) in
+        (let x := M.alloc (| Ty.path "f32", x |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4429,21 +2026,18 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque expf32.
   
-  (*
-  pub unsafe fn expf64(_x: f64) -> f64 {
-      unreachable!()
-  }
-  *)
+  (* pub fn expf64(x: f64) -> f64; *)
   Definition expf64 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _x ] =>
+    | [], [], [ x ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| Ty.path "f64", _x |) in
+        (let x := M.alloc (| Ty.path "f64", x |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4453,21 +2047,18 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque expf64.
   
-  (*
-  pub unsafe fn expf128(_x: f128) -> f128 {
-      unreachable!()
-  }
-  *)
+  (* pub fn expf128(x: f128) -> f128; *)
   Definition expf128 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _x ] =>
+    | [], [], [ x ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| Ty.path "f128", _x |) in
+        (let x := M.alloc (| Ty.path "f128", x |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4477,21 +2068,18 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque expf128.
   
-  (*
-  pub unsafe fn exp2f16(_x: f16) -> f16 {
-      unreachable!()
-  }
-  *)
+  (* pub fn exp2f16(x: f16) -> f16; *)
   Definition exp2f16 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _x ] =>
+    | [], [], [ x ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| Ty.path "f16", _x |) in
+        (let x := M.alloc (| Ty.path "f16", x |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4501,21 +2089,18 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque exp2f16.
   
-  (*
-  pub unsafe fn exp2f32(_x: f32) -> f32 {
-      unreachable!()
-  }
-  *)
+  (* pub fn exp2f32(x: f32) -> f32; *)
   Definition exp2f32 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _x ] =>
+    | [], [], [ x ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| Ty.path "f32", _x |) in
+        (let x := M.alloc (| Ty.path "f32", x |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4525,21 +2110,18 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque exp2f32.
   
-  (*
-  pub unsafe fn exp2f64(_x: f64) -> f64 {
-      unreachable!()
-  }
-  *)
+  (* pub fn exp2f64(x: f64) -> f64; *)
   Definition exp2f64 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _x ] =>
+    | [], [], [ x ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| Ty.path "f64", _x |) in
+        (let x := M.alloc (| Ty.path "f64", x |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4549,21 +2131,18 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque exp2f64.
   
-  (*
-  pub unsafe fn exp2f128(_x: f128) -> f128 {
-      unreachable!()
-  }
-  *)
+  (* pub fn exp2f128(x: f128) -> f128; *)
   Definition exp2f128 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _x ] =>
+    | [], [], [ x ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| Ty.path "f128", _x |) in
+        (let x := M.alloc (| Ty.path "f128", x |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4574,21 +2153,18 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque exp2f128.
   
-  (*
-  pub unsafe fn logf16(_x: f16) -> f16 {
-      unreachable!()
-  }
-  *)
+  (* pub fn logf16(x: f16) -> f16; *)
   Definition logf16 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _x ] =>
+    | [], [], [ x ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| Ty.path "f16", _x |) in
+        (let x := M.alloc (| Ty.path "f16", x |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4598,21 +2174,18 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque logf16.
   
-  (*
-  pub unsafe fn logf32(_x: f32) -> f32 {
-      unreachable!()
-  }
-  *)
+  (* pub fn logf32(x: f32) -> f32; *)
   Definition logf32 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _x ] =>
+    | [], [], [ x ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| Ty.path "f32", _x |) in
+        (let x := M.alloc (| Ty.path "f32", x |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4622,21 +2195,18 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque logf32.
   
-  (*
-  pub unsafe fn logf64(_x: f64) -> f64 {
-      unreachable!()
-  }
-  *)
+  (* pub fn logf64(x: f64) -> f64; *)
   Definition logf64 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _x ] =>
+    | [], [], [ x ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| Ty.path "f64", _x |) in
+        (let x := M.alloc (| Ty.path "f64", x |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4646,21 +2216,18 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque logf64.
   
-  (*
-  pub unsafe fn logf128(_x: f128) -> f128 {
-      unreachable!()
-  }
-  *)
+  (* pub fn logf128(x: f128) -> f128; *)
   Definition logf128 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _x ] =>
+    | [], [], [ x ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| Ty.path "f128", _x |) in
+        (let x := M.alloc (| Ty.path "f128", x |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4670,21 +2237,18 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque logf128.
   
-  (*
-  pub unsafe fn log10f16(_x: f16) -> f16 {
-      unreachable!()
-  }
-  *)
+  (* pub fn log10f16(x: f16) -> f16; *)
   Definition log10f16 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _x ] =>
+    | [], [], [ x ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| Ty.path "f16", _x |) in
+        (let x := M.alloc (| Ty.path "f16", x |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4695,21 +2259,18 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque log10f16.
   
-  (*
-  pub unsafe fn log10f32(_x: f32) -> f32 {
-      unreachable!()
-  }
-  *)
+  (* pub fn log10f32(x: f32) -> f32; *)
   Definition log10f32 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _x ] =>
+    | [], [], [ x ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| Ty.path "f32", _x |) in
+        (let x := M.alloc (| Ty.path "f32", x |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4720,21 +2281,18 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque log10f32.
   
-  (*
-  pub unsafe fn log10f64(_x: f64) -> f64 {
-      unreachable!()
-  }
-  *)
+  (* pub fn log10f64(x: f64) -> f64; *)
   Definition log10f64 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _x ] =>
+    | [], [], [ x ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| Ty.path "f64", _x |) in
+        (let x := M.alloc (| Ty.path "f64", x |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4745,21 +2303,18 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque log10f64.
   
-  (*
-  pub unsafe fn log10f128(_x: f128) -> f128 {
-      unreachable!()
-  }
-  *)
+  (* pub fn log10f128(x: f128) -> f128; *)
   Definition log10f128 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _x ] =>
+    | [], [], [ x ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| Ty.path "f128", _x |) in
+        (let x := M.alloc (| Ty.path "f128", x |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4770,21 +2325,18 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque log10f128.
   
-  (*
-  pub unsafe fn log2f16(_x: f16) -> f16 {
-      unreachable!()
-  }
-  *)
+  (* pub fn log2f16(x: f16) -> f16; *)
   Definition log2f16 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _x ] =>
+    | [], [], [ x ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| Ty.path "f16", _x |) in
+        (let x := M.alloc (| Ty.path "f16", x |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4794,21 +2346,18 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque log2f16.
   
-  (*
-  pub unsafe fn log2f32(_x: f32) -> f32 {
-      unreachable!()
-  }
-  *)
+  (* pub fn log2f32(x: f32) -> f32; *)
   Definition log2f32 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _x ] =>
+    | [], [], [ x ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| Ty.path "f32", _x |) in
+        (let x := M.alloc (| Ty.path "f32", x |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4818,21 +2367,18 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque log2f32.
   
-  (*
-  pub unsafe fn log2f64(_x: f64) -> f64 {
-      unreachable!()
-  }
-  *)
+  (* pub fn log2f64(x: f64) -> f64; *)
   Definition log2f64 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _x ] =>
+    | [], [], [ x ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| Ty.path "f64", _x |) in
+        (let x := M.alloc (| Ty.path "f64", x |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4842,21 +2388,18 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque log2f64.
   
-  (*
-  pub unsafe fn log2f128(_x: f128) -> f128 {
-      unreachable!()
-  }
-  *)
+  (* pub fn log2f128(x: f128) -> f128; *)
   Definition log2f128 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _x ] =>
+    | [], [], [ x ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| Ty.path "f128", _x |) in
+        (let x := M.alloc (| Ty.path "f128", x |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4867,23 +2410,20 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque log2f128.
   
-  (*
-  pub unsafe fn fmaf16(_a: f16, _b: f16, _c: f16) -> f16 {
-      unreachable!()
-  }
-  *)
+  (* pub const fn fmaf16(a: f16, b: f16, c: f16) -> f16; *)
   Definition fmaf16 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _a; _b; _c ] =>
+    | [], [], [ a; b; c ] =>
       ltac:(M.monadic
-        (let _a := M.alloc (| Ty.path "f16", _a |) in
-        let _b := M.alloc (| Ty.path "f16", _b |) in
-        let _c := M.alloc (| Ty.path "f16", _c |) in
+        (let a := M.alloc (| Ty.path "f16", a |) in
+        let b := M.alloc (| Ty.path "f16", b |) in
+        let c := M.alloc (| Ty.path "f16", c |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4893,23 +2433,20 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque fmaf16.
   
-  (*
-  pub unsafe fn fmaf32(_a: f32, _b: f32, _c: f32) -> f32 {
-      unreachable!()
-  }
-  *)
+  (* pub const fn fmaf32(a: f32, b: f32, c: f32) -> f32; *)
   Definition fmaf32 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _a; _b; _c ] =>
+    | [], [], [ a; b; c ] =>
       ltac:(M.monadic
-        (let _a := M.alloc (| Ty.path "f32", _a |) in
-        let _b := M.alloc (| Ty.path "f32", _b |) in
-        let _c := M.alloc (| Ty.path "f32", _c |) in
+        (let a := M.alloc (| Ty.path "f32", a |) in
+        let b := M.alloc (| Ty.path "f32", b |) in
+        let c := M.alloc (| Ty.path "f32", c |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4919,23 +2456,20 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque fmaf32.
   
-  (*
-  pub unsafe fn fmaf64(_a: f64, _b: f64, _c: f64) -> f64 {
-      unreachable!()
-  }
-  *)
+  (* pub const fn fmaf64(a: f64, b: f64, c: f64) -> f64; *)
   Definition fmaf64 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _a; _b; _c ] =>
+    | [], [], [ a; b; c ] =>
       ltac:(M.monadic
-        (let _a := M.alloc (| Ty.path "f64", _a |) in
-        let _b := M.alloc (| Ty.path "f64", _b |) in
-        let _c := M.alloc (| Ty.path "f64", _c |) in
+        (let a := M.alloc (| Ty.path "f64", a |) in
+        let b := M.alloc (| Ty.path "f64", b |) in
+        let c := M.alloc (| Ty.path "f64", c |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4945,23 +2479,20 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque fmaf64.
   
-  (*
-  pub unsafe fn fmaf128(_a: f128, _b: f128, _c: f128) -> f128 {
-      unreachable!()
-  }
-  *)
+  (* pub const fn fmaf128(a: f128, b: f128, c: f128) -> f128; *)
   Definition fmaf128 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _a; _b; _c ] =>
+    | [], [], [ a; b; c ] =>
       ltac:(M.monadic
-        (let _a := M.alloc (| Ty.path "f128", _a |) in
-        let _b := M.alloc (| Ty.path "f128", _b |) in
-        let _c := M.alloc (| Ty.path "f128", _c |) in
+        (let a := M.alloc (| Ty.path "f128", a |) in
+        let b := M.alloc (| Ty.path "f128", b |) in
+        let c := M.alloc (| Ty.path "f128", c |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4971,23 +2502,20 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque fmaf128.
   
-  (*
-  pub unsafe fn fmuladdf16(_a: f16, _b: f16, _c: f16) -> f16 {
-      unreachable!()
-  }
-  *)
+  (* pub const fn fmuladdf16(a: f16, b: f16, c: f16) -> f16; *)
   Definition fmuladdf16 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _a; _b; _c ] =>
+    | [], [], [ a; b; c ] =>
       ltac:(M.monadic
-        (let _a := M.alloc (| Ty.path "f16", _a |) in
-        let _b := M.alloc (| Ty.path "f16", _b |) in
-        let _c := M.alloc (| Ty.path "f16", _c |) in
+        (let a := M.alloc (| Ty.path "f16", a |) in
+        let b := M.alloc (| Ty.path "f16", b |) in
+        let c := M.alloc (| Ty.path "f16", c |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4998,23 +2526,20 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque fmuladdf16.
   
-  (*
-  pub unsafe fn fmuladdf32(_a: f32, _b: f32, _c: f32) -> f32 {
-      unreachable!()
-  }
-  *)
+  (* pub const fn fmuladdf32(a: f32, b: f32, c: f32) -> f32; *)
   Definition fmuladdf32 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _a; _b; _c ] =>
+    | [], [], [ a; b; c ] =>
       ltac:(M.monadic
-        (let _a := M.alloc (| Ty.path "f32", _a |) in
-        let _b := M.alloc (| Ty.path "f32", _b |) in
-        let _c := M.alloc (| Ty.path "f32", _c |) in
+        (let a := M.alloc (| Ty.path "f32", a |) in
+        let b := M.alloc (| Ty.path "f32", b |) in
+        let c := M.alloc (| Ty.path "f32", c |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -5025,23 +2550,20 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque fmuladdf32.
   
-  (*
-  pub unsafe fn fmuladdf64(_a: f64, _b: f64, _c: f64) -> f64 {
-      unreachable!()
-  }
-  *)
+  (* pub const fn fmuladdf64(a: f64, b: f64, c: f64) -> f64; *)
   Definition fmuladdf64 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _a; _b; _c ] =>
+    | [], [], [ a; b; c ] =>
       ltac:(M.monadic
-        (let _a := M.alloc (| Ty.path "f64", _a |) in
-        let _b := M.alloc (| Ty.path "f64", _b |) in
-        let _c := M.alloc (| Ty.path "f64", _c |) in
+        (let a := M.alloc (| Ty.path "f64", a |) in
+        let b := M.alloc (| Ty.path "f64", b |) in
+        let c := M.alloc (| Ty.path "f64", c |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -5052,23 +2574,20 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque fmuladdf64.
   
-  (*
-  pub unsafe fn fmuladdf128(_a: f128, _b: f128, _c: f128) -> f128 {
-      unreachable!()
-  }
-  *)
+  (* pub const fn fmuladdf128(a: f128, b: f128, c: f128) -> f128; *)
   Definition fmuladdf128 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _a; _b; _c ] =>
+    | [], [], [ a; b; c ] =>
       ltac:(M.monadic
-        (let _a := M.alloc (| Ty.path "f128", _a |) in
-        let _b := M.alloc (| Ty.path "f128", _b |) in
-        let _c := M.alloc (| Ty.path "f128", _c |) in
+        (let a := M.alloc (| Ty.path "f128", a |) in
+        let b := M.alloc (| Ty.path "f128", b |) in
+        let c := M.alloc (| Ty.path "f128", c |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -5079,21 +2598,18 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque fmuladdf128.
   
-  (*
-  pub unsafe fn floorf16(_x: f16) -> f16 {
-      unreachable!()
-  }
-  *)
+  (* pub const fn floorf16(x: f16) -> f16; *)
   Definition floorf16 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _x ] =>
+    | [], [], [ x ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| Ty.path "f16", _x |) in
+        (let x := M.alloc (| Ty.path "f16", x |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -5104,21 +2620,18 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque floorf16.
   
-  (*
-  pub unsafe fn floorf32(_x: f32) -> f32 {
-      unreachable!()
-  }
-  *)
+  (* pub const fn floorf32(x: f32) -> f32; *)
   Definition floorf32 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _x ] =>
+    | [], [], [ x ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| Ty.path "f32", _x |) in
+        (let x := M.alloc (| Ty.path "f32", x |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -5129,21 +2642,18 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque floorf32.
   
-  (*
-  pub unsafe fn floorf64(_x: f64) -> f64 {
-      unreachable!()
-  }
-  *)
+  (* pub const fn floorf64(x: f64) -> f64; *)
   Definition floorf64 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _x ] =>
+    | [], [], [ x ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| Ty.path "f64", _x |) in
+        (let x := M.alloc (| Ty.path "f64", x |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -5154,21 +2664,18 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque floorf64.
   
-  (*
-  pub unsafe fn floorf128(_x: f128) -> f128 {
-      unreachable!()
-  }
-  *)
+  (* pub const fn floorf128(x: f128) -> f128; *)
   Definition floorf128 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _x ] =>
+    | [], [], [ x ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| Ty.path "f128", _x |) in
+        (let x := M.alloc (| Ty.path "f128", x |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -5179,21 +2686,18 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque floorf128.
   
-  (*
-  pub unsafe fn ceilf16(_x: f16) -> f16 {
-      unreachable!()
-  }
-  *)
+  (* pub const fn ceilf16(x: f16) -> f16; *)
   Definition ceilf16 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _x ] =>
+    | [], [], [ x ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| Ty.path "f16", _x |) in
+        (let x := M.alloc (| Ty.path "f16", x |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -5203,21 +2707,18 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque ceilf16.
   
-  (*
-  pub unsafe fn ceilf32(_x: f32) -> f32 {
-      unreachable!()
-  }
-  *)
+  (* pub const fn ceilf32(x: f32) -> f32; *)
   Definition ceilf32 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _x ] =>
+    | [], [], [ x ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| Ty.path "f32", _x |) in
+        (let x := M.alloc (| Ty.path "f32", x |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -5227,21 +2728,18 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque ceilf32.
   
-  (*
-  pub unsafe fn ceilf64(_x: f64) -> f64 {
-      unreachable!()
-  }
-  *)
+  (* pub const fn ceilf64(x: f64) -> f64; *)
   Definition ceilf64 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _x ] =>
+    | [], [], [ x ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| Ty.path "f64", _x |) in
+        (let x := M.alloc (| Ty.path "f64", x |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -5251,21 +2749,18 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque ceilf64.
   
-  (*
-  pub unsafe fn ceilf128(_x: f128) -> f128 {
-      unreachable!()
-  }
-  *)
+  (* pub const fn ceilf128(x: f128) -> f128; *)
   Definition ceilf128 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _x ] =>
+    | [], [], [ x ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| Ty.path "f128", _x |) in
+        (let x := M.alloc (| Ty.path "f128", x |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -5276,21 +2771,18 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque ceilf128.
   
-  (*
-  pub unsafe fn truncf16(_x: f16) -> f16 {
-      unreachable!()
-  }
-  *)
+  (* pub const fn truncf16(x: f16) -> f16; *)
   Definition truncf16 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _x ] =>
+    | [], [], [ x ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| Ty.path "f16", _x |) in
+        (let x := M.alloc (| Ty.path "f16", x |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -5301,21 +2793,18 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque truncf16.
   
-  (*
-  pub unsafe fn truncf32(_x: f32) -> f32 {
-      unreachable!()
-  }
-  *)
+  (* pub const fn truncf32(x: f32) -> f32; *)
   Definition truncf32 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _x ] =>
+    | [], [], [ x ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| Ty.path "f32", _x |) in
+        (let x := M.alloc (| Ty.path "f32", x |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -5326,21 +2815,18 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque truncf32.
   
-  (*
-  pub unsafe fn truncf64(_x: f64) -> f64 {
-      unreachable!()
-  }
-  *)
+  (* pub const fn truncf64(x: f64) -> f64; *)
   Definition truncf64 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _x ] =>
+    | [], [], [ x ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| Ty.path "f64", _x |) in
+        (let x := M.alloc (| Ty.path "f64", x |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -5351,21 +2837,18 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque truncf64.
   
-  (*
-  pub unsafe fn truncf128(_x: f128) -> f128 {
-      unreachable!()
-  }
-  *)
+  (* pub const fn truncf128(x: f128) -> f128; *)
   Definition truncf128 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _x ] =>
+    | [], [], [ x ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| Ty.path "f128", _x |) in
+        (let x := M.alloc (| Ty.path "f128", x |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -5376,218 +2859,106 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque truncf128.
   
-  (*
-  pub unsafe fn rintf16(_x: f16) -> f16 {
-      unreachable!()
-  }
-  *)
-  Definition rintf16 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+  (* pub const fn round_ties_even_f16(x: f16) -> f16; *)
+  Definition round_ties_even_f16 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _x ] =>
+    | [], [], [ x ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| Ty.path "f16", _x |) in
+        (let x := M.alloc (| Ty.path "f16", x |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
-  Global Instance Instance_IsFunction_rintf16 : M.IsFunction.C "core::intrinsics::rintf16" rintf16.
+  Global Instance Instance_IsFunction_round_ties_even_f16 :
+    M.IsFunction.C "core::intrinsics::round_ties_even_f16" round_ties_even_f16.
   Admitted.
-  Global Typeclasses Opaque rintf16.
+  Global Typeclasses Opaque round_ties_even_f16.
   
-  (*
-  pub unsafe fn rintf32(_x: f32) -> f32 {
-      unreachable!()
-  }
-  *)
-  Definition rintf32 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+  (* pub const fn round_ties_even_f32(x: f32) -> f32; *)
+  Definition round_ties_even_f32 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _x ] =>
+    | [], [], [ x ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| Ty.path "f32", _x |) in
+        (let x := M.alloc (| Ty.path "f32", x |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
-  Global Instance Instance_IsFunction_rintf32 : M.IsFunction.C "core::intrinsics::rintf32" rintf32.
+  Global Instance Instance_IsFunction_round_ties_even_f32 :
+    M.IsFunction.C "core::intrinsics::round_ties_even_f32" round_ties_even_f32.
   Admitted.
-  Global Typeclasses Opaque rintf32.
+  Global Typeclasses Opaque round_ties_even_f32.
   
-  (*
-  pub unsafe fn rintf64(_x: f64) -> f64 {
-      unreachable!()
-  }
-  *)
-  Definition rintf64 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+  (* pub const fn round_ties_even_f64(x: f64) -> f64; *)
+  Definition round_ties_even_f64 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _x ] =>
+    | [], [], [ x ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| Ty.path "f64", _x |) in
+        (let x := M.alloc (| Ty.path "f64", x |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
-  Global Instance Instance_IsFunction_rintf64 : M.IsFunction.C "core::intrinsics::rintf64" rintf64.
+  Global Instance Instance_IsFunction_round_ties_even_f64 :
+    M.IsFunction.C "core::intrinsics::round_ties_even_f64" round_ties_even_f64.
   Admitted.
-  Global Typeclasses Opaque rintf64.
+  Global Typeclasses Opaque round_ties_even_f64.
   
-  (*
-  pub unsafe fn rintf128(_x: f128) -> f128 {
-      unreachable!()
-  }
-  *)
-  Definition rintf128 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+  (* pub const fn round_ties_even_f128(x: f128) -> f128; *)
+  Definition round_ties_even_f128 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _x ] =>
+    | [], [], [ x ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| Ty.path "f128", _x |) in
+        (let x := M.alloc (| Ty.path "f128", x |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
-  Global Instance Instance_IsFunction_rintf128 :
-    M.IsFunction.C "core::intrinsics::rintf128" rintf128.
+  Global Instance Instance_IsFunction_round_ties_even_f128 :
+    M.IsFunction.C "core::intrinsics::round_ties_even_f128" round_ties_even_f128.
   Admitted.
-  Global Typeclasses Opaque rintf128.
+  Global Typeclasses Opaque round_ties_even_f128.
   
-  (*
-  pub unsafe fn nearbyintf16(_x: f16) -> f16 {
-      unreachable!()
-  }
-  *)
-  Definition nearbyintf16 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [], [], [ _x ] =>
-      ltac:(M.monadic
-        (let _x := M.alloc (| Ty.path "f16", _x |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_nearbyintf16 :
-    M.IsFunction.C "core::intrinsics::nearbyintf16" nearbyintf16.
-  Admitted.
-  Global Typeclasses Opaque nearbyintf16.
-  
-  (*
-  pub unsafe fn nearbyintf32(_x: f32) -> f32 {
-      unreachable!()
-  }
-  *)
-  Definition nearbyintf32 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [], [], [ _x ] =>
-      ltac:(M.monadic
-        (let _x := M.alloc (| Ty.path "f32", _x |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_nearbyintf32 :
-    M.IsFunction.C "core::intrinsics::nearbyintf32" nearbyintf32.
-  Admitted.
-  Global Typeclasses Opaque nearbyintf32.
-  
-  (*
-  pub unsafe fn nearbyintf64(_x: f64) -> f64 {
-      unreachable!()
-  }
-  *)
-  Definition nearbyintf64 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [], [], [ _x ] =>
-      ltac:(M.monadic
-        (let _x := M.alloc (| Ty.path "f64", _x |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_nearbyintf64 :
-    M.IsFunction.C "core::intrinsics::nearbyintf64" nearbyintf64.
-  Admitted.
-  Global Typeclasses Opaque nearbyintf64.
-  
-  (*
-  pub unsafe fn nearbyintf128(_x: f128) -> f128 {
-      unreachable!()
-  }
-  *)
-  Definition nearbyintf128 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [], [], [ _x ] =>
-      ltac:(M.monadic
-        (let _x := M.alloc (| Ty.path "f128", _x |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_nearbyintf128 :
-    M.IsFunction.C "core::intrinsics::nearbyintf128" nearbyintf128.
-  Admitted.
-  Global Typeclasses Opaque nearbyintf128.
-  
-  (*
-  pub unsafe fn roundf16(_x: f16) -> f16 {
-      unreachable!()
-  }
-  *)
+  (* pub const fn roundf16(x: f16) -> f16; *)
   Definition roundf16 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _x ] =>
+    | [], [], [ x ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| Ty.path "f16", _x |) in
+        (let x := M.alloc (| Ty.path "f16", x |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -5598,21 +2969,18 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque roundf16.
   
-  (*
-  pub unsafe fn roundf32(_x: f32) -> f32 {
-      unreachable!()
-  }
-  *)
+  (* pub const fn roundf32(x: f32) -> f32; *)
   Definition roundf32 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _x ] =>
+    | [], [], [ x ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| Ty.path "f32", _x |) in
+        (let x := M.alloc (| Ty.path "f32", x |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -5623,21 +2991,18 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque roundf32.
   
-  (*
-  pub unsafe fn roundf64(_x: f64) -> f64 {
-      unreachable!()
-  }
-  *)
+  (* pub const fn roundf64(x: f64) -> f64; *)
   Definition roundf64 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _x ] =>
+    | [], [], [ x ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| Ty.path "f64", _x |) in
+        (let x := M.alloc (| Ty.path "f64", x |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -5648,21 +3013,18 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque roundf64.
   
-  (*
-  pub unsafe fn roundf128(_x: f128) -> f128 {
-      unreachable!()
-  }
-  *)
+  (* pub const fn roundf128(x: f128) -> f128; *)
   Definition roundf128 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _x ] =>
+    | [], [], [ x ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| Ty.path "f128", _x |) in
+        (let x := M.alloc (| Ty.path "f128", x |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -5673,122 +3035,19 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque roundf128.
   
-  (*
-  pub unsafe fn roundevenf16(_x: f16) -> f16 {
-      unreachable!()
-  }
-  *)
-  Definition roundevenf16 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [], [], [ _x ] =>
-      ltac:(M.monadic
-        (let _x := M.alloc (| Ty.path "f16", _x |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_roundevenf16 :
-    M.IsFunction.C "core::intrinsics::roundevenf16" roundevenf16.
-  Admitted.
-  Global Typeclasses Opaque roundevenf16.
-  
-  (*
-  pub unsafe fn roundevenf32(_x: f32) -> f32 {
-      unreachable!()
-  }
-  *)
-  Definition roundevenf32 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [], [], [ _x ] =>
-      ltac:(M.monadic
-        (let _x := M.alloc (| Ty.path "f32", _x |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_roundevenf32 :
-    M.IsFunction.C "core::intrinsics::roundevenf32" roundevenf32.
-  Admitted.
-  Global Typeclasses Opaque roundevenf32.
-  
-  (*
-  pub unsafe fn roundevenf64(_x: f64) -> f64 {
-      unreachable!()
-  }
-  *)
-  Definition roundevenf64 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [], [], [ _x ] =>
-      ltac:(M.monadic
-        (let _x := M.alloc (| Ty.path "f64", _x |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_roundevenf64 :
-    M.IsFunction.C "core::intrinsics::roundevenf64" roundevenf64.
-  Admitted.
-  Global Typeclasses Opaque roundevenf64.
-  
-  (*
-  pub unsafe fn roundevenf128(_x: f128) -> f128 {
-      unreachable!()
-  }
-  *)
-  Definition roundevenf128 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [], [], [ _x ] =>
-      ltac:(M.monadic
-        (let _x := M.alloc (| Ty.path "f128", _x |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
-          |)
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_roundevenf128 :
-    M.IsFunction.C "core::intrinsics::roundevenf128" roundevenf128.
-  Admitted.
-  Global Typeclasses Opaque roundevenf128.
-  
-  (*
-  pub unsafe fn fadd_fast<T: Copy>(_a: T, _b: T) -> T {
-      unreachable!()
-  }
-  *)
+  (* pub unsafe fn fadd_fast<T: Copy>(a: T, b: T) -> T; *)
   Definition fadd_fast (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [ T ], [ _a; _b ] =>
+    | [], [ T ], [ a; b ] =>
       ltac:(M.monadic
-        (let _a := M.alloc (| T, _a |) in
-        let _b := M.alloc (| T, _b |) in
+        (let a := M.alloc (| T, a |) in
+        let b := M.alloc (| T, b |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -5799,22 +3058,19 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque fadd_fast.
   
-  (*
-  pub unsafe fn fsub_fast<T: Copy>(_a: T, _b: T) -> T {
-      unreachable!()
-  }
-  *)
+  (* pub unsafe fn fsub_fast<T: Copy>(a: T, b: T) -> T; *)
   Definition fsub_fast (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [ T ], [ _a; _b ] =>
+    | [], [ T ], [ a; b ] =>
       ltac:(M.monadic
-        (let _a := M.alloc (| T, _a |) in
-        let _b := M.alloc (| T, _b |) in
+        (let a := M.alloc (| T, a |) in
+        let b := M.alloc (| T, b |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -5825,22 +3081,19 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque fsub_fast.
   
-  (*
-  pub unsafe fn fmul_fast<T: Copy>(_a: T, _b: T) -> T {
-      unreachable!()
-  }
-  *)
+  (* pub unsafe fn fmul_fast<T: Copy>(a: T, b: T) -> T; *)
   Definition fmul_fast (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [ T ], [ _a; _b ] =>
+    | [], [ T ], [ a; b ] =>
       ltac:(M.monadic
-        (let _a := M.alloc (| T, _a |) in
-        let _b := M.alloc (| T, _b |) in
+        (let a := M.alloc (| T, a |) in
+        let b := M.alloc (| T, b |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -5851,22 +3104,19 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque fmul_fast.
   
-  (*
-  pub unsafe fn fdiv_fast<T: Copy>(_a: T, _b: T) -> T {
-      unreachable!()
-  }
-  *)
+  (* pub unsafe fn fdiv_fast<T: Copy>(a: T, b: T) -> T; *)
   Definition fdiv_fast (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [ T ], [ _a; _b ] =>
+    | [], [ T ], [ a; b ] =>
       ltac:(M.monadic
-        (let _a := M.alloc (| T, _a |) in
-        let _b := M.alloc (| T, _b |) in
+        (let a := M.alloc (| T, a |) in
+        let b := M.alloc (| T, b |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -5877,22 +3127,19 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque fdiv_fast.
   
-  (*
-  pub unsafe fn frem_fast<T: Copy>(_a: T, _b: T) -> T {
-      unreachable!()
-  }
-  *)
+  (* pub unsafe fn frem_fast<T: Copy>(a: T, b: T) -> T; *)
   Definition frem_fast (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [ T ], [ _a; _b ] =>
+    | [], [ T ], [ a; b ] =>
       ltac:(M.monadic
-        (let _a := M.alloc (| T, _a |) in
-        let _b := M.alloc (| T, _b |) in
+        (let a := M.alloc (| T, a |) in
+        let b := M.alloc (| T, b |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -5903,21 +3150,18 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque frem_fast.
   
-  (*
-  pub unsafe fn float_to_int_unchecked<Float: Copy, Int: Copy>(_value: Float) -> Int {
-      unreachable!()
-  }
-  *)
+  (* pub unsafe fn float_to_int_unchecked<Float: Copy, Int: Copy>(value: Float) -> Int; *)
   Definition float_to_int_unchecked (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [ Float; Int ], [ _value ] =>
+    | [], [ Float; Int ], [ value ] =>
       ltac:(M.monadic
-        (let _value := M.alloc (| Float, _value |) in
+        (let value := M.alloc (| Float, value |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -5928,22 +3172,19 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque float_to_int_unchecked.
   
-  (*
-  pub fn fadd_algebraic<T: Copy>(_a: T, _b: T) -> T {
-      unimplemented!()
-  }
-  *)
+  (* pub const fn fadd_algebraic<T: Copy>(a: T, b: T) -> T; *)
   Definition fadd_algebraic (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [ T ], [ _a; _b ] =>
+    | [], [ T ], [ a; b ] =>
       ltac:(M.monadic
-        (let _a := M.alloc (| T, _a |) in
-        let _b := M.alloc (| T, _b |) in
+        (let a := M.alloc (| T, a |) in
+        let b := M.alloc (| T, b |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -5954,22 +3195,19 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque fadd_algebraic.
   
-  (*
-  pub fn fsub_algebraic<T: Copy>(_a: T, _b: T) -> T {
-      unimplemented!()
-  }
-  *)
+  (* pub const fn fsub_algebraic<T: Copy>(a: T, b: T) -> T; *)
   Definition fsub_algebraic (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [ T ], [ _a; _b ] =>
+    | [], [ T ], [ a; b ] =>
       ltac:(M.monadic
-        (let _a := M.alloc (| T, _a |) in
-        let _b := M.alloc (| T, _b |) in
+        (let a := M.alloc (| T, a |) in
+        let b := M.alloc (| T, b |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -5980,22 +3218,19 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque fsub_algebraic.
   
-  (*
-  pub fn fmul_algebraic<T: Copy>(_a: T, _b: T) -> T {
-      unimplemented!()
-  }
-  *)
+  (* pub const fn fmul_algebraic<T: Copy>(a: T, b: T) -> T; *)
   Definition fmul_algebraic (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [ T ], [ _a; _b ] =>
+    | [], [ T ], [ a; b ] =>
       ltac:(M.monadic
-        (let _a := M.alloc (| T, _a |) in
-        let _b := M.alloc (| T, _b |) in
+        (let a := M.alloc (| T, a |) in
+        let b := M.alloc (| T, b |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -6006,22 +3241,19 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque fmul_algebraic.
   
-  (*
-  pub fn fdiv_algebraic<T: Copy>(_a: T, _b: T) -> T {
-      unimplemented!()
-  }
-  *)
+  (* pub const fn fdiv_algebraic<T: Copy>(a: T, b: T) -> T; *)
   Definition fdiv_algebraic (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [ T ], [ _a; _b ] =>
+    | [], [ T ], [ a; b ] =>
       ltac:(M.monadic
-        (let _a := M.alloc (| T, _a |) in
-        let _b := M.alloc (| T, _b |) in
+        (let a := M.alloc (| T, a |) in
+        let b := M.alloc (| T, b |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -6032,22 +3264,19 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque fdiv_algebraic.
   
-  (*
-  pub fn frem_algebraic<T: Copy>(_a: T, _b: T) -> T {
-      unimplemented!()
-  }
-  *)
+  (* pub const fn frem_algebraic<T: Copy>(a: T, b: T) -> T; *)
   Definition frem_algebraic (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [ T ], [ _a; _b ] =>
+    | [], [ T ], [ a; b ] =>
       ltac:(M.monadic
-        (let _a := M.alloc (| T, _a |) in
-        let _b := M.alloc (| T, _b |) in
+        (let a := M.alloc (| T, a |) in
+        let b := M.alloc (| T, b |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -6058,21 +3287,18 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque frem_algebraic.
   
-  (*
-  pub const fn ctpop<T: Copy>(_x: T) -> u32 {
-      unimplemented!()
-  }
-  *)
+  (* pub const fn ctpop<T: Copy>(x: T) -> u32; *)
   Definition ctpop (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [ T ], [ _x ] =>
+    | [], [ T ], [ x ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| T, _x |) in
+        (let x := M.alloc (| T, x |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -6082,21 +3308,18 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque ctpop.
   
-  (*
-  pub const fn ctlz<T: Copy>(_x: T) -> u32 {
-      unimplemented!()
-  }
-  *)
+  (* pub const fn ctlz<T: Copy>(x: T) -> u32; *)
   Definition ctlz (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [ T ], [ _x ] =>
+    | [], [ T ], [ x ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| T, _x |) in
+        (let x := M.alloc (| T, x |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -6106,21 +3329,18 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque ctlz.
   
-  (*
-  pub const unsafe fn ctlz_nonzero<T: Copy>(_x: T) -> u32 {
-      unimplemented!()
-  }
-  *)
+  (* pub const unsafe fn ctlz_nonzero<T: Copy>(x: T) -> u32; *)
   Definition ctlz_nonzero (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [ T ], [ _x ] =>
+    | [], [ T ], [ x ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| T, _x |) in
+        (let x := M.alloc (| T, x |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -6131,21 +3351,18 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque ctlz_nonzero.
   
-  (*
-  pub const fn cttz<T: Copy>(_x: T) -> u32 {
-      unimplemented!()
-  }
-  *)
+  (* pub const fn cttz<T: Copy>(x: T) -> u32; *)
   Definition cttz (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [ T ], [ _x ] =>
+    | [], [ T ], [ x ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| T, _x |) in
+        (let x := M.alloc (| T, x |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -6155,21 +3372,18 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque cttz.
   
-  (*
-  pub const unsafe fn cttz_nonzero<T: Copy>(_x: T) -> u32 {
-      unimplemented!()
-  }
-  *)
+  (* pub const unsafe fn cttz_nonzero<T: Copy>(x: T) -> u32; *)
   Definition cttz_nonzero (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [ T ], [ _x ] =>
+    | [], [ T ], [ x ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| T, _x |) in
+        (let x := M.alloc (| T, x |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -6180,21 +3394,18 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque cttz_nonzero.
   
-  (*
-  pub const fn bswap<T: Copy>(_x: T) -> T {
-      unimplemented!()
-  }
-  *)
+  (* pub const fn bswap<T: Copy>(x: T) -> T; *)
   Definition bswap (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [ T ], [ _x ] =>
+    | [], [ T ], [ x ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| T, _x |) in
+        (let x := M.alloc (| T, x |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -6204,21 +3415,18 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque bswap.
   
-  (*
-  pub const fn bitreverse<T: Copy>(_x: T) -> T {
-      unimplemented!()
-  }
-  *)
+  (* pub const fn bitreverse<T: Copy>(x: T) -> T; *)
   Definition bitreverse (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [ T ], [ _x ] =>
+    | [], [ T ], [ x ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| T, _x |) in
+        (let x := M.alloc (| T, x |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -6229,22 +3437,19 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque bitreverse.
   
-  (*
-  pub const fn three_way_compare<T: Copy>(_lhs: T, _rhss: T) -> crate::cmp::Ordering {
-      unimplemented!()
-  }
-  *)
+  (* pub const fn three_way_compare<T: Copy>(lhs: T, rhss: T) -> crate::cmp::Ordering; *)
   Definition three_way_compare (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [ T ], [ _lhs; _rhss ] =>
+    | [], [ T ], [ lhs; rhss ] =>
       ltac:(M.monadic
-        (let _lhs := M.alloc (| T, _lhs |) in
-        let _rhss := M.alloc (| T, _rhss |) in
+        (let lhs := M.alloc (| T, lhs |) in
+        let rhss := M.alloc (| T, rhss |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -6256,21 +3461,51 @@ Module intrinsics.
   Global Typeclasses Opaque three_way_compare.
   
   (*
-  pub const fn add_with_overflow<T: Copy>(_x: T, _y: T) -> (T, bool) {
-      unimplemented!()
+  pub const unsafe fn disjoint_bitor<T: [const] fallback::DisjointBitOr>(a: T, b: T) -> T {
+      // SAFETY: same preconditions as this function.
+      unsafe { fallback::DisjointBitOr::disjoint_bitor(a, b) }
   }
   *)
+  Definition disjoint_bitor (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    match ε, τ, α with
+    | [], [ T ], [ a; b ] =>
+      ltac:(M.monadic
+        (let a := M.alloc (| T, a |) in
+        let b := M.alloc (| T, b |) in
+        M.call_closure (|
+          T,
+          M.get_trait_method (|
+            "core::intrinsics::fallback::DisjointBitOr",
+            T,
+            [],
+            [],
+            "disjoint_bitor",
+            [],
+            []
+          |),
+          [ M.read (| a |); M.read (| b |) ]
+        |)))
+    | _, _, _ => M.impossible "wrong number of arguments"
+    end.
+  
+  Global Instance Instance_IsFunction_disjoint_bitor :
+    M.IsFunction.C "core::intrinsics::disjoint_bitor" disjoint_bitor.
+  Admitted.
+  Global Typeclasses Opaque disjoint_bitor.
+  
+  (* pub const fn add_with_overflow<T: Copy>(x: T, y: T) -> (T, bool); *)
   Definition add_with_overflow (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [ T ], [ _x; _y ] =>
+    | [], [ T ], [ x; y ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| T, _x |) in
-        let _y := M.alloc (| T, _y |) in
+        (let x := M.alloc (| T, x |) in
+        let y := M.alloc (| T, y |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -6281,22 +3516,19 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque add_with_overflow.
   
-  (*
-  pub const fn sub_with_overflow<T: Copy>(_x: T, _y: T) -> (T, bool) {
-      unimplemented!()
-  }
-  *)
+  (* pub const fn sub_with_overflow<T: Copy>(x: T, y: T) -> (T, bool); *)
   Definition sub_with_overflow (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [ T ], [ _x; _y ] =>
+    | [], [ T ], [ x; y ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| T, _x |) in
-        let _y := M.alloc (| T, _y |) in
+        (let x := M.alloc (| T, x |) in
+        let y := M.alloc (| T, y |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -6307,22 +3539,19 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque sub_with_overflow.
   
-  (*
-  pub const fn mul_with_overflow<T: Copy>(_x: T, _y: T) -> (T, bool) {
-      unimplemented!()
-  }
-  *)
+  (* pub const fn mul_with_overflow<T: Copy>(x: T, y: T) -> (T, bool); *)
   Definition mul_with_overflow (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [ T ], [ _x; _y ] =>
+    | [], [ T ], [ x; y ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| T, _x |) in
-        let _y := M.alloc (| T, _y |) in
+        (let x := M.alloc (| T, x |) in
+        let y := M.alloc (| T, y |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -6334,21 +3563,62 @@ Module intrinsics.
   Global Typeclasses Opaque mul_with_overflow.
   
   (*
-  pub const unsafe fn exact_div<T: Copy>(_x: T, _y: T) -> T {
-      unimplemented!()
+  pub const fn carrying_mul_add<T: [const] fallback::CarryingMulAdd<Unsigned = U>, U>(
+      multiplier: T,
+      multiplicand: T,
+      addend: T,
+      carry: T,
+  ) -> (U, T) {
+      multiplier.carrying_mul_add(multiplicand, addend, carry)
   }
   *)
+  Definition carrying_mul_add (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    match ε, τ, α with
+    | [], [ T; U ], [ multiplier; multiplicand; addend; carry ] =>
+      ltac:(M.monadic
+        (let multiplier := M.alloc (| T, multiplier |) in
+        let multiplicand := M.alloc (| T, multiplicand |) in
+        let addend := M.alloc (| T, addend |) in
+        let carry := M.alloc (| T, carry |) in
+        M.call_closure (|
+          Ty.tuple [ U; T ],
+          M.get_trait_method (|
+            "core::intrinsics::fallback::CarryingMulAdd",
+            T,
+            [],
+            [],
+            "carrying_mul_add",
+            [],
+            []
+          |),
+          [
+            M.read (| multiplier |);
+            M.read (| multiplicand |);
+            M.read (| addend |);
+            M.read (| carry |)
+          ]
+        |)))
+    | _, _, _ => M.impossible "wrong number of arguments"
+    end.
+  
+  Global Instance Instance_IsFunction_carrying_mul_add :
+    M.IsFunction.C "core::intrinsics::carrying_mul_add" carrying_mul_add.
+  Admitted.
+  Global Typeclasses Opaque carrying_mul_add.
+  
+  (* pub const unsafe fn exact_div<T: Copy>(x: T, y: T) -> T; *)
   Definition exact_div (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [ T ], [ _x; _y ] =>
+    | [], [ T ], [ x; y ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| T, _x |) in
-        let _y := M.alloc (| T, _y |) in
+        (let x := M.alloc (| T, x |) in
+        let y := M.alloc (| T, y |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -6359,22 +3629,19 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque exact_div.
   
-  (*
-  pub const unsafe fn unchecked_div<T: Copy>(_x: T, _y: T) -> T {
-      unimplemented!()
-  }
-  *)
+  (* pub const unsafe fn unchecked_div<T: Copy>(x: T, y: T) -> T; *)
   Definition unchecked_div (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [ T ], [ _x; _y ] =>
+    | [], [ T ], [ x; y ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| T, _x |) in
-        let _y := M.alloc (| T, _y |) in
+        (let x := M.alloc (| T, x |) in
+        let y := M.alloc (| T, y |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -6385,22 +3652,19 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque unchecked_div.
   
-  (*
-  pub const unsafe fn unchecked_rem<T: Copy>(_x: T, _y: T) -> T {
-      unimplemented!()
-  }
-  *)
+  (* pub const unsafe fn unchecked_rem<T: Copy>(x: T, y: T) -> T; *)
   Definition unchecked_rem (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [ T ], [ _x; _y ] =>
+    | [], [ T ], [ x; y ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| T, _x |) in
-        let _y := M.alloc (| T, _y |) in
+        (let x := M.alloc (| T, x |) in
+        let y := M.alloc (| T, y |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -6411,22 +3675,19 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque unchecked_rem.
   
-  (*
-  pub const unsafe fn unchecked_shl<T: Copy, U: Copy>(_x: T, _y: U) -> T {
-      unimplemented!()
-  }
-  *)
+  (* pub const unsafe fn unchecked_shl<T: Copy, U: Copy>(x: T, y: U) -> T; *)
   Definition unchecked_shl (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [ T; U ], [ _x; _y ] =>
+    | [], [ T; U ], [ x; y ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| T, _x |) in
-        let _y := M.alloc (| U, _y |) in
+        (let x := M.alloc (| T, x |) in
+        let y := M.alloc (| U, y |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -6437,22 +3698,19 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque unchecked_shl.
   
-  (*
-  pub const unsafe fn unchecked_shr<T: Copy, U: Copy>(_x: T, _y: U) -> T {
-      unimplemented!()
-  }
-  *)
+  (* pub const unsafe fn unchecked_shr<T: Copy, U: Copy>(x: T, y: U) -> T; *)
   Definition unchecked_shr (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [ T; U ], [ _x; _y ] =>
+    | [], [ T; U ], [ x; y ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| T, _x |) in
-        let _y := M.alloc (| U, _y |) in
+        (let x := M.alloc (| T, x |) in
+        let y := M.alloc (| U, y |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -6463,22 +3721,19 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque unchecked_shr.
   
-  (*
-  pub const unsafe fn unchecked_add<T: Copy>(_x: T, _y: T) -> T {
-      unimplemented!()
-  }
-  *)
+  (* pub const unsafe fn unchecked_add<T: Copy>(x: T, y: T) -> T; *)
   Definition unchecked_add (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [ T ], [ _x; _y ] =>
+    | [], [ T ], [ x; y ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| T, _x |) in
-        let _y := M.alloc (| T, _y |) in
+        (let x := M.alloc (| T, x |) in
+        let y := M.alloc (| T, y |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -6489,22 +3744,19 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque unchecked_add.
   
-  (*
-  pub const unsafe fn unchecked_sub<T: Copy>(_x: T, _y: T) -> T {
-      unimplemented!()
-  }
-  *)
+  (* pub const unsafe fn unchecked_sub<T: Copy>(x: T, y: T) -> T; *)
   Definition unchecked_sub (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [ T ], [ _x; _y ] =>
+    | [], [ T ], [ x; y ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| T, _x |) in
-        let _y := M.alloc (| T, _y |) in
+        (let x := M.alloc (| T, x |) in
+        let y := M.alloc (| T, y |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -6515,22 +3767,19 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque unchecked_sub.
   
-  (*
-  pub const unsafe fn unchecked_mul<T: Copy>(_x: T, _y: T) -> T {
-      unimplemented!()
-  }
-  *)
+  (* pub const unsafe fn unchecked_mul<T: Copy>(x: T, y: T) -> T; *)
   Definition unchecked_mul (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [ T ], [ _x; _y ] =>
+    | [], [ T ], [ x; y ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| T, _x |) in
-        let _y := M.alloc (| T, _y |) in
+        (let x := M.alloc (| T, x |) in
+        let y := M.alloc (| T, y |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -6542,22 +3791,47 @@ Module intrinsics.
   Global Typeclasses Opaque unchecked_mul.
   
   (*
-  pub const fn rotate_left<T: Copy>(_x: T, _shift: u32) -> T {
-      unimplemented!()
+  pub const fn rotate_left<T: [const] fallback::FunnelShift>(x: T, shift: u32) -> T {
+      // Make sure to call the intrinsic for `funnel_shl`, not the fallback impl.
+      // SAFETY: we modulo `shift` so that the result is definitely less than the size of
+      // `T` in bits.
+      unsafe { unchecked_funnel_shl(x, x, shift % (mem::size_of::<T>() as u32 * 8)) }
   }
   *)
   Definition rotate_left (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [ T ], [ _x; _shift ] =>
+    | [], [ T ], [ x; shift ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| T, _x |) in
-        let _shift := M.alloc (| Ty.path "u32", _shift |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
-          |)
+        (let x := M.alloc (| T, x |) in
+        let shift := M.alloc (| Ty.path "u32", shift |) in
+        M.call_closure (|
+          T,
+          M.get_function (| "core::intrinsics::unchecked_funnel_shl", [], [ T ] |),
+          [
+            M.read (| x |);
+            M.read (| x |);
+            M.call_closure (|
+              Ty.path "u32",
+              BinOp.Wrap.rem,
+              [
+                M.read (| shift |);
+                M.call_closure (|
+                  Ty.path "u32",
+                  BinOp.Wrap.mul,
+                  [
+                    M.cast
+                      (Ty.path "u32")
+                      (M.call_closure (|
+                        Ty.path "usize",
+                        M.get_function (| "core::mem::size_of", [], [ T ] |),
+                        []
+                      |));
+                    Value.Integer IntegerKind.U32 8
+                  ]
+                |)
+              ]
+            |)
+          ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
@@ -6568,22 +3842,47 @@ Module intrinsics.
   Global Typeclasses Opaque rotate_left.
   
   (*
-  pub const fn rotate_right<T: Copy>(_x: T, _shift: u32) -> T {
-      unimplemented!()
+  pub const fn rotate_right<T: [const] fallback::FunnelShift>(x: T, shift: u32) -> T {
+      // Make sure to call the intrinsic for `funnel_shr`, not the fallback impl.
+      // SAFETY: we modulo `shift` so that the result is definitely less than the size of
+      // `T` in bits.
+      unsafe { unchecked_funnel_shr(x, x, shift % (mem::size_of::<T>() as u32 * 8)) }
   }
   *)
   Definition rotate_right (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [ T ], [ _x; _shift ] =>
+    | [], [ T ], [ x; shift ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| T, _x |) in
-        let _shift := M.alloc (| Ty.path "u32", _shift |) in
-        M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
-          |)
+        (let x := M.alloc (| T, x |) in
+        let shift := M.alloc (| Ty.path "u32", shift |) in
+        M.call_closure (|
+          T,
+          M.get_function (| "core::intrinsics::unchecked_funnel_shr", [], [ T ] |),
+          [
+            M.read (| x |);
+            M.read (| x |);
+            M.call_closure (|
+              Ty.path "u32",
+              BinOp.Wrap.rem,
+              [
+                M.read (| shift |);
+                M.call_closure (|
+                  Ty.path "u32",
+                  BinOp.Wrap.mul,
+                  [
+                    M.cast
+                      (Ty.path "u32")
+                      (M.call_closure (|
+                        Ty.path "usize",
+                        M.get_function (| "core::mem::size_of", [], [ T ] |),
+                        []
+                      |));
+                    Value.Integer IntegerKind.U32 8
+                  ]
+                |)
+              ]
+            |)
+          ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
@@ -6593,22 +3892,19 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque rotate_right.
   
-  (*
-  pub const fn wrapping_add<T: Copy>(_a: T, _b: T) -> T {
-      unimplemented!()
-  }
-  *)
+  (* pub const fn wrapping_add<T: Copy>(a: T, b: T) -> T; *)
   Definition wrapping_add (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [ T ], [ _a; _b ] =>
+    | [], [ T ], [ a; b ] =>
       ltac:(M.monadic
-        (let _a := M.alloc (| T, _a |) in
-        let _b := M.alloc (| T, _b |) in
+        (let a := M.alloc (| T, a |) in
+        let b := M.alloc (| T, b |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -6619,22 +3915,19 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque wrapping_add.
   
-  (*
-  pub const fn wrapping_sub<T: Copy>(_a: T, _b: T) -> T {
-      unimplemented!()
-  }
-  *)
+  (* pub const fn wrapping_sub<T: Copy>(a: T, b: T) -> T; *)
   Definition wrapping_sub (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [ T ], [ _a; _b ] =>
+    | [], [ T ], [ a; b ] =>
       ltac:(M.monadic
-        (let _a := M.alloc (| T, _a |) in
-        let _b := M.alloc (| T, _b |) in
+        (let a := M.alloc (| T, a |) in
+        let b := M.alloc (| T, b |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -6645,22 +3938,19 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque wrapping_sub.
   
-  (*
-  pub const fn wrapping_mul<T: Copy>(_a: T, _b: T) -> T {
-      unimplemented!()
-  }
-  *)
+  (* pub const fn wrapping_mul<T: Copy>(a: T, b: T) -> T; *)
   Definition wrapping_mul (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [ T ], [ _a; _b ] =>
+    | [], [ T ], [ a; b ] =>
       ltac:(M.monadic
-        (let _a := M.alloc (| T, _a |) in
-        let _b := M.alloc (| T, _b |) in
+        (let a := M.alloc (| T, a |) in
+        let b := M.alloc (| T, b |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -6671,22 +3961,19 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque wrapping_mul.
   
-  (*
-  pub const fn saturating_add<T: Copy>(_a: T, _b: T) -> T {
-      unimplemented!()
-  }
-  *)
+  (* pub const fn saturating_add<T: Copy>(a: T, b: T) -> T; *)
   Definition saturating_add (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [ T ], [ _a; _b ] =>
+    | [], [ T ], [ a; b ] =>
       ltac:(M.monadic
-        (let _a := M.alloc (| T, _a |) in
-        let _b := M.alloc (| T, _b |) in
+        (let a := M.alloc (| T, a |) in
+        let b := M.alloc (| T, b |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -6697,22 +3984,19 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque saturating_add.
   
-  (*
-  pub const fn saturating_sub<T: Copy>(_a: T, _b: T) -> T {
-      unimplemented!()
-  }
-  *)
+  (* pub const fn saturating_sub<T: Copy>(a: T, b: T) -> T; *)
   Definition saturating_sub (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [ T ], [ _a; _b ] =>
+    | [], [ T ], [ a; b ] =>
       ltac:(M.monadic
-        (let _a := M.alloc (| T, _a |) in
-        let _b := M.alloc (| T, _b |) in
+        (let a := M.alloc (| T, a |) in
+        let b := M.alloc (| T, b |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -6724,20 +4008,93 @@ Module intrinsics.
   Global Typeclasses Opaque saturating_sub.
   
   (*
-  pub const unsafe fn read_via_copy<T>(_ptr: *const T) -> T {
-      unimplemented!()
+  pub const unsafe fn unchecked_funnel_shl<T: [const] fallback::FunnelShift>(
+      a: T,
+      b: T,
+      shift: u32,
+  ) -> T {
+      // SAFETY: caller ensures that `shift` is in-range
+      unsafe { a.unchecked_funnel_shl(b, shift) }
   }
   *)
+  Definition unchecked_funnel_shl (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    match ε, τ, α with
+    | [], [ T ], [ a; b; shift ] =>
+      ltac:(M.monadic
+        (let a := M.alloc (| T, a |) in
+        let b := M.alloc (| T, b |) in
+        let shift := M.alloc (| Ty.path "u32", shift |) in
+        M.call_closure (|
+          T,
+          M.get_trait_method (|
+            "core::intrinsics::fallback::FunnelShift",
+            T,
+            [],
+            [],
+            "unchecked_funnel_shl",
+            [],
+            []
+          |),
+          [ M.read (| a |); M.read (| b |); M.read (| shift |) ]
+        |)))
+    | _, _, _ => M.impossible "wrong number of arguments"
+    end.
+  
+  Global Instance Instance_IsFunction_unchecked_funnel_shl :
+    M.IsFunction.C "core::intrinsics::unchecked_funnel_shl" unchecked_funnel_shl.
+  Admitted.
+  Global Typeclasses Opaque unchecked_funnel_shl.
+  
+  (*
+  pub const unsafe fn unchecked_funnel_shr<T: [const] fallback::FunnelShift>(
+      a: T,
+      b: T,
+      shift: u32,
+  ) -> T {
+      // SAFETY: caller ensures that `shift` is in-range
+      unsafe { a.unchecked_funnel_shr(b, shift) }
+  }
+  *)
+  Definition unchecked_funnel_shr (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    match ε, τ, α with
+    | [], [ T ], [ a; b; shift ] =>
+      ltac:(M.monadic
+        (let a := M.alloc (| T, a |) in
+        let b := M.alloc (| T, b |) in
+        let shift := M.alloc (| Ty.path "u32", shift |) in
+        M.call_closure (|
+          T,
+          M.get_trait_method (|
+            "core::intrinsics::fallback::FunnelShift",
+            T,
+            [],
+            [],
+            "unchecked_funnel_shr",
+            [],
+            []
+          |),
+          [ M.read (| a |); M.read (| b |); M.read (| shift |) ]
+        |)))
+    | _, _, _ => M.impossible "wrong number of arguments"
+    end.
+  
+  Global Instance Instance_IsFunction_unchecked_funnel_shr :
+    M.IsFunction.C "core::intrinsics::unchecked_funnel_shr" unchecked_funnel_shr.
+  Admitted.
+  Global Typeclasses Opaque unchecked_funnel_shr.
+  
+  (* pub const unsafe fn read_via_copy<T>(ptr: *const T) -> T; *)
   Definition read_via_copy (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [ T ], [ _ptr ] =>
+    | [], [ T ], [ ptr ] =>
       ltac:(M.monadic
-        (let _ptr := M.alloc (| Ty.apply (Ty.path "*const") [] [ T ], _ptr |) in
+        (let ptr := M.alloc (| Ty.apply (Ty.path "*const") [] [ T ], ptr |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -6748,22 +4105,19 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque read_via_copy.
   
-  (*
-  pub const unsafe fn write_via_move<T>(_ptr: *mut T, _value: T) {
-      unimplemented!()
-  }
-  *)
+  (* pub const unsafe fn write_via_move<T>(ptr: *mut T, value: T); *)
   Definition write_via_move (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [ T ], [ _ptr; _value ] =>
+    | [], [ T ], [ ptr; value ] =>
       ltac:(M.monadic
-        (let _ptr := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _ptr |) in
-        let _value := M.alloc (| T, _value |) in
+        (let ptr := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], ptr |) in
+        let value := M.alloc (| T, value |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -6774,21 +4128,18 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque write_via_move.
   
-  (*
-  pub const fn discriminant_value<T>(_v: &T) -> <T as DiscriminantKind>::Discriminant {
-      unimplemented!()
-  }
-  *)
+  (* pub const fn discriminant_value<T>(v: &T) -> <T as DiscriminantKind>::Discriminant; *)
   Definition discriminant_value (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [ T ], [ _v ] =>
+    | [], [ T ], [ v ] =>
       ltac:(M.monadic
-        (let _v := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], _v |) in
+        (let v := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], v |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -6799,34 +4150,85 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque discriminant_value.
   
-  Parameter catch_unwind : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
+  (*
+  pub unsafe fn catch_unwind(
+      _try_fn: fn( *mut u8),
+      _data: *mut u8,
+      _catch_fn: fn( *mut u8, *mut u8),
+  ) -> i32;
+  *)
+  Definition catch_unwind (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    match ε, τ, α with
+    | [], [], [ _try_fn; _data; _catch_fn ] =>
+      ltac:(M.monadic
+        (let _try_fn :=
+          M.alloc (|
+            Ty.function [ Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ] ] (Ty.tuple []),
+            _try_fn
+          |) in
+        let _data := M.alloc (| Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ], _data |) in
+        let _catch_fn :=
+          M.alloc (|
+            Ty.function
+              [
+                Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ];
+                Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]
+              ]
+              (Ty.tuple []),
+            _catch_fn
+          |) in
+        M.never_to_any (|
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
+          |)
+        |)))
+    | _, _, _ => M.impossible "wrong number of arguments"
+    end.
   
   Global Instance Instance_IsFunction_catch_unwind :
     M.IsFunction.C "core::intrinsics::catch_unwind" catch_unwind.
   Admitted.
+  Global Typeclasses Opaque catch_unwind.
   
-  Parameter nontemporal_store : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
+  (* pub unsafe fn nontemporal_store<T>(ptr: *mut T, val: T); *)
+  Definition nontemporal_store (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    match ε, τ, α with
+    | [], [ T ], [ ptr; val ] =>
+      ltac:(M.monadic
+        (let ptr := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], ptr |) in
+        let val := M.alloc (| T, val |) in
+        M.never_to_any (|
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
+          |)
+        |)))
+    | _, _, _ => M.impossible "wrong number of arguments"
+    end.
   
   Global Instance Instance_IsFunction_nontemporal_store :
     M.IsFunction.C "core::intrinsics::nontemporal_store" nontemporal_store.
   Admitted.
+  Global Typeclasses Opaque nontemporal_store.
   
-  (*
-  pub const unsafe fn ptr_offset_from<T>(_ptr: *const T, _base: *const T) -> isize {
-      unimplemented!()
-  }
-  *)
+  (* pub const unsafe fn ptr_offset_from<T>(ptr: *const T, base: *const T) -> isize; *)
   Definition ptr_offset_from (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [ T ], [ _ptr; _base ] =>
+    | [], [ T ], [ ptr; base ] =>
       ltac:(M.monadic
-        (let _ptr := M.alloc (| Ty.apply (Ty.path "*const") [] [ T ], _ptr |) in
-        let _base := M.alloc (| Ty.apply (Ty.path "*const") [] [ T ], _base |) in
+        (let ptr := M.alloc (| Ty.apply (Ty.path "*const") [] [ T ], ptr |) in
+        let base := M.alloc (| Ty.apply (Ty.path "*const") [] [ T ], base |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -6837,22 +4239,19 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque ptr_offset_from.
   
-  (*
-  pub const unsafe fn ptr_offset_from_unsigned<T>(_ptr: *const T, _base: *const T) -> usize {
-      unimplemented!()
-  }
-  *)
+  (* pub const unsafe fn ptr_offset_from_unsigned<T>(ptr: *const T, base: *const T) -> usize; *)
   Definition ptr_offset_from_unsigned (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [ T ], [ _ptr; _base ] =>
+    | [], [ T ], [ ptr; base ] =>
       ltac:(M.monadic
-        (let _ptr := M.alloc (| Ty.apply (Ty.path "*const") [] [ T ], _ptr |) in
-        let _base := M.alloc (| Ty.apply (Ty.path "*const") [] [ T ], _base |) in
+        (let ptr := M.alloc (| Ty.apply (Ty.path "*const") [] [ T ], ptr |) in
+        let base := M.alloc (| Ty.apply (Ty.path "*const") [] [ T ], base |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -6889,22 +4288,19 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque ptr_guaranteed_cmp.
   
-  (*
-  pub const unsafe fn raw_eq<T>(_a: &T, _b: &T) -> bool {
-      unimplemented!()
-  }
-  *)
+  (* pub const unsafe fn raw_eq<T>(a: &T, b: &T) -> bool; *)
   Definition raw_eq (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [ T ], [ _a; _b ] =>
+    | [], [ T ], [ a; b ] =>
       ltac:(M.monadic
-        (let _a := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], _a |) in
-        let _b := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], _b |) in
+        (let a := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], a |) in
+        let b := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], b |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -6914,23 +4310,20 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque raw_eq.
   
-  (*
-  pub const unsafe fn compare_bytes(_left: *const u8, _right: *const u8, _bytes: usize) -> i32 {
-      unimplemented!()
-  }
-  *)
+  (* pub const unsafe fn compare_bytes(left: *const u8, right: *const u8, bytes: usize) -> i32; *)
   Definition compare_bytes (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _left; _right; _bytes ] =>
+    | [], [], [ _ as left; _ as right; bytes ] =>
       ltac:(M.monadic
-        (let _left := M.alloc (| Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ], _left |) in
-        let _right := M.alloc (| Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ], _right |) in
-        let _bytes := M.alloc (| Ty.path "usize", _bytes |) in
+        (let left := M.alloc (| Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ], left |) in
+        let right := M.alloc (| Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ], right |) in
+        let bytes := M.alloc (| Ty.path "usize", bytes |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -6941,21 +4334,18 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque compare_bytes.
   
-  (*
-  pub const fn black_box<T>(_dummy: T) -> T {
-      unimplemented!()
-  }
-  *)
+  (* pub const fn black_box<T>(dummy: T) -> T; *)
   Definition black_box (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [ T ], [ _dummy ] =>
+    | [], [ T ], [ dummy ] =>
       ltac:(M.monadic
-        (let _dummy := M.alloc (| T, _dummy |) in
+        (let dummy := M.alloc (| T, dummy |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -6974,10 +4364,7 @@ Module intrinsics.
   ) -> RET
   where
       G: FnOnce<ARG, Output = RET>,
-      F: FnOnce<ARG, Output = RET>,
-  {
-      unreachable!()
-  }
+      F: const FnOnce<ARG, Output = RET>;
   *)
   Definition const_eval_select (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
@@ -6987,10 +4374,11 @@ Module intrinsics.
         let _called_in_const := M.alloc (| F, _called_in_const |) in
         let _called_at_rt := M.alloc (| G, _called_at_rt |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -7021,13 +4409,13 @@ Module intrinsics.
   Global Typeclasses Opaque is_val_statically_known.
   
   (*
-  pub const unsafe fn typed_swap<T>(x: *mut T, y: *mut T) {
+  pub const unsafe fn typed_swap_nonoverlapping<T>(x: *mut T, y: *mut T) {
       // SAFETY: The caller provided single non-overlapping items behind
       // pointers, so swapping them with `count: 1` is fine.
       unsafe { ptr::swap_nonoverlapping(x, y, 1) };
   }
   *)
-  Definition typed_swap (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+  Definition typed_swap_nonoverlapping (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
     | [], [ T ], [ x; y ] =>
       ltac:(M.monadic
@@ -7045,10 +4433,10 @@ Module intrinsics.
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
-  Global Instance Instance_IsFunction_typed_swap :
-    M.IsFunction.C "core::intrinsics::typed_swap" typed_swap.
+  Global Instance Instance_IsFunction_typed_swap_nonoverlapping :
+    M.IsFunction.C "core::intrinsics::typed_swap_nonoverlapping" typed_swap_nonoverlapping.
   Admitted.
-  Global Typeclasses Opaque typed_swap.
+  Global Typeclasses Opaque typed_swap_nonoverlapping.
   
   (*
   pub const fn ub_checks() -> bool {
@@ -7065,6 +4453,22 @@ Module intrinsics.
     M.IsFunction.C "core::intrinsics::ub_checks" ub_checks.
   Admitted.
   Global Typeclasses Opaque ub_checks.
+  
+  (*
+  pub const fn overflow_checks() -> bool {
+      cfg!(debug_assertions)
+  }
+  *)
+  Definition overflow_checks (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    match ε, τ, α with
+    | [], [], [] => ltac:(M.monadic (Value.Bool true))
+    | _, _, _ => M.impossible "wrong number of arguments"
+    end.
+  
+  Global Instance Instance_IsFunction_overflow_checks :
+    M.IsFunction.C "core::intrinsics::overflow_checks" overflow_checks.
+  Admitted.
+  Global Typeclasses Opaque overflow_checks.
   
   (*
   pub const unsafe fn const_allocate(_size: usize, _align: usize) -> *mut u8 {
@@ -7114,20 +4518,358 @@ Module intrinsics.
   Global Typeclasses Opaque const_deallocate.
   
   (*
-  pub unsafe fn vtable_size(_ptr: *const ()) -> usize {
-      unreachable!()
+  pub const unsafe fn const_make_global(ptr: *mut u8) -> *const u8 {
+      // const eval overrides this function; at runtime, it is a NOP.
+      ptr
   }
   *)
+  Definition const_make_global (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    match ε, τ, α with
+    | [], [], [ ptr ] =>
+      ltac:(M.monadic
+        (let ptr := M.alloc (| Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ], ptr |) in
+        M.call_closure (|
+          Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
+          M.pointer_coercion
+            M.PointerCoercion.MutToConstPointer
+            (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ])
+            (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]),
+          [ M.read (| ptr |) ]
+        |)))
+    | _, _, _ => M.impossible "wrong number of arguments"
+    end.
+  
+  Global Instance Instance_IsFunction_const_make_global :
+    M.IsFunction.C "core::intrinsics::const_make_global" const_make_global.
+  Admitted.
+  Global Typeclasses Opaque const_make_global.
+  
+  (*
+  pub const fn contract_check_requires<C: Fn() -> bool + Copy>(cond: C) {
+      const_eval_select!(
+          @capture[C: Fn() -> bool + Copy] { cond: C } :
+          if const {
+                  // Do nothing
+          } else {
+              if !cond() {
+                  // Emit no unwind panic in case this was a safety requirement.
+                  crate::panicking::panic_nounwind("failed requires check");
+              }
+          }
+      )
+  }
+  *)
+  Definition contract_check_requires (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    match ε, τ, α with
+    | [], [ C ], [ cond ] =>
+      ltac:(M.monadic
+        (let cond := M.alloc (| C, cond |) in
+        M.call_closure (|
+          Ty.tuple [],
+          M.get_function (|
+            "core::intrinsics::const_eval_select",
+            [],
+            [
+              Ty.tuple [ C ];
+              Ty.function [ C ] (Ty.tuple []);
+              Ty.function [ C ] (Ty.tuple []);
+              Ty.tuple []
+            ]
+          |),
+          [
+            Value.Tuple [ M.read (| cond |) ];
+            M.get_function (| "core::intrinsics::contract_check_requires.compiletime", [], [] |);
+            M.get_function (| "core::intrinsics::contract_check_requires.runtime", [], [] |)
+          ]
+        |)))
+    | _, _, _ => M.impossible "wrong number of arguments"
+    end.
+  
+  Global Instance Instance_IsFunction_contract_check_requires :
+    M.IsFunction.C "core::intrinsics::contract_check_requires" contract_check_requires.
+  Admitted.
+  Global Typeclasses Opaque contract_check_requires.
+  
+  Module contract_check_requires.
+    (*
+            fn runtime$(<$($binders)*>)?($($arg: $ty),* ) $( -> $ret )? {
+                $runtime
+            }
+    *)
+    Definition runtime (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [ C ], [ cond ] =>
+        ltac:(M.monadic
+          (let cond := M.alloc (| C, cond |) in
+          M.match_operator (|
+            Ty.tuple [],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
+                          M.call_closure (|
+                            Ty.path "bool",
+                            M.get_trait_method (|
+                              "core::ops::function::Fn",
+                              C,
+                              [],
+                              [ Ty.tuple [] ],
+                              "call",
+                              [],
+                              []
+                            |),
+                            [ M.borrow (| Pointer.Kind.Ref, cond |); Value.Tuple [] ]
+                          |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.never_to_any (|
+                    M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_nounwind", [], [] |),
+                      [ mk_str (| "failed requires check" |) ]
+                    |)
+                  |)));
+              fun γ => ltac:(M.monadic (Value.Tuple []))
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance Instance_IsFunction_runtime :
+      M.IsFunction.C "core::intrinsics::contract_check_requires::runtime" runtime.
+    Admitted.
+    Global Typeclasses Opaque runtime.
+    
+    (*
+            const fn compiletime$(<$($binders)*>)?($($arg: $ty),* ) $( -> $ret )? {
+                // Don't warn if one of the arguments is unused.
+                $(let _ = $arg;)*
+    
+                $compiletime
+            }
+    *)
+    Definition compiletime (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [ C ], [ cond ] =>
+        ltac:(M.monadic
+          (let cond := M.alloc (| C, cond |) in
+          M.match_operator (| Ty.tuple [], cond, [ fun γ => ltac:(M.monadic (Value.Tuple [])) ] |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance Instance_IsFunction_compiletime :
+      M.IsFunction.C "core::intrinsics::contract_check_requires::compiletime" compiletime.
+    Admitted.
+    Global Typeclasses Opaque compiletime.
+  End contract_check_requires.
+  
+  (*
+  pub const fn contract_check_ensures<C: Fn(&Ret) -> bool + Copy, Ret>(
+      cond: Option<C>,
+      ret: Ret,
+  ) -> Ret {
+      const_eval_select!(
+          @capture[C: Fn(&Ret) -> bool + Copy, Ret] { cond: Option<C>, ret: Ret } -> Ret :
+          if const {
+              // Do nothing
+              ret
+          } else {
+              match cond {
+                  crate::option::Option::Some(cond) => {
+                      if !cond(&ret) {
+                          // Emit no unwind panic in case this was a safety requirement.
+                          crate::panicking::panic_nounwind("failed ensures check");
+                      }
+                  },
+                  crate::option::Option::None => {},
+              }
+              ret
+          }
+      )
+  }
+  *)
+  Definition contract_check_ensures (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    match ε, τ, α with
+    | [], [ C; Ret ], [ cond; ret ] =>
+      ltac:(M.monadic
+        (let cond := M.alloc (| Ty.apply (Ty.path "core::option::Option") [] [ C ], cond |) in
+        let ret := M.alloc (| Ret, ret |) in
+        M.call_closure (|
+          Ret,
+          M.get_function (|
+            "core::intrinsics::const_eval_select",
+            [],
+            [
+              Ty.tuple [ Ty.apply (Ty.path "core::option::Option") [] [ C ]; Ret ];
+              Ty.function [ Ty.apply (Ty.path "core::option::Option") [] [ C ]; Ret ] Ret;
+              Ty.function [ Ty.apply (Ty.path "core::option::Option") [] [ C ]; Ret ] Ret;
+              Ret
+            ]
+          |),
+          [
+            Value.Tuple [ M.read (| cond |); M.read (| ret |) ];
+            M.get_function (| "core::intrinsics::contract_check_ensures.compiletime", [], [] |);
+            M.get_function (| "core::intrinsics::contract_check_ensures.runtime", [], [] |)
+          ]
+        |)))
+    | _, _, _ => M.impossible "wrong number of arguments"
+    end.
+  
+  Global Instance Instance_IsFunction_contract_check_ensures :
+    M.IsFunction.C "core::intrinsics::contract_check_ensures" contract_check_ensures.
+  Admitted.
+  Global Typeclasses Opaque contract_check_ensures.
+  
+  Module contract_check_ensures.
+    (*
+            fn runtime$(<$($binders)*>)?($($arg: $ty),* ) $( -> $ret )? {
+                $runtime
+            }
+    *)
+    Definition runtime (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [ C; Ret ], [ cond; ret ] =>
+        ltac:(M.monadic
+          (let cond := M.alloc (| Ty.apply (Ty.path "core::option::Option") [] [ C ], cond |) in
+          let ret := M.alloc (| Ret, ret |) in
+          M.read (|
+            let~ _ : Ty.tuple [] :=
+              M.match_operator (|
+                Ty.tuple [],
+                cond,
+                [
+                  fun γ =>
+                    ltac:(M.monadic
+                      (let γ0_0 :=
+                        M.SubPointer.get_struct_tuple_field (|
+                          γ,
+                          "core::option::Option::Some",
+                          0
+                        |) in
+                      let cond := M.copy (| C, γ0_0 |) in
+                      M.match_operator (|
+                        Ty.tuple [],
+                        M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                        [
+                          fun γ =>
+                            ltac:(M.monadic
+                              (let γ :=
+                                M.alloc (|
+                                  Ty.path "bool",
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    UnOp.not,
+                                    [
+                                      M.call_closure (|
+                                        Ty.path "bool",
+                                        M.get_trait_method (|
+                                          "core::ops::function::Fn",
+                                          C,
+                                          [],
+                                          [ Ty.tuple [ Ty.apply (Ty.path "&") [] [ Ret ] ] ],
+                                          "call",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.borrow (| Pointer.Kind.Ref, cond |);
+                                          Value.Tuple
+                                            [
+                                              M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.borrow (| Pointer.Kind.Ref, ret |) |)
+                                              |)
+                                            ]
+                                        ]
+                                      |)
+                                    ]
+                                  |)
+                                |) in
+                              let _ :=
+                                is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                              M.never_to_any (|
+                                M.call_closure (|
+                                  Ty.path "never",
+                                  M.get_function (| "core::panicking::panic_nounwind", [], [] |),
+                                  [ mk_str (| "failed ensures check" |) ]
+                                |)
+                              |)));
+                          fun γ => ltac:(M.monadic (Value.Tuple []))
+                        ]
+                      |)));
+                  fun γ =>
+                    ltac:(M.monadic
+                      (let _ := M.is_struct_tuple (| γ, "core::option::Option::None" |) in
+                      Value.Tuple []))
+                ]
+              |) in
+            ret
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance Instance_IsFunction_runtime :
+      M.IsFunction.C "core::intrinsics::contract_check_ensures::runtime" runtime.
+    Admitted.
+    Global Typeclasses Opaque runtime.
+    
+    (*
+            const fn compiletime$(<$($binders)*>)?($($arg: $ty),* ) $( -> $ret )? {
+                // Don't warn if one of the arguments is unused.
+                $(let _ = $arg;)*
+    
+                $compiletime
+            }
+    *)
+    Definition compiletime (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [ C; Ret ], [ cond; ret ] =>
+        ltac:(M.monadic
+          (let cond := M.alloc (| Ty.apply (Ty.path "core::option::Option") [] [ C ], cond |) in
+          let ret := M.alloc (| Ret, ret |) in
+          M.match_operator (|
+            Ret,
+            cond,
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (M.match_operator (|
+                    Ret,
+                    ret,
+                    [ fun γ => ltac:(M.monadic (M.read (| ret |))) ]
+                  |)))
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance Instance_IsFunction_compiletime :
+      M.IsFunction.C "core::intrinsics::contract_check_ensures::compiletime" compiletime.
+    Admitted.
+    Global Typeclasses Opaque compiletime.
+  End contract_check_ensures.
+  
+  (* pub unsafe fn vtable_size(ptr: *const ()) -> usize; *)
   Definition vtable_size (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _ptr ] =>
+    | [], [], [ ptr ] =>
       ltac:(M.monadic
-        (let _ptr := M.alloc (| Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ], _ptr |) in
+        (let ptr := M.alloc (| Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ], ptr |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -7138,21 +4880,18 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque vtable_size.
   
-  (*
-  pub unsafe fn vtable_align(_ptr: *const ()) -> usize {
-      unreachable!()
-  }
-  *)
+  (* pub unsafe fn vtable_align(ptr: *const ()) -> usize; *)
   Definition vtable_align (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _ptr ] =>
+    | [], [], [ ptr ] =>
       ltac:(M.monadic
-        (let _ptr := M.alloc (| Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ], _ptr |) in
+        (let ptr := M.alloc (| Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ], ptr |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -7163,20 +4902,17 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque vtable_align.
   
-  (*
-  pub const fn size_of<T>() -> usize {
-      unreachable!()
-  }
-  *)
+  (* pub const fn size_of<T>() -> usize; *)
   Definition size_of (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
     | [], [ T ], [] =>
       ltac:(M.monadic
         (M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -7186,68 +4922,61 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque size_of.
   
-  (*
-  pub const fn min_align_of<T>() -> usize {
-      unreachable!()
-  }
-  *)
-  Definition min_align_of (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+  (* pub const fn align_of<T>() -> usize; *)
+  Definition align_of (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
     | [], [ T ], [] =>
       ltac:(M.monadic
         (M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
-  Global Instance Instance_IsFunction_min_align_of :
-    M.IsFunction.C "core::intrinsics::min_align_of" min_align_of.
+  Global Instance Instance_IsFunction_align_of :
+    M.IsFunction.C "core::intrinsics::align_of" align_of.
   Admitted.
-  Global Typeclasses Opaque min_align_of.
+  Global Typeclasses Opaque align_of.
   
-  (*
-  pub const unsafe fn pref_align_of<T>() -> usize {
-      unreachable!()
-  }
-  *)
-  Definition pref_align_of (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+  (* pub const fn offset_of<T: PointeeSized>(variant: u32, field: u32) -> usize; *)
+  Definition offset_of (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [ T ], [] =>
+    | [], [ T ], [ variant; field ] =>
       ltac:(M.monadic
-        (M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+        (let variant := M.alloc (| Ty.path "u32", variant |) in
+        let field := M.alloc (| Ty.path "u32", field |) in
+        M.never_to_any (|
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
-  Global Instance Instance_IsFunction_pref_align_of :
-    M.IsFunction.C "core::intrinsics::pref_align_of" pref_align_of.
+  Global Instance Instance_IsFunction_offset_of :
+    M.IsFunction.C "core::intrinsics::offset_of" offset_of.
   Admitted.
-  Global Typeclasses Opaque pref_align_of.
+  Global Typeclasses Opaque offset_of.
   
-  (*
-  pub const fn variant_count<T>() -> usize {
-      unreachable!()
-  }
-  *)
+  (* pub const fn variant_count<T>() -> usize; *)
   Definition variant_count (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
     | [], [ T ], [] =>
       ltac:(M.monadic
         (M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -7258,21 +4987,18 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque variant_count.
   
-  (*
-  pub const unsafe fn size_of_val<T: ?Sized>(_ptr: *const T) -> usize {
-      unreachable!()
-  }
-  *)
+  (* pub const unsafe fn size_of_val<T: ?Sized>(ptr: *const T) -> usize; *)
   Definition size_of_val (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [ T ], [ _ptr ] =>
+    | [], [ T ], [ ptr ] =>
       ltac:(M.monadic
-        (let _ptr := M.alloc (| Ty.apply (Ty.path "*const") [] [ T ], _ptr |) in
+        (let ptr := M.alloc (| Ty.apply (Ty.path "*const") [] [ T ], ptr |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -7283,45 +5009,39 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque size_of_val.
   
-  (*
-  pub const unsafe fn min_align_of_val<T: ?Sized>(_ptr: *const T) -> usize {
-      unreachable!()
-  }
-  *)
-  Definition min_align_of_val (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+  (* pub const unsafe fn align_of_val<T: ?Sized>(ptr: *const T) -> usize; *)
+  Definition align_of_val (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [ T ], [ _ptr ] =>
+    | [], [ T ], [ ptr ] =>
       ltac:(M.monadic
-        (let _ptr := M.alloc (| Ty.apply (Ty.path "*const") [] [ T ], _ptr |) in
+        (let ptr := M.alloc (| Ty.apply (Ty.path "*const") [] [ T ], ptr |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
-  Global Instance Instance_IsFunction_min_align_of_val :
-    M.IsFunction.C "core::intrinsics::min_align_of_val" min_align_of_val.
+  Global Instance Instance_IsFunction_align_of_val :
+    M.IsFunction.C "core::intrinsics::align_of_val" align_of_val.
   Admitted.
-  Global Typeclasses Opaque min_align_of_val.
+  Global Typeclasses Opaque align_of_val.
   
-  (*
-  pub const fn type_name<T: ?Sized>() -> &'static str {
-      unreachable!()
-  }
-  *)
+  (* pub const fn type_name<T: ?Sized>() -> &'static str; *)
   Definition type_name (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
     | [], [ T ], [] =>
       ltac:(M.monadic
         (M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -7332,20 +5052,17 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque type_name.
   
-  (*
-  pub const fn type_id<T: ?Sized + 'static>() -> u128 {
-      unreachable!()
-  }
-  *)
+  (* pub const fn type_id<T: ?Sized + 'static>() -> crate::any::TypeId; *)
   Definition type_id (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
     | [], [ T ], [] =>
       ltac:(M.monadic
         (M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -7356,23 +5073,71 @@ Module intrinsics.
   Global Typeclasses Opaque type_id.
   
   (*
-  pub const fn aggregate_raw_ptr<P: AggregateRawPtr<D, Metadata = M>, D, M>(_data: D, _meta: M) -> P {
-      // To implement a fallback we'd have to assume the layout of the pointer,
-      // but the whole point of this intrinsic is that we shouldn't do that.
-      unreachable!()
+  pub const fn type_id_eq(a: crate::any::TypeId, b: crate::any::TypeId) -> bool {
+      a.data == b.data
   }
+  *)
+  Definition type_id_eq (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    match ε, τ, α with
+    | [], [], [ a; b ] =>
+      ltac:(M.monadic
+        (let a := M.alloc (| Ty.path "core::any::TypeId", a |) in
+        let b := M.alloc (| Ty.path "core::any::TypeId", b |) in
+        M.call_closure (|
+          Ty.path "bool",
+          M.get_trait_method (|
+            "core::cmp::PartialEq",
+            Ty.apply
+              (Ty.path "array")
+              [ Value.Integer IntegerKind.Usize 2 ]
+              [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ],
+            [],
+            [
+              Ty.apply
+                (Ty.path "array")
+                [ Value.Integer IntegerKind.Usize 2 ]
+                [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
+            ],
+            "eq",
+            [],
+            []
+          |),
+          [
+            M.borrow (|
+              Pointer.Kind.Ref,
+              M.SubPointer.get_struct_record_field (| a, "core::any::TypeId", "data" |)
+            |);
+            M.borrow (|
+              Pointer.Kind.Ref,
+              M.SubPointer.get_struct_record_field (| b, "core::any::TypeId", "data" |)
+            |)
+          ]
+        |)))
+    | _, _, _ => M.impossible "wrong number of arguments"
+    end.
+  
+  Global Instance Instance_IsFunction_type_id_eq :
+    M.IsFunction.C "core::intrinsics::type_id_eq" type_id_eq.
+  Admitted.
+  Global Typeclasses Opaque type_id_eq.
+  
+  (*
+  pub const fn aggregate_raw_ptr<P: bounds::BuiltinDeref, D, M>(data: D, meta: M) -> P
+  where
+      <P as bounds::BuiltinDeref>::Pointee: ptr::Pointee<Metadata = M>;
   *)
   Definition aggregate_raw_ptr (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [ P; D; M_ ], [ _data; _meta ] =>
+    | [], [ P; D; M_ ], [ data; meta ] =>
       ltac:(M.monadic
-        (let _data := M.alloc (| D, _data |) in
-        let _meta := M.alloc (| M_, _meta |) in
+        (let data := M.alloc (| D, data |) in
+        let meta := M.alloc (| M_, meta |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -7383,60 +5148,18 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque aggregate_raw_ptr.
   
-  (* Trait *)
-  (* Empty module 'AggregateRawPtr' *)
-  
-  Module Impl_core_intrinsics_AggregateRawPtr_where_core_marker_Sized_P_where_core_ptr_metadata_Thin_T_pointer_const_T_for_pointer_const_P.
-    Definition Self (P T : Ty.t) : Ty.t := Ty.apply (Ty.path "*const") [] [ P ].
-    
-    (*     type Metadata = <P as ptr::Pointee>::Metadata; *)
-    Definition _Metadata (P T : Ty.t) : Ty.t :=
-      Ty.associated_in_trait "core::ptr::metadata::Pointee" [] [] P "Metadata".
-    
-    Axiom Implements :
-      forall (P T : Ty.t),
-      M.IsTraitInstance
-        "core::intrinsics::AggregateRawPtr"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) [ Ty.apply (Ty.path "*const") [] [ T ] ]
-        (Self P T)
-        (* Instance *) [ ("Metadata", InstanceField.Ty (_Metadata P T)) ].
-  End Impl_core_intrinsics_AggregateRawPtr_where_core_marker_Sized_P_where_core_ptr_metadata_Thin_T_pointer_const_T_for_pointer_const_P.
-  
-  Module Impl_core_intrinsics_AggregateRawPtr_where_core_marker_Sized_P_where_core_ptr_metadata_Thin_T_pointer_mut_T_for_pointer_mut_P.
-    Definition Self (P T : Ty.t) : Ty.t := Ty.apply (Ty.path "*mut") [] [ P ].
-    
-    (*     type Metadata = <P as ptr::Pointee>::Metadata; *)
-    Definition _Metadata (P T : Ty.t) : Ty.t :=
-      Ty.associated_in_trait "core::ptr::metadata::Pointee" [] [] P "Metadata".
-    
-    Axiom Implements :
-      forall (P T : Ty.t),
-      M.IsTraitInstance
-        "core::intrinsics::AggregateRawPtr"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) [ Ty.apply (Ty.path "*mut") [] [ T ] ]
-        (Self P T)
-        (* Instance *) [ ("Metadata", InstanceField.Ty (_Metadata P T)) ].
-  End Impl_core_intrinsics_AggregateRawPtr_where_core_marker_Sized_P_where_core_ptr_metadata_Thin_T_pointer_mut_T_for_pointer_mut_P.
-  
-  (*
-  pub const fn ptr_metadata<P: ptr::Pointee<Metadata = M> + ?Sized, M>(_ptr: *const P) -> M {
-      // To implement a fallback we'd have to assume the layout of the pointer,
-      // but the whole point of this intrinsic is that we shouldn't do that.
-      unreachable!()
-  }
-  *)
+  (* pub const fn ptr_metadata<P: ptr::Pointee<Metadata = M> + PointeeSized, M>(ptr: *const P) -> M; *)
   Definition ptr_metadata (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [ P; M_ ], [ _ptr ] =>
+    | [], [ P; M_ ], [ ptr ] =>
       ltac:(M.monadic
-        (let _ptr := M.alloc (| Ty.apply (Ty.path "*const") [] [ P ], _ptr |) in
+        (let ptr := M.alloc (| Ty.apply (Ty.path "*const") [] [ P ], ptr |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -7447,39 +5170,7 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque ptr_metadata.
   
-  (*
-  pub const unsafe fn copy_nonoverlapping<T>(src: *const T, dst: *mut T, count: usize) {
-      #[rustc_intrinsic_const_stable_indirect]
-      #[rustc_nounwind]
-      #[rustc_intrinsic]
-      #[rustc_intrinsic_must_be_overridden]
-      const unsafe fn copy_nonoverlapping<T>(_src: *const T, _dst: *mut T, _count: usize) {
-          unreachable!()
-      }
-  
-      ub_checks::assert_unsafe_precondition!(
-          check_language_ub,
-          "ptr::copy_nonoverlapping requires that both pointer arguments are aligned and non-null \
-          and the specified memory ranges do not overlap",
-          (
-              src: *const () = src as *const (),
-              dst: *mut () = dst as *mut (),
-              size: usize = size_of::<T>(),
-              align: usize = align_of::<T>(),
-              count: usize = count,
-          ) => {
-              let zero_size = count == 0 || size == 0;
-              ub_checks::maybe_is_aligned_and_not_null(src, align, zero_size)
-                  && ub_checks::maybe_is_aligned_and_not_null(dst, align, zero_size)
-                  && ub_checks::maybe_is_nonoverlapping(src, dst, size, count)
-          }
-      );
-  
-      // SAFETY: the safety contract for `copy_nonoverlapping` must be
-      // upheld by the caller.
-      unsafe { copy_nonoverlapping(src, dst, count) }
-  }
-  *)
+  (* pub const unsafe fn copy_nonoverlapping<T>(src: *const T, dst: *mut T, count: usize); *)
   Definition copy_nonoverlapping (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
     | [], [ T ], [ src; dst; count ] =>
@@ -7487,69 +5178,11 @@ Module intrinsics.
         (let src := M.alloc (| Ty.apply (Ty.path "*const") [] [ T ], src |) in
         let dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], dst |) in
         let count := M.alloc (| Ty.path "usize", count |) in
-        M.read (|
-          let~ _ : Ty.tuple [] :=
-            M.match_operator (|
-              Ty.tuple [],
-              M.alloc (| Ty.tuple [], Value.Tuple [] |),
-              [
-                fun γ =>
-                  ltac:(M.monadic
-                    (let γ :=
-                      M.use
-                        (M.alloc (|
-                          Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            M.get_function (| "core::ub_checks::check_language_ub", [], [] |),
-                            []
-                          |)
-                        |)) in
-                    let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                    M.read (|
-                      let~ _ : Ty.tuple [] :=
-                        M.call_closure (|
-                          Ty.tuple [],
-                          M.get_function (|
-                            "core::intrinsics::copy_nonoverlapping.precondition_check",
-                            [],
-                            []
-                          |),
-                          [
-                            M.cast
-                              (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ])
-                              (M.read (| src |));
-                            M.cast
-                              (Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ])
-                              (M.read (| dst |));
-                            M.call_closure (|
-                              Ty.path "usize",
-                              M.get_function (| "core::intrinsics::size_of", [], [ T ] |),
-                              []
-                            |);
-                            M.call_closure (|
-                              Ty.path "usize",
-                              M.get_function (| "core::mem::align_of", [], [ T ] |),
-                              []
-                            |);
-                            M.read (| count |)
-                          ]
-                        |) in
-                      M.alloc (| Ty.tuple [], Value.Tuple [] |)
-                    |)));
-                fun γ => ltac:(M.monadic (Value.Tuple []))
-              ]
-            |) in
-          M.alloc (|
-            Ty.tuple [],
-            M.call_closure (|
-              Ty.tuple [],
-              M.get_function (|
-                "core::intrinsics::copy_nonoverlapping.copy_nonoverlapping",
-                [],
-                []
-              |),
-              [ M.read (| src |); M.read (| dst |); M.read (| count |) ]
+        M.never_to_any (|
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
             |)
           |)
         |)))
@@ -7561,65 +5194,7 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque copy_nonoverlapping.
   
-  Module copy_nonoverlapping.
-    (*
-        const unsafe fn copy_nonoverlapping<T>(_src: *const T, _dst: *mut T, _count: usize) {
-            unreachable!()
-        }
-    *)
-    Definition copy_nonoverlapping (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      match ε, τ, α with
-      | [], [ T ], [ _src; _dst; _count ] =>
-        ltac:(M.monadic
-          (let _src := M.alloc (| Ty.apply (Ty.path "*const") [] [ T ], _src |) in
-          let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-          let _count := M.alloc (| Ty.path "usize", _count |) in
-          M.never_to_any (|
-            M.call_closure (|
-              Ty.path "never",
-              M.get_function (| "core::panicking::panic", [], [] |),
-              [ mk_str (| "internal error: entered unreachable code" |) ]
-            |)
-          |)))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Global Instance Instance_IsFunction_copy_nonoverlapping :
-      M.IsFunction.C
-        "core::intrinsics::copy_nonoverlapping::copy_nonoverlapping"
-        copy_nonoverlapping.
-    Admitted.
-    Global Typeclasses Opaque copy_nonoverlapping.
-  End copy_nonoverlapping.
-  
-  (*
-  pub const unsafe fn copy<T>(src: *const T, dst: *mut T, count: usize) {
-      #[rustc_intrinsic_const_stable_indirect]
-      #[rustc_nounwind]
-      #[rustc_intrinsic]
-      #[rustc_intrinsic_must_be_overridden]
-      const unsafe fn copy<T>(_src: *const T, _dst: *mut T, _count: usize) {
-          unreachable!()
-      }
-  
-      // SAFETY: the safety contract for `copy` must be upheld by the caller.
-      unsafe {
-          ub_checks::assert_unsafe_precondition!(
-              check_language_ub,
-              "ptr::copy requires that both pointer arguments are aligned and non-null",
-              (
-                  src: *const () = src as *const (),
-                  dst: *mut () = dst as *mut (),
-                  align: usize = align_of::<T>(),
-                  zero_size: bool = T::IS_ZST || count == 0,
-              ) =>
-              ub_checks::maybe_is_aligned_and_not_null(src, align, zero_size)
-                  && ub_checks::maybe_is_aligned_and_not_null(dst, align, zero_size)
-          );
-          copy(src, dst, count)
-      }
-  }
-  *)
+  (* pub const unsafe fn copy<T>(src: *const T, dst: *mut T, count: usize); *)
   Definition copy (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
     | [], [ T ], [ src; dst; count ] =>
@@ -7627,69 +5202,11 @@ Module intrinsics.
         (let src := M.alloc (| Ty.apply (Ty.path "*const") [] [ T ], src |) in
         let dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], dst |) in
         let count := M.alloc (| Ty.path "usize", count |) in
-        M.read (|
-          let~ _ : Ty.tuple [] :=
-            M.match_operator (|
-              Ty.tuple [],
-              M.alloc (| Ty.tuple [], Value.Tuple [] |),
-              [
-                fun γ =>
-                  ltac:(M.monadic
-                    (let γ :=
-                      M.use
-                        (M.alloc (|
-                          Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            M.get_function (| "core::ub_checks::check_language_ub", [], [] |),
-                            []
-                          |)
-                        |)) in
-                    let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                    M.read (|
-                      let~ _ : Ty.tuple [] :=
-                        M.call_closure (|
-                          Ty.tuple [],
-                          M.get_function (| "core::intrinsics::copy.precondition_check", [], [] |),
-                          [
-                            M.cast
-                              (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ])
-                              (M.read (| src |));
-                            M.cast
-                              (Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ])
-                              (M.read (| dst |));
-                            M.call_closure (|
-                              Ty.path "usize",
-                              M.get_function (| "core::mem::align_of", [], [ T ] |),
-                              []
-                            |);
-                            LogicalOp.or (|
-                              M.read (|
-                                get_constant (|
-                                  "core::mem::SizedTypeProperties::IS_ZST",
-                                  Ty.path "bool"
-                                |)
-                              |),
-                              ltac:(M.monadic
-                                (M.call_closure (|
-                                  Ty.path "bool",
-                                  BinOp.eq,
-                                  [ M.read (| count |); Value.Integer IntegerKind.Usize 0 ]
-                                |)))
-                            |)
-                          ]
-                        |) in
-                      M.alloc (| Ty.tuple [], Value.Tuple [] |)
-                    |)));
-                fun γ => ltac:(M.monadic (Value.Tuple []))
-              ]
-            |) in
-          M.alloc (|
-            Ty.tuple [],
-            M.call_closure (|
-              Ty.tuple [],
-              M.get_function (| "core::intrinsics::copy.copy", [], [] |),
-              [ M.read (| src |); M.read (| dst |); M.read (| count |) ]
+        M.never_to_any (|
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
             |)
           |)
         |)))
@@ -7700,59 +5217,7 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque copy.
   
-  Module copy.
-    (*
-        const unsafe fn copy<T>(_src: *const T, _dst: *mut T, _count: usize) {
-            unreachable!()
-        }
-    *)
-    Definition copy (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      match ε, τ, α with
-      | [], [ T ], [ _src; _dst; _count ] =>
-        ltac:(M.monadic
-          (let _src := M.alloc (| Ty.apply (Ty.path "*const") [] [ T ], _src |) in
-          let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-          let _count := M.alloc (| Ty.path "usize", _count |) in
-          M.never_to_any (|
-            M.call_closure (|
-              Ty.path "never",
-              M.get_function (| "core::panicking::panic", [], [] |),
-              [ mk_str (| "internal error: entered unreachable code" |) ]
-            |)
-          |)))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Global Instance Instance_IsFunction_copy : M.IsFunction.C "core::intrinsics::copy::copy" copy.
-    Admitted.
-    Global Typeclasses Opaque copy.
-  End copy.
-  
-  (*
-  pub const unsafe fn write_bytes<T>(dst: *mut T, val: u8, count: usize) {
-      #[rustc_intrinsic_const_stable_indirect]
-      #[rustc_nounwind]
-      #[rustc_intrinsic]
-      #[rustc_intrinsic_must_be_overridden]
-      const unsafe fn write_bytes<T>(_dst: *mut T, _val: u8, _count: usize) {
-          unreachable!()
-      }
-  
-      // SAFETY: the safety contract for `write_bytes` must be upheld by the caller.
-      unsafe {
-          ub_checks::assert_unsafe_precondition!(
-              check_language_ub,
-              "ptr::write_bytes requires that the destination pointer is aligned and non-null",
-              (
-                  addr: *const () = dst as *const (),
-                  align: usize = align_of::<T>(),
-                  zero_size: bool = T::IS_ZST || count == 0,
-              ) => ub_checks::maybe_is_aligned_and_not_null(addr, align, zero_size)
-          );
-          write_bytes(dst, val, count)
-      }
-  }
-  *)
+  (* pub const unsafe fn write_bytes<T>(dst: *mut T, val: u8, count: usize); *)
   Definition write_bytes (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
     | [], [ T ], [ dst; val; count ] =>
@@ -7760,70 +5225,11 @@ Module intrinsics.
         (let dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], dst |) in
         let val := M.alloc (| Ty.path "u8", val |) in
         let count := M.alloc (| Ty.path "usize", count |) in
-        M.read (|
-          let~ _ : Ty.tuple [] :=
-            M.match_operator (|
-              Ty.tuple [],
-              M.alloc (| Ty.tuple [], Value.Tuple [] |),
-              [
-                fun γ =>
-                  ltac:(M.monadic
-                    (let γ :=
-                      M.use
-                        (M.alloc (|
-                          Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            M.get_function (| "core::ub_checks::check_language_ub", [], [] |),
-                            []
-                          |)
-                        |)) in
-                    let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                    M.read (|
-                      let~ _ : Ty.tuple [] :=
-                        M.call_closure (|
-                          Ty.tuple [],
-                          M.get_function (|
-                            "core::intrinsics::write_bytes.precondition_check",
-                            [],
-                            []
-                          |),
-                          [
-                            M.cast
-                              (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ])
-                              (M.read (| dst |));
-                            M.call_closure (|
-                              Ty.path "usize",
-                              M.get_function (| "core::mem::align_of", [], [ T ] |),
-                              []
-                            |);
-                            LogicalOp.or (|
-                              M.read (|
-                                get_constant (|
-                                  "core::mem::SizedTypeProperties::IS_ZST",
-                                  Ty.path "bool"
-                                |)
-                              |),
-                              ltac:(M.monadic
-                                (M.call_closure (|
-                                  Ty.path "bool",
-                                  BinOp.eq,
-                                  [ M.read (| count |); Value.Integer IntegerKind.Usize 0 ]
-                                |)))
-                            |)
-                          ]
-                        |) in
-                      M.alloc (| Ty.tuple [], Value.Tuple [] |)
-                    |)));
-                fun γ => ltac:(M.monadic (Value.Tuple []))
-              ]
-            |) in
-          M.alloc (|
-            Ty.tuple [],
-            M.call_closure (|
-              Ty.tuple [],
-              M.get_function (| "core::intrinsics::write_bytes.write_bytes", [], [] |),
-              [ M.read (| dst |); M.read (| val |); M.read (| count |) ]
+        M.never_to_any (|
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
             |)
           |)
         |)))
@@ -7835,51 +5241,19 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque write_bytes.
   
-  Module write_bytes.
-    (*
-        const unsafe fn write_bytes<T>(_dst: *mut T, _val: u8, _count: usize) {
-            unreachable!()
-        }
-    *)
-    Definition write_bytes (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      match ε, τ, α with
-      | [], [ T ], [ _dst; _val; _count ] =>
-        ltac:(M.monadic
-          (let _dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], _dst |) in
-          let _val := M.alloc (| Ty.path "u8", _val |) in
-          let _count := M.alloc (| Ty.path "usize", _count |) in
-          M.never_to_any (|
-            M.call_closure (|
-              Ty.path "never",
-              M.get_function (| "core::panicking::panic", [], [] |),
-              [ mk_str (| "internal error: entered unreachable code" |) ]
-            |)
-          |)))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Global Instance Instance_IsFunction_write_bytes :
-      M.IsFunction.C "core::intrinsics::write_bytes::write_bytes" write_bytes.
-    Admitted.
-    Global Typeclasses Opaque write_bytes.
-  End write_bytes.
-  
-  (*
-  pub const fn minnumf16(_x: f16, _y: f16) -> f16 {
-      unimplemented!();
-  }
-  *)
+  (* pub const fn minnumf16(x: f16, y: f16) -> f16; *)
   Definition minnumf16 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _x; _y ] =>
+    | [], [], [ x; y ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| Ty.path "f16", _x |) in
-        let _y := M.alloc (| Ty.path "f16", _y |) in
+        (let x := M.alloc (| Ty.path "f16", x |) in
+        let y := M.alloc (| Ty.path "f16", y |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -7890,22 +5264,19 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque minnumf16.
   
-  (*
-  pub const fn minnumf32(_x: f32, _y: f32) -> f32 {
-      unimplemented!();
-  }
-  *)
+  (* pub const fn minnumf32(x: f32, y: f32) -> f32; *)
   Definition minnumf32 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _x; _y ] =>
+    | [], [], [ x; y ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| Ty.path "f32", _x |) in
-        let _y := M.alloc (| Ty.path "f32", _y |) in
+        (let x := M.alloc (| Ty.path "f32", x |) in
+        let y := M.alloc (| Ty.path "f32", y |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -7916,22 +5287,19 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque minnumf32.
   
-  (*
-  pub const fn minnumf64(_x: f64, _y: f64) -> f64 {
-      unimplemented!();
-  }
-  *)
+  (* pub const fn minnumf64(x: f64, y: f64) -> f64; *)
   Definition minnumf64 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _x; _y ] =>
+    | [], [], [ x; y ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| Ty.path "f64", _x |) in
-        let _y := M.alloc (| Ty.path "f64", _y |) in
+        (let x := M.alloc (| Ty.path "f64", x |) in
+        let y := M.alloc (| Ty.path "f64", y |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -7942,22 +5310,19 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque minnumf64.
   
-  (*
-  pub const fn minnumf128(_x: f128, _y: f128) -> f128 {
-      unimplemented!();
-  }
-  *)
+  (* pub const fn minnumf128(x: f128, y: f128) -> f128; *)
   Definition minnumf128 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _x; _y ] =>
+    | [], [], [ x; y ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| Ty.path "f128", _x |) in
-        let _y := M.alloc (| Ty.path "f128", _y |) in
+        (let x := M.alloc (| Ty.path "f128", x |) in
+        let y := M.alloc (| Ty.path "f128", y |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -7969,21 +5334,606 @@ Module intrinsics.
   Global Typeclasses Opaque minnumf128.
   
   (*
-  pub const fn maxnumf16(_x: f16, _y: f16) -> f16 {
-      unimplemented!();
+  pub const fn minimumf16(x: f16, y: f16) -> f16 {
+      if x < y {
+          x
+      } else if y < x {
+          y
+      } else if x == y {
+          if x.is_sign_negative() && y.is_sign_positive() { x } else { y }
+      } else {
+          // At least one input is NaN. Use `+` to perform NaN propagation and quieting.
+          x + y
+      }
   }
   *)
+  Definition minimumf16 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    match ε, τ, α with
+    | [], [], [ x; y ] =>
+      ltac:(M.monadic
+        (let x := M.alloc (| Ty.path "f16", x |) in
+        let y := M.alloc (| Ty.path "f16", y |) in
+        M.match_operator (|
+          Ty.path "f16",
+          M.alloc (| Ty.tuple [], Value.Tuple [] |),
+          [
+            fun γ =>
+              ltac:(M.monadic
+                (let γ :=
+                  M.alloc (|
+                    Ty.path "bool",
+                    M.call_closure (|
+                      Ty.path "bool",
+                      BinOp.lt,
+                      [ M.read (| x |); M.read (| y |) ]
+                    |)
+                  |) in
+                let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                M.read (| x |)));
+            fun γ =>
+              ltac:(M.monadic
+                (M.match_operator (|
+                  Ty.path "f16",
+                  M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                  [
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ :=
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.lt,
+                              [ M.read (| y |); M.read (| x |) ]
+                            |)
+                          |) in
+                        let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                        M.read (| y |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (M.match_operator (|
+                          Ty.path "f16",
+                          M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                          [
+                            fun γ =>
+                              ltac:(M.monadic
+                                (let γ :=
+                                  M.alloc (|
+                                    Ty.path "bool",
+                                    M.call_closure (|
+                                      Ty.path "bool",
+                                      BinOp.eq,
+                                      [ M.read (| x |); M.read (| y |) ]
+                                    |)
+                                  |) in
+                                let _ :=
+                                  is_constant_or_break_match (|
+                                    M.read (| γ |),
+                                    Value.Bool true
+                                  |) in
+                                M.match_operator (|
+                                  Ty.path "f16",
+                                  M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                                  [
+                                    fun γ =>
+                                      ltac:(M.monadic
+                                        (let γ :=
+                                          M.alloc (|
+                                            Ty.path "bool",
+                                            M.call_closure (|
+                                              Ty.path "bool",
+                                              M.get_associated_function (|
+                                                Ty.path "f16",
+                                                "is_sign_negative",
+                                                [],
+                                                []
+                                              |),
+                                              [ M.read (| x |) ]
+                                            |)
+                                          |) in
+                                        let _ :=
+                                          is_constant_or_break_match (|
+                                            M.read (| γ |),
+                                            Value.Bool true
+                                          |) in
+                                        let γ :=
+                                          M.alloc (|
+                                            Ty.path "bool",
+                                            M.call_closure (|
+                                              Ty.path "bool",
+                                              M.get_associated_function (|
+                                                Ty.path "f16",
+                                                "is_sign_positive",
+                                                [],
+                                                []
+                                              |),
+                                              [ M.read (| y |) ]
+                                            |)
+                                          |) in
+                                        let _ :=
+                                          is_constant_or_break_match (|
+                                            M.read (| γ |),
+                                            Value.Bool true
+                                          |) in
+                                        M.read (| x |)));
+                                    fun γ => ltac:(M.monadic (M.read (| y |)))
+                                  ]
+                                |)));
+                            fun γ =>
+                              ltac:(M.monadic
+                                (M.call_closure (|
+                                  Ty.path "f16",
+                                  BinOp.Wrap.add,
+                                  [ M.read (| x |); M.read (| y |) ]
+                                |)))
+                          ]
+                        |)))
+                  ]
+                |)))
+          ]
+        |)))
+    | _, _, _ => M.impossible "wrong number of arguments"
+    end.
+  
+  Global Instance Instance_IsFunction_minimumf16 :
+    M.IsFunction.C "core::intrinsics::minimumf16" minimumf16.
+  Admitted.
+  Global Typeclasses Opaque minimumf16.
+  
+  (*
+  pub const fn minimumf32(x: f32, y: f32) -> f32 {
+      if x < y {
+          x
+      } else if y < x {
+          y
+      } else if x == y {
+          if x.is_sign_negative() && y.is_sign_positive() { x } else { y }
+      } else {
+          // At least one input is NaN. Use `+` to perform NaN propagation and quieting.
+          x + y
+      }
+  }
+  *)
+  Definition minimumf32 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    match ε, τ, α with
+    | [], [], [ x; y ] =>
+      ltac:(M.monadic
+        (let x := M.alloc (| Ty.path "f32", x |) in
+        let y := M.alloc (| Ty.path "f32", y |) in
+        M.match_operator (|
+          Ty.path "f32",
+          M.alloc (| Ty.tuple [], Value.Tuple [] |),
+          [
+            fun γ =>
+              ltac:(M.monadic
+                (let γ :=
+                  M.alloc (|
+                    Ty.path "bool",
+                    M.call_closure (|
+                      Ty.path "bool",
+                      BinOp.lt,
+                      [ M.read (| x |); M.read (| y |) ]
+                    |)
+                  |) in
+                let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                M.read (| x |)));
+            fun γ =>
+              ltac:(M.monadic
+                (M.match_operator (|
+                  Ty.path "f32",
+                  M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                  [
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ :=
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.lt,
+                              [ M.read (| y |); M.read (| x |) ]
+                            |)
+                          |) in
+                        let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                        M.read (| y |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (M.match_operator (|
+                          Ty.path "f32",
+                          M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                          [
+                            fun γ =>
+                              ltac:(M.monadic
+                                (let γ :=
+                                  M.alloc (|
+                                    Ty.path "bool",
+                                    M.call_closure (|
+                                      Ty.path "bool",
+                                      BinOp.eq,
+                                      [ M.read (| x |); M.read (| y |) ]
+                                    |)
+                                  |) in
+                                let _ :=
+                                  is_constant_or_break_match (|
+                                    M.read (| γ |),
+                                    Value.Bool true
+                                  |) in
+                                M.match_operator (|
+                                  Ty.path "f32",
+                                  M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                                  [
+                                    fun γ =>
+                                      ltac:(M.monadic
+                                        (let γ :=
+                                          M.alloc (|
+                                            Ty.path "bool",
+                                            M.call_closure (|
+                                              Ty.path "bool",
+                                              M.get_associated_function (|
+                                                Ty.path "f32",
+                                                "is_sign_negative",
+                                                [],
+                                                []
+                                              |),
+                                              [ M.read (| x |) ]
+                                            |)
+                                          |) in
+                                        let _ :=
+                                          is_constant_or_break_match (|
+                                            M.read (| γ |),
+                                            Value.Bool true
+                                          |) in
+                                        let γ :=
+                                          M.alloc (|
+                                            Ty.path "bool",
+                                            M.call_closure (|
+                                              Ty.path "bool",
+                                              M.get_associated_function (|
+                                                Ty.path "f32",
+                                                "is_sign_positive",
+                                                [],
+                                                []
+                                              |),
+                                              [ M.read (| y |) ]
+                                            |)
+                                          |) in
+                                        let _ :=
+                                          is_constant_or_break_match (|
+                                            M.read (| γ |),
+                                            Value.Bool true
+                                          |) in
+                                        M.read (| x |)));
+                                    fun γ => ltac:(M.monadic (M.read (| y |)))
+                                  ]
+                                |)));
+                            fun γ =>
+                              ltac:(M.monadic
+                                (M.call_closure (|
+                                  Ty.path "f32",
+                                  BinOp.Wrap.add,
+                                  [ M.read (| x |); M.read (| y |) ]
+                                |)))
+                          ]
+                        |)))
+                  ]
+                |)))
+          ]
+        |)))
+    | _, _, _ => M.impossible "wrong number of arguments"
+    end.
+  
+  Global Instance Instance_IsFunction_minimumf32 :
+    M.IsFunction.C "core::intrinsics::minimumf32" minimumf32.
+  Admitted.
+  Global Typeclasses Opaque minimumf32.
+  
+  (*
+  pub const fn minimumf64(x: f64, y: f64) -> f64 {
+      if x < y {
+          x
+      } else if y < x {
+          y
+      } else if x == y {
+          if x.is_sign_negative() && y.is_sign_positive() { x } else { y }
+      } else {
+          // At least one input is NaN. Use `+` to perform NaN propagation and quieting.
+          x + y
+      }
+  }
+  *)
+  Definition minimumf64 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    match ε, τ, α with
+    | [], [], [ x; y ] =>
+      ltac:(M.monadic
+        (let x := M.alloc (| Ty.path "f64", x |) in
+        let y := M.alloc (| Ty.path "f64", y |) in
+        M.match_operator (|
+          Ty.path "f64",
+          M.alloc (| Ty.tuple [], Value.Tuple [] |),
+          [
+            fun γ =>
+              ltac:(M.monadic
+                (let γ :=
+                  M.alloc (|
+                    Ty.path "bool",
+                    M.call_closure (|
+                      Ty.path "bool",
+                      BinOp.lt,
+                      [ M.read (| x |); M.read (| y |) ]
+                    |)
+                  |) in
+                let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                M.read (| x |)));
+            fun γ =>
+              ltac:(M.monadic
+                (M.match_operator (|
+                  Ty.path "f64",
+                  M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                  [
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ :=
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.lt,
+                              [ M.read (| y |); M.read (| x |) ]
+                            |)
+                          |) in
+                        let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                        M.read (| y |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (M.match_operator (|
+                          Ty.path "f64",
+                          M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                          [
+                            fun γ =>
+                              ltac:(M.monadic
+                                (let γ :=
+                                  M.alloc (|
+                                    Ty.path "bool",
+                                    M.call_closure (|
+                                      Ty.path "bool",
+                                      BinOp.eq,
+                                      [ M.read (| x |); M.read (| y |) ]
+                                    |)
+                                  |) in
+                                let _ :=
+                                  is_constant_or_break_match (|
+                                    M.read (| γ |),
+                                    Value.Bool true
+                                  |) in
+                                M.match_operator (|
+                                  Ty.path "f64",
+                                  M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                                  [
+                                    fun γ =>
+                                      ltac:(M.monadic
+                                        (let γ :=
+                                          M.alloc (|
+                                            Ty.path "bool",
+                                            M.call_closure (|
+                                              Ty.path "bool",
+                                              M.get_associated_function (|
+                                                Ty.path "f64",
+                                                "is_sign_negative",
+                                                [],
+                                                []
+                                              |),
+                                              [ M.read (| x |) ]
+                                            |)
+                                          |) in
+                                        let _ :=
+                                          is_constant_or_break_match (|
+                                            M.read (| γ |),
+                                            Value.Bool true
+                                          |) in
+                                        let γ :=
+                                          M.alloc (|
+                                            Ty.path "bool",
+                                            M.call_closure (|
+                                              Ty.path "bool",
+                                              M.get_associated_function (|
+                                                Ty.path "f64",
+                                                "is_sign_positive",
+                                                [],
+                                                []
+                                              |),
+                                              [ M.read (| y |) ]
+                                            |)
+                                          |) in
+                                        let _ :=
+                                          is_constant_or_break_match (|
+                                            M.read (| γ |),
+                                            Value.Bool true
+                                          |) in
+                                        M.read (| x |)));
+                                    fun γ => ltac:(M.monadic (M.read (| y |)))
+                                  ]
+                                |)));
+                            fun γ =>
+                              ltac:(M.monadic
+                                (M.call_closure (|
+                                  Ty.path "f64",
+                                  BinOp.Wrap.add,
+                                  [ M.read (| x |); M.read (| y |) ]
+                                |)))
+                          ]
+                        |)))
+                  ]
+                |)))
+          ]
+        |)))
+    | _, _, _ => M.impossible "wrong number of arguments"
+    end.
+  
+  Global Instance Instance_IsFunction_minimumf64 :
+    M.IsFunction.C "core::intrinsics::minimumf64" minimumf64.
+  Admitted.
+  Global Typeclasses Opaque minimumf64.
+  
+  (*
+  pub const fn minimumf128(x: f128, y: f128) -> f128 {
+      if x < y {
+          x
+      } else if y < x {
+          y
+      } else if x == y {
+          if x.is_sign_negative() && y.is_sign_positive() { x } else { y }
+      } else {
+          // At least one input is NaN. Use `+` to perform NaN propagation and quieting.
+          x + y
+      }
+  }
+  *)
+  Definition minimumf128 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    match ε, τ, α with
+    | [], [], [ x; y ] =>
+      ltac:(M.monadic
+        (let x := M.alloc (| Ty.path "f128", x |) in
+        let y := M.alloc (| Ty.path "f128", y |) in
+        M.match_operator (|
+          Ty.path "f128",
+          M.alloc (| Ty.tuple [], Value.Tuple [] |),
+          [
+            fun γ =>
+              ltac:(M.monadic
+                (let γ :=
+                  M.alloc (|
+                    Ty.path "bool",
+                    M.call_closure (|
+                      Ty.path "bool",
+                      BinOp.lt,
+                      [ M.read (| x |); M.read (| y |) ]
+                    |)
+                  |) in
+                let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                M.read (| x |)));
+            fun γ =>
+              ltac:(M.monadic
+                (M.match_operator (|
+                  Ty.path "f128",
+                  M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                  [
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ :=
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.lt,
+                              [ M.read (| y |); M.read (| x |) ]
+                            |)
+                          |) in
+                        let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                        M.read (| y |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (M.match_operator (|
+                          Ty.path "f128",
+                          M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                          [
+                            fun γ =>
+                              ltac:(M.monadic
+                                (let γ :=
+                                  M.alloc (|
+                                    Ty.path "bool",
+                                    M.call_closure (|
+                                      Ty.path "bool",
+                                      BinOp.eq,
+                                      [ M.read (| x |); M.read (| y |) ]
+                                    |)
+                                  |) in
+                                let _ :=
+                                  is_constant_or_break_match (|
+                                    M.read (| γ |),
+                                    Value.Bool true
+                                  |) in
+                                M.match_operator (|
+                                  Ty.path "f128",
+                                  M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                                  [
+                                    fun γ =>
+                                      ltac:(M.monadic
+                                        (let γ :=
+                                          M.alloc (|
+                                            Ty.path "bool",
+                                            M.call_closure (|
+                                              Ty.path "bool",
+                                              M.get_associated_function (|
+                                                Ty.path "f128",
+                                                "is_sign_negative",
+                                                [],
+                                                []
+                                              |),
+                                              [ M.read (| x |) ]
+                                            |)
+                                          |) in
+                                        let _ :=
+                                          is_constant_or_break_match (|
+                                            M.read (| γ |),
+                                            Value.Bool true
+                                          |) in
+                                        let γ :=
+                                          M.alloc (|
+                                            Ty.path "bool",
+                                            M.call_closure (|
+                                              Ty.path "bool",
+                                              M.get_associated_function (|
+                                                Ty.path "f128",
+                                                "is_sign_positive",
+                                                [],
+                                                []
+                                              |),
+                                              [ M.read (| y |) ]
+                                            |)
+                                          |) in
+                                        let _ :=
+                                          is_constant_or_break_match (|
+                                            M.read (| γ |),
+                                            Value.Bool true
+                                          |) in
+                                        M.read (| x |)));
+                                    fun γ => ltac:(M.monadic (M.read (| y |)))
+                                  ]
+                                |)));
+                            fun γ =>
+                              ltac:(M.monadic
+                                (M.call_closure (|
+                                  Ty.path "f128",
+                                  BinOp.Wrap.add,
+                                  [ M.read (| x |); M.read (| y |) ]
+                                |)))
+                          ]
+                        |)))
+                  ]
+                |)))
+          ]
+        |)))
+    | _, _, _ => M.impossible "wrong number of arguments"
+    end.
+  
+  Global Instance Instance_IsFunction_minimumf128 :
+    M.IsFunction.C "core::intrinsics::minimumf128" minimumf128.
+  Admitted.
+  Global Typeclasses Opaque minimumf128.
+  
+  (* pub const fn maxnumf16(x: f16, y: f16) -> f16; *)
   Definition maxnumf16 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _x; _y ] =>
+    | [], [], [ x; y ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| Ty.path "f16", _x |) in
-        let _y := M.alloc (| Ty.path "f16", _y |) in
+        (let x := M.alloc (| Ty.path "f16", x |) in
+        let y := M.alloc (| Ty.path "f16", y |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -7994,22 +5944,19 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque maxnumf16.
   
-  (*
-  pub const fn maxnumf32(_x: f32, _y: f32) -> f32 {
-      unimplemented!();
-  }
-  *)
+  (* pub const fn maxnumf32(x: f32, y: f32) -> f32; *)
   Definition maxnumf32 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _x; _y ] =>
+    | [], [], [ x; y ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| Ty.path "f32", _x |) in
-        let _y := M.alloc (| Ty.path "f32", _y |) in
+        (let x := M.alloc (| Ty.path "f32", x |) in
+        let y := M.alloc (| Ty.path "f32", y |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -8020,22 +5967,19 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque maxnumf32.
   
-  (*
-  pub const fn maxnumf64(_x: f64, _y: f64) -> f64 {
-      unimplemented!();
-  }
-  *)
+  (* pub const fn maxnumf64(x: f64, y: f64) -> f64; *)
   Definition maxnumf64 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _x; _y ] =>
+    | [], [], [ x; y ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| Ty.path "f64", _x |) in
-        let _y := M.alloc (| Ty.path "f64", _y |) in
+        (let x := M.alloc (| Ty.path "f64", x |) in
+        let y := M.alloc (| Ty.path "f64", y |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -8046,22 +5990,19 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque maxnumf64.
   
-  (*
-  pub const fn maxnumf128(_x: f128, _y: f128) -> f128 {
-      unimplemented!();
-  }
-  *)
+  (* pub const fn maxnumf128(x: f128, y: f128) -> f128; *)
   Definition maxnumf128 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _x; _y ] =>
+    | [], [], [ x; y ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| Ty.path "f128", _x |) in
-        let _y := M.alloc (| Ty.path "f128", _y |) in
+        (let x := M.alloc (| Ty.path "f128", x |) in
+        let y := M.alloc (| Ty.path "f128", y |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -8073,20 +6014,601 @@ Module intrinsics.
   Global Typeclasses Opaque maxnumf128.
   
   (*
-  pub const unsafe fn fabsf16(_x: f16) -> f16 {
-      unimplemented!();
+  pub const fn maximumf16(x: f16, y: f16) -> f16 {
+      if x > y {
+          x
+      } else if y > x {
+          y
+      } else if x == y {
+          if x.is_sign_positive() && y.is_sign_negative() { x } else { y }
+      } else {
+          x + y
+      }
   }
   *)
+  Definition maximumf16 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    match ε, τ, α with
+    | [], [], [ x; y ] =>
+      ltac:(M.monadic
+        (let x := M.alloc (| Ty.path "f16", x |) in
+        let y := M.alloc (| Ty.path "f16", y |) in
+        M.match_operator (|
+          Ty.path "f16",
+          M.alloc (| Ty.tuple [], Value.Tuple [] |),
+          [
+            fun γ =>
+              ltac:(M.monadic
+                (let γ :=
+                  M.alloc (|
+                    Ty.path "bool",
+                    M.call_closure (|
+                      Ty.path "bool",
+                      BinOp.gt,
+                      [ M.read (| x |); M.read (| y |) ]
+                    |)
+                  |) in
+                let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                M.read (| x |)));
+            fun γ =>
+              ltac:(M.monadic
+                (M.match_operator (|
+                  Ty.path "f16",
+                  M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                  [
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ :=
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.gt,
+                              [ M.read (| y |); M.read (| x |) ]
+                            |)
+                          |) in
+                        let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                        M.read (| y |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (M.match_operator (|
+                          Ty.path "f16",
+                          M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                          [
+                            fun γ =>
+                              ltac:(M.monadic
+                                (let γ :=
+                                  M.alloc (|
+                                    Ty.path "bool",
+                                    M.call_closure (|
+                                      Ty.path "bool",
+                                      BinOp.eq,
+                                      [ M.read (| x |); M.read (| y |) ]
+                                    |)
+                                  |) in
+                                let _ :=
+                                  is_constant_or_break_match (|
+                                    M.read (| γ |),
+                                    Value.Bool true
+                                  |) in
+                                M.match_operator (|
+                                  Ty.path "f16",
+                                  M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                                  [
+                                    fun γ =>
+                                      ltac:(M.monadic
+                                        (let γ :=
+                                          M.alloc (|
+                                            Ty.path "bool",
+                                            M.call_closure (|
+                                              Ty.path "bool",
+                                              M.get_associated_function (|
+                                                Ty.path "f16",
+                                                "is_sign_positive",
+                                                [],
+                                                []
+                                              |),
+                                              [ M.read (| x |) ]
+                                            |)
+                                          |) in
+                                        let _ :=
+                                          is_constant_or_break_match (|
+                                            M.read (| γ |),
+                                            Value.Bool true
+                                          |) in
+                                        let γ :=
+                                          M.alloc (|
+                                            Ty.path "bool",
+                                            M.call_closure (|
+                                              Ty.path "bool",
+                                              M.get_associated_function (|
+                                                Ty.path "f16",
+                                                "is_sign_negative",
+                                                [],
+                                                []
+                                              |),
+                                              [ M.read (| y |) ]
+                                            |)
+                                          |) in
+                                        let _ :=
+                                          is_constant_or_break_match (|
+                                            M.read (| γ |),
+                                            Value.Bool true
+                                          |) in
+                                        M.read (| x |)));
+                                    fun γ => ltac:(M.monadic (M.read (| y |)))
+                                  ]
+                                |)));
+                            fun γ =>
+                              ltac:(M.monadic
+                                (M.call_closure (|
+                                  Ty.path "f16",
+                                  BinOp.Wrap.add,
+                                  [ M.read (| x |); M.read (| y |) ]
+                                |)))
+                          ]
+                        |)))
+                  ]
+                |)))
+          ]
+        |)))
+    | _, _, _ => M.impossible "wrong number of arguments"
+    end.
+  
+  Global Instance Instance_IsFunction_maximumf16 :
+    M.IsFunction.C "core::intrinsics::maximumf16" maximumf16.
+  Admitted.
+  Global Typeclasses Opaque maximumf16.
+  
+  (*
+  pub const fn maximumf32(x: f32, y: f32) -> f32 {
+      if x > y {
+          x
+      } else if y > x {
+          y
+      } else if x == y {
+          if x.is_sign_positive() && y.is_sign_negative() { x } else { y }
+      } else {
+          x + y
+      }
+  }
+  *)
+  Definition maximumf32 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    match ε, τ, α with
+    | [], [], [ x; y ] =>
+      ltac:(M.monadic
+        (let x := M.alloc (| Ty.path "f32", x |) in
+        let y := M.alloc (| Ty.path "f32", y |) in
+        M.match_operator (|
+          Ty.path "f32",
+          M.alloc (| Ty.tuple [], Value.Tuple [] |),
+          [
+            fun γ =>
+              ltac:(M.monadic
+                (let γ :=
+                  M.alloc (|
+                    Ty.path "bool",
+                    M.call_closure (|
+                      Ty.path "bool",
+                      BinOp.gt,
+                      [ M.read (| x |); M.read (| y |) ]
+                    |)
+                  |) in
+                let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                M.read (| x |)));
+            fun γ =>
+              ltac:(M.monadic
+                (M.match_operator (|
+                  Ty.path "f32",
+                  M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                  [
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ :=
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.gt,
+                              [ M.read (| y |); M.read (| x |) ]
+                            |)
+                          |) in
+                        let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                        M.read (| y |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (M.match_operator (|
+                          Ty.path "f32",
+                          M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                          [
+                            fun γ =>
+                              ltac:(M.monadic
+                                (let γ :=
+                                  M.alloc (|
+                                    Ty.path "bool",
+                                    M.call_closure (|
+                                      Ty.path "bool",
+                                      BinOp.eq,
+                                      [ M.read (| x |); M.read (| y |) ]
+                                    |)
+                                  |) in
+                                let _ :=
+                                  is_constant_or_break_match (|
+                                    M.read (| γ |),
+                                    Value.Bool true
+                                  |) in
+                                M.match_operator (|
+                                  Ty.path "f32",
+                                  M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                                  [
+                                    fun γ =>
+                                      ltac:(M.monadic
+                                        (let γ :=
+                                          M.alloc (|
+                                            Ty.path "bool",
+                                            M.call_closure (|
+                                              Ty.path "bool",
+                                              M.get_associated_function (|
+                                                Ty.path "f32",
+                                                "is_sign_positive",
+                                                [],
+                                                []
+                                              |),
+                                              [ M.read (| x |) ]
+                                            |)
+                                          |) in
+                                        let _ :=
+                                          is_constant_or_break_match (|
+                                            M.read (| γ |),
+                                            Value.Bool true
+                                          |) in
+                                        let γ :=
+                                          M.alloc (|
+                                            Ty.path "bool",
+                                            M.call_closure (|
+                                              Ty.path "bool",
+                                              M.get_associated_function (|
+                                                Ty.path "f32",
+                                                "is_sign_negative",
+                                                [],
+                                                []
+                                              |),
+                                              [ M.read (| y |) ]
+                                            |)
+                                          |) in
+                                        let _ :=
+                                          is_constant_or_break_match (|
+                                            M.read (| γ |),
+                                            Value.Bool true
+                                          |) in
+                                        M.read (| x |)));
+                                    fun γ => ltac:(M.monadic (M.read (| y |)))
+                                  ]
+                                |)));
+                            fun γ =>
+                              ltac:(M.monadic
+                                (M.call_closure (|
+                                  Ty.path "f32",
+                                  BinOp.Wrap.add,
+                                  [ M.read (| x |); M.read (| y |) ]
+                                |)))
+                          ]
+                        |)))
+                  ]
+                |)))
+          ]
+        |)))
+    | _, _, _ => M.impossible "wrong number of arguments"
+    end.
+  
+  Global Instance Instance_IsFunction_maximumf32 :
+    M.IsFunction.C "core::intrinsics::maximumf32" maximumf32.
+  Admitted.
+  Global Typeclasses Opaque maximumf32.
+  
+  (*
+  pub const fn maximumf64(x: f64, y: f64) -> f64 {
+      if x > y {
+          x
+      } else if y > x {
+          y
+      } else if x == y {
+          if x.is_sign_positive() && y.is_sign_negative() { x } else { y }
+      } else {
+          x + y
+      }
+  }
+  *)
+  Definition maximumf64 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    match ε, τ, α with
+    | [], [], [ x; y ] =>
+      ltac:(M.monadic
+        (let x := M.alloc (| Ty.path "f64", x |) in
+        let y := M.alloc (| Ty.path "f64", y |) in
+        M.match_operator (|
+          Ty.path "f64",
+          M.alloc (| Ty.tuple [], Value.Tuple [] |),
+          [
+            fun γ =>
+              ltac:(M.monadic
+                (let γ :=
+                  M.alloc (|
+                    Ty.path "bool",
+                    M.call_closure (|
+                      Ty.path "bool",
+                      BinOp.gt,
+                      [ M.read (| x |); M.read (| y |) ]
+                    |)
+                  |) in
+                let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                M.read (| x |)));
+            fun γ =>
+              ltac:(M.monadic
+                (M.match_operator (|
+                  Ty.path "f64",
+                  M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                  [
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ :=
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.gt,
+                              [ M.read (| y |); M.read (| x |) ]
+                            |)
+                          |) in
+                        let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                        M.read (| y |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (M.match_operator (|
+                          Ty.path "f64",
+                          M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                          [
+                            fun γ =>
+                              ltac:(M.monadic
+                                (let γ :=
+                                  M.alloc (|
+                                    Ty.path "bool",
+                                    M.call_closure (|
+                                      Ty.path "bool",
+                                      BinOp.eq,
+                                      [ M.read (| x |); M.read (| y |) ]
+                                    |)
+                                  |) in
+                                let _ :=
+                                  is_constant_or_break_match (|
+                                    M.read (| γ |),
+                                    Value.Bool true
+                                  |) in
+                                M.match_operator (|
+                                  Ty.path "f64",
+                                  M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                                  [
+                                    fun γ =>
+                                      ltac:(M.monadic
+                                        (let γ :=
+                                          M.alloc (|
+                                            Ty.path "bool",
+                                            M.call_closure (|
+                                              Ty.path "bool",
+                                              M.get_associated_function (|
+                                                Ty.path "f64",
+                                                "is_sign_positive",
+                                                [],
+                                                []
+                                              |),
+                                              [ M.read (| x |) ]
+                                            |)
+                                          |) in
+                                        let _ :=
+                                          is_constant_or_break_match (|
+                                            M.read (| γ |),
+                                            Value.Bool true
+                                          |) in
+                                        let γ :=
+                                          M.alloc (|
+                                            Ty.path "bool",
+                                            M.call_closure (|
+                                              Ty.path "bool",
+                                              M.get_associated_function (|
+                                                Ty.path "f64",
+                                                "is_sign_negative",
+                                                [],
+                                                []
+                                              |),
+                                              [ M.read (| y |) ]
+                                            |)
+                                          |) in
+                                        let _ :=
+                                          is_constant_or_break_match (|
+                                            M.read (| γ |),
+                                            Value.Bool true
+                                          |) in
+                                        M.read (| x |)));
+                                    fun γ => ltac:(M.monadic (M.read (| y |)))
+                                  ]
+                                |)));
+                            fun γ =>
+                              ltac:(M.monadic
+                                (M.call_closure (|
+                                  Ty.path "f64",
+                                  BinOp.Wrap.add,
+                                  [ M.read (| x |); M.read (| y |) ]
+                                |)))
+                          ]
+                        |)))
+                  ]
+                |)))
+          ]
+        |)))
+    | _, _, _ => M.impossible "wrong number of arguments"
+    end.
+  
+  Global Instance Instance_IsFunction_maximumf64 :
+    M.IsFunction.C "core::intrinsics::maximumf64" maximumf64.
+  Admitted.
+  Global Typeclasses Opaque maximumf64.
+  
+  (*
+  pub const fn maximumf128(x: f128, y: f128) -> f128 {
+      if x > y {
+          x
+      } else if y > x {
+          y
+      } else if x == y {
+          if x.is_sign_positive() && y.is_sign_negative() { x } else { y }
+      } else {
+          x + y
+      }
+  }
+  *)
+  Definition maximumf128 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    match ε, τ, α with
+    | [], [], [ x; y ] =>
+      ltac:(M.monadic
+        (let x := M.alloc (| Ty.path "f128", x |) in
+        let y := M.alloc (| Ty.path "f128", y |) in
+        M.match_operator (|
+          Ty.path "f128",
+          M.alloc (| Ty.tuple [], Value.Tuple [] |),
+          [
+            fun γ =>
+              ltac:(M.monadic
+                (let γ :=
+                  M.alloc (|
+                    Ty.path "bool",
+                    M.call_closure (|
+                      Ty.path "bool",
+                      BinOp.gt,
+                      [ M.read (| x |); M.read (| y |) ]
+                    |)
+                  |) in
+                let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                M.read (| x |)));
+            fun γ =>
+              ltac:(M.monadic
+                (M.match_operator (|
+                  Ty.path "f128",
+                  M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                  [
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ :=
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.gt,
+                              [ M.read (| y |); M.read (| x |) ]
+                            |)
+                          |) in
+                        let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                        M.read (| y |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (M.match_operator (|
+                          Ty.path "f128",
+                          M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                          [
+                            fun γ =>
+                              ltac:(M.monadic
+                                (let γ :=
+                                  M.alloc (|
+                                    Ty.path "bool",
+                                    M.call_closure (|
+                                      Ty.path "bool",
+                                      BinOp.eq,
+                                      [ M.read (| x |); M.read (| y |) ]
+                                    |)
+                                  |) in
+                                let _ :=
+                                  is_constant_or_break_match (|
+                                    M.read (| γ |),
+                                    Value.Bool true
+                                  |) in
+                                M.match_operator (|
+                                  Ty.path "f128",
+                                  M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                                  [
+                                    fun γ =>
+                                      ltac:(M.monadic
+                                        (let γ :=
+                                          M.alloc (|
+                                            Ty.path "bool",
+                                            M.call_closure (|
+                                              Ty.path "bool",
+                                              M.get_associated_function (|
+                                                Ty.path "f128",
+                                                "is_sign_positive",
+                                                [],
+                                                []
+                                              |),
+                                              [ M.read (| x |) ]
+                                            |)
+                                          |) in
+                                        let _ :=
+                                          is_constant_or_break_match (|
+                                            M.read (| γ |),
+                                            Value.Bool true
+                                          |) in
+                                        let γ :=
+                                          M.alloc (|
+                                            Ty.path "bool",
+                                            M.call_closure (|
+                                              Ty.path "bool",
+                                              M.get_associated_function (|
+                                                Ty.path "f128",
+                                                "is_sign_negative",
+                                                [],
+                                                []
+                                              |),
+                                              [ M.read (| y |) ]
+                                            |)
+                                          |) in
+                                        let _ :=
+                                          is_constant_or_break_match (|
+                                            M.read (| γ |),
+                                            Value.Bool true
+                                          |) in
+                                        M.read (| x |)));
+                                    fun γ => ltac:(M.monadic (M.read (| y |)))
+                                  ]
+                                |)));
+                            fun γ =>
+                              ltac:(M.monadic
+                                (M.call_closure (|
+                                  Ty.path "f128",
+                                  BinOp.Wrap.add,
+                                  [ M.read (| x |); M.read (| y |) ]
+                                |)))
+                          ]
+                        |)))
+                  ]
+                |)))
+          ]
+        |)))
+    | _, _, _ => M.impossible "wrong number of arguments"
+    end.
+  
+  Global Instance Instance_IsFunction_maximumf128 :
+    M.IsFunction.C "core::intrinsics::maximumf128" maximumf128.
+  Admitted.
+  Global Typeclasses Opaque maximumf128.
+  
+  (* pub const fn fabsf16(x: f16) -> f16; *)
   Definition fabsf16 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _x ] =>
+    | [], [], [ x ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| Ty.path "f16", _x |) in
+        (let x := M.alloc (| Ty.path "f16", x |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -8096,21 +6618,18 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque fabsf16.
   
-  (*
-  pub const unsafe fn fabsf32(_x: f32) -> f32 {
-      unimplemented!();
-  }
-  *)
+  (* pub const fn fabsf32(x: f32) -> f32; *)
   Definition fabsf32 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _x ] =>
+    | [], [], [ x ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| Ty.path "f32", _x |) in
+        (let x := M.alloc (| Ty.path "f32", x |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -8120,21 +6639,18 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque fabsf32.
   
-  (*
-  pub const unsafe fn fabsf64(_x: f64) -> f64 {
-      unimplemented!();
-  }
-  *)
+  (* pub const fn fabsf64(x: f64) -> f64; *)
   Definition fabsf64 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _x ] =>
+    | [], [], [ x ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| Ty.path "f64", _x |) in
+        (let x := M.alloc (| Ty.path "f64", x |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -8144,21 +6660,18 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque fabsf64.
   
-  (*
-  pub const unsafe fn fabsf128(_x: f128) -> f128 {
-      unimplemented!();
-  }
-  *)
+  (* pub const fn fabsf128(x: f128) -> f128; *)
   Definition fabsf128 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _x ] =>
+    | [], [], [ x ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| Ty.path "f128", _x |) in
+        (let x := M.alloc (| Ty.path "f128", x |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -8169,22 +6682,19 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque fabsf128.
   
-  (*
-  pub const unsafe fn copysignf16(_x: f16, _y: f16) -> f16 {
-      unimplemented!();
-  }
-  *)
+  (* pub const fn copysignf16(x: f16, y: f16) -> f16; *)
   Definition copysignf16 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _x; _y ] =>
+    | [], [], [ x; y ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| Ty.path "f16", _x |) in
-        let _y := M.alloc (| Ty.path "f16", _y |) in
+        (let x := M.alloc (| Ty.path "f16", x |) in
+        let y := M.alloc (| Ty.path "f16", y |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -8195,22 +6705,19 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque copysignf16.
   
-  (*
-  pub const unsafe fn copysignf32(_x: f32, _y: f32) -> f32 {
-      unimplemented!();
-  }
-  *)
+  (* pub const fn copysignf32(x: f32, y: f32) -> f32; *)
   Definition copysignf32 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _x; _y ] =>
+    | [], [], [ x; y ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| Ty.path "f32", _x |) in
-        let _y := M.alloc (| Ty.path "f32", _y |) in
+        (let x := M.alloc (| Ty.path "f32", x |) in
+        let y := M.alloc (| Ty.path "f32", y |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -8221,22 +6728,19 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque copysignf32.
   
-  (*
-  pub const unsafe fn copysignf64(_x: f64, _y: f64) -> f64 {
-      unimplemented!();
-  }
-  *)
+  (* pub const fn copysignf64(x: f64, y: f64) -> f64; *)
   Definition copysignf64 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _x; _y ] =>
+    | [], [], [ x; y ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| Ty.path "f64", _x |) in
-        let _y := M.alloc (| Ty.path "f64", _y |) in
+        (let x := M.alloc (| Ty.path "f64", x |) in
+        let y := M.alloc (| Ty.path "f64", y |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -8247,22 +6751,19 @@ Module intrinsics.
   Admitted.
   Global Typeclasses Opaque copysignf64.
   
-  (*
-  pub const unsafe fn copysignf128(_x: f128, _y: f128) -> f128 {
-      unimplemented!();
-  }
-  *)
+  (* pub const fn copysignf128(x: f128, y: f128) -> f128; *)
   Definition copysignf128 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [ _x; _y ] =>
+    | [], [], [ x; y ] =>
       ltac:(M.monadic
-        (let _x := M.alloc (| Ty.path "f128", _x |) in
-        let _y := M.alloc (| Ty.path "f128", _y |) in
+        (let x := M.alloc (| Ty.path "f128", x |) in
+        let y := M.alloc (| Ty.path "f128", y |) in
         M.never_to_any (|
-          M.call_closure (|
-            Ty.path "never",
-            M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -8272,12 +6773,450 @@ Module intrinsics.
     M.IsFunction.C "core::intrinsics::copysignf128" copysignf128.
   Admitted.
   Global Typeclasses Opaque copysignf128.
+  
+  (* pub const fn autodiff<F, G, T: crate::marker::Tuple, R>(f: F, df: G, args: T) -> R; *)
+  Definition autodiff (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    match ε, τ, α with
+    | [], [ F; G; T; R ], [ f; df; args ] =>
+      ltac:(M.monadic
+        (let f := M.alloc (| F, f |) in
+        let df := M.alloc (| G, df |) in
+        let args := M.alloc (| T, args |) in
+        M.never_to_any (|
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
+          |)
+        |)))
+    | _, _, _ => M.impossible "wrong number of arguments"
+    end.
+  
+  Global Instance Instance_IsFunction_autodiff :
+    M.IsFunction.C "core::intrinsics::autodiff" autodiff.
+  Admitted.
+  Global Typeclasses Opaque autodiff.
+  
+  (* pub const fn offload<F, T: crate::marker::Tuple, R>(f: F, args: T) -> R; *)
+  Definition offload (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    match ε, τ, α with
+    | [], [ F; T; R ], [ f; args ] =>
+      ltac:(M.monadic
+        (let f := M.alloc (| F, f |) in
+        let args := M.alloc (| T, args |) in
+        M.never_to_any (|
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
+          |)
+        |)))
+    | _, _, _ => M.impossible "wrong number of arguments"
+    end.
+  
+  Global Instance Instance_IsFunction_offload : M.IsFunction.C "core::intrinsics::offload" offload.
+  Admitted.
+  Global Typeclasses Opaque offload.
+  
+  (* pub unsafe fn va_copy<'f>(dest: *mut VaList<'f>, src: &VaList<'f>); *)
+  Definition va_copy (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    match ε, τ, α with
+    | [], [], [ dest; src ] =>
+      ltac:(M.monadic
+        (let dest :=
+          M.alloc (|
+            Ty.apply (Ty.path "*mut") [] [ Ty.path "core::ffi::va_list::VaList" ],
+            dest
+          |) in
+        let src :=
+          M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "core::ffi::va_list::VaList" ], src |) in
+        M.never_to_any (|
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
+          |)
+        |)))
+    | _, _, _ => M.impossible "wrong number of arguments"
+    end.
+  
+  Global Instance Instance_IsFunction_va_copy : M.IsFunction.C "core::intrinsics::va_copy" va_copy.
+  Admitted.
+  Global Typeclasses Opaque va_copy.
+  
+  (* pub unsafe fn va_arg<T: VaArgSafe>(ap: &mut VaList<'_>) -> T; *)
+  Definition va_arg (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    match ε, τ, α with
+    | [], [ T ], [ ap ] =>
+      ltac:(M.monadic
+        (let ap :=
+          M.alloc (| Ty.apply (Ty.path "&mut") [] [ Ty.path "core::ffi::va_list::VaList" ], ap |) in
+        M.never_to_any (|
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
+          |)
+        |)))
+    | _, _, _ => M.impossible "wrong number of arguments"
+    end.
+  
+  Global Instance Instance_IsFunction_va_arg : M.IsFunction.C "core::intrinsics::va_arg" va_arg.
+  Admitted.
+  Global Typeclasses Opaque va_arg.
+  
+  (* pub unsafe fn va_end(ap: &mut VaList<'_>); *)
+  Definition va_end (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    match ε, τ, α with
+    | [], [], [ ap ] =>
+      ltac:(M.monadic
+        (let ap :=
+          M.alloc (| Ty.apply (Ty.path "&mut") [] [ Ty.path "core::ffi::va_list::VaList" ], ap |) in
+        M.never_to_any (|
+          M.read (|
+            M.loop (|
+              Ty.path "never",
+              ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+            |)
+          |)
+        |)))
+    | _, _, _ => M.impossible "wrong number of arguments"
+    end.
+  
+  Global Instance Instance_IsFunction_va_end : M.IsFunction.C "core::intrinsics::va_end" va_end.
+  Admitted.
+  Global Typeclasses Opaque va_end.
 End intrinsics.
+
+Module mem.
+  Module conjure_zst.
+    Module do_panic.
+      (*
+              fn runtime$(<$($binders)*>)?($($arg: $ty),* ) $( -> $ret )? {
+                  $runtime
+              }
+      *)
+      Definition runtime (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ t ] =>
+          ltac:(M.monadic
+            (let t := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "str" ], t |) in
+            M.call_closure (|
+              Ty.path "never",
+              M.get_function (| "core::panicking::panic_fmt", [], [] |),
+              [
+                M.read (|
+                  let~ args :
+                      Ty.tuple
+                        [ Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                        ] :=
+                    Value.Tuple [ M.borrow (| Pointer.Kind.Ref, t |) ] in
+                  let~ args :
+                      Ty.apply
+                        (Ty.path "array")
+                        [ Value.Integer IntegerKind.Usize 1 ]
+                        [ Ty.path "core::fmt::rt::Argument" ] :=
+                    Value.Array
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::rt::Argument",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::rt::Argument",
+                            "new_display",
+                            [],
+                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                          |),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| M.read (| M.SubPointer.get_tuple_field (| args, 0 |) |) |)
+                            |)
+                          ]
+                        |)
+                      ] in
+                  M.alloc (|
+                    Ty.path "core::fmt::Arguments",
+                    M.call_closure (|
+                      Ty.path "core::fmt::Arguments",
+                      M.get_associated_function (|
+                        Ty.path "core::fmt::Arguments",
+                        "new",
+                        [ Value.Integer IntegerKind.Usize 62; Value.Integer IntegerKind.Usize 1 ],
+                        []
+                      |),
+                      [
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| M.read (| UnsupportedLiteral |) |)
+                        |);
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
+                        |)
+                      ]
+                    |)
+                  |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance Instance_IsFunction_runtime :
+        M.IsFunction.C "core::mem::conjure_zst::do_panic::runtime" runtime.
+      Admitted.
+      Global Typeclasses Opaque runtime.
+      
+      (*
+              const fn compiletime$(<$($binders)*>)?($($arg: $ty),* ) $( -> $ret )? {
+                  // Don't warn if one of the arguments is unused.
+                  $(let _ = $arg;)*
+      
+                  $compiletime
+              }
+      *)
+      Definition compiletime (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ t ] =>
+          ltac:(M.monadic
+            (let t := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "str" ], t |) in
+            M.match_operator (|
+              Ty.path "never",
+              t,
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "mem::conjure_zst invoked on a nonzero-sized type" |) ]
+                        |)
+                      ]
+                    |)))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance Instance_IsFunction_compiletime :
+        M.IsFunction.C "core::mem::conjure_zst::do_panic::compiletime" compiletime.
+      Admitted.
+      Global Typeclasses Opaque compiletime.
+    End do_panic.
+  End conjure_zst.
+End mem.
+
+Module ptr.
+  Module swap_nonoverlapping.
+    (*
+            fn runtime$(<$($binders)*>)?($($arg: $ty),* ) $( -> $ret )? {
+                $runtime
+            }
+    *)
+    Definition runtime (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [ T ], [ x; y; count ] =>
+        ltac:(M.monadic
+          (let x := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], x |) in
+          let y := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], y |) in
+          let count := M.alloc (| Ty.path "usize", count |) in
+          M.read (|
+            let~ slice : Ty.apply (Ty.path "*mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ] :=
+              M.call_closure (|
+                Ty.apply (Ty.path "*mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                M.get_function (| "core::ptr::slice_from_raw_parts_mut", [], [ T ] |),
+                [ M.read (| x |); M.read (| count |) ]
+              |) in
+            let~ bytes : Ty.path "usize" :=
+              M.call_closure (|
+                Ty.path "usize",
+                M.get_function (|
+                  "core::mem::size_of_val_raw",
+                  [],
+                  [ Ty.apply (Ty.path "slice") [] [ T ] ]
+                |),
+                [
+                  M.call_closure (|
+                    Ty.apply (Ty.path "*const") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                    M.pointer_coercion
+                      M.PointerCoercion.MutToConstPointer
+                      (Ty.apply (Ty.path "*mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                      (Ty.apply (Ty.path "*const") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]),
+                    [ M.read (| slice |) ]
+                  |)
+                ]
+              |) in
+            M.alloc (|
+              Ty.tuple [],
+              M.match_operator (|
+                Ty.tuple [],
+                M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                [
+                  fun γ =>
+                    ltac:(M.monadic
+                      (let γ :=
+                        M.alloc (|
+                          Ty.apply
+                            (Ty.path "core::option::Option")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "core::num::nonzero::NonZero")
+                                []
+                                [ Ty.path "usize" ]
+                            ],
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "core::option::Option")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "core::num::nonzero::NonZero")
+                                  []
+                                  [ Ty.path "usize" ]
+                              ],
+                            M.get_associated_function (|
+                              Ty.apply
+                                (Ty.path "core::num::nonzero::NonZero")
+                                []
+                                [ Ty.path "usize" ],
+                              "new",
+                              [],
+                              []
+                            |),
+                            [ M.read (| bytes |) ]
+                          |)
+                        |) in
+                      let γ0_0 :=
+                        M.SubPointer.get_struct_tuple_field (|
+                          γ,
+                          "core::option::Option::Some",
+                          0
+                        |) in
+                      let bytes :=
+                        M.copy (|
+                          Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ],
+                          γ0_0
+                        |) in
+                      M.read (|
+                        let~ _ : Ty.tuple [] :=
+                          M.call_closure (|
+                            Ty.tuple [],
+                            M.get_function (| "core::ptr::swap_nonoverlapping_bytes", [], [] |),
+                            [
+                              M.call_closure (|
+                                Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                M.get_associated_function (|
+                                  Ty.apply (Ty.path "*mut") [] [ T ],
+                                  "cast",
+                                  [],
+                                  [ Ty.path "u8" ]
+                                |),
+                                [ M.read (| x |) ]
+                              |);
+                              M.call_closure (|
+                                Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                M.get_associated_function (|
+                                  Ty.apply (Ty.path "*mut") [] [ T ],
+                                  "cast",
+                                  [],
+                                  [ Ty.path "u8" ]
+                                |),
+                                [ M.read (| y |) ]
+                              |);
+                              M.read (| bytes |)
+                            ]
+                          |) in
+                        M.alloc (| Ty.tuple [], Value.Tuple [] |)
+                      |)));
+                  fun γ => ltac:(M.monadic (Value.Tuple []))
+                ]
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance Instance_IsFunction_runtime :
+      M.IsFunction.C "core::ptr::swap_nonoverlapping::runtime" runtime.
+    Admitted.
+    Global Typeclasses Opaque runtime.
+    
+    (*
+            const fn compiletime$(<$($binders)*>)?($($arg: $ty),* ) $( -> $ret )? {
+                // Don't warn if one of the arguments is unused.
+                $(let _ = $arg;)*
+    
+                $compiletime
+            }
+    *)
+    Definition compiletime (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [ T ], [ x; y; count ] =>
+        ltac:(M.monadic
+          (let x := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], x |) in
+          let y := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], y |) in
+          let count := M.alloc (| Ty.path "usize", count |) in
+          M.match_operator (|
+            Ty.tuple [],
+            x,
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (M.match_operator (|
+                    Ty.tuple [],
+                    y,
+                    [
+                      fun γ =>
+                        ltac:(M.monadic
+                          (M.match_operator (|
+                            Ty.tuple [],
+                            count,
+                            [
+                              fun γ =>
+                                ltac:(M.monadic
+                                  (M.call_closure (|
+                                    Ty.tuple [],
+                                    M.get_function (|
+                                      "core::ptr::swap_nonoverlapping_const",
+                                      [],
+                                      [ T ]
+                                    |),
+                                    [ M.read (| x |); M.read (| y |); M.read (| count |) ]
+                                  |)))
+                            ]
+                          |)))
+                    ]
+                  |)))
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance Instance_IsFunction_compiletime :
+      M.IsFunction.C "core::ptr::swap_nonoverlapping::compiletime" compiletime.
+    Admitted.
+    Global Typeclasses Opaque compiletime.
+  End swap_nonoverlapping.
+End ptr.
 
 Module ub_checks.
   Module check_language_ub.
     (*
-            fn runtime($($arg: $ty),* ) $( -> $ret )? {
+            fn runtime$(<$($binders)*>)?($($arg: $ty),* ) $( -> $ret )? {
                 $runtime
             }
     *)
@@ -8294,7 +7233,7 @@ Module ub_checks.
     Global Typeclasses Opaque runtime.
     
     (*
-            const fn compiletime($($arg: $ty),* ) $( -> $ret )? {
+            const fn compiletime$(<$($binders)*>)?($($arg: $ty),* ) $( -> $ret )? {
                 // Don't warn if one of the arguments is unused.
                 $(let _ = $arg;)*
     
@@ -8313,62 +7252,38 @@ Module ub_checks.
     Global Typeclasses Opaque compiletime.
   End check_language_ub.
   
-  Module maybe_is_aligned_and_not_null.
+  Module maybe_is_aligned.
     (*
-            fn runtime($($arg: $ty),* ) $( -> $ret )? {
+            fn runtime$(<$($binders)*>)?($($arg: $ty),* ) $( -> $ret )? {
                 $runtime
             }
     *)
     Definition runtime (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       match ε, τ, α with
-      | [], [], [ ptr; align; is_zst ] =>
+      | [], [], [ ptr; align ] =>
         ltac:(M.monadic
           (let ptr := M.alloc (| Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ], ptr |) in
           let align := M.alloc (| Ty.path "usize", align |) in
-          let is_zst := M.alloc (| Ty.path "bool", is_zst |) in
-          LogicalOp.and (|
-            M.call_closure (|
-              Ty.path "bool",
-              M.get_associated_function (|
-                Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ],
-                "is_aligned_to",
-                [],
-                []
-              |),
-              [ M.read (| ptr |); M.read (| align |) ]
+          M.call_closure (|
+            Ty.path "bool",
+            M.get_associated_function (|
+              Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ],
+              "is_aligned_to",
+              [],
+              []
             |),
-            ltac:(M.monadic
-              (LogicalOp.or (|
-                M.read (| is_zst |),
-                ltac:(M.monadic
-                  (M.call_closure (|
-                    Ty.path "bool",
-                    UnOp.not,
-                    [
-                      M.call_closure (|
-                        Ty.path "bool",
-                        M.get_associated_function (|
-                          Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ],
-                          "is_null",
-                          [],
-                          []
-                        |),
-                        [ M.read (| ptr |) ]
-                      |)
-                    ]
-                  |)))
-              |)))
+            [ M.read (| ptr |); M.read (| align |) ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
     Global Instance Instance_IsFunction_runtime :
-      M.IsFunction.C "core::ub_checks::maybe_is_aligned_and_not_null::runtime" runtime.
+      M.IsFunction.C "core::ub_checks::maybe_is_aligned::runtime" runtime.
     Admitted.
     Global Typeclasses Opaque runtime.
     
     (*
-            const fn compiletime($($arg: $ty),* ) $( -> $ret )? {
+            const fn compiletime$(<$($binders)*>)?($($arg: $ty),* ) $( -> $ret )? {
                 // Don't warn if one of the arguments is unused.
                 $(let _ = $arg;)*
     
@@ -8377,11 +7292,10 @@ Module ub_checks.
     *)
     Definition compiletime (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       match ε, τ, α with
-      | [], [], [ ptr; align; is_zst ] =>
+      | [], [], [ ptr; align ] =>
         ltac:(M.monadic
           (let ptr := M.alloc (| Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ], ptr |) in
           let align := M.alloc (| Ty.path "usize", align |) in
-          let is_zst := M.alloc (| Ty.path "bool", is_zst |) in
           M.match_operator (|
             Ty.path "bool",
             ptr,
@@ -8391,38 +7305,7 @@ Module ub_checks.
                   (M.match_operator (|
                     Ty.path "bool",
                     align,
-                    [
-                      fun γ =>
-                        ltac:(M.monadic
-                          (M.match_operator (|
-                            Ty.path "bool",
-                            is_zst,
-                            [
-                              fun γ =>
-                                ltac:(M.monadic
-                                  (LogicalOp.or (|
-                                    M.read (| is_zst |),
-                                    ltac:(M.monadic
-                                      (M.call_closure (|
-                                        Ty.path "bool",
-                                        UnOp.not,
-                                        [
-                                          M.call_closure (|
-                                            Ty.path "bool",
-                                            M.get_associated_function (|
-                                              Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ],
-                                              "is_null",
-                                              [],
-                                              []
-                                            |),
-                                            [ M.read (| ptr |) ]
-                                          |)
-                                        ]
-                                      |)))
-                                  |)))
-                            ]
-                          |)))
-                    ]
+                    [ fun γ => ltac:(M.monadic (Value.Bool true)) ]
                   |)))
             ]
           |)))
@@ -8430,14 +7313,14 @@ Module ub_checks.
       end.
     
     Global Instance Instance_IsFunction_compiletime :
-      M.IsFunction.C "core::ub_checks::maybe_is_aligned_and_not_null::compiletime" compiletime.
+      M.IsFunction.C "core::ub_checks::maybe_is_aligned::compiletime" compiletime.
     Admitted.
     Global Typeclasses Opaque compiletime.
-  End maybe_is_aligned_and_not_null.
+  End maybe_is_aligned.
   
   Module maybe_is_nonoverlapping.
     (*
-            fn runtime($($arg: $ty),* ) $( -> $ret )? {
+            fn runtime$(<$($binders)*>)?($($arg: $ty),* ) $( -> $ret )? {
                 $runtime
             }
     *)
@@ -8534,7 +7417,7 @@ Module ub_checks.
     Global Typeclasses Opaque runtime.
     
     (*
-            const fn compiletime($($arg: $ty),* ) $( -> $ret )? {
+            const fn compiletime$(<$($binders)*>)?($($arg: $ty),* ) $( -> $ret )? {
                 // Don't warn if one of the arguments is unused.
                 $(let _ = $arg;)*
     
@@ -8588,12 +7471,264 @@ Module ub_checks.
   End maybe_is_nonoverlapping.
 End ub_checks.
 
+Module cell.
+  Module panic_already_borrowed.
+    Module do_panic.
+      (*
+              fn runtime$(<$($binders)*>)?($($arg: $ty),* ) $( -> $ret )? {
+                  $runtime
+              }
+      *)
+      Definition runtime (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ err ] =>
+          ltac:(M.monadic
+            (let err := M.alloc (| Ty.path "core::cell::BorrowMutError", err |) in
+            M.call_closure (|
+              Ty.path "never",
+              M.get_function (| "core::panicking::panic_fmt", [], [] |),
+              [
+                M.read (|
+                  let~ args :
+                      Ty.tuple
+                        [ Ty.apply (Ty.path "&") [] [ Ty.path "core::cell::BorrowMutError" ] ] :=
+                    Value.Tuple [ M.borrow (| Pointer.Kind.Ref, err |) ] in
+                  let~ args :
+                      Ty.apply
+                        (Ty.path "array")
+                        [ Value.Integer IntegerKind.Usize 1 ]
+                        [ Ty.path "core::fmt::rt::Argument" ] :=
+                    Value.Array
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::rt::Argument",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::rt::Argument",
+                            "new_display",
+                            [],
+                            [ Ty.path "core::cell::BorrowMutError" ]
+                          |),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| M.read (| M.SubPointer.get_tuple_field (| args, 0 |) |) |)
+                            |)
+                          ]
+                        |)
+                      ] in
+                  M.alloc (|
+                    Ty.path "core::fmt::Arguments",
+                    M.call_closure (|
+                      Ty.path "core::fmt::Arguments",
+                      M.get_associated_function (|
+                        Ty.path "core::fmt::Arguments",
+                        "new",
+                        [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 1 ],
+                        []
+                      |),
+                      [
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| M.read (| UnsupportedLiteral |) |)
+                        |);
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
+                        |)
+                      ]
+                    |)
+                  |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance Instance_IsFunction_runtime :
+        M.IsFunction.C "core::cell::panic_already_borrowed::do_panic::runtime" runtime.
+      Admitted.
+      Global Typeclasses Opaque runtime.
+      
+      (*
+              const fn compiletime$(<$($binders)*>)?($($arg: $ty),* ) $( -> $ret )? {
+                  // Don't warn if one of the arguments is unused.
+                  $(let _ = $arg;)*
+      
+                  $compiletime
+              }
+      *)
+      Definition compiletime (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ err ] =>
+          ltac:(M.monadic
+            (let err := M.alloc (| Ty.path "core::cell::BorrowMutError", err |) in
+            M.match_operator (|
+              Ty.path "never",
+              err,
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "RefCell already borrowed" |) ]
+                        |)
+                      ]
+                    |)))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance Instance_IsFunction_compiletime :
+        M.IsFunction.C "core::cell::panic_already_borrowed::do_panic::compiletime" compiletime.
+      Admitted.
+      Global Typeclasses Opaque compiletime.
+    End do_panic.
+  End panic_already_borrowed.
+  
+  Module panic_already_mutably_borrowed.
+    Module do_panic.
+      (*
+              fn runtime$(<$($binders)*>)?($($arg: $ty),* ) $( -> $ret )? {
+                  $runtime
+              }
+      *)
+      Definition runtime (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ err ] =>
+          ltac:(M.monadic
+            (let err := M.alloc (| Ty.path "core::cell::BorrowError", err |) in
+            M.call_closure (|
+              Ty.path "never",
+              M.get_function (| "core::panicking::panic_fmt", [], [] |),
+              [
+                M.read (|
+                  let~ args :
+                      Ty.tuple
+                        [ Ty.apply (Ty.path "&") [] [ Ty.path "core::cell::BorrowError" ] ] :=
+                    Value.Tuple [ M.borrow (| Pointer.Kind.Ref, err |) ] in
+                  let~ args :
+                      Ty.apply
+                        (Ty.path "array")
+                        [ Value.Integer IntegerKind.Usize 1 ]
+                        [ Ty.path "core::fmt::rt::Argument" ] :=
+                    Value.Array
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::rt::Argument",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::rt::Argument",
+                            "new_display",
+                            [],
+                            [ Ty.path "core::cell::BorrowError" ]
+                          |),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| M.read (| M.SubPointer.get_tuple_field (| args, 0 |) |) |)
+                            |)
+                          ]
+                        |)
+                      ] in
+                  M.alloc (|
+                    Ty.path "core::fmt::Arguments",
+                    M.call_closure (|
+                      Ty.path "core::fmt::Arguments",
+                      M.get_associated_function (|
+                        Ty.path "core::fmt::Arguments",
+                        "new",
+                        [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 1 ],
+                        []
+                      |),
+                      [
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| M.read (| UnsupportedLiteral |) |)
+                        |);
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
+                        |)
+                      ]
+                    |)
+                  |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance Instance_IsFunction_runtime :
+        M.IsFunction.C "core::cell::panic_already_mutably_borrowed::do_panic::runtime" runtime.
+      Admitted.
+      Global Typeclasses Opaque runtime.
+      
+      (*
+              const fn compiletime$(<$($binders)*>)?($($arg: $ty),* ) $( -> $ret )? {
+                  // Don't warn if one of the arguments is unused.
+                  $(let _ = $arg;)*
+      
+                  $compiletime
+              }
+      *)
+      Definition compiletime (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ err ] =>
+          ltac:(M.monadic
+            (let err := M.alloc (| Ty.path "core::cell::BorrowError", err |) in
+            M.match_operator (|
+              Ty.path "never",
+              err,
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (M.call_closure (|
+                      Ty.path "never",
+                      M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "from_str",
+                            [],
+                            []
+                          |),
+                          [ mk_str (| "RefCell already mutably borrowed" |) ]
+                        |)
+                      ]
+                    |)))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance Instance_IsFunction_compiletime :
+        M.IsFunction.C
+          "core::cell::panic_already_mutably_borrowed::do_panic::compiletime"
+          compiletime.
+      Admitted.
+      Global Typeclasses Opaque compiletime.
+    End do_panic.
+  End panic_already_mutably_borrowed.
+End cell.
+
 Module char.
   Module methods.
     Module encode_utf8_raw.
       Module do_panic.
         (*
-                fn runtime($($arg: $ty),* ) $( -> $ret )? {
+                fn runtime$(<$($binders)*>)?($($arg: $ty),* ) $( -> $ret )? {
                     $runtime
                 }
         *)
@@ -8608,286 +7743,101 @@ Module char.
                 Ty.path "never",
                 M.get_function (| "core::panicking::panic_fmt", [], [] |),
                 [
-                  M.call_closure (|
-                    Ty.path "core::fmt::Arguments",
-                    M.get_associated_function (|
-                      Ty.path "core::fmt::Arguments",
-                      "new_v1_formatted",
-                      [],
-                      []
-                    |),
-                    [
-                      M.call_closure (|
-                        Ty.apply
-                          (Ty.path "&")
-                          []
+                  M.read (|
+                    let~ args :
+                        Ty.tuple
                           [
-                            Ty.apply
-                              (Ty.path "slice")
-                              []
-                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                          ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "array")
-                                [ Value.Integer IntegerKind.Usize 3 ]
-                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                            ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "slice")
-                                []
-                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                            ]),
+                            Ty.apply (Ty.path "&") [] [ Ty.path "usize" ];
+                            Ty.apply (Ty.path "&") [] [ Ty.path "u32" ];
+                            Ty.apply (Ty.path "&") [] [ Ty.path "usize" ]
+                          ] :=
+                      Value.Tuple
                         [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.alloc (|
-                                  Ty.apply
-                                    (Ty.path "array")
-                                    [ Value.Integer IntegerKind.Usize 3 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array
-                                    [
-                                      mk_str (| "encode_utf8: need " |);
-                                      mk_str (| " bytes to encode U+" |);
-                                      mk_str (| " but buffer has just " |)
-                                    ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
-                      |);
-                      M.call_closure (|
+                          M.borrow (| Pointer.Kind.Ref, len |);
+                          M.borrow (| Pointer.Kind.Ref, code |);
+                          M.borrow (| Pointer.Kind.Ref, dst_len |)
+                        ] in
+                    let~ args :
                         Ty.apply
-                          (Ty.path "&")
-                          []
-                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "core::fmt::rt::Argument" ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "array")
-                                [ Value.Integer IntegerKind.Usize 3 ]
-                                [ Ty.path "core::fmt::rt::Argument" ]
-                            ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "core::fmt::rt::Argument" ]
-                            ]),
+                          (Ty.path "array")
+                          [ Value.Integer IntegerKind.Usize 3 ]
+                          [ Ty.path "core::fmt::rt::Argument" ] :=
+                      Value.Array
                         [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
+                          M.call_closure (|
+                            Ty.path "core::fmt::rt::Argument",
+                            M.get_associated_function (|
+                              Ty.path "core::fmt::rt::Argument",
+                              "new_display",
+                              [],
+                              [ Ty.path "usize" ]
+                            |),
+                            [
                               M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
-                                  Ty.apply
-                                    (Ty.path "array")
-                                    [ Value.Integer IntegerKind.Usize 3 ]
-                                    [ Ty.path "core::fmt::rt::Argument" ],
-                                  Value.Array
-                                    [
-                                      M.call_closure (|
-                                        Ty.path "core::fmt::rt::Argument",
-                                        M.get_associated_function (|
-                                          Ty.path "core::fmt::rt::Argument",
-                                          "new_display",
-                                          [],
-                                          [ Ty.path "usize" ]
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.borrow (| Pointer.Kind.Ref, len |) |)
-                                          |)
-                                        ]
-                                      |);
-                                      M.call_closure (|
-                                        Ty.path "core::fmt::rt::Argument",
-                                        M.get_associated_function (|
-                                          Ty.path "core::fmt::rt::Argument",
-                                          "new_upper_hex",
-                                          [],
-                                          [ Ty.path "u32" ]
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.borrow (| Pointer.Kind.Ref, code |) |)
-                                          |)
-                                        ]
-                                      |);
-                                      M.call_closure (|
-                                        Ty.path "core::fmt::rt::Argument",
-                                        M.get_associated_function (|
-                                          Ty.path "core::fmt::rt::Argument",
-                                          "new_display",
-                                          [],
-                                          [ Ty.path "usize" ]
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.borrow (| Pointer.Kind.Ref, dst_len |) |)
-                                          |)
-                                        ]
-                                      |)
-                                    ]
+                                M.deref (|
+                                  M.read (| M.SubPointer.get_tuple_field (| args, 0 |) |)
                                 |)
                               |)
-                            |)
-                          |)
-                        ]
-                      |);
-                      M.call_closure (|
-                        Ty.apply
-                          (Ty.path "&")
-                          []
-                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "core::fmt::rt::Placeholder" ]
-                          ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
+                            ]
+                          |);
+                          M.call_closure (|
+                            Ty.path "core::fmt::rt::Argument",
+                            M.get_associated_function (|
+                              Ty.path "core::fmt::rt::Argument",
+                              "new_upper_hex",
+                              [],
+                              [ Ty.path "u32" ]
+                            |),
                             [
-                              Ty.apply
-                                (Ty.path "array")
-                                [ Value.Integer IntegerKind.Usize 3 ]
-                                [ Ty.path "core::fmt::rt::Placeholder" ]
-                            ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "core::fmt::rt::Placeholder" ]
-                            ]),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
                               M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
-                                  Ty.apply
-                                    (Ty.path "array")
-                                    [ Value.Integer IntegerKind.Usize 3 ]
-                                    [ Ty.path "core::fmt::rt::Placeholder" ],
-                                  Value.Array
-                                    [
-                                      M.call_closure (|
-                                        Ty.path "core::fmt::rt::Placeholder",
-                                        M.get_associated_function (|
-                                          Ty.path "core::fmt::rt::Placeholder",
-                                          "new",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          Value.Integer IntegerKind.Usize 0;
-                                          Value.UnicodeChar 32;
-                                          Value.StructTuple
-                                            "core::fmt::rt::Alignment::Unknown"
-                                            []
-                                            []
-                                            [];
-                                          Value.Integer IntegerKind.U32 0;
-                                          Value.StructTuple
-                                            "core::fmt::rt::Count::Implied"
-                                            []
-                                            []
-                                            [];
-                                          Value.StructTuple "core::fmt::rt::Count::Implied" [] [] []
-                                        ]
-                                      |);
-                                      M.call_closure (|
-                                        Ty.path "core::fmt::rt::Placeholder",
-                                        M.get_associated_function (|
-                                          Ty.path "core::fmt::rt::Placeholder",
-                                          "new",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          Value.Integer IntegerKind.Usize 1;
-                                          Value.UnicodeChar 32;
-                                          Value.StructTuple
-                                            "core::fmt::rt::Alignment::Unknown"
-                                            []
-                                            []
-                                            [];
-                                          Value.Integer IntegerKind.U32 8;
-                                          Value.StructTuple
-                                            "core::fmt::rt::Count::Implied"
-                                            []
-                                            []
-                                            [];
-                                          Value.StructTuple
-                                            "core::fmt::rt::Count::Is"
-                                            []
-                                            []
-                                            [ Value.Integer IntegerKind.Usize 4 ]
-                                        ]
-                                      |);
-                                      M.call_closure (|
-                                        Ty.path "core::fmt::rt::Placeholder",
-                                        M.get_associated_function (|
-                                          Ty.path "core::fmt::rt::Placeholder",
-                                          "new",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          Value.Integer IntegerKind.Usize 2;
-                                          Value.UnicodeChar 32;
-                                          Value.StructTuple
-                                            "core::fmt::rt::Alignment::Unknown"
-                                            []
-                                            []
-                                            [];
-                                          Value.Integer IntegerKind.U32 0;
-                                          Value.StructTuple
-                                            "core::fmt::rt::Count::Implied"
-                                            []
-                                            []
-                                            [];
-                                          Value.StructTuple "core::fmt::rt::Count::Implied" [] [] []
-                                        ]
-                                      |)
-                                    ]
+                                M.deref (|
+                                  M.read (| M.SubPointer.get_tuple_field (| args, 1 |) |)
                                 |)
                               |)
-                            |)
+                            ]
+                          |);
+                          M.call_closure (|
+                            Ty.path "core::fmt::rt::Argument",
+                            M.get_associated_function (|
+                              Ty.path "core::fmt::rt::Argument",
+                              "new_display",
+                              [],
+                              [ Ty.path "usize" ]
+                            |),
+                            [
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (|
+                                  M.read (| M.SubPointer.get_tuple_field (| args, 2 |) |)
+                                |)
+                              |)
+                            ]
                           |)
-                        ]
-                      |);
+                        ] in
+                    M.alloc (|
+                      Ty.path "core::fmt::Arguments",
                       M.call_closure (|
-                        Ty.path "core::fmt::rt::UnsafeArg",
+                        Ty.path "core::fmt::Arguments",
                         M.get_associated_function (|
-                          Ty.path "core::fmt::rt::UnsafeArg",
+                          Ty.path "core::fmt::Arguments",
                           "new",
-                          [],
+                          [ Value.Integer IntegerKind.Usize 71; Value.Integer IntegerKind.Usize 3 ],
                           []
                         |),
-                        []
+                        [
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (| M.read (| UnsupportedLiteral |) |)
+                          |);
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
+                          |)
+                        ]
                       |)
-                    ]
+                    |)
                   |)
                 ]
               |)))
@@ -8900,7 +7850,7 @@ Module char.
         Global Typeclasses Opaque runtime.
         
         (*
-                const fn compiletime($($arg: $ty),* ) $( -> $ret )? {
+                const fn compiletime$(<$($binders)*>)?($($arg: $ty),* ) $( -> $ret )? {
                     // Don't warn if one of the arguments is unused.
                     $(let _ = $arg;)*
         
@@ -8940,35 +7890,13 @@ Module char.
                                             Ty.path "core::fmt::Arguments",
                                             M.get_associated_function (|
                                               Ty.path "core::fmt::Arguments",
-                                              "new_const",
-                                              [ Value.Integer IntegerKind.Usize 1 ],
+                                              "from_str",
+                                              [],
                                               []
                                             |),
                                             [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (|
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.alloc (|
-                                                      Ty.apply
-                                                        (Ty.path "array")
-                                                        [ Value.Integer IntegerKind.Usize 1 ]
-                                                        [
-                                                          Ty.apply
-                                                            (Ty.path "&")
-                                                            []
-                                                            [ Ty.path "str" ]
-                                                        ],
-                                                      Value.Array
-                                                        [
-                                                          mk_str (|
-                                                            "encode_utf8: buffer does not have enough bytes to encode code point"
-                                                          |)
-                                                        ]
-                                                    |)
-                                                  |)
-                                                |)
+                                              mk_str (|
+                                                "encode_utf8: buffer does not have enough bytes to encode code point"
                                               |)
                                             ]
                                           |)
@@ -8993,7 +7921,7 @@ Module char.
     Module encode_utf16_raw.
       Module do_panic.
         (*
-                fn runtime($($arg: $ty),* ) $( -> $ret )? {
+                fn runtime$(<$($binders)*>)?($($arg: $ty),* ) $( -> $ret )? {
                     $runtime
                 }
         *)
@@ -9008,286 +7936,101 @@ Module char.
                 Ty.path "never",
                 M.get_function (| "core::panicking::panic_fmt", [], [] |),
                 [
-                  M.call_closure (|
-                    Ty.path "core::fmt::Arguments",
-                    M.get_associated_function (|
-                      Ty.path "core::fmt::Arguments",
-                      "new_v1_formatted",
-                      [],
-                      []
-                    |),
-                    [
-                      M.call_closure (|
-                        Ty.apply
-                          (Ty.path "&")
-                          []
+                  M.read (|
+                    let~ args :
+                        Ty.tuple
                           [
-                            Ty.apply
-                              (Ty.path "slice")
-                              []
-                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                          ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "array")
-                                [ Value.Integer IntegerKind.Usize 3 ]
-                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                            ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "slice")
-                                []
-                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                            ]),
+                            Ty.apply (Ty.path "&") [] [ Ty.path "usize" ];
+                            Ty.apply (Ty.path "&") [] [ Ty.path "u32" ];
+                            Ty.apply (Ty.path "&") [] [ Ty.path "usize" ]
+                          ] :=
+                      Value.Tuple
                         [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.alloc (|
-                                  Ty.apply
-                                    (Ty.path "array")
-                                    [ Value.Integer IntegerKind.Usize 3 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array
-                                    [
-                                      mk_str (| "encode_utf16: need " |);
-                                      mk_str (| " bytes to encode U+" |);
-                                      mk_str (| " but buffer has just " |)
-                                    ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
-                      |);
-                      M.call_closure (|
+                          M.borrow (| Pointer.Kind.Ref, len |);
+                          M.borrow (| Pointer.Kind.Ref, code |);
+                          M.borrow (| Pointer.Kind.Ref, dst_len |)
+                        ] in
+                    let~ args :
                         Ty.apply
-                          (Ty.path "&")
-                          []
-                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "core::fmt::rt::Argument" ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "array")
-                                [ Value.Integer IntegerKind.Usize 3 ]
-                                [ Ty.path "core::fmt::rt::Argument" ]
-                            ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "core::fmt::rt::Argument" ]
-                            ]),
+                          (Ty.path "array")
+                          [ Value.Integer IntegerKind.Usize 3 ]
+                          [ Ty.path "core::fmt::rt::Argument" ] :=
+                      Value.Array
                         [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
+                          M.call_closure (|
+                            Ty.path "core::fmt::rt::Argument",
+                            M.get_associated_function (|
+                              Ty.path "core::fmt::rt::Argument",
+                              "new_display",
+                              [],
+                              [ Ty.path "usize" ]
+                            |),
+                            [
                               M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
-                                  Ty.apply
-                                    (Ty.path "array")
-                                    [ Value.Integer IntegerKind.Usize 3 ]
-                                    [ Ty.path "core::fmt::rt::Argument" ],
-                                  Value.Array
-                                    [
-                                      M.call_closure (|
-                                        Ty.path "core::fmt::rt::Argument",
-                                        M.get_associated_function (|
-                                          Ty.path "core::fmt::rt::Argument",
-                                          "new_display",
-                                          [],
-                                          [ Ty.path "usize" ]
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.borrow (| Pointer.Kind.Ref, len |) |)
-                                          |)
-                                        ]
-                                      |);
-                                      M.call_closure (|
-                                        Ty.path "core::fmt::rt::Argument",
-                                        M.get_associated_function (|
-                                          Ty.path "core::fmt::rt::Argument",
-                                          "new_upper_hex",
-                                          [],
-                                          [ Ty.path "u32" ]
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.borrow (| Pointer.Kind.Ref, code |) |)
-                                          |)
-                                        ]
-                                      |);
-                                      M.call_closure (|
-                                        Ty.path "core::fmt::rt::Argument",
-                                        M.get_associated_function (|
-                                          Ty.path "core::fmt::rt::Argument",
-                                          "new_display",
-                                          [],
-                                          [ Ty.path "usize" ]
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.borrow (| Pointer.Kind.Ref, dst_len |) |)
-                                          |)
-                                        ]
-                                      |)
-                                    ]
+                                M.deref (|
+                                  M.read (| M.SubPointer.get_tuple_field (| args, 0 |) |)
                                 |)
                               |)
-                            |)
-                          |)
-                        ]
-                      |);
-                      M.call_closure (|
-                        Ty.apply
-                          (Ty.path "&")
-                          []
-                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "core::fmt::rt::Placeholder" ]
-                          ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
+                            ]
+                          |);
+                          M.call_closure (|
+                            Ty.path "core::fmt::rt::Argument",
+                            M.get_associated_function (|
+                              Ty.path "core::fmt::rt::Argument",
+                              "new_upper_hex",
+                              [],
+                              [ Ty.path "u32" ]
+                            |),
                             [
-                              Ty.apply
-                                (Ty.path "array")
-                                [ Value.Integer IntegerKind.Usize 3 ]
-                                [ Ty.path "core::fmt::rt::Placeholder" ]
-                            ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "core::fmt::rt::Placeholder" ]
-                            ]),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
                               M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
-                                  Ty.apply
-                                    (Ty.path "array")
-                                    [ Value.Integer IntegerKind.Usize 3 ]
-                                    [ Ty.path "core::fmt::rt::Placeholder" ],
-                                  Value.Array
-                                    [
-                                      M.call_closure (|
-                                        Ty.path "core::fmt::rt::Placeholder",
-                                        M.get_associated_function (|
-                                          Ty.path "core::fmt::rt::Placeholder",
-                                          "new",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          Value.Integer IntegerKind.Usize 0;
-                                          Value.UnicodeChar 32;
-                                          Value.StructTuple
-                                            "core::fmt::rt::Alignment::Unknown"
-                                            []
-                                            []
-                                            [];
-                                          Value.Integer IntegerKind.U32 0;
-                                          Value.StructTuple
-                                            "core::fmt::rt::Count::Implied"
-                                            []
-                                            []
-                                            [];
-                                          Value.StructTuple "core::fmt::rt::Count::Implied" [] [] []
-                                        ]
-                                      |);
-                                      M.call_closure (|
-                                        Ty.path "core::fmt::rt::Placeholder",
-                                        M.get_associated_function (|
-                                          Ty.path "core::fmt::rt::Placeholder",
-                                          "new",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          Value.Integer IntegerKind.Usize 1;
-                                          Value.UnicodeChar 32;
-                                          Value.StructTuple
-                                            "core::fmt::rt::Alignment::Unknown"
-                                            []
-                                            []
-                                            [];
-                                          Value.Integer IntegerKind.U32 8;
-                                          Value.StructTuple
-                                            "core::fmt::rt::Count::Implied"
-                                            []
-                                            []
-                                            [];
-                                          Value.StructTuple
-                                            "core::fmt::rt::Count::Is"
-                                            []
-                                            []
-                                            [ Value.Integer IntegerKind.Usize 4 ]
-                                        ]
-                                      |);
-                                      M.call_closure (|
-                                        Ty.path "core::fmt::rt::Placeholder",
-                                        M.get_associated_function (|
-                                          Ty.path "core::fmt::rt::Placeholder",
-                                          "new",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          Value.Integer IntegerKind.Usize 2;
-                                          Value.UnicodeChar 32;
-                                          Value.StructTuple
-                                            "core::fmt::rt::Alignment::Unknown"
-                                            []
-                                            []
-                                            [];
-                                          Value.Integer IntegerKind.U32 0;
-                                          Value.StructTuple
-                                            "core::fmt::rt::Count::Implied"
-                                            []
-                                            []
-                                            [];
-                                          Value.StructTuple "core::fmt::rt::Count::Implied" [] [] []
-                                        ]
-                                      |)
-                                    ]
+                                M.deref (|
+                                  M.read (| M.SubPointer.get_tuple_field (| args, 1 |) |)
                                 |)
                               |)
-                            |)
+                            ]
+                          |);
+                          M.call_closure (|
+                            Ty.path "core::fmt::rt::Argument",
+                            M.get_associated_function (|
+                              Ty.path "core::fmt::rt::Argument",
+                              "new_display",
+                              [],
+                              [ Ty.path "usize" ]
+                            |),
+                            [
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (|
+                                  M.read (| M.SubPointer.get_tuple_field (| args, 2 |) |)
+                                |)
+                              |)
+                            ]
                           |)
-                        ]
-                      |);
+                        ] in
+                    M.alloc (|
+                      Ty.path "core::fmt::Arguments",
                       M.call_closure (|
-                        Ty.path "core::fmt::rt::UnsafeArg",
+                        Ty.path "core::fmt::Arguments",
                         M.get_associated_function (|
-                          Ty.path "core::fmt::rt::UnsafeArg",
+                          Ty.path "core::fmt::Arguments",
                           "new",
-                          [],
+                          [ Value.Integer IntegerKind.Usize 72; Value.Integer IntegerKind.Usize 3 ],
                           []
                         |),
-                        []
+                        [
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (| M.read (| UnsupportedLiteral |) |)
+                          |);
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
+                          |)
+                        ]
                       |)
-                    ]
+                    |)
                   |)
                 ]
               |)))
@@ -9300,7 +8043,7 @@ Module char.
         Global Typeclasses Opaque runtime.
         
         (*
-                const fn compiletime($($arg: $ty),* ) $( -> $ret )? {
+                const fn compiletime$(<$($binders)*>)?($($arg: $ty),* ) $( -> $ret )? {
                     // Don't warn if one of the arguments is unused.
                     $(let _ = $arg;)*
         
@@ -9340,35 +8083,13 @@ Module char.
                                             Ty.path "core::fmt::Arguments",
                                             M.get_associated_function (|
                                               Ty.path "core::fmt::Arguments",
-                                              "new_const",
-                                              [ Value.Integer IntegerKind.Usize 1 ],
+                                              "from_str",
+                                              [],
                                               []
                                             |),
                                             [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (|
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.alloc (|
-                                                      Ty.apply
-                                                        (Ty.path "array")
-                                                        [ Value.Integer IntegerKind.Usize 1 ]
-                                                        [
-                                                          Ty.apply
-                                                            (Ty.path "&")
-                                                            []
-                                                            [ Ty.path "str" ]
-                                                        ],
-                                                      Value.Array
-                                                        [
-                                                          mk_str (|
-                                                            "encode_utf16: buffer does not have enough bytes to encode code point"
-                                                          |)
-                                                        ]
-                                                    |)
-                                                  |)
-                                                |)
+                                              mk_str (|
+                                                "encode_utf16: buffer does not have enough bytes to encode code point"
                                               |)
                                             ]
                                           |)
@@ -9396,7 +8117,7 @@ Module ffi.
   Module c_str.
     Module strlen.
       (*
-              fn runtime($($arg: $ty),* ) $( -> $ret )? {
+              fn runtime$(<$($binders)*>)?($($arg: $ty),* ) $( -> $ret )? {
                   $runtime
               }
       *)
@@ -9419,7 +8140,7 @@ Module ffi.
       Global Typeclasses Opaque runtime.
       
       (*
-              const fn compiletime($($arg: $ty),* ) $( -> $ret )? {
+              const fn compiletime$(<$($binders)*>)?($($arg: $ty),* ) $( -> $ret )? {
                   // Don't warn if one of the arguments is unused.
                   $(let _ = $arg;)*
       
@@ -9453,37 +8174,36 @@ Module ffi.
                                     fun γ =>
                                       ltac:(M.monadic
                                         (let γ :=
-                                          M.use
-                                            (M.alloc (|
+                                          M.alloc (|
+                                            Ty.path "bool",
+                                            M.call_closure (|
                                               Ty.path "bool",
-                                              M.call_closure (|
-                                                Ty.path "bool",
-                                                BinOp.ne,
-                                                [
-                                                  M.read (|
-                                                    M.deref (|
-                                                      M.call_closure (|
+                                              BinOp.ne,
+                                              [
+                                                M.read (|
+                                                  M.deref (|
+                                                    M.call_closure (|
+                                                      Ty.apply
+                                                        (Ty.path "*const")
+                                                        []
+                                                        [ Ty.path "i8" ],
+                                                      M.get_associated_function (|
                                                         Ty.apply
                                                           (Ty.path "*const")
                                                           []
                                                           [ Ty.path "i8" ],
-                                                        M.get_associated_function (|
-                                                          Ty.apply
-                                                            (Ty.path "*const")
-                                                            []
-                                                            [ Ty.path "i8" ],
-                                                          "add",
-                                                          [],
-                                                          []
-                                                        |),
-                                                        [ M.read (| s |); M.read (| len |) ]
-                                                      |)
+                                                        "add",
+                                                        [],
+                                                        []
+                                                      |),
+                                                      [ M.read (| s |); M.read (| len |) ]
                                                     |)
-                                                  |);
-                                                  Value.Integer IntegerKind.I8 0
-                                                ]
-                                              |)
-                                            |)) in
+                                                  |)
+                                                |);
+                                                Value.Integer IntegerKind.I8 0
+                                              ]
+                                            |)
+                                          |) in
                                         let _ :=
                                           is_constant_or_break_match (|
                                             M.read (| γ |),
@@ -9535,7 +8255,7 @@ End ffi.
 Module panicking.
   Module panic_nounwind_fmt.
     (*
-            fn runtime($($arg: $ty),* ) $( -> $ret )? {
+            fn runtime$(<$($binders)*>)?($($arg: $ty),* ) $( -> $ret )? {
                 $runtime
             }
     *)
@@ -9553,7 +8273,7 @@ Module panicking.
                 [
                   fun γ =>
                     ltac:(M.monadic
-                      (let γ := M.use (M.alloc (| Ty.path "bool", Value.Bool false |)) in
+                      (let γ := M.alloc (| Ty.path "bool", Value.Bool false |) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       M.never_to_any (|
                         M.call_closure (|
@@ -9621,7 +8341,7 @@ Module panicking.
     Global Typeclasses Opaque runtime.
     
     (*
-            const fn compiletime($($arg: $ty),* ) $( -> $ret )? {
+            const fn compiletime$(<$($binders)*>)?($($arg: $ty),* ) $( -> $ret )? {
                 // Don't warn if one of the arguments is unused.
                 $(let _ = $arg;)*
     
@@ -9669,7 +8389,7 @@ Module slice.
   Module memchr.
     Module memchr_aligned.
       (*
-              fn runtime($($arg: $ty),* ) $( -> $ret )? {
+              fn runtime$(<$($binders)*>)?($($arg: $ty),* ) $( -> $ret )? {
                   $runtime
               }
       *)
@@ -9732,15 +8452,14 @@ Module slice.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
                                   Ty.path "bool",
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    BinOp.gt,
-                                    [ M.read (| offset |); Value.Integer IntegerKind.Usize 0 ]
-                                  |)
-                                |)) in
+                                  BinOp.gt,
+                                  [ M.read (| offset |); Value.Integer IntegerKind.Usize 0 ]
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.read (|
@@ -9881,37 +8600,36 @@ Module slice.
                                 fun γ =>
                                   ltac:(M.monadic
                                     (let γ :=
-                                      M.use
-                                        (M.alloc (|
+                                      M.alloc (|
+                                        Ty.path "bool",
+                                        M.call_closure (|
                                           Ty.path "bool",
-                                          M.call_closure (|
-                                            Ty.path "bool",
-                                            BinOp.le,
-                                            [
-                                              M.read (| offset |);
-                                              M.call_closure (|
-                                                Ty.path "usize",
-                                                BinOp.Wrap.sub,
-                                                [
-                                                  M.read (| len |);
-                                                  M.call_closure (|
-                                                    Ty.path "usize",
-                                                    BinOp.Wrap.mul,
-                                                    [
-                                                      Value.Integer IntegerKind.Usize 2;
-                                                      M.read (|
-                                                        get_constant (|
-                                                          "core::slice::memchr::USIZE_BYTES",
-                                                          Ty.path "usize"
-                                                        |)
+                                          BinOp.le,
+                                          [
+                                            M.read (| offset |);
+                                            M.call_closure (|
+                                              Ty.path "usize",
+                                              BinOp.Wrap.sub,
+                                              [
+                                                M.read (| len |);
+                                                M.call_closure (|
+                                                  Ty.path "usize",
+                                                  BinOp.Wrap.mul,
+                                                  [
+                                                    Value.Integer IntegerKind.Usize 2;
+                                                    M.read (|
+                                                      get_constant (|
+                                                        "core::slice::memchr::USIZE_BYTES",
+                                                        Ty.path "usize"
                                                       |)
-                                                    ]
-                                                  |)
-                                                ]
-                                              |)
-                                            ]
-                                          |)
-                                        |)) in
+                                                    |)
+                                                  ]
+                                                |)
+                                              ]
+                                            |)
+                                          ]
+                                        |)
+                                      |) in
                                     let _ :=
                                       is_constant_or_break_match (|
                                         M.read (| γ |),
@@ -10022,14 +8740,13 @@ Module slice.
                                                 fun γ =>
                                                   ltac:(M.monadic
                                                     (let γ :=
-                                                      M.use
-                                                        (M.alloc (|
-                                                          Ty.path "bool",
-                                                          LogicalOp.or (|
-                                                            M.read (| zu |),
-                                                            ltac:(M.monadic (M.read (| zv |)))
-                                                          |)
-                                                        |)) in
+                                                      M.alloc (|
+                                                        Ty.path "bool",
+                                                        LogicalOp.or (|
+                                                          M.read (| zu |),
+                                                          ltac:(M.monadic (M.read (| zv |)))
+                                                        |)
+                                                      |) in
                                                     let _ :=
                                                       is_constant_or_break_match (|
                                                         M.read (| γ |),
@@ -10196,7 +8913,7 @@ Module slice.
       Global Typeclasses Opaque runtime.
       
       (*
-              const fn compiletime($($arg: $ty),* ) $( -> $ret )? {
+              const fn compiletime$(<$($binders)*>)?($($arg: $ty),* ) $( -> $ret )? {
                   // Don't warn if one of the arguments is unused.
                   $(let _ = $arg;)*
       
@@ -10247,998 +8964,113 @@ Module slice.
     End memchr_aligned.
   End memchr.
   
-  Module ascii.
-    Module is_ascii.
-      (*
-              fn runtime($($arg: $ty),* ) $( -> $ret )? {
-                  $runtime
-              }
-      *)
-      Definition runtime (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [ s ] =>
-          ltac:(M.monadic
-            (let s :=
-              M.alloc (|
-                Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                s
-              |) in
-            M.catch_return (Ty.path "bool") (|
-              ltac:(M.monadic
-                (M.read (|
-                  let~ len : Ty.path "usize" :=
-                    M.call_closure (|
-                      Ty.path "usize",
-                      M.get_associated_function (|
-                        Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                        "len",
-                        [],
-                        []
-                      |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |) ]
-                    |) in
-                  let~ align_offset : Ty.path "usize" :=
-                    M.call_closure (|
-                      Ty.path "usize",
-                      M.get_associated_function (|
-                        Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                        "align_offset",
-                        [],
-                        []
-                      |),
-                      [
-                        M.call_closure (|
-                          Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                          M.get_associated_function (|
-                            Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                            "as_ptr",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |) ]
-                        |);
-                        M.read (|
-                          get_constant (|
-                            "core::slice::ascii::is_ascii::runtime::USIZE_SIZE",
-                            Ty.path "usize"
-                          |)
-                        |)
-                      ]
-                    |) in
-                  let~ _ : Ty.tuple [] :=
-                    M.match_operator (|
-                      Ty.tuple [],
-                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
-                      [
-                        fun γ =>
-                          ltac:(M.monadic
-                            (let γ :=
-                              M.use
-                                (M.alloc (|
-                                  Ty.path "bool",
-                                  LogicalOp.or (|
-                                    LogicalOp.or (|
-                                      M.call_closure (|
-                                        Ty.path "bool",
-                                        BinOp.lt,
-                                        [
-                                          M.read (| len |);
-                                          M.read (|
-                                            get_constant (|
-                                              "core::slice::ascii::is_ascii::runtime::USIZE_SIZE",
-                                              Ty.path "usize"
-                                            |)
-                                          |)
-                                        ]
-                                      |),
-                                      ltac:(M.monadic
-                                        (M.call_closure (|
-                                          Ty.path "bool",
-                                          BinOp.lt,
-                                          [ M.read (| len |); M.read (| align_offset |) ]
-                                        |)))
-                                    |),
-                                    ltac:(M.monadic
-                                      (M.call_closure (|
-                                        Ty.path "bool",
-                                        BinOp.lt,
-                                        [
-                                          M.read (|
-                                            get_constant (|
-                                              "core::slice::ascii::is_ascii::runtime::USIZE_SIZE",
-                                              Ty.path "usize"
-                                            |)
-                                          |);
-                                          M.call_closure (|
-                                            Ty.path "usize",
-                                            M.get_function (|
-                                              "core::mem::align_of",
-                                              [],
-                                              [ Ty.path "usize" ]
-                                            |),
-                                            []
-                                          |)
-                                        ]
-                                      |)))
-                                  |)
-                                |)) in
-                            let _ :=
-                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                            M.never_to_any (|
-                              M.read (|
-                                M.return_ (|
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    M.get_function (|
-                                      "core::slice::ascii::is_ascii_simple",
-                                      [],
-                                      []
-                                    |),
-                                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |)
-                                    ]
-                                  |)
-                                |)
-                              |)
-                            |)));
-                        fun γ => ltac:(M.monadic (Value.Tuple []))
-                      ]
-                    |) in
-                  let~ offset_to_aligned : Ty.path "usize" :=
-                    M.match_operator (|
-                      Ty.path "usize",
-                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
-                      [
-                        fun γ =>
-                          ltac:(M.monadic
-                            (let γ :=
-                              M.use
-                                (M.alloc (|
-                                  Ty.path "bool",
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    BinOp.eq,
-                                    [ M.read (| align_offset |); Value.Integer IntegerKind.Usize 0 ]
-                                  |)
-                                |)) in
-                            let _ :=
-                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                            M.read (|
-                              get_constant (|
-                                "core::slice::ascii::is_ascii::runtime::USIZE_SIZE",
-                                Ty.path "usize"
-                              |)
-                            |)));
-                        fun γ => ltac:(M.monadic (M.read (| align_offset |)))
-                      ]
-                    |) in
-                  let~ start : Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ] :=
-                    M.call_closure (|
-                      Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                      M.get_associated_function (|
-                        Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                        "as_ptr",
-                        [],
-                        []
-                      |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |) ]
-                    |) in
-                  let~ first_word : Ty.path "usize" :=
-                    M.call_closure (|
-                      Ty.path "usize",
-                      M.get_associated_function (|
-                        Ty.apply (Ty.path "*const") [] [ Ty.path "usize" ],
-                        "read_unaligned",
-                        [],
-                        []
-                      |),
-                      [
-                        M.cast
-                          (Ty.apply (Ty.path "*const") [] [ Ty.path "usize" ])
-                          (M.read (| start |))
-                      ]
-                    |) in
-                  let~ _ : Ty.tuple [] :=
-                    M.match_operator (|
-                      Ty.tuple [],
-                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
-                      [
-                        fun γ =>
-                          ltac:(M.monadic
-                            (let γ :=
-                              M.use
-                                (M.alloc (|
-                                  Ty.path "bool",
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    M.get_function (|
-                                      "core::slice::ascii::contains_nonascii",
-                                      [],
-                                      []
-                                    |),
-                                    [ M.read (| first_word |) ]
-                                  |)
-                                |)) in
-                            let _ :=
-                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                            M.never_to_any (| M.read (| M.return_ (| Value.Bool false |) |) |)));
-                        fun γ => ltac:(M.monadic (Value.Tuple []))
-                      ]
-                    |) in
-                  let~ _ : Ty.tuple [] :=
-                    M.match_operator (|
-                      Ty.tuple [],
-                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
-                      [
-                        fun γ =>
-                          ltac:(M.monadic
-                            (let γ := M.use (M.alloc (| Ty.path "bool", Value.Bool true |)) in
-                            let _ :=
-                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                            M.read (|
-                              let~ _ : Ty.tuple [] :=
-                                M.match_operator (|
-                                  Ty.tuple [],
-                                  M.alloc (| Ty.tuple [], Value.Tuple [] |),
-                                  [
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let γ :=
-                                          M.use
-                                            (M.alloc (|
-                                              Ty.path "bool",
-                                              M.call_closure (|
-                                                Ty.path "bool",
-                                                UnOp.not,
-                                                [
-                                                  M.call_closure (|
-                                                    Ty.path "bool",
-                                                    BinOp.le,
-                                                    [
-                                                      M.read (| offset_to_aligned |);
-                                                      M.read (| len |)
-                                                    ]
-                                                  |)
-                                                ]
-                                              |)
-                                            |)) in
-                                        let _ :=
-                                          is_constant_or_break_match (|
-                                            M.read (| γ |),
-                                            Value.Bool true
-                                          |) in
-                                        M.never_to_any (|
-                                          M.call_closure (|
-                                            Ty.path "never",
-                                            M.get_function (| "core::panicking::panic", [], [] |),
-                                            [
-                                              mk_str (|
-                                                "assertion failed: offset_to_aligned <= len"
-                                              |)
-                                            ]
-                                          |)
-                                        |)));
-                                    fun γ => ltac:(M.monadic (Value.Tuple []))
-                                  ]
-                                |) in
-                              M.alloc (| Ty.tuple [], Value.Tuple [] |)
-                            |)));
-                        fun γ => ltac:(M.monadic (Value.Tuple []))
-                      ]
-                    |) in
-                  let~ word_ptr : Ty.apply (Ty.path "*const") [] [ Ty.path "usize" ] :=
-                    M.cast
-                      (Ty.apply (Ty.path "*const") [] [ Ty.path "usize" ])
-                      (M.call_closure (|
-                        Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                        M.get_associated_function (|
-                          Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                          "add",
-                          [],
-                          []
-                        |),
-                        [ M.read (| start |); M.read (| offset_to_aligned |) ]
-                      |)) in
-                  let~ byte_pos : Ty.path "usize" := M.read (| offset_to_aligned |) in
-                  let~ _ : Ty.tuple [] :=
-                    M.match_operator (|
-                      Ty.tuple [],
-                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
-                      [
-                        fun γ =>
-                          ltac:(M.monadic
-                            (let γ := M.use (M.alloc (| Ty.path "bool", Value.Bool true |)) in
-                            let _ :=
-                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                            M.read (|
-                              let~ _ : Ty.tuple [] :=
-                                M.match_operator (|
-                                  Ty.tuple [],
-                                  M.alloc (| Ty.tuple [], Value.Tuple [] |),
-                                  [
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let γ :=
-                                          M.use
-                                            (M.alloc (|
-                                              Ty.path "bool",
-                                              M.call_closure (|
-                                                Ty.path "bool",
-                                                UnOp.not,
-                                                [
-                                                  M.call_closure (|
-                                                    Ty.path "bool",
-                                                    M.get_associated_function (|
-                                                      Ty.apply
-                                                        (Ty.path "*const")
-                                                        []
-                                                        [ Ty.path "usize" ],
-                                                      "is_aligned_to",
-                                                      [],
-                                                      []
-                                                    |),
-                                                    [
-                                                      M.read (| word_ptr |);
-                                                      M.call_closure (|
-                                                        Ty.path "usize",
-                                                        M.get_function (|
-                                                          "core::mem::align_of",
-                                                          [],
-                                                          [ Ty.path "usize" ]
-                                                        |),
-                                                        []
-                                                      |)
-                                                    ]
-                                                  |)
-                                                ]
-                                              |)
-                                            |)) in
-                                        let _ :=
-                                          is_constant_or_break_match (|
-                                            M.read (| γ |),
-                                            Value.Bool true
-                                          |) in
-                                        M.never_to_any (|
-                                          M.call_closure (|
-                                            Ty.path "never",
-                                            M.get_function (| "core::panicking::panic", [], [] |),
-                                            [
-                                              mk_str (|
-                                                "assertion failed: word_ptr.is_aligned_to(mem::align_of::<usize>())"
-                                              |)
-                                            ]
-                                          |)
-                                        |)));
-                                    fun γ => ltac:(M.monadic (Value.Tuple []))
-                                  ]
-                                |) in
-                              M.alloc (| Ty.tuple [], Value.Tuple [] |)
-                            |)));
-                        fun γ => ltac:(M.monadic (Value.Tuple []))
-                      ]
-                    |) in
-                  let~ _ : Ty.tuple [] :=
-                    M.read (|
-                      M.loop (|
-                        Ty.tuple [],
-                        ltac:(M.monadic
-                          (M.alloc (|
-                            Ty.tuple [],
-                            M.match_operator (|
-                              Ty.tuple [],
-                              M.alloc (| Ty.tuple [], Value.Tuple [] |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let γ :=
-                                      M.use
-                                        (M.alloc (|
-                                          Ty.path "bool",
-                                          M.call_closure (|
-                                            Ty.path "bool",
-                                            BinOp.lt,
-                                            [
-                                              M.read (| byte_pos |);
-                                              M.call_closure (|
-                                                Ty.path "usize",
-                                                BinOp.Wrap.sub,
-                                                [
-                                                  M.read (| len |);
-                                                  M.read (|
-                                                    get_constant (|
-                                                      "core::slice::ascii::is_ascii::runtime::USIZE_SIZE",
-                                                      Ty.path "usize"
-                                                    |)
-                                                  |)
-                                                ]
-                                              |)
-                                            ]
-                                          |)
-                                        |)) in
-                                    let _ :=
-                                      is_constant_or_break_match (|
-                                        M.read (| γ |),
-                                        Value.Bool true
-                                      |) in
-                                    M.read (|
-                                      let~ _ : Ty.tuple [] :=
-                                        M.match_operator (|
-                                          Ty.tuple [],
-                                          M.alloc (| Ty.tuple [], Value.Tuple [] |),
-                                          [
-                                            fun γ =>
-                                              ltac:(M.monadic
-                                                (let γ :=
-                                                  M.use
-                                                    (M.alloc (|
-                                                      Ty.path "bool",
-                                                      Value.Bool true
-                                                    |)) in
-                                                let _ :=
-                                                  is_constant_or_break_match (|
-                                                    M.read (| γ |),
-                                                    Value.Bool true
-                                                  |) in
-                                                M.read (|
-                                                  let~ _ : Ty.tuple [] :=
-                                                    M.match_operator (|
-                                                      Ty.tuple [],
-                                                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
-                                                      [
-                                                        fun γ =>
-                                                          ltac:(M.monadic
-                                                            (let γ :=
-                                                              M.use
-                                                                (M.alloc (|
-                                                                  Ty.path "bool",
-                                                                  M.call_closure (|
-                                                                    Ty.path "bool",
-                                                                    UnOp.not,
-                                                                    [
-                                                                      M.call_closure (|
-                                                                        Ty.path "bool",
-                                                                        BinOp.le,
-                                                                        [
-                                                                          M.call_closure (|
-                                                                            Ty.path "usize",
-                                                                            BinOp.Wrap.add,
-                                                                            [
-                                                                              M.read (| byte_pos |);
-                                                                              M.read (|
-                                                                                get_constant (|
-                                                                                  "core::slice::ascii::is_ascii::runtime::USIZE_SIZE",
-                                                                                  Ty.path "usize"
-                                                                                |)
-                                                                              |)
-                                                                            ]
-                                                                          |);
-                                                                          M.read (| len |)
-                                                                        ]
-                                                                      |)
-                                                                    ]
-                                                                  |)
-                                                                |)) in
-                                                            let _ :=
-                                                              is_constant_or_break_match (|
-                                                                M.read (| γ |),
-                                                                Value.Bool true
-                                                              |) in
-                                                            M.never_to_any (|
-                                                              M.call_closure (|
-                                                                Ty.path "never",
-                                                                M.get_function (|
-                                                                  "core::panicking::panic",
-                                                                  [],
-                                                                  []
-                                                                |),
-                                                                [
-                                                                  mk_str (|
-                                                                    "assertion failed: byte_pos + USIZE_SIZE <= len"
-                                                                  |)
-                                                                ]
-                                                              |)
-                                                            |)));
-                                                        fun γ => ltac:(M.monadic (Value.Tuple []))
-                                                      ]
-                                                    |) in
-                                                  M.alloc (| Ty.tuple [], Value.Tuple [] |)
-                                                |)));
-                                            fun γ => ltac:(M.monadic (Value.Tuple []))
-                                          ]
-                                        |) in
-                                      let~ _ : Ty.tuple [] :=
-                                        M.match_operator (|
-                                          Ty.tuple [],
-                                          M.alloc (| Ty.tuple [], Value.Tuple [] |),
-                                          [
-                                            fun γ =>
-                                              ltac:(M.monadic
-                                                (let γ :=
-                                                  M.use
-                                                    (M.alloc (|
-                                                      Ty.path "bool",
-                                                      Value.Bool true
-                                                    |)) in
-                                                let _ :=
-                                                  is_constant_or_break_match (|
-                                                    M.read (| γ |),
-                                                    Value.Bool true
-                                                  |) in
-                                                M.read (|
-                                                  let~ _ : Ty.tuple [] :=
-                                                    M.match_operator (|
-                                                      Ty.tuple [],
-                                                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
-                                                      [
-                                                        fun γ =>
-                                                          ltac:(M.monadic
-                                                            (let γ :=
-                                                              M.use
-                                                                (M.alloc (|
-                                                                  Ty.path "bool",
-                                                                  M.call_closure (|
-                                                                    Ty.path "bool",
-                                                                    UnOp.not,
-                                                                    [
-                                                                      M.call_closure (|
-                                                                        Ty.path "bool",
-                                                                        BinOp.eq,
-                                                                        [
-                                                                          M.call_closure (|
-                                                                            Ty.apply
-                                                                              (Ty.path "*const")
-                                                                              []
-                                                                              [ Ty.path "u8" ],
-                                                                            M.get_associated_function (|
-                                                                              Ty.apply
-                                                                                (Ty.path "*const")
-                                                                                []
-                                                                                [ Ty.path "usize" ],
-                                                                              "cast",
-                                                                              [],
-                                                                              [ Ty.path "u8" ]
-                                                                            |),
-                                                                            [ M.read (| word_ptr |)
-                                                                            ]
-                                                                          |);
-                                                                          M.call_closure (|
-                                                                            Ty.apply
-                                                                              (Ty.path "*const")
-                                                                              []
-                                                                              [ Ty.path "u8" ],
-                                                                            M.get_associated_function (|
-                                                                              Ty.apply
-                                                                                (Ty.path "*const")
-                                                                                []
-                                                                                [ Ty.path "u8" ],
-                                                                              "wrapping_add",
-                                                                              [],
-                                                                              []
-                                                                            |),
-                                                                            [
-                                                                              M.read (| start |);
-                                                                              M.read (| byte_pos |)
-                                                                            ]
-                                                                          |)
-                                                                        ]
-                                                                      |)
-                                                                    ]
-                                                                  |)
-                                                                |)) in
-                                                            let _ :=
-                                                              is_constant_or_break_match (|
-                                                                M.read (| γ |),
-                                                                Value.Bool true
-                                                              |) in
-                                                            M.never_to_any (|
-                                                              M.call_closure (|
-                                                                Ty.path "never",
-                                                                M.get_function (|
-                                                                  "core::panicking::panic",
-                                                                  [],
-                                                                  []
-                                                                |),
-                                                                [
-                                                                  mk_str (|
-                                                                    "assertion failed: word_ptr.cast::<u8>() == start.wrapping_add(byte_pos)"
-                                                                  |)
-                                                                ]
-                                                              |)
-                                                            |)));
-                                                        fun γ => ltac:(M.monadic (Value.Tuple []))
-                                                      ]
-                                                    |) in
-                                                  M.alloc (| Ty.tuple [], Value.Tuple [] |)
-                                                |)));
-                                            fun γ => ltac:(M.monadic (Value.Tuple []))
-                                          ]
-                                        |) in
-                                      let~ word : Ty.path "usize" :=
-                                        M.call_closure (|
-                                          Ty.path "usize",
-                                          M.get_associated_function (|
-                                            Ty.apply (Ty.path "*const") [] [ Ty.path "usize" ],
-                                            "read",
-                                            [],
-                                            []
-                                          |),
-                                          [ M.read (| word_ptr |) ]
-                                        |) in
-                                      let~ _ : Ty.tuple [] :=
-                                        M.match_operator (|
-                                          Ty.tuple [],
-                                          M.alloc (| Ty.tuple [], Value.Tuple [] |),
-                                          [
-                                            fun γ =>
-                                              ltac:(M.monadic
-                                                (let γ :=
-                                                  M.use
-                                                    (M.alloc (|
-                                                      Ty.path "bool",
-                                                      M.call_closure (|
-                                                        Ty.path "bool",
-                                                        M.get_function (|
-                                                          "core::slice::ascii::contains_nonascii",
-                                                          [],
-                                                          []
-                                                        |),
-                                                        [ M.read (| word |) ]
-                                                      |)
-                                                    |)) in
-                                                let _ :=
-                                                  is_constant_or_break_match (|
-                                                    M.read (| γ |),
-                                                    Value.Bool true
-                                                  |) in
-                                                M.never_to_any (|
-                                                  M.read (| M.return_ (| Value.Bool false |) |)
-                                                |)));
-                                            fun γ => ltac:(M.monadic (Value.Tuple []))
-                                          ]
-                                        |) in
-                                      let~ _ : Ty.tuple [] :=
-                                        let β := byte_pos in
-                                        M.write (|
-                                          β,
-                                          M.call_closure (|
-                                            Ty.path "usize",
-                                            BinOp.Wrap.add,
-                                            [
-                                              M.read (| β |);
-                                              M.read (|
-                                                get_constant (|
-                                                  "core::slice::ascii::is_ascii::runtime::USIZE_SIZE",
-                                                  Ty.path "usize"
-                                                |)
-                                              |)
-                                            ]
-                                          |)
-                                        |) in
-                                      let~ _ : Ty.tuple [] :=
-                                        M.write (|
-                                          word_ptr,
-                                          M.call_closure (|
-                                            Ty.apply (Ty.path "*const") [] [ Ty.path "usize" ],
-                                            M.get_associated_function (|
-                                              Ty.apply (Ty.path "*const") [] [ Ty.path "usize" ],
-                                              "add",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.read (| word_ptr |);
-                                              Value.Integer IntegerKind.Usize 1
-                                            ]
-                                          |)
-                                        |) in
-                                      M.alloc (| Ty.tuple [], Value.Tuple [] |)
-                                    |)));
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (M.never_to_any (|
-                                      M.read (|
-                                        let~ _ : Ty.tuple [] :=
-                                          M.never_to_any (| M.read (| M.break (||) |) |) in
-                                        M.alloc (| Ty.tuple [], Value.Tuple [] |)
-                                      |)
-                                    |)))
-                              ]
-                            |)
-                          |)))
-                      |)
-                    |) in
-                  let~ _ : Ty.tuple [] :=
-                    M.match_operator (|
-                      Ty.tuple [],
-                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
-                      [
-                        fun γ =>
-                          ltac:(M.monadic
-                            (let γ := M.use (M.alloc (| Ty.path "bool", Value.Bool true |)) in
-                            let _ :=
-                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                            M.read (|
-                              let~ _ : Ty.tuple [] :=
-                                M.match_operator (|
-                                  Ty.tuple [],
-                                  M.alloc (| Ty.tuple [], Value.Tuple [] |),
-                                  [
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let γ :=
-                                          M.use
-                                            (M.alloc (|
-                                              Ty.path "bool",
-                                              M.call_closure (|
-                                                Ty.path "bool",
-                                                UnOp.not,
-                                                [
-                                                  LogicalOp.and (|
-                                                    M.call_closure (|
-                                                      Ty.path "bool",
-                                                      BinOp.le,
-                                                      [ M.read (| byte_pos |); M.read (| len |) ]
-                                                    |),
-                                                    ltac:(M.monadic
-                                                      (M.call_closure (|
-                                                        Ty.path "bool",
-                                                        BinOp.le,
-                                                        [
-                                                          M.call_closure (|
-                                                            Ty.path "usize",
-                                                            BinOp.Wrap.sub,
-                                                            [
-                                                              M.read (| len |);
-                                                              M.read (| byte_pos |)
-                                                            ]
-                                                          |);
-                                                          M.read (|
-                                                            get_constant (|
-                                                              "core::slice::ascii::is_ascii::runtime::USIZE_SIZE",
-                                                              Ty.path "usize"
-                                                            |)
-                                                          |)
-                                                        ]
-                                                      |)))
-                                                  |)
-                                                ]
-                                              |)
-                                            |)) in
-                                        let _ :=
-                                          is_constant_or_break_match (|
-                                            M.read (| γ |),
-                                            Value.Bool true
-                                          |) in
-                                        M.never_to_any (|
-                                          M.call_closure (|
-                                            Ty.path "never",
-                                            M.get_function (| "core::panicking::panic", [], [] |),
-                                            [
-                                              mk_str (|
-                                                "assertion failed: byte_pos <= len && len - byte_pos <= USIZE_SIZE"
-                                              |)
-                                            ]
-                                          |)
-                                        |)));
-                                    fun γ => ltac:(M.monadic (Value.Tuple []))
-                                  ]
-                                |) in
-                              M.alloc (| Ty.tuple [], Value.Tuple [] |)
-                            |)));
-                        fun γ => ltac:(M.monadic (Value.Tuple []))
-                      ]
-                    |) in
-                  let~ last_word : Ty.path "usize" :=
-                    M.call_closure (|
-                      Ty.path "usize",
-                      M.get_associated_function (|
-                        Ty.apply (Ty.path "*const") [] [ Ty.path "usize" ],
-                        "read_unaligned",
-                        [],
-                        []
-                      |),
-                      [
-                        M.cast
-                          (Ty.apply (Ty.path "*const") [] [ Ty.path "usize" ])
-                          (M.call_closure (|
-                            Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
+  Module index.
+    Module slice_index_fail.
+      Module do_panic.
+        (*
+                fn runtime$(<$($binders)*>)?($($arg: $ty),* ) $( -> $ret )? {
+                    $runtime
+                }
+        *)
+        Definition runtime (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+          match ε, τ, α with
+          | [], [], [ start; len ] =>
+            ltac:(M.monadic
+              (let start := M.alloc (| Ty.path "usize", start |) in
+              let len := M.alloc (| Ty.path "usize", len |) in
+              M.call_closure (|
+                Ty.path "never",
+                M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                [
+                  M.read (|
+                    let~ args :
+                        Ty.tuple
+                          [
+                            Ty.apply (Ty.path "&") [] [ Ty.path "usize" ];
+                            Ty.apply (Ty.path "&") [] [ Ty.path "usize" ]
+                          ] :=
+                      Value.Tuple
+                        [
+                          M.borrow (| Pointer.Kind.Ref, start |);
+                          M.borrow (| Pointer.Kind.Ref, len |)
+                        ] in
+                    let~ args :
+                        Ty.apply
+                          (Ty.path "array")
+                          [ Value.Integer IntegerKind.Usize 2 ]
+                          [ Ty.path "core::fmt::rt::Argument" ] :=
+                      Value.Array
+                        [
+                          M.call_closure (|
+                            Ty.path "core::fmt::rt::Argument",
                             M.get_associated_function (|
-                              Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                              "add",
+                              Ty.path "core::fmt::rt::Argument",
+                              "new_display",
                               [],
-                              []
+                              [ Ty.path "usize" ]
                             |),
                             [
-                              M.read (| start |);
-                              M.call_closure (|
-                                Ty.path "usize",
-                                BinOp.Wrap.sub,
-                                [
-                                  M.read (| len |);
-                                  M.read (|
-                                    get_constant (|
-                                      "core::slice::ascii::is_ascii::runtime::USIZE_SIZE",
-                                      Ty.path "usize"
-                                    |)
-                                  |)
-                                ]
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (|
+                                  M.read (| M.SubPointer.get_tuple_field (| args, 0 |) |)
+                                |)
                               |)
                             ]
-                          |))
-                      ]
-                    |) in
-                  M.alloc (|
-                    Ty.path "bool",
-                    M.call_closure (|
-                      Ty.path "bool",
-                      UnOp.not,
-                      [
-                        M.call_closure (|
-                          Ty.path "bool",
-                          M.get_function (| "core::slice::ascii::contains_nonascii", [], [] |),
-                          [ M.read (| last_word |) ]
-                        |)
-                      ]
+                          |);
+                          M.call_closure (|
+                            Ty.path "core::fmt::rt::Argument",
+                            M.get_associated_function (|
+                              Ty.path "core::fmt::rt::Argument",
+                              "new_display",
+                              [],
+                              [ Ty.path "usize" ]
+                            |),
+                            [
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (|
+                                  M.read (| M.SubPointer.get_tuple_field (| args, 1 |) |)
+                                |)
+                              |)
+                            ]
+                          |)
+                        ] in
+                    M.alloc (|
+                      Ty.path "core::fmt::Arguments",
+                      M.call_closure (|
+                        Ty.path "core::fmt::Arguments",
+                        M.get_associated_function (|
+                          Ty.path "core::fmt::Arguments",
+                          "new",
+                          [ Value.Integer IntegerKind.Usize 57; Value.Integer IntegerKind.Usize 2 ],
+                          []
+                        |),
+                        [
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (| M.read (| UnsupportedLiteral |) |)
+                          |);
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
+                          |)
+                        ]
+                      |)
                     |)
                   |)
-                |)))
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Global Instance Instance_IsFunction_runtime :
-        M.IsFunction.C "core::slice::ascii::is_ascii::runtime" runtime.
-      Admitted.
-      Global Typeclasses Opaque runtime.
-      
-      (*
-              const fn compiletime($($arg: $ty),* ) $( -> $ret )? {
-                  // Don't warn if one of the arguments is unused.
-                  $(let _ = $arg;)*
-      
-                  $compiletime
-              }
-      *)
-      Definition compiletime (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [ s ] =>
-          ltac:(M.monadic
-            (let s :=
-              M.alloc (|
-                Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                s
-              |) in
-            M.match_operator (|
-              Ty.path "bool",
-              s,
-              [
-                fun γ =>
-                  ltac:(M.monadic
-                    (M.call_closure (|
-                      Ty.path "bool",
-                      M.get_function (| "core::slice::ascii::is_ascii_simple", [], [] |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |) ]
-                    |)))
-              ]
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Global Instance Instance_IsFunction_compiletime :
-        M.IsFunction.C "core::slice::ascii::is_ascii::compiletime" compiletime.
-      Admitted.
-      Global Typeclasses Opaque compiletime.
-    End is_ascii.
-  End ascii.
-  
-  Module index.
-    Module slice_start_index_len_fail.
-      Module do_panic.
-        (*
-                fn runtime($($arg: $ty),* ) $( -> $ret )? {
-                    $runtime
-                }
-        *)
-        Definition runtime (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-          match ε, τ, α with
-          | [], [], [ index; len ] =>
-            ltac:(M.monadic
-              (let index := M.alloc (| Ty.path "usize", index |) in
-              let len := M.alloc (| Ty.path "usize", len |) in
-              M.call_closure (|
-                Ty.path "never",
-                M.get_function (| "core::panicking::panic_fmt", [], [] |),
-                [
-                  M.call_closure (|
-                    Ty.path "core::fmt::Arguments",
-                    M.get_associated_function (|
-                      Ty.path "core::fmt::Arguments",
-                      "new_v1",
-                      [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 2 ],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.alloc (|
-                              Ty.apply
-                                (Ty.path "array")
-                                [ Value.Integer IntegerKind.Usize 2 ]
-                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                              Value.Array
-                                [
-                                  mk_str (| "range start index " |);
-                                  mk_str (| " out of range for slice of length " |)
-                                ]
-                            |)
-                          |)
-                        |)
-                      |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.alloc (|
-                              Ty.apply
-                                (Ty.path "array")
-                                [ Value.Integer IntegerKind.Usize 2 ]
-                                [ Ty.path "core::fmt::rt::Argument" ],
-                              Value.Array
-                                [
-                                  M.call_closure (|
-                                    Ty.path "core::fmt::rt::Argument",
-                                    M.get_associated_function (|
-                                      Ty.path "core::fmt::rt::Argument",
-                                      "new_display",
-                                      [],
-                                      [ Ty.path "usize" ]
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.borrow (| Pointer.Kind.Ref, index |) |)
-                                      |)
-                                    ]
-                                  |);
-                                  M.call_closure (|
-                                    Ty.path "core::fmt::rt::Argument",
-                                    M.get_associated_function (|
-                                      Ty.path "core::fmt::rt::Argument",
-                                      "new_display",
-                                      [],
-                                      [ Ty.path "usize" ]
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.borrow (| Pointer.Kind.Ref, len |) |)
-                                      |)
-                                    ]
-                                  |)
-                                ]
-                            |)
-                          |)
-                        |)
-                      |)
-                    ]
-                  |)
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
           end.
         
         Global Instance Instance_IsFunction_runtime :
-          M.IsFunction.C
-            "core::slice::index::slice_start_index_len_fail::do_panic::runtime"
-            runtime.
+          M.IsFunction.C "core::slice::index::slice_index_fail::do_panic::runtime" runtime.
         Admitted.
         Global Typeclasses Opaque runtime.
         
         (*
-                const fn compiletime($($arg: $ty),* ) $( -> $ret )? {
+                const fn compiletime$(<$($binders)*>)?($($arg: $ty),* ) $( -> $ret )? {
                     // Don't warn if one of the arguments is unused.
                     $(let _ = $arg;)*
         
@@ -11247,13 +9079,13 @@ Module slice.
         *)
         Definition compiletime (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
           match ε, τ, α with
-          | [], [], [ index; len ] =>
+          | [], [], [ start; len ] =>
             ltac:(M.monadic
-              (let index := M.alloc (| Ty.path "usize", index |) in
+              (let start := M.alloc (| Ty.path "usize", start |) in
               let len := M.alloc (| Ty.path "usize", len |) in
               M.match_operator (|
                 Ty.path "never",
-                index,
+                start,
                 [
                   fun γ =>
                     ltac:(M.monadic
@@ -11271,32 +9103,11 @@ Module slice.
                                     Ty.path "core::fmt::Arguments",
                                     M.get_associated_function (|
                                       Ty.path "core::fmt::Arguments",
-                                      "new_const",
-                                      [ Value.Integer IntegerKind.Usize 1 ],
+                                      "from_str",
+                                      [],
                                       []
                                     |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.alloc (|
-                                              Ty.apply
-                                                (Ty.path "array")
-                                                [ Value.Integer IntegerKind.Usize 1 ]
-                                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                              Value.Array
-                                                [
-                                                  mk_str (|
-                                                    "slice start index is out of range for slice"
-                                                  |)
-                                                ]
-                                            |)
-                                          |)
-                                        |)
-                                      |)
-                                    ]
+                                    [ mk_str (| "slice start index is out of range for slice" |) ]
                                   |)
                                 ]
                               |)))
@@ -11308,107 +9119,103 @@ Module slice.
           end.
         
         Global Instance Instance_IsFunction_compiletime :
-          M.IsFunction.C
-            "core::slice::index::slice_start_index_len_fail::do_panic::compiletime"
-            compiletime.
+          M.IsFunction.C "core::slice::index::slice_index_fail::do_panic::compiletime" compiletime.
         Admitted.
         Global Typeclasses Opaque compiletime.
       End do_panic.
-    End slice_start_index_len_fail.
-    
-    Module slice_end_index_len_fail.
-      Module do_panic.
+      
+      Module do_panic_1.
         (*
-                fn runtime($($arg: $ty),* ) $( -> $ret )? {
+                fn runtime$(<$($binders)*>)?($($arg: $ty),* ) $( -> $ret )? {
                     $runtime
                 }
         *)
         Definition runtime (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
           match ε, τ, α with
-          | [], [], [ index; len ] =>
+          | [], [], [ end_; len ] =>
             ltac:(M.monadic
-              (let index := M.alloc (| Ty.path "usize", index |) in
+              (let end_ := M.alloc (| Ty.path "usize", end_ |) in
               let len := M.alloc (| Ty.path "usize", len |) in
               M.call_closure (|
                 Ty.path "never",
                 M.get_function (| "core::panicking::panic_fmt", [], [] |),
                 [
-                  M.call_closure (|
-                    Ty.path "core::fmt::Arguments",
-                    M.get_associated_function (|
+                  M.read (|
+                    let~ args :
+                        Ty.tuple
+                          [
+                            Ty.apply (Ty.path "&") [] [ Ty.path "usize" ];
+                            Ty.apply (Ty.path "&") [] [ Ty.path "usize" ]
+                          ] :=
+                      Value.Tuple
+                        [
+                          M.borrow (| Pointer.Kind.Ref, end_ |);
+                          M.borrow (| Pointer.Kind.Ref, len |)
+                        ] in
+                    let~ args :
+                        Ty.apply
+                          (Ty.path "array")
+                          [ Value.Integer IntegerKind.Usize 2 ]
+                          [ Ty.path "core::fmt::rt::Argument" ] :=
+                      Value.Array
+                        [
+                          M.call_closure (|
+                            Ty.path "core::fmt::rt::Argument",
+                            M.get_associated_function (|
+                              Ty.path "core::fmt::rt::Argument",
+                              "new_display",
+                              [],
+                              [ Ty.path "usize" ]
+                            |),
+                            [
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (|
+                                  M.read (| M.SubPointer.get_tuple_field (| args, 0 |) |)
+                                |)
+                              |)
+                            ]
+                          |);
+                          M.call_closure (|
+                            Ty.path "core::fmt::rt::Argument",
+                            M.get_associated_function (|
+                              Ty.path "core::fmt::rt::Argument",
+                              "new_display",
+                              [],
+                              [ Ty.path "usize" ]
+                            |),
+                            [
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (|
+                                  M.read (| M.SubPointer.get_tuple_field (| args, 1 |) |)
+                                |)
+                              |)
+                            ]
+                          |)
+                        ] in
+                    M.alloc (|
                       Ty.path "core::fmt::Arguments",
-                      "new_v1",
-                      [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 2 ],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
+                      M.call_closure (|
+                        Ty.path "core::fmt::Arguments",
+                        M.get_associated_function (|
+                          Ty.path "core::fmt::Arguments",
+                          "new",
+                          [ Value.Integer IntegerKind.Usize 55; Value.Integer IntegerKind.Usize 2 ],
+                          []
+                        |),
+                        [
                           M.borrow (|
                             Pointer.Kind.Ref,
-                            M.alloc (|
-                              Ty.apply
-                                (Ty.path "array")
-                                [ Value.Integer IntegerKind.Usize 2 ]
-                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                              Value.Array
-                                [
-                                  mk_str (| "range end index " |);
-                                  mk_str (| " out of range for slice of length " |)
-                                ]
-                            |)
-                          |)
-                        |)
-                      |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
+                            M.deref (| M.read (| UnsupportedLiteral |) |)
+                          |);
                           M.borrow (|
                             Pointer.Kind.Ref,
-                            M.alloc (|
-                              Ty.apply
-                                (Ty.path "array")
-                                [ Value.Integer IntegerKind.Usize 2 ]
-                                [ Ty.path "core::fmt::rt::Argument" ],
-                              Value.Array
-                                [
-                                  M.call_closure (|
-                                    Ty.path "core::fmt::rt::Argument",
-                                    M.get_associated_function (|
-                                      Ty.path "core::fmt::rt::Argument",
-                                      "new_display",
-                                      [],
-                                      [ Ty.path "usize" ]
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.borrow (| Pointer.Kind.Ref, index |) |)
-                                      |)
-                                    ]
-                                  |);
-                                  M.call_closure (|
-                                    Ty.path "core::fmt::rt::Argument",
-                                    M.get_associated_function (|
-                                      Ty.path "core::fmt::rt::Argument",
-                                      "new_display",
-                                      [],
-                                      [ Ty.path "usize" ]
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.borrow (| Pointer.Kind.Ref, len |) |)
-                                      |)
-                                    ]
-                                  |)
-                                ]
-                            |)
+                            M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
                           |)
-                        |)
+                        ]
                       |)
-                    ]
+                    |)
                   |)
                 ]
               |)))
@@ -11416,12 +9223,12 @@ Module slice.
           end.
         
         Global Instance Instance_IsFunction_runtime :
-          M.IsFunction.C "core::slice::index::slice_end_index_len_fail::do_panic::runtime" runtime.
+          M.IsFunction.C "core::slice::index::slice_index_fail::do_panic'1::runtime" runtime.
         Admitted.
         Global Typeclasses Opaque runtime.
         
         (*
-                const fn compiletime($($arg: $ty),* ) $( -> $ret )? {
+                const fn compiletime$(<$($binders)*>)?($($arg: $ty),* ) $( -> $ret )? {
                     // Don't warn if one of the arguments is unused.
                     $(let _ = $arg;)*
         
@@ -11430,13 +9237,13 @@ Module slice.
         *)
         Definition compiletime (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
           match ε, τ, α with
-          | [], [], [ index; len ] =>
+          | [], [], [ end_; len ] =>
             ltac:(M.monadic
-              (let index := M.alloc (| Ty.path "usize", index |) in
+              (let end_ := M.alloc (| Ty.path "usize", end_ |) in
               let len := M.alloc (| Ty.path "usize", len |) in
               M.match_operator (|
                 Ty.path "never",
-                index,
+                end_,
                 [
                   fun γ =>
                     ltac:(M.monadic
@@ -11454,32 +9261,11 @@ Module slice.
                                     Ty.path "core::fmt::Arguments",
                                     M.get_associated_function (|
                                       Ty.path "core::fmt::Arguments",
-                                      "new_const",
-                                      [ Value.Integer IntegerKind.Usize 1 ],
+                                      "from_str",
+                                      [],
                                       []
                                     |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.alloc (|
-                                              Ty.apply
-                                                (Ty.path "array")
-                                                [ Value.Integer IntegerKind.Usize 1 ]
-                                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                              Value.Array
-                                                [
-                                                  mk_str (|
-                                                    "slice end index is out of range for slice"
-                                                  |)
-                                                ]
-                                            |)
-                                          |)
-                                        |)
-                                      |)
-                                    ]
+                                    [ mk_str (| "slice end index is out of range for slice" |) ]
                                   |)
                                 ]
                               |)))
@@ -11492,106 +9278,104 @@ Module slice.
         
         Global Instance Instance_IsFunction_compiletime :
           M.IsFunction.C
-            "core::slice::index::slice_end_index_len_fail::do_panic::compiletime"
+            "core::slice::index::slice_index_fail::do_panic'1::compiletime"
             compiletime.
         Admitted.
         Global Typeclasses Opaque compiletime.
-      End do_panic.
-    End slice_end_index_len_fail.
-    
-    Module slice_index_order_fail.
-      Module do_panic.
+      End do_panic_1.
+      
+      Module do_panic_2.
         (*
-                fn runtime($($arg: $ty),* ) $( -> $ret )? {
+                fn runtime$(<$($binders)*>)?($($arg: $ty),* ) $( -> $ret )? {
                     $runtime
                 }
         *)
         Definition runtime (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
           match ε, τ, α with
-          | [], [], [ index; end_ ] =>
+          | [], [], [ start; end_ ] =>
             ltac:(M.monadic
-              (let index := M.alloc (| Ty.path "usize", index |) in
+              (let start := M.alloc (| Ty.path "usize", start |) in
               let end_ := M.alloc (| Ty.path "usize", end_ |) in
               M.call_closure (|
                 Ty.path "never",
                 M.get_function (| "core::panicking::panic_fmt", [], [] |),
                 [
-                  M.call_closure (|
-                    Ty.path "core::fmt::Arguments",
-                    M.get_associated_function (|
+                  M.read (|
+                    let~ args :
+                        Ty.tuple
+                          [
+                            Ty.apply (Ty.path "&") [] [ Ty.path "usize" ];
+                            Ty.apply (Ty.path "&") [] [ Ty.path "usize" ]
+                          ] :=
+                      Value.Tuple
+                        [
+                          M.borrow (| Pointer.Kind.Ref, start |);
+                          M.borrow (| Pointer.Kind.Ref, end_ |)
+                        ] in
+                    let~ args :
+                        Ty.apply
+                          (Ty.path "array")
+                          [ Value.Integer IntegerKind.Usize 2 ]
+                          [ Ty.path "core::fmt::rt::Argument" ] :=
+                      Value.Array
+                        [
+                          M.call_closure (|
+                            Ty.path "core::fmt::rt::Argument",
+                            M.get_associated_function (|
+                              Ty.path "core::fmt::rt::Argument",
+                              "new_display",
+                              [],
+                              [ Ty.path "usize" ]
+                            |),
+                            [
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (|
+                                  M.read (| M.SubPointer.get_tuple_field (| args, 0 |) |)
+                                |)
+                              |)
+                            ]
+                          |);
+                          M.call_closure (|
+                            Ty.path "core::fmt::rt::Argument",
+                            M.get_associated_function (|
+                              Ty.path "core::fmt::rt::Argument",
+                              "new_display",
+                              [],
+                              [ Ty.path "usize" ]
+                            |),
+                            [
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (|
+                                  M.read (| M.SubPointer.get_tuple_field (| args, 1 |) |)
+                                |)
+                              |)
+                            ]
+                          |)
+                        ] in
+                    M.alloc (|
                       Ty.path "core::fmt::Arguments",
-                      "new_v1",
-                      [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 2 ],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
+                      M.call_closure (|
+                        Ty.path "core::fmt::Arguments",
+                        M.get_associated_function (|
+                          Ty.path "core::fmt::Arguments",
+                          "new",
+                          [ Value.Integer IntegerKind.Usize 40; Value.Integer IntegerKind.Usize 2 ],
+                          []
+                        |),
+                        [
                           M.borrow (|
                             Pointer.Kind.Ref,
-                            M.alloc (|
-                              Ty.apply
-                                (Ty.path "array")
-                                [ Value.Integer IntegerKind.Usize 2 ]
-                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                              Value.Array
-                                [
-                                  mk_str (| "slice index starts at " |);
-                                  mk_str (| " but ends at " |)
-                                ]
-                            |)
-                          |)
-                        |)
-                      |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
+                            M.deref (| M.read (| UnsupportedLiteral |) |)
+                          |);
                           M.borrow (|
                             Pointer.Kind.Ref,
-                            M.alloc (|
-                              Ty.apply
-                                (Ty.path "array")
-                                [ Value.Integer IntegerKind.Usize 2 ]
-                                [ Ty.path "core::fmt::rt::Argument" ],
-                              Value.Array
-                                [
-                                  M.call_closure (|
-                                    Ty.path "core::fmt::rt::Argument",
-                                    M.get_associated_function (|
-                                      Ty.path "core::fmt::rt::Argument",
-                                      "new_display",
-                                      [],
-                                      [ Ty.path "usize" ]
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.borrow (| Pointer.Kind.Ref, index |) |)
-                                      |)
-                                    ]
-                                  |);
-                                  M.call_closure (|
-                                    Ty.path "core::fmt::rt::Argument",
-                                    M.get_associated_function (|
-                                      Ty.path "core::fmt::rt::Argument",
-                                      "new_display",
-                                      [],
-                                      [ Ty.path "usize" ]
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.borrow (| Pointer.Kind.Ref, end_ |) |)
-                                      |)
-                                    ]
-                                  |)
-                                ]
-                            |)
+                            M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
                           |)
-                        |)
+                        ]
                       |)
-                    ]
+                    |)
                   |)
                 ]
               |)))
@@ -11599,12 +9383,12 @@ Module slice.
           end.
         
         Global Instance Instance_IsFunction_runtime :
-          M.IsFunction.C "core::slice::index::slice_index_order_fail::do_panic::runtime" runtime.
+          M.IsFunction.C "core::slice::index::slice_index_fail::do_panic'2::runtime" runtime.
         Admitted.
         Global Typeclasses Opaque runtime.
         
         (*
-                const fn compiletime($($arg: $ty),* ) $( -> $ret )? {
+                const fn compiletime$(<$($binders)*>)?($($arg: $ty),* ) $( -> $ret )? {
                     // Don't warn if one of the arguments is unused.
                     $(let _ = $arg;)*
         
@@ -11613,13 +9397,13 @@ Module slice.
         *)
         Definition compiletime (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
           match ε, τ, α with
-          | [], [], [ index; end_ ] =>
+          | [], [], [ start; end_ ] =>
             ltac:(M.monadic
-              (let index := M.alloc (| Ty.path "usize", index |) in
+              (let start := M.alloc (| Ty.path "usize", start |) in
               let end_ := M.alloc (| Ty.path "usize", end_ |) in
               M.match_operator (|
                 Ty.path "never",
-                index,
+                start,
                 [
                   fun γ =>
                     ltac:(M.monadic
@@ -11637,30 +9421,339 @@ Module slice.
                                     Ty.path "core::fmt::Arguments",
                                     M.get_associated_function (|
                                       Ty.path "core::fmt::Arguments",
-                                      "new_const",
-                                      [ Value.Integer IntegerKind.Usize 1 ],
+                                      "from_str",
+                                      [],
+                                      []
+                                    |),
+                                    [ mk_str (| "slice index start is larger than end" |) ]
+                                  |)
+                                ]
+                              |)))
+                        ]
+                      |)))
+                ]
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        Global Instance Instance_IsFunction_compiletime :
+          M.IsFunction.C
+            "core::slice::index::slice_index_fail::do_panic'2::compiletime"
+            compiletime.
+        Admitted.
+        Global Typeclasses Opaque compiletime.
+      End do_panic_2.
+      
+      Module do_panic_3.
+        (*
+                fn runtime$(<$($binders)*>)?($($arg: $ty),* ) $( -> $ret )? {
+                    $runtime
+                }
+        *)
+        Definition runtime (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+          match ε, τ, α with
+          | [], [], [ end_; len ] =>
+            ltac:(M.monadic
+              (let end_ := M.alloc (| Ty.path "usize", end_ |) in
+              let len := M.alloc (| Ty.path "usize", len |) in
+              M.call_closure (|
+                Ty.path "never",
+                M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                [
+                  M.read (|
+                    let~ args :
+                        Ty.tuple
+                          [
+                            Ty.apply (Ty.path "&") [] [ Ty.path "usize" ];
+                            Ty.apply (Ty.path "&") [] [ Ty.path "usize" ]
+                          ] :=
+                      Value.Tuple
+                        [
+                          M.borrow (| Pointer.Kind.Ref, end_ |);
+                          M.borrow (| Pointer.Kind.Ref, len |)
+                        ] in
+                    let~ args :
+                        Ty.apply
+                          (Ty.path "array")
+                          [ Value.Integer IntegerKind.Usize 2 ]
+                          [ Ty.path "core::fmt::rt::Argument" ] :=
+                      Value.Array
+                        [
+                          M.call_closure (|
+                            Ty.path "core::fmt::rt::Argument",
+                            M.get_associated_function (|
+                              Ty.path "core::fmt::rt::Argument",
+                              "new_display",
+                              [],
+                              [ Ty.path "usize" ]
+                            |),
+                            [
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (|
+                                  M.read (| M.SubPointer.get_tuple_field (| args, 0 |) |)
+                                |)
+                              |)
+                            ]
+                          |);
+                          M.call_closure (|
+                            Ty.path "core::fmt::rt::Argument",
+                            M.get_associated_function (|
+                              Ty.path "core::fmt::rt::Argument",
+                              "new_display",
+                              [],
+                              [ Ty.path "usize" ]
+                            |),
+                            [
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (|
+                                  M.read (| M.SubPointer.get_tuple_field (| args, 1 |) |)
+                                |)
+                              |)
+                            ]
+                          |)
+                        ] in
+                    M.alloc (|
+                      Ty.path "core::fmt::Arguments",
+                      M.call_closure (|
+                        Ty.path "core::fmt::Arguments",
+                        M.get_associated_function (|
+                          Ty.path "core::fmt::Arguments",
+                          "new",
+                          [ Value.Integer IntegerKind.Usize 55; Value.Integer IntegerKind.Usize 2 ],
+                          []
+                        |),
+                        [
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (| M.read (| UnsupportedLiteral |) |)
+                          |);
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
+                          |)
+                        ]
+                      |)
+                    |)
+                  |)
+                ]
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        Global Instance Instance_IsFunction_runtime :
+          M.IsFunction.C "core::slice::index::slice_index_fail::do_panic'3::runtime" runtime.
+        Admitted.
+        Global Typeclasses Opaque runtime.
+        
+        (*
+                const fn compiletime$(<$($binders)*>)?($($arg: $ty),* ) $( -> $ret )? {
+                    // Don't warn if one of the arguments is unused.
+                    $(let _ = $arg;)*
+        
+                    $compiletime
+                }
+        *)
+        Definition compiletime (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+          match ε, τ, α with
+          | [], [], [ end_; len ] =>
+            ltac:(M.monadic
+              (let end_ := M.alloc (| Ty.path "usize", end_ |) in
+              let len := M.alloc (| Ty.path "usize", len |) in
+              M.match_operator (|
+                Ty.path "never",
+                end_,
+                [
+                  fun γ =>
+                    ltac:(M.monadic
+                      (M.match_operator (|
+                        Ty.path "never",
+                        len,
+                        [
+                          fun γ =>
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "never",
+                                M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                                [
+                                  M.call_closure (|
+                                    Ty.path "core::fmt::Arguments",
+                                    M.get_associated_function (|
+                                      Ty.path "core::fmt::Arguments",
+                                      "from_str",
+                                      [],
+                                      []
+                                    |),
+                                    [ mk_str (| "slice end index is out of range for slice" |) ]
+                                  |)
+                                ]
+                              |)))
+                        ]
+                      |)))
+                ]
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        Global Instance Instance_IsFunction_compiletime :
+          M.IsFunction.C
+            "core::slice::index::slice_index_fail::do_panic'3::compiletime"
+            compiletime.
+        Admitted.
+        Global Typeclasses Opaque compiletime.
+      End do_panic_3.
+    End slice_index_fail.
+  End index.
+  
+  Module copy_from_slice_impl.
+    Module len_mismatch_fail.
+      Module do_panic.
+        (*
+                fn runtime$(<$($binders)*>)?($($arg: $ty),* ) $( -> $ret )? {
+                    $runtime
+                }
+        *)
+        Definition runtime (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+          match ε, τ, α with
+          | [], [], [ src_len; dst_len ] =>
+            ltac:(M.monadic
+              (let src_len := M.alloc (| Ty.path "usize", src_len |) in
+              let dst_len := M.alloc (| Ty.path "usize", dst_len |) in
+              M.call_closure (|
+                Ty.path "never",
+                M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                [
+                  M.read (|
+                    let~ args :
+                        Ty.tuple
+                          [
+                            Ty.apply (Ty.path "&") [] [ Ty.path "usize" ];
+                            Ty.apply (Ty.path "&") [] [ Ty.path "usize" ]
+                          ] :=
+                      Value.Tuple
+                        [
+                          M.borrow (| Pointer.Kind.Ref, src_len |);
+                          M.borrow (| Pointer.Kind.Ref, dst_len |)
+                        ] in
+                    let~ args :
+                        Ty.apply
+                          (Ty.path "array")
+                          [ Value.Integer IntegerKind.Usize 2 ]
+                          [ Ty.path "core::fmt::rt::Argument" ] :=
+                      Value.Array
+                        [
+                          M.call_closure (|
+                            Ty.path "core::fmt::rt::Argument",
+                            M.get_associated_function (|
+                              Ty.path "core::fmt::rt::Argument",
+                              "new_display",
+                              [],
+                              [ Ty.path "usize" ]
+                            |),
+                            [
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (|
+                                  M.read (| M.SubPointer.get_tuple_field (| args, 0 |) |)
+                                |)
+                              |)
+                            ]
+                          |);
+                          M.call_closure (|
+                            Ty.path "core::fmt::rt::Argument",
+                            M.get_associated_function (|
+                              Ty.path "core::fmt::rt::Argument",
+                              "new_display",
+                              [],
+                              [ Ty.path "usize" ]
+                            |),
+                            [
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (|
+                                  M.read (| M.SubPointer.get_tuple_field (| args, 1 |) |)
+                                |)
+                              |)
+                            ]
+                          |)
+                        ] in
+                    M.alloc (|
+                      Ty.path "core::fmt::Arguments",
+                      M.call_closure (|
+                        Ty.path "core::fmt::Arguments",
+                        M.get_associated_function (|
+                          Ty.path "core::fmt::Arguments",
+                          "new",
+                          [ Value.Integer IntegerKind.Usize 88; Value.Integer IntegerKind.Usize 2 ],
+                          []
+                        |),
+                        [
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (| M.read (| UnsupportedLiteral |) |)
+                          |);
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
+                          |)
+                        ]
+                      |)
+                    |)
+                  |)
+                ]
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        Global Instance Instance_IsFunction_runtime :
+          M.IsFunction.C
+            "core::slice::copy_from_slice_impl::len_mismatch_fail::do_panic::runtime"
+            runtime.
+        Admitted.
+        Global Typeclasses Opaque runtime.
+        
+        (*
+                const fn compiletime$(<$($binders)*>)?($($arg: $ty),* ) $( -> $ret )? {
+                    // Don't warn if one of the arguments is unused.
+                    $(let _ = $arg;)*
+        
+                    $compiletime
+                }
+        *)
+        Definition compiletime (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+          match ε, τ, α with
+          | [], [], [ src_len; dst_len ] =>
+            ltac:(M.monadic
+              (let src_len := M.alloc (| Ty.path "usize", src_len |) in
+              let dst_len := M.alloc (| Ty.path "usize", dst_len |) in
+              M.match_operator (|
+                Ty.path "never",
+                src_len,
+                [
+                  fun γ =>
+                    ltac:(M.monadic
+                      (M.match_operator (|
+                        Ty.path "never",
+                        dst_len,
+                        [
+                          fun γ =>
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "never",
+                                M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                                [
+                                  M.call_closure (|
+                                    Ty.path "core::fmt::Arguments",
+                                    M.get_associated_function (|
+                                      Ty.path "core::fmt::Arguments",
+                                      "from_str",
+                                      [],
                                       []
                                     |),
                                     [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.alloc (|
-                                              Ty.apply
-                                                (Ty.path "array")
-                                                [ Value.Integer IntegerKind.Usize 1 ]
-                                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                              Value.Array
-                                                [
-                                                  mk_str (|
-                                                    "slice index start is larger than end"
-                                                  |)
-                                                ]
-                                            |)
-                                          |)
-                                        |)
+                                      mk_str (|
+                                        "copy_from_slice: source slice length does not match destination slice length"
                                       |)
                                     ]
                                   |)
@@ -11675,20 +9768,20 @@ Module slice.
         
         Global Instance Instance_IsFunction_compiletime :
           M.IsFunction.C
-            "core::slice::index::slice_index_order_fail::do_panic::compiletime"
+            "core::slice::copy_from_slice_impl::len_mismatch_fail::do_panic::compiletime"
             compiletime.
         Admitted.
         Global Typeclasses Opaque compiletime.
       End do_panic.
-    End slice_index_order_fail.
-  End index.
+    End len_mismatch_fail.
+  End copy_from_slice_impl.
 End slice.
 
 Module str.
   Module validations.
     Module run_utf8_validation.
       (*
-              fn runtime($($arg: $ty),* ) $( -> $ret )? {
+              fn runtime$(<$($binders)*>)?($($arg: $ty),* ) $( -> $ret )? {
                   $runtime
               }
       *)
@@ -11737,7 +9830,7 @@ Module str.
       Global Typeclasses Opaque runtime.
       
       (*
-              const fn compiletime($($arg: $ty),* ) $( -> $ret )? {
+              const fn compiletime$(<$($binders)*>)?($($arg: $ty),* ) $( -> $ret )? {
                   // Don't warn if one of the arguments is unused.
                   $(let _ = $arg;)*
       

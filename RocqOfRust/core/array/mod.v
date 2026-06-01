@@ -35,18 +35,18 @@ Module array.
   Global Typeclasses Opaque repeat.
   
   (*
-  pub fn from_fn<T, const N: usize, F>(cb: F) -> [T; N]
+  pub const fn from_fn<T: [const] Destruct, const N: usize, F>(f: F) -> [T; N]
   where
-      F: FnMut(usize) -> T,
+      F: [const] FnMut(usize) -> T + [const] Destruct,
   {
-      try_from_fn(NeverShortCircuit::wrap_mut_1(cb)).0
+      try_from_fn(NeverShortCircuit::wrap_mut_1(f)).0
   }
   *)
   Definition from_fn (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [ N ], [ T; F ], [ cb ] =>
+    | [ N ], [ T; F ], [ f ] =>
       ltac:(M.monadic
-        (let cb := M.alloc (| F, cb |) in
+        (let f := M.alloc (| F, f |) in
         M.read (|
           M.SubPointer.get_struct_tuple_field (|
             M.alloc (|
@@ -64,19 +64,19 @@ Module array.
                   [ N ],
                   [
                     Ty.apply (Ty.path "core::ops::try_trait::NeverShortCircuit") [] [ T ];
-                    Ty.associated_unknown
+                    Ty.apply (Ty.path "core::ops::try_trait::Wrapped") [] [ T; Ty.path "usize"; F ]
                   ]
                 |),
                 [
                   M.call_closure (|
-                    Ty.associated_unknown,
+                    Ty.apply (Ty.path "core::ops::try_trait::Wrapped") [] [ T; Ty.path "usize"; F ],
                     M.get_associated_function (|
                       Ty.apply (Ty.path "core::ops::try_trait::NeverShortCircuit") [] [ T ],
                       "wrap_mut_1",
                       [],
                       [ Ty.path "usize"; F ]
                     |),
-                    [ M.read (| cb |) ]
+                    [ M.read (| f |) ]
                   |)
                 ]
               |)
@@ -93,11 +93,10 @@ Module array.
   Global Typeclasses Opaque from_fn.
   
   (*
-  pub fn try_from_fn<R, const N: usize, F>(cb: F) -> ChangeOutputType<R, [R::Output; N]>
+  pub const fn try_from_fn<R, const N: usize, F>(cb: F) -> ChangeOutputType<R, [R::Output; N]>
   where
-      F: FnMut(usize) -> R,
-      R: Try,
-      R::Residual: Residual<[R::Output; N]>,
+      R: [const] Try<Residual: [const] Residual<[R::Output; N]>, Output: [const] Destruct>,
+      F: [const] FnMut(usize) -> R + [const] Destruct,
   {
       let mut array = [const { MaybeUninit::uninit() }; N];
       match try_from_fn_erased(&mut array, cb) {
@@ -177,11 +176,7 @@ Module array.
                       Ty.associated_in_trait "core::ops::try_trait::Try" [] [] R "Residual";
                       Ty.tuple []
                     ],
-                  M.get_function (|
-                    "core::array::try_from_fn_erased",
-                    [],
-                    [ Ty.associated_in_trait "core::ops::try_trait::Try" [] [] R "Output"; R; F ]
-                  |),
+                  M.get_function (| "core::array::try_from_fn_erased", [], [ R; F ] |),
                   [
                     M.call_closure (|
                       Ty.apply
@@ -584,6 +579,18 @@ Module array.
         (* Instance *) [].
   End Impl_core_marker_Copy_for_core_array_TryFromSliceError.
   
+  Module Impl_core_clone_TrivialClone_for_core_array_TryFromSliceError.
+    Definition Self : Ty.t := Ty.path "core::array::TryFromSliceError".
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "core::clone::TrivialClone"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        Self
+        (* Instance *) [].
+  End Impl_core_clone_TrivialClone_for_core_array_TryFromSliceError.
+  
   Module Impl_core_clone_Clone_for_core_array_TryFromSliceError.
     Definition Self : Ty.t := Ty.path "core::array::TryFromSliceError".
     
@@ -619,8 +626,7 @@ Module array.
     
     (*
         fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-            #[allow(deprecated)]
-            self.description().fmt(f)
+            "could not convert slice to array".fmt(f)
         }
     *)
     Definition fmt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -643,21 +649,7 @@ Module array.
             [
               M.borrow (|
                 Pointer.Kind.Ref,
-                M.deref (|
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                    M.get_trait_method (|
-                      "core::error::Error",
-                      Ty.path "core::array::TryFromSliceError",
-                      [],
-                      [],
-                      "description",
-                      [],
-                      []
-                    |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                  |)
-                |)
+                M.deref (| mk_str (| "could not convert slice to array" |) |)
               |);
               M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
             ]
@@ -677,34 +669,13 @@ Module array.
   Module Impl_core_error_Error_for_core_array_TryFromSliceError.
     Definition Self : Ty.t := Ty.path "core::array::TryFromSliceError".
     
-    (*
-        fn description(&self) -> &str {
-            "could not convert slice to array"
-        }
-    *)
-    Definition description (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      match ε, τ, α with
-      | [], [], [ self ] =>
-        ltac:(M.monadic
-          (let self :=
-            M.alloc (|
-              Ty.apply (Ty.path "&") [] [ Ty.path "core::array::TryFromSliceError" ],
-              self
-            |) in
-          M.borrow (|
-            Pointer.Kind.Ref,
-            M.deref (| mk_str (| "could not convert slice to array" |) |)
-          |)))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
     Axiom Implements :
       M.IsTraitInstance
         "core::error::Error"
         (* Trait polymorphic consts *) []
         (* Trait polymorphic types *) []
         Self
-        (* Instance *) [ ("description", InstanceField.Method description) ].
+        (* Instance *) [].
   End Impl_core_error_Error_for_core_array_TryFromSliceError.
   
   Module Impl_core_convert_From_core_convert_Infallible_for_core_array_TryFromSliceError.
@@ -2566,6 +2537,19 @@ Module array.
         ].
   End Impl_core_clone_Clone_where_core_clone_Clone_T_for_array_N_T.
   
+  Module Impl_core_clone_TrivialClone_where_core_clone_TrivialClone_T_for_array_N_T.
+    Definition Self (N : Value.t) (T : Ty.t) : Ty.t := Ty.apply (Ty.path "array") [ N ] [ T ].
+    
+    Axiom Implements :
+      forall (N : Value.t) (T : Ty.t),
+      M.IsTraitInstance
+        "core::clone::TrivialClone"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self N T)
+        (* Instance *) [].
+  End Impl_core_clone_TrivialClone_where_core_clone_TrivialClone_T_for_array_N_T.
+  
   (* Trait *)
   (* Empty module 'SpecArrayClone' *)
   
@@ -2652,12 +2636,14 @@ Module array.
         (* Instance *) [ ("clone", InstanceField.Method (clone T)) ].
   End Impl_core_array_SpecArrayClone_where_core_clone_Clone_T_for_T.
   
-  Module Impl_core_array_SpecArrayClone_where_core_marker_Copy_T_for_T.
+  Module Impl_core_array_SpecArrayClone_where_core_clone_TrivialClone_T_for_T.
     Definition Self (T : Ty.t) : Ty.t := T.
     
     (*
         fn clone<const N: usize>(array: &[T; N]) -> [T; N] {
-            *array
+            // SAFETY: `TrivialClone` implies that this is equivalent to calling
+            // `Clone` on every element.
+            unsafe { ptr::read(array) }
         }
     *)
     Definition clone (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -2670,7 +2656,11 @@ Module array.
               Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "array") [ N ] [ T ] ],
               array
             |) in
-          M.read (| M.deref (| M.read (| array |) |) |)))
+          M.call_closure (|
+            Ty.apply (Ty.path "array") [ N ] [ T ],
+            M.get_function (| "core::ptr::read", [], [ Ty.apply (Ty.path "array") [ N ] [ T ] ] |),
+            [ M.borrow (| Pointer.Kind.ConstPointer, M.deref (| M.read (| array |) |) |) ]
+          |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -2682,7 +2672,7 @@ Module array.
         (* Trait polymorphic types *) []
         (Self T)
         (* Instance *) [ ("clone", InstanceField.Method (clone T)) ].
-  End Impl_core_array_SpecArrayClone_where_core_marker_Copy_T_for_T.
+  End Impl_core_array_SpecArrayClone_where_core_clone_TrivialClone_T_for_T.
   
   Module Impl_core_default_Default_where_core_default_Default_T_for_array_Usize_32_T.
     Definition Self (T : Ty.t) : Ty.t :=
@@ -6166,9 +6156,11 @@ Module array.
     Definition Self (N : Value.t) (T : Ty.t) : Ty.t := Ty.apply (Ty.path "array") [ N ] [ T ].
     
     (*
-        pub fn map<F, U>(self, f: F) -> [U; N]
+        pub const fn map<F, U>(self, f: F) -> [U; N]
         where
-            F: FnMut(T) -> U,
+            F: [const] FnMut(T) -> U + [const] Destruct,
+            U: [const] Destruct,
+            T: [const] Destruct,
         {
             self.try_map(NeverShortCircuit::wrap_mut_1(f)).0
         }
@@ -6204,13 +6196,13 @@ Module array.
                     [],
                     [
                       Ty.apply (Ty.path "core::ops::try_trait::NeverShortCircuit") [] [ U ];
-                      Ty.associated_unknown
+                      Ty.apply (Ty.path "core::ops::try_trait::Wrapped") [] [ U; T; F ]
                     ]
                   |),
                   [
                     M.read (| self |);
                     M.call_closure (|
-                      Ty.associated_unknown,
+                      Ty.apply (Ty.path "core::ops::try_trait::Wrapped") [] [ U; T; F ],
                       M.get_associated_function (|
                         Ty.apply (Ty.path "core::ops::try_trait::NeverShortCircuit") [] [ U ],
                         "wrap_mut_1",
@@ -6236,11 +6228,18 @@ Module array.
     Global Typeclasses Opaque map.
     
     (*
-        pub fn try_map<R>(self, f: impl FnMut(T) -> R) -> ChangeOutputType<R, [R::Output; N]>
+        pub const fn try_map<R>(
+            self,
+            mut f: impl [const] FnMut(T) -> R + [const] Destruct,
+        ) -> ChangeOutputType<R, [R::Output; N]>
         where
-            R: Try<Residual: Residual<[R::Output; N]>>,
+            R: [const] Try<Residual: [const] Residual<[R::Output; N]>, Output: [const] Destruct>,
+            T: [const] Destruct,
         {
-            drain_array_with(self, |iter| try_from_trusted_iterator(iter.map(f)))
+            let mut me = ManuallyDrop::new(self);
+            // SAFETY: try_from_fn calls `f` N times.
+            let mut f = unsafe { drain::Drain::new(&mut me, &mut f) };
+            try_from_fn(&mut f)
         }
     *)
     Definition try_map
@@ -6252,27 +6251,75 @@ Module array.
         : M :=
       let Self : Ty.t := Self N T in
       match ε, τ, α with
-      | [], [ R; impl_FnMut_T__arrow_R ], [ self; f ] =>
+      | [], [ R; impl__const__FnMut_T__arrow_R__plus___const__Destruct ], [ self; f ] =>
         ltac:(M.monadic
           (let self := M.alloc (| Ty.apply (Ty.path "array") [ N ] [ T ], self |) in
-          let f := M.alloc (| impl_FnMut_T__arrow_R, f |) in
-          M.call_closure (|
-            Ty.associated_in_trait
-              "core::ops::try_trait::Residual"
-              []
-              [
+          let f := M.alloc (| impl__const__FnMut_T__arrow_R__plus___const__Destruct, f |) in
+          M.read (|
+            let~ me :
                 Ty.apply
-                  (Ty.path "array")
+                  (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                  []
+                  [ Ty.apply (Ty.path "array") [ N ] [ T ] ] :=
+              M.call_closure (|
+                Ty.apply
+                  (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                  []
+                  [ Ty.apply (Ty.path "array") [ N ] [ T ] ],
+                M.get_associated_function (|
+                  Ty.apply
+                    (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                    []
+                    [ Ty.apply (Ty.path "array") [ N ] [ T ] ],
+                  "new",
+                  [],
+                  []
+                |),
+                [ M.read (| self |) ]
+              |) in
+            let~ f :
+                Ty.apply
+                  (Ty.path "core::array::drain::Drain")
                   [ N ]
-                  [ Ty.associated_in_trait "core::ops::try_trait::Try" [] [] R "Output" ]
-              ]
-              (Ty.associated_in_trait "core::ops::try_trait::Try" [] [] R "Residual")
-              "TryType",
-            M.get_function (|
-              "core::array::drain::drain_array_with",
-              [ N ],
-              [
-                T;
+                  [ T; impl__const__FnMut_T__arrow_R__plus___const__Destruct ] :=
+              M.call_closure (|
+                Ty.apply
+                  (Ty.path "core::array::drain::Drain")
+                  [ N ]
+                  [ T; impl__const__FnMut_T__arrow_R__plus___const__Destruct ],
+                M.get_associated_function (|
+                  Ty.apply
+                    (Ty.path "core::array::drain::Drain")
+                    [ N ]
+                    [ T; impl__const__FnMut_T__arrow_R__plus___const__Destruct ],
+                  "new",
+                  [],
+                  []
+                |),
+                [
+                  M.borrow (|
+                    Pointer.Kind.MutRef,
+                    M.deref (| M.borrow (| Pointer.Kind.MutRef, me |) |)
+                  |);
+                  M.borrow (|
+                    Pointer.Kind.MutRef,
+                    M.deref (| M.borrow (| Pointer.Kind.MutRef, f |) |)
+                  |)
+                ]
+              |) in
+            M.alloc (|
+              Ty.associated_in_trait
+                "core::ops::try_trait::Residual"
+                []
+                [
+                  Ty.apply
+                    (Ty.path "array")
+                    [ N ]
+                    [ Ty.associated_in_trait "core::ops::try_trait::Try" [] [] R "Output" ]
+                ]
+                (Ty.associated_in_trait "core::ops::try_trait::Try" [] [] R "Residual")
+                "TryType",
+              M.call_closure (|
                 Ty.associated_in_trait
                   "core::ops::try_trait::Residual"
                   []
@@ -6283,129 +6330,26 @@ Module array.
                       [ Ty.associated_in_trait "core::ops::try_trait::Try" [] [] R "Output" ]
                   ]
                   (Ty.associated_in_trait "core::ops::try_trait::Try" [] [] R "Residual")
-                  "TryType";
-                Ty.function
-                  [ Ty.apply (Ty.path "core::array::drain::Drain") [] [ T ] ]
-                  (Ty.associated_in_trait
-                    "core::ops::try_trait::Residual"
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "array")
-                        [ N ]
-                        [ Ty.associated_in_trait "core::ops::try_trait::Try" [] [] R "Output" ]
-                    ]
-                    (Ty.associated_in_trait "core::ops::try_trait::Try" [] [] R "Residual")
-                    "TryType")
-              ]
-            |),
-            [
-              M.read (| self |);
-              M.closure
-                (fun γ =>
-                  ltac:(M.monadic
-                    match γ with
-                    | [ α0 ] =>
-                      ltac:(M.monadic
-                        (M.match_operator (|
-                          Ty.associated_in_trait
-                            "core::ops::try_trait::Residual"
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "array")
-                                [ N ]
-                                [
-                                  Ty.associated_in_trait
-                                    "core::ops::try_trait::Try"
-                                    []
-                                    []
-                                    R
-                                    "Output"
-                                ]
-                            ]
-                            (Ty.associated_in_trait "core::ops::try_trait::Try" [] [] R "Residual")
-                            "TryType",
-                          M.alloc (| Ty.apply (Ty.path "core::array::drain::Drain") [] [ T ], α0 |),
-                          [
-                            fun γ =>
-                              ltac:(M.monadic
-                                (let iter :=
-                                  M.copy (|
-                                    Ty.apply (Ty.path "core::array::drain::Drain") [] [ T ],
-                                    γ
-                                  |) in
-                                M.call_closure (|
-                                  Ty.associated_in_trait
-                                    "core::ops::try_trait::Residual"
-                                    []
-                                    [
-                                      Ty.apply
-                                        (Ty.path "array")
-                                        [ N ]
-                                        [
-                                          Ty.associated_in_trait
-                                            "core::ops::try_trait::Try"
-                                            []
-                                            []
-                                            R
-                                            "Output"
-                                        ]
-                                    ]
-                                    (Ty.associated_in_trait
-                                      "core::ops::try_trait::Try"
-                                      []
-                                      []
-                                      R
-                                      "Residual")
-                                    "TryType",
-                                  M.get_function (|
-                                    "core::array::try_from_trusted_iterator",
-                                    [ N ],
-                                    [
-                                      Ty.associated_in_trait
-                                        "core::ops::try_trait::Try"
-                                        []
-                                        []
-                                        R
-                                        "Output";
-                                      R;
-                                      Ty.apply
-                                        (Ty.path "core::iter::adapters::map::Map")
-                                        []
-                                        [
-                                          Ty.apply (Ty.path "core::array::drain::Drain") [] [ T ];
-                                          impl_FnMut_T__arrow_R
-                                        ]
-                                    ]
-                                  |),
-                                  [
-                                    M.call_closure (|
-                                      Ty.apply
-                                        (Ty.path "core::iter::adapters::map::Map")
-                                        []
-                                        [
-                                          Ty.apply (Ty.path "core::array::drain::Drain") [] [ T ];
-                                          impl_FnMut_T__arrow_R
-                                        ],
-                                      M.get_trait_method (|
-                                        "core::iter::traits::iterator::Iterator",
-                                        Ty.apply (Ty.path "core::array::drain::Drain") [] [ T ],
-                                        [],
-                                        [],
-                                        "map",
-                                        [],
-                                        [ R; impl_FnMut_T__arrow_R ]
-                                      |),
-                                      [ M.read (| iter |); M.read (| f |) ]
-                                    |)
-                                  ]
-                                |)))
-                          ]
-                        |)))
-                    | _ => M.impossible "wrong number of arguments"
-                    end))
-            ]
+                  "TryType",
+                M.get_function (|
+                  "core::array::try_from_fn",
+                  [ N ],
+                  [
+                    R;
+                    Ty.apply
+                      (Ty.path "&mut")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "core::array::drain::Drain")
+                          [ N ]
+                          [ T; impl__const__FnMut_T__arrow_R__plus___const__Destruct ]
+                      ]
+                  ]
+                |),
+                [ M.borrow (| Pointer.Kind.MutRef, f |) ]
+              |)
+            |)
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -6501,7 +6445,7 @@ Module array.
         pub const fn each_ref(&self) -> [&T; N] {
             let mut buf = [null::<T>(); N];
     
-            // FIXME(const-hack): We would like to simply use iterators for this (as in the original implementation), but this is not allowed in constant expressions.
+            // FIXME(const_trait_impl): We would like to simply use iterators for this (as in the original implementation), but this is not allowed in constant expressions.
             let mut i = 0;
             while i < N {
                 buf[i] = &raw const self[i];
@@ -6554,15 +6498,14 @@ Module array.
                           fun γ =>
                             ltac:(M.monadic
                               (let γ :=
-                                M.use
-                                  (M.alloc (|
+                                M.alloc (|
+                                  Ty.path "bool",
+                                  M.call_closure (|
                                     Ty.path "bool",
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      BinOp.lt,
-                                      [ M.read (| i |); N ]
-                                    |)
-                                  |)) in
+                                    BinOp.lt,
+                                    [ M.read (| i |); N ]
+                                  |)
+                                |) in
                               let _ :=
                                 is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                               M.read (|
@@ -6632,7 +6575,7 @@ Module array.
         pub const fn each_mut(&mut self) -> [&mut T; N] {
             let mut buf = [null_mut::<T>(); N];
     
-            // FIXME(const-hack): We would like to simply use iterators for this (as in the original implementation), but this is not allowed in constant expressions.
+            // FIXME(const_trait_impl): We would like to simply use iterators for this (as in the original implementation), but this is not allowed in constant expressions.
             let mut i = 0;
             while i < N {
                 buf[i] = &raw mut self[i];
@@ -6685,15 +6628,14 @@ Module array.
                           fun γ =>
                             ltac:(M.monadic
                               (let γ :=
-                                M.use
-                                  (M.alloc (|
+                                M.alloc (|
+                                  Ty.path "bool",
+                                  M.call_closure (|
                                     Ty.path "bool",
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      BinOp.lt,
-                                      [ M.read (| i |); N ]
-                                    |)
-                                  |)) in
+                                    BinOp.lt,
+                                    [ M.read (| i |); N ]
+                                  |)
+                                |) in
                               let _ :=
                                 is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                               M.read (|
@@ -6761,7 +6703,7 @@ Module array.
     
     (*
         pub fn split_array_ref<const M: usize>(&self) -> (&[T; M], &[T]) {
-            (&self[..]).split_first_chunk::<M>().unwrap()
+            self.split_first_chunk::<M>().unwrap()
         }
     *)
     Definition split_array_ref
@@ -6820,31 +6762,13 @@ Module array.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.call_closure (|
-                            Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                            M.get_trait_method (|
-                              "core::ops::index::Index",
-                              Ty.apply (Ty.path "array") [ N ] [ T ],
-                              [],
-                              [ Ty.path "core::ops::range::RangeFull" ],
-                              "index",
-                              [],
-                              []
-                            |),
-                            [
-                              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                              Value.StructTuple "core::ops::range::RangeFull" [] [] []
-                            ]
-                          |)
-                        |)
-                      |)
-                    |)
+                  M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                    M.pointer_coercion
+                      M.PointerCoercion.Unsize
+                      (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "array") [ N ] [ T ] ])
+                      (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]),
+                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
                   |)
                 ]
               |)
@@ -6861,7 +6785,7 @@ Module array.
     
     (*
         pub fn split_array_mut<const M: usize>(&mut self) -> (&mut [T; M], &mut [T]) {
-            (&mut self[..]).split_first_chunk_mut::<M>().unwrap()
+            self.split_first_chunk_mut::<M>().unwrap()
         }
     *)
     Definition split_array_mut
@@ -6920,31 +6844,13 @@ Module array.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.MutRef,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.MutRef,
-                        M.deref (|
-                          M.call_closure (|
-                            Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                            M.get_trait_method (|
-                              "core::ops::index::IndexMut",
-                              Ty.apply (Ty.path "array") [ N ] [ T ],
-                              [],
-                              [ Ty.path "core::ops::range::RangeFull" ],
-                              "index_mut",
-                              [],
-                              []
-                            |),
-                            [
-                              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                              Value.StructTuple "core::ops::range::RangeFull" [] [] []
-                            ]
-                          |)
-                        |)
-                      |)
-                    |)
+                  M.call_closure (|
+                    Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                    M.pointer_coercion
+                      M.PointerCoercion.Unsize
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "array") [ N ] [ T ] ])
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]),
+                    [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |) ]
                   |)
                 ]
               |)
@@ -6961,7 +6867,7 @@ Module array.
     
     (*
         pub fn rsplit_array_ref<const M: usize>(&self) -> (&[T], &[T; M]) {
-            (&self[..]).split_last_chunk::<M>().unwrap()
+            self.split_last_chunk::<M>().unwrap()
         }
     *)
     Definition rsplit_array_ref
@@ -7020,31 +6926,13 @@ Module array.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.call_closure (|
-                            Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                            M.get_trait_method (|
-                              "core::ops::index::Index",
-                              Ty.apply (Ty.path "array") [ N ] [ T ],
-                              [],
-                              [ Ty.path "core::ops::range::RangeFull" ],
-                              "index",
-                              [],
-                              []
-                            |),
-                            [
-                              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                              Value.StructTuple "core::ops::range::RangeFull" [] [] []
-                            ]
-                          |)
-                        |)
-                      |)
-                    |)
+                  M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                    M.pointer_coercion
+                      M.PointerCoercion.Unsize
+                      (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "array") [ N ] [ T ] ])
+                      (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]),
+                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
                   |)
                 ]
               |)
@@ -7061,7 +6949,7 @@ Module array.
     
     (*
         pub fn rsplit_array_mut<const M: usize>(&mut self) -> (&mut [T], &mut [T; M]) {
-            (&mut self[..]).split_last_chunk_mut::<M>().unwrap()
+            self.split_last_chunk_mut::<M>().unwrap()
         }
     *)
     Definition rsplit_array_mut
@@ -7120,31 +7008,13 @@ Module array.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.MutRef,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.MutRef,
-                        M.deref (|
-                          M.call_closure (|
-                            Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                            M.get_trait_method (|
-                              "core::ops::index::IndexMut",
-                              Ty.apply (Ty.path "array") [ N ] [ T ],
-                              [],
-                              [ Ty.path "core::ops::range::RangeFull" ],
-                              "index_mut",
-                              [],
-                              []
-                            |),
-                            [
-                              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                              Value.StructTuple "core::ops::range::RangeFull" [] [] []
-                            ]
-                          |)
-                        |)
-                      |)
-                    |)
+                  M.call_closure (|
+                    Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                    M.pointer_coercion
+                      M.PointerCoercion.Unsize
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "array") [ N ] [ T ] ])
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]),
+                    [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |) ]
                   |)
                 ]
               |)
@@ -7278,20 +7148,28 @@ Module array.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            UnOp.not,
-                            [
-                              M.call_closure (|
-                                Ty.path "bool",
-                                BinOp.ge,
-                                [
-                                  M.read (|
-                                    M.SubPointer.get_tuple_field (|
-                                      M.alloc (|
+                          UnOp.not,
+                          [
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.ge,
+                              [
+                                M.read (|
+                                  M.SubPointer.get_tuple_field (|
+                                    M.alloc (|
+                                      Ty.tuple
+                                        [
+                                          Ty.path "usize";
+                                          Ty.apply
+                                            (Ty.path "core::option::Option")
+                                            []
+                                            [ Ty.path "usize" ]
+                                        ],
+                                      M.call_closure (|
                                         Ty.tuple
                                           [
                                             Ty.path "usize";
@@ -7300,36 +7178,27 @@ Module array.
                                               []
                                               [ Ty.path "usize" ]
                                           ],
-                                        M.call_closure (|
-                                          Ty.tuple
-                                            [
-                                              Ty.path "usize";
-                                              Ty.apply
-                                                (Ty.path "core::option::Option")
-                                                []
-                                                [ Ty.path "usize" ]
-                                            ],
-                                          M.get_trait_method (|
-                                            "core::iter::traits::iterator::Iterator",
-                                            impl_UncheckedIterator_Item___R_,
-                                            [],
-                                            [],
-                                            "size_hint",
-                                            [],
-                                            []
-                                          |),
-                                          [ M.borrow (| Pointer.Kind.Ref, iter |) ]
-                                        |)
-                                      |),
-                                      0
-                                    |)
-                                  |);
-                                  N
-                                ]
-                              |)
-                            ]
-                          |)
-                        |)) in
+                                        M.get_trait_method (|
+                                          "core::iter::traits::iterator::Iterator",
+                                          impl_UncheckedIterator_Item___R_,
+                                          [],
+                                          [],
+                                          "size_hint",
+                                          [],
+                                          []
+                                        |),
+                                        [ M.borrow (| Pointer.Kind.Ref, iter |) ]
+                                      |)
+                                    |),
+                                    0
+                                  |)
+                                |);
+                                N
+                              ]
+                            |)
+                          ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     M.never_to_any (|
                       M.call_closure (|
@@ -7428,13 +7297,10 @@ Module array.
   End try_from_trusted_iterator.
   
   (*
-  fn try_from_fn_erased<T, R>(
-      buffer: &mut [MaybeUninit<T>],
-      mut generator: impl FnMut(usize) -> R,
-  ) -> ControlFlow<R::Residual>
-  where
-      R: Try<Output = T>,
-  {
+  const fn try_from_fn_erased<R: [const] Try<Output: [const] Destruct>>(
+      buffer: &mut [MaybeUninit<R::Output>],
+      mut generator: impl [const] FnMut(usize) -> R + [const] Destruct,
+  ) -> ControlFlow<R::Residual> {
       let mut guard = Guard { array_mut: buffer, initialized: 0 };
   
       while guard.initialized < guard.array_mut.len() {
@@ -7450,7 +7316,7 @@ Module array.
   *)
   Definition try_from_fn_erased (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [ T; R; impl_FnMut_usize__arrow_R ], [ buffer; generator ] =>
+    | [], [ R; impl__const__FnMut_usize__arrow_R__plus___const__Destruct ], [ buffer; generator ] =>
       ltac:(M.monadic
         (let buffer :=
           M.alloc (|
@@ -7461,11 +7327,17 @@ Module array.
                 Ty.apply
                   (Ty.path "slice")
                   []
-                  [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]
+                  [
+                    Ty.apply
+                      (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                      []
+                      [ Ty.associated_in_trait "core::ops::try_trait::Try" [] [] R "Output" ]
+                  ]
               ],
             buffer
           |) in
-        let generator := M.alloc (| impl_FnMut_usize__arrow_R, generator |) in
+        let generator :=
+          M.alloc (| impl__const__FnMut_usize__arrow_R__plus___const__Destruct, generator |) in
         M.catch_return
           (Ty.apply
             (Ty.path "core::ops::control_flow::ControlFlow")
@@ -7474,11 +7346,15 @@ Module array.
             ]) (|
           ltac:(M.monadic
             (M.read (|
-              let~ guard : Ty.apply (Ty.path "core::array::Guard") [] [ T ] :=
+              let~ guard :
+                  Ty.apply
+                    (Ty.path "core::array::Guard")
+                    []
+                    [ Ty.associated_in_trait "core::ops::try_trait::Try" [] [] R "Output" ] :=
                 Value.mkStructRecord
                   "core::array::Guard"
                   []
-                  [ T ]
+                  [ Ty.associated_in_trait "core::ops::try_trait::Try" [] [] R "Output" ]
                   [
                     ("array_mut",
                       M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| buffer |) |) |));
@@ -7498,63 +7374,80 @@ Module array.
                             fun γ =>
                               ltac:(M.monadic
                                 (let γ :=
-                                  M.use
-                                    (M.alloc (|
+                                  M.alloc (|
+                                    Ty.path "bool",
+                                    M.call_closure (|
                                       Ty.path "bool",
-                                      M.call_closure (|
-                                        Ty.path "bool",
-                                        BinOp.lt,
-                                        [
-                                          M.read (|
-                                            M.SubPointer.get_struct_record_field (|
-                                              guard,
-                                              "core::array::Guard",
-                                              "initialized"
-                                            |)
-                                          |);
-                                          M.call_closure (|
-                                            Ty.path "usize",
-                                            M.get_associated_function (|
-                                              Ty.apply
-                                                (Ty.path "slice")
-                                                []
-                                                [
-                                                  Ty.apply
-                                                    (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                                    []
-                                                    [ T ]
-                                                ],
-                                              "len",
-                                              [],
+                                      BinOp.lt,
+                                      [
+                                        M.read (|
+                                          M.SubPointer.get_struct_record_field (|
+                                            guard,
+                                            "core::array::Guard",
+                                            "initialized"
+                                          |)
+                                        |);
+                                        M.call_closure (|
+                                          Ty.path "usize",
+                                          M.get_associated_function (|
+                                            Ty.apply
+                                              (Ty.path "slice")
                                               []
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (|
-                                                  M.read (|
-                                                    M.SubPointer.get_struct_record_field (|
-                                                      guard,
-                                                      "core::array::Guard",
-                                                      "array_mut"
-                                                    |)
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                                  []
+                                                  [
+                                                    Ty.associated_in_trait
+                                                      "core::ops::try_trait::Try"
+                                                      []
+                                                      []
+                                                      R
+                                                      "Output"
+                                                  ]
+                                              ],
+                                            "len",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (|
+                                                M.read (|
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    guard,
+                                                    "core::array::Guard",
+                                                    "array_mut"
                                                   |)
                                                 |)
                                               |)
-                                            ]
-                                          |)
-                                        ]
-                                      |)
-                                    |)) in
+                                            |)
+                                          ]
+                                        |)
+                                      ]
+                                    |)
+                                  |) in
                                 let _ :=
                                   is_constant_or_break_match (|
                                     M.read (| γ |),
                                     Value.Bool true
                                   |) in
                                 M.read (|
-                                  let~ item : T :=
+                                  let~ item :
+                                      Ty.associated_in_trait
+                                        "core::ops::try_trait::Try"
+                                        []
+                                        []
+                                        R
+                                        "Output" :=
                                     M.match_operator (|
-                                      T,
+                                      Ty.associated_in_trait
+                                        "core::ops::try_trait::Try"
+                                        []
+                                        []
+                                        R
+                                        "Output",
                                       M.alloc (|
                                         Ty.apply
                                           (Ty.path "core::ops::control_flow::ControlFlow")
@@ -7572,7 +7465,12 @@ Module array.
                                                   "Residual";
                                                 Ty.path "core::convert::Infallible"
                                               ];
-                                            T
+                                            Ty.associated_in_trait
+                                              "core::ops::try_trait::Try"
+                                              []
+                                              []
+                                              R
+                                              "Output"
                                           ],
                                         M.call_closure (|
                                           Ty.apply
@@ -7591,7 +7489,12 @@ Module array.
                                                     "Residual";
                                                   Ty.path "core::convert::Infallible"
                                                 ];
-                                              T
+                                              Ty.associated_in_trait
+                                                "core::ops::try_trait::Try"
+                                                []
+                                                []
+                                                R
+                                                "Output"
                                             ],
                                           M.get_trait_method (|
                                             "core::ops::try_trait::Try",
@@ -7605,7 +7508,12 @@ Module array.
                                                   []
                                                   R
                                                   "Residual";
-                                                T
+                                                Ty.associated_in_trait
+                                                  "core::ops::try_trait::Try"
+                                                  []
+                                                  []
+                                                  R
+                                                  "Output"
                                               ],
                                             [],
                                             [],
@@ -7625,7 +7533,12 @@ Module array.
                                                     []
                                                     R
                                                     "Residual";
-                                                  T
+                                                  Ty.associated_in_trait
+                                                    "core::ops::try_trait::Try"
+                                                    []
+                                                    []
+                                                    R
+                                                    "Output"
                                                 ],
                                               M.get_trait_method (|
                                                 "core::ops::try_trait::Try",
@@ -7641,7 +7554,7 @@ Module array.
                                                   R,
                                                   M.get_trait_method (|
                                                     "core::ops::function::FnMut",
-                                                    impl_FnMut_usize__arrow_R,
+                                                    impl__const__FnMut_usize__arrow_R__plus___const__Destruct,
                                                     [],
                                                     [ Ty.tuple [ Ty.path "usize" ] ],
                                                     "call_mut",
@@ -7757,7 +7670,16 @@ Module array.
                                                 "core::ops::control_flow::ControlFlow::Continue",
                                                 0
                                               |) in
-                                            let val := M.copy (| T, γ0_0 |) in
+                                            let val :=
+                                              M.copy (|
+                                                Ty.associated_in_trait
+                                                  "core::ops::try_trait::Try"
+                                                  []
+                                                  []
+                                                  R
+                                                  "Output",
+                                                γ0_0
+                                              |) in
                                             M.read (| val |)))
                                       ]
                                     |) in
@@ -7765,7 +7687,17 @@ Module array.
                                     M.call_closure (|
                                       Ty.tuple [],
                                       M.get_associated_function (|
-                                        Ty.apply (Ty.path "core::array::Guard") [] [ T ],
+                                        Ty.apply
+                                          (Ty.path "core::array::Guard")
+                                          []
+                                          [
+                                            Ty.associated_in_trait
+                                              "core::ops::try_trait::Try"
+                                              []
+                                              []
+                                              R
+                                              "Output"
+                                          ],
                                         "push_unchecked",
                                         [],
                                         []
@@ -7795,7 +7727,12 @@ Module array.
                   M.get_function (|
                     "core::mem::forget",
                     [],
-                    [ Ty.apply (Ty.path "core::array::Guard") [] [ T ] ]
+                    [
+                      Ty.apply
+                        (Ty.path "core::array::Guard")
+                        []
+                        [ Ty.associated_in_trait "core::ops::try_trait::Try" [] [] R "Output" ]
+                    ]
                   |),
                   [ M.read (| guard |) ]
                 |) in
@@ -7851,9 +7788,9 @@ Module array.
     Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "core::array::Guard") [] [ T ].
     
     (*
-        pub unsafe fn push_unchecked(&mut self, item: T) {
+        pub(crate) const unsafe fn push_unchecked(&mut self, item: T) {
             // SAFETY: If `initialized` was correct before and the caller does not
-            // invoke this method more than N times then writes will be in-bounds
+            // invoke this method more than N times, then writes will be in-bounds
             // and slots will not be initialized more than once.
             unsafe {
                 self.array_mut.get_unchecked_mut(self.initialized).write(item);
@@ -7966,18 +7903,15 @@ Module array.
     Global Typeclasses Opaque push_unchecked.
   End Impl_core_array_Guard_T.
   
-  Module Impl_core_ops_drop_Drop_for_core_array_Guard_T.
+  Module Impl_core_ops_drop_Drop_where_core_marker_Destruct_T_for_core_array_Guard_T.
     Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "core::array::Guard") [] [ T ].
     
     (*
         fn drop(&mut self) {
             debug_assert!(self.initialized <= self.array_mut.len());
-    
             // SAFETY: this slice will contain only initialized objects.
             unsafe {
-                crate::ptr::drop_in_place(MaybeUninit::slice_assume_init_mut(
-                    self.array_mut.get_unchecked_mut(..self.initialized),
-                ));
+                self.array_mut.get_unchecked_mut(..self.initialized).assume_init_drop();
             }
         }
     *)
@@ -7999,7 +7933,7 @@ Module array.
                 [
                   fun γ =>
                     ltac:(M.monadic
-                      (let γ := M.use (M.alloc (| Ty.path "bool", Value.Bool true |)) in
+                      (let γ := M.alloc (| Ty.path "bool", Value.Bool true |) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       M.read (|
                         let~ _ : Ty.tuple [] :=
@@ -8010,61 +7944,60 @@ Module array.
                               fun γ =>
                                 ltac:(M.monadic
                                   (let γ :=
-                                    M.use
-                                      (M.alloc (|
+                                    M.alloc (|
+                                      Ty.path "bool",
+                                      M.call_closure (|
                                         Ty.path "bool",
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          UnOp.not,
-                                          [
-                                            M.call_closure (|
-                                              Ty.path "bool",
-                                              BinOp.le,
-                                              [
-                                                M.read (|
-                                                  M.SubPointer.get_struct_record_field (|
-                                                    M.deref (| M.read (| self |) |),
-                                                    "core::array::Guard",
-                                                    "initialized"
-                                                  |)
-                                                |);
-                                                M.call_closure (|
-                                                  Ty.path "usize",
-                                                  M.get_associated_function (|
-                                                    Ty.apply
-                                                      (Ty.path "slice")
-                                                      []
-                                                      [
-                                                        Ty.apply
-                                                          (Ty.path
-                                                            "core::mem::maybe_uninit::MaybeUninit")
-                                                          []
-                                                          [ T ]
-                                                      ],
-                                                    "len",
-                                                    [],
+                                        UnOp.not,
+                                        [
+                                          M.call_closure (|
+                                            Ty.path "bool",
+                                            BinOp.le,
+                                            [
+                                              M.read (|
+                                                M.SubPointer.get_struct_record_field (|
+                                                  M.deref (| M.read (| self |) |),
+                                                  "core::array::Guard",
+                                                  "initialized"
+                                                |)
+                                              |);
+                                              M.call_closure (|
+                                                Ty.path "usize",
+                                                M.get_associated_function (|
+                                                  Ty.apply
+                                                    (Ty.path "slice")
                                                     []
-                                                  |),
-                                                  [
-                                                    M.borrow (|
-                                                      Pointer.Kind.Ref,
-                                                      M.deref (|
-                                                        M.read (|
-                                                          M.SubPointer.get_struct_record_field (|
-                                                            M.deref (| M.read (| self |) |),
-                                                            "core::array::Guard",
-                                                            "array_mut"
-                                                          |)
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path
+                                                          "core::mem::maybe_uninit::MaybeUninit")
+                                                        []
+                                                        [ T ]
+                                                    ],
+                                                  "len",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (|
+                                                      M.read (|
+                                                        M.SubPointer.get_struct_record_field (|
+                                                          M.deref (| M.read (| self |) |),
+                                                          "core::array::Guard",
+                                                          "array_mut"
                                                         |)
                                                       |)
                                                     |)
-                                                  ]
-                                                |)
-                                              ]
-                                            |)
-                                          ]
-                                        |)
-                                      |)) in
+                                                  |)
+                                                ]
+                                              |)
+                                            ]
+                                          |)
+                                        ]
+                                      |)
+                                    |) in
                                   let _ :=
                                     is_constant_or_break_match (|
                                       M.read (| γ |),
@@ -8092,92 +8025,65 @@ Module array.
             let~ _ : Ty.tuple [] :=
               M.call_closure (|
                 Ty.tuple [],
-                M.get_function (|
-                  "core::ptr::drop_in_place",
+                M.get_associated_function (|
+                  Ty.apply
+                    (Ty.path "slice")
+                    []
+                    [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ],
+                  "assume_init_drop",
                   [],
-                  [ Ty.apply (Ty.path "slice") [] [ T ] ]
+                  []
                 |),
                 [
                   M.borrow (|
-                    Pointer.Kind.MutPointer,
+                    Pointer.Kind.MutRef,
                     M.deref (|
                       M.call_closure (|
-                        Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                        M.get_associated_function (|
-                          Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ],
-                          "slice_assume_init_mut",
-                          [],
+                        Ty.apply
+                          (Ty.path "&mut")
                           []
+                          [
+                            Ty.apply
+                              (Ty.path "slice")
+                              []
+                              [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]
+                          ],
+                        M.get_associated_function (|
+                          Ty.apply
+                            (Ty.path "slice")
+                            []
+                            [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ],
+                          "get_unchecked_mut",
+                          [],
+                          [ Ty.apply (Ty.path "core::ops::range::RangeTo") [] [ Ty.path "usize" ] ]
                         |),
                         [
                           M.borrow (|
                             Pointer.Kind.MutRef,
                             M.deref (|
-                              M.call_closure (|
-                                Ty.apply
-                                  (Ty.path "&mut")
-                                  []
-                                  [
-                                    Ty.apply
-                                      (Ty.path "slice")
-                                      []
-                                      [
-                                        Ty.apply
-                                          (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                          []
-                                          [ T ]
-                                      ]
-                                  ],
-                                M.get_associated_function (|
-                                  Ty.apply
-                                    (Ty.path "slice")
-                                    []
-                                    [
-                                      Ty.apply
-                                        (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                        []
-                                        [ T ]
-                                    ],
-                                  "get_unchecked_mut",
-                                  [],
-                                  [
-                                    Ty.apply
-                                      (Ty.path "core::ops::range::RangeTo")
-                                      []
-                                      [ Ty.path "usize" ]
-                                  ]
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.MutRef,
-                                    M.deref (|
-                                      M.read (|
-                                        M.SubPointer.get_struct_record_field (|
-                                          M.deref (| M.read (| self |) |),
-                                          "core::array::Guard",
-                                          "array_mut"
-                                        |)
-                                      |)
-                                    |)
-                                  |);
-                                  Value.mkStructRecord
-                                    "core::ops::range::RangeTo"
-                                    []
-                                    [ Ty.path "usize" ]
-                                    [
-                                      ("end_",
-                                        M.read (|
-                                          M.SubPointer.get_struct_record_field (|
-                                            M.deref (| M.read (| self |) |),
-                                            "core::array::Guard",
-                                            "initialized"
-                                          |)
-                                        |))
-                                    ]
-                                ]
+                              M.read (|
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "core::array::Guard",
+                                  "array_mut"
+                                |)
                               |)
                             |)
-                          |)
+                          |);
+                          Value.mkStructRecord
+                            "core::ops::range::RangeTo"
+                            []
+                            [ Ty.path "usize" ]
+                            [
+                              ("end_",
+                                M.read (|
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (| M.read (| self |) |),
+                                    "core::array::Guard",
+                                    "initialized"
+                                  |)
+                                |))
+                            ]
                         ]
                       |)
                     |)
@@ -8197,7 +8103,7 @@ Module array.
         (* Trait polymorphic types *) []
         (Self T)
         (* Instance *) [ ("drop", InstanceField.Method (drop T)) ].
-  End Impl_core_ops_drop_Drop_for_core_array_Guard_T.
+  End Impl_core_ops_drop_Drop_where_core_marker_Destruct_T_for_core_array_Guard_T.
   
   (*
   pub(crate) fn iter_next_chunk<T, const N: usize>(
@@ -8378,6 +8284,7 @@ Module array.
       buffer: &mut [MaybeUninit<T>],
       iter: &mut impl Iterator<Item = T>,
   ) -> Result<(), usize> {
+      // if `Iterator::next` panics, this guard will drop already initialized items
       let mut guard = Guard { array_mut: buffer, initialized: 0 };
       while guard.initialized < guard.array_mut.len() {
           let Some(item) = iter.next() else {
@@ -8442,54 +8349,53 @@ Module array.
                             fun γ =>
                               ltac:(M.monadic
                                 (let γ :=
-                                  M.use
-                                    (M.alloc (|
+                                  M.alloc (|
+                                    Ty.path "bool",
+                                    M.call_closure (|
                                       Ty.path "bool",
-                                      M.call_closure (|
-                                        Ty.path "bool",
-                                        BinOp.lt,
-                                        [
-                                          M.read (|
-                                            M.SubPointer.get_struct_record_field (|
-                                              guard,
-                                              "core::array::Guard",
-                                              "initialized"
-                                            |)
-                                          |);
-                                          M.call_closure (|
-                                            Ty.path "usize",
-                                            M.get_associated_function (|
-                                              Ty.apply
-                                                (Ty.path "slice")
-                                                []
-                                                [
-                                                  Ty.apply
-                                                    (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                                    []
-                                                    [ T ]
-                                                ],
-                                              "len",
-                                              [],
+                                      BinOp.lt,
+                                      [
+                                        M.read (|
+                                          M.SubPointer.get_struct_record_field (|
+                                            guard,
+                                            "core::array::Guard",
+                                            "initialized"
+                                          |)
+                                        |);
+                                        M.call_closure (|
+                                          Ty.path "usize",
+                                          M.get_associated_function (|
+                                            Ty.apply
+                                              (Ty.path "slice")
                                               []
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (|
-                                                  M.read (|
-                                                    M.SubPointer.get_struct_record_field (|
-                                                      guard,
-                                                      "core::array::Guard",
-                                                      "array_mut"
-                                                    |)
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                                  []
+                                                  [ T ]
+                                              ],
+                                            "len",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (|
+                                                M.read (|
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    guard,
+                                                    "core::array::Guard",
+                                                    "array_mut"
                                                   |)
                                                 |)
                                               |)
-                                            ]
-                                          |)
-                                        ]
-                                      |)
-                                    |)) in
+                                            |)
+                                          ]
+                                        |)
+                                      ]
+                                    |)
+                                  |) in
                                 let _ :=
                                   is_constant_or_break_match (|
                                     M.read (| γ |),

@@ -95,9 +95,8 @@ pub(crate) fn compile_type<'a>(
     ty: &rustc_hir::Ty<'a>,
 ) -> Rc<RocqType> {
     let generics = env.tcx.generics_of(*local_def_id);
-    let item_ctxt = rustc_hir_analysis::collect::ItemCtxt::new(env.tcx, *local_def_id);
     let span = &ty.span;
-    let ty = &item_ctxt.lower_ty(ty);
+    let ty = &rustc_hir_analysis::lower_ty(env.tcx, ty);
 
     crate::thir_ty::compile_type(env, span, generics, ty)
 }
@@ -142,7 +141,9 @@ pub(crate) fn compile_path_ty_params<'a>(
             .args
             .iter()
             .filter_map(|arg| match arg {
-                rustc_hir::GenericArg::Type(ty) => Some(compile_type(env, local_def_id, ty)),
+                rustc_hir::GenericArg::Type(ty) => {
+                    Some(compile_type(env, local_def_id, ty.as_unambig_ty()))
+                }
                 _ => None,
             })
             .collect(),

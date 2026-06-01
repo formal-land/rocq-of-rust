@@ -876,54 +876,53 @@ Module cell.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
                                   Ty.path "bool",
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    M.get_associated_function (|
-                                      Ty.apply
-                                        (Ty.path "core::option::Option")
-                                        []
-                                        [ Ty.apply (Ty.path "&") [] [ T ] ],
-                                      "is_none",
-                                      [],
+                                  M.get_associated_function (|
+                                    Ty.apply
+                                      (Ty.path "core::option::Option")
                                       []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.alloc (|
+                                      [ Ty.apply (Ty.path "&") [] [ T ] ],
+                                    "is_none",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.alloc (|
+                                        Ty.apply
+                                          (Ty.path "core::option::Option")
+                                          []
+                                          [ Ty.apply (Ty.path "&") [] [ T ] ],
+                                        M.call_closure (|
                                           Ty.apply
                                             (Ty.path "core::option::Option")
                                             []
                                             [ Ty.apply (Ty.path "&") [] [ T ] ],
-                                          M.call_closure (|
+                                          M.get_associated_function (|
                                             Ty.apply
-                                              (Ty.path "core::option::Option")
+                                              (Ty.path "core::cell::once::OnceCell")
                                               []
-                                              [ Ty.apply (Ty.path "&") [] [ T ] ],
-                                            M.get_associated_function (|
-                                              Ty.apply
-                                                (Ty.path "core::cell::once::OnceCell")
-                                                []
-                                                [ T ],
-                                              "get",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (| M.read (| self |) |)
-                                              |)
-                                            ]
-                                          |)
+                                              [ T ],
+                                            "get",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| self |) |)
+                                            |)
+                                          ]
                                         |)
                                       |)
-                                    ]
-                                  |)
-                                |)) in
+                                    |)
+                                  ]
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.read (|
@@ -1328,27 +1327,11 @@ Module cell.
                                     Ty.path "core::fmt::Arguments",
                                     M.get_associated_function (|
                                       Ty.path "core::fmt::Arguments",
-                                      "new_const",
-                                      [ Value.Integer IntegerKind.Usize 1 ],
+                                      "from_str",
+                                      [],
                                       []
                                     |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.alloc (|
-                                              Ty.apply
-                                                (Ty.path "array")
-                                                [ Value.Integer IntegerKind.Usize 1 ]
-                                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                              Value.Array [ mk_str (| "reentrant init" |) ]
-                                            |)
-                                          |)
-                                        |)
-                                      |)
-                                    ]
+                                    [ mk_str (| "reentrant init" |) ]
                                   |)
                                 ]
                               |)
@@ -1642,32 +1625,11 @@ Module cell.
                                               Ty.path "core::fmt::Arguments",
                                               M.get_associated_function (|
                                                 Ty.path "core::fmt::Arguments",
-                                                "new_const",
-                                                [ Value.Integer IntegerKind.Usize 1 ],
+                                                "from_str",
+                                                [],
                                                 []
                                               |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (|
-                                                    M.borrow (|
-                                                      Pointer.Kind.Ref,
-                                                      M.alloc (|
-                                                        Ty.apply
-                                                          (Ty.path "array")
-                                                          [ Value.Integer IntegerKind.Usize 1 ]
-                                                          [
-                                                            Ty.apply
-                                                              (Ty.path "&")
-                                                              []
-                                                              [ Ty.path "str" ]
-                                                          ],
-                                                        Value.Array [ mk_str (| "<uninit>" |) ]
-                                                      |)
-                                                    |)
-                                                  |)
-                                                |)
-                                              ]
+                                              [ mk_str (| "<uninit>" |) ]
                                             |)
                                           |)
                                         |)
@@ -1719,14 +1681,10 @@ Module cell.
       
       (*
           fn clone(&self) -> OnceCell<T> {
-              let res = OnceCell::new();
-              if let Some(value) = self.get() {
-                  match res.set(value.clone()) {
-                      Ok(()) => (),
-                      Err(_) => unreachable!(),
-                  }
+              match self.get() {
+                  Some(value) => OnceCell::from(value.clone()),
+                  None => OnceCell::new(),
               }
-              res
           }
       *)
       Definition clone (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -1742,118 +1700,64 @@ Module cell.
                   [ Ty.apply (Ty.path "core::cell::once::OnceCell") [] [ T ] ],
                 self
               |) in
-            M.read (|
-              let~ res : Ty.apply (Ty.path "core::cell::once::OnceCell") [] [ T ] :=
+            M.match_operator (|
+              Ty.apply (Ty.path "core::cell::once::OnceCell") [] [ T ],
+              M.alloc (|
+                Ty.apply (Ty.path "core::option::Option") [] [ Ty.apply (Ty.path "&") [] [ T ] ],
                 M.call_closure (|
-                  Ty.apply (Ty.path "core::cell::once::OnceCell") [] [ T ],
+                  Ty.apply (Ty.path "core::option::Option") [] [ Ty.apply (Ty.path "&") [] [ T ] ],
                   M.get_associated_function (|
                     Ty.apply (Ty.path "core::cell::once::OnceCell") [] [ T ],
-                    "new",
+                    "get",
                     [],
                     []
                   |),
-                  []
-                |) in
-              let~ _ : Ty.tuple [] :=
-                M.match_operator (|
-                  Ty.tuple [],
-                  M.alloc (| Ty.tuple [], Value.Tuple [] |),
-                  [
-                    fun γ =>
-                      ltac:(M.monadic
-                        (let γ :=
-                          M.alloc (|
-                            Ty.apply
-                              (Ty.path "core::option::Option")
-                              []
-                              [ Ty.apply (Ty.path "&") [] [ T ] ],
-                            M.call_closure (|
-                              Ty.apply
-                                (Ty.path "core::option::Option")
-                                []
-                                [ Ty.apply (Ty.path "&") [] [ T ] ],
-                              M.get_associated_function (|
-                                Ty.apply (Ty.path "core::cell::once::OnceCell") [] [ T ],
-                                "get",
-                                [],
-                                []
-                              |),
-                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                            |)
-                          |) in
-                        let γ0_0 :=
-                          M.SubPointer.get_struct_tuple_field (|
-                            γ,
-                            "core::option::Option::Some",
-                            0
-                          |) in
-                        let value := M.copy (| Ty.apply (Ty.path "&") [] [ T ], γ0_0 |) in
-                        M.match_operator (|
-                          Ty.tuple [],
-                          M.alloc (|
-                            Ty.apply (Ty.path "core::result::Result") [] [ Ty.tuple []; T ],
-                            M.call_closure (|
-                              Ty.apply (Ty.path "core::result::Result") [] [ Ty.tuple []; T ],
-                              M.get_associated_function (|
-                                Ty.apply (Ty.path "core::cell::once::OnceCell") [] [ T ],
-                                "set",
-                                [],
-                                []
-                              |),
-                              [
-                                M.borrow (| Pointer.Kind.Ref, res |);
-                                M.call_closure (|
-                                  T,
-                                  M.get_trait_method (|
-                                    "core::clone::Clone",
-                                    T,
-                                    [],
-                                    [],
-                                    "clone",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (| M.read (| value |) |)
-                                    |)
-                                  ]
-                                |)
-                              ]
-                            |)
-                          |),
-                          [
-                            fun γ =>
-                              ltac:(M.monadic
-                                (let γ0_0 :=
-                                  M.SubPointer.get_struct_tuple_field (|
-                                    γ,
-                                    "core::result::Result::Ok",
-                                    0
-                                  |) in
-                                Value.Tuple []));
-                            fun γ =>
-                              ltac:(M.monadic
-                                (let γ0_0 :=
-                                  M.SubPointer.get_struct_tuple_field (|
-                                    γ,
-                                    "core::result::Result::Err",
-                                    0
-                                  |) in
-                                M.never_to_any (|
-                                  M.call_closure (|
-                                    Ty.path "never",
-                                    M.get_function (| "core::panicking::panic", [], [] |),
-                                    [ mk_str (| "internal error: entered unreachable code" |) ]
-                                  |)
-                                |)))
-                          ]
-                        |)));
-                    fun γ => ltac:(M.monadic (Value.Tuple []))
-                  ]
-                |) in
-              res
+                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                |)
+              |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 :=
+                      M.SubPointer.get_struct_tuple_field (|
+                        γ,
+                        "core::option::Option::Some",
+                        0
+                      |) in
+                    let value := M.copy (| Ty.apply (Ty.path "&") [] [ T ], γ0_0 |) in
+                    M.call_closure (|
+                      Ty.apply (Ty.path "core::cell::once::OnceCell") [] [ T ],
+                      M.get_trait_method (|
+                        "core::convert::From",
+                        Ty.apply (Ty.path "core::cell::once::OnceCell") [] [ T ],
+                        [],
+                        [ T ],
+                        "from",
+                        [],
+                        []
+                      |),
+                      [
+                        M.call_closure (|
+                          T,
+                          M.get_trait_method (| "core::clone::Clone", T, [], [], "clone", [], [] |),
+                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value |) |) |) ]
+                        |)
+                      ]
+                    |)));
+                fun γ =>
+                  ltac:(M.monadic
+                    (let _ := M.is_struct_tuple (| γ, "core::option::Option::None" |) in
+                    M.call_closure (|
+                      Ty.apply (Ty.path "core::cell::once::OnceCell") [] [ T ],
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "core::cell::once::OnceCell") [] [ T ],
+                        "new",
+                        [],
+                        []
+                      |),
+                      []
+                    |)))
+              ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.

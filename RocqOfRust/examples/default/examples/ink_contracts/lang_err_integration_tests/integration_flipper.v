@@ -135,7 +135,7 @@ Module Impl_integration_flipper_Flipper.
           [
             fun γ =>
               ltac:(M.monadic
-                (let γ := M.use succeed in
+                (let γ := succeed in
                 let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                 Value.StructTuple
                   "core::result::Result::Ok"

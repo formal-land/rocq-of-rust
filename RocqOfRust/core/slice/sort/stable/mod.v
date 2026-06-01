@@ -18,15 +18,18 @@ Module slice.
               return;
           }
       
-          cfg_if! {
-              if #[cfg(any(feature = "optimize_for_size", target_pointer_width = "16"))] {
+          cfg_select! {
+              any(feature = "optimize_for_size", target_pointer_width = "16") => {
+                  // Unlike driftsort, mergesort only requires len / 2,
+                  // not len - len / 2.
                   let alloc_len = len / 2;
       
-                  cfg_if! {
-                      if #[cfg(target_pointer_width = "16")] {
+                  cfg_select! {
+                      target_pointer_width = "16" => {
                           let mut heap_buf = BufT::with_capacity(alloc_len);
                           let scratch = heap_buf.as_uninit_slice_mut();
-                      } else {
+                      }
+                      _ => {
                           // For small inputs 4KiB of stack storage suffices, which allows us to avoid
                           // calling the (de-)allocator. Benchmarks showed this was quite beneficial.
                           let mut stack_buf = AlignedStorage::<T, 4096>::new();
@@ -42,7 +45,8 @@ Module slice.
                   }
       
                   tiny::mergesort(v, scratch, is_less);
-              } else {
+              }
+              _ => {
                   // More advanced sorting methods than insertion sort are faster if called in
                   // a hot loop for small inputs, but for general-purpose code the small
                   // binary size of insertion sort is more important. The instruction cache in
@@ -81,11 +85,10 @@ Module slice.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (get_constant (|
-                                  "core::mem::SizedTypeProperties::IS_ZST",
-                                  Ty.path "bool"
-                                |)) in
+                              get_constant (|
+                                "core::mem::SizedTypeProperties::IS_ZST",
+                                Ty.path "bool"
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.never_to_any (| M.read (| M.return_ (| Value.Tuple [] |) |) |)));
@@ -111,21 +114,20 @@ Module slice.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
                                   Ty.path "bool",
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    M.get_function (| "core::intrinsics::likely", [], [] |),
-                                    [
-                                      M.call_closure (|
-                                        Ty.path "bool",
-                                        BinOp.lt,
-                                        [ M.read (| len |); Value.Integer IntegerKind.Usize 2 ]
-                                      |)
-                                    ]
-                                  |)
-                                |)) in
+                                  M.get_function (| "core::intrinsics::likely", [], [] |),
+                                  [
+                                    M.call_closure (|
+                                      Ty.path "bool",
+                                      BinOp.lt,
+                                      [ M.read (| len |); Value.Integer IntegerKind.Usize 2 ]
+                                    |)
+                                  ]
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.never_to_any (| M.read (| M.return_ (| Value.Tuple [] |) |) |)));
@@ -140,29 +142,28 @@ Module slice.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
                                   Ty.path "bool",
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    M.get_function (| "core::intrinsics::likely", [], [] |),
-                                    [
-                                      M.call_closure (|
-                                        Ty.path "bool",
-                                        BinOp.le,
-                                        [
-                                          M.read (| len |);
-                                          M.read (|
-                                            get_constant (|
-                                              "core::slice::sort::stable::sort::MAX_LEN_ALWAYS_INSERTION_SORT",
-                                              Ty.path "usize"
-                                            |)
+                                  M.get_function (| "core::intrinsics::likely", [], [] |),
+                                  [
+                                    M.call_closure (|
+                                      Ty.path "bool",
+                                      BinOp.le,
+                                      [
+                                        M.read (| len |);
+                                        M.read (|
+                                          get_constant (|
+                                            "core::slice::sort::stable::sort::MAX_LEN_ALWAYS_INSERTION_SORT",
+                                            Ty.path "usize"
                                           |)
-                                        ]
-                                      |)
-                                    ]
-                                  |)
-                                |)) in
+                                        |)
+                                      ]
+                                    |)
+                                  ]
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.never_to_any (|
@@ -238,16 +239,26 @@ Module slice.
           // By allocating n elements of memory we can ensure the entire input can
           // be sorted using stable quicksort, which allows better performance on
           // random and low-cardinality distributions. However, we still want to
-          // reduce our memory usage to n / 2 for large inputs. We do this by scaling
-          // our allocation as max(n / 2, min(n, 8MB)), ensuring we scale like n for
-          // small inputs and n / 2 for large inputs, without a sudden drop off. We
-          // also need to ensure our alloc >= MIN_SMALL_SORT_SCRATCH_LEN, as the
+          // reduce our memory usage to n - n / 2 for large inputs. We do this by scaling
+          // our allocation as max(n - n / 2, min(n, 8MB)), ensuring we scale like n for
+          // small inputs and n - n / 2 for large inputs, without a sudden drop off. We
+          // also need to ensure our alloc >= SMALL_SORT_GENERAL_SCRATCH_LEN, as the
           // small-sort always needs this much memory.
+          //
+          // driftsort will produce unsorted runs of up to min_good_run_len, which
+          // is at most len - len / 2.
+          // Unsorted runs need to be processed by quicksort, which requires as much
+          // scratch space as the run length, therefore the scratch space must be at
+          // least len - len / 2.
+          // If min_good_run_len is ever modified, this code must be updated to allocate
+          // the correct scratch size for it.
           const MAX_FULL_ALLOC_BYTES: usize = 8_000_000; // 8MB
-          let max_full_alloc = MAX_FULL_ALLOC_BYTES / mem::size_of::<T>();
+          let max_full_alloc = MAX_FULL_ALLOC_BYTES / size_of::<T>();
           let len = v.len();
-          let alloc_len =
-              cmp::max(cmp::max(len / 2, cmp::min(len, max_full_alloc)), SMALL_SORT_GENERAL_SCRATCH_LEN);
+          let alloc_len = cmp::max(
+              cmp::max(len - len / 2, cmp::min(len, max_full_alloc)),
+              SMALL_SORT_GENERAL_SCRATCH_LEN,
+          );
       
           // For small inputs 4KiB of stack storage suffices, which allows us to avoid
           // calling the (de-)allocator. Benchmarks showed this was quite beneficial.
@@ -319,8 +330,15 @@ Module slice.
                       [
                         M.call_closure (|
                           Ty.path "usize",
-                          BinOp.Wrap.div,
-                          [ M.read (| len |); Value.Integer IntegerKind.Usize 2 ]
+                          BinOp.Wrap.sub,
+                          [
+                            M.read (| len |);
+                            M.call_closure (|
+                              Ty.path "usize",
+                              BinOp.Wrap.div,
+                              [ M.read (| len |); Value.Integer IntegerKind.Usize 2 ]
+                            |)
+                          ]
                         |);
                         M.call_closure (|
                           Ty.path "usize",
@@ -415,40 +433,39 @@ Module slice.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                BinOp.ge,
-                                [
-                                  M.call_closure (|
-                                    Ty.path "usize",
-                                    M.get_associated_function (|
-                                      Ty.apply
-                                        (Ty.path "slice")
-                                        []
-                                        [
-                                          Ty.apply
-                                            (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                            []
-                                            [ T ]
-                                        ],
-                                      "len",
-                                      [],
+                              BinOp.ge,
+                              [
+                                M.call_closure (|
+                                  Ty.path "usize",
+                                  M.get_associated_function (|
+                                    Ty.apply
+                                      (Ty.path "slice")
                                       []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| stack_scratch |) |)
-                                      |)
-                                    ]
-                                  |);
-                                  M.read (| alloc_len |)
-                                ]
-                              |)
-                            |)) in
+                                      [
+                                        Ty.apply
+                                          (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                          []
+                                          [ T ]
+                                      ],
+                                    "len",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| stack_scratch |) |)
+                                    |)
+                                  ]
+                                |);
+                                M.read (| alloc_len |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.read (| stack_scratch |)));
                     fun γ =>
@@ -656,7 +673,7 @@ Module slice.
         
         (*
             fn as_uninit_slice_mut(&mut self) -> &mut [MaybeUninit<T>] {
-                let len = N / mem::size_of::<T>();
+                let len = N / size_of::<T>();
         
                 // SAFETY: `_align` ensures we are correctly aligned.
                 unsafe { core::slice::from_raw_parts_mut(self.storage.as_mut_ptr().cast(), len) }

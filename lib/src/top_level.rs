@@ -6,14 +6,13 @@ use crate::pattern::*;
 use crate::rocq;
 use crate::ty::*;
 use itertools::Itertools;
-use rustc_ast::ast::{AttrArgs, AttrKind};
 use rustc_hir::def_id::LocalDefId;
 use rustc_hir::{
-    GenericBound, GenericBounds, GenericParamKind, Impl, ImplItemRef, Item, ItemId, ItemKind,
-    PatKind, QPath, TraitFn, TraitItemKind, Ty, TyKind, VariantData,
+    ConstItemRhs, GenericBound, GenericBounds, GenericParamKind, Impl, ImplItemId, Item, ItemId,
+    ItemKind, PatKind, QPath, TraitFn, TraitItemKind, Ty, TyKind, VariantData,
 };
 use rustc_middle::ty::TyCtxt;
-use rustc_span::symbol::sym;
+use rustc_span::symbol::{sym, Symbol};
 use serde::Serialize;
 use std::collections::HashMap;
 use std::iter::repeat;
@@ -249,7 +248,7 @@ fn compile_fn_sig_and_body<'a>(
 /// Check if the function body is actually the main test function calling to all
 /// tests in the file. If so, we do not want to compile it.
 fn check_if_is_test_main_function(env: &Env, body_id: &rustc_hir::BodyId) -> bool {
-    let body = env.tcx.hir().body(*body_id);
+    let body = env.tcx.hir_body(*body_id);
     let expr = body.value;
 
     if let rustc_hir::ExprKind::Block(block, _) = expr.kind {
@@ -280,6 +279,36 @@ fn check_if_test_declaration(ty: &Ty) -> bool {
     false
 }
 
+fn item_ident(item: &Item) -> Option<rustc_span::Ident> {
+    item.kind.ident()
+}
+
+fn item_name(env: &Env, item: &Item, is_value: IsValue) -> String {
+    let name = item_ident(item)
+        .map(|ident| to_valid_rocq_name(is_value, ident.name.as_str()))
+        .unwrap_or_else(|| "anonymous".to_string());
+    let disambiguator = env
+        .tcx
+        .def_path(item.owner_id.to_def_id())
+        .data
+        .last()
+        .map(|item| item.disambiguator)
+        .unwrap_or(0);
+
+    if disambiguator == 0 {
+        name
+    } else {
+        format!("{name}_{disambiguator}")
+    }
+}
+
+fn const_rhs_body_id(rhs: &ConstItemRhs) -> Option<rustc_hir::BodyId> {
+    match rhs {
+        ConstItemRhs::Body(body_id) => Some(*body_id),
+        ConstItemRhs::TypeConst(_) => None,
+    }
+}
+
 fn check_lint_attribute<'a, Item: Into<rustc_hir::OwnerNode<'a>>>(
     env: &Env,
     item: Item,
@@ -289,26 +318,12 @@ fn check_lint_attribute<'a, Item: Into<rustc_hir::OwnerNode<'a>>>(
         .tcx
         .get_attrs(item.into().def_id().to_def_id(), sym::allow)
     {
-        if let AttrKind::Normal(value) = &attr.kind {
-            if let AttrArgs::Delimited(value2) = &value.item.args {
-                let into_trees = &value2.tokens.trees();
-                let in_the_tree = into_trees.look_ahead(0);
-                match in_the_tree {
-                    Some(res) => {
-                        if let rustc_ast::tokenstream::TokenTree::Token(res2, _) = res {
-                            if let rustc_ast::token::TokenKind::Ident(ident, _) = res2.kind {
-                                // since we can have many attributes on top of each piece of code,
-                                // when we face the expected attribute, we return [true] right away,
-                                // otherwise we keep looking
-                                if ident.to_string() == attribute {
-                                    return true;
-                                }
-                            }
-                        }
-                    }
-                    _ => return false,
-                }
-            }
+        let attribute = Symbol::intern(attribute);
+        if attr
+            .meta_item_list()
+            .is_some_and(|items| items.iter().any(|item| item.has_name(attribute)))
+        {
+            return true;
         }
     }
     false
@@ -323,8 +338,7 @@ fn check_lint_attribute_axiom<'a, Item: Into<rustc_hir::OwnerNode<'a>>>(
 
 fn get_item_ids_for_parent(env: &Env, expected_parent: rustc_hir::def_id::DefId) -> Vec<ItemId> {
     env.tcx
-        .hir()
-        .items()
+        .hir_free_items()
         .filter(|item_id| {
             let def_id = item_id.owner_id.to_def_id();
             let parent = env.tcx.opt_parent(def_id).unwrap();
@@ -339,21 +353,21 @@ fn compile_top_level_item_without_local_items<'a>(
     item: &'a Item,
 ) -> Vec<Rc<TopLevelItem>> {
     let is_value = match &item.kind {
-        ItemKind::Static(..) | ItemKind::Const(..) | ItemKind::Fn(..) => IsValue::Yes,
+        ItemKind::Static(..) | ItemKind::Const(..) | ItemKind::Fn { .. } => IsValue::Yes,
         _ => IsValue::No,
     };
-    let name = to_valid_rocq_name(is_value, item.ident.name.as_str());
+    let name = item_name(env, item, is_value);
     let path = compile_def_id(env, item.owner_id.to_def_id());
 
     match &item.kind {
-        ItemKind::ExternCrate(_) => vec![],
+        ItemKind::ExternCrate(..) => vec![],
         ItemKind::Use(..) => vec![],
-        ItemKind::Static(ty, _, body_id) | ItemKind::Const(ty, _, body_id) => {
+        ItemKind::Static(_, ident, ty, body_id) => {
             if check_if_test_declaration(ty) {
                 return vec![];
             }
             // skip const _ : ... = ...
-            if item.ident.name.as_str() == "_" {
+            if ident.name.as_str() == "_" {
                 return vec![];
             }
 
@@ -363,15 +377,34 @@ fn compile_top_level_item_without_local_items<'a>(
             } else {
                 Some(compile_hir_id(env, body_id.hir_id))
             };
-            let value = if let ItemKind::Static(_, _, _) = &item.kind {
-                value_without_alloc.map(|value_without_alloc| value_without_alloc.alloc(ty))
+            let value =
+                value_without_alloc.map(|value_without_alloc| value_without_alloc.alloc(ty));
+
+            vec![Rc::new(TopLevelItem::Const { name, path, value })]
+        }
+        ItemKind::Const(ident, _, ty, rhs) => {
+            if check_if_test_declaration(ty) {
+                return vec![];
+            }
+            // skip const _ : ... = ...
+            if ident.name.as_str() == "_" {
+                return vec![];
+            }
+
+            let value = if env.axiomatize {
+                None
             } else {
-                value_without_alloc
+                const_rhs_body_id(rhs).map(|body_id| compile_hir_id(env, body_id.hir_id))
             };
 
             vec![Rc::new(TopLevelItem::Const { name, path, value })]
         }
-        ItemKind::Fn(fn_sig, generics, body_id) => {
+        ItemKind::Fn {
+            sig: fn_sig,
+            generics,
+            body: body_id,
+            ..
+        } => {
             if check_if_is_test_main_function(env, body_id) {
                 return vec![];
             }
@@ -387,13 +420,13 @@ fn compile_top_level_item_without_local_items<'a>(
                 definition: FunDefinition::compile(env, generics, fn_decl_and_body, is_axiom),
             })]
         }
-        ItemKind::Macro(_, _) => vec![],
-        ItemKind::Mod(module) => {
+        ItemKind::Macro(..) => vec![],
+        ItemKind::Mod(_, module) => {
             let items = module
                 .item_ids
                 .iter()
                 .flat_map(|item_id| {
-                    let item = env.tcx.hir().item(*item_id);
+                    let item = env.tcx.hir_item(*item_id);
 
                     compile_top_level_item_with_file_name(env, item)
                 })
@@ -407,15 +440,15 @@ fn compile_top_level_item_without_local_items<'a>(
         ItemKind::ForeignMod { abi: _, items } => items
             .iter()
             .map(|item| {
-                let foreign_item = env.tcx.hir().foreign_item(item.id);
+                let foreign_item = env.tcx.hir_foreign_item(*item);
                 let is_value = match &foreign_item.kind {
                     rustc_hir::ForeignItemKind::Fn(..) | rustc_hir::ForeignItemKind::Static(..) => {
                         IsValue::Yes
                     }
                     rustc_hir::ForeignItemKind::Type => IsValue::No,
                 };
-                let name = to_valid_rocq_name(is_value, item.ident.name.as_str());
-                let path = Path::concat(&[path.clone(), Path::new(&[name.clone()])]);
+                let name = to_valid_rocq_name(is_value, foreign_item.ident.name.as_str());
+                let path = Path::concat(&[path.clone(), Path::new(std::slice::from_ref(&name))]);
 
                 match &foreign_item.kind {
                     rustc_hir::ForeignItemKind::Fn(sign, _, generics) => {
@@ -445,17 +478,17 @@ fn compile_top_level_item_without_local_items<'a>(
                 }
             })
             .collect_vec(),
-        ItemKind::GlobalAsm(_) => vec![Rc::new(TopLevelItem::Error {
+        ItemKind::GlobalAsm { .. } => vec![Rc::new(TopLevelItem::Error {
             message: "GlobalAsm".to_string(),
         })],
-        ItemKind::TyAlias(ty, generics) => vec![Rc::new(TopLevelItem::TypeAlias {
+        ItemKind::TyAlias(_, generics, ty) => vec![Rc::new(TopLevelItem::TypeAlias {
             name,
             path,
             ty: compile_type(env, &item.owner_id.def_id, ty),
             const_params: get_const_params(env, generics),
             ty_params: get_ty_params(env, generics),
         })],
-        ItemKind::Enum(enum_def, generics) => {
+        ItemKind::Enum(_, generics, enum_def) => {
             let const_params = get_const_params(env, generics);
             let ty_params = get_ty_params(env, generics);
             let mut discriminant: u128 = 0;
@@ -496,7 +529,7 @@ fn compile_top_level_item_without_local_items<'a>(
                             VariantData::Unit(_, _) => VariantItem::Tuple { tys: vec![] },
                         };
                         if let Some(annon_const) = &variant.disr_expr {
-                            let body = env.tcx.hir().body(annon_const.body);
+                            let body = env.tcx.hir_body(annon_const.body);
                             let value = body.value;
                             match value.kind {
                                 rustc_hir::ExprKind::Lit(rustc_span::source_map::Spanned {
@@ -524,7 +557,7 @@ fn compile_top_level_item_without_local_items<'a>(
                     .collect(),
             })]
         }
-        ItemKind::Struct(body, generics) => {
+        ItemKind::Struct(_, generics, body) => {
             let const_params = get_const_params(env, generics);
             let ty_params = get_ty_params(env, generics);
 
@@ -578,10 +611,10 @@ fn compile_top_level_item_without_local_items<'a>(
                 }
             }
         }
-        ItemKind::Union(_, _) => vec![Rc::new(TopLevelItem::Error {
+        ItemKind::Union(..) => vec![Rc::new(TopLevelItem::Error {
             message: "Union".to_string(),
         })],
-        ItemKind::Trait(_, _, generics, _, items) => {
+        ItemKind::Trait(_, _, _, _, generics, _, items) => {
             vec![Rc::new(TopLevelItem::Trait {
                 name,
                 path,
@@ -590,7 +623,7 @@ fn compile_top_level_item_without_local_items<'a>(
                 body: items
                     .iter()
                     .map(|item| {
-                        let item = env.tcx.hir().trait_item(item.id);
+                        let item = env.tcx.hir_trait_item(*item);
                         let const_params = get_const_params(env, item.generics);
                         let ty_params = get_ty_params(env, item.generics);
                         let body = compile_trait_item_body(env, const_params, ty_params, item);
@@ -606,7 +639,7 @@ fn compile_top_level_item_without_local_items<'a>(
                     .collect(),
             })]
         }
-        ItemKind::TraitAlias(_, _) => {
+        ItemKind::TraitAlias(..) => {
             vec![Rc::new(TopLevelItem::Error {
                 message: "TraitAlias".to_string(),
             })]
@@ -628,10 +661,13 @@ fn compile_top_level_item_without_local_items<'a>(
                 Some(trait_ref) => {
                     let rustc_default_item_names: Vec<String> = env
                         .tcx
-                        .associated_items(trait_ref.trait_def_id().unwrap())
+                        .associated_items(trait_ref.trait_ref.trait_def_id().unwrap())
                         .in_definition_order()
                         .filter(|item| item.defaultness(env.tcx).has_value())
-                        .map(|item| to_valid_rocq_name(IsValue::Yes, item.name.as_str()))
+                        .filter_map(|item| {
+                            item.opt_name()
+                                .map(|name| to_valid_rocq_name(IsValue::Yes, name.as_str()))
+                        })
                         .collect();
                     let items: Vec<Rc<TraitImplItem>> = items
                         .iter()
@@ -669,8 +705,7 @@ fn compile_top_level_item_without_local_items<'a>(
                         )
                         .collect();
                     let impl_generics = env.tcx.generics_of(item.owner_id.def_id);
-                    let impl_trait_header =
-                        env.tcx.impl_trait_header(item.owner_id.def_id).unwrap();
+                    let impl_trait_header = env.tcx.impl_trait_header(item.owner_id.def_id);
                     let trait_params = impl_trait_header.trait_ref.instantiate_identity().args;
                     let trait_const_params = trait_params
                         .iter()
@@ -696,7 +731,7 @@ fn compile_top_level_item_without_local_items<'a>(
                         generic_tys,
                         predicates,
                         self_ty,
-                        of_trait: compile_path(env, trait_ref.path),
+                        of_trait: compile_path(env, trait_ref.trait_ref.path),
                         trait_const_params,
                         trait_ty_params,
                         items,
@@ -727,13 +762,13 @@ fn compile_top_level_item<'a>(env: &Env<'a>, item: &'a Item) -> Vec<Rc<TopLevelI
     // expected to have items. We will concatenate the local items directly after
     // the item's translation, in a module of the same name to avoid collisions.
     let local_item_ids = match &item.kind {
-        ItemKind::Mod(_) => vec![],
+        ItemKind::Mod(..) => vec![],
         _ => get_item_ids_for_parent(env, item.item_id().owner_id.to_def_id()),
     };
     let local_items = local_item_ids
         .into_iter()
         .flat_map(|item_id| {
-            let item = env.tcx.hir().item(item_id);
+            let item = env.tcx.hir_item(item_id);
 
             compile_top_level_item_with_file_name(env, item)
         })
@@ -747,7 +782,7 @@ fn compile_top_level_item<'a>(env: &Env<'a>, item: &'a Item) -> Vec<Rc<TopLevelI
             vec![]
         } else {
             vec![Rc::new(TopLevelItem::Module {
-                name: to_valid_rocq_name(IsValue::No, item.ident.as_str()),
+                name: item_name(env, item, IsValue::No),
                 body: Rc::new(TopLevel(local_items)),
             })]
         },
@@ -763,7 +798,7 @@ fn entry_of_item(env: &Env, span: rustc_span::Span, item: Rc<TopLevelItem>) -> R
             .source_map()
             .lookup_source_file(span.lo())
             .name
-            .prefer_remapped_unconditionaly()
+            .prefer_remapped_unconditionally()
             .to_string_lossy()
             .to_string(),
         item,
@@ -836,10 +871,10 @@ fn get_hir_fn_decl_and_body<'a>(
 }
 
 /// compiles a list of references to items
-fn compile_impl_item_refs(env: &Env, item_refs: &[ImplItemRef]) -> Vec<Rc<ImplItem>> {
+fn compile_impl_item_refs(env: &Env, item_refs: &[ImplItemId]) -> Vec<Rc<ImplItem>> {
     item_refs
         .iter()
-        .map(|item_ref| compile_impl_item(env, env.tcx.hir().impl_item(item_ref.id)))
+        .map(|item_ref| compile_impl_item(env, env.tcx.hir_impl_item(*item_ref)))
         .collect()
 }
 
@@ -858,7 +893,7 @@ fn compile_impl_item<'a>(env: &Env<'a>, item: &'a rustc_hir::ImplItem) -> Rc<Imp
             let body = if env.axiomatize {
                 None
             } else {
-                Some(compile_hir_id(env, body_id.hir_id))
+                Some(compile_hir_id(env, body_id.hir_id()))
             };
             Rc::new(ImplItemKind::Const { ty, body })
         }
@@ -888,7 +923,7 @@ fn compile_impl_item<'a>(env: &Env<'a>, item: &'a rustc_hir::ImplItem) -> Rc<Imp
 
 /// returns the body corresponding to the given body_id
 fn get_body<'a>(env: &Env<'a>, body_id: &rustc_hir::BodyId) -> &'a rustc_hir::Body<'a> {
-    env.tcx.hir().body(*body_id)
+    env.tcx.hir_body(*body_id)
 }
 
 // compiles the body of a function
@@ -1197,7 +1232,7 @@ fn compile_top_level(tcx: &TyCtxt, opts: TopLevelOptions) -> Rc<TopLevel> {
     let results = get_item_ids_for_parent(&env, rustc_hir::def_id::CRATE_DEF_ID.into())
         .iter()
         .flat_map(|item_id| {
-            let item = tcx.hir().item(*item_id);
+            let item = tcx.hir_item(*item_id);
             compile_top_level_item_with_file_name(&env, item)
         })
         .collect();

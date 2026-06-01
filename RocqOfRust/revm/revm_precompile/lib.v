@@ -3423,6 +3423,18 @@ Module Impl_core_marker_Copy_for_revm_precompile_PrecompileSpecId.
       (* Instance *) [].
 End Impl_core_marker_Copy_for_revm_precompile_PrecompileSpecId.
 
+Module Impl_core_clone_TrivialClone_for_revm_precompile_PrecompileSpecId.
+  Definition Self : Ty.t := Ty.path "revm_precompile::PrecompileSpecId".
+  
+  Axiom Implements :
+    M.IsTraitInstance
+      "core::clone::TrivialClone"
+      (* Trait polymorphic consts *) []
+      (* Trait polymorphic types *) []
+      Self
+      (* Instance *) [].
+End Impl_core_clone_TrivialClone_for_revm_precompile_PrecompileSpecId.
+
 Module Impl_core_clone_Clone_for_revm_precompile_PrecompileSpecId.
   Definition Self : Ty.t := Ty.path "revm_precompile::PrecompileSpecId".
   

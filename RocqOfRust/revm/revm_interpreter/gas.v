@@ -16,6 +16,18 @@ Module gas.
         ];
     } *)
   
+  Module Impl_core_clone_TrivialClone_for_revm_interpreter_gas_Gas.
+    Definition Self : Ty.t := Ty.path "revm_interpreter::gas::Gas".
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "core::clone::TrivialClone"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        Self
+        (* Instance *) [].
+  End Impl_core_clone_TrivialClone_for_revm_interpreter_gas_Gas.
+  
   Module Impl_core_clone_Clone_for_revm_interpreter_gas_Gas.
     Definition Self : Ty.t := Ty.path "revm_interpreter::gas::Gas".
     
@@ -1066,7 +1078,7 @@ Module gas.
                 [
                   fun γ =>
                     ltac:(M.monadic
-                      (let γ := M.use is_london in
+                      (let γ := is_london in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       Value.Integer IntegerKind.U64 5));
                   fun γ => ltac:(M.monadic (Value.Integer IntegerKind.U64 2))
@@ -1218,7 +1230,7 @@ Module gas.
                         [
                           fun γ =>
                             ltac:(M.monadic
-                              (let γ := M.use success in
+                              (let γ := success in
                               let _ :=
                                 is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                               M.read (|
@@ -1317,32 +1329,31 @@ Module gas.
                               fun γ =>
                                 ltac:(M.monadic
                                   (let γ :=
-                                    M.use
-                                      (M.alloc (|
+                                    M.alloc (|
+                                      Ty.path "bool",
+                                      M.call_closure (|
                                         Ty.path "bool",
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          UnOp.not,
-                                          [
-                                            M.call_closure (|
-                                              Ty.path "bool",
-                                              M.get_associated_function (|
-                                                Ty.path "revm_interpreter::gas::Gas",
-                                                "record_cost",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.MutRef,
-                                                  M.deref (| M.read (| self |) |)
-                                                |);
-                                                M.read (| additional_cost |)
-                                              ]
-                                            |)
-                                          ]
-                                        |)
-                                      |)) in
+                                        UnOp.not,
+                                        [
+                                          M.call_closure (|
+                                            Ty.path "bool",
+                                            M.get_associated_function (|
+                                              Ty.path "revm_interpreter::gas::Gas",
+                                              "record_cost",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.borrow (|
+                                                Pointer.Kind.MutRef,
+                                                M.deref (| M.read (| self |) |)
+                                              |);
+                                              M.read (| additional_cost |)
+                                            ]
+                                          |)
+                                        ]
+                                      |)
+                                    |) in
                                   let _ :=
                                     is_constant_or_break_match (|
                                       M.read (| γ |),
@@ -1431,6 +1442,18 @@ Module gas.
       ty_params := [];
       fields := [ ("words_num", Ty.path "usize"); ("expansion_cost", Ty.path "u64") ];
     } *)
+  
+  Module Impl_core_clone_TrivialClone_for_revm_interpreter_gas_MemoryGas.
+    Definition Self : Ty.t := Ty.path "revm_interpreter::gas::MemoryGas".
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "core::clone::TrivialClone"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        Self
+        (* Instance *) [].
+  End Impl_core_clone_TrivialClone_for_revm_interpreter_gas_MemoryGas.
   
   Module Impl_core_clone_Clone_for_revm_interpreter_gas_MemoryGas.
     Definition Self : Ty.t := Ty.path "revm_interpreter::gas::MemoryGas".
@@ -1670,14 +1693,14 @@ Module gas.
                   M.SubPointer.get_struct_record_field (|
                     M.deref (| M.read (| self |) |),
                     "revm_interpreter::gas::MemoryGas",
-                    "words_num"
+                    "expansion_cost"
                   |)
                 |);
                 M.read (|
                   M.SubPointer.get_struct_record_field (|
                     M.deref (| M.read (| other |) |),
                     "revm_interpreter::gas::MemoryGas",
-                    "words_num"
+                    "expansion_cost"
                   |)
                 |)
               ]
@@ -1691,14 +1714,14 @@ Module gas.
                     M.SubPointer.get_struct_record_field (|
                       M.deref (| M.read (| self |) |),
                       "revm_interpreter::gas::MemoryGas",
-                      "expansion_cost"
+                      "words_num"
                     |)
                   |);
                   M.read (|
                     M.SubPointer.get_struct_record_field (|
                       M.deref (| M.read (| other |) |),
                       "revm_interpreter::gas::MemoryGas",
-                      "expansion_cost"
+                      "words_num"
                     |)
                   |)
                 ]
@@ -1911,24 +1934,23 @@ Module gas.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  BinOp.le,
-                                  [
-                                    M.read (| new_num |);
-                                    M.read (|
-                                      M.SubPointer.get_struct_record_field (|
-                                        M.deref (| M.read (| self |) |),
-                                        "revm_interpreter::gas::MemoryGas",
-                                        "words_num"
-                                      |)
+                                BinOp.le,
+                                [
+                                  M.read (| new_num |);
+                                  M.read (|
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "revm_interpreter::gas::MemoryGas",
+                                      "words_num"
                                     |)
-                                  ]
-                                |)
-                              |)) in
+                                  |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|

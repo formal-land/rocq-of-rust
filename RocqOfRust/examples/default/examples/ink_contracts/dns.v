@@ -339,6 +339,18 @@ Module Impl_core_default_Default_for_dns_AccountId.
       (* Instance *) [ ("default", InstanceField.Method default) ].
 End Impl_core_default_Default_for_dns_AccountId.
 
+Module Impl_core_clone_TrivialClone_for_dns_AccountId.
+  Definition Self : Ty.t := Ty.path "dns::AccountId".
+  
+  Axiom Implements :
+    M.IsTraitInstance
+      "core::clone::TrivialClone"
+      (* Trait polymorphic consts *) []
+      (* Trait polymorphic types *) []
+      Self
+      (* Instance *) [].
+End Impl_core_clone_TrivialClone_for_dns_AccountId.
+
 Module Impl_core_clone_Clone_for_dns_AccountId.
   Definition Self : Ty.t := Ty.path "dns::AccountId".
   
@@ -1140,42 +1152,41 @@ Module Impl_dns_DomainNameService.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                M.get_associated_function (|
-                                  Ty.apply
-                                    (Ty.path "dns::Mapping")
-                                    []
-                                    [
-                                      Ty.apply
-                                        (Ty.path "array")
-                                        [ Value.Integer IntegerKind.Usize 32 ]
-                                        [ Ty.path "u8" ];
-                                      Ty.path "dns::AccountId"
-                                    ],
-                                  "contains",
-                                  [],
+                              M.get_associated_function (|
+                                Ty.apply
+                                  (Ty.path "dns::Mapping")
                                   []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| self |) |),
-                                      "dns::DomainNameService",
-                                      "name_to_owner"
-                                    |)
-                                  |);
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (| M.borrow (| Pointer.Kind.Ref, name |) |)
+                                  [
+                                    Ty.apply
+                                      (Ty.path "array")
+                                      [ Value.Integer IntegerKind.Usize 32 ]
+                                      [ Ty.path "u8" ];
+                                    Ty.path "dns::AccountId"
+                                  ],
+                                "contains",
+                                [],
+                                []
+                              |),
+                              [
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (| M.read (| self |) |),
+                                    "dns::DomainNameService",
+                                    "name_to_owner"
                                   |)
-                                ]
-                              |)
-                            |)) in
+                                |);
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (| M.borrow (| Pointer.Kind.Ref, name |) |)
+                                |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.never_to_any (|
                           M.read (|
@@ -1427,26 +1438,25 @@ Module Impl_dns_DomainNameService.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                M.get_trait_method (|
-                                  "core::cmp::PartialEq",
-                                  Ty.path "dns::AccountId",
-                                  [],
-                                  [ Ty.path "dns::AccountId" ],
-                                  "ne",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (| Pointer.Kind.Ref, caller |);
-                                  M.borrow (| Pointer.Kind.Ref, owner |)
-                                ]
-                              |)
-                            |)) in
+                              M.get_trait_method (|
+                                "core::cmp::PartialEq",
+                                Ty.path "dns::AccountId",
+                                [],
+                                [ Ty.path "dns::AccountId" ],
+                                "ne",
+                                [],
+                                []
+                              |),
+                              [
+                                M.borrow (| Pointer.Kind.Ref, caller |);
+                                M.borrow (| Pointer.Kind.Ref, owner |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.never_to_any (|
                           M.read (|
@@ -1666,26 +1676,25 @@ Module Impl_dns_DomainNameService.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                M.get_trait_method (|
-                                  "core::cmp::PartialEq",
-                                  Ty.path "dns::AccountId",
-                                  [],
-                                  [ Ty.path "dns::AccountId" ],
-                                  "ne",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (| Pointer.Kind.Ref, caller |);
-                                  M.borrow (| Pointer.Kind.Ref, owner |)
-                                ]
-                              |)
-                            |)) in
+                              M.get_trait_method (|
+                                "core::cmp::PartialEq",
+                                Ty.path "dns::AccountId",
+                                [],
+                                [ Ty.path "dns::AccountId" ],
+                                "ne",
+                                [],
+                                []
+                              |),
+                              [
+                                M.borrow (| Pointer.Kind.Ref, caller |);
+                                M.borrow (| Pointer.Kind.Ref, owner |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.never_to_any (|
                           M.read (|

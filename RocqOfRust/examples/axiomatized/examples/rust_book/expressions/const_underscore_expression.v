@@ -9,19 +9,6 @@ Module underscore.
       ty_params := [];
       fields := [ ("test", Ty.path "bool") ];
     } *)
-  Module Impl_const_underscore_expression_BarTrait_for_const_underscore_expression_Bar.
-    Definition Self : Ty.t := Ty.path "const_underscore_expression::Bar".
-    
-    Parameter show : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
-    
-    Axiom Implements :
-      M.IsTraitInstance
-        "const_underscore_expression::BarTrait"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        Self
-        (* Instance *) [ ("show", InstanceField.Method show) ].
-  End Impl_const_underscore_expression_BarTrait_for_const_underscore_expression_Bar.
 End underscore.
 
 (* StructRecord
@@ -35,3 +22,18 @@ End underscore.
 (* Trait *)
 (* Empty module 'BarTrait' *)
 
+Module underscore_1.
+  Module Impl_const_underscore_expression_BarTrait_for_const_underscore_expression_Bar.
+    Definition Self : Ty.t := Ty.path "const_underscore_expression::Bar".
+    
+    Parameter show : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "const_underscore_expression::BarTrait"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        Self
+        (* Instance *) [ ("show", InstanceField.Method show) ].
+  End Impl_const_underscore_expression_BarTrait_for_const_underscore_expression_Bar.
+End underscore_1.

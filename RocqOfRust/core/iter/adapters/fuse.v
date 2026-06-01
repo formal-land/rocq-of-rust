@@ -1237,7 +1237,7 @@ Module iter.
         
         (*
             fn default() -> Self {
-                Fuse { iter: Default::default() }
+                Fuse { iter: Some(I::default()) }
             }
         *)
         Definition default (I : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -1251,19 +1251,25 @@ Module iter.
                 [ I ]
                 [
                   ("iter",
-                    M.call_closure (|
-                      Ty.apply (Ty.path "core::option::Option") [] [ I ],
-                      M.get_trait_method (|
-                        "core::default::Default",
-                        Ty.apply (Ty.path "core::option::Option") [] [ I ],
-                        [],
-                        [],
-                        "default",
-                        [],
-                        []
-                      |),
+                    Value.StructTuple
+                      "core::option::Option::Some"
                       []
-                    |))
+                      [ I ]
+                      [
+                        M.call_closure (|
+                          I,
+                          M.get_trait_method (|
+                            "core::default::Default",
+                            I,
+                            [],
+                            [],
+                            "default",
+                            [],
+                            []
+                          |),
+                          []
+                        |)
+                      ])
                 ]))
           | _, _, _ => M.impossible "wrong number of arguments"
           end.
@@ -4403,20 +4409,19 @@ Module iter.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
                                   Ty.path "bool",
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    M.get_associated_function (|
-                                      Ty.apply (Ty.path "core::option::Option") [] [ U ],
-                                      "is_none",
-                                      [],
-                                      []
-                                    |),
-                                    [ M.borrow (| Pointer.Kind.Ref, x |) ]
-                                  |)
-                                |)) in
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "core::option::Option") [] [ U ],
+                                    "is_none",
+                                    [],
+                                    []
+                                  |),
+                                  [ M.borrow (| Pointer.Kind.Ref, x |) ]
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.read (|

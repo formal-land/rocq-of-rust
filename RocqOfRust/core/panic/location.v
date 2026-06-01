@@ -10,9 +10,14 @@ Module panic.
         ty_params := [];
         fields :=
           [
-            ("file", Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+            ("filename", Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ Ty.path "str" ]);
             ("line", Ty.path "u32");
-            ("col", Ty.path "u32")
+            ("col", Ty.path "u32");
+            ("_filename",
+              Ty.apply
+                (Ty.path "core::marker::PhantomData")
+                []
+                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ])
           ];
       } *)
     
@@ -27,6 +32,18 @@ Module panic.
           Self
           (* Instance *) [].
     End Impl_core_marker_Copy_for_core_panic_location_Location.
+    
+    Module Impl_core_clone_TrivialClone_for_core_panic_location_Location.
+      Definition Self : Ty.t := Ty.path "core::panic::location::Location".
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::clone::TrivialClone"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [].
+    End Impl_core_clone_TrivialClone_for_core_panic_location_Location.
     
     Module Impl_core_clone_Clone_for_core_panic_location_Location.
       Definition Self : Ty.t := Ty.path "core::panic::location::Location".
@@ -50,7 +67,18 @@ Module panic.
                     (M.match_operator (|
                       Ty.path "core::panic::location::Location",
                       Value.DeclaredButUndefined,
-                      [ fun γ => ltac:(M.monadic (M.read (| M.deref (| M.read (| self |) |) |))) ]
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (M.match_operator (|
+                              Ty.path "core::panic::location::Location",
+                              Value.DeclaredButUndefined,
+                              [
+                                fun γ =>
+                                  ltac:(M.monadic (M.read (| M.deref (| M.read (| self |) |) |)))
+                              ]
+                            |)))
+                      ]
                     |)))
               ]
             |)))
@@ -66,480 +94,16 @@ Module panic.
           (* Instance *) [ ("clone", InstanceField.Method clone) ].
     End Impl_core_clone_Clone_for_core_panic_location_Location.
     
-    Module Impl_core_fmt_Debug_for_core_panic_location_Location.
-      Definition Self : Ty.t := Ty.path "core::panic::location::Location".
-      
-      (* Debug *)
-      Definition fmt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [ self; f ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (|
-                Ty.apply (Ty.path "&") [] [ Ty.path "core::panic::location::Location" ],
-                self
-              |) in
-            let f :=
-              M.alloc (| Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ], f |) in
-            M.call_closure (|
-              Ty.apply
-                (Ty.path "core::result::Result")
-                []
-                [ Ty.tuple []; Ty.path "core::fmt::Error" ],
-              M.get_associated_function (|
-                Ty.path "core::fmt::Formatter",
-                "debug_struct_field3_finish",
-                [],
-                []
-              |),
-              [
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Location" |) |) |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "file" |) |) |);
-                M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                  M.pointer_coercion
-                    M.PointerCoercion.Unsize
-                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::panic::location::Location",
-                            "file"
-                          |)
-                        |)
-                      |)
-                    |)
-                  ]
-                |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "line" |) |) |);
-                M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                  M.pointer_coercion
-                    M.PointerCoercion.Unsize
-                    (Ty.apply (Ty.path "&") [] [ Ty.path "u32" ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::panic::location::Location",
-                            "line"
-                          |)
-                        |)
-                      |)
-                    |)
-                  ]
-                |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "col" |) |) |);
-                M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                  M.pointer_coercion
-                    M.PointerCoercion.Unsize
-                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "u32" ] ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.alloc (|
-                            Ty.apply (Ty.path "&") [] [ Ty.path "u32" ],
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "core::panic::location::Location",
-                                "col"
-                              |)
-                            |)
-                          |)
-                        |)
-                      |)
-                    |)
-                  ]
-                |)
-              ]
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Axiom Implements :
-        M.IsTraitInstance
-          "core::fmt::Debug"
-          (* Trait polymorphic consts *) []
-          (* Trait polymorphic types *) []
-          Self
-          (* Instance *) [ ("fmt", InstanceField.Method fmt) ].
-    End Impl_core_fmt_Debug_for_core_panic_location_Location.
-    
-    Module Impl_core_cmp_Eq_for_core_panic_location_Location.
-      Definition Self : Ty.t := Ty.path "core::panic::location::Location".
-      
-      (* Eq *)
-      Definition assert_receiver_is_total_eq
-          (ε : list Value.t)
-          (τ : list Ty.t)
-          (α : list Value.t)
-          : M :=
-        match ε, τ, α with
-        | [], [], [ self ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (|
-                Ty.apply (Ty.path "&") [] [ Ty.path "core::panic::location::Location" ],
-                self
-              |) in
-            M.match_operator (|
-              Ty.tuple [],
-              Value.DeclaredButUndefined,
-              [
-                fun γ =>
-                  ltac:(M.monadic
-                    (M.match_operator (|
-                      Ty.tuple [],
-                      Value.DeclaredButUndefined,
-                      [ fun γ => ltac:(M.monadic (Value.Tuple [])) ]
-                    |)))
-              ]
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Axiom Implements :
-        M.IsTraitInstance
-          "core::cmp::Eq"
-          (* Trait polymorphic consts *) []
-          (* Trait polymorphic types *) []
-          Self
-          (* Instance *)
-          [ ("assert_receiver_is_total_eq", InstanceField.Method assert_receiver_is_total_eq) ].
-    End Impl_core_cmp_Eq_for_core_panic_location_Location.
-    
-    Module Impl_core_hash_Hash_for_core_panic_location_Location.
-      Definition Self : Ty.t := Ty.path "core::panic::location::Location".
-      
-      (* Hash *)
-      Definition hash (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [ __H ], [ self; state ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (|
-                Ty.apply (Ty.path "&") [] [ Ty.path "core::panic::location::Location" ],
-                self
-              |) in
-            let state := M.alloc (| Ty.apply (Ty.path "&mut") [] [ __H ], state |) in
-            M.read (|
-              let~ _ : Ty.tuple [] :=
-                M.call_closure (|
-                  Ty.tuple [],
-                  M.get_trait_method (|
-                    "core::hash::Hash",
-                    Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                    [],
-                    [],
-                    "hash",
-                    [],
-                    [ __H ]
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::panic::location::Location",
-                            "file"
-                          |)
-                        |)
-                      |)
-                    |);
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
-                  ]
-                |) in
-              let~ _ : Ty.tuple [] :=
-                M.call_closure (|
-                  Ty.tuple [],
-                  M.get_trait_method (|
-                    "core::hash::Hash",
-                    Ty.path "u32",
-                    [],
-                    [],
-                    "hash",
-                    [],
-                    [ __H ]
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::panic::location::Location",
-                            "line"
-                          |)
-                        |)
-                      |)
-                    |);
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
-                  ]
-                |) in
-              M.alloc (|
-                Ty.tuple [],
-                M.call_closure (|
-                  Ty.tuple [],
-                  M.get_trait_method (|
-                    "core::hash::Hash",
-                    Ty.path "u32",
-                    [],
-                    [],
-                    "hash",
-                    [],
-                    [ __H ]
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::panic::location::Location",
-                            "col"
-                          |)
-                        |)
-                      |)
-                    |);
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
-                  ]
-                |)
-              |)
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Axiom Implements :
-        M.IsTraitInstance
-          "core::hash::Hash"
-          (* Trait polymorphic consts *) []
-          (* Trait polymorphic types *) []
-          Self
-          (* Instance *) [ ("hash", InstanceField.Method hash) ].
-    End Impl_core_hash_Hash_for_core_panic_location_Location.
-    
-    Module Impl_core_cmp_Ord_for_core_panic_location_Location.
-      Definition Self : Ty.t := Ty.path "core::panic::location::Location".
-      
-      (* Ord *)
-      Definition cmp (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [ self; other ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (|
-                Ty.apply (Ty.path "&") [] [ Ty.path "core::panic::location::Location" ],
-                self
-              |) in
-            let other :=
-              M.alloc (|
-                Ty.apply (Ty.path "&") [] [ Ty.path "core::panic::location::Location" ],
-                other
-              |) in
-            M.match_operator (|
-              Ty.path "core::cmp::Ordering",
-              M.alloc (|
-                Ty.path "core::cmp::Ordering",
-                M.call_closure (|
-                  Ty.path "core::cmp::Ordering",
-                  M.get_trait_method (|
-                    "core::cmp::Ord",
-                    Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                    [],
-                    [],
-                    "cmp",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::panic::location::Location",
-                            "file"
-                          |)
-                        |)
-                      |)
-                    |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| other |) |),
-                            "core::panic::location::Location",
-                            "file"
-                          |)
-                        |)
-                      |)
-                    |)
-                  ]
-                |)
-              |),
-              [
-                fun γ =>
-                  ltac:(M.monadic
-                    (let _ := M.is_struct_tuple (| γ, "core::cmp::Ordering::Equal" |) in
-                    M.match_operator (|
-                      Ty.path "core::cmp::Ordering",
-                      M.alloc (|
-                        Ty.path "core::cmp::Ordering",
-                        M.call_closure (|
-                          Ty.path "core::cmp::Ordering",
-                          M.get_trait_method (|
-                            "core::cmp::Ord",
-                            Ty.path "u32",
-                            [],
-                            [],
-                            "cmp",
-                            [],
-                            []
-                          |),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "core::panic::location::Location",
-                                    "line"
-                                  |)
-                                |)
-                              |)
-                            |);
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| other |) |),
-                                    "core::panic::location::Location",
-                                    "line"
-                                  |)
-                                |)
-                              |)
-                            |)
-                          ]
-                        |)
-                      |),
-                      [
-                        fun γ =>
-                          ltac:(M.monadic
-                            (let _ := M.is_struct_tuple (| γ, "core::cmp::Ordering::Equal" |) in
-                            M.call_closure (|
-                              Ty.path "core::cmp::Ordering",
-                              M.get_trait_method (|
-                                "core::cmp::Ord",
-                                Ty.path "u32",
-                                [],
-                                [],
-                                "cmp",
-                                [],
-                                []
-                              |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.SubPointer.get_struct_record_field (|
-                                        M.deref (| M.read (| self |) |),
-                                        "core::panic::location::Location",
-                                        "col"
-                                      |)
-                                    |)
-                                  |)
-                                |);
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.SubPointer.get_struct_record_field (|
-                                        M.deref (| M.read (| other |) |),
-                                        "core::panic::location::Location",
-                                        "col"
-                                      |)
-                                    |)
-                                  |)
-                                |)
-                              ]
-                            |)));
-                        fun γ =>
-                          ltac:(M.monadic
-                            (let cmp := M.copy (| Ty.path "core::cmp::Ordering", γ |) in
-                            M.read (| cmp |)))
-                      ]
-                    |)));
-                fun γ =>
-                  ltac:(M.monadic
-                    (let cmp := M.copy (| Ty.path "core::cmp::Ordering", γ |) in
-                    M.read (| cmp |)))
-              ]
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Axiom Implements :
-        M.IsTraitInstance
-          "core::cmp::Ord"
-          (* Trait polymorphic consts *) []
-          (* Trait polymorphic types *) []
-          Self
-          (* Instance *) [ ("cmp", InstanceField.Method cmp) ].
-    End Impl_core_cmp_Ord_for_core_panic_location_Location.
-    
-    Module Impl_core_marker_StructuralPartialEq_for_core_panic_location_Location.
-      Definition Self : Ty.t := Ty.path "core::panic::location::Location".
-      
-      Axiom Implements :
-        M.IsTraitInstance
-          "core::marker::StructuralPartialEq"
-          (* Trait polymorphic consts *) []
-          (* Trait polymorphic types *) []
-          Self
-          (* Instance *) [].
-    End Impl_core_marker_StructuralPartialEq_for_core_panic_location_Location.
-    
     Module Impl_core_cmp_PartialEq_core_panic_location_Location_for_core_panic_location_Location.
       Definition Self : Ty.t := Ty.path "core::panic::location::Location".
       
-      (* PartialEq *)
+      (*
+          fn eq(&self, other: &Self) -> bool {
+              // Compare col / line first as they're cheaper to compare and more likely to differ,
+              // while not impacting the result.
+              self.col == other.col && self.line == other.line && self.file() == other.file()
+          }
+      *)
       Definition eq (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -558,30 +122,20 @@ Module panic.
               LogicalOp.and (|
                 M.call_closure (|
                   Ty.path "bool",
-                  M.get_trait_method (|
-                    "core::cmp::PartialEq",
-                    Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                    [],
-                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                    "eq",
-                    [],
-                    []
-                  |),
+                  BinOp.eq,
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
+                    M.read (|
                       M.SubPointer.get_struct_record_field (|
                         M.deref (| M.read (| self |) |),
                         "core::panic::location::Location",
-                        "file"
+                        "col"
                       |)
                     |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
+                    M.read (|
                       M.SubPointer.get_struct_record_field (|
                         M.deref (| M.read (| other |) |),
                         "core::panic::location::Location",
-                        "file"
+                        "col"
                       |)
                     |)
                   ]
@@ -611,20 +165,46 @@ Module panic.
               ltac:(M.monadic
                 (M.call_closure (|
                   Ty.path "bool",
-                  BinOp.eq,
+                  M.get_trait_method (|
+                    "core::cmp::PartialEq",
+                    Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                    [],
+                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                    "eq",
+                    [],
+                    []
+                  |),
                   [
-                    M.read (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::panic::location::Location",
-                        "col"
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                        M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                          M.get_associated_function (|
+                            Ty.path "core::panic::location::Location",
+                            "file",
+                            [],
+                            []
+                          |),
+                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                        |)
                       |)
                     |);
-                    M.read (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| other |) |),
-                        "core::panic::location::Location",
-                        "col"
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                        M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                          M.get_associated_function (|
+                            Ty.path "core::panic::location::Location",
+                            "file",
+                            [],
+                            []
+                          |),
+                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                        |)
                       |)
                     |)
                   ]
@@ -642,10 +222,231 @@ Module panic.
           (* Instance *) [ ("eq", InstanceField.Method eq) ].
     End Impl_core_cmp_PartialEq_core_panic_location_Location_for_core_panic_location_Location.
     
+    Module Impl_core_cmp_Eq_for_core_panic_location_Location.
+      Definition Self : Ty.t := Ty.path "core::panic::location::Location".
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::cmp::Eq"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [].
+    End Impl_core_cmp_Eq_for_core_panic_location_Location.
+    
+    Module Impl_core_cmp_Ord_for_core_panic_location_Location.
+      Definition Self : Ty.t := Ty.path "core::panic::location::Location".
+      
+      (*
+          fn cmp(&self, other: &Self) -> Ordering {
+              self.file()
+                  .cmp(other.file())
+                  .then_with(|| self.line.cmp(&other.line))
+                  .then_with(|| self.col.cmp(&other.col))
+          }
+      *)
+      Definition cmp (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "&") [] [ Ty.path "core::panic::location::Location" ],
+                self
+              |) in
+            let other :=
+              M.alloc (|
+                Ty.apply (Ty.path "&") [] [ Ty.path "core::panic::location::Location" ],
+                other
+              |) in
+            M.call_closure (|
+              Ty.path "core::cmp::Ordering",
+              M.get_associated_function (|
+                Ty.path "core::cmp::Ordering",
+                "then_with",
+                [],
+                [ Ty.function [] (Ty.path "core::cmp::Ordering") ]
+              |),
+              [
+                M.call_closure (|
+                  Ty.path "core::cmp::Ordering",
+                  M.get_associated_function (|
+                    Ty.path "core::cmp::Ordering",
+                    "then_with",
+                    [],
+                    [ Ty.function [] (Ty.path "core::cmp::Ordering") ]
+                  |),
+                  [
+                    M.call_closure (|
+                      Ty.path "core::cmp::Ordering",
+                      M.get_trait_method (|
+                        "core::cmp::Ord",
+                        Ty.path "str",
+                        [],
+                        [],
+                        "cmp",
+                        [],
+                        []
+                      |),
+                      [
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.call_closure (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                              M.get_associated_function (|
+                                Ty.path "core::panic::location::Location",
+                                "file",
+                                [],
+                                []
+                              |),
+                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                            |)
+                          |)
+                        |);
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.call_closure (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                              M.get_associated_function (|
+                                Ty.path "core::panic::location::Location",
+                                "file",
+                                [],
+                                []
+                              |),
+                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                            |)
+                          |)
+                        |)
+                      ]
+                    |);
+                    M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
+                                Ty.path "core::cmp::Ordering",
+                                M.alloc (| Ty.tuple [], α0 |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (M.call_closure (|
+                                        Ty.path "core::cmp::Ordering",
+                                        M.get_trait_method (|
+                                          "core::cmp::Ord",
+                                          Ty.path "u32",
+                                          [],
+                                          [],
+                                          "cmp",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.SubPointer.get_struct_record_field (|
+                                              M.deref (| M.read (| self |) |),
+                                              "core::panic::location::Location",
+                                              "line"
+                                            |)
+                                          |);
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (|
+                                              M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.SubPointer.get_struct_record_field (|
+                                                  M.deref (| M.read (| other |) |),
+                                                  "core::panic::location::Location",
+                                                  "line"
+                                                |)
+                                              |)
+                                            |)
+                                          |)
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end))
+                  ]
+                |);
+                M.closure
+                  (fun γ =>
+                    ltac:(M.monadic
+                      match γ with
+                      | [ α0 ] =>
+                        ltac:(M.monadic
+                          (M.match_operator (|
+                            Ty.path "core::cmp::Ordering",
+                            M.alloc (| Ty.tuple [], α0 |),
+                            [
+                              fun γ =>
+                                ltac:(M.monadic
+                                  (M.call_closure (|
+                                    Ty.path "core::cmp::Ordering",
+                                    M.get_trait_method (|
+                                      "core::cmp::Ord",
+                                      Ty.path "u32",
+                                      [],
+                                      [],
+                                      "cmp",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "core::panic::location::Location",
+                                          "col"
+                                        |)
+                                      |);
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.SubPointer.get_struct_record_field (|
+                                              M.deref (| M.read (| other |) |),
+                                              "core::panic::location::Location",
+                                              "col"
+                                            |)
+                                          |)
+                                        |)
+                                      |)
+                                    ]
+                                  |)))
+                            ]
+                          |)))
+                      | _ => M.impossible "wrong number of arguments"
+                      end))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::cmp::Ord"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [ ("cmp", InstanceField.Method cmp) ].
+    End Impl_core_cmp_Ord_for_core_panic_location_Location.
+    
     Module Impl_core_cmp_PartialOrd_core_panic_location_Location_for_core_panic_location_Location.
       Definition Self : Ty.t := Ty.path "core::panic::location::Location".
       
-      (* PartialOrd *)
+      (*
+          fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+              Some(self.cmp(other))
+          }
+      *)
       Definition partial_cmp (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -660,194 +461,28 @@ Module panic.
                 Ty.apply (Ty.path "&") [] [ Ty.path "core::panic::location::Location" ],
                 other
               |) in
-            M.match_operator (|
-              Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "core::cmp::Ordering" ],
-              M.alloc (|
-                Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "core::cmp::Ordering" ],
+            Value.StructTuple
+              "core::option::Option::Some"
+              []
+              [ Ty.path "core::cmp::Ordering" ]
+              [
                 M.call_closure (|
-                  Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "core::cmp::Ordering" ],
+                  Ty.path "core::cmp::Ordering",
                   M.get_trait_method (|
-                    "core::cmp::PartialOrd",
-                    Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                    "core::cmp::Ord",
+                    Ty.path "core::panic::location::Location",
                     [],
-                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                    "partial_cmp",
+                    [],
+                    "cmp",
                     [],
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::panic::location::Location",
-                            "file"
-                          |)
-                        |)
-                      |)
-                    |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| other |) |),
-                            "core::panic::location::Location",
-                            "file"
-                          |)
-                        |)
-                      |)
-                    |)
+                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
+                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |)
                   ]
                 |)
-              |),
-              [
-                fun γ =>
-                  ltac:(M.monadic
-                    (let γ0_0 :=
-                      M.SubPointer.get_struct_tuple_field (|
-                        γ,
-                        "core::option::Option::Some",
-                        0
-                      |) in
-                    let _ := M.is_struct_tuple (| γ0_0, "core::cmp::Ordering::Equal" |) in
-                    M.match_operator (|
-                      Ty.apply
-                        (Ty.path "core::option::Option")
-                        []
-                        [ Ty.path "core::cmp::Ordering" ],
-                      M.alloc (|
-                        Ty.apply
-                          (Ty.path "core::option::Option")
-                          []
-                          [ Ty.path "core::cmp::Ordering" ],
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "core::option::Option")
-                            []
-                            [ Ty.path "core::cmp::Ordering" ],
-                          M.get_trait_method (|
-                            "core::cmp::PartialOrd",
-                            Ty.path "u32",
-                            [],
-                            [ Ty.path "u32" ],
-                            "partial_cmp",
-                            [],
-                            []
-                          |),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "core::panic::location::Location",
-                                    "line"
-                                  |)
-                                |)
-                              |)
-                            |);
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| other |) |),
-                                    "core::panic::location::Location",
-                                    "line"
-                                  |)
-                                |)
-                              |)
-                            |)
-                          ]
-                        |)
-                      |),
-                      [
-                        fun γ =>
-                          ltac:(M.monadic
-                            (let γ0_0 :=
-                              M.SubPointer.get_struct_tuple_field (|
-                                γ,
-                                "core::option::Option::Some",
-                                0
-                              |) in
-                            let _ := M.is_struct_tuple (| γ0_0, "core::cmp::Ordering::Equal" |) in
-                            M.call_closure (|
-                              Ty.apply
-                                (Ty.path "core::option::Option")
-                                []
-                                [ Ty.path "core::cmp::Ordering" ],
-                              M.get_trait_method (|
-                                "core::cmp::PartialOrd",
-                                Ty.path "u32",
-                                [],
-                                [ Ty.path "u32" ],
-                                "partial_cmp",
-                                [],
-                                []
-                              |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.SubPointer.get_struct_record_field (|
-                                        M.deref (| M.read (| self |) |),
-                                        "core::panic::location::Location",
-                                        "col"
-                                      |)
-                                    |)
-                                  |)
-                                |);
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.SubPointer.get_struct_record_field (|
-                                        M.deref (| M.read (| other |) |),
-                                        "core::panic::location::Location",
-                                        "col"
-                                      |)
-                                    |)
-                                  |)
-                                |)
-                              ]
-                            |)));
-                        fun γ =>
-                          ltac:(M.monadic
-                            (let cmp :=
-                              M.copy (|
-                                Ty.apply
-                                  (Ty.path "core::option::Option")
-                                  []
-                                  [ Ty.path "core::cmp::Ordering" ],
-                                γ
-                              |) in
-                            M.read (| cmp |)))
-                      ]
-                    |)));
-                fun γ =>
-                  ltac:(M.monadic
-                    (let cmp :=
-                      M.copy (|
-                        Ty.apply
-                          (Ty.path "core::option::Option")
-                          []
-                          [ Ty.path "core::cmp::Ordering" ],
-                        γ
-                      |) in
-                    M.read (| cmp |)))
-              ]
-            |)))
+              ]))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -859,6 +494,351 @@ Module panic.
           Self
           (* Instance *) [ ("partial_cmp", InstanceField.Method partial_cmp) ].
     End Impl_core_cmp_PartialOrd_core_panic_location_Location_for_core_panic_location_Location.
+    
+    Module Impl_core_hash_Hash_for_core_panic_location_Location.
+      Definition Self : Ty.t := Ty.path "core::panic::location::Location".
+      
+      (*
+          fn hash<H: Hasher>(&self, state: &mut H) {
+              self.file().hash(state);
+              self.line.hash(state);
+              self.col.hash(state);
+          }
+      *)
+      Definition hash (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [ H ], [ self; state ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "&") [] [ Ty.path "core::panic::location::Location" ],
+                self
+              |) in
+            let state := M.alloc (| Ty.apply (Ty.path "&mut") [] [ H ], state |) in
+            M.read (|
+              let~ _ : Ty.tuple [] :=
+                M.call_closure (|
+                  Ty.tuple [],
+                  M.get_trait_method (|
+                    "core::hash::Hash",
+                    Ty.path "str",
+                    [],
+                    [],
+                    "hash",
+                    [],
+                    [ H ]
+                  |),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                          M.get_associated_function (|
+                            Ty.path "core::panic::location::Location",
+                            "file",
+                            [],
+                            []
+                          |),
+                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                        |)
+                      |)
+                    |);
+                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                  ]
+                |) in
+              let~ _ : Ty.tuple [] :=
+                M.call_closure (|
+                  Ty.tuple [],
+                  M.get_trait_method (|
+                    "core::hash::Hash",
+                    Ty.path "u32",
+                    [],
+                    [],
+                    "hash",
+                    [],
+                    [ H ]
+                  |),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "core::panic::location::Location",
+                        "line"
+                      |)
+                    |);
+                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                  ]
+                |) in
+              let~ _ : Ty.tuple [] :=
+                M.call_closure (|
+                  Ty.tuple [],
+                  M.get_trait_method (|
+                    "core::hash::Hash",
+                    Ty.path "u32",
+                    [],
+                    [],
+                    "hash",
+                    [],
+                    [ H ]
+                  |),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "core::panic::location::Location",
+                        "col"
+                      |)
+                    |);
+                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                  ]
+                |) in
+              M.alloc (| Ty.tuple [], Value.Tuple [] |)
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::hash::Hash"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [ ("hash", InstanceField.Method hash) ].
+    End Impl_core_hash_Hash_for_core_panic_location_Location.
+    
+    Module Impl_core_fmt_Debug_for_core_panic_location_Location.
+      Definition Self : Ty.t := Ty.path "core::panic::location::Location".
+      
+      (*
+          fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+              f.debug_struct("Location")
+                  .field("file", &self.file())
+                  .field("line", &self.line)
+                  .field("column", &self.col)
+                  .finish()
+          }
+      *)
+      Definition fmt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; f ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "&") [] [ Ty.path "core::panic::location::Location" ],
+                self
+              |) in
+            let f :=
+              M.alloc (| Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ], f |) in
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "core::result::Result")
+                []
+                [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+              M.get_associated_function (|
+                Ty.path "core::fmt::builders::DebugStruct",
+                "finish",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::builders::DebugStruct" ],
+                      M.get_associated_function (|
+                        Ty.path "core::fmt::builders::DebugStruct",
+                        "field",
+                        [],
+                        []
+                      |),
+                      [
+                        M.borrow (|
+                          Pointer.Kind.MutRef,
+                          M.deref (|
+                            M.call_closure (|
+                              Ty.apply
+                                (Ty.path "&mut")
+                                []
+                                [ Ty.path "core::fmt::builders::DebugStruct" ],
+                              M.get_associated_function (|
+                                Ty.path "core::fmt::builders::DebugStruct",
+                                "field",
+                                [],
+                                []
+                              |),
+                              [
+                                M.borrow (|
+                                  Pointer.Kind.MutRef,
+                                  M.deref (|
+                                    M.call_closure (|
+                                      Ty.apply
+                                        (Ty.path "&mut")
+                                        []
+                                        [ Ty.path "core::fmt::builders::DebugStruct" ],
+                                      M.get_associated_function (|
+                                        Ty.path "core::fmt::builders::DebugStruct",
+                                        "field",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.borrow (|
+                                          Pointer.Kind.MutRef,
+                                          M.alloc (|
+                                            Ty.path "core::fmt::builders::DebugStruct",
+                                            M.call_closure (|
+                                              Ty.path "core::fmt::builders::DebugStruct",
+                                              M.get_associated_function (|
+                                                Ty.path "core::fmt::Formatter",
+                                                "debug_struct",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.borrow (|
+                                                  Pointer.Kind.MutRef,
+                                                  M.deref (| M.read (| f |) |)
+                                                |);
+                                                M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (| mk_str (| "Location" |) |)
+                                                |)
+                                              ]
+                                            |)
+                                          |)
+                                        |);
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| mk_str (| "file" |) |)
+                                        |);
+                                        M.call_closure (|
+                                          Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                                          M.pointer_coercion
+                                            M.PointerCoercion.Unsize
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ])
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                                          [
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (|
+                                                M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.alloc (|
+                                                    Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                                                    M.call_closure (|
+                                                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                                                      M.get_associated_function (|
+                                                        Ty.path "core::panic::location::Location",
+                                                        "file",
+                                                        [],
+                                                        []
+                                                      |),
+                                                      [
+                                                        M.borrow (|
+                                                          Pointer.Kind.Ref,
+                                                          M.deref (| M.read (| self |) |)
+                                                        |)
+                                                      ]
+                                                    |)
+                                                  |)
+                                                |)
+                                              |)
+                                            |)
+                                          ]
+                                        |)
+                                      ]
+                                    |)
+                                  |)
+                                |);
+                                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "line" |) |) |);
+                                M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                                  M.pointer_coercion
+                                    M.PointerCoercion.Unsize
+                                    (Ty.apply (Ty.path "&") [] [ Ty.path "u32" ])
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (|
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.SubPointer.get_struct_record_field (|
+                                            M.deref (| M.read (| self |) |),
+                                            "core::panic::location::Location",
+                                            "line"
+                                          |)
+                                        |)
+                                      |)
+                                    |)
+                                  ]
+                                |)
+                              ]
+                            |)
+                          |)
+                        |);
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "column" |) |) |);
+                        M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "u32" ])
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (|
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (| M.read (| self |) |),
+                                    "core::panic::location::Location",
+                                    "col"
+                                  |)
+                                |)
+                              |)
+                            |)
+                          ]
+                        |)
+                      ]
+                    |)
+                  |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::fmt::Debug"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [ ("fmt", InstanceField.Method fmt) ].
+    End Impl_core_fmt_Debug_for_core_panic_location_Location.
     
     Module Impl_core_panic_location_Location.
       Definition Self : Ty.t := Ty.path "core::panic::location::Location".
@@ -885,8 +865,9 @@ Module panic.
       Global Typeclasses Opaque caller.
       
       (*
-          pub const fn file(&self) -> &str {
-              self.file
+          pub const fn file(&self) -> &'a str {
+              // SAFETY: The filename is valid.
+              unsafe { self.filename.as_ref() }
           }
       *)
       Definition file (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -901,12 +882,24 @@ Module panic.
             M.borrow (|
               Pointer.Kind.Ref,
               M.deref (|
-                M.read (|
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "core::panic::location::Location",
-                    "file"
-                  |)
+                M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ Ty.path "str" ],
+                    "as_ref",
+                    [],
+                    []
+                  |),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "core::panic::location::Location",
+                        "filename"
+                      |)
+                    |)
+                  ]
                 |)
               |)
             |)))
@@ -916,6 +909,127 @@ Module panic.
       Global Instance AssociatedFunction_file : M.IsAssociatedFunction.C Self "file" file.
       Admitted.
       Global Typeclasses Opaque file.
+      
+      (*
+          pub const fn file_as_c_str(&self) -> &'a CStr {
+              let filename = self.filename.as_ptr();
+      
+              // SAFETY: The filename is valid for `filename_len+1` bytes, so this addition can't
+              // overflow.
+              let cstr_len = unsafe { crate::mem::size_of_val_raw(filename).unchecked_add(1) };
+      
+              // SAFETY: The filename is valid for `filename_len+1` bytes.
+              let slice = unsafe { crate::slice::from_raw_parts(filename.cast(), cstr_len) };
+      
+              // SAFETY: The filename is guaranteed to have a trailing nul byte and no interior nul bytes.
+              unsafe { CStr::from_bytes_with_nul_unchecked(slice) }
+          }
+      *)
+      Definition file_as_c_str (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "&") [] [ Ty.path "core::panic::location::Location" ],
+                self
+              |) in
+            M.read (|
+              let~ filename : Ty.apply (Ty.path "*mut") [] [ Ty.path "str" ] :=
+                M.call_closure (|
+                  Ty.apply (Ty.path "*mut") [] [ Ty.path "str" ],
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ Ty.path "str" ],
+                    "as_ptr",
+                    [],
+                    []
+                  |),
+                  [
+                    M.read (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "core::panic::location::Location",
+                        "filename"
+                      |)
+                    |)
+                  ]
+                |) in
+              let~ cstr_len : Ty.path "usize" :=
+                M.call_closure (|
+                  Ty.path "usize",
+                  M.get_associated_function (| Ty.path "usize", "unchecked_add", [], [] |),
+                  [
+                    M.call_closure (|
+                      Ty.path "usize",
+                      M.get_function (| "core::mem::size_of_val_raw", [], [ Ty.path "str" ] |),
+                      [
+                        M.call_closure (|
+                          Ty.apply (Ty.path "*const") [] [ Ty.path "str" ],
+                          M.pointer_coercion
+                            M.PointerCoercion.MutToConstPointer
+                            (Ty.apply (Ty.path "*mut") [] [ Ty.path "str" ])
+                            (Ty.apply (Ty.path "*const") [] [ Ty.path "str" ]),
+                          [ M.read (| filename |) ]
+                        |)
+                      ]
+                    |);
+                    Value.Integer IntegerKind.Usize 1
+                  ]
+                |) in
+              let~ slice :
+                  Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ] :=
+                M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                  M.get_function (| "core::slice::raw::from_raw_parts", [], [ Ty.path "u8" ] |),
+                  [
+                    M.call_closure (|
+                      Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
+                      M.pointer_coercion
+                        M.PointerCoercion.MutToConstPointer
+                        (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ])
+                        (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]),
+                      [
+                        M.call_closure (|
+                          Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                          M.get_associated_function (|
+                            Ty.apply (Ty.path "*mut") [] [ Ty.path "str" ],
+                            "cast",
+                            [],
+                            [ Ty.path "u8" ]
+                          |),
+                          [ M.read (| filename |) ]
+                        |)
+                      ]
+                    |);
+                    M.read (| cstr_len |)
+                  ]
+                |) in
+              M.alloc (|
+                Ty.apply (Ty.path "&") [] [ Ty.path "core::ffi::c_str::CStr" ],
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "core::ffi::c_str::CStr" ],
+                      M.get_associated_function (|
+                        Ty.path "core::ffi::c_str::CStr",
+                        "from_bytes_with_nul_unchecked",
+                        [],
+                        []
+                      |),
+                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |) ]
+                    |)
+                  |)
+                |)
+              |)
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_file_as_c_str :
+        M.IsAssociatedFunction.C Self "file_as_c_str" file_as_c_str.
+      Admitted.
+      Global Typeclasses Opaque file_as_c_str.
       
       (*
           pub const fn line(&self) -> u32 {
@@ -972,43 +1086,14 @@ Module panic.
       Global Instance AssociatedFunction_column : M.IsAssociatedFunction.C Self "column" column.
       Admitted.
       Global Typeclasses Opaque column.
-      (*
-          pub const fn internal_constructor(file: &'a str, line: u32, col: u32) -> Self {
-              Location { file, line, col }
-          }
-      *)
-      Definition internal_constructor (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [ file; line; col ] =>
-          ltac:(M.monadic
-            (let file := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "str" ], file |) in
-            let line := M.alloc (| Ty.path "u32", line |) in
-            let col := M.alloc (| Ty.path "u32", col |) in
-            Value.mkStructRecord
-              "core::panic::location::Location"
-              []
-              []
-              [
-                ("file", M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| file |) |) |));
-                ("line", M.read (| line |));
-                ("col", M.read (| col |))
-              ]))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Global Instance AssociatedFunction_internal_constructor :
-        M.IsAssociatedFunction.C Self "internal_constructor" internal_constructor.
-      Admitted.
-      Global Typeclasses Opaque internal_constructor.
     End Impl_core_panic_location_Location.
-    
     
     Module Impl_core_fmt_Display_for_core_panic_location_Location.
       Definition Self : Ty.t := Ty.path "core::panic::location::Location".
       
       (*
           fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
-              write!(formatter, "{}:{}:{}", self.file, self.line, self.col)
+              write!(formatter, "{}:{}:{}", self.file(), self.line, self.col)
           }
       *)
       Definition fmt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -1033,120 +1118,124 @@ Module panic.
               M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_fmt", [], [] |),
               [
                 M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| formatter |) |) |);
-                M.call_closure (|
-                  Ty.path "core::fmt::Arguments",
-                  M.get_associated_function (|
+                M.read (|
+                  let~ args :
+                      Ty.tuple
+                        [
+                          Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ];
+                          Ty.apply (Ty.path "&") [] [ Ty.path "u32" ];
+                          Ty.apply (Ty.path "&") [] [ Ty.path "u32" ]
+                        ] :=
+                    Value.Tuple
+                      [
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.alloc (|
+                            Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                            M.call_closure (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                              M.get_associated_function (|
+                                Ty.path "core::panic::location::Location",
+                                "file",
+                                [],
+                                []
+                              |),
+                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                            |)
+                          |)
+                        |);
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::panic::location::Location",
+                            "line"
+                          |)
+                        |);
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::panic::location::Location",
+                            "col"
+                          |)
+                        |)
+                      ] in
+                  let~ args :
+                      Ty.apply
+                        (Ty.path "array")
+                        [ Value.Integer IntegerKind.Usize 3 ]
+                        [ Ty.path "core::fmt::rt::Argument" ] :=
+                    Value.Array
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::rt::Argument",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::rt::Argument",
+                            "new_display",
+                            [],
+                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                          |),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| M.read (| M.SubPointer.get_tuple_field (| args, 0 |) |) |)
+                            |)
+                          ]
+                        |);
+                        M.call_closure (|
+                          Ty.path "core::fmt::rt::Argument",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::rt::Argument",
+                            "new_display",
+                            [],
+                            [ Ty.path "u32" ]
+                          |),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| M.read (| M.SubPointer.get_tuple_field (| args, 1 |) |) |)
+                            |)
+                          ]
+                        |);
+                        M.call_closure (|
+                          Ty.path "core::fmt::rt::Argument",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::rt::Argument",
+                            "new_display",
+                            [],
+                            [ Ty.path "u32" ]
+                          |),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| M.read (| M.SubPointer.get_tuple_field (| args, 2 |) |) |)
+                            |)
+                          ]
+                        |)
+                      ] in
+                  M.alloc (|
                     Ty.path "core::fmt::Arguments",
-                    "new_v1",
-                    [ Value.Integer IntegerKind.Usize 3; Value.Integer IntegerKind.Usize 3 ],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
+                    M.call_closure (|
+                      Ty.path "core::fmt::Arguments",
+                      M.get_associated_function (|
+                        Ty.path "core::fmt::Arguments",
+                        "new",
+                        [ Value.Integer IntegerKind.Usize 8; Value.Integer IntegerKind.Usize 3 ],
+                        []
+                      |),
+                      [
                         M.borrow (|
                           Pointer.Kind.Ref,
-                          M.alloc (|
-                            Ty.apply
-                              (Ty.path "array")
-                              [ Value.Integer IntegerKind.Usize 3 ]
-                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                            Value.Array [ mk_str (| "" |); mk_str (| ":" |); mk_str (| ":" |) ]
-                          |)
-                        |)
-                      |)
-                    |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
+                          M.deref (| M.read (| UnsupportedLiteral |) |)
+                        |);
                         M.borrow (|
                           Pointer.Kind.Ref,
-                          M.alloc (|
-                            Ty.apply
-                              (Ty.path "array")
-                              [ Value.Integer IntegerKind.Usize 3 ]
-                              [ Ty.path "core::fmt::rt::Argument" ],
-                            Value.Array
-                              [
-                                M.call_closure (|
-                                  Ty.path "core::fmt::rt::Argument",
-                                  M.get_associated_function (|
-                                    Ty.path "core::fmt::rt::Argument",
-                                    "new_display",
-                                    [],
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                                  |),
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (|
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.SubPointer.get_struct_record_field (|
-                                            M.deref (| M.read (| self |) |),
-                                            "core::panic::location::Location",
-                                            "file"
-                                          |)
-                                        |)
-                                      |)
-                                    |)
-                                  ]
-                                |);
-                                M.call_closure (|
-                                  Ty.path "core::fmt::rt::Argument",
-                                  M.get_associated_function (|
-                                    Ty.path "core::fmt::rt::Argument",
-                                    "new_display",
-                                    [],
-                                    [ Ty.path "u32" ]
-                                  |),
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (|
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.SubPointer.get_struct_record_field (|
-                                            M.deref (| M.read (| self |) |),
-                                            "core::panic::location::Location",
-                                            "line"
-                                          |)
-                                        |)
-                                      |)
-                                    |)
-                                  ]
-                                |);
-                                M.call_closure (|
-                                  Ty.path "core::fmt::rt::Argument",
-                                  M.get_associated_function (|
-                                    Ty.path "core::fmt::rt::Argument",
-                                    "new_display",
-                                    [],
-                                    [ Ty.path "u32" ]
-                                  |),
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (|
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.SubPointer.get_struct_record_field (|
-                                            M.deref (| M.read (| self |) |),
-                                            "core::panic::location::Location",
-                                            "col"
-                                          |)
-                                        |)
-                                      |)
-                                    |)
-                                  ]
-                                |)
-                              ]
-                          |)
+                          M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
                         |)
-                      |)
+                      ]
                     |)
-                  ]
+                  |)
                 |)
               ]
             |)))
@@ -1161,5 +1250,29 @@ Module panic.
           Self
           (* Instance *) [ ("fmt", InstanceField.Method fmt) ].
     End Impl_core_fmt_Display_for_core_panic_location_Location.
+    
+    Module Impl_core_marker_Send_for_core_panic_location_Location.
+      Definition Self : Ty.t := Ty.path "core::panic::location::Location".
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::marker::Send"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [].
+    End Impl_core_marker_Send_for_core_panic_location_Location.
+    
+    Module Impl_core_marker_Sync_for_core_panic_location_Location.
+      Definition Self : Ty.t := Ty.path "core::panic::location::Location".
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::marker::Sync"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [].
+    End Impl_core_marker_Sync_for_core_panic_location_Location.
   End location.
 End panic.

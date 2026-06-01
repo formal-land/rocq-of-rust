@@ -33,42 +33,41 @@ Definition check_program_account (ε : list Value.t) (τ : list Ty.t) (α : list
                   fun γ =>
                     ltac:(M.monadic
                       (let γ :=
-                        M.use
-                          (M.alloc (|
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
                             Ty.path "bool",
-                            M.call_closure (|
-                              Ty.path "bool",
-                              M.get_trait_method (|
-                                "core::cmp::PartialEq",
-                                Ty.apply (Ty.path "&") [] [ Ty.path "solana_address::Address" ],
-                                [],
-                                [ Ty.apply (Ty.path "&") [] [ Ty.path "solana_address::Address" ] ],
-                                "ne",
-                                [],
-                                []
-                              |),
-                              [
-                                M.borrow (| Pointer.Kind.Ref, spl_token_program_id |);
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.alloc (|
-                                    Ty.apply (Ty.path "&") [] [ Ty.path "solana_address::Address" ],
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.alloc (|
+                            M.get_trait_method (|
+                              "core::cmp::PartialEq",
+                              Ty.apply (Ty.path "&") [] [ Ty.path "solana_address::Address" ],
+                              [],
+                              [ Ty.apply (Ty.path "&") [] [ Ty.path "solana_address::Address" ] ],
+                              "ne",
+                              [],
+                              []
+                            |),
+                            [
+                              M.borrow (| Pointer.Kind.Ref, spl_token_program_id |);
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.alloc (|
+                                  Ty.apply (Ty.path "&") [] [ Ty.path "solana_address::Address" ],
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.path "solana_address::Address",
+                                      M.call_closure (|
                                         Ty.path "solana_address::Address",
-                                        M.call_closure (|
-                                          Ty.path "solana_address::Address",
-                                          M.get_function (| "spl_token_interface::id", [], [] |),
-                                          []
-                                        |)
+                                        M.get_function (| "spl_token_interface::id", [], [] |),
+                                        []
                                       |)
                                     |)
                                   |)
                                 |)
-                              ]
-                            |)
-                          |)) in
+                              |)
+                            ]
+                          |)
+                        |) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       M.never_to_any (|
                         M.read (|

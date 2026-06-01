@@ -37,6 +37,18 @@ Axiom IsDiscriminant_Scope_Module :
 Axiom IsDiscriminant_Scope_Function :
   M.IsDiscriminant "move_bytecode_verifier_meter::Scope::Function" 3.
 
+Module Impl_core_clone_TrivialClone_for_move_bytecode_verifier_meter_Scope.
+  Definition Self : Ty.t := Ty.path "move_bytecode_verifier_meter::Scope".
+  
+  Axiom Implements :
+    M.IsTraitInstance
+      "core::clone::TrivialClone"
+      (* Trait polymorphic consts *) []
+      (* Trait polymorphic types *) []
+      Self
+      (* Instance *) [].
+End Impl_core_clone_TrivialClone_for_move_bytecode_verifier_meter_Scope.
+
 Module Impl_core_clone_Clone_for_move_bytecode_verifier_meter_Scope.
   Definition Self : Ty.t := Ty.path "move_bytecode_verifier_meter::Scope".
   
@@ -415,15 +427,14 @@ Module Meter.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                BinOp.eq,
-                                [ M.read (| items |); Value.Integer IntegerKind.Usize 0 ]
-                              |)
-                            |)) in
+                              BinOp.eq,
+                              [ M.read (| items |); Value.Integer IntegerKind.Usize 0 ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.never_to_any (|
                           M.read (|
@@ -506,15 +517,14 @@ Module Meter.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                BinOp.eq,
-                                [ M.read (| items |); Value.Integer IntegerKind.Usize 0 ]
-                              |)
-                            |)) in
+                              BinOp.eq,
+                              [ M.read (| items |); Value.Integer IntegerKind.Usize 0 ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.never_to_any (|
                           M.read (|

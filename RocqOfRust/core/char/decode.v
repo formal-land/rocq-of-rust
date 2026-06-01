@@ -762,26 +762,25 @@ Module char.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
                                   Ty.path "bool",
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    UnOp.not,
-                                    [
-                                      M.call_closure (|
-                                        Ty.path "bool",
-                                        M.get_associated_function (|
-                                          Ty.path "u16",
-                                          "is_utf16_surrogate",
-                                          [],
-                                          []
-                                        |),
-                                        [ M.read (| u |) ]
-                                      |)
-                                    ]
-                                  |)
-                                |)) in
+                                  UnOp.not,
+                                  [
+                                    M.call_closure (|
+                                      Ty.path "bool",
+                                      M.get_associated_function (|
+                                        Ty.path "u16",
+                                        "is_utf16_surrogate",
+                                        [],
+                                        []
+                                      |),
+                                      [ M.read (| u |) ]
+                                    |)
+                                  ]
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             Value.StructTuple
@@ -829,15 +828,14 @@ Module char.
                                 fun γ =>
                                   ltac:(M.monadic
                                     (let γ :=
-                                      M.use
-                                        (M.alloc (|
+                                      M.alloc (|
+                                        Ty.path "bool",
+                                        M.call_closure (|
                                           Ty.path "bool",
-                                          M.call_closure (|
-                                            Ty.path "bool",
-                                            BinOp.ge,
-                                            [ M.read (| u |); Value.Integer IntegerKind.U16 56320 ]
-                                          |)
-                                        |)) in
+                                          BinOp.ge,
+                                          [ M.read (| u |); Value.Integer IntegerKind.U16 56320 ]
+                                        |)
+                                      |) in
                                     let _ :=
                                       is_constant_or_break_match (|
                                         M.read (| γ |),
@@ -972,29 +970,28 @@ Module char.
                                             fun γ =>
                                               ltac:(M.monadic
                                                 (let γ :=
-                                                  M.use
-                                                    (M.alloc (|
-                                                      Ty.path "bool",
-                                                      LogicalOp.or (|
-                                                        M.call_closure (|
+                                                  M.alloc (|
+                                                    Ty.path "bool",
+                                                    LogicalOp.or (|
+                                                      M.call_closure (|
+                                                        Ty.path "bool",
+                                                        BinOp.lt,
+                                                        [
+                                                          M.read (| u2 |);
+                                                          Value.Integer IntegerKind.U16 56320
+                                                        ]
+                                                      |),
+                                                      ltac:(M.monadic
+                                                        (M.call_closure (|
                                                           Ty.path "bool",
-                                                          BinOp.lt,
+                                                          BinOp.gt,
                                                           [
                                                             M.read (| u2 |);
-                                                            Value.Integer IntegerKind.U16 56320
+                                                            Value.Integer IntegerKind.U16 57343
                                                           ]
-                                                        |),
-                                                        ltac:(M.monadic
-                                                          (M.call_closure (|
-                                                            Ty.path "bool",
-                                                            BinOp.gt,
-                                                            [
-                                                              M.read (| u2 |);
-                                                              Value.Integer IntegerKind.U16 57343
-                                                            ]
-                                                          |)))
-                                                      |)
-                                                    |)) in
+                                                        |)))
+                                                    |)
+                                                  |) in
                                                 let _ :=
                                                   is_constant_or_break_match (|
                                                     M.read (| γ |),
@@ -1577,72 +1574,64 @@ Module char.
               M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_fmt", [], [] |),
               [
                 M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                M.call_closure (|
-                  Ty.path "core::fmt::Arguments",
-                  M.get_associated_function (|
+                M.read (|
+                  let~ args : Ty.tuple [ Ty.apply (Ty.path "&") [] [ Ty.path "u16" ] ] :=
+                    Value.Tuple
+                      [
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::char::decode::DecodeUtf16Error",
+                            "code"
+                          |)
+                        |)
+                      ] in
+                  let~ args :
+                      Ty.apply
+                        (Ty.path "array")
+                        [ Value.Integer IntegerKind.Usize 1 ]
+                        [ Ty.path "core::fmt::rt::Argument" ] :=
+                    Value.Array
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::rt::Argument",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::rt::Argument",
+                            "new_lower_hex",
+                            [],
+                            [ Ty.path "u16" ]
+                          |),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| M.read (| M.SubPointer.get_tuple_field (| args, 0 |) |) |)
+                            |)
+                          ]
+                        |)
+                      ] in
+                  M.alloc (|
                     Ty.path "core::fmt::Arguments",
-                    "new_v1",
-                    [ Value.Integer IntegerKind.Usize 1; Value.Integer IntegerKind.Usize 1 ],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
+                    M.call_closure (|
+                      Ty.path "core::fmt::Arguments",
+                      M.get_associated_function (|
+                        Ty.path "core::fmt::Arguments",
+                        "new",
+                        [ Value.Integer IntegerKind.Usize 29; Value.Integer IntegerKind.Usize 1 ],
+                        []
+                      |),
+                      [
                         M.borrow (|
                           Pointer.Kind.Ref,
-                          M.alloc (|
-                            Ty.apply
-                              (Ty.path "array")
-                              [ Value.Integer IntegerKind.Usize 1 ]
-                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                            Value.Array [ mk_str (| "unpaired surrogate found: " |) ]
-                          |)
-                        |)
-                      |)
-                    |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
+                          M.deref (| M.read (| UnsupportedLiteral |) |)
+                        |);
                         M.borrow (|
                           Pointer.Kind.Ref,
-                          M.alloc (|
-                            Ty.apply
-                              (Ty.path "array")
-                              [ Value.Integer IntegerKind.Usize 1 ]
-                              [ Ty.path "core::fmt::rt::Argument" ],
-                            Value.Array
-                              [
-                                M.call_closure (|
-                                  Ty.path "core::fmt::rt::Argument",
-                                  M.get_associated_function (|
-                                    Ty.path "core::fmt::rt::Argument",
-                                    "new_lower_hex",
-                                    [],
-                                    [ Ty.path "u16" ]
-                                  |),
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (|
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.SubPointer.get_struct_record_field (|
-                                            M.deref (| M.read (| self |) |),
-                                            "core::char::decode::DecodeUtf16Error",
-                                            "code"
-                                          |)
-                                        |)
-                                      |)
-                                    |)
-                                  ]
-                                |)
-                              ]
-                          |)
+                          M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
                         |)
-                      |)
+                      ]
                     |)
-                  ]
+                  |)
                 |)
               ]
             |)))
@@ -1661,31 +1650,13 @@ Module char.
     Module Impl_core_error_Error_for_core_char_decode_DecodeUtf16Error.
       Definition Self : Ty.t := Ty.path "core::char::decode::DecodeUtf16Error".
       
-      (*
-          fn description(&self) -> &str {
-              "unpaired surrogate found"
-          }
-      *)
-      Definition description (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [ self ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (|
-                Ty.apply (Ty.path "&") [] [ Ty.path "core::char::decode::DecodeUtf16Error" ],
-                self
-              |) in
-            M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "unpaired surrogate found" |) |) |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
       Axiom Implements :
         M.IsTraitInstance
           "core::error::Error"
           (* Trait polymorphic consts *) []
           (* Trait polymorphic types *) []
           Self
-          (* Instance *) [ ("description", InstanceField.Method description) ].
+          (* Instance *) [].
     End Impl_core_error_Error_for_core_char_decode_DecodeUtf16Error.
   End decode.
 End char.

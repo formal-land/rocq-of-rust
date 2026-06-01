@@ -79,7 +79,6 @@ pub(crate) enum PointerCoercion {
     MutToConstPointer,
     ArrayToPointer,
     Unsize,
-    DynStar,
 }
 
 /// Enum [Expr] represents the AST of rust terms.
@@ -538,7 +537,6 @@ impl PointerCoercion {
                 rocq::Expression::just_name("M.PointerCoercion.ArrayToPointer")
             }
             PointerCoercion::Unsize => rocq::Expression::just_name("M.PointerCoercion.Unsize"),
-            PointerCoercion::DynStar => rocq::Expression::just_name("M.PointerCoercion.DynStar"),
         }
     }
 }

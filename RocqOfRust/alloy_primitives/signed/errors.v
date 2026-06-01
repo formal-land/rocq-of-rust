@@ -27,6 +27,18 @@ Module signed.
     Axiom IsDiscriminant_ParseSignedError_IntegerOverflow :
       M.IsDiscriminant "alloy_primitives::signed::errors::ParseSignedError::IntegerOverflow" 1.
     
+    Module Impl_core_clone_TrivialClone_for_alloy_primitives_signed_errors_ParseSignedError.
+      Definition Self : Ty.t := Ty.path "alloy_primitives::signed::errors::ParseSignedError".
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::clone::TrivialClone"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [].
+    End Impl_core_clone_TrivialClone_for_alloy_primitives_signed_errors_ParseSignedError.
+    
     Module Impl_core_clone_Clone_for_alloy_primitives_signed_errors_ParseSignedError.
       Definition Self : Ty.t := Ty.path "alloy_primitives::signed::errors::ParseSignedError".
       
@@ -639,6 +651,18 @@ Module signed.
         ty_params := [];
         fields := [];
       } *)
+    
+    Module Impl_core_clone_TrivialClone_for_alloy_primitives_signed_errors_BigIntConversionError.
+      Definition Self : Ty.t := Ty.path "alloy_primitives::signed::errors::BigIntConversionError".
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::clone::TrivialClone"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [].
+    End Impl_core_clone_TrivialClone_for_alloy_primitives_signed_errors_BigIntConversionError.
     
     Module Impl_core_clone_Clone_for_alloy_primitives_signed_errors_BigIntConversionError.
       Definition Self : Ty.t := Ty.path "alloy_primitives::signed::errors::BigIntConversionError".

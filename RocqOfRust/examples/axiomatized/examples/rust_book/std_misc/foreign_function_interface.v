@@ -31,6 +31,18 @@ Admitted.
     fields := [ ("re", Ty.path "f32"); ("im", Ty.path "f32") ];
   } *)
 
+Module Impl_core_clone_TrivialClone_for_foreign_function_interface_Complex.
+  Definition Self : Ty.t := Ty.path "foreign_function_interface::Complex".
+  
+  Axiom Implements :
+    M.IsTraitInstance
+      "core::clone::TrivialClone"
+      (* Trait polymorphic consts *) []
+      (* Trait polymorphic types *) []
+      Self
+      (* Instance *) [].
+End Impl_core_clone_TrivialClone_for_foreign_function_interface_Complex.
+
 Module Impl_core_clone_Clone_for_foreign_function_interface_Complex.
   Definition Self : Ty.t := Ty.path "foreign_function_interface::Complex".
   

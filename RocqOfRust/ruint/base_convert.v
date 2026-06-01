@@ -32,6 +32,18 @@ Module base_convert.
   Axiom IsDiscriminant_BaseConvertError_InvalidDigit :
     M.IsDiscriminant "ruint::base_convert::BaseConvertError::InvalidDigit" 2.
   
+  Module Impl_core_clone_TrivialClone_for_ruint_base_convert_BaseConvertError.
+    Definition Self : Ty.t := Ty.path "ruint::base_convert::BaseConvertError".
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "core::clone::TrivialClone"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        Self
+        (* Instance *) [].
+  End Impl_core_clone_TrivialClone_for_ruint_base_convert_BaseConvertError.
+  
   Module Impl_core_clone_Clone_for_ruint_base_convert_BaseConvertError.
     Definition Self : Ty.t := Ty.path "ruint::base_convert::BaseConvertError".
     
@@ -573,67 +585,66 @@ Module base_convert.
                     |),
                     [
                       M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.call_closure (|
-                        Ty.path "core::fmt::Arguments",
-                        M.get_associated_function (|
+                      M.read (|
+                        let~ args :
+                            Ty.tuple
+                              [
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ]
+                              ] :=
+                          Value.Tuple [ M.borrow (| Pointer.Kind.Ref, base |) ] in
+                        let~ args :
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 1 ]
+                              [ Ty.path "core::fmt::rt::Argument" ] :=
+                          Value.Array
+                            [
+                              M.call_closure (|
+                                Ty.path "core::fmt::rt::Argument",
+                                M.get_associated_function (|
+                                  Ty.path "core::fmt::rt::Argument",
+                                  "new_display",
+                                  [],
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ]
+                                |),
+                                [
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (|
+                                      M.read (| M.SubPointer.get_tuple_field (| args, 0 |) |)
+                                    |)
+                                  |)
+                                ]
+                              |)
+                            ] in
+                        M.alloc (|
                           Ty.path "core::fmt::Arguments",
-                          "new_v1",
-                          [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 1 ],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
+                          M.call_closure (|
+                            Ty.path "core::fmt::Arguments",
+                            M.get_associated_function (|
+                              Ty.path "core::fmt::Arguments",
+                              "new",
+                              [
+                                Value.Integer IntegerKind.Usize 47;
+                                Value.Integer IntegerKind.Usize 1
+                              ],
+                              []
+                            |),
+                            [
                               M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
-                                  Ty.apply
-                                    (Ty.path "array")
-                                    [ Value.Integer IntegerKind.Usize 2 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array
-                                    [
-                                      mk_str (| "the requested number base " |);
-                                      mk_str (| " is less than two" |)
-                                    ]
-                                |)
-                              |)
-                            |)
-                          |);
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
+                                M.deref (| M.read (| UnsupportedLiteral |) |)
+                              |);
                               M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
-                                  Ty.apply
-                                    (Ty.path "array")
-                                    [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.path "core::fmt::rt::Argument" ],
-                                  Value.Array
-                                    [
-                                      M.call_closure (|
-                                        Ty.path "core::fmt::rt::Argument",
-                                        M.get_associated_function (|
-                                          Ty.path "core::fmt::rt::Argument",
-                                          "new_display",
-                                          [],
-                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ]
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.borrow (| Pointer.Kind.Ref, base |) |)
-                                          |)
-                                        ]
-                                      |)
-                                    ]
-                                |)
+                                M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
                               |)
-                            |)
+                            ]
                           |)
-                        ]
+                        |)
                       |)
                     ]
                   |)));
@@ -667,82 +678,91 @@ Module base_convert.
                     |),
                     [
                       M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.call_closure (|
-                        Ty.path "core::fmt::Arguments",
-                        M.get_associated_function (|
+                      M.read (|
+                        let~ args :
+                            Ty.tuple
+                              [
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ];
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ]
+                              ] :=
+                          Value.Tuple
+                            [
+                              M.borrow (| Pointer.Kind.Ref, digit |);
+                              M.borrow (| Pointer.Kind.Ref, base |)
+                            ] in
+                        let~ args :
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 2 ]
+                              [ Ty.path "core::fmt::rt::Argument" ] :=
+                          Value.Array
+                            [
+                              M.call_closure (|
+                                Ty.path "core::fmt::rt::Argument",
+                                M.get_associated_function (|
+                                  Ty.path "core::fmt::rt::Argument",
+                                  "new_display",
+                                  [],
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ]
+                                |),
+                                [
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (|
+                                      M.read (| M.SubPointer.get_tuple_field (| args, 0 |) |)
+                                    |)
+                                  |)
+                                ]
+                              |);
+                              M.call_closure (|
+                                Ty.path "core::fmt::rt::Argument",
+                                M.get_associated_function (|
+                                  Ty.path "core::fmt::rt::Argument",
+                                  "new_display",
+                                  [],
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ]
+                                |),
+                                [
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (|
+                                      M.read (| M.SubPointer.get_tuple_field (| args, 1 |) |)
+                                    |)
+                                  |)
+                                ]
+                              |)
+                            ] in
+                        M.alloc (|
                           Ty.path "core::fmt::Arguments",
-                          "new_v1",
-                          [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 2 ],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
+                          M.call_closure (|
+                            Ty.path "core::fmt::Arguments",
+                            M.get_associated_function (|
+                              Ty.path "core::fmt::Arguments",
+                              "new",
+                              [
+                                Value.Integer IntegerKind.Usize 37;
+                                Value.Integer IntegerKind.Usize 2
+                              ],
+                              []
+                            |),
+                            [
                               M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
-                                  Ty.apply
-                                    (Ty.path "array")
-                                    [ Value.Integer IntegerKind.Usize 2 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array
-                                    [
-                                      mk_str (| "digit " |);
-                                      mk_str (| " is out of range for base " |)
-                                    ]
-                                |)
-                              |)
-                            |)
-                          |);
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
+                                M.deref (| M.read (| UnsupportedLiteral |) |)
+                              |);
                               M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
-                                  Ty.apply
-                                    (Ty.path "array")
-                                    [ Value.Integer IntegerKind.Usize 2 ]
-                                    [ Ty.path "core::fmt::rt::Argument" ],
-                                  Value.Array
-                                    [
-                                      M.call_closure (|
-                                        Ty.path "core::fmt::rt::Argument",
-                                        M.get_associated_function (|
-                                          Ty.path "core::fmt::rt::Argument",
-                                          "new_display",
-                                          [],
-                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ]
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.borrow (| Pointer.Kind.Ref, digit |) |)
-                                          |)
-                                        ]
-                                      |);
-                                      M.call_closure (|
-                                        Ty.path "core::fmt::rt::Argument",
-                                        M.get_associated_function (|
-                                          Ty.path "core::fmt::rt::Argument",
-                                          "new_display",
-                                          [],
-                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ]
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.borrow (| Pointer.Kind.Ref, base |) |)
-                                          |)
-                                        ]
-                                      |)
-                                    ]
-                                |)
+                                M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
                               |)
-                            |)
+                            ]
                           |)
-                        ]
+                        |)
                       |)
                     ]
                   |)))
@@ -798,21 +818,20 @@ Module base_convert.
                   fun γ =>
                     ltac:(M.monadic
                       (let γ :=
-                        M.use
-                          (M.alloc (|
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
                             Ty.path "bool",
-                            M.call_closure (|
-                              Ty.path "bool",
-                              UnOp.not,
-                              [
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  BinOp.gt,
-                                  [ M.read (| base |); Value.Integer IntegerKind.U64 1 ]
-                                |)
-                              ]
-                            |)
-                          |)) in
+                            UnOp.not,
+                            [
+                              M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| base |); Value.Integer IntegerKind.U64 1 ]
+                              |)
+                            ]
+                          |)
+                        |) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       M.never_to_any (|
                         M.call_closure (|
@@ -898,21 +917,20 @@ Module base_convert.
                   fun γ =>
                     ltac:(M.monadic
                       (let γ :=
-                        M.use
-                          (M.alloc (|
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
                             Ty.path "bool",
-                            M.call_closure (|
-                              Ty.path "bool",
-                              UnOp.not,
-                              [
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  BinOp.gt,
-                                  [ M.read (| base |); Value.Integer IntegerKind.U64 1 ]
-                                |)
-                              ]
-                            |)
-                          |)) in
+                            UnOp.not,
+                            [
+                              M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [ M.read (| base |); Value.Integer IntegerKind.U64 1 ]
+                              |)
+                            ]
+                          |)
+                        |) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       M.never_to_any (|
                         M.call_closure (|
@@ -1061,15 +1079,14 @@ Module base_convert.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  BinOp.lt,
-                                  [ M.read (| base |); Value.Integer IntegerKind.U64 2 ]
-                                |)
-                              |)) in
+                                BinOp.lt,
+                                [ M.read (| base |); Value.Integer IntegerKind.U64 2 ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -1103,15 +1120,14 @@ Module base_convert.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  BinOp.eq,
-                                  [ BITS; Value.Integer IntegerKind.Usize 0 ]
-                                |)
-                              |)) in
+                                BinOp.eq,
+                                [ BITS; Value.Integer IntegerKind.Usize 0 ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -1237,22 +1253,19 @@ Module base_convert.
                                                                       fun γ =>
                                                                         ltac:(M.monadic
                                                                           (let γ :=
-                                                                            M.use
-                                                                              (M.alloc (|
+                                                                            M.alloc (|
+                                                                              Ty.path "bool",
+                                                                              M.call_closure (|
                                                                                 Ty.path "bool",
-                                                                                M.call_closure (|
-                                                                                  Ty.path "bool",
-                                                                                  BinOp.ge,
-                                                                                  [
-                                                                                    M.read (|
-                                                                                      digit
-                                                                                    |);
-                                                                                    M.read (|
-                                                                                      base
-                                                                                    |)
-                                                                                  ]
-                                                                                |)
-                                                                              |)) in
+                                                                                BinOp.ge,
+                                                                                [
+                                                                                  M.read (|
+                                                                                    digit
+                                                                                  |);
+                                                                                  M.read (| base |)
+                                                                                ]
+                                                                              |)
+                                                                            |) in
                                                                           let _ :=
                                                                             is_constant_or_break_match (|
                                                                               M.read (| γ |),
@@ -1308,22 +1321,21 @@ Module base_convert.
                                                                       fun γ =>
                                                                         ltac:(M.monadic
                                                                           (let γ :=
-                                                                            M.use
-                                                                              (M.alloc (|
+                                                                            M.alloc (|
+                                                                              Ty.path "bool",
+                                                                              M.call_closure (|
                                                                                 Ty.path "bool",
-                                                                                M.call_closure (|
-                                                                                  Ty.path "bool",
-                                                                                  BinOp.ne,
-                                                                                  [
-                                                                                    M.read (|
-                                                                                      digit
-                                                                                    |);
-                                                                                    Value.Integer
-                                                                                      IntegerKind.U64
-                                                                                      0
-                                                                                  ]
-                                                                                |)
-                                                                              |)) in
+                                                                                BinOp.ne,
+                                                                                [
+                                                                                  M.read (|
+                                                                                    digit
+                                                                                  |);
+                                                                                  Value.Integer
+                                                                                    IntegerKind.U64
+                                                                                    0
+                                                                                ]
+                                                                              |)
+                                                                            |) in
                                                                           let _ :=
                                                                             is_constant_or_break_match (|
                                                                               M.read (| γ |),
@@ -1609,18 +1621,17 @@ Module base_convert.
                                                         fun γ =>
                                                           ltac:(M.monadic
                                                             (let γ :=
-                                                              M.use
-                                                                (M.alloc (|
+                                                              M.alloc (|
+                                                                Ty.path "bool",
+                                                                M.call_closure (|
                                                                   Ty.path "bool",
-                                                                  M.call_closure (|
-                                                                    Ty.path "bool",
-                                                                    BinOp.ge,
-                                                                    [
-                                                                      M.read (| digit |);
-                                                                      M.read (| base |)
-                                                                    ]
-                                                                  |)
-                                                                |)) in
+                                                                  BinOp.ge,
+                                                                  [
+                                                                    M.read (| digit |);
+                                                                    M.read (| base |)
+                                                                  ]
+                                                                |)
+                                                              |) in
                                                             let _ :=
                                                               is_constant_or_break_match (|
                                                                 M.read (| γ |),
@@ -1786,59 +1797,58 @@ Module base_convert.
                                                         fun γ =>
                                                           ltac:(M.monadic
                                                             (let γ :=
-                                                              M.use
-                                                                (M.alloc (|
-                                                                  Ty.path "bool",
-                                                                  LogicalOp.or (|
-                                                                    M.call_closure (|
+                                                              M.alloc (|
+                                                                Ty.path "bool",
+                                                                LogicalOp.or (|
+                                                                  M.call_closure (|
+                                                                    Ty.path "bool",
+                                                                    BinOp.ne,
+                                                                    [
+                                                                      M.read (| overflow |);
+                                                                      Value.Integer
+                                                                        IntegerKind.U64
+                                                                        0
+                                                                    ]
+                                                                  |),
+                                                                  ltac:(M.monadic
+                                                                    (M.call_closure (|
                                                                       Ty.path "bool",
-                                                                      BinOp.ne,
+                                                                      BinOp.gt,
                                                                       [
-                                                                        M.read (| overflow |);
-                                                                        Value.Integer
-                                                                          IntegerKind.U64
-                                                                          0
-                                                                      ]
-                                                                    |),
-                                                                    ltac:(M.monadic
-                                                                      (M.call_closure (|
-                                                                        Ty.path "bool",
-                                                                        BinOp.gt,
-                                                                        [
-                                                                          M.read (|
-                                                                            M.SubPointer.get_array_field (|
-                                                                              M.SubPointer.get_struct_record_field (|
-                                                                                result,
-                                                                                "ruint::Uint",
-                                                                                "limbs"
-                                                                              |),
-                                                                              M.call_closure (|
-                                                                                Ty.path "usize",
-                                                                                BinOp.Wrap.sub,
-                                                                                [
-                                                                                  LIMBS;
-                                                                                  Value.Integer
-                                                                                    IntegerKind.Usize
-                                                                                    1
-                                                                                ]
-                                                                              |)
-                                                                            |)
-                                                                          |);
-                                                                          M.read (|
-                                                                            get_associated_constant (|
-                                                                              Ty.apply
-                                                                                (Ty.path
-                                                                                  "ruint::Uint")
-                                                                                [ BITS; LIMBS ]
-                                                                                [],
-                                                                              "MASK",
-                                                                              Ty.path "u64"
+                                                                        M.read (|
+                                                                          M.SubPointer.get_array_field (|
+                                                                            M.SubPointer.get_struct_record_field (|
+                                                                              result,
+                                                                              "ruint::Uint",
+                                                                              "limbs"
+                                                                            |),
+                                                                            M.call_closure (|
+                                                                              Ty.path "usize",
+                                                                              BinOp.Wrap.sub,
+                                                                              [
+                                                                                LIMBS;
+                                                                                Value.Integer
+                                                                                  IntegerKind.Usize
+                                                                                  1
+                                                                              ]
                                                                             |)
                                                                           |)
-                                                                        ]
-                                                                      |)))
-                                                                  |)
-                                                                |)) in
+                                                                        |);
+                                                                        M.read (|
+                                                                          get_associated_constant (|
+                                                                            Ty.apply
+                                                                              (Ty.path
+                                                                                "ruint::Uint")
+                                                                              [ BITS; LIMBS ]
+                                                                              [],
+                                                                            "MASK",
+                                                                            Ty.path "u64"
+                                                                          |)
+                                                                        |)
+                                                                      ]
+                                                                    |)))
+                                                                |)
+                                                              |) in
                                                             let _ :=
                                                               is_constant_or_break_match (|
                                                                 M.read (| γ |),
@@ -1938,59 +1948,58 @@ Module base_convert.
                                                         fun γ =>
                                                           ltac:(M.monadic
                                                             (let γ :=
-                                                              M.use
-                                                                (M.alloc (|
-                                                                  Ty.path "bool",
-                                                                  LogicalOp.or (|
-                                                                    M.call_closure (|
+                                                              M.alloc (|
+                                                                Ty.path "bool",
+                                                                LogicalOp.or (|
+                                                                  M.call_closure (|
+                                                                    Ty.path "bool",
+                                                                    BinOp.ne,
+                                                                    [
+                                                                      M.read (| overflow |);
+                                                                      Value.Integer
+                                                                        IntegerKind.U64
+                                                                        0
+                                                                    ]
+                                                                  |),
+                                                                  ltac:(M.monadic
+                                                                    (M.call_closure (|
                                                                       Ty.path "bool",
-                                                                      BinOp.ne,
+                                                                      BinOp.gt,
                                                                       [
-                                                                        M.read (| overflow |);
-                                                                        Value.Integer
-                                                                          IntegerKind.U64
-                                                                          0
-                                                                      ]
-                                                                    |),
-                                                                    ltac:(M.monadic
-                                                                      (M.call_closure (|
-                                                                        Ty.path "bool",
-                                                                        BinOp.gt,
-                                                                        [
-                                                                          M.read (|
-                                                                            M.SubPointer.get_array_field (|
-                                                                              M.SubPointer.get_struct_record_field (|
-                                                                                power,
-                                                                                "ruint::Uint",
-                                                                                "limbs"
-                                                                              |),
-                                                                              M.call_closure (|
-                                                                                Ty.path "usize",
-                                                                                BinOp.Wrap.sub,
-                                                                                [
-                                                                                  LIMBS;
-                                                                                  Value.Integer
-                                                                                    IntegerKind.Usize
-                                                                                    1
-                                                                                ]
-                                                                              |)
-                                                                            |)
-                                                                          |);
-                                                                          M.read (|
-                                                                            get_associated_constant (|
-                                                                              Ty.apply
-                                                                                (Ty.path
-                                                                                  "ruint::Uint")
-                                                                                [ BITS; LIMBS ]
-                                                                                [],
-                                                                              "MASK",
-                                                                              Ty.path "u64"
+                                                                        M.read (|
+                                                                          M.SubPointer.get_array_field (|
+                                                                            M.SubPointer.get_struct_record_field (|
+                                                                              power,
+                                                                              "ruint::Uint",
+                                                                              "limbs"
+                                                                            |),
+                                                                            M.call_closure (|
+                                                                              Ty.path "usize",
+                                                                              BinOp.Wrap.sub,
+                                                                              [
+                                                                                LIMBS;
+                                                                                Value.Integer
+                                                                                  IntegerKind.Usize
+                                                                                  1
+                                                                              ]
                                                                             |)
                                                                           |)
-                                                                        ]
-                                                                      |)))
-                                                                  |)
-                                                                |)) in
+                                                                        |);
+                                                                        M.read (|
+                                                                          get_associated_constant (|
+                                                                            Ty.apply
+                                                                              (Ty.path
+                                                                                "ruint::Uint")
+                                                                              [ BITS; LIMBS ]
+                                                                              [],
+                                                                            "MASK",
+                                                                            Ty.path "u64"
+                                                                          |)
+                                                                        |)
+                                                                      ]
+                                                                    |)))
+                                                                |)
+                                                              |) in
                                                             let _ :=
                                                               is_constant_or_break_match (|
                                                                 M.read (| γ |),
@@ -2130,18 +2139,17 @@ Module base_convert.
                                                         fun γ =>
                                                           ltac:(M.monadic
                                                             (let γ :=
-                                                              M.use
-                                                                (M.alloc (|
+                                                              M.alloc (|
+                                                                Ty.path "bool",
+                                                                M.call_closure (|
                                                                   Ty.path "bool",
-                                                                  M.call_closure (|
-                                                                    Ty.path "bool",
-                                                                    BinOp.ge,
-                                                                    [
-                                                                      M.read (| digit |);
-                                                                      M.read (| base |)
-                                                                    ]
-                                                                  |)
-                                                                |)) in
+                                                                  BinOp.ge,
+                                                                  [
+                                                                    M.read (| digit |);
+                                                                    M.read (| base |)
+                                                                  ]
+                                                                |)
+                                                              |) in
                                                             let _ :=
                                                               is_constant_or_break_match (|
                                                                 M.read (| γ |),
@@ -2186,20 +2194,17 @@ Module base_convert.
                                                         fun γ =>
                                                           ltac:(M.monadic
                                                             (let γ :=
-                                                              M.use
-                                                                (M.alloc (|
+                                                              M.alloc (|
+                                                                Ty.path "bool",
+                                                                M.call_closure (|
                                                                   Ty.path "bool",
-                                                                  M.call_closure (|
-                                                                    Ty.path "bool",
-                                                                    BinOp.ne,
-                                                                    [
-                                                                      M.read (| digit |);
-                                                                      Value.Integer
-                                                                        IntegerKind.U64
-                                                                        0
-                                                                    ]
-                                                                  |)
-                                                                |)) in
+                                                                  BinOp.ne,
+                                                                  [
+                                                                    M.read (| digit |);
+                                                                    Value.Integer IntegerKind.U64 0
+                                                                  ]
+                                                                |)
+                                                              |) in
                                                             let _ :=
                                                               is_constant_or_break_match (|
                                                                 M.read (| γ |),
@@ -2336,15 +2341,14 @@ Module base_convert.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  BinOp.lt,
-                                  [ M.read (| base |); Value.Integer IntegerKind.U64 2 ]
-                                |)
-                              |)) in
+                                BinOp.lt,
+                                [ M.read (| base |); Value.Integer IntegerKind.U64 2 ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -2490,18 +2494,17 @@ Module base_convert.
                                                         fun γ =>
                                                           ltac:(M.monadic
                                                             (let γ :=
-                                                              M.use
-                                                                (M.alloc (|
+                                                              M.alloc (|
+                                                                Ty.path "bool",
+                                                                M.call_closure (|
                                                                   Ty.path "bool",
-                                                                  M.call_closure (|
-                                                                    Ty.path "bool",
-                                                                    BinOp.ge,
-                                                                    [
-                                                                      M.read (| digit |);
-                                                                      M.read (| base |)
-                                                                    ]
-                                                                  |)
-                                                                |)) in
+                                                                  BinOp.ge,
+                                                                  [
+                                                                    M.read (| digit |);
+                                                                    M.read (| base |)
+                                                                  ]
+                                                                |)
+                                                              |) in
                                                             let _ :=
                                                               is_constant_or_break_match (|
                                                                 M.read (| γ |),
@@ -2840,72 +2843,71 @@ Module base_convert.
                                                         fun γ =>
                                                           ltac:(M.monadic
                                                             (let γ :=
-                                                              M.use
-                                                                (M.alloc (|
-                                                                  Ty.path "bool",
-                                                                  LogicalOp.or (|
-                                                                    M.call_closure (|
-                                                                      Ty.path "bool",
-                                                                      BinOp.gt,
-                                                                      [
-                                                                        M.read (| carry |);
-                                                                        Value.Integer
-                                                                          IntegerKind.U128
-                                                                          0
-                                                                      ]
-                                                                    |),
-                                                                    ltac:(M.monadic
-                                                                      (LogicalOp.and (|
-                                                                        M.call_closure (|
+                                                              M.alloc (|
+                                                                Ty.path "bool",
+                                                                LogicalOp.or (|
+                                                                  M.call_closure (|
+                                                                    Ty.path "bool",
+                                                                    BinOp.gt,
+                                                                    [
+                                                                      M.read (| carry |);
+                                                                      Value.Integer
+                                                                        IntegerKind.U128
+                                                                        0
+                                                                    ]
+                                                                  |),
+                                                                  ltac:(M.monadic
+                                                                    (LogicalOp.and (|
+                                                                      M.call_closure (|
+                                                                        Ty.path "bool",
+                                                                        BinOp.ne,
+                                                                        [
+                                                                          LIMBS;
+                                                                          Value.Integer
+                                                                            IntegerKind.Usize
+                                                                            0
+                                                                        ]
+                                                                      |),
+                                                                      ltac:(M.monadic
+                                                                        (M.call_closure (|
                                                                           Ty.path "bool",
-                                                                          BinOp.ne,
+                                                                          BinOp.gt,
                                                                           [
-                                                                            LIMBS;
-                                                                            Value.Integer
-                                                                              IntegerKind.Usize
-                                                                              0
-                                                                          ]
-                                                                        |),
-                                                                        ltac:(M.monadic
-                                                                          (M.call_closure (|
-                                                                            Ty.path "bool",
-                                                                            BinOp.gt,
-                                                                            [
-                                                                              M.read (|
-                                                                                M.SubPointer.get_array_field (|
-                                                                                  M.SubPointer.get_struct_record_field (|
-                                                                                    result,
-                                                                                    "ruint::Uint",
-                                                                                    "limbs"
-                                                                                  |),
-                                                                                  M.call_closure (|
-                                                                                    Ty.path "usize",
-                                                                                    BinOp.Wrap.sub,
-                                                                                    [
-                                                                                      LIMBS;
-                                                                                      Value.Integer
-                                                                                        IntegerKind.Usize
-                                                                                        1
-                                                                                    ]
-                                                                                  |)
-                                                                                |)
-                                                                              |);
-                                                                              M.read (|
-                                                                                get_associated_constant (|
-                                                                                  Ty.apply
-                                                                                    (Ty.path
-                                                                                      "ruint::Uint")
-                                                                                    [ BITS; LIMBS ]
-                                                                                    [],
-                                                                                  "MASK",
-                                                                                  Ty.path "u64"
+                                                                            M.read (|
+                                                                              M.SubPointer.get_array_field (|
+                                                                                M.SubPointer.get_struct_record_field (|
+                                                                                  result,
+                                                                                  "ruint::Uint",
+                                                                                  "limbs"
+                                                                                |),
+                                                                                M.call_closure (|
+                                                                                  Ty.path "usize",
+                                                                                  BinOp.Wrap.sub,
+                                                                                  [
+                                                                                    LIMBS;
+                                                                                    Value.Integer
+                                                                                      IntegerKind.Usize
+                                                                                      1
+                                                                                  ]
                                                                                 |)
                                                                               |)
-                                                                            ]
-                                                                          |)))
-                                                                      |)))
-                                                                  |)
-                                                                |)) in
+                                                                            |);
+                                                                            M.read (|
+                                                                              get_associated_constant (|
+                                                                                Ty.apply
+                                                                                  (Ty.path
+                                                                                    "ruint::Uint")
+                                                                                  [ BITS; LIMBS ]
+                                                                                  [],
+                                                                                "MASK",
+                                                                                Ty.path "u64"
+                                                                              |)
+                                                                            |)
+                                                                          ]
+                                                                        |)))
+                                                                    |)))
+                                                                |)
+                                                              |) in
                                                             let _ :=
                                                               is_constant_or_break_match (|
                                                                 M.read (| γ |),
@@ -3345,15 +3347,14 @@ Module base_convert.
                   fun γ =>
                     ltac:(M.monadic
                       (let γ :=
-                        M.use
-                          (M.alloc (|
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
                             Ty.path "bool",
-                            M.call_closure (|
-                              Ty.path "bool",
-                              BinOp.eq,
-                              [ M.read (| zero |); Value.Integer IntegerKind.U64 0 ]
-                            |)
-                          |)) in
+                            BinOp.eq,
+                            [ M.read (| zero |); Value.Integer IntegerKind.U64 0 ]
+                          |)
+                        |) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       Value.StructTuple "core::option::Option::None" [] [ Ty.path "u64" ] []));
                   fun γ =>

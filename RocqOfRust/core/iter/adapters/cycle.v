@@ -960,7 +960,7 @@ Module iter.
                         [
                           fun γ =>
                             ltac:(M.monadic
-                              (let γ := M.use is_empty in
+                              (let γ := is_empty in
                               let _ :=
                                 is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                               M.never_to_any (|
@@ -1324,15 +1324,14 @@ Module iter.
                                   fun γ =>
                                     ltac:(M.monadic
                                       (let γ :=
-                                        M.use
-                                          (M.alloc (|
+                                        M.alloc (|
+                                          Ty.path "bool",
+                                          M.call_closure (|
                                             Ty.path "bool",
-                                            M.call_closure (|
-                                              Ty.path "bool",
-                                              BinOp.gt,
-                                              [ M.read (| n |); Value.Integer IntegerKind.Usize 0 ]
-                                            |)
-                                          |)) in
+                                            BinOp.gt,
+                                            [ M.read (| n |); Value.Integer IntegerKind.Usize 0 ]
+                                          |)
+                                        |) in
                                       let _ :=
                                         is_constant_or_break_match (|
                                           M.read (| γ |),

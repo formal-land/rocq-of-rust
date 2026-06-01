@@ -115,32 +115,31 @@ Module control_flow.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                BinOp.le,
-                                [
-                                  M.call_closure (|
-                                    Ty.path "u32",
-                                    M.get_associated_function (|
-                                      Ty.path "move_binary_format::file_format::CompiledModule",
-                                      "version",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| module |) |)
-                                      |)
-                                    ]
-                                  |);
-                                  Value.Integer IntegerKind.U32 5
-                                ]
-                              |)
-                            |)) in
+                              BinOp.le,
+                              [
+                                M.call_closure (|
+                                  Ty.path "u32",
+                                  M.get_associated_function (|
+                                    Ty.path "move_binary_format::file_format::CompiledModule",
+                                    "version",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| module |) |)
+                                    |)
+                                  ]
+                                |);
+                                Value.Integer IntegerKind.U32 5
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
@@ -1441,35 +1440,31 @@ Module control_flow.
                                                       fun γ =>
                                                         ltac:(M.monadic
                                                           (let γ :=
-                                                            M.use
-                                                              (M.alloc (|
+                                                            M.alloc (|
+                                                              Ty.path "bool",
+                                                              M.call_closure (|
                                                                 Ty.path "bool",
-                                                                M.call_closure (|
-                                                                  Ty.path "bool",
-                                                                  M.get_associated_function (|
-                                                                    Ty.apply
-                                                                      (Ty.path "alloc::vec::Vec")
-                                                                      []
-                                                                      [
-                                                                        Ty.path
-                                                                          "move_bytecode_verifier::loop_summary::NodeId";
-                                                                        Ty.path
-                                                                          "alloc::alloc::Global"
-                                                                      ],
-                                                                    "is_empty",
-                                                                    [],
+                                                                M.get_associated_function (|
+                                                                  Ty.apply
+                                                                    (Ty.path "alloc::vec::Vec")
                                                                     []
-                                                                  |),
-                                                                  [
-                                                                    M.borrow (|
-                                                                      Pointer.Kind.Ref,
-                                                                      M.deref (|
-                                                                        M.read (| back |)
-                                                                      |)
-                                                                    |)
-                                                                  ]
-                                                                |)
-                                                              |)) in
+                                                                    [
+                                                                      Ty.path
+                                                                        "move_bytecode_verifier::loop_summary::NodeId";
+                                                                      Ty.path "alloc::alloc::Global"
+                                                                    ],
+                                                                  "is_empty",
+                                                                  [],
+                                                                  []
+                                                                |),
+                                                                [
+                                                                  M.borrow (|
+                                                                    Pointer.Kind.Ref,
+                                                                    M.deref (| M.read (| back |) |)
+                                                                  |)
+                                                                ]
+                                                              |)
+                                                            |) in
                                                           let _ :=
                                                             is_constant_or_break_match (|
                                                               M.read (| γ |),
@@ -1716,38 +1711,37 @@ Module control_flow.
                                                                                           ltac:(M.monadic
                                                                                             (let
                                                                                                   γ :=
-                                                                                              M.use
-                                                                                                (M.alloc (|
+                                                                                              M.alloc (|
+                                                                                                Ty.path
+                                                                                                  "bool",
+                                                                                                M.call_closure (|
                                                                                                   Ty.path
                                                                                                     "bool",
-                                                                                                  M.call_closure (|
+                                                                                                  M.get_trait_method (|
+                                                                                                    "core::cmp::PartialEq",
                                                                                                     Ty.path
-                                                                                                      "bool",
-                                                                                                    M.get_trait_method (|
-                                                                                                      "core::cmp::PartialEq",
-                                                                                                      Ty.path
-                                                                                                        "move_bytecode_verifier::loop_summary::NodeId",
-                                                                                                      [],
-                                                                                                      [
-                                                                                                        Ty.path
-                                                                                                          "move_bytecode_verifier::loop_summary::NodeId"
-                                                                                                      ],
-                                                                                                      "ne",
-                                                                                                      [],
-                                                                                                      []
-                                                                                                    |),
+                                                                                                      "move_bytecode_verifier::loop_summary::NodeId",
+                                                                                                    [],
                                                                                                     [
-                                                                                                      M.borrow (|
-                                                                                                        Pointer.Kind.Ref,
-                                                                                                        node
-                                                                                                      |);
-                                                                                                      M.borrow (|
-                                                                                                        Pointer.Kind.Ref,
-                                                                                                        head
-                                                                                                      |)
-                                                                                                    ]
-                                                                                                  |)
-                                                                                                |)) in
+                                                                                                      Ty.path
+                                                                                                        "move_bytecode_verifier::loop_summary::NodeId"
+                                                                                                    ],
+                                                                                                    "ne",
+                                                                                                    [],
+                                                                                                    []
+                                                                                                  |),
+                                                                                                  [
+                                                                                                    M.borrow (|
+                                                                                                      Pointer.Kind.Ref,
+                                                                                                      node
+                                                                                                    |);
+                                                                                                    M.borrow (|
+                                                                                                      Pointer.Kind.Ref,
+                                                                                                      head
+                                                                                                    |)
+                                                                                                  ]
+                                                                                                |)
+                                                                                              |) in
                                                                                             let _ :=
                                                                                               is_constant_or_break_match (|
                                                                                                 M.read (|
@@ -2251,41 +2245,40 @@ Module control_flow.
                                                                                                           ltac:(M.monadic
                                                                                                             (let
                                                                                                                   γ :=
-                                                                                                              M.use
-                                                                                                                (M.alloc (|
+                                                                                                              M.alloc (|
+                                                                                                                Ty.path
+                                                                                                                  "bool",
+                                                                                                                M.call_closure (|
                                                                                                                   Ty.path
                                                                                                                     "bool",
-                                                                                                                  M.call_closure (|
-                                                                                                                    Ty.path
-                                                                                                                      "bool",
-                                                                                                                    UnOp.not,
-                                                                                                                    [
-                                                                                                                      M.call_closure (|
+                                                                                                                  UnOp.not,
+                                                                                                                  [
+                                                                                                                    M.call_closure (|
+                                                                                                                      Ty.path
+                                                                                                                        "bool",
+                                                                                                                      M.get_associated_function (|
                                                                                                                         Ty.path
-                                                                                                                          "bool",
-                                                                                                                        M.get_associated_function (|
-                                                                                                                          Ty.path
-                                                                                                                            "move_bytecode_verifier::loop_summary::LoopSummary",
-                                                                                                                          "is_descendant",
-                                                                                                                          [],
-                                                                                                                          []
-                                                                                                                        |),
-                                                                                                                        [
-                                                                                                                          M.borrow (|
-                                                                                                                            Pointer.Kind.Ref,
-                                                                                                                            summary
-                                                                                                                          |);
-                                                                                                                          M.read (|
-                                                                                                                            head
-                                                                                                                          |);
-                                                                                                                          M.read (|
-                                                                                                                            pred
-                                                                                                                          |)
-                                                                                                                        ]
-                                                                                                                      |)
-                                                                                                                    ]
-                                                                                                                  |)
-                                                                                                                |)) in
+                                                                                                                          "move_bytecode_verifier::loop_summary::LoopSummary",
+                                                                                                                        "is_descendant",
+                                                                                                                        [],
+                                                                                                                        []
+                                                                                                                      |),
+                                                                                                                      [
+                                                                                                                        M.borrow (|
+                                                                                                                          Pointer.Kind.Ref,
+                                                                                                                          summary
+                                                                                                                        |);
+                                                                                                                        M.read (|
+                                                                                                                          head
+                                                                                                                        |);
+                                                                                                                        M.read (|
+                                                                                                                          pred
+                                                                                                                        |)
+                                                                                                                      ]
+                                                                                                                    |)
+                                                                                                                  ]
+                                                                                                                |)
+                                                                                                              |) in
                                                                                                             let
                                                                                                                   _ :=
                                                                                                               is_constant_or_break_match (|
@@ -2467,8 +2460,7 @@ Module control_flow.
                                                                                                           ltac:(M.monadic
                                                                                                             (let
                                                                                                                   γ :=
-                                                                                                              M.use
-                                                                                                                body_extended in
+                                                                                                              body_extended in
                                                                                                             let
                                                                                                                   _ :=
                                                                                                               is_constant_or_break_match (|
@@ -2614,20 +2606,19 @@ Module control_flow.
                                                               fun γ =>
                                                                 ltac:(M.monadic
                                                                   (let γ :=
-                                                                    M.use
-                                                                      (M.alloc (|
+                                                                    M.alloc (|
+                                                                      Ty.path "bool",
+                                                                      M.call_closure (|
                                                                         Ty.path "bool",
-                                                                        M.call_closure (|
-                                                                          Ty.path "bool",
-                                                                          BinOp.gt,
-                                                                          [
-                                                                            M.cast
-                                                                              (Ty.path "usize")
-                                                                              (M.read (| depth |));
-                                                                            M.read (| max_depth |)
-                                                                          ]
-                                                                        |)
-                                                                      |)) in
+                                                                        BinOp.gt,
+                                                                        [
+                                                                          M.cast
+                                                                            (Ty.path "usize")
+                                                                            (M.read (| depth |));
+                                                                          M.read (| max_depth |)
+                                                                        ]
+                                                                      |)
+                                                                    |) in
                                                                   let _ :=
                                                                     is_constant_or_break_match (|
                                                                       M.read (| γ |),

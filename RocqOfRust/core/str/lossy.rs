@@ -1,3 +1,4 @@
+use super::char::EscapeDebugExtArgs;
 use super::from_utf8_unchecked;
 use super::validations::utf8_char_width;
 use crate::fmt;
@@ -8,7 +9,7 @@ impl [u8] {
     /// Creates an iterator over the contiguous valid UTF-8 ranges of this
     /// slice, and the non-UTF-8 fragments in between.
     ///
-    /// See the [`Utf8Chunk`] type for documenation of the items yielded by this iterator.
+    /// See the [`Utf8Chunk`] type for documentation of the items yielded by this iterator.
     ///
     /// # Examples
     ///
@@ -121,7 +122,11 @@ impl fmt::Debug for Debug<'_> {
                 let valid = chunk.valid();
                 let mut from = 0;
                 for (i, c) in valid.char_indices() {
-                    let esc = c.escape_debug();
+                    let esc = c.escape_debug_ext(EscapeDebugExtArgs {
+                        escape_grapheme_extended: true,
+                        escape_single_quote: false,
+                        escape_double_quote: true,
+                    });
                     // If char needs escaping, flush backlog so far and write, else skip
                     if esc.len() != 1 {
                         f.write_str(&valid[from..i])?;
@@ -147,12 +152,14 @@ impl fmt::Debug for Debug<'_> {
 /// An iterator used to decode a slice of mostly UTF-8 bytes to string slices
 /// ([`&str`]) and byte slices ([`&[u8]`][byteslice]).
 ///
+/// This struct is created by the [`utf8_chunks`] method on bytes slices.
 /// If you want a simple conversion from UTF-8 byte slices to string slices,
 /// [`from_utf8`] is easier to use.
 ///
-/// See the [`Utf8Chunk`] type for documenation of the items yielded by this iterator.
+/// See the [`Utf8Chunk`] type for documentation of the items yielded by this iterator.
 ///
 /// [byteslice]: slice
+/// [`utf8_chunks`]: slice::utf8_chunks
 /// [`from_utf8`]: super::from_utf8
 ///
 /// # Examples

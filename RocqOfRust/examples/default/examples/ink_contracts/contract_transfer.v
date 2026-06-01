@@ -48,6 +48,18 @@ Module Impl_core_default_Default_for_contract_transfer_AccountId.
       (* Instance *) [ ("default", InstanceField.Method default) ].
 End Impl_core_default_Default_for_contract_transfer_AccountId.
 
+Module Impl_core_clone_TrivialClone_for_contract_transfer_AccountId.
+  Definition Self : Ty.t := Ty.path "contract_transfer::AccountId".
+  
+  Axiom Implements :
+    M.IsTraitInstance
+      "core::clone::TrivialClone"
+      (* Trait polymorphic consts *) []
+      (* Trait polymorphic types *) []
+      Self
+      (* Instance *) [].
+End Impl_core_clone_TrivialClone_for_contract_transfer_AccountId.
+
 Module Impl_core_clone_Clone_for_contract_transfer_AccountId.
   Definition Self : Ty.t := Ty.path "contract_transfer::AccountId".
   
@@ -313,64 +325,57 @@ Module Impl_contract_transfer_GiveMe.
                   Ty.tuple [],
                   M.get_function (| "std::io::stdio::_print", [], [] |),
                   [
-                    M.call_closure (|
-                      Ty.path "core::fmt::Arguments",
-                      M.get_associated_function (|
+                    M.read (|
+                      let~ args : Ty.tuple [ Ty.apply (Ty.path "&") [] [ Ty.path "u128" ] ] :=
+                        Value.Tuple [ M.borrow (| Pointer.Kind.Ref, value |) ] in
+                      let~ args :
+                          Ty.apply
+                            (Ty.path "array")
+                            [ Value.Integer IntegerKind.Usize 1 ]
+                            [ Ty.path "core::fmt::rt::Argument" ] :=
+                        Value.Array
+                          [
+                            M.call_closure (|
+                              Ty.path "core::fmt::rt::Argument",
+                              M.get_associated_function (|
+                                Ty.path "core::fmt::rt::Argument",
+                                "new_display",
+                                [],
+                                [ Ty.path "u128" ]
+                              |),
+                              [
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (|
+                                    M.read (| M.SubPointer.get_tuple_field (| args, 0 |) |)
+                                  |)
+                                |)
+                              ]
+                            |)
+                          ] in
+                      M.alloc (|
                         Ty.path "core::fmt::Arguments",
-                        "new_v1",
-                        [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 1 ],
-                        []
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (|
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "new",
+                            [ Value.Integer IntegerKind.Usize 22; Value.Integer IntegerKind.Usize 1
+                            ],
+                            []
+                          |),
+                          [
                             M.borrow (|
                               Pointer.Kind.Ref,
-                              M.alloc (|
-                                Ty.apply
-                                  (Ty.path "array")
-                                  [ Value.Integer IntegerKind.Usize 2 ]
-                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                Value.Array [ mk_str (| "requested value: " |); mk_str (| "
-" |) ]
-                              |)
-                            |)
-                          |)
-                        |);
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (|
+                              M.deref (| M.read (| UnsupportedLiteral |) |)
+                            |);
                             M.borrow (|
                               Pointer.Kind.Ref,
-                              M.alloc (|
-                                Ty.apply
-                                  (Ty.path "array")
-                                  [ Value.Integer IntegerKind.Usize 1 ]
-                                  [ Ty.path "core::fmt::rt::Argument" ],
-                                Value.Array
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "core::fmt::rt::Argument",
-                                      M.get_associated_function (|
-                                        Ty.path "core::fmt::rt::Argument",
-                                        "new_display",
-                                        [],
-                                        [ Ty.path "u128" ]
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.borrow (| Pointer.Kind.Ref, value |) |)
-                                        |)
-                                      ]
-                                    |)
-                                  ]
-                              |)
+                              M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
                             |)
-                          |)
+                          ]
                         |)
-                      ]
+                      |)
                     |)
                   ]
                 |) in
@@ -383,103 +388,97 @@ Module Impl_contract_transfer_GiveMe.
                   Ty.tuple [],
                   M.get_function (| "std::io::stdio::_print", [], [] |),
                   [
-                    M.call_closure (|
-                      Ty.path "core::fmt::Arguments",
-                      M.get_associated_function (|
-                        Ty.path "core::fmt::Arguments",
-                        "new_v1",
-                        [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 1 ],
-                        []
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (|
+                    M.read (|
+                      let~ args : Ty.tuple [ Ty.apply (Ty.path "&") [] [ Ty.path "u128" ] ] :=
+                        Value.Tuple
+                          [
                             M.borrow (|
                               Pointer.Kind.Ref,
                               M.alloc (|
-                                Ty.apply
-                                  (Ty.path "array")
-                                  [ Value.Integer IntegerKind.Usize 2 ]
-                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                Value.Array [ mk_str (| "contract balance: " |); mk_str (| "
-" |) ]
-                              |)
-                            |)
-                          |)
-                        |);
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (|
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.alloc (|
-                                Ty.apply
-                                  (Ty.path "array")
-                                  [ Value.Integer IntegerKind.Usize 1 ]
-                                  [ Ty.path "core::fmt::rt::Argument" ],
-                                Value.Array
+                                Ty.path "u128",
+                                M.call_closure (|
+                                  Ty.path "u128",
+                                  M.get_associated_function (|
+                                    Ty.path "contract_transfer::Env",
+                                    "balance",
+                                    [],
+                                    []
+                                  |),
                                   [
-                                    M.call_closure (|
-                                      Ty.path "core::fmt::rt::Argument",
-                                      M.get_associated_function (|
-                                        Ty.path "core::fmt::rt::Argument",
-                                        "new_display",
-                                        [],
-                                        [ Ty.path "u128" ]
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (|
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.alloc (|
+                                        Ty.path "contract_transfer::Env",
+                                        M.call_closure (|
+                                          Ty.path "contract_transfer::Env",
+                                          M.get_associated_function (|
+                                            Ty.path "contract_transfer::GiveMe",
+                                            "env",
+                                            [],
+                                            []
+                                          |),
+                                          [
                                             M.borrow (|
                                               Pointer.Kind.Ref,
-                                              M.alloc (|
-                                                Ty.path "u128",
-                                                M.call_closure (|
-                                                  Ty.path "u128",
-                                                  M.get_associated_function (|
-                                                    Ty.path "contract_transfer::Env",
-                                                    "balance",
-                                                    [],
-                                                    []
-                                                  |),
-                                                  [
-                                                    M.borrow (|
-                                                      Pointer.Kind.Ref,
-                                                      M.alloc (|
-                                                        Ty.path "contract_transfer::Env",
-                                                        M.call_closure (|
-                                                          Ty.path "contract_transfer::Env",
-                                                          M.get_associated_function (|
-                                                            Ty.path "contract_transfer::GiveMe",
-                                                            "env",
-                                                            [],
-                                                            []
-                                                          |),
-                                                          [
-                                                            M.borrow (|
-                                                              Pointer.Kind.Ref,
-                                                              M.deref (| M.read (| self |) |)
-                                                            |)
-                                                          ]
-                                                        |)
-                                                      |)
-                                                    |)
-                                                  ]
-                                                |)
-                                              |)
+                                              M.deref (| M.read (| self |) |)
                                             |)
-                                          |)
+                                          ]
                                         |)
-                                      ]
+                                      |)
                                     |)
                                   ]
+                                |)
                               |)
                             |)
-                          |)
+                          ] in
+                      let~ args :
+                          Ty.apply
+                            (Ty.path "array")
+                            [ Value.Integer IntegerKind.Usize 1 ]
+                            [ Ty.path "core::fmt::rt::Argument" ] :=
+                        Value.Array
+                          [
+                            M.call_closure (|
+                              Ty.path "core::fmt::rt::Argument",
+                              M.get_associated_function (|
+                                Ty.path "core::fmt::rt::Argument",
+                                "new_display",
+                                [],
+                                [ Ty.path "u128" ]
+                              |),
+                              [
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (|
+                                    M.read (| M.SubPointer.get_tuple_field (| args, 0 |) |)
+                                  |)
+                                |)
+                              ]
+                            |)
+                          ] in
+                      M.alloc (|
+                        Ty.path "core::fmt::Arguments",
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "new",
+                            [ Value.Integer IntegerKind.Usize 23; Value.Integer IntegerKind.Usize 1
+                            ],
+                            []
+                          |),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| M.read (| UnsupportedLiteral |) |)
+                            |);
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
+                            |)
+                          ]
                         |)
-                      ]
+                      |)
                     |)
                   ]
                 |) in
@@ -493,55 +492,54 @@ Module Impl_contract_transfer_GiveMe.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            UnOp.not,
-                            [
-                              M.call_closure (|
-                                Ty.path "bool",
-                                BinOp.le,
-                                [
-                                  M.read (| value |);
-                                  M.call_closure (|
-                                    Ty.path "u128",
-                                    M.get_associated_function (|
-                                      Ty.path "contract_transfer::Env",
-                                      "balance",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.alloc (|
+                          UnOp.not,
+                          [
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.le,
+                              [
+                                M.read (| value |);
+                                M.call_closure (|
+                                  Ty.path "u128",
+                                  M.get_associated_function (|
+                                    Ty.path "contract_transfer::Env",
+                                    "balance",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.alloc (|
+                                        Ty.path "contract_transfer::Env",
+                                        M.call_closure (|
                                           Ty.path "contract_transfer::Env",
-                                          M.call_closure (|
-                                            Ty.path "contract_transfer::Env",
-                                            M.get_associated_function (|
-                                              Ty.path "contract_transfer::GiveMe",
-                                              "env",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (| M.read (| self |) |)
-                                              |)
-                                            ]
-                                          |)
+                                          M.get_associated_function (|
+                                            Ty.path "contract_transfer::GiveMe",
+                                            "env",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| self |) |)
+                                            |)
+                                          ]
                                         |)
                                       |)
-                                    ]
-                                  |)
-                                ]
-                              |)
-                            ]
-                          |)
-                        |)) in
+                                    |)
+                                  ]
+                                |)
+                              ]
+                            |)
+                          ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     M.never_to_any (|
                       M.call_closure (|
@@ -566,101 +564,100 @@ Module Impl_contract_transfer_GiveMe.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            M.get_associated_function (|
-                              Ty.apply
-                                (Ty.path "core::result::Result")
-                                []
-                                [ Ty.tuple []; Ty.tuple [] ],
-                              "is_err",
-                              [],
+                          M.get_associated_function (|
+                            Ty.apply
+                              (Ty.path "core::result::Result")
                               []
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.alloc (|
+                              [ Ty.tuple []; Ty.tuple [] ],
+                            "is_err",
+                            [],
+                            []
+                          |),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.alloc (|
+                                Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [ Ty.tuple []; Ty.tuple [] ],
+                                M.call_closure (|
                                   Ty.apply
                                     (Ty.path "core::result::Result")
                                     []
                                     [ Ty.tuple []; Ty.tuple [] ],
-                                  M.call_closure (|
-                                    Ty.apply
-                                      (Ty.path "core::result::Result")
-                                      []
-                                      [ Ty.tuple []; Ty.tuple [] ],
-                                    M.get_associated_function (|
-                                      Ty.path "contract_transfer::Env",
-                                      "transfer",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.MutRef,
-                                        M.alloc (|
+                                  M.get_associated_function (|
+                                    Ty.path "contract_transfer::Env",
+                                    "transfer",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.MutRef,
+                                      M.alloc (|
+                                        Ty.path "contract_transfer::Env",
+                                        M.call_closure (|
                                           Ty.path "contract_transfer::Env",
-                                          M.call_closure (|
-                                            Ty.path "contract_transfer::Env",
-                                            M.get_associated_function (|
-                                              Ty.path "contract_transfer::GiveMe",
-                                              "env",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (| M.read (| self |) |)
-                                              |)
-                                            ]
-                                          |)
+                                          M.get_associated_function (|
+                                            Ty.path "contract_transfer::GiveMe",
+                                            "env",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| self |) |)
+                                            |)
+                                          ]
                                         |)
-                                      |);
-                                      M.call_closure (|
-                                        Ty.path "contract_transfer::AccountId",
-                                        M.get_associated_function (|
-                                          Ty.path "contract_transfer::Env",
-                                          "caller",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.alloc (|
+                                      |)
+                                    |);
+                                    M.call_closure (|
+                                      Ty.path "contract_transfer::AccountId",
+                                      M.get_associated_function (|
+                                        Ty.path "contract_transfer::Env",
+                                        "caller",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.alloc (|
+                                            Ty.path "contract_transfer::Env",
+                                            M.call_closure (|
                                               Ty.path "contract_transfer::Env",
-                                              M.call_closure (|
-                                                Ty.path "contract_transfer::Env",
-                                                M.get_associated_function (|
-                                                  Ty.path "contract_transfer::GiveMe",
-                                                  "env",
-                                                  [],
-                                                  []
-                                                |),
-                                                [
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.deref (| M.read (| self |) |)
-                                                  |)
-                                                ]
-                                              |)
+                                              M.get_associated_function (|
+                                                Ty.path "contract_transfer::GiveMe",
+                                                "env",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (| M.read (| self |) |)
+                                                |)
+                                              ]
                                             |)
                                           |)
-                                        ]
-                                      |);
-                                      M.read (| value |)
-                                    ]
-                                  |)
+                                        |)
+                                      ]
+                                    |);
+                                    M.read (| value |)
+                                  ]
                                 |)
                               |)
-                            ]
-                          |)
-                        |)) in
+                            |)
+                          ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     M.never_to_any (|
                       M.call_closure (|
@@ -709,103 +706,97 @@ Module Impl_contract_transfer_GiveMe.
                   Ty.tuple [],
                   M.get_function (| "std::io::stdio::_print", [], [] |),
                   [
-                    M.call_closure (|
-                      Ty.path "core::fmt::Arguments",
-                      M.get_associated_function (|
-                        Ty.path "core::fmt::Arguments",
-                        "new_v1",
-                        [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 1 ],
-                        []
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (|
+                    M.read (|
+                      let~ args : Ty.tuple [ Ty.apply (Ty.path "&") [] [ Ty.path "u128" ] ] :=
+                        Value.Tuple
+                          [
                             M.borrow (|
                               Pointer.Kind.Ref,
                               M.alloc (|
-                                Ty.apply
-                                  (Ty.path "array")
-                                  [ Value.Integer IntegerKind.Usize 2 ]
-                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                Value.Array [ mk_str (| "received payment: " |); mk_str (| "
-" |) ]
-                              |)
-                            |)
-                          |)
-                        |);
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (|
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.alloc (|
-                                Ty.apply
-                                  (Ty.path "array")
-                                  [ Value.Integer IntegerKind.Usize 1 ]
-                                  [ Ty.path "core::fmt::rt::Argument" ],
-                                Value.Array
+                                Ty.path "u128",
+                                M.call_closure (|
+                                  Ty.path "u128",
+                                  M.get_associated_function (|
+                                    Ty.path "contract_transfer::Env",
+                                    "transferred_value",
+                                    [],
+                                    []
+                                  |),
                                   [
-                                    M.call_closure (|
-                                      Ty.path "core::fmt::rt::Argument",
-                                      M.get_associated_function (|
-                                        Ty.path "core::fmt::rt::Argument",
-                                        "new_display",
-                                        [],
-                                        [ Ty.path "u128" ]
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (|
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.alloc (|
+                                        Ty.path "contract_transfer::Env",
+                                        M.call_closure (|
+                                          Ty.path "contract_transfer::Env",
+                                          M.get_associated_function (|
+                                            Ty.path "contract_transfer::GiveMe",
+                                            "env",
+                                            [],
+                                            []
+                                          |),
+                                          [
                                             M.borrow (|
                                               Pointer.Kind.Ref,
-                                              M.alloc (|
-                                                Ty.path "u128",
-                                                M.call_closure (|
-                                                  Ty.path "u128",
-                                                  M.get_associated_function (|
-                                                    Ty.path "contract_transfer::Env",
-                                                    "transferred_value",
-                                                    [],
-                                                    []
-                                                  |),
-                                                  [
-                                                    M.borrow (|
-                                                      Pointer.Kind.Ref,
-                                                      M.alloc (|
-                                                        Ty.path "contract_transfer::Env",
-                                                        M.call_closure (|
-                                                          Ty.path "contract_transfer::Env",
-                                                          M.get_associated_function (|
-                                                            Ty.path "contract_transfer::GiveMe",
-                                                            "env",
-                                                            [],
-                                                            []
-                                                          |),
-                                                          [
-                                                            M.borrow (|
-                                                              Pointer.Kind.Ref,
-                                                              M.deref (| M.read (| self |) |)
-                                                            |)
-                                                          ]
-                                                        |)
-                                                      |)
-                                                    |)
-                                                  ]
-                                                |)
-                                              |)
+                                              M.deref (| M.read (| self |) |)
                                             |)
-                                          |)
+                                          ]
                                         |)
-                                      ]
+                                      |)
                                     |)
                                   ]
+                                |)
                               |)
                             |)
-                          |)
+                          ] in
+                      let~ args :
+                          Ty.apply
+                            (Ty.path "array")
+                            [ Value.Integer IntegerKind.Usize 1 ]
+                            [ Ty.path "core::fmt::rt::Argument" ] :=
+                        Value.Array
+                          [
+                            M.call_closure (|
+                              Ty.path "core::fmt::rt::Argument",
+                              M.get_associated_function (|
+                                Ty.path "core::fmt::rt::Argument",
+                                "new_display",
+                                [],
+                                [ Ty.path "u128" ]
+                              |),
+                              [
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (|
+                                    M.read (| M.SubPointer.get_tuple_field (| args, 0 |) |)
+                                  |)
+                                |)
+                              ]
+                            |)
+                          ] in
+                      M.alloc (|
+                        Ty.path "core::fmt::Arguments",
+                        M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "new",
+                            [ Value.Integer IntegerKind.Usize 23; Value.Integer IntegerKind.Usize 1
+                            ],
+                            []
+                          |),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| M.read (| UnsupportedLiteral |) |)
+                            |);
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
+                            |)
+                          ]
                         |)
-                      ]
+                      |)
                     |)
                   ]
                 |) in
@@ -819,55 +810,54 @@ Module Impl_contract_transfer_GiveMe.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            UnOp.not,
-                            [
-                              M.call_closure (|
-                                Ty.path "bool",
-                                BinOp.eq,
-                                [
-                                  M.call_closure (|
-                                    Ty.path "u128",
-                                    M.get_associated_function (|
-                                      Ty.path "contract_transfer::Env",
-                                      "transferred_value",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.alloc (|
+                          UnOp.not,
+                          [
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [
+                                M.call_closure (|
+                                  Ty.path "u128",
+                                  M.get_associated_function (|
+                                    Ty.path "contract_transfer::Env",
+                                    "transferred_value",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.alloc (|
+                                        Ty.path "contract_transfer::Env",
+                                        M.call_closure (|
                                           Ty.path "contract_transfer::Env",
-                                          M.call_closure (|
-                                            Ty.path "contract_transfer::Env",
-                                            M.get_associated_function (|
-                                              Ty.path "contract_transfer::GiveMe",
-                                              "env",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (| M.read (| self |) |)
-                                              |)
-                                            ]
-                                          |)
+                                          M.get_associated_function (|
+                                            Ty.path "contract_transfer::GiveMe",
+                                            "env",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| self |) |)
+                                            |)
+                                          ]
                                         |)
                                       |)
-                                    ]
-                                  |);
-                                  Value.Integer IntegerKind.U128 10
-                                ]
-                              |)
-                            ]
-                          |)
-                        |)) in
+                                    |)
+                                  ]
+                                |);
+                                Value.Integer IntegerKind.U128 10
+                              ]
+                            |)
+                          ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     M.never_to_any (|
                       M.call_closure (|

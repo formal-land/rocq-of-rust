@@ -48,6 +48,18 @@ Module Impl_core_default_Default_for_conditional_compilation_AccountId.
       (* Instance *) [ ("default", InstanceField.Method default) ].
 End Impl_core_default_Default_for_conditional_compilation_AccountId.
 
+Module Impl_core_clone_TrivialClone_for_conditional_compilation_AccountId.
+  Definition Self : Ty.t := Ty.path "conditional_compilation::AccountId".
+  
+  Axiom Implements :
+    M.IsTraitInstance
+      "core::clone::TrivialClone"
+      (* Trait polymorphic consts *) []
+      (* Trait polymorphic types *) []
+      Self
+      (* Instance *) [].
+End Impl_core_clone_TrivialClone_for_conditional_compilation_AccountId.
+
 Module Impl_core_clone_Clone_for_conditional_compilation_AccountId.
   Definition Self : Ty.t := Ty.path "conditional_compilation::AccountId".
   

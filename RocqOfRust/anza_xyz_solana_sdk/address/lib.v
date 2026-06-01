@@ -34,6 +34,18 @@ Global Typeclasses Opaque value_MAX_SEEDS.
       [ Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 32 ] [ Ty.path "u8" ] ];
   } *)
 
+Module Impl_core_clone_TrivialClone_for_solana_address_Address.
+  Definition Self : Ty.t := Ty.path "solana_address::Address".
+  
+  Axiom Implements :
+    M.IsTraitInstance
+      "core::clone::TrivialClone"
+      (* Trait polymorphic consts *) []
+      (* Trait polymorphic types *) []
+      Self
+      (* Instance *) [].
+End Impl_core_clone_TrivialClone_for_solana_address_Address.
+
 Module Impl_core_clone_Clone_for_solana_address_Address.
   Definition Self : Ty.t := Ty.path "solana_address::Address".
   

@@ -69,46 +69,45 @@ Module processor.
             fun γ =>
               ltac:(M.monadic
                 (let γ :=
-                  M.use
-                    (M.alloc (|
+                  M.alloc (|
+                    Ty.path "bool",
+                    M.call_closure (|
                       Ty.path "bool",
-                      M.call_closure (|
-                        Ty.path "bool",
-                        M.get_function (| "pinocchio::hint::likely", [], [] |),
-                        [
-                          M.call_closure (|
-                            Ty.path "bool",
-                            M.get_associated_function (|
-                              Ty.path "pinocchio::account_info::AccountInfo",
-                              "is_owned_by",
-                              [],
-                              []
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (| M.read (| account_info |) |)
-                              |);
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    get_constant (|
-                                      "pinocchio_token_interface::program::ID",
-                                      Ty.apply
-                                        (Ty.path "array")
-                                        [ Value.Integer IntegerKind.Usize 32 ]
-                                        [ Ty.path "u8" ]
-                                    |)
+                      M.get_function (| "pinocchio::hint::likely", [], [] |),
+                      [
+                        M.call_closure (|
+                          Ty.path "bool",
+                          M.get_associated_function (|
+                            Ty.path "pinocchio::account_info::AccountInfo",
+                            "is_owned_by",
+                            [],
+                            []
+                          |),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| M.read (| account_info |) |)
+                            |);
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (|
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  get_constant (|
+                                    "pinocchio_token_interface::program::ID",
+                                    Ty.apply
+                                      (Ty.path "array")
+                                      [ Value.Integer IntegerKind.Usize 32 ]
+                                      [ Ty.path "u8" ]
                                   |)
                                 |)
                               |)
-                            ]
-                          |)
-                        ]
-                      |)
-                    |)) in
+                            |)
+                          ]
+                        |)
+                      ]
+                    |)
+                  |) in
                 let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                 Value.StructTuple
                   "core::result::Result::Ok"
@@ -228,60 +227,59 @@ Module processor.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                M.get_function (| "pinocchio::hint::unlikely", [], [] |),
-                                [
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    UnOp.not,
-                                    [
-                                      M.call_closure (|
-                                        Ty.path "bool",
-                                        M.get_function (| "pinocchio::pubkey::pubkey_eq", [], [] |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| expected_owner |) |)
-                                          |);
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (|
-                                              M.call_closure (|
-                                                Ty.apply
-                                                  (Ty.path "&")
-                                                  []
-                                                  [
-                                                    Ty.apply
-                                                      (Ty.path "array")
-                                                      [ Value.Integer IntegerKind.Usize 32 ]
-                                                      [ Ty.path "u8" ]
-                                                  ],
-                                                M.get_associated_function (|
-                                                  Ty.path "pinocchio::account_info::AccountInfo",
-                                                  "key",
-                                                  [],
-                                                  []
-                                                |),
+                              M.get_function (| "pinocchio::hint::unlikely", [], [] |),
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  UnOp.not,
+                                  [
+                                    M.call_closure (|
+                                      Ty.path "bool",
+                                      M.get_function (| "pinocchio::pubkey::pubkey_eq", [], [] |),
+                                      [
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| expected_owner |) |)
+                                        |);
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (|
+                                            M.call_closure (|
+                                              Ty.apply
+                                                (Ty.path "&")
+                                                []
                                                 [
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.deref (| M.read (| owner_account_info |) |)
-                                                  |)
-                                                ]
-                                              |)
+                                                  Ty.apply
+                                                    (Ty.path "array")
+                                                    [ Value.Integer IntegerKind.Usize 32 ]
+                                                    [ Ty.path "u8" ]
+                                                ],
+                                              M.get_associated_function (|
+                                                Ty.path "pinocchio::account_info::AccountInfo",
+                                                "key",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (| M.read (| owner_account_info |) |)
+                                                |)
+                                              ]
                                             |)
                                           |)
-                                        ]
-                                      |)
-                                    ]
-                                  |)
-                                ]
-                              |)
-                            |)) in
+                                        |)
+                                      ]
+                                    |)
+                                  ]
+                                |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.never_to_any (|
                           M.read (|
@@ -325,47 +323,22 @@ Module processor.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                M.get_function (| "pinocchio::hint::unlikely", [], [] |),
-                                [
-                                  LogicalOp.and (|
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      BinOp.eq,
-                                      [
-                                        M.call_closure (|
-                                          Ty.path "usize",
-                                          M.get_associated_function (|
-                                            Ty.path "pinocchio::account_info::AccountInfo",
-                                            "data_len",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| owner_account_info |) |)
-                                            |)
-                                          ]
-                                        |);
-                                        M.read (|
-                                          get_constant (|
-                                            "pinocchio_token_interface::state::Transmutable::LEN",
-                                            Ty.path "usize"
-                                          |)
-                                        |)
-                                      ]
-                                    |),
-                                    ltac:(M.monadic
-                                      (M.call_closure (|
-                                        Ty.path "bool",
+                              M.get_function (| "pinocchio::hint::unlikely", [], [] |),
+                              [
+                                LogicalOp.and (|
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    BinOp.eq,
+                                    [
+                                      M.call_closure (|
+                                        Ty.path "usize",
                                         M.get_associated_function (|
                                           Ty.path "pinocchio::account_info::AccountInfo",
-                                          "is_owned_by",
+                                          "data_len",
                                           [],
                                           []
                                         |),
@@ -373,28 +346,52 @@ Module processor.
                                           M.borrow (|
                                             Pointer.Kind.Ref,
                                             M.deref (| M.read (| owner_account_info |) |)
-                                          |);
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (|
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                get_constant (|
-                                                  "pinocchio_token_interface::program::ID",
-                                                  Ty.apply
-                                                    (Ty.path "array")
-                                                    [ Value.Integer IntegerKind.Usize 32 ]
-                                                    [ Ty.path "u8" ]
-                                                |)
+                                          |)
+                                        ]
+                                      |);
+                                      M.read (|
+                                        get_constant (|
+                                          "pinocchio_token_interface::state::Transmutable::LEN",
+                                          Ty.path "usize"
+                                        |)
+                                      |)
+                                    ]
+                                  |),
+                                  ltac:(M.monadic
+                                    (M.call_closure (|
+                                      Ty.path "bool",
+                                      M.get_associated_function (|
+                                        Ty.path "pinocchio::account_info::AccountInfo",
+                                        "is_owned_by",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| owner_account_info |) |)
+                                        |);
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (|
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              get_constant (|
+                                                "pinocchio_token_interface::program::ID",
+                                                Ty.apply
+                                                  (Ty.path "array")
+                                                  [ Value.Integer IntegerKind.Usize 32 ]
+                                                  [ Ty.path "u8" ]
                                               |)
                                             |)
                                           |)
-                                        ]
-                                      |)))
-                                  |)
-                                ]
-                              |)
-                            |)) in
+                                        |)
+                                      ]
+                                    |)))
+                                |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.read (|
                           let~ multisig :
@@ -1256,90 +1253,101 @@ Module processor.
                                                                                               ltac:(M.monadic
                                                                                                 (let
                                                                                                       γ :=
-                                                                                                  M.use
-                                                                                                    (M.alloc (|
+                                                                                                  M.alloc (|
+                                                                                                    Ty.path
+                                                                                                      "bool",
+                                                                                                    M.call_closure (|
                                                                                                       Ty.path
                                                                                                         "bool",
-                                                                                                      LogicalOp.and (|
-                                                                                                        M.call_closure (|
-                                                                                                          Ty.path
-                                                                                                            "bool",
-                                                                                                          M.get_function (|
-                                                                                                            "pinocchio::pubkey::pubkey_eq",
-                                                                                                            [],
-                                                                                                            []
-                                                                                                          |),
-                                                                                                          [
-                                                                                                            M.borrow (|
-                                                                                                              Pointer.Kind.Ref,
-                                                                                                              M.deref (|
-                                                                                                                M.read (|
-                                                                                                                  key
-                                                                                                                |)
-                                                                                                              |)
-                                                                                                            |);
-                                                                                                            M.borrow (|
-                                                                                                              Pointer.Kind.Ref,
-                                                                                                              M.deref (|
-                                                                                                                M.call_closure (|
+                                                                                                      M.get_function (|
+                                                                                                        "pinocchio::pubkey::pubkey_eq",
+                                                                                                        [],
+                                                                                                        []
+                                                                                                      |),
+                                                                                                      [
+                                                                                                        M.borrow (|
+                                                                                                          Pointer.Kind.Ref,
+                                                                                                          M.deref (|
+                                                                                                            M.read (|
+                                                                                                              key
+                                                                                                            |)
+                                                                                                          |)
+                                                                                                        |);
+                                                                                                        M.borrow (|
+                                                                                                          Pointer.Kind.Ref,
+                                                                                                          M.deref (|
+                                                                                                            M.call_closure (|
+                                                                                                              Ty.apply
+                                                                                                                (Ty.path
+                                                                                                                  "&")
+                                                                                                                []
+                                                                                                                [
                                                                                                                   Ty.apply
                                                                                                                     (Ty.path
-                                                                                                                      "&")
-                                                                                                                    []
+                                                                                                                      "array")
                                                                                                                     [
-                                                                                                                      Ty.apply
-                                                                                                                        (Ty.path
-                                                                                                                          "array")
-                                                                                                                        [
-                                                                                                                          Value.Integer
-                                                                                                                            IntegerKind.Usize
-                                                                                                                            32
-                                                                                                                        ]
-                                                                                                                        [
-                                                                                                                          Ty.path
-                                                                                                                            "u8"
-                                                                                                                        ]
-                                                                                                                    ],
-                                                                                                                  M.get_associated_function (|
-                                                                                                                    Ty.path
-                                                                                                                      "pinocchio::account_info::AccountInfo",
-                                                                                                                    "key",
-                                                                                                                    [],
-                                                                                                                    []
-                                                                                                                  |),
-                                                                                                                  [
-                                                                                                                    M.borrow (|
-                                                                                                                      Pointer.Kind.Ref,
-                                                                                                                      M.deref (|
-                                                                                                                        M.read (|
-                                                                                                                          signer
-                                                                                                                        |)
-                                                                                                                      |)
+                                                                                                                      Value.Integer
+                                                                                                                        IntegerKind.Usize
+                                                                                                                        32
+                                                                                                                    ]
+                                                                                                                    [
+                                                                                                                      Ty.path
+                                                                                                                        "u8"
+                                                                                                                    ]
+                                                                                                                ],
+                                                                                                              M.get_associated_function (|
+                                                                                                                Ty.path
+                                                                                                                  "pinocchio::account_info::AccountInfo",
+                                                                                                                "key",
+                                                                                                                [],
+                                                                                                                []
+                                                                                                              |),
+                                                                                                              [
+                                                                                                                M.borrow (|
+                                                                                                                  Pointer.Kind.Ref,
+                                                                                                                  M.deref (|
+                                                                                                                    M.read (|
+                                                                                                                      signer
                                                                                                                     |)
-                                                                                                                  ]
-                                                                                                                |)
-                                                                                                              |)
-                                                                                                            |)
-                                                                                                          ]
-                                                                                                        |),
-                                                                                                        ltac:(M.monadic
-                                                                                                          (M.call_closure (|
-                                                                                                            Ty.path
-                                                                                                              "bool",
-                                                                                                            UnOp.not,
-                                                                                                            [
-                                                                                                              M.read (|
-                                                                                                                M.SubPointer.get_array_field (|
-                                                                                                                  matched,
-                                                                                                                  M.read (|
-                                                                                                                    position
                                                                                                                   |)
                                                                                                                 |)
-                                                                                                              |)
-                                                                                                            ]
-                                                                                                          |)))
-                                                                                                      |)
-                                                                                                    |)) in
+                                                                                                              ]
+                                                                                                            |)
+                                                                                                          |)
+                                                                                                        |)
+                                                                                                      ]
+                                                                                                    |)
+                                                                                                  |) in
+                                                                                                let
+                                                                                                      _ :=
+                                                                                                  is_constant_or_break_match (|
+                                                                                                    M.read (|
+                                                                                                      γ
+                                                                                                    |),
+                                                                                                    Value.Bool
+                                                                                                      true
+                                                                                                  |) in
+                                                                                                let
+                                                                                                      γ :=
+                                                                                                  M.alloc (|
+                                                                                                    Ty.path
+                                                                                                      "bool",
+                                                                                                    M.call_closure (|
+                                                                                                      Ty.path
+                                                                                                        "bool",
+                                                                                                      UnOp.not,
+                                                                                                      [
+                                                                                                        M.read (|
+                                                                                                          M.SubPointer.get_array_field (|
+                                                                                                            matched,
+                                                                                                            M.read (|
+                                                                                                              position
+                                                                                                            |)
+                                                                                                          |)
+                                                                                                        |)
+                                                                                                      ]
+                                                                                                    |)
+                                                                                                  |) in
                                                                                                 let
                                                                                                       _ :=
                                                                                                   is_constant_or_break_match (|
@@ -1369,39 +1377,38 @@ Module processor.
                                                                                                           ltac:(M.monadic
                                                                                                             (let
                                                                                                                   γ :=
-                                                                                                              M.use
-                                                                                                                (M.alloc (|
+                                                                                                              M.alloc (|
+                                                                                                                Ty.path
+                                                                                                                  "bool",
+                                                                                                                M.call_closure (|
                                                                                                                   Ty.path
                                                                                                                     "bool",
-                                                                                                                  M.call_closure (|
-                                                                                                                    Ty.path
-                                                                                                                      "bool",
-                                                                                                                    UnOp.not,
-                                                                                                                    [
-                                                                                                                      M.call_closure (|
+                                                                                                                  UnOp.not,
+                                                                                                                  [
+                                                                                                                    M.call_closure (|
+                                                                                                                      Ty.path
+                                                                                                                        "bool",
+                                                                                                                      M.get_associated_function (|
                                                                                                                         Ty.path
-                                                                                                                          "bool",
-                                                                                                                        M.get_associated_function (|
-                                                                                                                          Ty.path
-                                                                                                                            "pinocchio::account_info::AccountInfo",
-                                                                                                                          "is_signer",
-                                                                                                                          [],
-                                                                                                                          []
-                                                                                                                        |),
-                                                                                                                        [
-                                                                                                                          M.borrow (|
-                                                                                                                            Pointer.Kind.Ref,
-                                                                                                                            M.deref (|
-                                                                                                                              M.read (|
-                                                                                                                                signer
-                                                                                                                              |)
+                                                                                                                          "pinocchio::account_info::AccountInfo",
+                                                                                                                        "is_signer",
+                                                                                                                        [],
+                                                                                                                        []
+                                                                                                                      |),
+                                                                                                                      [
+                                                                                                                        M.borrow (|
+                                                                                                                          Pointer.Kind.Ref,
+                                                                                                                          M.deref (|
+                                                                                                                            M.read (|
+                                                                                                                              signer
                                                                                                                             |)
                                                                                                                           |)
-                                                                                                                        ]
-                                                                                                                      |)
-                                                                                                                    ]
-                                                                                                                  |)
-                                                                                                                |)) in
+                                                                                                                        |)
+                                                                                                                      ]
+                                                                                                                    |)
+                                                                                                                  ]
+                                                                                                                |)
+                                                                                                              |) in
                                                                                                             let
                                                                                                                   _ :=
                                                                                                               is_constant_or_break_match (|
@@ -1520,24 +1527,23 @@ Module processor.
                                 fun γ =>
                                   ltac:(M.monadic
                                     (let γ :=
-                                      M.use
-                                        (M.alloc (|
+                                      M.alloc (|
+                                        Ty.path "bool",
+                                        M.call_closure (|
                                           Ty.path "bool",
-                                          M.call_closure (|
-                                            Ty.path "bool",
-                                            BinOp.lt,
-                                            [
-                                              M.read (| num_signers |);
-                                              M.read (|
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| multisig |) |),
-                                                  "pinocchio_token_interface::state::multisig::Multisig",
-                                                  "m"
-                                                |)
+                                          BinOp.lt,
+                                          [
+                                            M.read (| num_signers |);
+                                            M.read (|
+                                              M.SubPointer.get_struct_record_field (|
+                                                M.deref (| M.read (| multisig |) |),
+                                                "pinocchio_token_interface::state::multisig::Multisig",
+                                                "m"
                                               |)
-                                            ]
-                                          |)
-                                        |)) in
+                                            |)
+                                          ]
+                                        |)
+                                      |) in
                                     let _ :=
                                       is_constant_or_break_match (|
                                         M.read (| γ |),
@@ -1577,37 +1583,36 @@ Module processor.
                             fun γ =>
                               ltac:(M.monadic
                                 (let γ :=
-                                  M.use
-                                    (M.alloc (|
+                                  M.alloc (|
+                                    Ty.path "bool",
+                                    M.call_closure (|
                                       Ty.path "bool",
-                                      M.call_closure (|
-                                        Ty.path "bool",
-                                        M.get_function (| "pinocchio::hint::unlikely", [], [] |),
-                                        [
-                                          M.call_closure (|
-                                            Ty.path "bool",
-                                            UnOp.not,
-                                            [
-                                              M.call_closure (|
-                                                Ty.path "bool",
-                                                M.get_associated_function (|
-                                                  Ty.path "pinocchio::account_info::AccountInfo",
-                                                  "is_signer",
-                                                  [],
-                                                  []
-                                                |),
-                                                [
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.deref (| M.read (| owner_account_info |) |)
-                                                  |)
-                                                ]
-                                              |)
-                                            ]
-                                          |)
-                                        ]
-                                      |)
-                                    |)) in
+                                      M.get_function (| "pinocchio::hint::unlikely", [], [] |),
+                                      [
+                                        M.call_closure (|
+                                          Ty.path "bool",
+                                          UnOp.not,
+                                          [
+                                            M.call_closure (|
+                                              Ty.path "bool",
+                                              M.get_associated_function (|
+                                                Ty.path "pinocchio::account_info::AccountInfo",
+                                                "is_signer",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (| M.read (| owner_account_info |) |)
+                                                |)
+                                              ]
+                                            |)
+                                          ]
+                                        |)
+                                      ]
+                                    |)
+                                  |) in
                                 let _ :=
                                   is_constant_or_break_match (|
                                     M.read (| γ |),
@@ -1821,14 +1826,29 @@ Module processor.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
-                              Ty.path "bool",
+                          M.alloc (|
+                            Ty.path "bool",
+                            LogicalOp.or (|
                               LogicalOp.or (|
                                 LogicalOp.or (|
-                                  LogicalOp.or (|
-                                    LogicalOp.and (|
-                                      M.call_closure (|
+                                  LogicalOp.and (|
+                                    M.call_closure (|
+                                      Ty.path "bool",
+                                      M.get_associated_function (|
+                                        Ty.path "str",
+                                        "is_empty",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| amount_str |) |)
+                                        |)
+                                      ]
+                                    |),
+                                    ltac:(M.monadic
+                                      (M.call_closure (|
                                         Ty.path "bool",
                                         M.get_associated_function (|
                                           Ty.path "str",
@@ -1839,67 +1859,7 @@ Module processor.
                                         [
                                           M.borrow (|
                                             Pointer.Kind.Ref,
-                                            M.deref (| M.read (| amount_str |) |)
-                                          |)
-                                        ]
-                                      |),
-                                      ltac:(M.monadic
-                                        (M.call_closure (|
-                                          Ty.path "bool",
-                                          M.get_associated_function (|
-                                            Ty.path "str",
-                                            "is_empty",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| after_decimal |) |)
-                                            |)
-                                          ]
-                                        |)))
-                                    |),
-                                    ltac:(M.monadic
-                                      (M.call_closure (|
-                                        Ty.path "bool",
-                                        M.get_associated_function (|
-                                          Ty.apply
-                                            (Ty.path "core::option::Option")
-                                            []
-                                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                          "is_some",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.alloc (|
-                                              Ty.apply
-                                                (Ty.path "core::option::Option")
-                                                []
-                                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                              M.call_closure (|
-                                                Ty.apply
-                                                  (Ty.path "core::option::Option")
-                                                  []
-                                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                                M.get_trait_method (|
-                                                  "core::iter::traits::iterator::Iterator",
-                                                  Ty.apply
-                                                    (Ty.path "core::str::iter::Split")
-                                                    []
-                                                    [ Ty.path "char" ],
-                                                  [],
-                                                  [],
-                                                  "next",
-                                                  [],
-                                                  []
-                                                |),
-                                                [ M.borrow (| Pointer.Kind.MutRef, parts |) ]
-                                              |)
-                                            |)
+                                            M.deref (| M.read (| after_decimal |) |)
                                           |)
                                         ]
                                       |)))
@@ -1907,24 +1867,44 @@ Module processor.
                                   ltac:(M.monadic
                                     (M.call_closure (|
                                       Ty.path "bool",
-                                      BinOp.gt,
+                                      M.get_associated_function (|
+                                        Ty.apply
+                                          (Ty.path "core::option::Option")
+                                          []
+                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                        "is_some",
+                                        [],
+                                        []
+                                      |),
                                       [
-                                        M.call_closure (|
-                                          Ty.path "usize",
-                                          M.get_associated_function (|
-                                            Ty.path "str",
-                                            "len",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| after_decimal |) |)
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.alloc (|
+                                            Ty.apply
+                                              (Ty.path "core::option::Option")
+                                              []
+                                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                            M.call_closure (|
+                                              Ty.apply
+                                                (Ty.path "core::option::Option")
+                                                []
+                                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                              M.get_trait_method (|
+                                                "core::iter::traits::iterator::Iterator",
+                                                Ty.apply
+                                                  (Ty.path "core::str::iter::Split")
+                                                  []
+                                                  [ Ty.path "char" ],
+                                                [],
+                                                [],
+                                                "next",
+                                                [],
+                                                []
+                                              |),
+                                              [ M.borrow (| Pointer.Kind.MutRef, parts |) ]
                                             |)
-                                          ]
-                                        |);
-                                        M.read (| decimals |)
+                                          |)
+                                        |)
                                       ]
                                     |)))
                                 |),
@@ -1935,19 +1915,43 @@ Module processor.
                                     [
                                       M.call_closure (|
                                         Ty.path "usize",
-                                        BinOp.Wrap.add,
-                                        [ M.read (| length |); M.read (| decimals |) ]
+                                        M.get_associated_function (|
+                                          Ty.path "str",
+                                          "len",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| after_decimal |) |)
+                                          |)
+                                        ]
                                       |);
-                                      M.read (|
-                                        get_constant (|
-                                          "pinocchio_token_program::processor::MAX_FORMATTED_DIGITS",
-                                          Ty.path "usize"
-                                        |)
-                                      |)
+                                      M.read (| decimals |)
                                     ]
                                   |)))
-                              |)
-                            |)) in
+                              |),
+                              ltac:(M.monadic
+                                (M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.gt,
+                                  [
+                                    M.call_closure (|
+                                      Ty.path "usize",
+                                      BinOp.Wrap.add,
+                                      [ M.read (| length |); M.read (| decimals |) ]
+                                    |);
+                                    M.read (|
+                                      get_constant (|
+                                        "pinocchio_token_program::processor::MAX_FORMATTED_DIGITS",
+                                        Ty.path "usize"
+                                      |)
+                                    |)
+                                  ]
+                                |)))
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.never_to_any (|
                           M.read (|
@@ -2283,37 +2287,36 @@ Module processor.
             fun γ =>
               ltac:(M.monadic
                 (let γ :=
-                  M.use
-                    (M.alloc (|
+                  M.alloc (|
+                    Ty.path "bool",
+                    M.call_closure (|
                       Ty.path "bool",
-                      M.call_closure (|
-                        Ty.path "bool",
-                        BinOp.ge,
-                        [
-                          M.call_closure (|
-                            Ty.path "usize",
-                            M.get_associated_function (|
-                              Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                              "len",
-                              [],
-                              []
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (| M.read (| instruction_data |) |)
-                              |)
-                            ]
-                          |);
-                          M.read (|
-                            get_constant (|
-                              "pinocchio_token_program::processor::U64_BYTES",
-                              Ty.path "usize"
+                      BinOp.ge,
+                      [
+                        M.call_closure (|
+                          Ty.path "usize",
+                          M.get_associated_function (|
+                            Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                            "len",
+                            [],
+                            []
+                          |),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| M.read (| instruction_data |) |)
                             |)
+                          ]
+                        |);
+                        M.read (|
+                          get_constant (|
+                            "pinocchio_token_program::processor::U64_BYTES",
+                            Ty.path "usize"
                           |)
-                        ]
-                      |)
-                    |)) in
+                        |)
+                      ]
+                    |)
+                  |) in
                 let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                 Value.StructTuple
                   "core::result::Result::Ok"
@@ -2416,32 +2419,31 @@ Module processor.
             fun γ =>
               ltac:(M.monadic
                 (let γ :=
-                  M.use
-                    (M.alloc (|
+                  M.alloc (|
+                    Ty.path "bool",
+                    M.call_closure (|
                       Ty.path "bool",
-                      M.call_closure (|
-                        Ty.path "bool",
-                        BinOp.ge,
-                        [
-                          M.call_closure (|
-                            Ty.path "usize",
-                            M.get_associated_function (|
-                              Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                              "len",
-                              [],
-                              []
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (| M.read (| instruction_data |) |)
-                              |)
-                            ]
-                          |);
-                          Value.Integer IntegerKind.Usize 9
-                        ]
-                      |)
-                    |)) in
+                      BinOp.ge,
+                      [
+                        M.call_closure (|
+                          Ty.path "usize",
+                          M.get_associated_function (|
+                            Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                            "len",
+                            [],
+                            []
+                          |),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| M.read (| instruction_data |) |)
+                            |)
+                          ]
+                        |);
+                        Value.Integer IntegerKind.Usize 9
+                      ]
+                    |)
+                  |) in
                 let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                 M.match_operator (|
                   Ty.apply

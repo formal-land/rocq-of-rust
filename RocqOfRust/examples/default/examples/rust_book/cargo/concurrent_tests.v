@@ -33,28 +33,12 @@ Definition foo (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                         Ty.path "core::fmt::Arguments",
                         M.get_associated_function (|
                           Ty.path "core::fmt::Arguments",
-                          "new_const",
-                          [ Value.Integer IntegerKind.Usize 1 ],
+                          "from_str",
+                          [],
                           []
                         |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.alloc (|
-                                  Ty.apply
-                                    (Ty.path "array")
-                                    [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array [ mk_str (| "some
+                        [ mk_str (| "some
 " |) ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
                       |)
                     ]
                   |) in
@@ -73,28 +57,12 @@ Definition foo (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                         Ty.path "core::fmt::Arguments",
                         M.get_associated_function (|
                           Ty.path "core::fmt::Arguments",
-                          "new_const",
-                          [ Value.Integer IntegerKind.Usize 1 ],
+                          "from_str",
+                          [],
                           []
                         |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.alloc (|
-                                  Ty.apply
-                                    (Ty.path "array")
-                                    [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array [ mk_str (| "nothing
+                        [ mk_str (| "nothing
 " |) ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
                       |)
                     ]
                   |) in
@@ -126,7 +94,7 @@ Module tests.
           }
       }
   *)
-  Definition test_file (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+  Definition test_file_1 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
     | [], [], [] =>
       ltac:(M.monadic
@@ -379,10 +347,10 @@ Module tests.
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
-  Global Instance Instance_IsFunction_test_file :
-    M.IsFunction.C "concurrent_tests::tests::test_file'1" test_file.
+  Global Instance Instance_IsFunction_test_file_1 :
+    M.IsFunction.C "concurrent_tests::tests::test_file'1" test_file_1.
   Admitted.
-  Global Typeclasses Opaque test_file.
+  Global Typeclasses Opaque test_file_1.
   
   (*
       fn test_file_also() {
@@ -400,7 +368,7 @@ Module tests.
           }
       }
   *)
-  Definition test_file_also (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+  Definition test_file_also_1 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
     | [], [], [] =>
       ltac:(M.monadic
@@ -653,8 +621,8 @@ Module tests.
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
-  Global Instance Instance_IsFunction_test_file_also :
-    M.IsFunction.C "concurrent_tests::tests::test_file_also'1" test_file_also.
+  Global Instance Instance_IsFunction_test_file_also_1 :
+    M.IsFunction.C "concurrent_tests::tests::test_file_also'1" test_file_also_1.
   Admitted.
-  Global Typeclasses Opaque test_file_also.
+  Global Typeclasses Opaque test_file_also_1.
 End tests.

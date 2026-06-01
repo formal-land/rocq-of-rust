@@ -494,6 +494,9 @@ Module gas_algebra.
           (Self U)
           (* Instance *) [ ("serialize", InstanceField.Method (serialize U)) ].
     End Impl_serde_ser_Serialize_for_move_core_types_gas_algebra_GasQuantity_U.
+  End underscore.
+  
+  Module underscore_1.
     Module Impl_serde_de_Deserialize_for_move_core_types_gas_algebra_GasQuantity_U.
       Definition Self (U : Ty.t) : Ty.t :=
         Ty.apply (Ty.path "move_core_types::gas_algebra::GasQuantity") [] [ U ].
@@ -576,8 +579,7 @@ Module gas_algebra.
           (Self U)
           (* Instance *) [ ("deserialize", InstanceField.Method (deserialize U)) ].
     End Impl_serde_de_Deserialize_for_move_core_types_gas_algebra_GasQuantity_U.
-  End underscore.
-  
+  End underscore_1.
   
   Axiom InternalGas :
     (Ty.path "move_core_types::gas_algebra::InternalGas") =
@@ -1114,18 +1116,17 @@ Module gas_algebra.
                           fun γ =>
                             ltac:(M.monadic
                               (let γ :=
-                                M.use
-                                  (M.alloc (|
+                                M.alloc (|
+                                  Ty.path "bool",
+                                  M.call_closure (|
                                     Ty.path "bool",
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      BinOp.eq,
-                                      [
-                                        M.read (| M.deref (| M.read (| left_val |) |) |);
-                                        M.read (| M.deref (| M.read (| right_val |) |) |)
-                                      ]
-                                    |)
-                                  |)) in
+                                    BinOp.eq,
+                                    [
+                                      M.read (| M.deref (| M.read (| left_val |) |) |);
+                                      M.read (| M.deref (| M.read (| right_val |) |) |)
+                                    ]
+                                  |)
+                                |) in
                               let _ :=
                                 is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                               M.never_to_any (|
@@ -1450,18 +1451,17 @@ Module gas_algebra.
                           fun γ =>
                             ltac:(M.monadic
                               (let γ :=
-                                M.use
-                                  (M.alloc (|
+                                M.alloc (|
+                                  Ty.path "bool",
+                                  M.call_closure (|
                                     Ty.path "bool",
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      BinOp.eq,
-                                      [
-                                        M.read (| M.deref (| M.read (| left_val |) |) |);
-                                        M.read (| M.deref (| M.read (| right_val |) |) |)
-                                      ]
-                                    |)
-                                  |)) in
+                                    BinOp.eq,
+                                    [
+                                      M.read (| M.deref (| M.read (| left_val |) |) |);
+                                      M.read (| M.deref (| M.read (| right_val |) |) |)
+                                    ]
+                                  |)
+                                |) in
                               let _ :=
                                 is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                               M.never_to_any (|
@@ -1949,72 +1949,64 @@ Module gas_algebra.
             M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_fmt", [], [] |),
             [
               M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-              M.call_closure (|
-                Ty.path "core::fmt::Arguments",
-                M.get_associated_function (|
+              M.read (|
+                let~ args : Ty.tuple [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ] :=
+                  Value.Tuple
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "move_core_types::gas_algebra::GasQuantity",
+                          "val"
+                        |)
+                      |)
+                    ] in
+                let~ args :
+                    Ty.apply
+                      (Ty.path "array")
+                      [ Value.Integer IntegerKind.Usize 1 ]
+                      [ Ty.path "core::fmt::rt::Argument" ] :=
+                  Value.Array
+                    [
+                      M.call_closure (|
+                        Ty.path "core::fmt::rt::Argument",
+                        M.get_associated_function (|
+                          Ty.path "core::fmt::rt::Argument",
+                          "new_display",
+                          [],
+                          [ Ty.path "u64" ]
+                        |),
+                        [
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (| M.read (| M.SubPointer.get_tuple_field (| args, 0 |) |) |)
+                          |)
+                        ]
+                      |)
+                    ] in
+                M.alloc (|
                   Ty.path "core::fmt::Arguments",
-                  "new_v1",
-                  [ Value.Integer IntegerKind.Usize 1; Value.Integer IntegerKind.Usize 1 ],
-                  []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
+                  M.call_closure (|
+                    Ty.path "core::fmt::Arguments",
+                    M.get_associated_function (|
+                      Ty.path "core::fmt::Arguments",
+                      "new",
+                      [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 1 ],
+                      []
+                    |),
+                    [
                       M.borrow (|
                         Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply
-                            (Ty.path "array")
-                            [ Value.Integer IntegerKind.Usize 1 ]
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                          Value.Array [ mk_str (| "" |) ]
-                        |)
-                      |)
-                    |)
-                  |);
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
+                        M.deref (| M.read (| UnsupportedLiteral |) |)
+                      |);
                       M.borrow (|
                         Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply
-                            (Ty.path "array")
-                            [ Value.Integer IntegerKind.Usize 1 ]
-                            [ Ty.path "core::fmt::rt::Argument" ],
-                          Value.Array
-                            [
-                              M.call_closure (|
-                                Ty.path "core::fmt::rt::Argument",
-                                M.get_associated_function (|
-                                  Ty.path "core::fmt::rt::Argument",
-                                  "new_display",
-                                  [],
-                                  [ Ty.path "u64" ]
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.SubPointer.get_struct_record_field (|
-                                          M.deref (| M.read (| self |) |),
-                                          "move_core_types::gas_algebra::GasQuantity",
-                                          "val"
-                                        |)
-                                      |)
-                                    |)
-                                  |)
-                                ]
-                              |)
-                            ]
-                        |)
+                        M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
                       |)
-                    |)
+                    ]
                   |)
-                ]
+                |)
               |)
             ]
           |)))
@@ -2063,99 +2055,95 @@ Module gas_algebra.
             M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_fmt", [], [] |),
             [
               M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-              M.call_closure (|
-                Ty.path "core::fmt::Arguments",
-                M.get_associated_function (|
+              M.read (|
+                let~ args :
+                    Ty.tuple
+                      [
+                        Ty.apply (Ty.path "&") [] [ Ty.path "u64" ];
+                        Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                      ] :=
+                  Value.Tuple
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "move_core_types::gas_algebra::GasQuantity",
+                          "val"
+                        |)
+                      |);
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                          M.call_closure (|
+                            Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                            M.get_function (| "core::any::type_name", [], [ U ] |),
+                            []
+                          |)
+                        |)
+                      |)
+                    ] in
+                let~ args :
+                    Ty.apply
+                      (Ty.path "array")
+                      [ Value.Integer IntegerKind.Usize 2 ]
+                      [ Ty.path "core::fmt::rt::Argument" ] :=
+                  Value.Array
+                    [
+                      M.call_closure (|
+                        Ty.path "core::fmt::rt::Argument",
+                        M.get_associated_function (|
+                          Ty.path "core::fmt::rt::Argument",
+                          "new_display",
+                          [],
+                          [ Ty.path "u64" ]
+                        |),
+                        [
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (| M.read (| M.SubPointer.get_tuple_field (| args, 0 |) |) |)
+                          |)
+                        ]
+                      |);
+                      M.call_closure (|
+                        Ty.path "core::fmt::rt::Argument",
+                        M.get_associated_function (|
+                          Ty.path "core::fmt::rt::Argument",
+                          "new_display",
+                          [],
+                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                        |),
+                        [
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (| M.read (| M.SubPointer.get_tuple_field (| args, 1 |) |) |)
+                          |)
+                        ]
+                      |)
+                    ] in
+                M.alloc (|
                   Ty.path "core::fmt::Arguments",
-                  "new_v1",
-                  [ Value.Integer IntegerKind.Usize 3; Value.Integer IntegerKind.Usize 2 ],
-                  []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
+                  M.call_closure (|
+                    Ty.path "core::fmt::Arguments",
+                    M.get_associated_function (|
+                      Ty.path "core::fmt::Arguments",
+                      "new",
+                      [ Value.Integer IntegerKind.Usize 8; Value.Integer IntegerKind.Usize 2 ],
+                      []
+                    |),
+                    [
                       M.borrow (|
                         Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply
-                            (Ty.path "array")
-                            [ Value.Integer IntegerKind.Usize 3 ]
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                          Value.Array [ mk_str (| "" |); mk_str (| " (" |); mk_str (| ")" |) ]
-                        |)
-                      |)
-                    |)
-                  |);
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
+                        M.deref (| M.read (| UnsupportedLiteral |) |)
+                      |);
                       M.borrow (|
                         Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply
-                            (Ty.path "array")
-                            [ Value.Integer IntegerKind.Usize 2 ]
-                            [ Ty.path "core::fmt::rt::Argument" ],
-                          Value.Array
-                            [
-                              M.call_closure (|
-                                Ty.path "core::fmt::rt::Argument",
-                                M.get_associated_function (|
-                                  Ty.path "core::fmt::rt::Argument",
-                                  "new_display",
-                                  [],
-                                  [ Ty.path "u64" ]
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.SubPointer.get_struct_record_field (|
-                                          M.deref (| M.read (| self |) |),
-                                          "move_core_types::gas_algebra::GasQuantity",
-                                          "val"
-                                        |)
-                                      |)
-                                    |)
-                                  |)
-                                ]
-                              |);
-                              M.call_closure (|
-                                Ty.path "core::fmt::rt::Argument",
-                                M.get_associated_function (|
-                                  Ty.path "core::fmt::rt::Argument",
-                                  "new_display",
-                                  [],
-                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.alloc (|
-                                          Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                                          M.call_closure (|
-                                            Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                                            M.get_function (| "core::any::type_name", [], [ U ] |),
-                                            []
-                                          |)
-                                        |)
-                                      |)
-                                    |)
-                                  |)
-                                ]
-                              |)
-                            ]
-                        |)
+                        M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
                       |)
-                    |)
+                    ]
                   |)
-                ]
+                |)
               |)
             ]
           |)))
@@ -2737,18 +2725,17 @@ Module gas_algebra.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
                                   Ty.path "bool",
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    BinOp.eq,
-                                    [
-                                      M.read (| M.deref (| M.read (| left_val |) |) |);
-                                      M.read (| M.deref (| M.read (| right_val |) |) |)
-                                    ]
-                                  |)
-                                |)) in
+                                  BinOp.eq,
+                                  [
+                                    M.read (| M.deref (| M.read (| left_val |) |) |);
+                                    M.read (| M.deref (| M.read (| right_val |) |) |)
+                                  ]
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.never_to_any (|
@@ -2833,18 +2820,17 @@ Module gas_algebra.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
                                   Ty.path "bool",
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    BinOp.eq,
-                                    [
-                                      M.read (| M.deref (| M.read (| left_val |) |) |);
-                                      M.read (| M.deref (| M.read (| right_val |) |) |)
-                                    ]
-                                  |)
-                                |)) in
+                                  BinOp.eq,
+                                  [
+                                    M.read (| M.deref (| M.read (| left_val |) |) |);
+                                    M.read (| M.deref (| M.read (| right_val |) |) |)
+                                  ]
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.never_to_any (|
@@ -2920,22 +2906,21 @@ Module gas_algebra.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            BinOp.gt,
-                            [
-                              M.read (| res |);
-                              M.cast
-                                (Ty.path "u128")
-                                (M.read (|
-                                  get_associated_constant (| Ty.path "u64", "MAX", Ty.path "u64" |)
-                                |))
-                            ]
-                          |)
-                        |)) in
+                          BinOp.gt,
+                          [
+                            M.read (| res |);
+                            M.cast
+                              (Ty.path "u128")
+                              (M.read (|
+                                get_associated_constant (| Ty.path "u64", "MAX", Ty.path "u64" |)
+                              |))
+                          ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     M.read (|
                       get_associated_constant (| Ty.path "u64", "MAX", Ty.path "u64" |)
@@ -3011,18 +2996,17 @@ Module gas_algebra.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
                                   Ty.path "bool",
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    BinOp.eq,
-                                    [
-                                      M.read (| M.deref (| M.read (| left_val |) |) |);
-                                      M.read (| M.deref (| M.read (| right_val |) |) |)
-                                    ]
-                                  |)
-                                |)) in
+                                  BinOp.eq,
+                                  [
+                                    M.read (| M.deref (| M.read (| left_val |) |) |);
+                                    M.read (| M.deref (| M.read (| right_val |) |) |)
+                                  ]
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.never_to_any (|
@@ -3107,18 +3091,17 @@ Module gas_algebra.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
                                   Ty.path "bool",
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    BinOp.eq,
-                                    [
-                                      M.read (| M.deref (| M.read (| left_val |) |) |);
-                                      M.read (| M.deref (| M.read (| right_val |) |) |)
-                                    ]
-                                  |)
-                                |)) in
+                                  BinOp.eq,
+                                  [
+                                    M.read (| M.deref (| M.read (| left_val |) |) |);
+                                    M.read (| M.deref (| M.read (| right_val |) |) |)
+                                  ]
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.never_to_any (|
@@ -3196,22 +3179,21 @@ Module gas_algebra.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                BinOp.eq,
-                                [
-                                  M.call_closure (|
-                                    Ty.path "u128",
-                                    BinOp.Wrap.rem,
-                                    [ M.read (| n |); M.read (| d |) ]
-                                  |);
-                                  Value.Integer IntegerKind.U128 0
-                                ]
-                              |)
-                            |)) in
+                              BinOp.eq,
+                              [
+                                M.call_closure (|
+                                  Ty.path "u128",
+                                  BinOp.Wrap.rem,
+                                  [ M.read (| n |); M.read (| d |) ]
+                                |);
+                                Value.Integer IntegerKind.U128 0
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         Value.Integer IntegerKind.U128 0));
                     fun γ => ltac:(M.monadic (Value.Integer IntegerKind.U128 1))
@@ -3228,22 +3210,21 @@ Module gas_algebra.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            BinOp.gt,
-                            [
-                              M.read (| res |);
-                              M.cast
-                                (Ty.path "u128")
-                                (M.read (|
-                                  get_associated_constant (| Ty.path "u64", "MAX", Ty.path "u64" |)
-                                |))
-                            ]
-                          |)
-                        |)) in
+                          BinOp.gt,
+                          [
+                            M.read (| res |);
+                            M.cast
+                              (Ty.path "u128")
+                              (M.read (|
+                                get_associated_constant (| Ty.path "u64", "MAX", Ty.path "u64" |)
+                              |))
+                          ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     M.read (|
                       get_associated_constant (| Ty.path "u64", "MAX", Ty.path "u64" |)

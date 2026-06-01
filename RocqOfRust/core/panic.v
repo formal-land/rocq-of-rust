@@ -2,7 +2,7 @@
 Require Import RocqOfRust.RocqOfRust.
 
 Module num.
-  Module from_str_radix_panic.
+  Module from_ascii_radix_panic.
     (*
             const fn do_panic($($arg: $ty),* ) -> ! {
                 $crate::intrinsics::const_eval_select!(
@@ -35,847 +35,177 @@ Module num.
             |),
             [
               Value.Tuple [ M.read (| radix |) ];
-              M.get_function (| "core::num::from_str_radix_panic::do_panic.compiletime", [], [] |);
-              M.get_function (| "core::num::from_str_radix_panic::do_panic.runtime", [], [] |)
+              M.get_function (|
+                "core::num::from_ascii_radix_panic::do_panic.compiletime",
+                [],
+                []
+              |);
+              M.get_function (| "core::num::from_ascii_radix_panic::do_panic.runtime", [], [] |)
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
     Global Instance Instance_IsFunction_do_panic :
-      M.IsFunction.C "core::num::from_str_radix_panic::do_panic" do_panic.
+      M.IsFunction.C "core::num::from_ascii_radix_panic::do_panic" do_panic.
     Admitted.
     Global Typeclasses Opaque do_panic.
-  End from_str_radix_panic.
+  End from_ascii_radix_panic.
 End num.
 
-Module intrinsics.
-  Module mir.
-    Module UnwindContinue.
-      (*
-              const fn panic_cold_explicit() -> ! {
-                  $crate::panicking::panic_explicit()
-              }
-      *)
-      Definition panic_cold_explicit (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [] =>
-          ltac:(M.monadic
-            (M.call_closure (|
-              Ty.path "never",
-              M.get_function (| "core::panicking::panic_explicit", [], [] |),
-              []
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Global Instance Instance_IsFunction_panic_cold_explicit :
-        M.IsFunction.C
-          "core::intrinsics::mir::UnwindContinue::panic_cold_explicit"
-          panic_cold_explicit.
-      Admitted.
-      Global Typeclasses Opaque panic_cold_explicit.
-    End UnwindContinue.
+Module mem.
+  Module conjure_zst.
+    (*
+            const fn do_panic($($arg: $ty),* ) -> ! {
+                $crate::intrinsics::const_eval_select!(
+                    @capture { $($arg: $ty = $arg),* } -> !:
+                    #[noinline]
+                    if const #[track_caller] #[inline] { // Inline this, to prevent codegen
+                        $crate::panic!($const_msg)
+                    } else #[track_caller] { // Do not inline this, it makes perf worse
+                        $crate::panic!($runtime_msg)
+                    }
+                )
+            }
+    *)
+    Definition do_panic (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [], [ t ] =>
+        ltac:(M.monadic
+          (let t := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "str" ], t |) in
+          M.call_closure (|
+            Ty.path "never",
+            M.get_function (|
+              "core::intrinsics::const_eval_select",
+              [],
+              [
+                Ty.tuple [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ];
+                Ty.function [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ] (Ty.path "never");
+                Ty.function [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ] (Ty.path "never");
+                Ty.path "never"
+              ]
+            |),
+            [
+              Value.Tuple [ M.read (| t |) ];
+              M.get_function (| "core::mem::conjure_zst::do_panic.compiletime", [], [] |);
+              M.get_function (| "core::mem::conjure_zst::do_panic.runtime", [], [] |)
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
     
-    Module UnwindUnreachable.
-      (*
-              const fn panic_cold_explicit() -> ! {
-                  $crate::panicking::panic_explicit()
-              }
-      *)
-      Definition panic_cold_explicit (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [] =>
-          ltac:(M.monadic
-            (M.call_closure (|
-              Ty.path "never",
-              M.get_function (| "core::panicking::panic_explicit", [], [] |),
-              []
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Global Instance Instance_IsFunction_panic_cold_explicit :
-        M.IsFunction.C
-          "core::intrinsics::mir::UnwindUnreachable::panic_cold_explicit"
-          panic_cold_explicit.
-      Admitted.
-      Global Typeclasses Opaque panic_cold_explicit.
-    End UnwindUnreachable.
+    Global Instance Instance_IsFunction_do_panic :
+      M.IsFunction.C "core::mem::conjure_zst::do_panic" do_panic.
+    Admitted.
+    Global Typeclasses Opaque do_panic.
+  End conjure_zst.
+End mem.
+
+Module cell.
+  Module panic_already_borrowed.
+    (*
+            const fn do_panic($($arg: $ty),* ) -> ! {
+                $crate::intrinsics::const_eval_select!(
+                    @capture { $($arg: $ty = $arg),* } -> !:
+                    #[noinline]
+                    if const #[track_caller] #[inline] { // Inline this, to prevent codegen
+                        $crate::panic!($const_msg)
+                    } else #[track_caller] { // Do not inline this, it makes perf worse
+                        $crate::panic!($runtime_msg)
+                    }
+                )
+            }
+    *)
+    Definition do_panic (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [], [ err ] =>
+        ltac:(M.monadic
+          (let err := M.alloc (| Ty.path "core::cell::BorrowMutError", err |) in
+          M.call_closure (|
+            Ty.path "never",
+            M.get_function (|
+              "core::intrinsics::const_eval_select",
+              [],
+              [
+                Ty.tuple [ Ty.path "core::cell::BorrowMutError" ];
+                Ty.function [ Ty.path "core::cell::BorrowMutError" ] (Ty.path "never");
+                Ty.function [ Ty.path "core::cell::BorrowMutError" ] (Ty.path "never");
+                Ty.path "never"
+              ]
+            |),
+            [
+              Value.Tuple [ M.read (| err |) ];
+              M.get_function (|
+                "core::cell::panic_already_borrowed::do_panic.compiletime",
+                [],
+                []
+              |);
+              M.get_function (| "core::cell::panic_already_borrowed::do_panic.runtime", [], [] |)
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
     
-    Module UnwindTerminate.
-      (*
-              const fn panic_cold_explicit() -> ! {
-                  $crate::panicking::panic_explicit()
-              }
-      *)
-      Definition panic_cold_explicit (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [] =>
-          ltac:(M.monadic
-            (M.call_closure (|
-              Ty.path "never",
-              M.get_function (| "core::panicking::panic_explicit", [], [] |),
-              []
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Global Instance Instance_IsFunction_panic_cold_explicit :
-        M.IsFunction.C
-          "core::intrinsics::mir::UnwindTerminate::panic_cold_explicit"
-          panic_cold_explicit.
-      Admitted.
-      Global Typeclasses Opaque panic_cold_explicit.
-    End UnwindTerminate.
+    Global Instance Instance_IsFunction_do_panic :
+      M.IsFunction.C "core::cell::panic_already_borrowed::do_panic" do_panic.
+    Admitted.
+    Global Typeclasses Opaque do_panic.
+  End panic_already_borrowed.
+  
+  Module panic_already_mutably_borrowed.
+    (*
+            const fn do_panic($($arg: $ty),* ) -> ! {
+                $crate::intrinsics::const_eval_select!(
+                    @capture { $($arg: $ty = $arg),* } -> !:
+                    #[noinline]
+                    if const #[track_caller] #[inline] { // Inline this, to prevent codegen
+                        $crate::panic!($const_msg)
+                    } else #[track_caller] { // Do not inline this, it makes perf worse
+                        $crate::panic!($runtime_msg)
+                    }
+                )
+            }
+    *)
+    Definition do_panic (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [], [ err ] =>
+        ltac:(M.monadic
+          (let err := M.alloc (| Ty.path "core::cell::BorrowError", err |) in
+          M.call_closure (|
+            Ty.path "never",
+            M.get_function (|
+              "core::intrinsics::const_eval_select",
+              [],
+              [
+                Ty.tuple [ Ty.path "core::cell::BorrowError" ];
+                Ty.function [ Ty.path "core::cell::BorrowError" ] (Ty.path "never");
+                Ty.function [ Ty.path "core::cell::BorrowError" ] (Ty.path "never");
+                Ty.path "never"
+              ]
+            |),
+            [
+              Value.Tuple [ M.read (| err |) ];
+              M.get_function (|
+                "core::cell::panic_already_mutably_borrowed::do_panic.compiletime",
+                [],
+                []
+              |);
+              M.get_function (|
+                "core::cell::panic_already_mutably_borrowed::do_panic.runtime",
+                [],
+                []
+              |)
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
     
-    Module UnwindCleanup.
-      (*
-              const fn panic_cold_explicit() -> ! {
-                  $crate::panicking::panic_explicit()
-              }
-      *)
-      Definition panic_cold_explicit (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [] =>
-          ltac:(M.monadic
-            (M.call_closure (|
-              Ty.path "never",
-              M.get_function (| "core::panicking::panic_explicit", [], [] |),
-              []
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Global Instance Instance_IsFunction_panic_cold_explicit :
-        M.IsFunction.C
-          "core::intrinsics::mir::UnwindCleanup::panic_cold_explicit"
-          panic_cold_explicit.
-      Admitted.
-      Global Typeclasses Opaque panic_cold_explicit.
-    End UnwindCleanup.
-    
-    Module ReturnTo.
-      (*
-              const fn panic_cold_explicit() -> ! {
-                  $crate::panicking::panic_explicit()
-              }
-      *)
-      Definition panic_cold_explicit (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [] =>
-          ltac:(M.monadic
-            (M.call_closure (|
-              Ty.path "never",
-              M.get_function (| "core::panicking::panic_explicit", [], [] |),
-              []
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Global Instance Instance_IsFunction_panic_cold_explicit :
-        M.IsFunction.C "core::intrinsics::mir::ReturnTo::panic_cold_explicit" panic_cold_explicit.
-      Admitted.
-      Global Typeclasses Opaque panic_cold_explicit.
-    End ReturnTo.
-    
-    Module Return.
-      (*
-              const fn panic_cold_explicit() -> ! {
-                  $crate::panicking::panic_explicit()
-              }
-      *)
-      Definition panic_cold_explicit (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [] =>
-          ltac:(M.monadic
-            (M.call_closure (|
-              Ty.path "never",
-              M.get_function (| "core::panicking::panic_explicit", [], [] |),
-              []
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Global Instance Instance_IsFunction_panic_cold_explicit :
-        M.IsFunction.C "core::intrinsics::mir::Return::panic_cold_explicit" panic_cold_explicit.
-      Admitted.
-      Global Typeclasses Opaque panic_cold_explicit.
-    End Return.
-    
-    Module Goto.
-      (*
-              const fn panic_cold_explicit() -> ! {
-                  $crate::panicking::panic_explicit()
-              }
-      *)
-      Definition panic_cold_explicit (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [] =>
-          ltac:(M.monadic
-            (M.call_closure (|
-              Ty.path "never",
-              M.get_function (| "core::panicking::panic_explicit", [], [] |),
-              []
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Global Instance Instance_IsFunction_panic_cold_explicit :
-        M.IsFunction.C "core::intrinsics::mir::Goto::panic_cold_explicit" panic_cold_explicit.
-      Admitted.
-      Global Typeclasses Opaque panic_cold_explicit.
-    End Goto.
-    
-    Module Unreachable.
-      (*
-              const fn panic_cold_explicit() -> ! {
-                  $crate::panicking::panic_explicit()
-              }
-      *)
-      Definition panic_cold_explicit (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [] =>
-          ltac:(M.monadic
-            (M.call_closure (|
-              Ty.path "never",
-              M.get_function (| "core::panicking::panic_explicit", [], [] |),
-              []
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Global Instance Instance_IsFunction_panic_cold_explicit :
-        M.IsFunction.C
-          "core::intrinsics::mir::Unreachable::panic_cold_explicit"
-          panic_cold_explicit.
-      Admitted.
-      Global Typeclasses Opaque panic_cold_explicit.
-    End Unreachable.
-    
-    Module Drop.
-      (*
-              const fn panic_cold_explicit() -> ! {
-                  $crate::panicking::panic_explicit()
-              }
-      *)
-      Definition panic_cold_explicit (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [] =>
-          ltac:(M.monadic
-            (M.call_closure (|
-              Ty.path "never",
-              M.get_function (| "core::panicking::panic_explicit", [], [] |),
-              []
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Global Instance Instance_IsFunction_panic_cold_explicit :
-        M.IsFunction.C "core::intrinsics::mir::Drop::panic_cold_explicit" panic_cold_explicit.
-      Admitted.
-      Global Typeclasses Opaque panic_cold_explicit.
-    End Drop.
-    
-    Module Call.
-      (*
-              const fn panic_cold_explicit() -> ! {
-                  $crate::panicking::panic_explicit()
-              }
-      *)
-      Definition panic_cold_explicit (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [] =>
-          ltac:(M.monadic
-            (M.call_closure (|
-              Ty.path "never",
-              M.get_function (| "core::panicking::panic_explicit", [], [] |),
-              []
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Global Instance Instance_IsFunction_panic_cold_explicit :
-        M.IsFunction.C "core::intrinsics::mir::Call::panic_cold_explicit" panic_cold_explicit.
-      Admitted.
-      Global Typeclasses Opaque panic_cold_explicit.
-    End Call.
-    
-    Module TailCall.
-      (*
-              const fn panic_cold_explicit() -> ! {
-                  $crate::panicking::panic_explicit()
-              }
-      *)
-      Definition panic_cold_explicit (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [] =>
-          ltac:(M.monadic
-            (M.call_closure (|
-              Ty.path "never",
-              M.get_function (| "core::panicking::panic_explicit", [], [] |),
-              []
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Global Instance Instance_IsFunction_panic_cold_explicit :
-        M.IsFunction.C "core::intrinsics::mir::TailCall::panic_cold_explicit" panic_cold_explicit.
-      Admitted.
-      Global Typeclasses Opaque panic_cold_explicit.
-    End TailCall.
-    
-    Module UnwindResume.
-      (*
-              const fn panic_cold_explicit() -> ! {
-                  $crate::panicking::panic_explicit()
-              }
-      *)
-      Definition panic_cold_explicit (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [] =>
-          ltac:(M.monadic
-            (M.call_closure (|
-              Ty.path "never",
-              M.get_function (| "core::panicking::panic_explicit", [], [] |),
-              []
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Global Instance Instance_IsFunction_panic_cold_explicit :
-        M.IsFunction.C
-          "core::intrinsics::mir::UnwindResume::panic_cold_explicit"
-          panic_cold_explicit.
-      Admitted.
-      Global Typeclasses Opaque panic_cold_explicit.
-    End UnwindResume.
-    
-    Module StorageLive.
-      (*
-              const fn panic_cold_explicit() -> ! {
-                  $crate::panicking::panic_explicit()
-              }
-      *)
-      Definition panic_cold_explicit (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [] =>
-          ltac:(M.monadic
-            (M.call_closure (|
-              Ty.path "never",
-              M.get_function (| "core::panicking::panic_explicit", [], [] |),
-              []
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Global Instance Instance_IsFunction_panic_cold_explicit :
-        M.IsFunction.C
-          "core::intrinsics::mir::StorageLive::panic_cold_explicit"
-          panic_cold_explicit.
-      Admitted.
-      Global Typeclasses Opaque panic_cold_explicit.
-    End StorageLive.
-    
-    Module StorageDead.
-      (*
-              const fn panic_cold_explicit() -> ! {
-                  $crate::panicking::panic_explicit()
-              }
-      *)
-      Definition panic_cold_explicit (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [] =>
-          ltac:(M.monadic
-            (M.call_closure (|
-              Ty.path "never",
-              M.get_function (| "core::panicking::panic_explicit", [], [] |),
-              []
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Global Instance Instance_IsFunction_panic_cold_explicit :
-        M.IsFunction.C
-          "core::intrinsics::mir::StorageDead::panic_cold_explicit"
-          panic_cold_explicit.
-      Admitted.
-      Global Typeclasses Opaque panic_cold_explicit.
-    End StorageDead.
-    
-    Module Assume.
-      (*
-              const fn panic_cold_explicit() -> ! {
-                  $crate::panicking::panic_explicit()
-              }
-      *)
-      Definition panic_cold_explicit (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [] =>
-          ltac:(M.monadic
-            (M.call_closure (|
-              Ty.path "never",
-              M.get_function (| "core::panicking::panic_explicit", [], [] |),
-              []
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Global Instance Instance_IsFunction_panic_cold_explicit :
-        M.IsFunction.C "core::intrinsics::mir::Assume::panic_cold_explicit" panic_cold_explicit.
-      Admitted.
-      Global Typeclasses Opaque panic_cold_explicit.
-    End Assume.
-    
-    Module Deinit.
-      (*
-              const fn panic_cold_explicit() -> ! {
-                  $crate::panicking::panic_explicit()
-              }
-      *)
-      Definition panic_cold_explicit (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [] =>
-          ltac:(M.monadic
-            (M.call_closure (|
-              Ty.path "never",
-              M.get_function (| "core::panicking::panic_explicit", [], [] |),
-              []
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Global Instance Instance_IsFunction_panic_cold_explicit :
-        M.IsFunction.C "core::intrinsics::mir::Deinit::panic_cold_explicit" panic_cold_explicit.
-      Admitted.
-      Global Typeclasses Opaque panic_cold_explicit.
-    End Deinit.
-    
-    Module Checked.
-      (*
-              const fn panic_cold_explicit() -> ! {
-                  $crate::panicking::panic_explicit()
-              }
-      *)
-      Definition panic_cold_explicit (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [] =>
-          ltac:(M.monadic
-            (M.call_closure (|
-              Ty.path "never",
-              M.get_function (| "core::panicking::panic_explicit", [], [] |),
-              []
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Global Instance Instance_IsFunction_panic_cold_explicit :
-        M.IsFunction.C "core::intrinsics::mir::Checked::panic_cold_explicit" panic_cold_explicit.
-      Admitted.
-      Global Typeclasses Opaque panic_cold_explicit.
-    End Checked.
-    
-    Module Len.
-      (*
-              const fn panic_cold_explicit() -> ! {
-                  $crate::panicking::panic_explicit()
-              }
-      *)
-      Definition panic_cold_explicit (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [] =>
-          ltac:(M.monadic
-            (M.call_closure (|
-              Ty.path "never",
-              M.get_function (| "core::panicking::panic_explicit", [], [] |),
-              []
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Global Instance Instance_IsFunction_panic_cold_explicit :
-        M.IsFunction.C "core::intrinsics::mir::Len::panic_cold_explicit" panic_cold_explicit.
-      Admitted.
-      Global Typeclasses Opaque panic_cold_explicit.
-    End Len.
-    
-    Module PtrMetadata.
-      (*
-              const fn panic_cold_explicit() -> ! {
-                  $crate::panicking::panic_explicit()
-              }
-      *)
-      Definition panic_cold_explicit (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [] =>
-          ltac:(M.monadic
-            (M.call_closure (|
-              Ty.path "never",
-              M.get_function (| "core::panicking::panic_explicit", [], [] |),
-              []
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Global Instance Instance_IsFunction_panic_cold_explicit :
-        M.IsFunction.C
-          "core::intrinsics::mir::PtrMetadata::panic_cold_explicit"
-          panic_cold_explicit.
-      Admitted.
-      Global Typeclasses Opaque panic_cold_explicit.
-    End PtrMetadata.
-    
-    Module CopyForDeref.
-      (*
-              const fn panic_cold_explicit() -> ! {
-                  $crate::panicking::panic_explicit()
-              }
-      *)
-      Definition panic_cold_explicit (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [] =>
-          ltac:(M.monadic
-            (M.call_closure (|
-              Ty.path "never",
-              M.get_function (| "core::panicking::panic_explicit", [], [] |),
-              []
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Global Instance Instance_IsFunction_panic_cold_explicit :
-        M.IsFunction.C
-          "core::intrinsics::mir::CopyForDeref::panic_cold_explicit"
-          panic_cold_explicit.
-      Admitted.
-      Global Typeclasses Opaque panic_cold_explicit.
-    End CopyForDeref.
-    
-    Module Retag.
-      (*
-              const fn panic_cold_explicit() -> ! {
-                  $crate::panicking::panic_explicit()
-              }
-      *)
-      Definition panic_cold_explicit (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [] =>
-          ltac:(M.monadic
-            (M.call_closure (|
-              Ty.path "never",
-              M.get_function (| "core::panicking::panic_explicit", [], [] |),
-              []
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Global Instance Instance_IsFunction_panic_cold_explicit :
-        M.IsFunction.C "core::intrinsics::mir::Retag::panic_cold_explicit" panic_cold_explicit.
-      Admitted.
-      Global Typeclasses Opaque panic_cold_explicit.
-    End Retag.
-    
-    Module Move.
-      (*
-              const fn panic_cold_explicit() -> ! {
-                  $crate::panicking::panic_explicit()
-              }
-      *)
-      Definition panic_cold_explicit (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [] =>
-          ltac:(M.monadic
-            (M.call_closure (|
-              Ty.path "never",
-              M.get_function (| "core::panicking::panic_explicit", [], [] |),
-              []
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Global Instance Instance_IsFunction_panic_cold_explicit :
-        M.IsFunction.C "core::intrinsics::mir::Move::panic_cold_explicit" panic_cold_explicit.
-      Admitted.
-      Global Typeclasses Opaque panic_cold_explicit.
-    End Move.
-    
-    Module Static.
-      (*
-              const fn panic_cold_explicit() -> ! {
-                  $crate::panicking::panic_explicit()
-              }
-      *)
-      Definition panic_cold_explicit (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [] =>
-          ltac:(M.monadic
-            (M.call_closure (|
-              Ty.path "never",
-              M.get_function (| "core::panicking::panic_explicit", [], [] |),
-              []
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Global Instance Instance_IsFunction_panic_cold_explicit :
-        M.IsFunction.C "core::intrinsics::mir::Static::panic_cold_explicit" panic_cold_explicit.
-      Admitted.
-      Global Typeclasses Opaque panic_cold_explicit.
-    End Static.
-    
-    Module StaticMut.
-      (*
-              const fn panic_cold_explicit() -> ! {
-                  $crate::panicking::panic_explicit()
-              }
-      *)
-      Definition panic_cold_explicit (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [] =>
-          ltac:(M.monadic
-            (M.call_closure (|
-              Ty.path "never",
-              M.get_function (| "core::panicking::panic_explicit", [], [] |),
-              []
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Global Instance Instance_IsFunction_panic_cold_explicit :
-        M.IsFunction.C "core::intrinsics::mir::StaticMut::panic_cold_explicit" panic_cold_explicit.
-      Admitted.
-      Global Typeclasses Opaque panic_cold_explicit.
-    End StaticMut.
-    
-    Module Discriminant.
-      (*
-              const fn panic_cold_explicit() -> ! {
-                  $crate::panicking::panic_explicit()
-              }
-      *)
-      Definition panic_cold_explicit (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [] =>
-          ltac:(M.monadic
-            (M.call_closure (|
-              Ty.path "never",
-              M.get_function (| "core::panicking::panic_explicit", [], [] |),
-              []
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Global Instance Instance_IsFunction_panic_cold_explicit :
-        M.IsFunction.C
-          "core::intrinsics::mir::Discriminant::panic_cold_explicit"
-          panic_cold_explicit.
-      Admitted.
-      Global Typeclasses Opaque panic_cold_explicit.
-    End Discriminant.
-    
-    Module SetDiscriminant.
-      (*
-              const fn panic_cold_explicit() -> ! {
-                  $crate::panicking::panic_explicit()
-              }
-      *)
-      Definition panic_cold_explicit (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [] =>
-          ltac:(M.monadic
-            (M.call_closure (|
-              Ty.path "never",
-              M.get_function (| "core::panicking::panic_explicit", [], [] |),
-              []
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Global Instance Instance_IsFunction_panic_cold_explicit :
-        M.IsFunction.C
-          "core::intrinsics::mir::SetDiscriminant::panic_cold_explicit"
-          panic_cold_explicit.
-      Admitted.
-      Global Typeclasses Opaque panic_cold_explicit.
-    End SetDiscriminant.
-    
-    Module Offset.
-      (*
-              const fn panic_cold_explicit() -> ! {
-                  $crate::panicking::panic_explicit()
-              }
-      *)
-      Definition panic_cold_explicit (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [] =>
-          ltac:(M.monadic
-            (M.call_closure (|
-              Ty.path "never",
-              M.get_function (| "core::panicking::panic_explicit", [], [] |),
-              []
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Global Instance Instance_IsFunction_panic_cold_explicit :
-        M.IsFunction.C "core::intrinsics::mir::Offset::panic_cold_explicit" panic_cold_explicit.
-      Admitted.
-      Global Typeclasses Opaque panic_cold_explicit.
-    End Offset.
-    
-    Module Field.
-      (*
-              const fn panic_cold_explicit() -> ! {
-                  $crate::panicking::panic_explicit()
-              }
-      *)
-      Definition panic_cold_explicit (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [] =>
-          ltac:(M.monadic
-            (M.call_closure (|
-              Ty.path "never",
-              M.get_function (| "core::panicking::panic_explicit", [], [] |),
-              []
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Global Instance Instance_IsFunction_panic_cold_explicit :
-        M.IsFunction.C "core::intrinsics::mir::Field::panic_cold_explicit" panic_cold_explicit.
-      Admitted.
-      Global Typeclasses Opaque panic_cold_explicit.
-    End Field.
-    
-    Module Variant.
-      (*
-              const fn panic_cold_explicit() -> ! {
-                  $crate::panicking::panic_explicit()
-              }
-      *)
-      Definition panic_cold_explicit (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [] =>
-          ltac:(M.monadic
-            (M.call_closure (|
-              Ty.path "never",
-              M.get_function (| "core::panicking::panic_explicit", [], [] |),
-              []
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Global Instance Instance_IsFunction_panic_cold_explicit :
-        M.IsFunction.C "core::intrinsics::mir::Variant::panic_cold_explicit" panic_cold_explicit.
-      Admitted.
-      Global Typeclasses Opaque panic_cold_explicit.
-    End Variant.
-    
-    Module CastTransmute.
-      (*
-              const fn panic_cold_explicit() -> ! {
-                  $crate::panicking::panic_explicit()
-              }
-      *)
-      Definition panic_cold_explicit (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [] =>
-          ltac:(M.monadic
-            (M.call_closure (|
-              Ty.path "never",
-              M.get_function (| "core::panicking::panic_explicit", [], [] |),
-              []
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Global Instance Instance_IsFunction_panic_cold_explicit :
-        M.IsFunction.C
-          "core::intrinsics::mir::CastTransmute::panic_cold_explicit"
-          panic_cold_explicit.
-      Admitted.
-      Global Typeclasses Opaque panic_cold_explicit.
-    End CastTransmute.
-    
-    Module CastPtrToPtr.
-      (*
-              const fn panic_cold_explicit() -> ! {
-                  $crate::panicking::panic_explicit()
-              }
-      *)
-      Definition panic_cold_explicit (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [] =>
-          ltac:(M.monadic
-            (M.call_closure (|
-              Ty.path "never",
-              M.get_function (| "core::panicking::panic_explicit", [], [] |),
-              []
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Global Instance Instance_IsFunction_panic_cold_explicit :
-        M.IsFunction.C
-          "core::intrinsics::mir::CastPtrToPtr::panic_cold_explicit"
-          panic_cold_explicit.
-      Admitted.
-      Global Typeclasses Opaque panic_cold_explicit.
-    End CastPtrToPtr.
-    
-    Module __internal_make_place.
-      (*
-              const fn panic_cold_explicit() -> ! {
-                  $crate::panicking::panic_explicit()
-              }
-      *)
-      Definition panic_cold_explicit (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [] =>
-          ltac:(M.monadic
-            (M.call_closure (|
-              Ty.path "never",
-              M.get_function (| "core::panicking::panic_explicit", [], [] |),
-              []
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Global Instance Instance_IsFunction_panic_cold_explicit :
-        M.IsFunction.C
-          "core::intrinsics::mir::__internal_make_place::panic_cold_explicit"
-          panic_cold_explicit.
-      Admitted.
-      Global Typeclasses Opaque panic_cold_explicit.
-    End __internal_make_place.
-    
-    Module __debuginfo.
-      (*
-              const fn panic_cold_explicit() -> ! {
-                  $crate::panicking::panic_explicit()
-              }
-      *)
-      Definition panic_cold_explicit (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [] =>
-          ltac:(M.monadic
-            (M.call_closure (|
-              Ty.path "never",
-              M.get_function (| "core::panicking::panic_explicit", [], [] |),
-              []
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Global Instance Instance_IsFunction_panic_cold_explicit :
-        M.IsFunction.C
-          "core::intrinsics::mir::__debuginfo::panic_cold_explicit"
-          panic_cold_explicit.
-      Admitted.
-      Global Typeclasses Opaque panic_cold_explicit.
-    End __debuginfo.
-  End mir.
-End intrinsics.
+    Global Instance Instance_IsFunction_do_panic :
+      M.IsFunction.C "core::cell::panic_already_mutably_borrowed::do_panic" do_panic.
+    Admitted.
+    Global Typeclasses Opaque do_panic.
+  End panic_already_mutably_borrowed.
+End cell.
 
 Module char.
   Module methods.
@@ -1046,7 +376,7 @@ End panic.
 
 Module slice.
   Module index.
-    Module slice_start_index_len_fail.
+    Module slice_index_fail.
       (*
               const fn do_panic($($arg: $ty),* ) -> ! {
                   $crate::intrinsics::const_eval_select!(
@@ -1062,9 +392,9 @@ Module slice.
       *)
       Definition do_panic (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
-        | [], [], [ index; len ] =>
+        | [], [], [ start; len ] =>
           ltac:(M.monadic
-            (let index := M.alloc (| Ty.path "usize", index |) in
+            (let start := M.alloc (| Ty.path "usize", start |) in
             let len := M.alloc (| Ty.path "usize", len |) in
             M.call_closure (|
               Ty.path "never",
@@ -1079,14 +409,14 @@ Module slice.
                 ]
               |),
               [
-                Value.Tuple [ M.read (| index |); M.read (| len |) ];
+                Value.Tuple [ M.read (| start |); M.read (| len |) ];
                 M.get_function (|
-                  "core::slice::index::slice_start_index_len_fail::do_panic.compiletime",
+                  "core::slice::index::slice_index_fail::do_panic.compiletime",
                   [],
                   []
                 |);
                 M.get_function (|
-                  "core::slice::index::slice_start_index_len_fail::do_panic.runtime",
+                  "core::slice::index::slice_index_fail::do_panic.runtime",
                   [],
                   []
                 |)
@@ -1096,12 +426,10 @@ Module slice.
         end.
       
       Global Instance Instance_IsFunction_do_panic :
-        M.IsFunction.C "core::slice::index::slice_start_index_len_fail::do_panic" do_panic.
+        M.IsFunction.C "core::slice::index::slice_index_fail::do_panic" do_panic.
       Admitted.
       Global Typeclasses Opaque do_panic.
-    End slice_start_index_len_fail.
-    
-    Module slice_end_index_len_fail.
+      
       (*
               const fn do_panic($($arg: $ty),* ) -> ! {
                   $crate::intrinsics::const_eval_select!(
@@ -1115,11 +443,11 @@ Module slice.
                   )
               }
       *)
-      Definition do_panic (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      Definition do_panic_1 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
-        | [], [], [ index; len ] =>
+        | [], [], [ end_; len ] =>
           ltac:(M.monadic
-            (let index := M.alloc (| Ty.path "usize", index |) in
+            (let end_ := M.alloc (| Ty.path "usize", end_ |) in
             let len := M.alloc (| Ty.path "usize", len |) in
             M.call_closure (|
               Ty.path "never",
@@ -1134,14 +462,14 @@ Module slice.
                 ]
               |),
               [
-                Value.Tuple [ M.read (| index |); M.read (| len |) ];
+                Value.Tuple [ M.read (| end_ |); M.read (| len |) ];
                 M.get_function (|
-                  "core::slice::index::slice_end_index_len_fail::do_panic.compiletime",
+                  "core::slice::index::slice_index_fail::do_panic'1.compiletime",
                   [],
                   []
                 |);
                 M.get_function (|
-                  "core::slice::index::slice_end_index_len_fail::do_panic.runtime",
+                  "core::slice::index::slice_index_fail::do_panic'1.runtime",
                   [],
                   []
                 |)
@@ -1150,13 +478,11 @@ Module slice.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      Global Instance Instance_IsFunction_do_panic :
-        M.IsFunction.C "core::slice::index::slice_end_index_len_fail::do_panic" do_panic.
+      Global Instance Instance_IsFunction_do_panic_1 :
+        M.IsFunction.C "core::slice::index::slice_index_fail::do_panic'1" do_panic_1.
       Admitted.
-      Global Typeclasses Opaque do_panic.
-    End slice_end_index_len_fail.
-    
-    Module slice_index_order_fail.
+      Global Typeclasses Opaque do_panic_1.
+      
       (*
               const fn do_panic($($arg: $ty),* ) -> ! {
                   $crate::intrinsics::const_eval_select!(
@@ -1170,11 +496,11 @@ Module slice.
                   )
               }
       *)
-      Definition do_panic (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      Definition do_panic_2 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
-        | [], [], [ index; end_ ] =>
+        | [], [], [ start; end_ ] =>
           ltac:(M.monadic
-            (let index := M.alloc (| Ty.path "usize", index |) in
+            (let start := M.alloc (| Ty.path "usize", start |) in
             let end_ := M.alloc (| Ty.path "usize", end_ |) in
             M.call_closure (|
               Ty.path "never",
@@ -1189,14 +515,124 @@ Module slice.
                 ]
               |),
               [
-                Value.Tuple [ M.read (| index |); M.read (| end_ |) ];
+                Value.Tuple [ M.read (| start |); M.read (| end_ |) ];
                 M.get_function (|
-                  "core::slice::index::slice_index_order_fail::do_panic.compiletime",
+                  "core::slice::index::slice_index_fail::do_panic'2.compiletime",
                   [],
                   []
                 |);
                 M.get_function (|
-                  "core::slice::index::slice_index_order_fail::do_panic.runtime",
+                  "core::slice::index::slice_index_fail::do_panic'2.runtime",
+                  [],
+                  []
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance Instance_IsFunction_do_panic_2 :
+        M.IsFunction.C "core::slice::index::slice_index_fail::do_panic'2" do_panic_2.
+      Admitted.
+      Global Typeclasses Opaque do_panic_2.
+      
+      (*
+              const fn do_panic($($arg: $ty),* ) -> ! {
+                  $crate::intrinsics::const_eval_select!(
+                      @capture { $($arg: $ty = $arg),* } -> !:
+                      #[noinline]
+                      if const #[track_caller] #[inline] { // Inline this, to prevent codegen
+                          $crate::panic!($const_msg)
+                      } else #[track_caller] { // Do not inline this, it makes perf worse
+                          $crate::panic!($runtime_msg)
+                      }
+                  )
+              }
+      *)
+      Definition do_panic_3 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ end_; len ] =>
+          ltac:(M.monadic
+            (let end_ := M.alloc (| Ty.path "usize", end_ |) in
+            let len := M.alloc (| Ty.path "usize", len |) in
+            M.call_closure (|
+              Ty.path "never",
+              M.get_function (|
+                "core::intrinsics::const_eval_select",
+                [],
+                [
+                  Ty.tuple [ Ty.path "usize"; Ty.path "usize" ];
+                  Ty.function [ Ty.path "usize"; Ty.path "usize" ] (Ty.path "never");
+                  Ty.function [ Ty.path "usize"; Ty.path "usize" ] (Ty.path "never");
+                  Ty.path "never"
+                ]
+              |),
+              [
+                Value.Tuple [ M.read (| end_ |); M.read (| len |) ];
+                M.get_function (|
+                  "core::slice::index::slice_index_fail::do_panic'3.compiletime",
+                  [],
+                  []
+                |);
+                M.get_function (|
+                  "core::slice::index::slice_index_fail::do_panic'3.runtime",
+                  [],
+                  []
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance Instance_IsFunction_do_panic_3 :
+        M.IsFunction.C "core::slice::index::slice_index_fail::do_panic'3" do_panic_3.
+      Admitted.
+      Global Typeclasses Opaque do_panic_3.
+    End slice_index_fail.
+  End index.
+  
+  Module copy_from_slice_impl.
+    Module len_mismatch_fail.
+      (*
+              const fn do_panic($($arg: $ty),* ) -> ! {
+                  $crate::intrinsics::const_eval_select!(
+                      @capture { $($arg: $ty = $arg),* } -> !:
+                      #[noinline]
+                      if const #[track_caller] #[inline] { // Inline this, to prevent codegen
+                          $crate::panic!($const_msg)
+                      } else #[track_caller] { // Do not inline this, it makes perf worse
+                          $crate::panic!($runtime_msg)
+                      }
+                  )
+              }
+      *)
+      Definition do_panic (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ src_len; dst_len ] =>
+          ltac:(M.monadic
+            (let src_len := M.alloc (| Ty.path "usize", src_len |) in
+            let dst_len := M.alloc (| Ty.path "usize", dst_len |) in
+            M.call_closure (|
+              Ty.path "never",
+              M.get_function (|
+                "core::intrinsics::const_eval_select",
+                [],
+                [
+                  Ty.tuple [ Ty.path "usize"; Ty.path "usize" ];
+                  Ty.function [ Ty.path "usize"; Ty.path "usize" ] (Ty.path "never");
+                  Ty.function [ Ty.path "usize"; Ty.path "usize" ] (Ty.path "never");
+                  Ty.path "never"
+                ]
+              |),
+              [
+                Value.Tuple [ M.read (| src_len |); M.read (| dst_len |) ];
+                M.get_function (|
+                  "core::slice::copy_from_slice_impl::len_mismatch_fail::do_panic.compiletime",
+                  [],
+                  []
+                |);
+                M.get_function (|
+                  "core::slice::copy_from_slice_impl::len_mismatch_fail::do_panic.runtime",
                   [],
                   []
                 |)
@@ -1206,9 +642,9 @@ Module slice.
         end.
       
       Global Instance Instance_IsFunction_do_panic :
-        M.IsFunction.C "core::slice::index::slice_index_order_fail::do_panic" do_panic.
+        M.IsFunction.C "core::slice::copy_from_slice_impl::len_mismatch_fail::do_panic" do_panic.
       Admitted.
       Global Typeclasses Opaque do_panic.
-    End slice_index_order_fail.
-  End index.
+    End len_mismatch_fail.
+  End copy_from_slice_impl.
 End slice.

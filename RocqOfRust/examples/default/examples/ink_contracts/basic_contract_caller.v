@@ -48,6 +48,18 @@ Module Impl_core_default_Default_for_basic_contract_caller_AccountId.
       (* Instance *) [ ("default", InstanceField.Method default) ].
 End Impl_core_default_Default_for_basic_contract_caller_AccountId.
 
+Module Impl_core_clone_TrivialClone_for_basic_contract_caller_AccountId.
+  Definition Self : Ty.t := Ty.path "basic_contract_caller::AccountId".
+  
+  Axiom Implements :
+    M.IsTraitInstance
+      "core::clone::TrivialClone"
+      (* Trait polymorphic consts *) []
+      (* Trait polymorphic types *) []
+      Self
+      (* Instance *) [].
+End Impl_core_clone_TrivialClone_for_basic_contract_caller_AccountId.
+
 Module Impl_core_clone_Clone_for_basic_contract_caller_AccountId.
   Definition Self : Ty.t := Ty.path "basic_contract_caller::AccountId".
   

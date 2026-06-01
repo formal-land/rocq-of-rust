@@ -37,6 +37,18 @@ Module state.
     M.IsDiscriminant "move_core_types::state::VMState::RUNTIME" 2.
   Axiom IsDiscriminant_VMState_OTHER : M.IsDiscriminant "move_core_types::state::VMState::OTHER" 3.
   
+  Module Impl_core_clone_TrivialClone_for_move_core_types_state_VMState.
+    Definition Self : Ty.t := Ty.path "move_core_types::state::VMState".
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "core::clone::TrivialClone"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        Self
+        (* Instance *) [].
+  End Impl_core_clone_TrivialClone_for_move_core_types_state_VMState.
+  
   Module Impl_core_clone_Clone_for_move_core_types_state_VMState.
     Definition Self : Ty.t := Ty.path "move_core_types::state::VMState".
     

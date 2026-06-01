@@ -1935,69 +1935,68 @@ Module absint.
                                                                                                   ltac:(M.monadic
                                                                                                     (let
                                                                                                           γ :=
-                                                                                                      M.use
-                                                                                                        (M.alloc (|
+                                                                                                      M.alloc (|
+                                                                                                        Ty.path
+                                                                                                          "bool",
+                                                                                                        M.call_closure (|
                                                                                                           Ty.path
                                                                                                             "bool",
-                                                                                                          M.call_closure (|
+                                                                                                          M.get_trait_method (|
+                                                                                                            "move_binary_format::control_flow_graph::ControlFlowGraph",
                                                                                                             Ty.path
-                                                                                                              "bool",
-                                                                                                            M.get_trait_method (|
-                                                                                                              "move_binary_format::control_flow_graph::ControlFlowGraph",
-                                                                                                              Ty.path
-                                                                                                                "move_binary_format::control_flow_graph::VMControlFlowGraph",
-                                                                                                              [],
-                                                                                                              [],
-                                                                                                              "is_back_edge",
-                                                                                                              [],
-                                                                                                              []
-                                                                                                            |),
-                                                                                                            [
-                                                                                                              M.borrow (|
-                                                                                                                Pointer.Kind.Ref,
-                                                                                                                M.deref (|
-                                                                                                                  M.call_closure (|
-                                                                                                                    Ty.apply
-                                                                                                                      (Ty.path
-                                                                                                                        "&")
-                                                                                                                      []
-                                                                                                                      [
-                                                                                                                        Ty.path
-                                                                                                                          "move_binary_format::control_flow_graph::VMControlFlowGraph"
-                                                                                                                      ],
-                                                                                                                    M.get_associated_function (|
-                                                                                                                      Ty.path
-                                                                                                                        "move_bytecode_verifier::absint::FunctionContext",
-                                                                                                                      "cfg",
-                                                                                                                      [],
-                                                                                                                      []
-                                                                                                                    |),
+                                                                                                              "move_binary_format::control_flow_graph::VMControlFlowGraph",
+                                                                                                            [],
+                                                                                                            [],
+                                                                                                            "is_back_edge",
+                                                                                                            [],
+                                                                                                            []
+                                                                                                          |),
+                                                                                                          [
+                                                                                                            M.borrow (|
+                                                                                                              Pointer.Kind.Ref,
+                                                                                                              M.deref (|
+                                                                                                                M.call_closure (|
+                                                                                                                  Ty.apply
+                                                                                                                    (Ty.path
+                                                                                                                      "&")
+                                                                                                                    []
                                                                                                                     [
-                                                                                                                      M.borrow (|
-                                                                                                                        Pointer.Kind.Ref,
-                                                                                                                        M.deref (|
-                                                                                                                          M.read (|
-                                                                                                                            function_context
-                                                                                                                          |)
+                                                                                                                      Ty.path
+                                                                                                                        "move_binary_format::control_flow_graph::VMControlFlowGraph"
+                                                                                                                    ],
+                                                                                                                  M.get_associated_function (|
+                                                                                                                    Ty.path
+                                                                                                                      "move_bytecode_verifier::absint::FunctionContext",
+                                                                                                                    "cfg",
+                                                                                                                    [],
+                                                                                                                    []
+                                                                                                                  |),
+                                                                                                                  [
+                                                                                                                    M.borrow (|
+                                                                                                                      Pointer.Kind.Ref,
+                                                                                                                      M.deref (|
+                                                                                                                        M.read (|
+                                                                                                                          function_context
                                                                                                                         |)
                                                                                                                       |)
-                                                                                                                    ]
-                                                                                                                  |)
-                                                                                                                |)
-                                                                                                              |);
-                                                                                                              M.read (|
-                                                                                                                block_id
-                                                                                                              |);
-                                                                                                              M.read (|
-                                                                                                                M.deref (|
-                                                                                                                  M.read (|
-                                                                                                                    successor_block_id
-                                                                                                                  |)
+                                                                                                                    |)
+                                                                                                                  ]
                                                                                                                 |)
                                                                                                               |)
-                                                                                                            ]
-                                                                                                          |)
-                                                                                                        |)) in
+                                                                                                            |);
+                                                                                                            M.read (|
+                                                                                                              block_id
+                                                                                                            |);
+                                                                                                            M.read (|
+                                                                                                              M.deref (|
+                                                                                                                M.read (|
+                                                                                                                  successor_block_id
+                                                                                                                |)
+                                                                                                              |)
+                                                                                                            |)
+                                                                                                          ]
+                                                                                                        |)
+                                                                                                      |) in
                                                                                                     let
                                                                                                           _ :=
                                                                                                       is_constant_or_break_match (|

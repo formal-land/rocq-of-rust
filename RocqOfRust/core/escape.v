@@ -449,7 +449,7 @@ Module escape.
               [
                 fun γ =>
                   ltac:(M.monadic
-                    (let γ := M.use lookup_escaped in
+                    (let γ := lookup_escaped in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     M.match_operator (|
                       Ty.tuple
@@ -465,25 +465,24 @@ Module escape.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.match_operator (|
                                   Ty.path "bool",
-                                  M.match_operator (|
-                                    Ty.path "bool",
-                                    lookup_ascii,
-                                    [
-                                      fun γ =>
-                                        ltac:(M.monadic
-                                          (let _ :=
-                                            M.is_struct_tuple (|
-                                              γ,
-                                              "core::ascii::ascii_char::AsciiChar::Null"
-                                            |) in
-                                          Value.Bool true));
-                                      fun γ => ltac:(M.monadic (Value.Bool false))
-                                    ]
-                                  |)
-                                |)) in
+                                  lookup_ascii,
+                                  [
+                                    fun γ =>
+                                      ltac:(M.monadic
+                                        (let _ :=
+                                          M.is_struct_tuple (|
+                                            γ,
+                                            "core::ascii::ascii_char::AsciiChar::Null"
+                                          |) in
+                                        Value.Bool true));
+                                    fun γ => ltac:(M.monadic (Value.Bool false))
+                                  ]
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.call_closure (|
@@ -561,15 +560,14 @@ Module escape.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  BinOp.le,
-                                  [ M.read (| idx |); Value.Integer IntegerKind.Usize 255 ]
-                                |)
-                              |)) in
+                                BinOp.le,
+                                [ M.read (| idx |); Value.Integer IntegerKind.Usize 255 ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.read (|
@@ -1051,22 +1049,25 @@ Module escape.
   Admitted.
   Global Typeclasses Opaque escape_unicode.
   
-  (* StructRecord
-    {
-      name := "EscapeIterInner";
-      const_params := [ "N" ];
-      ty_params := [];
-      fields :=
-        [
-          ("data",
-            Ty.apply (Ty.path "array") [ N ] [ Ty.path "core::ascii::ascii_char::AsciiChar" ]);
-          ("alive", Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "u8" ])
-        ];
-    } *)
+  (* Error Union *)
   
-  Module Impl_core_clone_Clone_for_core_escape_EscapeIterInner_N.
+  Module Impl_core_clone_TrivialClone_for_core_escape_MaybeEscapedCharacter_N.
     Definition Self (N : Value.t) : Ty.t :=
-      Ty.apply (Ty.path "core::escape::EscapeIterInner") [ N ] [].
+      Ty.apply (Ty.path "core::escape::MaybeEscapedCharacter") [ N ] [].
+    
+    Axiom Implements :
+      forall (N : Value.t),
+      M.IsTraitInstance
+        "core::clone::TrivialClone"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self N)
+        (* Instance *) [].
+  End Impl_core_clone_TrivialClone_for_core_escape_MaybeEscapedCharacter_N.
+  
+  Module Impl_core_clone_Clone_for_core_escape_MaybeEscapedCharacter_N.
+    Definition Self (N : Value.t) : Ty.t :=
+      Ty.apply (Ty.path "core::escape::MaybeEscapedCharacter") [ N ] [].
     
     (* Clone *)
     Definition clone (N : Value.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -1079,23 +1080,205 @@ Module escape.
               Ty.apply
                 (Ty.path "&")
                 []
-                [ Ty.apply (Ty.path "core::escape::EscapeIterInner") [ N ] [] ],
+                [ Ty.apply (Ty.path "core::escape::MaybeEscapedCharacter") [ N ] [] ],
+              self
+            |) in
+          M.match_operator (|
+            Ty.apply (Ty.path "core::escape::MaybeEscapedCharacter") [ N ] [],
+            Value.DeclaredButUndefined,
+            [ fun γ => ltac:(M.monadic (M.read (| M.deref (| M.read (| self |) |) |))) ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (N : Value.t),
+      M.IsTraitInstance
+        "core::clone::Clone"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self N)
+        (* Instance *) [ ("clone", InstanceField.Method (clone N)) ].
+  End Impl_core_clone_Clone_for_core_escape_MaybeEscapedCharacter_N.
+  
+  Module Impl_core_marker_Copy_for_core_escape_MaybeEscapedCharacter_N.
+    Definition Self (N : Value.t) : Ty.t :=
+      Ty.apply (Ty.path "core::escape::MaybeEscapedCharacter") [ N ] [].
+    
+    Axiom Implements :
+      forall (N : Value.t),
+      M.IsTraitInstance
+        "core::marker::Copy"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self N)
+        (* Instance *) [].
+  End Impl_core_marker_Copy_for_core_escape_MaybeEscapedCharacter_N.
+  
+  (* StructTuple
+    {
+      name := "AlwaysEscaped";
+      const_params := [];
+      ty_params := [];
+      fields := [];
+    } *)
+  
+  Module Impl_core_clone_TrivialClone_for_core_escape_AlwaysEscaped.
+    Definition Self : Ty.t := Ty.path "core::escape::AlwaysEscaped".
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "core::clone::TrivialClone"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        Self
+        (* Instance *) [].
+  End Impl_core_clone_TrivialClone_for_core_escape_AlwaysEscaped.
+  
+  Module Impl_core_clone_Clone_for_core_escape_AlwaysEscaped.
+    Definition Self : Ty.t := Ty.path "core::escape::AlwaysEscaped".
+    
+    (* Clone *)
+    Definition clone (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply (Ty.path "&") [] [ Ty.path "core::escape::AlwaysEscaped" ],
+              self
+            |) in
+          M.read (| M.deref (| M.read (| self |) |) |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "core::clone::Clone"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        Self
+        (* Instance *) [ ("clone", InstanceField.Method clone) ].
+  End Impl_core_clone_Clone_for_core_escape_AlwaysEscaped.
+  
+  Module Impl_core_marker_Copy_for_core_escape_AlwaysEscaped.
+    Definition Self : Ty.t := Ty.path "core::escape::AlwaysEscaped".
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "core::marker::Copy"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        Self
+        (* Instance *) [].
+  End Impl_core_marker_Copy_for_core_escape_AlwaysEscaped.
+  
+  (* StructTuple
+    {
+      name := "MaybeEscaped";
+      const_params := [];
+      ty_params := [];
+      fields := [];
+    } *)
+  
+  Module Impl_core_clone_TrivialClone_for_core_escape_MaybeEscaped.
+    Definition Self : Ty.t := Ty.path "core::escape::MaybeEscaped".
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "core::clone::TrivialClone"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        Self
+        (* Instance *) [].
+  End Impl_core_clone_TrivialClone_for_core_escape_MaybeEscaped.
+  
+  Module Impl_core_clone_Clone_for_core_escape_MaybeEscaped.
+    Definition Self : Ty.t := Ty.path "core::escape::MaybeEscaped".
+    
+    (* Clone *)
+    Definition clone (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply (Ty.path "&") [] [ Ty.path "core::escape::MaybeEscaped" ],
+              self
+            |) in
+          M.read (| M.deref (| M.read (| self |) |) |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "core::clone::Clone"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        Self
+        (* Instance *) [ ("clone", InstanceField.Method clone) ].
+  End Impl_core_clone_Clone_for_core_escape_MaybeEscaped.
+  
+  Module Impl_core_marker_Copy_for_core_escape_MaybeEscaped.
+    Definition Self : Ty.t := Ty.path "core::escape::MaybeEscaped".
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "core::marker::Copy"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        Self
+        (* Instance *) [].
+  End Impl_core_marker_Copy_for_core_escape_MaybeEscaped.
+  
+  (* StructRecord
+    {
+      name := "EscapeIterInner";
+      const_params := [ "N" ];
+      ty_params := [ "ESCAPING" ];
+      fields :=
+        [
+          ("data", Ty.apply (Ty.path "core::escape::MaybeEscapedCharacter") [ N ] []);
+          ("alive", Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "u8" ]);
+          ("escaping", Ty.apply (Ty.path "core::marker::PhantomData") [] [ ESCAPING ])
+        ];
+    } *)
+  
+  Module Impl_core_clone_Clone_where_core_clone_Clone_ESCAPING_for_core_escape_EscapeIterInner_N_ESCAPING.
+    Definition Self (N : Value.t) (ESCAPING : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "core::escape::EscapeIterInner") [ N ] [ ESCAPING ].
+    
+    (* Clone *)
+    Definition clone
+        (N : Value.t)
+        (ESCAPING : Ty.t)
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      let Self : Ty.t := Self N ESCAPING in
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&")
+                []
+                [ Ty.apply (Ty.path "core::escape::EscapeIterInner") [ N ] [ ESCAPING ] ],
               self
             |) in
           Value.mkStructRecord
             "core::escape::EscapeIterInner"
             [ N ]
-            []
+            [ ESCAPING ]
             [
               ("data",
                 M.call_closure (|
-                  Ty.apply (Ty.path "array") [ N ] [ Ty.path "core::ascii::ascii_char::AsciiChar" ],
+                  Ty.apply (Ty.path "core::escape::MaybeEscapedCharacter") [ N ] [],
                   M.get_trait_method (|
                     "core::clone::Clone",
-                    Ty.apply
-                      (Ty.path "array")
-                      [ N ]
-                      [ Ty.path "core::ascii::ascii_char::AsciiChar" ],
+                    Ty.apply (Ty.path "core::escape::MaybeEscapedCharacter") [ N ] [],
                     [],
                     [],
                     "clone",
@@ -1145,159 +1328,216 @@ Module escape.
                       |)
                     |)
                   ]
+                |));
+              ("escaping",
+                M.call_closure (|
+                  Ty.apply (Ty.path "core::marker::PhantomData") [] [ ESCAPING ],
+                  M.get_trait_method (|
+                    "core::clone::Clone",
+                    Ty.apply (Ty.path "core::marker::PhantomData") [] [ ESCAPING ],
+                    [],
+                    [],
+                    "clone",
+                    [],
+                    []
+                  |),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::escape::EscapeIterInner",
+                            "escaping"
+                          |)
+                        |)
+                      |)
+                    |)
+                  ]
                 |))
             ]))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
     Axiom Implements :
-      forall (N : Value.t),
+      forall (N : Value.t) (ESCAPING : Ty.t),
       M.IsTraitInstance
         "core::clone::Clone"
         (* Trait polymorphic consts *) []
         (* Trait polymorphic types *) []
-        (Self N)
-        (* Instance *) [ ("clone", InstanceField.Method (clone N)) ].
-  End Impl_core_clone_Clone_for_core_escape_EscapeIterInner_N.
+        (Self N ESCAPING)
+        (* Instance *) [ ("clone", InstanceField.Method (clone N ESCAPING)) ].
+  End Impl_core_clone_Clone_where_core_clone_Clone_ESCAPING_for_core_escape_EscapeIterInner_N_ESCAPING.
   
-  Module Impl_core_fmt_Debug_for_core_escape_EscapeIterInner_N.
-    Definition Self (N : Value.t) : Ty.t :=
-      Ty.apply (Ty.path "core::escape::EscapeIterInner") [ N ] [].
+  Module Impl_core_escape_EscapeIterInner_N_ESCAPING.
+    Definition Self (N : Value.t) (ESCAPING : Ty.t) : Ty.t :=
+      Ty.apply (Ty.path "core::escape::EscapeIterInner") [ N ] [ ESCAPING ].
     
-    (* Debug *)
-    Definition fmt (N : Value.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      let Self : Ty.t := Self N in
+    (*     const LITERAL_ESCAPE_START: u8 = 128; *)
+    (* Ty.path "u8" *)
+    Definition value_LITERAL_ESCAPE_START
+        (N : Value.t)
+        (ESCAPING : Ty.t)
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      let Self : Ty.t := Self N ESCAPING in
+      ltac:(M.monadic (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 128 |))).
+    
+    Global Instance AssociatedConstant_value_LITERAL_ESCAPE_START :
+      forall (N : Value.t) (ESCAPING : Ty.t),
+      M.IsAssociatedFunction.C
+        (Self N ESCAPING)
+        "LITERAL_ESCAPE_START"
+        (value_LITERAL_ESCAPE_START N ESCAPING).
+    Admitted.
+    Global Typeclasses Opaque value_LITERAL_ESCAPE_START.
+    
+    (*
+        const unsafe fn new(data: MaybeEscapedCharacter<N>, alive: Range<u8>) -> Self {
+            // Longer escape sequences are not useful given `alive.end` is at most
+            // `Self::LITERAL_ESCAPE_START`.
+            const { assert!(N < Self::LITERAL_ESCAPE_START as usize) };
+    
+            // Check bounds, which implicitly also checks the invariant
+            // `alive.end <= Self::LITERAL_ESCAPE_START`.
+            debug_assert!(alive.end <= (N + 1) as u8);
+    
+            Self { data, alive, escaping: PhantomData }
+        }
+    *)
+    Definition new
+        (N : Value.t)
+        (ESCAPING : Ty.t)
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      let Self : Ty.t := Self N ESCAPING in
       match ε, τ, α with
-      | [], [], [ self; f ] =>
+      | [], [], [ data; alive ] =>
         ltac:(M.monadic
-          (let self :=
+          (let data :=
+            M.alloc (| Ty.apply (Ty.path "core::escape::MaybeEscapedCharacter") [ N ] [], data |) in
+          let alive :=
+            M.alloc (| Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "u8" ], alive |) in
+          M.read (|
+            let~ _ : Ty.tuple [] :=
+              M.read (| get_constant (| "core::escape::new_discriminant", Ty.tuple [] |) |) in
+            let~ _ : Ty.tuple [] :=
+              M.match_operator (|
+                Ty.tuple [],
+                M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                [
+                  fun γ =>
+                    ltac:(M.monadic
+                      (let γ := M.alloc (| Ty.path "bool", Value.Bool true |) in
+                      let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                      M.read (|
+                        let~ _ : Ty.tuple [] :=
+                          M.match_operator (|
+                            Ty.tuple [],
+                            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                            [
+                              fun γ =>
+                                ltac:(M.monadic
+                                  (let γ :=
+                                    M.alloc (|
+                                      Ty.path "bool",
+                                      M.call_closure (|
+                                        Ty.path "bool",
+                                        UnOp.not,
+                                        [
+                                          M.call_closure (|
+                                            Ty.path "bool",
+                                            BinOp.le,
+                                            [
+                                              M.read (|
+                                                M.SubPointer.get_struct_record_field (|
+                                                  alive,
+                                                  "core::ops::range::Range",
+                                                  "end"
+                                                |)
+                                              |);
+                                              M.cast
+                                                (Ty.path "u8")
+                                                (M.call_closure (|
+                                                  Ty.path "usize",
+                                                  BinOp.Wrap.add,
+                                                  [ N; Value.Integer IntegerKind.Usize 1 ]
+                                                |))
+                                            ]
+                                          |)
+                                        ]
+                                      |)
+                                    |) in
+                                  let _ :=
+                                    is_constant_or_break_match (|
+                                      M.read (| γ |),
+                                      Value.Bool true
+                                    |) in
+                                  M.never_to_any (|
+                                    M.call_closure (|
+                                      Ty.path "never",
+                                      M.get_function (| "core::panicking::panic", [], [] |),
+                                      [ mk_str (| "assertion failed: alive.end <= (N + 1) as u8" |)
+                                      ]
+                                    |)
+                                  |)));
+                              fun γ => ltac:(M.monadic (Value.Tuple []))
+                            ]
+                          |) in
+                        M.alloc (| Ty.tuple [], Value.Tuple [] |)
+                      |)));
+                  fun γ => ltac:(M.monadic (Value.Tuple []))
+                ]
+              |) in
             M.alloc (|
-              Ty.apply
-                (Ty.path "&")
-                []
-                [ Ty.apply (Ty.path "core::escape::EscapeIterInner") [ N ] [] ],
-              self
-            |) in
-          let f :=
-            M.alloc (| Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ], f |) in
-          M.call_closure (|
-            Ty.apply
-              (Ty.path "core::result::Result")
-              []
-              [ Ty.tuple []; Ty.path "core::fmt::Error" ],
-            M.get_associated_function (|
-              Ty.path "core::fmt::Formatter",
-              "debug_struct_field2_finish",
-              [],
-              []
-            |),
-            [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "EscapeIterInner" |) |) |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "data" |) |) |);
-              M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply
-                    (Ty.path "&")
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "array")
-                        [ N ]
-                        [ Ty.path "core::ascii::ascii_char::AsciiChar" ]
-                    ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+              Ty.apply (Ty.path "core::escape::EscapeIterInner") [ N ] [ ESCAPING ],
+              Value.mkStructRecord
+                "core::escape::EscapeIterInner"
+                [ N ]
+                [ ESCAPING ]
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "core::escape::EscapeIterInner",
-                          "data"
-                        |)
-                      |)
-                    |)
-                  |)
+                  ("data", M.read (| data |));
+                  ("alive", M.read (| alive |));
+                  ("escaping", Value.StructTuple "core::marker::PhantomData" [] [ ESCAPING ] [])
                 ]
-              |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "alive" |) |) |);
-              M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply
-                    (Ty.path "&")
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "&")
-                        []
-                        [ Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "u8" ] ]
-                    ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "u8" ] ],
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "core::escape::EscapeIterInner",
-                              "alive"
-                            |)
-                          |)
-                        |)
-                      |)
-                    |)
-                  |)
-                ]
-              |)
-            ]
+            |)
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
-    Axiom Implements :
-      forall (N : Value.t),
-      M.IsTraitInstance
-        "core::fmt::Debug"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        (Self N)
-        (* Instance *) [ ("fmt", InstanceField.Method (fmt N)) ].
-  End Impl_core_fmt_Debug_for_core_escape_EscapeIterInner_N.
-  
-  Module Impl_core_escape_EscapeIterInner_N.
-    Definition Self (N : Value.t) : Ty.t :=
-      Ty.apply (Ty.path "core::escape::EscapeIterInner") [ N ] [].
+    Global Instance AssociatedFunction_new :
+      forall (N : Value.t) (ESCAPING : Ty.t),
+      M.IsAssociatedFunction.C (Self N ESCAPING) "new" (new N ESCAPING).
+    Admitted.
+    Global Typeclasses Opaque new.
     
     (*
-        pub const fn backslash(c: ascii::Char) -> Self {
-            let (data, range) = backslash(c);
-            Self { data, alive: range }
+        pub(crate) const fn backslash(c: ascii::Char) -> Self {
+            let (escape_seq, alive) = backslash(c);
+            // SAFETY: `escape_seq` contains an escape sequence in the range given by `alive`.
+            unsafe { Self::new(MaybeEscapedCharacter { escape_seq }, alive) }
         }
     *)
-    Definition backslash (N : Value.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      let Self : Ty.t := Self N in
+    Definition backslash
+        (N : Value.t)
+        (ESCAPING : Ty.t)
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      let Self : Ty.t := Self N ESCAPING in
       match ε, τ, α with
       | [], [], [ c ] =>
         ltac:(M.monadic
           (let c := M.alloc (| Ty.path "core::ascii::ascii_char::AsciiChar", c |) in
           M.match_operator (|
-            Ty.apply (Ty.path "core::escape::EscapeIterInner") [ N ] [],
+            Ty.apply (Ty.path "core::escape::EscapeIterInner") [ N ] [ ESCAPING ],
             M.alloc (|
               Ty.tuple
                 [
@@ -1322,7 +1562,7 @@ Module escape.
                 ltac:(M.monadic
                   (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
                   let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
-                  let data :=
+                  let escape_seq :=
                     M.copy (|
                       Ty.apply
                         (Ty.path "array")
@@ -1330,41 +1570,60 @@ Module escape.
                         [ Ty.path "core::ascii::ascii_char::AsciiChar" ],
                       γ0_0
                     |) in
-                  let range :=
+                  let alive :=
                     M.copy (|
                       Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "u8" ],
                       γ0_1
                     |) in
-                  Value.mkStructRecord
-                    "core::escape::EscapeIterInner"
-                    [ N ]
-                    []
-                    [ ("data", M.read (| data |)); ("alive", M.read (| range |)) ]))
+                  M.call_closure (|
+                    Ty.apply (Ty.path "core::escape::EscapeIterInner") [ N ] [ ESCAPING ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::escape::EscapeIterInner") [ N ] [ ESCAPING ],
+                      "new",
+                      [],
+                      []
+                    |),
+                    [
+                      Value.mkStructRecord
+                        "core::escape::MaybeEscapedCharacter"
+                        [ N ]
+                        []
+                        [ ("escape_seq", M.read (| escape_seq |)) ];
+                      M.read (| alive |)
+                    ]
+                  |)))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
     Global Instance AssociatedFunction_backslash :
-      forall (N : Value.t),
-      M.IsAssociatedFunction.C (Self N) "backslash" (backslash N).
+      forall (N : Value.t) (ESCAPING : Ty.t),
+      M.IsAssociatedFunction.C (Self N ESCAPING) "backslash" (backslash N ESCAPING).
     Admitted.
     Global Typeclasses Opaque backslash.
     
     (*
-        pub const fn ascii(c: u8) -> Self {
-            let (data, range) = escape_ascii(c);
-            Self { data, alive: range }
+        pub(crate) const fn ascii(c: u8) -> Self {
+            let (escape_seq, alive) = escape_ascii(c);
+            // SAFETY: `escape_seq` contains an escape sequence in the range given by `alive`.
+            unsafe { Self::new(MaybeEscapedCharacter { escape_seq }, alive) }
         }
     *)
-    Definition ascii (N : Value.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      let Self : Ty.t := Self N in
+    Definition ascii
+        (N : Value.t)
+        (ESCAPING : Ty.t)
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      let Self : Ty.t := Self N ESCAPING in
       match ε, τ, α with
       | [], [], [ c ] =>
         ltac:(M.monadic
           (let c := M.alloc (| Ty.path "u8", c |) in
           M.match_operator (|
-            Ty.apply (Ty.path "core::escape::EscapeIterInner") [ N ] [],
+            Ty.apply (Ty.path "core::escape::EscapeIterInner") [ N ] [ ESCAPING ],
             M.alloc (|
               Ty.tuple
                 [
@@ -1389,7 +1648,7 @@ Module escape.
                 ltac:(M.monadic
                   (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
                   let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
-                  let data :=
+                  let escape_seq :=
                     M.copy (|
                       Ty.apply
                         (Ty.path "array")
@@ -1397,41 +1656,60 @@ Module escape.
                         [ Ty.path "core::ascii::ascii_char::AsciiChar" ],
                       γ0_0
                     |) in
-                  let range :=
+                  let alive :=
                     M.copy (|
                       Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "u8" ],
                       γ0_1
                     |) in
-                  Value.mkStructRecord
-                    "core::escape::EscapeIterInner"
-                    [ N ]
-                    []
-                    [ ("data", M.read (| data |)); ("alive", M.read (| range |)) ]))
+                  M.call_closure (|
+                    Ty.apply (Ty.path "core::escape::EscapeIterInner") [ N ] [ ESCAPING ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::escape::EscapeIterInner") [ N ] [ ESCAPING ],
+                      "new",
+                      [],
+                      []
+                    |),
+                    [
+                      Value.mkStructRecord
+                        "core::escape::MaybeEscapedCharacter"
+                        [ N ]
+                        []
+                        [ ("escape_seq", M.read (| escape_seq |)) ];
+                      M.read (| alive |)
+                    ]
+                  |)))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
     Global Instance AssociatedFunction_ascii :
-      forall (N : Value.t),
-      M.IsAssociatedFunction.C (Self N) "ascii" (ascii N).
+      forall (N : Value.t) (ESCAPING : Ty.t),
+      M.IsAssociatedFunction.C (Self N ESCAPING) "ascii" (ascii N ESCAPING).
     Admitted.
     Global Typeclasses Opaque ascii.
     
     (*
-        pub const fn unicode(c: char) -> Self {
-            let (data, range) = escape_unicode(c);
-            Self { data, alive: range }
+        pub(crate) const fn unicode(c: char) -> Self {
+            let (escape_seq, alive) = escape_unicode(c);
+            // SAFETY: `escape_seq` contains an escape sequence in the range given by `alive`.
+            unsafe { Self::new(MaybeEscapedCharacter { escape_seq }, alive) }
         }
     *)
-    Definition unicode (N : Value.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      let Self : Ty.t := Self N in
+    Definition unicode
+        (N : Value.t)
+        (ESCAPING : Ty.t)
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      let Self : Ty.t := Self N ESCAPING in
       match ε, τ, α with
       | [], [], [ c ] =>
         ltac:(M.monadic
           (let c := M.alloc (| Ty.path "char", c |) in
           M.match_operator (|
-            Ty.apply (Ty.path "core::escape::EscapeIterInner") [ N ] [],
+            Ty.apply (Ty.path "core::escape::EscapeIterInner") [ N ] [ ESCAPING ],
             M.alloc (|
               Ty.tuple
                 [
@@ -1456,7 +1734,7 @@ Module escape.
                 ltac:(M.monadic
                   (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
                   let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
-                  let data :=
+                  let escape_seq :=
                     M.copy (|
                       Ty.apply
                         (Ty.path "array")
@@ -1464,288 +1742,108 @@ Module escape.
                         [ Ty.path "core::ascii::ascii_char::AsciiChar" ],
                       γ0_0
                     |) in
-                  let range :=
+                  let alive :=
                     M.copy (|
                       Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "u8" ],
                       γ0_1
                     |) in
-                  Value.mkStructRecord
-                    "core::escape::EscapeIterInner"
-                    [ N ]
-                    []
-                    [ ("data", M.read (| data |)); ("alive", M.read (| range |)) ]))
+                  M.call_closure (|
+                    Ty.apply (Ty.path "core::escape::EscapeIterInner") [ N ] [ ESCAPING ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::escape::EscapeIterInner") [ N ] [ ESCAPING ],
+                      "new",
+                      [],
+                      []
+                    |),
+                    [
+                      Value.mkStructRecord
+                        "core::escape::MaybeEscapedCharacter"
+                        [ N ]
+                        []
+                        [ ("escape_seq", M.read (| escape_seq |)) ];
+                      M.read (| alive |)
+                    ]
+                  |)))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
     Global Instance AssociatedFunction_unicode :
-      forall (N : Value.t),
-      M.IsAssociatedFunction.C (Self N) "unicode" (unicode N).
+      forall (N : Value.t) (ESCAPING : Ty.t),
+      M.IsAssociatedFunction.C (Self N ESCAPING) "unicode" (unicode N ESCAPING).
     Admitted.
     Global Typeclasses Opaque unicode.
     
     (*
-        pub const fn empty() -> Self {
-            Self { data: [ascii::Char::Null; N], alive: 0..0 }
+        pub(crate) const fn empty() -> Self {
+            // SAFETY: `0..0` ensures an empty escape sequence.
+            unsafe { Self::new(MaybeEscapedCharacter { escape_seq: [ascii::Char::Null; N] }, 0..0) }
         }
     *)
-    Definition empty (N : Value.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      let Self : Ty.t := Self N in
+    Definition empty
+        (N : Value.t)
+        (ESCAPING : Ty.t)
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      let Self : Ty.t := Self N ESCAPING in
       match ε, τ, α with
       | [], [], [] =>
         ltac:(M.monadic
-          (Value.mkStructRecord
-            "core::escape::EscapeIterInner"
-            [ N ]
-            []
+          (M.call_closure (|
+            Ty.apply (Ty.path "core::escape::EscapeIterInner") [ N ] [ ESCAPING ],
+            M.get_associated_function (|
+              Ty.apply (Ty.path "core::escape::EscapeIterInner") [ N ] [ ESCAPING ],
+              "new",
+              [],
+              []
+            |),
             [
-              ("data",
-                lib.repeat (|
-                  Value.StructTuple "core::ascii::ascii_char::AsciiChar::Null" [] [] [],
-                  N
-                |));
-              ("alive",
-                Value.mkStructRecord
-                  "core::ops::range::Range"
-                  []
-                  [ Ty.path "u8" ]
-                  [
-                    ("start", Value.Integer IntegerKind.U8 0);
-                    ("end_", Value.Integer IntegerKind.U8 0)
-                  ])
-            ]))
+              Value.mkStructRecord
+                "core::escape::MaybeEscapedCharacter"
+                [ N ]
+                []
+                [
+                  ("escape_seq",
+                    lib.repeat (|
+                      Value.StructTuple "core::ascii::ascii_char::AsciiChar::Null" [] [] [],
+                      N
+                    |))
+                ];
+              Value.mkStructRecord
+                "core::ops::range::Range"
+                []
+                [ Ty.path "u8" ]
+                [
+                  ("start", Value.Integer IntegerKind.U8 0);
+                  ("end_", Value.Integer IntegerKind.U8 0)
+                ]
+            ]
+          |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
     Global Instance AssociatedFunction_empty :
-      forall (N : Value.t),
-      M.IsAssociatedFunction.C (Self N) "empty" (empty N).
+      forall (N : Value.t) (ESCAPING : Ty.t),
+      M.IsAssociatedFunction.C (Self N ESCAPING) "empty" (empty N ESCAPING).
     Admitted.
     Global Typeclasses Opaque empty.
     
     (*
-        pub fn as_ascii(&self) -> &[ascii::Char] {
-            // SAFETY: `self.alive` is guaranteed to be a valid range for indexing `self.data`.
-            unsafe {
-                self.data.get_unchecked(usize::from(self.alive.start)..usize::from(self.alive.end))
-            }
-        }
-    *)
-    Definition as_ascii (N : Value.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      let Self : Ty.t := Self N in
-      match ε, τ, α with
-      | [], [], [ self ] =>
-        ltac:(M.monadic
-          (let self :=
-            M.alloc (|
-              Ty.apply
-                (Ty.path "&")
-                []
-                [ Ty.apply (Ty.path "core::escape::EscapeIterInner") [ N ] [] ],
-              self
-            |) in
-          M.borrow (|
-            Pointer.Kind.Ref,
-            M.deref (|
-              M.call_closure (|
-                Ty.apply
-                  (Ty.path "&")
-                  []
-                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "core::ascii::ascii_char::AsciiChar" ]
-                  ],
-                M.get_associated_function (|
-                  Ty.apply (Ty.path "slice") [] [ Ty.path "core::ascii::ascii_char::AsciiChar" ],
-                  "get_unchecked",
-                  [],
-                  [ Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ] ]
-                |),
-                [
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "&")
-                      []
-                      [
-                        Ty.apply
-                          (Ty.path "slice")
-                          []
-                          [ Ty.path "core::ascii::ascii_char::AsciiChar" ]
-                      ],
-                    M.pointer_coercion
-                      M.PointerCoercion.Unsize
-                      (Ty.apply
-                        (Ty.path "&")
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "array")
-                            [ N ]
-                            [ Ty.path "core::ascii::ascii_char::AsciiChar" ]
-                        ])
-                      (Ty.apply
-                        (Ty.path "&")
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "slice")
-                            []
-                            [ Ty.path "core::ascii::ascii_char::AsciiChar" ]
-                        ]),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "core::escape::EscapeIterInner",
-                          "data"
-                        |)
-                      |)
-                    ]
-                  |);
-                  Value.mkStructRecord
-                    "core::ops::range::Range"
-                    []
-                    [ Ty.path "usize" ]
-                    [
-                      ("start",
-                        M.call_closure (|
-                          Ty.path "usize",
-                          M.get_trait_method (|
-                            "core::convert::From",
-                            Ty.path "usize",
-                            [],
-                            [ Ty.path "u8" ],
-                            "from",
-                            [],
-                            []
-                          |),
-                          [
-                            M.read (|
-                              M.SubPointer.get_struct_record_field (|
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "core::escape::EscapeIterInner",
-                                  "alive"
-                                |),
-                                "core::ops::range::Range",
-                                "start"
-                              |)
-                            |)
-                          ]
-                        |));
-                      ("end_",
-                        M.call_closure (|
-                          Ty.path "usize",
-                          M.get_trait_method (|
-                            "core::convert::From",
-                            Ty.path "usize",
-                            [],
-                            [ Ty.path "u8" ],
-                            "from",
-                            [],
-                            []
-                          |),
-                          [
-                            M.read (|
-                              M.SubPointer.get_struct_record_field (|
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "core::escape::EscapeIterInner",
-                                  "alive"
-                                |),
-                                "core::ops::range::Range",
-                                "end"
-                              |)
-                            |)
-                          ]
-                        |))
-                    ]
-                ]
-              |)
-            |)
-          |)))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Global Instance AssociatedFunction_as_ascii :
-      forall (N : Value.t),
-      M.IsAssociatedFunction.C (Self N) "as_ascii" (as_ascii N).
-    Admitted.
-    Global Typeclasses Opaque as_ascii.
-    
-    (*
-        pub fn as_str(&self) -> &str {
-            self.as_ascii().as_str()
-        }
-    *)
-    Definition as_str (N : Value.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      let Self : Ty.t := Self N in
-      match ε, τ, α with
-      | [], [], [ self ] =>
-        ltac:(M.monadic
-          (let self :=
-            M.alloc (|
-              Ty.apply
-                (Ty.path "&")
-                []
-                [ Ty.apply (Ty.path "core::escape::EscapeIterInner") [ N ] [] ],
-              self
-            |) in
-          M.borrow (|
-            Pointer.Kind.Ref,
-            M.deref (|
-              M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                M.get_associated_function (|
-                  Ty.apply (Ty.path "slice") [] [ Ty.path "core::ascii::ascii_char::AsciiChar" ],
-                  "as_str",
-                  [],
-                  []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.call_closure (|
-                        Ty.apply
-                          (Ty.path "&")
-                          []
-                          [
-                            Ty.apply
-                              (Ty.path "slice")
-                              []
-                              [ Ty.path "core::ascii::ascii_char::AsciiChar" ]
-                          ],
-                        M.get_associated_function (|
-                          Ty.apply (Ty.path "core::escape::EscapeIterInner") [ N ] [],
-                          "as_ascii",
-                          [],
-                          []
-                        |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                      |)
-                    |)
-                  |)
-                ]
-              |)
-            |)
-          |)))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Global Instance AssociatedFunction_as_str :
-      forall (N : Value.t),
-      M.IsAssociatedFunction.C (Self N) "as_str" (as_str N).
-    Admitted.
-    Global Typeclasses Opaque as_str.
-    
-    (*
-        pub fn len(&self) -> usize {
+        pub(crate) fn len(&self) -> usize {
             usize::from(self.alive.end - self.alive.start)
         }
     *)
-    Definition len (N : Value.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      let Self : Ty.t := Self N in
+    Definition len
+        (N : Value.t)
+        (ESCAPING : Ty.t)
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      let Self : Ty.t := Self N ESCAPING in
       match ε, τ, α with
       | [], [], [ self ] =>
         ltac:(M.monadic
@@ -1754,7 +1852,7 @@ Module escape.
               Ty.apply
                 (Ty.path "&")
                 []
-                [ Ty.apply (Ty.path "core::escape::EscapeIterInner") [ N ] [] ],
+                [ Ty.apply (Ty.path "core::escape::EscapeIterInner") [ N ] [ ESCAPING ] ],
               self
             |) in
           M.call_closure (|
@@ -1803,17 +1901,540 @@ Module escape.
       end.
     
     Global Instance AssociatedFunction_len :
-      forall (N : Value.t),
-      M.IsAssociatedFunction.C (Self N) "len" (len N).
+      forall (N : Value.t) (ESCAPING : Ty.t),
+      M.IsAssociatedFunction.C (Self N ESCAPING) "len" (len N ESCAPING).
     Admitted.
     Global Typeclasses Opaque len.
     
     (*
-        pub fn next(&mut self) -> Option<u8> {
+        pub(crate) fn advance_by(&mut self, n: usize) -> Result<(), NonZero<usize>> {
+            self.alive.advance_by(n)
+        }
+    *)
+    Definition advance_by
+        (N : Value.t)
+        (ESCAPING : Ty.t)
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      let Self : Ty.t := Self N ESCAPING in
+      match ε, τ, α with
+      | [], [], [ self; n ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&mut")
+                []
+                [ Ty.apply (Ty.path "core::escape::EscapeIterInner") [ N ] [ ESCAPING ] ],
+              self
+            |) in
+          let n := M.alloc (| Ty.path "usize", n |) in
+          M.call_closure (|
+            Ty.apply
+              (Ty.path "core::result::Result")
+              []
+              [ Ty.tuple []; Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ]
+              ],
+            M.get_trait_method (|
+              "core::iter::traits::iterator::Iterator",
+              Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "u8" ],
+              [],
+              [],
+              "advance_by",
+              [],
+              []
+            |),
+            [
+              M.borrow (|
+                Pointer.Kind.MutRef,
+                M.SubPointer.get_struct_record_field (|
+                  M.deref (| M.read (| self |) |),
+                  "core::escape::EscapeIterInner",
+                  "alive"
+                |)
+              |);
+              M.read (| n |)
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_advance_by :
+      forall (N : Value.t) (ESCAPING : Ty.t),
+      M.IsAssociatedFunction.C (Self N ESCAPING) "advance_by" (advance_by N ESCAPING).
+    Admitted.
+    Global Typeclasses Opaque advance_by.
+    
+    (*
+        pub(crate) fn advance_back_by(&mut self, n: usize) -> Result<(), NonZero<usize>> {
+            self.alive.advance_back_by(n)
+        }
+    *)
+    Definition advance_back_by
+        (N : Value.t)
+        (ESCAPING : Ty.t)
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      let Self : Ty.t := Self N ESCAPING in
+      match ε, τ, α with
+      | [], [], [ self; n ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&mut")
+                []
+                [ Ty.apply (Ty.path "core::escape::EscapeIterInner") [ N ] [ ESCAPING ] ],
+              self
+            |) in
+          let n := M.alloc (| Ty.path "usize", n |) in
+          M.call_closure (|
+            Ty.apply
+              (Ty.path "core::result::Result")
+              []
+              [ Ty.tuple []; Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ]
+              ],
+            M.get_trait_method (|
+              "core::iter::traits::double_ended::DoubleEndedIterator",
+              Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "u8" ],
+              [],
+              [],
+              "advance_back_by",
+              [],
+              []
+            |),
+            [
+              M.borrow (|
+                Pointer.Kind.MutRef,
+                M.SubPointer.get_struct_record_field (|
+                  M.deref (| M.read (| self |) |),
+                  "core::escape::EscapeIterInner",
+                  "alive"
+                |)
+              |);
+              M.read (| n |)
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_advance_back_by :
+      forall (N : Value.t) (ESCAPING : Ty.t),
+      M.IsAssociatedFunction.C (Self N ESCAPING) "advance_back_by" (advance_back_by N ESCAPING).
+    Admitted.
+    Global Typeclasses Opaque advance_back_by.
+    
+    (*
+        const fn to_char(&self) -> Option<char> {
+            if self.alive.end > Self::LITERAL_ESCAPE_START {
+                // SAFETY: We just checked that `self.data` contains a `char` in
+                //         its `literal` variant.
+                return Some(unsafe { self.data.literal });
+            }
+    
+            None
+        }
+    *)
+    Definition to_char
+        (N : Value.t)
+        (ESCAPING : Ty.t)
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      let Self : Ty.t := Self N ESCAPING in
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&")
+                []
+                [ Ty.apply (Ty.path "core::escape::EscapeIterInner") [ N ] [ ESCAPING ] ],
+              self
+            |) in
+          M.catch_return (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "char" ]) (|
+            ltac:(M.monadic
+              (M.read (|
+                let~ _ : Ty.tuple [] :=
+                  M.match_operator (|
+                    Ty.tuple [],
+                    M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                    [
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ :=
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.gt,
+                                [
+                                  M.read (|
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "core::escape::EscapeIterInner",
+                                        "alive"
+                                      |),
+                                      "core::ops::range::Range",
+                                      "end"
+                                    |)
+                                  |);
+                                  M.read (|
+                                    get_associated_constant (|
+                                      Ty.apply
+                                        (Ty.path "core::escape::EscapeIterInner")
+                                        [ N ]
+                                        [ ESCAPING ],
+                                      "LITERAL_ESCAPE_START",
+                                      Ty.path "u8"
+                                    |)
+                                  |)
+                                ]
+                              |)
+                            |) in
+                          let _ :=
+                            is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                          M.never_to_any (|
+                            M.read (|
+                              M.return_ (|
+                                Value.StructTuple
+                                  "core::option::Option::Some"
+                                  []
+                                  [ Ty.path "char" ]
+                                  [
+                                    M.read (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "core::escape::EscapeIterInner",
+                                          "data"
+                                        |),
+                                        "core::escape::MaybeEscapedCharacter",
+                                        "literal"
+                                      |)
+                                    |)
+                                  ]
+                              |)
+                            |)
+                          |)));
+                      fun γ => ltac:(M.monadic (Value.Tuple []))
+                    ]
+                  |) in
+                M.alloc (|
+                  Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "char" ],
+                  Value.StructTuple "core::option::Option::None" [] [ Ty.path "char" ] []
+                |)
+              |)))
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_to_char :
+      forall (N : Value.t) (ESCAPING : Ty.t),
+      M.IsAssociatedFunction.C (Self N ESCAPING) "to_char" (to_char N ESCAPING).
+    Admitted.
+    Global Typeclasses Opaque to_char.
+    
+    (*
+        unsafe fn to_str_unchecked(&self) -> &str {
+            debug_assert!(self.alive.end <= Self::LITERAL_ESCAPE_START);
+    
+            // SAFETY: The caller guarantees `self.data` contains printable ASCII
+            //         characters in its `escape_seq` variant, and `self.alive` is
+            //         a valid range for `self.data.escape_seq`.
+            unsafe {
+                self.data
+                    .escape_seq
+                    .get_unchecked(usize::from(self.alive.start)..usize::from(self.alive.end))
+                    .as_str()
+            }
+        }
+    *)
+    Definition to_str_unchecked
+        (N : Value.t)
+        (ESCAPING : Ty.t)
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      let Self : Ty.t := Self N ESCAPING in
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&")
+                []
+                [ Ty.apply (Ty.path "core::escape::EscapeIterInner") [ N ] [ ESCAPING ] ],
+              self
+            |) in
+          M.read (|
+            let~ _ : Ty.tuple [] :=
+              M.match_operator (|
+                Ty.tuple [],
+                M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                [
+                  fun γ =>
+                    ltac:(M.monadic
+                      (let γ := M.alloc (| Ty.path "bool", Value.Bool true |) in
+                      let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                      M.read (|
+                        let~ _ : Ty.tuple [] :=
+                          M.match_operator (|
+                            Ty.tuple [],
+                            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                            [
+                              fun γ =>
+                                ltac:(M.monadic
+                                  (let γ :=
+                                    M.alloc (|
+                                      Ty.path "bool",
+                                      M.call_closure (|
+                                        Ty.path "bool",
+                                        UnOp.not,
+                                        [
+                                          M.call_closure (|
+                                            Ty.path "bool",
+                                            BinOp.le,
+                                            [
+                                              M.read (|
+                                                M.SubPointer.get_struct_record_field (|
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (| M.read (| self |) |),
+                                                    "core::escape::EscapeIterInner",
+                                                    "alive"
+                                                  |),
+                                                  "core::ops::range::Range",
+                                                  "end"
+                                                |)
+                                              |);
+                                              M.read (|
+                                                get_associated_constant (|
+                                                  Ty.apply
+                                                    (Ty.path "core::escape::EscapeIterInner")
+                                                    [ N ]
+                                                    [ ESCAPING ],
+                                                  "LITERAL_ESCAPE_START",
+                                                  Ty.path "u8"
+                                                |)
+                                              |)
+                                            ]
+                                          |)
+                                        ]
+                                      |)
+                                    |) in
+                                  let _ :=
+                                    is_constant_or_break_match (|
+                                      M.read (| γ |),
+                                      Value.Bool true
+                                    |) in
+                                  M.never_to_any (|
+                                    M.call_closure (|
+                                      Ty.path "never",
+                                      M.get_function (| "core::panicking::panic", [], [] |),
+                                      [
+                                        mk_str (|
+                                          "assertion failed: self.alive.end <= Self::LITERAL_ESCAPE_START"
+                                        |)
+                                      ]
+                                    |)
+                                  |)));
+                              fun γ => ltac:(M.monadic (Value.Tuple []))
+                            ]
+                          |) in
+                        M.alloc (| Ty.tuple [], Value.Tuple [] |)
+                      |)));
+                  fun γ => ltac:(M.monadic (Value.Tuple []))
+                ]
+              |) in
+            M.alloc (|
+              Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+              M.borrow (|
+                Pointer.Kind.Ref,
+                M.deref (|
+                  M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                    M.get_associated_function (|
+                      Ty.apply
+                        (Ty.path "slice")
+                        []
+                        [ Ty.path "core::ascii::ascii_char::AsciiChar" ],
+                      "as_str",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "slice")
+                                  []
+                                  [ Ty.path "core::ascii::ascii_char::AsciiChar" ]
+                              ],
+                            M.get_associated_function (|
+                              Ty.apply
+                                (Ty.path "slice")
+                                []
+                                [ Ty.path "core::ascii::ascii_char::AsciiChar" ],
+                              "get_unchecked",
+                              [],
+                              [ Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ]
+                              ]
+                            |),
+                            [
+                              M.call_closure (|
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "slice")
+                                      []
+                                      [ Ty.path "core::ascii::ascii_char::AsciiChar" ]
+                                  ],
+                                M.pointer_coercion
+                                  M.PointerCoercion.Unsize
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ N ]
+                                        [ Ty.path "core::ascii::ascii_char::AsciiChar" ]
+                                    ])
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "slice")
+                                        []
+                                        [ Ty.path "core::ascii::ascii_char::AsciiChar" ]
+                                    ]),
+                                [
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "core::escape::EscapeIterInner",
+                                        "data"
+                                      |),
+                                      "core::escape::MaybeEscapedCharacter",
+                                      "escape_seq"
+                                    |)
+                                  |)
+                                ]
+                              |);
+                              Value.mkStructRecord
+                                "core::ops::range::Range"
+                                []
+                                [ Ty.path "usize" ]
+                                [
+                                  ("start",
+                                    M.call_closure (|
+                                      Ty.path "usize",
+                                      M.get_trait_method (|
+                                        "core::convert::From",
+                                        Ty.path "usize",
+                                        [],
+                                        [ Ty.path "u8" ],
+                                        "from",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.read (|
+                                          M.SubPointer.get_struct_record_field (|
+                                            M.SubPointer.get_struct_record_field (|
+                                              M.deref (| M.read (| self |) |),
+                                              "core::escape::EscapeIterInner",
+                                              "alive"
+                                            |),
+                                            "core::ops::range::Range",
+                                            "start"
+                                          |)
+                                        |)
+                                      ]
+                                    |));
+                                  ("end_",
+                                    M.call_closure (|
+                                      Ty.path "usize",
+                                      M.get_trait_method (|
+                                        "core::convert::From",
+                                        Ty.path "usize",
+                                        [],
+                                        [ Ty.path "u8" ],
+                                        "from",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.read (|
+                                          M.SubPointer.get_struct_record_field (|
+                                            M.SubPointer.get_struct_record_field (|
+                                              M.deref (| M.read (| self |) |),
+                                              "core::escape::EscapeIterInner",
+                                              "alive"
+                                            |),
+                                            "core::ops::range::Range",
+                                            "end"
+                                          |)
+                                        |)
+                                      ]
+                                    |))
+                                ]
+                            ]
+                          |)
+                        |)
+                      |)
+                    ]
+                  |)
+                |)
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_to_str_unchecked :
+      forall (N : Value.t) (ESCAPING : Ty.t),
+      M.IsAssociatedFunction.C (Self N ESCAPING) "to_str_unchecked" (to_str_unchecked N ESCAPING).
+    Admitted.
+    Global Typeclasses Opaque to_str_unchecked.
+  End Impl_core_escape_EscapeIterInner_N_ESCAPING.
+  
+  Module Impl_core_escape_EscapeIterInner_N_core_escape_AlwaysEscaped.
+    Definition Self (N : Value.t) : Ty.t :=
+      Ty.apply
+        (Ty.path "core::escape::EscapeIterInner")
+        [ N ]
+        [ Ty.path "core::escape::AlwaysEscaped" ].
+    
+    (*
+        pub(crate) fn next(&mut self) -> Option<u8> {
             let i = self.alive.next()?;
     
-            // SAFETY: `i` is guaranteed to be a valid index for `self.data`.
-            unsafe { Some(self.data.get_unchecked(usize::from(i)).to_u8()) }
+            // SAFETY: The `AlwaysEscaped` marker guarantees that `self.data`
+            //         contains printable ASCII characters in its `escape_seq`
+            //         variant, and `i` is guaranteed to be a valid index for
+            //         `self.data.escape_seq`.
+            unsafe { Some(self.data.escape_seq.get_unchecked(usize::from(i)).to_u8()) }
         }
     *)
     Definition next (N : Value.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -1826,7 +2447,12 @@ Module escape.
               Ty.apply
                 (Ty.path "&mut")
                 []
-                [ Ty.apply (Ty.path "core::escape::EscapeIterInner") [ N ] [] ],
+                [
+                  Ty.apply
+                    (Ty.path "core::escape::EscapeIterInner")
+                    [ N ]
+                    [ Ty.path "core::escape::AlwaysEscaped" ]
+                ],
               self
             |) in
           M.catch_return (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u8" ]) (|
@@ -2012,9 +2638,13 @@ Module escape.
                                       M.borrow (|
                                         Pointer.Kind.Ref,
                                         M.SubPointer.get_struct_record_field (|
-                                          M.deref (| M.read (| self |) |),
-                                          "core::escape::EscapeIterInner",
-                                          "data"
+                                          M.SubPointer.get_struct_record_field (|
+                                            M.deref (| M.read (| self |) |),
+                                            "core::escape::EscapeIterInner",
+                                            "data"
+                                          |),
+                                          "core::escape::MaybeEscapedCharacter",
+                                          "escape_seq"
                                         |)
                                       |)
                                     ]
@@ -2052,11 +2682,14 @@ Module escape.
     Global Typeclasses Opaque next.
     
     (*
-        pub fn next_back(&mut self) -> Option<u8> {
+        pub(crate) fn next_back(&mut self) -> Option<u8> {
             let i = self.alive.next_back()?;
     
-            // SAFETY: `i` is guaranteed to be a valid index for `self.data`.
-            unsafe { Some(self.data.get_unchecked(usize::from(i)).to_u8()) }
+            // SAFETY: The `AlwaysEscaped` marker guarantees that `self.data`
+            //         contains printable ASCII characters in its `escape_seq`
+            //         variant, and `i` is guaranteed to be a valid index for
+            //         `self.data.escape_seq`.
+            unsafe { Some(self.data.escape_seq.get_unchecked(usize::from(i)).to_u8()) }
         }
     *)
     Definition next_back (N : Value.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -2069,7 +2702,12 @@ Module escape.
               Ty.apply
                 (Ty.path "&mut")
                 []
-                [ Ty.apply (Ty.path "core::escape::EscapeIterInner") [ N ] [] ],
+                [
+                  Ty.apply
+                    (Ty.path "core::escape::EscapeIterInner")
+                    [ N ]
+                    [ Ty.path "core::escape::AlwaysEscaped" ]
+                ],
               self
             |) in
           M.catch_return (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u8" ]) (|
@@ -2255,9 +2893,13 @@ Module escape.
                                       M.borrow (|
                                         Pointer.Kind.Ref,
                                         M.SubPointer.get_struct_record_field (|
-                                          M.deref (| M.read (| self |) |),
-                                          "core::escape::EscapeIterInner",
-                                          "data"
+                                          M.SubPointer.get_struct_record_field (|
+                                            M.deref (| M.read (| self |) |),
+                                            "core::escape::EscapeIterInner",
+                                            "data"
+                                          |),
+                                          "core::escape::MaybeEscapedCharacter",
+                                          "escape_seq"
                                         |)
                                       |)
                                     ]
@@ -2293,120 +2935,1044 @@ Module escape.
       M.IsAssociatedFunction.C (Self N) "next_back" (next_back N).
     Admitted.
     Global Typeclasses Opaque next_back.
+  End Impl_core_escape_EscapeIterInner_N_core_escape_AlwaysEscaped.
+  
+  Module Impl_core_escape_EscapeIterInner_N_core_escape_MaybeEscaped.
+    Definition Self (N : Value.t) : Ty.t :=
+      Ty.apply
+        (Ty.path "core::escape::EscapeIterInner")
+        [ N ]
+        [ Ty.path "core::escape::MaybeEscaped" ].
     
     (*
-        pub fn advance_by(&mut self, n: usize) -> Result<(), NonZero<usize>> {
-            self.alive.advance_by(n)
+        pub(crate) const fn printable(c: char) -> Self {
+            Self {
+                data: MaybeEscapedCharacter { literal: c },
+                // Uphold the invariant `alive.end > Self::LITERAL_ESCAPE_START`, and ensure
+                // `len` behaves correctly for iterating through one character literal.
+                alive: Self::LITERAL_ESCAPE_START..(Self::LITERAL_ESCAPE_START + 1),
+                escaping: PhantomData,
+            }
         }
     *)
-    Definition advance_by (N : Value.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    Definition printable (N : Value.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       let Self : Ty.t := Self N in
       match ε, τ, α with
-      | [], [], [ self; n ] =>
+      | [], [], [ c ] =>
+        ltac:(M.monadic
+          (let c := M.alloc (| Ty.path "char", c |) in
+          Value.mkStructRecord
+            "core::escape::EscapeIterInner"
+            [ N ]
+            [ Ty.path "core::escape::MaybeEscaped" ]
+            [
+              ("data",
+                Value.mkStructRecord
+                  "core::escape::MaybeEscapedCharacter"
+                  [ N ]
+                  []
+                  [ ("literal", M.read (| c |)) ]);
+              ("alive",
+                Value.mkStructRecord
+                  "core::ops::range::Range"
+                  []
+                  [ Ty.path "u8" ]
+                  [
+                    ("start",
+                      M.read (|
+                        get_associated_constant (|
+                          Ty.apply
+                            (Ty.path "core::escape::EscapeIterInner")
+                            [ N ]
+                            [ Ty.path "core::escape::MaybeEscaped" ],
+                          "LITERAL_ESCAPE_START",
+                          Ty.path "u8"
+                        |)
+                      |));
+                    ("end_",
+                      M.call_closure (|
+                        Ty.path "u8",
+                        BinOp.Wrap.add,
+                        [
+                          M.read (|
+                            get_associated_constant (|
+                              Ty.apply
+                                (Ty.path "core::escape::EscapeIterInner")
+                                [ N ]
+                                [ Ty.path "core::escape::MaybeEscaped" ],
+                              "LITERAL_ESCAPE_START",
+                              Ty.path "u8"
+                            |)
+                          |);
+                          Value.Integer IntegerKind.U8 1
+                        ]
+                      |))
+                  ]);
+              ("escaping",
+                Value.StructTuple
+                  "core::marker::PhantomData"
+                  []
+                  [ Ty.path "core::escape::MaybeEscaped" ]
+                  [])
+            ]))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_printable :
+      forall (N : Value.t),
+      M.IsAssociatedFunction.C (Self N) "printable" (printable N).
+    Admitted.
+    Global Typeclasses Opaque printable.
+    
+    (*
+        pub(crate) fn next(&mut self) -> Option<char> {
+            let i = self.alive.next()?;
+    
+            if let Some(c) = self.to_char() {
+                return Some(c);
+            }
+    
+            // SAFETY: At this point, `self.data` must contain printable ASCII
+            //         characters in its `escape_seq` variant, and `i` is
+            //         guaranteed to be a valid index for `self.data.escape_seq`.
+            Some(char::from(unsafe { self.data.escape_seq.get_unchecked(usize::from(i)).to_u8() }))
+        }
+    *)
+    Definition next (N : Value.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self N in
+      match ε, τ, α with
+      | [], [], [ self ] =>
         ltac:(M.monadic
           (let self :=
             M.alloc (|
               Ty.apply
                 (Ty.path "&mut")
                 []
-                [ Ty.apply (Ty.path "core::escape::EscapeIterInner") [ N ] [] ],
+                [
+                  Ty.apply
+                    (Ty.path "core::escape::EscapeIterInner")
+                    [ N ]
+                    [ Ty.path "core::escape::MaybeEscaped" ]
+                ],
               self
             |) in
-          let n := M.alloc (| Ty.path "usize", n |) in
-          M.call_closure (|
-            Ty.apply
-              (Ty.path "core::result::Result")
-              []
-              [ Ty.tuple []; Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ]
-              ],
-            M.get_trait_method (|
-              "core::iter::traits::iterator::Iterator",
-              Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "u8" ],
-              [],
-              [],
-              "advance_by",
-              [],
-              []
-            |),
-            [
-              M.borrow (|
-                Pointer.Kind.MutRef,
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "core::escape::EscapeIterInner",
-                  "alive"
+          M.catch_return (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "char" ]) (|
+            ltac:(M.monadic
+              (M.read (|
+                let~ i : Ty.path "u8" :=
+                  M.match_operator (|
+                    Ty.path "u8",
+                    M.alloc (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "core::option::Option")
+                            []
+                            [ Ty.path "core::convert::Infallible" ];
+                          Ty.path "u8"
+                        ],
+                      M.call_closure (|
+                        Ty.apply
+                          (Ty.path "core::ops::control_flow::ControlFlow")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "core::option::Option")
+                              []
+                              [ Ty.path "core::convert::Infallible" ];
+                            Ty.path "u8"
+                          ],
+                        M.get_trait_method (|
+                          "core::ops::try_trait::Try",
+                          Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u8" ],
+                          [],
+                          [],
+                          "branch",
+                          [],
+                          []
+                        |),
+                        [
+                          M.call_closure (|
+                            Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u8" ],
+                            M.get_trait_method (|
+                              "core::iter::traits::iterator::Iterator",
+                              Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "u8" ],
+                              [],
+                              [],
+                              "next",
+                              [],
+                              []
+                            |),
+                            [
+                              M.borrow (|
+                                Pointer.Kind.MutRef,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "core::escape::EscapeIterInner",
+                                  "alive"
+                                |)
+                              |)
+                            ]
+                          |)
+                        ]
+                      |)
+                    |),
+                    [
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ0_0 :=
+                            M.SubPointer.get_struct_tuple_field (|
+                              γ,
+                              "core::ops::control_flow::ControlFlow::Break",
+                              0
+                            |) in
+                          let residual :=
+                            M.copy (|
+                              Ty.apply
+                                (Ty.path "core::option::Option")
+                                []
+                                [ Ty.path "core::convert::Infallible" ],
+                              γ0_0
+                            |) in
+                          M.never_to_any (|
+                            M.read (|
+                              M.return_ (|
+                                M.call_closure (|
+                                  Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "char" ],
+                                  M.get_trait_method (|
+                                    "core::ops::try_trait::FromResidual",
+                                    Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "char" ],
+                                    [],
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::option::Option")
+                                        []
+                                        [ Ty.path "core::convert::Infallible" ]
+                                    ],
+                                    "from_residual",
+                                    [],
+                                    []
+                                  |),
+                                  [ M.read (| residual |) ]
+                                |)
+                              |)
+                            |)
+                          |)));
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ0_0 :=
+                            M.SubPointer.get_struct_tuple_field (|
+                              γ,
+                              "core::ops::control_flow::ControlFlow::Continue",
+                              0
+                            |) in
+                          let val := M.copy (| Ty.path "u8", γ0_0 |) in
+                          M.read (| val |)))
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.match_operator (|
+                    Ty.tuple [],
+                    M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                    [
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ :=
+                            M.alloc (|
+                              Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "char" ],
+                              M.call_closure (|
+                                Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "char" ],
+                                M.get_associated_function (|
+                                  Ty.apply
+                                    (Ty.path "core::escape::EscapeIterInner")
+                                    [ N ]
+                                    [ Ty.path "core::escape::MaybeEscaped" ],
+                                  "to_char",
+                                  [],
+                                  []
+                                |),
+                                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                              |)
+                            |) in
+                          let γ0_0 :=
+                            M.SubPointer.get_struct_tuple_field (|
+                              γ,
+                              "core::option::Option::Some",
+                              0
+                            |) in
+                          let c := M.copy (| Ty.path "char", γ0_0 |) in
+                          M.never_to_any (|
+                            M.read (|
+                              M.return_ (|
+                                Value.StructTuple
+                                  "core::option::Option::Some"
+                                  []
+                                  [ Ty.path "char" ]
+                                  [ M.read (| c |) ]
+                              |)
+                            |)
+                          |)));
+                      fun γ => ltac:(M.monadic (Value.Tuple []))
+                    ]
+                  |) in
+                M.alloc (|
+                  Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "char" ],
+                  Value.StructTuple
+                    "core::option::Option::Some"
+                    []
+                    [ Ty.path "char" ]
+                    [
+                      M.call_closure (|
+                        Ty.path "char",
+                        M.get_trait_method (|
+                          "core::convert::From",
+                          Ty.path "char",
+                          [],
+                          [ Ty.path "u8" ],
+                          "from",
+                          [],
+                          []
+                        |),
+                        [
+                          M.call_closure (|
+                            Ty.path "u8",
+                            M.get_associated_function (|
+                              Ty.path "core::ascii::ascii_char::AsciiChar",
+                              "to_u8",
+                              [],
+                              []
+                            |),
+                            [
+                              M.read (|
+                                M.deref (|
+                                  M.call_closure (|
+                                    Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.path "core::ascii::ascii_char::AsciiChar" ],
+                                    M.get_associated_function (|
+                                      Ty.apply
+                                        (Ty.path "slice")
+                                        []
+                                        [ Ty.path "core::ascii::ascii_char::AsciiChar" ],
+                                      "get_unchecked",
+                                      [],
+                                      [ Ty.path "usize" ]
+                                    |),
+                                    [
+                                      M.call_closure (|
+                                        Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "slice")
+                                              []
+                                              [ Ty.path "core::ascii::ascii_char::AsciiChar" ]
+                                          ],
+                                        M.pointer_coercion
+                                          M.PointerCoercion.Unsize
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "array")
+                                                [ N ]
+                                                [ Ty.path "core::ascii::ascii_char::AsciiChar" ]
+                                            ])
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "slice")
+                                                []
+                                                [ Ty.path "core::ascii::ascii_char::AsciiChar" ]
+                                            ]),
+                                        [
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.SubPointer.get_struct_record_field (|
+                                              M.SubPointer.get_struct_record_field (|
+                                                M.deref (| M.read (| self |) |),
+                                                "core::escape::EscapeIterInner",
+                                                "data"
+                                              |),
+                                              "core::escape::MaybeEscapedCharacter",
+                                              "escape_seq"
+                                            |)
+                                          |)
+                                        ]
+                                      |);
+                                      M.call_closure (|
+                                        Ty.path "usize",
+                                        M.get_trait_method (|
+                                          "core::convert::From",
+                                          Ty.path "usize",
+                                          [],
+                                          [ Ty.path "u8" ],
+                                          "from",
+                                          [],
+                                          []
+                                        |),
+                                        [ M.read (| i |) ]
+                                      |)
+                                    ]
+                                  |)
+                                |)
+                              |)
+                            ]
+                          |)
+                        ]
+                      |)
+                    ]
                 |)
-              |);
-              M.read (| n |)
-            ]
+              |)))
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
-    Global Instance AssociatedFunction_advance_by :
+    Global Instance AssociatedFunction_next :
       forall (N : Value.t),
-      M.IsAssociatedFunction.C (Self N) "advance_by" (advance_by N).
+      M.IsAssociatedFunction.C (Self N) "next" (next N).
     Admitted.
-    Global Typeclasses Opaque advance_by.
+    Global Typeclasses Opaque next.
+  End Impl_core_escape_EscapeIterInner_N_core_escape_MaybeEscaped.
+  
+  Module Impl_core_fmt_Display_for_core_escape_EscapeIterInner_N_core_escape_AlwaysEscaped.
+    Definition Self (N : Value.t) : Ty.t :=
+      Ty.apply
+        (Ty.path "core::escape::EscapeIterInner")
+        [ N ]
+        [ Ty.path "core::escape::AlwaysEscaped" ].
     
     (*
-        pub fn advance_back_by(&mut self, n: usize) -> Result<(), NonZero<usize>> {
-            self.alive.advance_back_by(n)
+        fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+            // SAFETY: The `AlwaysEscaped` marker guarantees that `self.data`
+            //         contains printable ASCII chars, and `self.alive` is
+            //         guaranteed to be a valid range for `self.data`.
+            f.write_str(unsafe { self.to_str_unchecked() })
         }
     *)
-    Definition advance_back_by
-        (N : Value.t)
-        (ε : list Value.t)
-        (τ : list Ty.t)
-        (α : list Value.t)
-        : M :=
+    Definition fmt (N : Value.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       let Self : Ty.t := Self N in
       match ε, τ, α with
-      | [], [], [ self; n ] =>
+      | [], [], [ self; f ] =>
         ltac:(M.monadic
           (let self :=
             M.alloc (|
               Ty.apply
-                (Ty.path "&mut")
+                (Ty.path "&")
                 []
-                [ Ty.apply (Ty.path "core::escape::EscapeIterInner") [ N ] [] ],
+                [
+                  Ty.apply
+                    (Ty.path "core::escape::EscapeIterInner")
+                    [ N ]
+                    [ Ty.path "core::escape::AlwaysEscaped" ]
+                ],
               self
             |) in
-          let n := M.alloc (| Ty.path "usize", n |) in
+          let f :=
+            M.alloc (| Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ], f |) in
           M.call_closure (|
             Ty.apply
               (Ty.path "core::result::Result")
               []
-              [ Ty.tuple []; Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ]
-              ],
-            M.get_trait_method (|
-              "core::iter::traits::double_ended::DoubleEndedIterator",
-              Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "u8" ],
-              [],
-              [],
-              "advance_back_by",
+              [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+            M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_str", [], [] |),
+            [
+              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
+              M.borrow (|
+                Pointer.Kind.Ref,
+                M.deref (|
+                  M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                    M.get_associated_function (|
+                      Ty.apply
+                        (Ty.path "core::escape::EscapeIterInner")
+                        [ N ]
+                        [ Ty.path "core::escape::AlwaysEscaped" ],
+                      "to_str_unchecked",
+                      [],
+                      []
+                    |),
+                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                  |)
+                |)
+              |)
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (N : Value.t),
+      M.IsTraitInstance
+        "core::fmt::Display"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self N)
+        (* Instance *) [ ("fmt", InstanceField.Method (fmt N)) ].
+  End Impl_core_fmt_Display_for_core_escape_EscapeIterInner_N_core_escape_AlwaysEscaped.
+  
+  Module Impl_core_fmt_Display_for_core_escape_EscapeIterInner_N_core_escape_MaybeEscaped.
+    Definition Self (N : Value.t) : Ty.t :=
+      Ty.apply
+        (Ty.path "core::escape::EscapeIterInner")
+        [ N ]
+        [ Ty.path "core::escape::MaybeEscaped" ].
+    
+    (*
+        fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+            if let Some(c) = self.to_char() {
+                return f.write_char(c);
+            }
+    
+            // SAFETY: At this point, `self.data` must contain printable ASCII
+            //         characters in its `escape_seq` variant, and `self.alive`
+            //         is guaranteed to be a valid range for `self.data`.
+            f.write_str(unsafe { self.to_str_unchecked() })
+        }
+    *)
+    Definition fmt (N : Value.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self N in
+      match ε, τ, α with
+      | [], [], [ self; f ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "core::escape::EscapeIterInner")
+                    [ N ]
+                    [ Ty.path "core::escape::MaybeEscaped" ]
+                ],
+              self
+            |) in
+          let f :=
+            M.alloc (| Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ], f |) in
+          M.catch_return
+            (Ty.apply
+              (Ty.path "core::result::Result")
+              []
+              [ Ty.tuple []; Ty.path "core::fmt::Error" ]) (|
+            ltac:(M.monadic
+              (M.read (|
+                let~ _ : Ty.tuple [] :=
+                  M.match_operator (|
+                    Ty.tuple [],
+                    M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                    [
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ :=
+                            M.alloc (|
+                              Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "char" ],
+                              M.call_closure (|
+                                Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "char" ],
+                                M.get_associated_function (|
+                                  Ty.apply
+                                    (Ty.path "core::escape::EscapeIterInner")
+                                    [ N ]
+                                    [ Ty.path "core::escape::MaybeEscaped" ],
+                                  "to_char",
+                                  [],
+                                  []
+                                |),
+                                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                              |)
+                            |) in
+                          let γ0_0 :=
+                            M.SubPointer.get_struct_tuple_field (|
+                              γ,
+                              "core::option::Option::Some",
+                              0
+                            |) in
+                          let c := M.copy (| Ty.path "char", γ0_0 |) in
+                          M.never_to_any (|
+                            M.read (|
+                              M.return_ (|
+                                M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                                  M.get_trait_method (|
+                                    "core::fmt::Write",
+                                    Ty.path "core::fmt::Formatter",
+                                    [],
+                                    [],
+                                    "write_char",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.MutRef,
+                                      M.deref (| M.read (| f |) |)
+                                    |);
+                                    M.read (| c |)
+                                  ]
+                                |)
+                              |)
+                            |)
+                          |)));
+                      fun γ => ltac:(M.monadic (Value.Tuple []))
+                    ]
+                  |) in
+                M.alloc (|
+                  Ty.apply
+                    (Ty.path "core::result::Result")
+                    []
+                    [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                  M.call_closure (|
+                    Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                    M.get_associated_function (|
+                      Ty.path "core::fmt::Formatter",
+                      "write_str",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.call_closure (|
+                            Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                            M.get_associated_function (|
+                              Ty.apply
+                                (Ty.path "core::escape::EscapeIterInner")
+                                [ N ]
+                                [ Ty.path "core::escape::MaybeEscaped" ],
+                              "to_str_unchecked",
+                              [],
+                              []
+                            |),
+                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                          |)
+                        |)
+                      |)
+                    ]
+                  |)
+                |)
+              |)))
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (N : Value.t),
+      M.IsTraitInstance
+        "core::fmt::Display"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self N)
+        (* Instance *) [ ("fmt", InstanceField.Method (fmt N)) ].
+  End Impl_core_fmt_Display_for_core_escape_EscapeIterInner_N_core_escape_MaybeEscaped.
+  
+  Module Impl_core_fmt_Debug_for_core_escape_EscapeIterInner_N_core_escape_AlwaysEscaped.
+    Definition Self (N : Value.t) : Ty.t :=
+      Ty.apply
+        (Ty.path "core::escape::EscapeIterInner")
+        [ N ]
+        [ Ty.path "core::escape::AlwaysEscaped" ].
+    
+    (*
+        fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+            f.debug_tuple("EscapeIterInner").field(&format_args!("'{}'", self)).finish()
+        }
+    *)
+    Definition fmt (N : Value.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self N in
+      match ε, τ, α with
+      | [], [], [ self; f ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "core::escape::EscapeIterInner")
+                    [ N ]
+                    [ Ty.path "core::escape::AlwaysEscaped" ]
+                ],
+              self
+            |) in
+          let f :=
+            M.alloc (| Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ], f |) in
+          M.call_closure (|
+            Ty.apply
+              (Ty.path "core::result::Result")
+              []
+              [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+            M.get_associated_function (|
+              Ty.path "core::fmt::builders::DebugTuple",
+              "finish",
               [],
               []
             |),
             [
               M.borrow (|
                 Pointer.Kind.MutRef,
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "core::escape::EscapeIterInner",
-                  "alive"
+                M.deref (|
+                  M.call_closure (|
+                    Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::builders::DebugTuple" ],
+                    M.get_associated_function (|
+                      Ty.path "core::fmt::builders::DebugTuple",
+                      "field",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.alloc (|
+                          Ty.path "core::fmt::builders::DebugTuple",
+                          M.call_closure (|
+                            Ty.path "core::fmt::builders::DebugTuple",
+                            M.get_associated_function (|
+                              Ty.path "core::fmt::Formatter",
+                              "debug_tuple",
+                              [],
+                              []
+                            |),
+                            [
+                              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (| mk_str (| "EscapeIterInner" |) |)
+                              |)
+                            ]
+                          |)
+                        |)
+                      |);
+                      M.call_closure (|
+                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                        M.pointer_coercion
+                          M.PointerCoercion.Unsize
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::Arguments" ])
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                        [
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (|
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                let~ args :
+                                    Ty.tuple
+                                      [
+                                        Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "core::escape::EscapeIterInner")
+                                                  [ N ]
+                                                  [ Ty.path "core::escape::AlwaysEscaped" ]
+                                              ]
+                                          ]
+                                      ] :=
+                                  Value.Tuple [ M.borrow (| Pointer.Kind.Ref, self |) ] in
+                                let~ args :
+                                    Ty.apply
+                                      (Ty.path "array")
+                                      [ Value.Integer IntegerKind.Usize 1 ]
+                                      [ Ty.path "core::fmt::rt::Argument" ] :=
+                                  Value.Array
+                                    [
+                                      M.call_closure (|
+                                        Ty.path "core::fmt::rt::Argument",
+                                        M.get_associated_function (|
+                                          Ty.path "core::fmt::rt::Argument",
+                                          "new_display",
+                                          [],
+                                          [
+                                            Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "core::escape::EscapeIterInner")
+                                                  [ N ]
+                                                  [ Ty.path "core::escape::AlwaysEscaped" ]
+                                              ]
+                                          ]
+                                        |),
+                                        [
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (|
+                                              M.read (|
+                                                M.SubPointer.get_tuple_field (| args, 0 |)
+                                              |)
+                                            |)
+                                          |)
+                                        ]
+                                      |)
+                                    ] in
+                                M.alloc (|
+                                  Ty.path "core::fmt::Arguments",
+                                  M.call_closure (|
+                                    Ty.path "core::fmt::Arguments",
+                                    M.get_associated_function (|
+                                      Ty.path "core::fmt::Arguments",
+                                      "new",
+                                      [
+                                        Value.Integer IntegerKind.Usize 6;
+                                        Value.Integer IntegerKind.Usize 1
+                                      ],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| UnsupportedLiteral |) |)
+                                      |);
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
+                                      |)
+                                    ]
+                                  |)
+                                |)
+                              |)
+                            |)
+                          |)
+                        ]
+                      |)
+                    ]
+                  |)
                 |)
-              |);
-              M.read (| n |)
+              |)
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
-    Global Instance AssociatedFunction_advance_back_by :
+    Axiom Implements :
       forall (N : Value.t),
-      M.IsAssociatedFunction.C (Self N) "advance_back_by" (advance_back_by N).
-    Admitted.
-    Global Typeclasses Opaque advance_back_by.
-  End Impl_core_escape_EscapeIterInner_N.
+      M.IsTraitInstance
+        "core::fmt::Debug"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self N)
+        (* Instance *) [ ("fmt", InstanceField.Method (fmt N)) ].
+  End Impl_core_fmt_Debug_for_core_escape_EscapeIterInner_N_core_escape_AlwaysEscaped.
+  
+  Module Impl_core_fmt_Debug_for_core_escape_EscapeIterInner_N_core_escape_MaybeEscaped.
+    Definition Self (N : Value.t) : Ty.t :=
+      Ty.apply
+        (Ty.path "core::escape::EscapeIterInner")
+        [ N ]
+        [ Ty.path "core::escape::MaybeEscaped" ].
+    
+    (*
+        fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+            f.debug_tuple("EscapeIterInner").field(&format_args!("'{}'", self)).finish()
+        }
+    *)
+    Definition fmt (N : Value.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self N in
+      match ε, τ, α with
+      | [], [], [ self; f ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "&")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "core::escape::EscapeIterInner")
+                    [ N ]
+                    [ Ty.path "core::escape::MaybeEscaped" ]
+                ],
+              self
+            |) in
+          let f :=
+            M.alloc (| Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ], f |) in
+          M.call_closure (|
+            Ty.apply
+              (Ty.path "core::result::Result")
+              []
+              [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+            M.get_associated_function (|
+              Ty.path "core::fmt::builders::DebugTuple",
+              "finish",
+              [],
+              []
+            |),
+            [
+              M.borrow (|
+                Pointer.Kind.MutRef,
+                M.deref (|
+                  M.call_closure (|
+                    Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::builders::DebugTuple" ],
+                    M.get_associated_function (|
+                      Ty.path "core::fmt::builders::DebugTuple",
+                      "field",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.alloc (|
+                          Ty.path "core::fmt::builders::DebugTuple",
+                          M.call_closure (|
+                            Ty.path "core::fmt::builders::DebugTuple",
+                            M.get_associated_function (|
+                              Ty.path "core::fmt::Formatter",
+                              "debug_tuple",
+                              [],
+                              []
+                            |),
+                            [
+                              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (| mk_str (| "EscapeIterInner" |) |)
+                              |)
+                            ]
+                          |)
+                        |)
+                      |);
+                      M.call_closure (|
+                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                        M.pointer_coercion
+                          M.PointerCoercion.Unsize
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::Arguments" ])
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                        [
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (|
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                let~ args :
+                                    Ty.tuple
+                                      [
+                                        Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "core::escape::EscapeIterInner")
+                                                  [ N ]
+                                                  [ Ty.path "core::escape::MaybeEscaped" ]
+                                              ]
+                                          ]
+                                      ] :=
+                                  Value.Tuple [ M.borrow (| Pointer.Kind.Ref, self |) ] in
+                                let~ args :
+                                    Ty.apply
+                                      (Ty.path "array")
+                                      [ Value.Integer IntegerKind.Usize 1 ]
+                                      [ Ty.path "core::fmt::rt::Argument" ] :=
+                                  Value.Array
+                                    [
+                                      M.call_closure (|
+                                        Ty.path "core::fmt::rt::Argument",
+                                        M.get_associated_function (|
+                                          Ty.path "core::fmt::rt::Argument",
+                                          "new_display",
+                                          [],
+                                          [
+                                            Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "core::escape::EscapeIterInner")
+                                                  [ N ]
+                                                  [ Ty.path "core::escape::MaybeEscaped" ]
+                                              ]
+                                          ]
+                                        |),
+                                        [
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (|
+                                              M.read (|
+                                                M.SubPointer.get_tuple_field (| args, 0 |)
+                                              |)
+                                            |)
+                                          |)
+                                        ]
+                                      |)
+                                    ] in
+                                M.alloc (|
+                                  Ty.path "core::fmt::Arguments",
+                                  M.call_closure (|
+                                    Ty.path "core::fmt::Arguments",
+                                    M.get_associated_function (|
+                                      Ty.path "core::fmt::Arguments",
+                                      "new",
+                                      [
+                                        Value.Integer IntegerKind.Usize 6;
+                                        Value.Integer IntegerKind.Usize 1
+                                      ],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| UnsupportedLiteral |) |)
+                                      |);
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
+                                      |)
+                                    ]
+                                  |)
+                                |)
+                              |)
+                            |)
+                          |)
+                        ]
+                      |)
+                    ]
+                  |)
+                |)
+              |)
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (N : Value.t),
+      M.IsTraitInstance
+        "core::fmt::Debug"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self N)
+        (* Instance *) [ ("fmt", InstanceField.Method (fmt N)) ].
+  End Impl_core_fmt_Debug_for_core_escape_EscapeIterInner_N_core_escape_MaybeEscaped.
 End escape.

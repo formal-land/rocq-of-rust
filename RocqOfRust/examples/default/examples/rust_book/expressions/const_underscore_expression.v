@@ -9,6 +9,20 @@ Module underscore.
       ty_params := [];
       fields := [ ("test", Ty.path "bool") ];
     } *)
+End underscore.
+
+(* StructRecord
+  {
+    name := "Bar";
+    const_params := [];
+    ty_params := [];
+    fields := [ ("test", Ty.path "alloc::string::String") ];
+  } *)
+
+(* Trait *)
+(* Empty module 'BarTrait' *)
+
+Module underscore_1.
   Module Impl_const_underscore_expression_BarTrait_for_const_underscore_expression_Bar.
     Definition Self : Ty.t := Ty.path "const_underscore_expression::Bar".
     
@@ -40,16 +54,4 @@ Module underscore.
         Self
         (* Instance *) [ ("show", InstanceField.Method show) ].
   End Impl_const_underscore_expression_BarTrait_for_const_underscore_expression_Bar.
-End underscore.
-
-(* StructRecord
-  {
-    name := "Bar";
-    const_params := [];
-    ty_params := [];
-    fields := [ ("test", Ty.path "alloc::string::String") ];
-  } *)
-
-(* Trait *)
-(* Empty module 'BarTrait' *)
-
+End underscore_1.

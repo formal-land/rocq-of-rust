@@ -5,7 +5,7 @@ Module collections.
   Module btree.
     Module mem.
       (*
-      pub fn take_mut<T>(v: &mut T, change: impl FnOnce(T) -> T) {
+      pub(super) fn take_mut<T>(v: &mut T, change: impl FnOnce(T) -> T) {
           replace(v, |value| (change(value), ()))
       }
       *)
@@ -69,7 +69,7 @@ Module collections.
       Global Typeclasses Opaque take_mut.
       
       (*
-      pub fn replace<T, R>(v: &mut T, change: impl FnOnce(T) -> (T, R)) -> R {
+      pub(super) fn replace<T, R>(v: &mut T, change: impl FnOnce(T) -> (T, R)) -> R {
           struct PanicGuard;
           impl Drop for PanicGuard {
               fn drop(&mut self) {

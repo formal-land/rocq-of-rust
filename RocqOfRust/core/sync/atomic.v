@@ -3,6 +3,368 @@ Require Import RocqOfRust.RocqOfRust.
 
 Module sync.
   Module atomic.
+    (* Trait *)
+    (* Empty module 'Sealed' *)
+    
+    (* Trait *)
+    (* Empty module 'AtomicPrimitive' *)
+    
+    Module Impl_core_sync_atomic_Sealed_for_bool.
+      Definition Self : Ty.t := Ty.path "bool".
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::sync::atomic::Sealed"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [].
+    End Impl_core_sync_atomic_Sealed_for_bool.
+    
+    Module Impl_core_sync_atomic_AtomicPrimitive_for_bool.
+      Definition Self : Ty.t := Ty.path "bool".
+      
+      (*         type AtomicInner = $Atom $(<$T>)?; *)
+      Definition _AtomicInner : Ty.t := Ty.path "core::sync::atomic::AtomicBool".
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::sync::atomic::AtomicPrimitive"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [ ("AtomicInner", InstanceField.Ty _AtomicInner) ].
+    End Impl_core_sync_atomic_AtomicPrimitive_for_bool.
+    
+    Module Impl_core_sync_atomic_Sealed_for_i8.
+      Definition Self : Ty.t := Ty.path "i8".
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::sync::atomic::Sealed"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [].
+    End Impl_core_sync_atomic_Sealed_for_i8.
+    
+    Module Impl_core_sync_atomic_AtomicPrimitive_for_i8.
+      Definition Self : Ty.t := Ty.path "i8".
+      
+      (*         type AtomicInner = $Atom $(<$T>)?; *)
+      Definition _AtomicInner : Ty.t := Ty.path "core::sync::atomic::AtomicI8".
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::sync::atomic::AtomicPrimitive"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [ ("AtomicInner", InstanceField.Ty _AtomicInner) ].
+    End Impl_core_sync_atomic_AtomicPrimitive_for_i8.
+    
+    Module Impl_core_sync_atomic_Sealed_for_u8.
+      Definition Self : Ty.t := Ty.path "u8".
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::sync::atomic::Sealed"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [].
+    End Impl_core_sync_atomic_Sealed_for_u8.
+    
+    Module Impl_core_sync_atomic_AtomicPrimitive_for_u8.
+      Definition Self : Ty.t := Ty.path "u8".
+      
+      (*         type AtomicInner = $Atom $(<$T>)?; *)
+      Definition _AtomicInner : Ty.t := Ty.path "core::sync::atomic::AtomicU8".
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::sync::atomic::AtomicPrimitive"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [ ("AtomicInner", InstanceField.Ty _AtomicInner) ].
+    End Impl_core_sync_atomic_AtomicPrimitive_for_u8.
+    
+    Module Impl_core_sync_atomic_Sealed_for_i16.
+      Definition Self : Ty.t := Ty.path "i16".
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::sync::atomic::Sealed"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [].
+    End Impl_core_sync_atomic_Sealed_for_i16.
+    
+    Module Impl_core_sync_atomic_AtomicPrimitive_for_i16.
+      Definition Self : Ty.t := Ty.path "i16".
+      
+      (*         type AtomicInner = $Atom $(<$T>)?; *)
+      Definition _AtomicInner : Ty.t := Ty.path "core::sync::atomic::AtomicI16".
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::sync::atomic::AtomicPrimitive"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [ ("AtomicInner", InstanceField.Ty _AtomicInner) ].
+    End Impl_core_sync_atomic_AtomicPrimitive_for_i16.
+    
+    Module Impl_core_sync_atomic_Sealed_for_u16.
+      Definition Self : Ty.t := Ty.path "u16".
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::sync::atomic::Sealed"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [].
+    End Impl_core_sync_atomic_Sealed_for_u16.
+    
+    Module Impl_core_sync_atomic_AtomicPrimitive_for_u16.
+      Definition Self : Ty.t := Ty.path "u16".
+      
+      (*         type AtomicInner = $Atom $(<$T>)?; *)
+      Definition _AtomicInner : Ty.t := Ty.path "core::sync::atomic::AtomicU16".
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::sync::atomic::AtomicPrimitive"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [ ("AtomicInner", InstanceField.Ty _AtomicInner) ].
+    End Impl_core_sync_atomic_AtomicPrimitive_for_u16.
+    
+    Module Impl_core_sync_atomic_Sealed_for_i32.
+      Definition Self : Ty.t := Ty.path "i32".
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::sync::atomic::Sealed"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [].
+    End Impl_core_sync_atomic_Sealed_for_i32.
+    
+    Module Impl_core_sync_atomic_AtomicPrimitive_for_i32.
+      Definition Self : Ty.t := Ty.path "i32".
+      
+      (*         type AtomicInner = $Atom $(<$T>)?; *)
+      Definition _AtomicInner : Ty.t := Ty.path "core::sync::atomic::AtomicI32".
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::sync::atomic::AtomicPrimitive"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [ ("AtomicInner", InstanceField.Ty _AtomicInner) ].
+    End Impl_core_sync_atomic_AtomicPrimitive_for_i32.
+    
+    Module Impl_core_sync_atomic_Sealed_for_u32.
+      Definition Self : Ty.t := Ty.path "u32".
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::sync::atomic::Sealed"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [].
+    End Impl_core_sync_atomic_Sealed_for_u32.
+    
+    Module Impl_core_sync_atomic_AtomicPrimitive_for_u32.
+      Definition Self : Ty.t := Ty.path "u32".
+      
+      (*         type AtomicInner = $Atom $(<$T>)?; *)
+      Definition _AtomicInner : Ty.t := Ty.path "core::sync::atomic::AtomicU32".
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::sync::atomic::AtomicPrimitive"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [ ("AtomicInner", InstanceField.Ty _AtomicInner) ].
+    End Impl_core_sync_atomic_AtomicPrimitive_for_u32.
+    
+    Module Impl_core_sync_atomic_Sealed_for_i64.
+      Definition Self : Ty.t := Ty.path "i64".
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::sync::atomic::Sealed"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [].
+    End Impl_core_sync_atomic_Sealed_for_i64.
+    
+    Module Impl_core_sync_atomic_AtomicPrimitive_for_i64.
+      Definition Self : Ty.t := Ty.path "i64".
+      
+      (*         type AtomicInner = $Atom $(<$T>)?; *)
+      Definition _AtomicInner : Ty.t := Ty.path "core::sync::atomic::AtomicI64".
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::sync::atomic::AtomicPrimitive"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [ ("AtomicInner", InstanceField.Ty _AtomicInner) ].
+    End Impl_core_sync_atomic_AtomicPrimitive_for_i64.
+    
+    Module Impl_core_sync_atomic_Sealed_for_u64.
+      Definition Self : Ty.t := Ty.path "u64".
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::sync::atomic::Sealed"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [].
+    End Impl_core_sync_atomic_Sealed_for_u64.
+    
+    Module Impl_core_sync_atomic_AtomicPrimitive_for_u64.
+      Definition Self : Ty.t := Ty.path "u64".
+      
+      (*         type AtomicInner = $Atom $(<$T>)?; *)
+      Definition _AtomicInner : Ty.t := Ty.path "core::sync::atomic::AtomicU64".
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::sync::atomic::AtomicPrimitive"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [ ("AtomicInner", InstanceField.Ty _AtomicInner) ].
+    End Impl_core_sync_atomic_AtomicPrimitive_for_u64.
+    
+    Module Impl_core_sync_atomic_Sealed_for_i128.
+      Definition Self : Ty.t := Ty.path "i128".
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::sync::atomic::Sealed"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [].
+    End Impl_core_sync_atomic_Sealed_for_i128.
+    
+    Module Impl_core_sync_atomic_Sealed_for_u128.
+      Definition Self : Ty.t := Ty.path "u128".
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::sync::atomic::Sealed"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [].
+    End Impl_core_sync_atomic_Sealed_for_u128.
+    
+    Module Impl_core_sync_atomic_Sealed_for_isize.
+      Definition Self : Ty.t := Ty.path "isize".
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::sync::atomic::Sealed"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [].
+    End Impl_core_sync_atomic_Sealed_for_isize.
+    
+    Module Impl_core_sync_atomic_AtomicPrimitive_for_isize.
+      Definition Self : Ty.t := Ty.path "isize".
+      
+      (*         type AtomicInner = $Atom $(<$T>)?; *)
+      Definition _AtomicInner : Ty.t := Ty.path "core::sync::atomic::AtomicIsize".
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::sync::atomic::AtomicPrimitive"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [ ("AtomicInner", InstanceField.Ty _AtomicInner) ].
+    End Impl_core_sync_atomic_AtomicPrimitive_for_isize.
+    
+    Module Impl_core_sync_atomic_Sealed_for_usize.
+      Definition Self : Ty.t := Ty.path "usize".
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::sync::atomic::Sealed"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [].
+    End Impl_core_sync_atomic_Sealed_for_usize.
+    
+    Module Impl_core_sync_atomic_AtomicPrimitive_for_usize.
+      Definition Self : Ty.t := Ty.path "usize".
+      
+      (*         type AtomicInner = $Atom $(<$T>)?; *)
+      Definition _AtomicInner : Ty.t := Ty.path "core::sync::atomic::AtomicUsize".
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::sync::atomic::AtomicPrimitive"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [ ("AtomicInner", InstanceField.Ty _AtomicInner) ].
+    End Impl_core_sync_atomic_AtomicPrimitive_for_usize.
+    
+    Module Impl_core_sync_atomic_Sealed_for_pointer_mut_T.
+      Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "*mut") [] [ T ].
+      
+      Axiom Implements :
+        forall (T : Ty.t),
+        M.IsTraitInstance
+          "core::sync::atomic::Sealed"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          (Self T)
+          (* Instance *) [].
+    End Impl_core_sync_atomic_Sealed_for_pointer_mut_T.
+    
+    Module Impl_core_sync_atomic_AtomicPrimitive_for_pointer_mut_T.
+      Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "*mut") [] [ T ].
+      
+      (*         type AtomicInner = $Atom $(<$T>)?; *)
+      Definition _AtomicInner (T : Ty.t) : Ty.t :=
+        Ty.apply (Ty.path "core::sync::atomic::AtomicPtr") [] [ T ].
+      
+      Axiom Implements :
+        forall (T : Ty.t),
+        M.IsTraitInstance
+          "core::sync::atomic::AtomicPrimitive"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          (Self T)
+          (* Instance *) [ ("AtomicInner", InstanceField.Ty (_AtomicInner T)) ].
+    End Impl_core_sync_atomic_AtomicPrimitive_for_pointer_mut_T.
+    
+    Axiom Atomic :
+      forall (T : Ty.t),
+      (Ty.apply (Ty.path "core::sync::atomic::Atomic") [] [ T ]) =
+        (Ty.associated_in_trait "core::sync::atomic::AtomicPrimitive" [] [] T "AtomicInner").
+    
     Definition value_EMULATE_ATOMIC_BOOL
         (ε : list Value.t)
         (τ : list Ty.t)
@@ -205,6 +567,18 @@ Module sync.
           Self
           (* Instance *) [].
     End Impl_core_marker_Copy_for_core_sync_atomic_Ordering.
+    
+    Module Impl_core_clone_TrivialClone_for_core_sync_atomic_Ordering.
+      Definition Self : Ty.t := Ty.path "core::sync::atomic::Ordering".
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::clone::TrivialClone"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [].
+    End Impl_core_clone_TrivialClone_for_core_sync_atomic_Ordering.
     
     Module Impl_core_clone_Clone_for_core_sync_atomic_Ordering.
       Definition Self : Ty.t := Ty.path "core::sync::atomic::Ordering".
@@ -1009,11 +1383,10 @@ Module sync.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (get_constant (|
-                          "core::sync::atomic::EMULATE_ATOMIC_BOOL",
-                          Ty.path "bool"
-                        |)) in
+                      get_constant (|
+                        "core::sync::atomic::EMULATE_ATOMIC_BOOL",
+                        Ty.path "bool"
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     M.match_operator (|
                       Ty.path "bool",
@@ -1021,7 +1394,7 @@ Module sync.
                       [
                         fun γ =>
                           ltac:(M.monadic
-                            (let γ := M.use val in
+                            (let γ := val in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.call_closure (|
@@ -1237,11 +1610,10 @@ Module sync.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (get_constant (|
-                          "core::sync::atomic::EMULATE_ATOMIC_BOOL",
-                          Ty.path "bool"
-                        |)) in
+                      get_constant (|
+                        "core::sync::atomic::EMULATE_ATOMIC_BOOL",
+                        Ty.path "bool"
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     M.read (|
                       let~ order : Ty.path "core::sync::atomic::Ordering" :=
@@ -1304,30 +1676,13 @@ Module sync.
                                         Ty.path "core::fmt::Arguments",
                                         M.get_associated_function (|
                                           Ty.path "core::fmt::Arguments",
-                                          "new_const",
-                                          [ Value.Integer IntegerKind.Usize 1 ],
+                                          "from_str",
+                                          [],
                                           []
                                         |),
                                         [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (|
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.alloc (|
-                                                  Ty.apply
-                                                    (Ty.path "array")
-                                                    [ Value.Integer IntegerKind.Usize 1 ]
-                                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                                  Value.Array
-                                                    [
-                                                      mk_str (|
-                                                        "there is no such thing as an acquire-release failure ordering"
-                                                      |)
-                                                    ]
-                                                |)
-                                              |)
-                                            |)
+                                          mk_str (|
+                                            "there is no such thing as an acquire-release failure ordering"
                                           |)
                                         ]
                                       |)
@@ -1414,30 +1769,13 @@ Module sync.
                                         Ty.path "core::fmt::Arguments",
                                         M.get_associated_function (|
                                           Ty.path "core::fmt::Arguments",
-                                          "new_const",
-                                          [ Value.Integer IntegerKind.Usize 1 ],
+                                          "from_str",
+                                          [],
                                           []
                                         |),
                                         [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (|
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.alloc (|
-                                                  Ty.apply
-                                                    (Ty.path "array")
-                                                    [ Value.Integer IntegerKind.Usize 1 ]
-                                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                                  Value.Array
-                                                    [
-                                                      mk_str (|
-                                                        "there is no such thing as a release failure ordering"
-                                                      |)
-                                                    ]
-                                                |)
-                                              |)
-                                            |)
+                                          mk_str (|
+                                            "there is no such thing as a release failure ordering"
                                           |)
                                         ]
                                       |)
@@ -1469,15 +1807,14 @@ Module sync.
                             fun γ =>
                               ltac:(M.monadic
                                 (let γ :=
-                                  M.use
-                                    (M.alloc (|
+                                  M.alloc (|
+                                    Ty.path "bool",
+                                    M.call_closure (|
                                       Ty.path "bool",
-                                      M.call_closure (|
-                                        Ty.path "bool",
-                                        BinOp.eq,
-                                        [ M.read (| current |); M.read (| new |) ]
-                                      |)
-                                    |)) in
+                                      BinOp.eq,
+                                      [ M.read (| current |); M.read (| new |) ]
+                                    |)
+                                  |) in
                                 let _ :=
                                   is_constant_or_break_match (|
                                     M.read (| γ |),
@@ -1536,15 +1873,14 @@ Module sync.
                             fun γ =>
                               ltac:(M.monadic
                                 (let γ :=
-                                  M.use
-                                    (M.alloc (|
+                                  M.alloc (|
+                                    Ty.path "bool",
+                                    M.call_closure (|
                                       Ty.path "bool",
-                                      M.call_closure (|
-                                        Ty.path "bool",
-                                        BinOp.eq,
-                                        [ M.read (| old |); M.read (| current |) ]
-                                      |)
-                                    |)) in
+                                      BinOp.eq,
+                                      [ M.read (| old |); M.read (| current |) ]
+                                    |)
+                                  |) in
                                 let _ :=
                                   is_constant_or_break_match (|
                                     M.read (| γ |),
@@ -1711,11 +2047,10 @@ Module sync.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (get_constant (|
-                                  "core::sync::atomic::EMULATE_ATOMIC_BOOL",
-                                  Ty.path "bool"
-                                |)) in
+                              get_constant (|
+                                "core::sync::atomic::EMULATE_ATOMIC_BOOL",
+                                Ty.path "bool"
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.never_to_any (|
@@ -1872,7 +2207,11 @@ Module sync.
               [
                 M.call_closure (|
                   Ty.path "u8",
-                  M.get_function (| "core::sync::atomic::atomic_and", [], [ Ty.path "u8" ] |),
+                  M.get_function (|
+                    "core::sync::atomic::atomic_and",
+                    [],
+                    [ Ty.path "u8"; Ty.path "u8" ]
+                  |),
                   [
                     M.call_closure (|
                       Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
@@ -1942,7 +2281,7 @@ Module sync.
               [
                 fun γ =>
                   ltac:(M.monadic
-                    (let γ := M.use val in
+                    (let γ := val in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     M.call_closure (|
                       Ty.path "bool",
@@ -2007,7 +2346,11 @@ Module sync.
               [
                 M.call_closure (|
                   Ty.path "u8",
-                  M.get_function (| "core::sync::atomic::atomic_or", [], [ Ty.path "u8" ] |),
+                  M.get_function (|
+                    "core::sync::atomic::atomic_or",
+                    [],
+                    [ Ty.path "u8"; Ty.path "u8" ]
+                  |),
                   [
                     M.call_closure (|
                       Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
@@ -2066,7 +2409,11 @@ Module sync.
               [
                 M.call_closure (|
                   Ty.path "u8",
-                  M.get_function (| "core::sync::atomic::atomic_xor", [], [ Ty.path "u8" ] |),
+                  M.get_function (|
+                    "core::sync::atomic::atomic_xor",
+                    [],
+                    [ Ty.path "u8"; Ty.path "u8" ]
+                  |),
                   [
                     M.call_closure (|
                       Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
@@ -2379,6 +2726,176 @@ Module sync.
         M.IsAssociatedFunction.C Self "fetch_update" fetch_update.
       Admitted.
       Global Typeclasses Opaque fetch_update.
+      
+      (*
+          pub fn try_update(
+              &self,
+              set_order: Ordering,
+              fetch_order: Ordering,
+              f: impl FnMut(bool) -> Option<bool>,
+          ) -> Result<bool, bool> {
+              // FIXME(atomic_try_update): this is currently an unstable alias to `fetch_update`;
+              //      when stabilizing, turn `fetch_update` into a deprecated alias to `try_update`.
+              self.fetch_update(set_order, fetch_order, f)
+          }
+      *)
+      Definition try_update (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [ impl_FnMut_bool__arrow_Option_bool_ ], [ self; set_order; fetch_order; f ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "&") [] [ Ty.path "core::sync::atomic::AtomicBool" ],
+                self
+              |) in
+            let set_order := M.alloc (| Ty.path "core::sync::atomic::Ordering", set_order |) in
+            let fetch_order := M.alloc (| Ty.path "core::sync::atomic::Ordering", fetch_order |) in
+            let f := M.alloc (| impl_FnMut_bool__arrow_Option_bool_, f |) in
+            M.call_closure (|
+              Ty.apply (Ty.path "core::result::Result") [] [ Ty.path "bool"; Ty.path "bool" ],
+              M.get_associated_function (|
+                Ty.path "core::sync::atomic::AtomicBool",
+                "fetch_update",
+                [],
+                [ impl_FnMut_bool__arrow_Option_bool_ ]
+              |),
+              [
+                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
+                M.read (| set_order |);
+                M.read (| fetch_order |);
+                M.read (| f |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_try_update :
+        M.IsAssociatedFunction.C Self "try_update" try_update.
+      Admitted.
+      Global Typeclasses Opaque try_update.
+      
+      (*
+          pub fn update(
+              &self,
+              set_order: Ordering,
+              fetch_order: Ordering,
+              mut f: impl FnMut(bool) -> bool,
+          ) -> bool {
+              let mut prev = self.load(fetch_order);
+              loop {
+                  match self.compare_exchange_weak(prev, f(prev), set_order, fetch_order) {
+                      Ok(x) => break x,
+                      Err(next_prev) => prev = next_prev,
+                  }
+              }
+          }
+      *)
+      Definition update (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [ impl_FnMut_bool__arrow_bool ], [ self; set_order; fetch_order; f ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "&") [] [ Ty.path "core::sync::atomic::AtomicBool" ],
+                self
+              |) in
+            let set_order := M.alloc (| Ty.path "core::sync::atomic::Ordering", set_order |) in
+            let fetch_order := M.alloc (| Ty.path "core::sync::atomic::Ordering", fetch_order |) in
+            let f := M.alloc (| impl_FnMut_bool__arrow_bool, f |) in
+            M.read (|
+              let~ prev : Ty.path "bool" :=
+                M.call_closure (|
+                  Ty.path "bool",
+                  M.get_associated_function (|
+                    Ty.path "core::sync::atomic::AtomicBool",
+                    "load",
+                    [],
+                    []
+                  |),
+                  [
+                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
+                    M.read (| fetch_order |)
+                  ]
+                |) in
+              M.loop (|
+                Ty.path "bool",
+                ltac:(M.monadic
+                  (M.alloc (|
+                    Ty.tuple [],
+                    M.match_operator (|
+                      Ty.tuple [],
+                      M.alloc (|
+                        Ty.apply
+                          (Ty.path "core::result::Result")
+                          []
+                          [ Ty.path "bool"; Ty.path "bool" ],
+                        M.call_closure (|
+                          Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [ Ty.path "bool"; Ty.path "bool" ],
+                          M.get_associated_function (|
+                            Ty.path "core::sync::atomic::AtomicBool",
+                            "compare_exchange_weak",
+                            [],
+                            []
+                          |),
+                          [
+                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
+                            M.read (| prev |);
+                            M.call_closure (|
+                              Ty.path "bool",
+                              M.get_trait_method (|
+                                "core::ops::function::FnMut",
+                                impl_FnMut_bool__arrow_bool,
+                                [],
+                                [ Ty.tuple [ Ty.path "bool" ] ],
+                                "call_mut",
+                                [],
+                                []
+                              |),
+                              [
+                                M.borrow (| Pointer.Kind.MutRef, f |);
+                                Value.Tuple [ M.read (| prev |) ]
+                              ]
+                            |);
+                            M.read (| set_order |);
+                            M.read (| fetch_order |)
+                          ]
+                        |)
+                      |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ0_0 :=
+                              M.SubPointer.get_struct_tuple_field (|
+                                γ,
+                                "core::result::Result::Ok",
+                                0
+                              |) in
+                            let x := M.copy (| Ty.path "bool", γ0_0 |) in
+                            M.never_to_any (| M.read (| M.break (||) |) |)));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ0_0 :=
+                              M.SubPointer.get_struct_tuple_field (|
+                                γ,
+                                "core::result::Result::Err",
+                                0
+                              |) in
+                            let next_prev := M.copy (| Ty.path "bool", γ0_0 |) in
+                            M.write (| prev, M.read (| next_prev |) |)))
+                      ]
+                    |)
+                  |)))
+              |)
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_update : M.IsAssociatedFunction.C Self "update" update.
+      Admitted.
+      Global Typeclasses Opaque update.
     End Impl_core_sync_atomic_AtomicBool.
     
     Module Impl_core_sync_atomic_AtomicPtr_T.
@@ -3521,8 +4038,195 @@ Module sync.
       Global Typeclasses Opaque fetch_update.
       
       (*
+          pub fn try_update(
+              &self,
+              set_order: Ordering,
+              fetch_order: Ordering,
+              f: impl FnMut( *mut T) -> Option<*mut T>,
+          ) -> Result<*mut T, *mut T> {
+              // FIXME(atomic_try_update): this is currently an unstable alias to `fetch_update`;
+              //      when stabilizing, turn `fetch_update` into a deprecated alias to `try_update`.
+              self.fetch_update(set_order, fetch_order, f)
+          }
+      *)
+      Definition try_update (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [ impl_FnMut__mut_T__arrow_Option__mut_T_ ], [ self; set_order; fetch_order; f ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "core::sync::atomic::AtomicPtr") [] [ T ] ],
+                self
+              |) in
+            let set_order := M.alloc (| Ty.path "core::sync::atomic::Ordering", set_order |) in
+            let fetch_order := M.alloc (| Ty.path "core::sync::atomic::Ordering", fetch_order |) in
+            let f := M.alloc (| impl_FnMut__mut_T__arrow_Option__mut_T_, f |) in
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "core::result::Result")
+                []
+                [ Ty.apply (Ty.path "*mut") [] [ T ]; Ty.apply (Ty.path "*mut") [] [ T ] ],
+              M.get_associated_function (|
+                Ty.apply (Ty.path "core::sync::atomic::AtomicPtr") [] [ T ],
+                "fetch_update",
+                [],
+                [ impl_FnMut__mut_T__arrow_Option__mut_T_ ]
+              |),
+              [
+                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
+                M.read (| set_order |);
+                M.read (| fetch_order |);
+                M.read (| f |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_try_update :
+        forall (T : Ty.t),
+        M.IsAssociatedFunction.C (Self T) "try_update" (try_update T).
+      Admitted.
+      Global Typeclasses Opaque try_update.
+      
+      (*
+          pub fn update(
+              &self,
+              set_order: Ordering,
+              fetch_order: Ordering,
+              mut f: impl FnMut( *mut T) -> *mut T,
+          ) -> *mut T {
+              let mut prev = self.load(fetch_order);
+              loop {
+                  match self.compare_exchange_weak(prev, f(prev), set_order, fetch_order) {
+                      Ok(x) => break x,
+                      Err(next_prev) => prev = next_prev,
+                  }
+              }
+          }
+      *)
+      Definition update (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [ impl_FnMut__mut_T__arrow__mut_T ], [ self; set_order; fetch_order; f ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "core::sync::atomic::AtomicPtr") [] [ T ] ],
+                self
+              |) in
+            let set_order := M.alloc (| Ty.path "core::sync::atomic::Ordering", set_order |) in
+            let fetch_order := M.alloc (| Ty.path "core::sync::atomic::Ordering", fetch_order |) in
+            let f := M.alloc (| impl_FnMut__mut_T__arrow__mut_T, f |) in
+            M.read (|
+              let~ prev : Ty.apply (Ty.path "*mut") [] [ T ] :=
+                M.call_closure (|
+                  Ty.apply (Ty.path "*mut") [] [ T ],
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "core::sync::atomic::AtomicPtr") [] [ T ],
+                    "load",
+                    [],
+                    []
+                  |),
+                  [
+                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
+                    M.read (| fetch_order |)
+                  ]
+                |) in
+              M.loop (|
+                Ty.apply (Ty.path "*mut") [] [ T ],
+                ltac:(M.monadic
+                  (M.alloc (|
+                    Ty.tuple [],
+                    M.match_operator (|
+                      Ty.tuple [],
+                      M.alloc (|
+                        Ty.apply
+                          (Ty.path "core::result::Result")
+                          []
+                          [ Ty.apply (Ty.path "*mut") [] [ T ]; Ty.apply (Ty.path "*mut") [] [ T ]
+                          ],
+                        M.call_closure (|
+                          Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [ Ty.apply (Ty.path "*mut") [] [ T ]; Ty.apply (Ty.path "*mut") [] [ T ]
+                            ],
+                          M.get_associated_function (|
+                            Ty.apply (Ty.path "core::sync::atomic::AtomicPtr") [] [ T ],
+                            "compare_exchange_weak",
+                            [],
+                            []
+                          |),
+                          [
+                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
+                            M.read (| prev |);
+                            M.call_closure (|
+                              Ty.apply (Ty.path "*mut") [] [ T ],
+                              M.get_trait_method (|
+                                "core::ops::function::FnMut",
+                                impl_FnMut__mut_T__arrow__mut_T,
+                                [],
+                                [ Ty.tuple [ Ty.apply (Ty.path "*mut") [] [ T ] ] ],
+                                "call_mut",
+                                [],
+                                []
+                              |),
+                              [
+                                M.borrow (| Pointer.Kind.MutRef, f |);
+                                Value.Tuple [ M.read (| prev |) ]
+                              ]
+                            |);
+                            M.read (| set_order |);
+                            M.read (| fetch_order |)
+                          ]
+                        |)
+                      |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ0_0 :=
+                              M.SubPointer.get_struct_tuple_field (|
+                                γ,
+                                "core::result::Result::Ok",
+                                0
+                              |) in
+                            let x := M.copy (| Ty.apply (Ty.path "*mut") [] [ T ], γ0_0 |) in
+                            M.never_to_any (| M.read (| M.break (||) |) |)));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ0_0 :=
+                              M.SubPointer.get_struct_tuple_field (|
+                                γ,
+                                "core::result::Result::Err",
+                                0
+                              |) in
+                            let next_prev :=
+                              M.copy (| Ty.apply (Ty.path "*mut") [] [ T ], γ0_0 |) in
+                            M.write (| prev, M.read (| next_prev |) |)))
+                      ]
+                    |)
+                  |)))
+              |)
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_update :
+        forall (T : Ty.t),
+        M.IsAssociatedFunction.C (Self T) "update" (update T).
+      Admitted.
+      Global Typeclasses Opaque update.
+      
+      (*
           pub fn fetch_ptr_add(&self, val: usize, order: Ordering) -> *mut T {
-              self.fetch_byte_add(val.wrapping_mul(core::mem::size_of::<T>()), order)
+              self.fetch_byte_add(val.wrapping_mul(size_of::<T>()), order)
           }
       *)
       Definition fetch_ptr_add
@@ -3581,7 +4285,7 @@ Module sync.
       
       (*
           pub fn fetch_ptr_sub(&self, val: usize, order: Ordering) -> *mut T {
-              self.fetch_byte_sub(val.wrapping_mul(core::mem::size_of::<T>()), order)
+              self.fetch_byte_sub(val.wrapping_mul(size_of::<T>()), order)
           }
       *)
       Definition fetch_ptr_sub
@@ -3641,7 +4345,7 @@ Module sync.
       (*
           pub fn fetch_byte_add(&self, val: usize, order: Ordering) -> *mut T {
               // SAFETY: data races are prevented by atomic intrinsics.
-              unsafe { atomic_add(self.p.get(), core::ptr::without_provenance_mut(val), order).cast() }
+              unsafe { atomic_add(self.p.get(), val, order).cast() }
           }
       *)
       Definition fetch_byte_add
@@ -3673,7 +4377,7 @@ Module sync.
                   M.get_function (|
                     "core::sync::atomic::atomic_add",
                     [],
-                    [ Ty.apply (Ty.path "*mut") [] [ T ] ]
+                    [ Ty.apply (Ty.path "*mut") [] [ T ]; Ty.path "usize" ]
                   |),
                   [
                     M.call_closure (|
@@ -3698,11 +4402,7 @@ Module sync.
                         |)
                       ]
                     |);
-                    M.call_closure (|
-                      Ty.apply (Ty.path "*mut") [] [ T ],
-                      M.get_function (| "core::ptr::without_provenance_mut", [], [ T ] |),
-                      [ M.read (| val |) ]
-                    |);
+                    M.read (| val |);
                     M.read (| order |)
                   ]
                 |)
@@ -3720,7 +4420,7 @@ Module sync.
       (*
           pub fn fetch_byte_sub(&self, val: usize, order: Ordering) -> *mut T {
               // SAFETY: data races are prevented by atomic intrinsics.
-              unsafe { atomic_sub(self.p.get(), core::ptr::without_provenance_mut(val), order).cast() }
+              unsafe { atomic_sub(self.p.get(), val, order).cast() }
           }
       *)
       Definition fetch_byte_sub
@@ -3752,7 +4452,7 @@ Module sync.
                   M.get_function (|
                     "core::sync::atomic::atomic_sub",
                     [],
-                    [ Ty.apply (Ty.path "*mut") [] [ T ] ]
+                    [ Ty.apply (Ty.path "*mut") [] [ T ]; Ty.path "usize" ]
                   |),
                   [
                     M.call_closure (|
@@ -3777,11 +4477,7 @@ Module sync.
                         |)
                       ]
                     |);
-                    M.call_closure (|
-                      Ty.apply (Ty.path "*mut") [] [ T ],
-                      M.get_function (| "core::ptr::without_provenance_mut", [], [ T ] |),
-                      [ M.read (| val |) ]
-                    |);
+                    M.read (| val |);
                     M.read (| order |)
                   ]
                 |)
@@ -3799,7 +4495,7 @@ Module sync.
       (*
           pub fn fetch_or(&self, val: usize, order: Ordering) -> *mut T {
               // SAFETY: data races are prevented by atomic intrinsics.
-              unsafe { atomic_or(self.p.get(), core::ptr::without_provenance_mut(val), order).cast() }
+              unsafe { atomic_or(self.p.get(), val, order).cast() }
           }
       *)
       Definition fetch_or (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -3826,7 +4522,7 @@ Module sync.
                   M.get_function (|
                     "core::sync::atomic::atomic_or",
                     [],
-                    [ Ty.apply (Ty.path "*mut") [] [ T ] ]
+                    [ Ty.apply (Ty.path "*mut") [] [ T ]; Ty.path "usize" ]
                   |),
                   [
                     M.call_closure (|
@@ -3851,11 +4547,7 @@ Module sync.
                         |)
                       ]
                     |);
-                    M.call_closure (|
-                      Ty.apply (Ty.path "*mut") [] [ T ],
-                      M.get_function (| "core::ptr::without_provenance_mut", [], [ T ] |),
-                      [ M.read (| val |) ]
-                    |);
+                    M.read (| val |);
                     M.read (| order |)
                   ]
                 |)
@@ -3873,7 +4565,7 @@ Module sync.
       (*
           pub fn fetch_and(&self, val: usize, order: Ordering) -> *mut T {
               // SAFETY: data races are prevented by atomic intrinsics.
-              unsafe { atomic_and(self.p.get(), core::ptr::without_provenance_mut(val), order).cast() }
+              unsafe { atomic_and(self.p.get(), val, order).cast() }
           }
       *)
       Definition fetch_and (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -3900,7 +4592,7 @@ Module sync.
                   M.get_function (|
                     "core::sync::atomic::atomic_and",
                     [],
-                    [ Ty.apply (Ty.path "*mut") [] [ T ] ]
+                    [ Ty.apply (Ty.path "*mut") [] [ T ]; Ty.path "usize" ]
                   |),
                   [
                     M.call_closure (|
@@ -3925,11 +4617,7 @@ Module sync.
                         |)
                       ]
                     |);
-                    M.call_closure (|
-                      Ty.apply (Ty.path "*mut") [] [ T ],
-                      M.get_function (| "core::ptr::without_provenance_mut", [], [ T ] |),
-                      [ M.read (| val |) ]
-                    |);
+                    M.read (| val |);
                     M.read (| order |)
                   ]
                 |)
@@ -3947,7 +4635,7 @@ Module sync.
       (*
           pub fn fetch_xor(&self, val: usize, order: Ordering) -> *mut T {
               // SAFETY: data races are prevented by atomic intrinsics.
-              unsafe { atomic_xor(self.p.get(), core::ptr::without_provenance_mut(val), order).cast() }
+              unsafe { atomic_xor(self.p.get(), val, order).cast() }
           }
       *)
       Definition fetch_xor (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -3974,7 +4662,7 @@ Module sync.
                   M.get_function (|
                     "core::sync::atomic::atomic_xor",
                     [],
-                    [ Ty.apply (Ty.path "*mut") [] [ T ] ]
+                    [ Ty.apply (Ty.path "*mut") [] [ T ]; Ty.path "usize" ]
                   |),
                   [
                     M.call_closure (|
@@ -3999,11 +4687,7 @@ Module sync.
                         |)
                       ]
                     |);
-                    M.call_closure (|
-                      Ty.apply (Ty.path "*mut") [] [ T ],
-                      M.get_function (| "core::ptr::without_provenance_mut", [], [ T ] |),
-                      [ M.read (| val |) ]
-                    |);
+                    M.read (| val |);
                     M.read (| order |)
                   ]
                 |)
@@ -5072,7 +5756,11 @@ Module sync.
             let order := M.alloc (| Ty.path "core::sync::atomic::Ordering", order |) in
             M.call_closure (|
               Ty.path "i8",
-              M.get_function (| "core::sync::atomic::atomic_add", [], [ Ty.path "i8" ] |),
+              M.get_function (|
+                "core::sync::atomic::atomic_add",
+                [],
+                [ Ty.path "i8"; Ty.path "i8" ]
+              |),
               [
                 M.call_closure (|
                   Ty.apply (Ty.path "*mut") [] [ Ty.path "i8" ],
@@ -5124,7 +5812,11 @@ Module sync.
             let order := M.alloc (| Ty.path "core::sync::atomic::Ordering", order |) in
             M.call_closure (|
               Ty.path "i8",
-              M.get_function (| "core::sync::atomic::atomic_sub", [], [ Ty.path "i8" ] |),
+              M.get_function (|
+                "core::sync::atomic::atomic_sub",
+                [],
+                [ Ty.path "i8"; Ty.path "i8" ]
+              |),
               [
                 M.call_closure (|
                   Ty.apply (Ty.path "*mut") [] [ Ty.path "i8" ],
@@ -5176,7 +5868,11 @@ Module sync.
             let order := M.alloc (| Ty.path "core::sync::atomic::Ordering", order |) in
             M.call_closure (|
               Ty.path "i8",
-              M.get_function (| "core::sync::atomic::atomic_and", [], [ Ty.path "i8" ] |),
+              M.get_function (|
+                "core::sync::atomic::atomic_and",
+                [],
+                [ Ty.path "i8"; Ty.path "i8" ]
+              |),
               [
                 M.call_closure (|
                   Ty.apply (Ty.path "*mut") [] [ Ty.path "i8" ],
@@ -5228,7 +5924,11 @@ Module sync.
             let order := M.alloc (| Ty.path "core::sync::atomic::Ordering", order |) in
             M.call_closure (|
               Ty.path "i8",
-              M.get_function (| "core::sync::atomic::atomic_nand", [], [ Ty.path "i8" ] |),
+              M.get_function (|
+                "core::sync::atomic::atomic_nand",
+                [],
+                [ Ty.path "i8"; Ty.path "i8" ]
+              |),
               [
                 M.call_closure (|
                   Ty.apply (Ty.path "*mut") [] [ Ty.path "i8" ],
@@ -5280,7 +5980,11 @@ Module sync.
             let order := M.alloc (| Ty.path "core::sync::atomic::Ordering", order |) in
             M.call_closure (|
               Ty.path "i8",
-              M.get_function (| "core::sync::atomic::atomic_or", [], [ Ty.path "i8" ] |),
+              M.get_function (|
+                "core::sync::atomic::atomic_or",
+                [],
+                [ Ty.path "i8"; Ty.path "i8" ]
+              |),
               [
                 M.call_closure (|
                   Ty.apply (Ty.path "*mut") [] [ Ty.path "i8" ],
@@ -5332,7 +6036,11 @@ Module sync.
             let order := M.alloc (| Ty.path "core::sync::atomic::Ordering", order |) in
             M.call_closure (|
               Ty.path "i8",
-              M.get_function (| "core::sync::atomic::atomic_xor", [], [ Ty.path "i8" ] |),
+              M.get_function (|
+                "core::sync::atomic::atomic_xor",
+                [],
+                [ Ty.path "i8"; Ty.path "i8" ]
+              |),
               [
                 M.call_closure (|
                   Ty.apply (Ty.path "*mut") [] [ Ty.path "i8" ],
@@ -5550,6 +6258,173 @@ Module sync.
         M.IsAssociatedFunction.C Self "fetch_update" fetch_update.
       Admitted.
       Global Typeclasses Opaque fetch_update.
+      
+      (*
+                  pub fn try_update(
+                      &self,
+                      set_order: Ordering,
+                      fetch_order: Ordering,
+                      f: impl FnMut($int_type) -> Option<$int_type>,
+                  ) -> Result<$int_type, $int_type> {
+                      // FIXME(atomic_try_update): this is currently an unstable alias to `fetch_update`;
+                      //      when stabilizing, turn `fetch_update` into a deprecated alias to `try_update`.
+                      self.fetch_update(set_order, fetch_order, f)
+                  }
+      *)
+      Definition try_update (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [ impl_FnMut_i8__arrow_Option_i8_ ], [ self; set_order; fetch_order; f ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "&") [] [ Ty.path "core::sync::atomic::AtomicI8" ],
+                self
+              |) in
+            let set_order := M.alloc (| Ty.path "core::sync::atomic::Ordering", set_order |) in
+            let fetch_order := M.alloc (| Ty.path "core::sync::atomic::Ordering", fetch_order |) in
+            let f := M.alloc (| impl_FnMut_i8__arrow_Option_i8_, f |) in
+            M.call_closure (|
+              Ty.apply (Ty.path "core::result::Result") [] [ Ty.path "i8"; Ty.path "i8" ],
+              M.get_associated_function (|
+                Ty.path "core::sync::atomic::AtomicI8",
+                "fetch_update",
+                [],
+                [ impl_FnMut_i8__arrow_Option_i8_ ]
+              |),
+              [
+                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
+                M.read (| set_order |);
+                M.read (| fetch_order |);
+                M.read (| f |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_try_update :
+        M.IsAssociatedFunction.C Self "try_update" try_update.
+      Admitted.
+      Global Typeclasses Opaque try_update.
+      
+      (*
+                  pub fn update(
+                      &self,
+                      set_order: Ordering,
+                      fetch_order: Ordering,
+                      mut f: impl FnMut($int_type) -> $int_type,
+                  ) -> $int_type {
+                      let mut prev = self.load(fetch_order);
+                      loop {
+                          match self.compare_exchange_weak(prev, f(prev), set_order, fetch_order) {
+                              Ok(x) => break x,
+                              Err(next_prev) => prev = next_prev,
+                          }
+                      }
+                  }
+      *)
+      Definition update (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [ impl_FnMut_i8__arrow_i8 ], [ self; set_order; fetch_order; f ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "&") [] [ Ty.path "core::sync::atomic::AtomicI8" ],
+                self
+              |) in
+            let set_order := M.alloc (| Ty.path "core::sync::atomic::Ordering", set_order |) in
+            let fetch_order := M.alloc (| Ty.path "core::sync::atomic::Ordering", fetch_order |) in
+            let f := M.alloc (| impl_FnMut_i8__arrow_i8, f |) in
+            M.read (|
+              let~ prev : Ty.path "i8" :=
+                M.call_closure (|
+                  Ty.path "i8",
+                  M.get_associated_function (|
+                    Ty.path "core::sync::atomic::AtomicI8",
+                    "load",
+                    [],
+                    []
+                  |),
+                  [
+                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
+                    M.read (| fetch_order |)
+                  ]
+                |) in
+              M.loop (|
+                Ty.path "i8",
+                ltac:(M.monadic
+                  (M.alloc (|
+                    Ty.tuple [],
+                    M.match_operator (|
+                      Ty.tuple [],
+                      M.alloc (|
+                        Ty.apply (Ty.path "core::result::Result") [] [ Ty.path "i8"; Ty.path "i8" ],
+                        M.call_closure (|
+                          Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [ Ty.path "i8"; Ty.path "i8" ],
+                          M.get_associated_function (|
+                            Ty.path "core::sync::atomic::AtomicI8",
+                            "compare_exchange_weak",
+                            [],
+                            []
+                          |),
+                          [
+                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
+                            M.read (| prev |);
+                            M.call_closure (|
+                              Ty.path "i8",
+                              M.get_trait_method (|
+                                "core::ops::function::FnMut",
+                                impl_FnMut_i8__arrow_i8,
+                                [],
+                                [ Ty.tuple [ Ty.path "i8" ] ],
+                                "call_mut",
+                                [],
+                                []
+                              |),
+                              [
+                                M.borrow (| Pointer.Kind.MutRef, f |);
+                                Value.Tuple [ M.read (| prev |) ]
+                              ]
+                            |);
+                            M.read (| set_order |);
+                            M.read (| fetch_order |)
+                          ]
+                        |)
+                      |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ0_0 :=
+                              M.SubPointer.get_struct_tuple_field (|
+                                γ,
+                                "core::result::Result::Ok",
+                                0
+                              |) in
+                            let x := M.copy (| Ty.path "i8", γ0_0 |) in
+                            M.never_to_any (| M.read (| M.break (||) |) |)));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ0_0 :=
+                              M.SubPointer.get_struct_tuple_field (|
+                                γ,
+                                "core::result::Result::Err",
+                                0
+                              |) in
+                            let next_prev := M.copy (| Ty.path "i8", γ0_0 |) in
+                            M.write (| prev, M.read (| next_prev |) |)))
+                      ]
+                    |)
+                  |)))
+              |)
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_update : M.IsAssociatedFunction.C Self "update" update.
+      Admitted.
+      Global Typeclasses Opaque update.
       
       (*
                   pub fn fetch_max(&self, val: $int_type, order: Ordering) -> $int_type {
@@ -6627,7 +7502,11 @@ Module sync.
             let order := M.alloc (| Ty.path "core::sync::atomic::Ordering", order |) in
             M.call_closure (|
               Ty.path "u8",
-              M.get_function (| "core::sync::atomic::atomic_add", [], [ Ty.path "u8" ] |),
+              M.get_function (|
+                "core::sync::atomic::atomic_add",
+                [],
+                [ Ty.path "u8"; Ty.path "u8" ]
+              |),
               [
                 M.call_closure (|
                   Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
@@ -6679,7 +7558,11 @@ Module sync.
             let order := M.alloc (| Ty.path "core::sync::atomic::Ordering", order |) in
             M.call_closure (|
               Ty.path "u8",
-              M.get_function (| "core::sync::atomic::atomic_sub", [], [ Ty.path "u8" ] |),
+              M.get_function (|
+                "core::sync::atomic::atomic_sub",
+                [],
+                [ Ty.path "u8"; Ty.path "u8" ]
+              |),
               [
                 M.call_closure (|
                   Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
@@ -6731,7 +7614,11 @@ Module sync.
             let order := M.alloc (| Ty.path "core::sync::atomic::Ordering", order |) in
             M.call_closure (|
               Ty.path "u8",
-              M.get_function (| "core::sync::atomic::atomic_and", [], [ Ty.path "u8" ] |),
+              M.get_function (|
+                "core::sync::atomic::atomic_and",
+                [],
+                [ Ty.path "u8"; Ty.path "u8" ]
+              |),
               [
                 M.call_closure (|
                   Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
@@ -6783,7 +7670,11 @@ Module sync.
             let order := M.alloc (| Ty.path "core::sync::atomic::Ordering", order |) in
             M.call_closure (|
               Ty.path "u8",
-              M.get_function (| "core::sync::atomic::atomic_nand", [], [ Ty.path "u8" ] |),
+              M.get_function (|
+                "core::sync::atomic::atomic_nand",
+                [],
+                [ Ty.path "u8"; Ty.path "u8" ]
+              |),
               [
                 M.call_closure (|
                   Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
@@ -6835,7 +7726,11 @@ Module sync.
             let order := M.alloc (| Ty.path "core::sync::atomic::Ordering", order |) in
             M.call_closure (|
               Ty.path "u8",
-              M.get_function (| "core::sync::atomic::atomic_or", [], [ Ty.path "u8" ] |),
+              M.get_function (|
+                "core::sync::atomic::atomic_or",
+                [],
+                [ Ty.path "u8"; Ty.path "u8" ]
+              |),
               [
                 M.call_closure (|
                   Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
@@ -6887,7 +7782,11 @@ Module sync.
             let order := M.alloc (| Ty.path "core::sync::atomic::Ordering", order |) in
             M.call_closure (|
               Ty.path "u8",
-              M.get_function (| "core::sync::atomic::atomic_xor", [], [ Ty.path "u8" ] |),
+              M.get_function (|
+                "core::sync::atomic::atomic_xor",
+                [],
+                [ Ty.path "u8"; Ty.path "u8" ]
+              |),
               [
                 M.call_closure (|
                   Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
@@ -7105,6 +8004,173 @@ Module sync.
         M.IsAssociatedFunction.C Self "fetch_update" fetch_update.
       Admitted.
       Global Typeclasses Opaque fetch_update.
+      
+      (*
+                  pub fn try_update(
+                      &self,
+                      set_order: Ordering,
+                      fetch_order: Ordering,
+                      f: impl FnMut($int_type) -> Option<$int_type>,
+                  ) -> Result<$int_type, $int_type> {
+                      // FIXME(atomic_try_update): this is currently an unstable alias to `fetch_update`;
+                      //      when stabilizing, turn `fetch_update` into a deprecated alias to `try_update`.
+                      self.fetch_update(set_order, fetch_order, f)
+                  }
+      *)
+      Definition try_update (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [ impl_FnMut_u8__arrow_Option_u8_ ], [ self; set_order; fetch_order; f ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "&") [] [ Ty.path "core::sync::atomic::AtomicU8" ],
+                self
+              |) in
+            let set_order := M.alloc (| Ty.path "core::sync::atomic::Ordering", set_order |) in
+            let fetch_order := M.alloc (| Ty.path "core::sync::atomic::Ordering", fetch_order |) in
+            let f := M.alloc (| impl_FnMut_u8__arrow_Option_u8_, f |) in
+            M.call_closure (|
+              Ty.apply (Ty.path "core::result::Result") [] [ Ty.path "u8"; Ty.path "u8" ],
+              M.get_associated_function (|
+                Ty.path "core::sync::atomic::AtomicU8",
+                "fetch_update",
+                [],
+                [ impl_FnMut_u8__arrow_Option_u8_ ]
+              |),
+              [
+                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
+                M.read (| set_order |);
+                M.read (| fetch_order |);
+                M.read (| f |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_try_update :
+        M.IsAssociatedFunction.C Self "try_update" try_update.
+      Admitted.
+      Global Typeclasses Opaque try_update.
+      
+      (*
+                  pub fn update(
+                      &self,
+                      set_order: Ordering,
+                      fetch_order: Ordering,
+                      mut f: impl FnMut($int_type) -> $int_type,
+                  ) -> $int_type {
+                      let mut prev = self.load(fetch_order);
+                      loop {
+                          match self.compare_exchange_weak(prev, f(prev), set_order, fetch_order) {
+                              Ok(x) => break x,
+                              Err(next_prev) => prev = next_prev,
+                          }
+                      }
+                  }
+      *)
+      Definition update (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [ impl_FnMut_u8__arrow_u8 ], [ self; set_order; fetch_order; f ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "&") [] [ Ty.path "core::sync::atomic::AtomicU8" ],
+                self
+              |) in
+            let set_order := M.alloc (| Ty.path "core::sync::atomic::Ordering", set_order |) in
+            let fetch_order := M.alloc (| Ty.path "core::sync::atomic::Ordering", fetch_order |) in
+            let f := M.alloc (| impl_FnMut_u8__arrow_u8, f |) in
+            M.read (|
+              let~ prev : Ty.path "u8" :=
+                M.call_closure (|
+                  Ty.path "u8",
+                  M.get_associated_function (|
+                    Ty.path "core::sync::atomic::AtomicU8",
+                    "load",
+                    [],
+                    []
+                  |),
+                  [
+                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
+                    M.read (| fetch_order |)
+                  ]
+                |) in
+              M.loop (|
+                Ty.path "u8",
+                ltac:(M.monadic
+                  (M.alloc (|
+                    Ty.tuple [],
+                    M.match_operator (|
+                      Ty.tuple [],
+                      M.alloc (|
+                        Ty.apply (Ty.path "core::result::Result") [] [ Ty.path "u8"; Ty.path "u8" ],
+                        M.call_closure (|
+                          Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [ Ty.path "u8"; Ty.path "u8" ],
+                          M.get_associated_function (|
+                            Ty.path "core::sync::atomic::AtomicU8",
+                            "compare_exchange_weak",
+                            [],
+                            []
+                          |),
+                          [
+                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
+                            M.read (| prev |);
+                            M.call_closure (|
+                              Ty.path "u8",
+                              M.get_trait_method (|
+                                "core::ops::function::FnMut",
+                                impl_FnMut_u8__arrow_u8,
+                                [],
+                                [ Ty.tuple [ Ty.path "u8" ] ],
+                                "call_mut",
+                                [],
+                                []
+                              |),
+                              [
+                                M.borrow (| Pointer.Kind.MutRef, f |);
+                                Value.Tuple [ M.read (| prev |) ]
+                              ]
+                            |);
+                            M.read (| set_order |);
+                            M.read (| fetch_order |)
+                          ]
+                        |)
+                      |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ0_0 :=
+                              M.SubPointer.get_struct_tuple_field (|
+                                γ,
+                                "core::result::Result::Ok",
+                                0
+                              |) in
+                            let x := M.copy (| Ty.path "u8", γ0_0 |) in
+                            M.never_to_any (| M.read (| M.break (||) |) |)));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ0_0 :=
+                              M.SubPointer.get_struct_tuple_field (|
+                                γ,
+                                "core::result::Result::Err",
+                                0
+                              |) in
+                            let next_prev := M.copy (| Ty.path "u8", γ0_0 |) in
+                            M.write (| prev, M.read (| next_prev |) |)))
+                      ]
+                    |)
+                  |)))
+              |)
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_update : M.IsAssociatedFunction.C Self "update" update.
+      Admitted.
+      Global Typeclasses Opaque update.
       
       (*
                   pub fn fetch_max(&self, val: $int_type, order: Ordering) -> $int_type {
@@ -8192,7 +9258,11 @@ Module sync.
             let order := M.alloc (| Ty.path "core::sync::atomic::Ordering", order |) in
             M.call_closure (|
               Ty.path "i16",
-              M.get_function (| "core::sync::atomic::atomic_add", [], [ Ty.path "i16" ] |),
+              M.get_function (|
+                "core::sync::atomic::atomic_add",
+                [],
+                [ Ty.path "i16"; Ty.path "i16" ]
+              |),
               [
                 M.call_closure (|
                   Ty.apply (Ty.path "*mut") [] [ Ty.path "i16" ],
@@ -8244,7 +9314,11 @@ Module sync.
             let order := M.alloc (| Ty.path "core::sync::atomic::Ordering", order |) in
             M.call_closure (|
               Ty.path "i16",
-              M.get_function (| "core::sync::atomic::atomic_sub", [], [ Ty.path "i16" ] |),
+              M.get_function (|
+                "core::sync::atomic::atomic_sub",
+                [],
+                [ Ty.path "i16"; Ty.path "i16" ]
+              |),
               [
                 M.call_closure (|
                   Ty.apply (Ty.path "*mut") [] [ Ty.path "i16" ],
@@ -8296,7 +9370,11 @@ Module sync.
             let order := M.alloc (| Ty.path "core::sync::atomic::Ordering", order |) in
             M.call_closure (|
               Ty.path "i16",
-              M.get_function (| "core::sync::atomic::atomic_and", [], [ Ty.path "i16" ] |),
+              M.get_function (|
+                "core::sync::atomic::atomic_and",
+                [],
+                [ Ty.path "i16"; Ty.path "i16" ]
+              |),
               [
                 M.call_closure (|
                   Ty.apply (Ty.path "*mut") [] [ Ty.path "i16" ],
@@ -8348,7 +9426,11 @@ Module sync.
             let order := M.alloc (| Ty.path "core::sync::atomic::Ordering", order |) in
             M.call_closure (|
               Ty.path "i16",
-              M.get_function (| "core::sync::atomic::atomic_nand", [], [ Ty.path "i16" ] |),
+              M.get_function (|
+                "core::sync::atomic::atomic_nand",
+                [],
+                [ Ty.path "i16"; Ty.path "i16" ]
+              |),
               [
                 M.call_closure (|
                   Ty.apply (Ty.path "*mut") [] [ Ty.path "i16" ],
@@ -8400,7 +9482,11 @@ Module sync.
             let order := M.alloc (| Ty.path "core::sync::atomic::Ordering", order |) in
             M.call_closure (|
               Ty.path "i16",
-              M.get_function (| "core::sync::atomic::atomic_or", [], [ Ty.path "i16" ] |),
+              M.get_function (|
+                "core::sync::atomic::atomic_or",
+                [],
+                [ Ty.path "i16"; Ty.path "i16" ]
+              |),
               [
                 M.call_closure (|
                   Ty.apply (Ty.path "*mut") [] [ Ty.path "i16" ],
@@ -8452,7 +9538,11 @@ Module sync.
             let order := M.alloc (| Ty.path "core::sync::atomic::Ordering", order |) in
             M.call_closure (|
               Ty.path "i16",
-              M.get_function (| "core::sync::atomic::atomic_xor", [], [ Ty.path "i16" ] |),
+              M.get_function (|
+                "core::sync::atomic::atomic_xor",
+                [],
+                [ Ty.path "i16"; Ty.path "i16" ]
+              |),
               [
                 M.call_closure (|
                   Ty.apply (Ty.path "*mut") [] [ Ty.path "i16" ],
@@ -8670,6 +9760,176 @@ Module sync.
         M.IsAssociatedFunction.C Self "fetch_update" fetch_update.
       Admitted.
       Global Typeclasses Opaque fetch_update.
+      
+      (*
+                  pub fn try_update(
+                      &self,
+                      set_order: Ordering,
+                      fetch_order: Ordering,
+                      f: impl FnMut($int_type) -> Option<$int_type>,
+                  ) -> Result<$int_type, $int_type> {
+                      // FIXME(atomic_try_update): this is currently an unstable alias to `fetch_update`;
+                      //      when stabilizing, turn `fetch_update` into a deprecated alias to `try_update`.
+                      self.fetch_update(set_order, fetch_order, f)
+                  }
+      *)
+      Definition try_update (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [ impl_FnMut_i16__arrow_Option_i16_ ], [ self; set_order; fetch_order; f ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "&") [] [ Ty.path "core::sync::atomic::AtomicI16" ],
+                self
+              |) in
+            let set_order := M.alloc (| Ty.path "core::sync::atomic::Ordering", set_order |) in
+            let fetch_order := M.alloc (| Ty.path "core::sync::atomic::Ordering", fetch_order |) in
+            let f := M.alloc (| impl_FnMut_i16__arrow_Option_i16_, f |) in
+            M.call_closure (|
+              Ty.apply (Ty.path "core::result::Result") [] [ Ty.path "i16"; Ty.path "i16" ],
+              M.get_associated_function (|
+                Ty.path "core::sync::atomic::AtomicI16",
+                "fetch_update",
+                [],
+                [ impl_FnMut_i16__arrow_Option_i16_ ]
+              |),
+              [
+                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
+                M.read (| set_order |);
+                M.read (| fetch_order |);
+                M.read (| f |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_try_update :
+        M.IsAssociatedFunction.C Self "try_update" try_update.
+      Admitted.
+      Global Typeclasses Opaque try_update.
+      
+      (*
+                  pub fn update(
+                      &self,
+                      set_order: Ordering,
+                      fetch_order: Ordering,
+                      mut f: impl FnMut($int_type) -> $int_type,
+                  ) -> $int_type {
+                      let mut prev = self.load(fetch_order);
+                      loop {
+                          match self.compare_exchange_weak(prev, f(prev), set_order, fetch_order) {
+                              Ok(x) => break x,
+                              Err(next_prev) => prev = next_prev,
+                          }
+                      }
+                  }
+      *)
+      Definition update (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [ impl_FnMut_i16__arrow_i16 ], [ self; set_order; fetch_order; f ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "&") [] [ Ty.path "core::sync::atomic::AtomicI16" ],
+                self
+              |) in
+            let set_order := M.alloc (| Ty.path "core::sync::atomic::Ordering", set_order |) in
+            let fetch_order := M.alloc (| Ty.path "core::sync::atomic::Ordering", fetch_order |) in
+            let f := M.alloc (| impl_FnMut_i16__arrow_i16, f |) in
+            M.read (|
+              let~ prev : Ty.path "i16" :=
+                M.call_closure (|
+                  Ty.path "i16",
+                  M.get_associated_function (|
+                    Ty.path "core::sync::atomic::AtomicI16",
+                    "load",
+                    [],
+                    []
+                  |),
+                  [
+                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
+                    M.read (| fetch_order |)
+                  ]
+                |) in
+              M.loop (|
+                Ty.path "i16",
+                ltac:(M.monadic
+                  (M.alloc (|
+                    Ty.tuple [],
+                    M.match_operator (|
+                      Ty.tuple [],
+                      M.alloc (|
+                        Ty.apply
+                          (Ty.path "core::result::Result")
+                          []
+                          [ Ty.path "i16"; Ty.path "i16" ],
+                        M.call_closure (|
+                          Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [ Ty.path "i16"; Ty.path "i16" ],
+                          M.get_associated_function (|
+                            Ty.path "core::sync::atomic::AtomicI16",
+                            "compare_exchange_weak",
+                            [],
+                            []
+                          |),
+                          [
+                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
+                            M.read (| prev |);
+                            M.call_closure (|
+                              Ty.path "i16",
+                              M.get_trait_method (|
+                                "core::ops::function::FnMut",
+                                impl_FnMut_i16__arrow_i16,
+                                [],
+                                [ Ty.tuple [ Ty.path "i16" ] ],
+                                "call_mut",
+                                [],
+                                []
+                              |),
+                              [
+                                M.borrow (| Pointer.Kind.MutRef, f |);
+                                Value.Tuple [ M.read (| prev |) ]
+                              ]
+                            |);
+                            M.read (| set_order |);
+                            M.read (| fetch_order |)
+                          ]
+                        |)
+                      |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ0_0 :=
+                              M.SubPointer.get_struct_tuple_field (|
+                                γ,
+                                "core::result::Result::Ok",
+                                0
+                              |) in
+                            let x := M.copy (| Ty.path "i16", γ0_0 |) in
+                            M.never_to_any (| M.read (| M.break (||) |) |)));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ0_0 :=
+                              M.SubPointer.get_struct_tuple_field (|
+                                γ,
+                                "core::result::Result::Err",
+                                0
+                              |) in
+                            let next_prev := M.copy (| Ty.path "i16", γ0_0 |) in
+                            M.write (| prev, M.read (| next_prev |) |)))
+                      ]
+                    |)
+                  |)))
+              |)
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_update : M.IsAssociatedFunction.C Self "update" update.
+      Admitted.
+      Global Typeclasses Opaque update.
       
       (*
                   pub fn fetch_max(&self, val: $int_type, order: Ordering) -> $int_type {
@@ -9757,7 +11017,11 @@ Module sync.
             let order := M.alloc (| Ty.path "core::sync::atomic::Ordering", order |) in
             M.call_closure (|
               Ty.path "u16",
-              M.get_function (| "core::sync::atomic::atomic_add", [], [ Ty.path "u16" ] |),
+              M.get_function (|
+                "core::sync::atomic::atomic_add",
+                [],
+                [ Ty.path "u16"; Ty.path "u16" ]
+              |),
               [
                 M.call_closure (|
                   Ty.apply (Ty.path "*mut") [] [ Ty.path "u16" ],
@@ -9809,7 +11073,11 @@ Module sync.
             let order := M.alloc (| Ty.path "core::sync::atomic::Ordering", order |) in
             M.call_closure (|
               Ty.path "u16",
-              M.get_function (| "core::sync::atomic::atomic_sub", [], [ Ty.path "u16" ] |),
+              M.get_function (|
+                "core::sync::atomic::atomic_sub",
+                [],
+                [ Ty.path "u16"; Ty.path "u16" ]
+              |),
               [
                 M.call_closure (|
                   Ty.apply (Ty.path "*mut") [] [ Ty.path "u16" ],
@@ -9861,7 +11129,11 @@ Module sync.
             let order := M.alloc (| Ty.path "core::sync::atomic::Ordering", order |) in
             M.call_closure (|
               Ty.path "u16",
-              M.get_function (| "core::sync::atomic::atomic_and", [], [ Ty.path "u16" ] |),
+              M.get_function (|
+                "core::sync::atomic::atomic_and",
+                [],
+                [ Ty.path "u16"; Ty.path "u16" ]
+              |),
               [
                 M.call_closure (|
                   Ty.apply (Ty.path "*mut") [] [ Ty.path "u16" ],
@@ -9913,7 +11185,11 @@ Module sync.
             let order := M.alloc (| Ty.path "core::sync::atomic::Ordering", order |) in
             M.call_closure (|
               Ty.path "u16",
-              M.get_function (| "core::sync::atomic::atomic_nand", [], [ Ty.path "u16" ] |),
+              M.get_function (|
+                "core::sync::atomic::atomic_nand",
+                [],
+                [ Ty.path "u16"; Ty.path "u16" ]
+              |),
               [
                 M.call_closure (|
                   Ty.apply (Ty.path "*mut") [] [ Ty.path "u16" ],
@@ -9965,7 +11241,11 @@ Module sync.
             let order := M.alloc (| Ty.path "core::sync::atomic::Ordering", order |) in
             M.call_closure (|
               Ty.path "u16",
-              M.get_function (| "core::sync::atomic::atomic_or", [], [ Ty.path "u16" ] |),
+              M.get_function (|
+                "core::sync::atomic::atomic_or",
+                [],
+                [ Ty.path "u16"; Ty.path "u16" ]
+              |),
               [
                 M.call_closure (|
                   Ty.apply (Ty.path "*mut") [] [ Ty.path "u16" ],
@@ -10017,7 +11297,11 @@ Module sync.
             let order := M.alloc (| Ty.path "core::sync::atomic::Ordering", order |) in
             M.call_closure (|
               Ty.path "u16",
-              M.get_function (| "core::sync::atomic::atomic_xor", [], [ Ty.path "u16" ] |),
+              M.get_function (|
+                "core::sync::atomic::atomic_xor",
+                [],
+                [ Ty.path "u16"; Ty.path "u16" ]
+              |),
               [
                 M.call_closure (|
                   Ty.apply (Ty.path "*mut") [] [ Ty.path "u16" ],
@@ -10235,6 +11519,176 @@ Module sync.
         M.IsAssociatedFunction.C Self "fetch_update" fetch_update.
       Admitted.
       Global Typeclasses Opaque fetch_update.
+      
+      (*
+                  pub fn try_update(
+                      &self,
+                      set_order: Ordering,
+                      fetch_order: Ordering,
+                      f: impl FnMut($int_type) -> Option<$int_type>,
+                  ) -> Result<$int_type, $int_type> {
+                      // FIXME(atomic_try_update): this is currently an unstable alias to `fetch_update`;
+                      //      when stabilizing, turn `fetch_update` into a deprecated alias to `try_update`.
+                      self.fetch_update(set_order, fetch_order, f)
+                  }
+      *)
+      Definition try_update (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [ impl_FnMut_u16__arrow_Option_u16_ ], [ self; set_order; fetch_order; f ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "&") [] [ Ty.path "core::sync::atomic::AtomicU16" ],
+                self
+              |) in
+            let set_order := M.alloc (| Ty.path "core::sync::atomic::Ordering", set_order |) in
+            let fetch_order := M.alloc (| Ty.path "core::sync::atomic::Ordering", fetch_order |) in
+            let f := M.alloc (| impl_FnMut_u16__arrow_Option_u16_, f |) in
+            M.call_closure (|
+              Ty.apply (Ty.path "core::result::Result") [] [ Ty.path "u16"; Ty.path "u16" ],
+              M.get_associated_function (|
+                Ty.path "core::sync::atomic::AtomicU16",
+                "fetch_update",
+                [],
+                [ impl_FnMut_u16__arrow_Option_u16_ ]
+              |),
+              [
+                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
+                M.read (| set_order |);
+                M.read (| fetch_order |);
+                M.read (| f |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_try_update :
+        M.IsAssociatedFunction.C Self "try_update" try_update.
+      Admitted.
+      Global Typeclasses Opaque try_update.
+      
+      (*
+                  pub fn update(
+                      &self,
+                      set_order: Ordering,
+                      fetch_order: Ordering,
+                      mut f: impl FnMut($int_type) -> $int_type,
+                  ) -> $int_type {
+                      let mut prev = self.load(fetch_order);
+                      loop {
+                          match self.compare_exchange_weak(prev, f(prev), set_order, fetch_order) {
+                              Ok(x) => break x,
+                              Err(next_prev) => prev = next_prev,
+                          }
+                      }
+                  }
+      *)
+      Definition update (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [ impl_FnMut_u16__arrow_u16 ], [ self; set_order; fetch_order; f ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "&") [] [ Ty.path "core::sync::atomic::AtomicU16" ],
+                self
+              |) in
+            let set_order := M.alloc (| Ty.path "core::sync::atomic::Ordering", set_order |) in
+            let fetch_order := M.alloc (| Ty.path "core::sync::atomic::Ordering", fetch_order |) in
+            let f := M.alloc (| impl_FnMut_u16__arrow_u16, f |) in
+            M.read (|
+              let~ prev : Ty.path "u16" :=
+                M.call_closure (|
+                  Ty.path "u16",
+                  M.get_associated_function (|
+                    Ty.path "core::sync::atomic::AtomicU16",
+                    "load",
+                    [],
+                    []
+                  |),
+                  [
+                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
+                    M.read (| fetch_order |)
+                  ]
+                |) in
+              M.loop (|
+                Ty.path "u16",
+                ltac:(M.monadic
+                  (M.alloc (|
+                    Ty.tuple [],
+                    M.match_operator (|
+                      Ty.tuple [],
+                      M.alloc (|
+                        Ty.apply
+                          (Ty.path "core::result::Result")
+                          []
+                          [ Ty.path "u16"; Ty.path "u16" ],
+                        M.call_closure (|
+                          Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [ Ty.path "u16"; Ty.path "u16" ],
+                          M.get_associated_function (|
+                            Ty.path "core::sync::atomic::AtomicU16",
+                            "compare_exchange_weak",
+                            [],
+                            []
+                          |),
+                          [
+                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
+                            M.read (| prev |);
+                            M.call_closure (|
+                              Ty.path "u16",
+                              M.get_trait_method (|
+                                "core::ops::function::FnMut",
+                                impl_FnMut_u16__arrow_u16,
+                                [],
+                                [ Ty.tuple [ Ty.path "u16" ] ],
+                                "call_mut",
+                                [],
+                                []
+                              |),
+                              [
+                                M.borrow (| Pointer.Kind.MutRef, f |);
+                                Value.Tuple [ M.read (| prev |) ]
+                              ]
+                            |);
+                            M.read (| set_order |);
+                            M.read (| fetch_order |)
+                          ]
+                        |)
+                      |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ0_0 :=
+                              M.SubPointer.get_struct_tuple_field (|
+                                γ,
+                                "core::result::Result::Ok",
+                                0
+                              |) in
+                            let x := M.copy (| Ty.path "u16", γ0_0 |) in
+                            M.never_to_any (| M.read (| M.break (||) |) |)));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ0_0 :=
+                              M.SubPointer.get_struct_tuple_field (|
+                                γ,
+                                "core::result::Result::Err",
+                                0
+                              |) in
+                            let next_prev := M.copy (| Ty.path "u16", γ0_0 |) in
+                            M.write (| prev, M.read (| next_prev |) |)))
+                      ]
+                    |)
+                  |)))
+              |)
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_update : M.IsAssociatedFunction.C Self "update" update.
+      Admitted.
+      Global Typeclasses Opaque update.
       
       (*
                   pub fn fetch_max(&self, val: $int_type, order: Ordering) -> $int_type {
@@ -11322,7 +12776,11 @@ Module sync.
             let order := M.alloc (| Ty.path "core::sync::atomic::Ordering", order |) in
             M.call_closure (|
               Ty.path "i32",
-              M.get_function (| "core::sync::atomic::atomic_add", [], [ Ty.path "i32" ] |),
+              M.get_function (|
+                "core::sync::atomic::atomic_add",
+                [],
+                [ Ty.path "i32"; Ty.path "i32" ]
+              |),
               [
                 M.call_closure (|
                   Ty.apply (Ty.path "*mut") [] [ Ty.path "i32" ],
@@ -11374,7 +12832,11 @@ Module sync.
             let order := M.alloc (| Ty.path "core::sync::atomic::Ordering", order |) in
             M.call_closure (|
               Ty.path "i32",
-              M.get_function (| "core::sync::atomic::atomic_sub", [], [ Ty.path "i32" ] |),
+              M.get_function (|
+                "core::sync::atomic::atomic_sub",
+                [],
+                [ Ty.path "i32"; Ty.path "i32" ]
+              |),
               [
                 M.call_closure (|
                   Ty.apply (Ty.path "*mut") [] [ Ty.path "i32" ],
@@ -11426,7 +12888,11 @@ Module sync.
             let order := M.alloc (| Ty.path "core::sync::atomic::Ordering", order |) in
             M.call_closure (|
               Ty.path "i32",
-              M.get_function (| "core::sync::atomic::atomic_and", [], [ Ty.path "i32" ] |),
+              M.get_function (|
+                "core::sync::atomic::atomic_and",
+                [],
+                [ Ty.path "i32"; Ty.path "i32" ]
+              |),
               [
                 M.call_closure (|
                   Ty.apply (Ty.path "*mut") [] [ Ty.path "i32" ],
@@ -11478,7 +12944,11 @@ Module sync.
             let order := M.alloc (| Ty.path "core::sync::atomic::Ordering", order |) in
             M.call_closure (|
               Ty.path "i32",
-              M.get_function (| "core::sync::atomic::atomic_nand", [], [ Ty.path "i32" ] |),
+              M.get_function (|
+                "core::sync::atomic::atomic_nand",
+                [],
+                [ Ty.path "i32"; Ty.path "i32" ]
+              |),
               [
                 M.call_closure (|
                   Ty.apply (Ty.path "*mut") [] [ Ty.path "i32" ],
@@ -11530,7 +13000,11 @@ Module sync.
             let order := M.alloc (| Ty.path "core::sync::atomic::Ordering", order |) in
             M.call_closure (|
               Ty.path "i32",
-              M.get_function (| "core::sync::atomic::atomic_or", [], [ Ty.path "i32" ] |),
+              M.get_function (|
+                "core::sync::atomic::atomic_or",
+                [],
+                [ Ty.path "i32"; Ty.path "i32" ]
+              |),
               [
                 M.call_closure (|
                   Ty.apply (Ty.path "*mut") [] [ Ty.path "i32" ],
@@ -11582,7 +13056,11 @@ Module sync.
             let order := M.alloc (| Ty.path "core::sync::atomic::Ordering", order |) in
             M.call_closure (|
               Ty.path "i32",
-              M.get_function (| "core::sync::atomic::atomic_xor", [], [ Ty.path "i32" ] |),
+              M.get_function (|
+                "core::sync::atomic::atomic_xor",
+                [],
+                [ Ty.path "i32"; Ty.path "i32" ]
+              |),
               [
                 M.call_closure (|
                   Ty.apply (Ty.path "*mut") [] [ Ty.path "i32" ],
@@ -11800,6 +13278,176 @@ Module sync.
         M.IsAssociatedFunction.C Self "fetch_update" fetch_update.
       Admitted.
       Global Typeclasses Opaque fetch_update.
+      
+      (*
+                  pub fn try_update(
+                      &self,
+                      set_order: Ordering,
+                      fetch_order: Ordering,
+                      f: impl FnMut($int_type) -> Option<$int_type>,
+                  ) -> Result<$int_type, $int_type> {
+                      // FIXME(atomic_try_update): this is currently an unstable alias to `fetch_update`;
+                      //      when stabilizing, turn `fetch_update` into a deprecated alias to `try_update`.
+                      self.fetch_update(set_order, fetch_order, f)
+                  }
+      *)
+      Definition try_update (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [ impl_FnMut_i32__arrow_Option_i32_ ], [ self; set_order; fetch_order; f ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "&") [] [ Ty.path "core::sync::atomic::AtomicI32" ],
+                self
+              |) in
+            let set_order := M.alloc (| Ty.path "core::sync::atomic::Ordering", set_order |) in
+            let fetch_order := M.alloc (| Ty.path "core::sync::atomic::Ordering", fetch_order |) in
+            let f := M.alloc (| impl_FnMut_i32__arrow_Option_i32_, f |) in
+            M.call_closure (|
+              Ty.apply (Ty.path "core::result::Result") [] [ Ty.path "i32"; Ty.path "i32" ],
+              M.get_associated_function (|
+                Ty.path "core::sync::atomic::AtomicI32",
+                "fetch_update",
+                [],
+                [ impl_FnMut_i32__arrow_Option_i32_ ]
+              |),
+              [
+                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
+                M.read (| set_order |);
+                M.read (| fetch_order |);
+                M.read (| f |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_try_update :
+        M.IsAssociatedFunction.C Self "try_update" try_update.
+      Admitted.
+      Global Typeclasses Opaque try_update.
+      
+      (*
+                  pub fn update(
+                      &self,
+                      set_order: Ordering,
+                      fetch_order: Ordering,
+                      mut f: impl FnMut($int_type) -> $int_type,
+                  ) -> $int_type {
+                      let mut prev = self.load(fetch_order);
+                      loop {
+                          match self.compare_exchange_weak(prev, f(prev), set_order, fetch_order) {
+                              Ok(x) => break x,
+                              Err(next_prev) => prev = next_prev,
+                          }
+                      }
+                  }
+      *)
+      Definition update (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [ impl_FnMut_i32__arrow_i32 ], [ self; set_order; fetch_order; f ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "&") [] [ Ty.path "core::sync::atomic::AtomicI32" ],
+                self
+              |) in
+            let set_order := M.alloc (| Ty.path "core::sync::atomic::Ordering", set_order |) in
+            let fetch_order := M.alloc (| Ty.path "core::sync::atomic::Ordering", fetch_order |) in
+            let f := M.alloc (| impl_FnMut_i32__arrow_i32, f |) in
+            M.read (|
+              let~ prev : Ty.path "i32" :=
+                M.call_closure (|
+                  Ty.path "i32",
+                  M.get_associated_function (|
+                    Ty.path "core::sync::atomic::AtomicI32",
+                    "load",
+                    [],
+                    []
+                  |),
+                  [
+                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
+                    M.read (| fetch_order |)
+                  ]
+                |) in
+              M.loop (|
+                Ty.path "i32",
+                ltac:(M.monadic
+                  (M.alloc (|
+                    Ty.tuple [],
+                    M.match_operator (|
+                      Ty.tuple [],
+                      M.alloc (|
+                        Ty.apply
+                          (Ty.path "core::result::Result")
+                          []
+                          [ Ty.path "i32"; Ty.path "i32" ],
+                        M.call_closure (|
+                          Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [ Ty.path "i32"; Ty.path "i32" ],
+                          M.get_associated_function (|
+                            Ty.path "core::sync::atomic::AtomicI32",
+                            "compare_exchange_weak",
+                            [],
+                            []
+                          |),
+                          [
+                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
+                            M.read (| prev |);
+                            M.call_closure (|
+                              Ty.path "i32",
+                              M.get_trait_method (|
+                                "core::ops::function::FnMut",
+                                impl_FnMut_i32__arrow_i32,
+                                [],
+                                [ Ty.tuple [ Ty.path "i32" ] ],
+                                "call_mut",
+                                [],
+                                []
+                              |),
+                              [
+                                M.borrow (| Pointer.Kind.MutRef, f |);
+                                Value.Tuple [ M.read (| prev |) ]
+                              ]
+                            |);
+                            M.read (| set_order |);
+                            M.read (| fetch_order |)
+                          ]
+                        |)
+                      |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ0_0 :=
+                              M.SubPointer.get_struct_tuple_field (|
+                                γ,
+                                "core::result::Result::Ok",
+                                0
+                              |) in
+                            let x := M.copy (| Ty.path "i32", γ0_0 |) in
+                            M.never_to_any (| M.read (| M.break (||) |) |)));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ0_0 :=
+                              M.SubPointer.get_struct_tuple_field (|
+                                γ,
+                                "core::result::Result::Err",
+                                0
+                              |) in
+                            let next_prev := M.copy (| Ty.path "i32", γ0_0 |) in
+                            M.write (| prev, M.read (| next_prev |) |)))
+                      ]
+                    |)
+                  |)))
+              |)
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_update : M.IsAssociatedFunction.C Self "update" update.
+      Admitted.
+      Global Typeclasses Opaque update.
       
       (*
                   pub fn fetch_max(&self, val: $int_type, order: Ordering) -> $int_type {
@@ -12887,7 +14535,11 @@ Module sync.
             let order := M.alloc (| Ty.path "core::sync::atomic::Ordering", order |) in
             M.call_closure (|
               Ty.path "u32",
-              M.get_function (| "core::sync::atomic::atomic_add", [], [ Ty.path "u32" ] |),
+              M.get_function (|
+                "core::sync::atomic::atomic_add",
+                [],
+                [ Ty.path "u32"; Ty.path "u32" ]
+              |),
               [
                 M.call_closure (|
                   Ty.apply (Ty.path "*mut") [] [ Ty.path "u32" ],
@@ -12939,7 +14591,11 @@ Module sync.
             let order := M.alloc (| Ty.path "core::sync::atomic::Ordering", order |) in
             M.call_closure (|
               Ty.path "u32",
-              M.get_function (| "core::sync::atomic::atomic_sub", [], [ Ty.path "u32" ] |),
+              M.get_function (|
+                "core::sync::atomic::atomic_sub",
+                [],
+                [ Ty.path "u32"; Ty.path "u32" ]
+              |),
               [
                 M.call_closure (|
                   Ty.apply (Ty.path "*mut") [] [ Ty.path "u32" ],
@@ -12991,7 +14647,11 @@ Module sync.
             let order := M.alloc (| Ty.path "core::sync::atomic::Ordering", order |) in
             M.call_closure (|
               Ty.path "u32",
-              M.get_function (| "core::sync::atomic::atomic_and", [], [ Ty.path "u32" ] |),
+              M.get_function (|
+                "core::sync::atomic::atomic_and",
+                [],
+                [ Ty.path "u32"; Ty.path "u32" ]
+              |),
               [
                 M.call_closure (|
                   Ty.apply (Ty.path "*mut") [] [ Ty.path "u32" ],
@@ -13043,7 +14703,11 @@ Module sync.
             let order := M.alloc (| Ty.path "core::sync::atomic::Ordering", order |) in
             M.call_closure (|
               Ty.path "u32",
-              M.get_function (| "core::sync::atomic::atomic_nand", [], [ Ty.path "u32" ] |),
+              M.get_function (|
+                "core::sync::atomic::atomic_nand",
+                [],
+                [ Ty.path "u32"; Ty.path "u32" ]
+              |),
               [
                 M.call_closure (|
                   Ty.apply (Ty.path "*mut") [] [ Ty.path "u32" ],
@@ -13095,7 +14759,11 @@ Module sync.
             let order := M.alloc (| Ty.path "core::sync::atomic::Ordering", order |) in
             M.call_closure (|
               Ty.path "u32",
-              M.get_function (| "core::sync::atomic::atomic_or", [], [ Ty.path "u32" ] |),
+              M.get_function (|
+                "core::sync::atomic::atomic_or",
+                [],
+                [ Ty.path "u32"; Ty.path "u32" ]
+              |),
               [
                 M.call_closure (|
                   Ty.apply (Ty.path "*mut") [] [ Ty.path "u32" ],
@@ -13147,7 +14815,11 @@ Module sync.
             let order := M.alloc (| Ty.path "core::sync::atomic::Ordering", order |) in
             M.call_closure (|
               Ty.path "u32",
-              M.get_function (| "core::sync::atomic::atomic_xor", [], [ Ty.path "u32" ] |),
+              M.get_function (|
+                "core::sync::atomic::atomic_xor",
+                [],
+                [ Ty.path "u32"; Ty.path "u32" ]
+              |),
               [
                 M.call_closure (|
                   Ty.apply (Ty.path "*mut") [] [ Ty.path "u32" ],
@@ -13365,6 +15037,176 @@ Module sync.
         M.IsAssociatedFunction.C Self "fetch_update" fetch_update.
       Admitted.
       Global Typeclasses Opaque fetch_update.
+      
+      (*
+                  pub fn try_update(
+                      &self,
+                      set_order: Ordering,
+                      fetch_order: Ordering,
+                      f: impl FnMut($int_type) -> Option<$int_type>,
+                  ) -> Result<$int_type, $int_type> {
+                      // FIXME(atomic_try_update): this is currently an unstable alias to `fetch_update`;
+                      //      when stabilizing, turn `fetch_update` into a deprecated alias to `try_update`.
+                      self.fetch_update(set_order, fetch_order, f)
+                  }
+      *)
+      Definition try_update (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [ impl_FnMut_u32__arrow_Option_u32_ ], [ self; set_order; fetch_order; f ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "&") [] [ Ty.path "core::sync::atomic::AtomicU32" ],
+                self
+              |) in
+            let set_order := M.alloc (| Ty.path "core::sync::atomic::Ordering", set_order |) in
+            let fetch_order := M.alloc (| Ty.path "core::sync::atomic::Ordering", fetch_order |) in
+            let f := M.alloc (| impl_FnMut_u32__arrow_Option_u32_, f |) in
+            M.call_closure (|
+              Ty.apply (Ty.path "core::result::Result") [] [ Ty.path "u32"; Ty.path "u32" ],
+              M.get_associated_function (|
+                Ty.path "core::sync::atomic::AtomicU32",
+                "fetch_update",
+                [],
+                [ impl_FnMut_u32__arrow_Option_u32_ ]
+              |),
+              [
+                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
+                M.read (| set_order |);
+                M.read (| fetch_order |);
+                M.read (| f |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_try_update :
+        M.IsAssociatedFunction.C Self "try_update" try_update.
+      Admitted.
+      Global Typeclasses Opaque try_update.
+      
+      (*
+                  pub fn update(
+                      &self,
+                      set_order: Ordering,
+                      fetch_order: Ordering,
+                      mut f: impl FnMut($int_type) -> $int_type,
+                  ) -> $int_type {
+                      let mut prev = self.load(fetch_order);
+                      loop {
+                          match self.compare_exchange_weak(prev, f(prev), set_order, fetch_order) {
+                              Ok(x) => break x,
+                              Err(next_prev) => prev = next_prev,
+                          }
+                      }
+                  }
+      *)
+      Definition update (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [ impl_FnMut_u32__arrow_u32 ], [ self; set_order; fetch_order; f ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "&") [] [ Ty.path "core::sync::atomic::AtomicU32" ],
+                self
+              |) in
+            let set_order := M.alloc (| Ty.path "core::sync::atomic::Ordering", set_order |) in
+            let fetch_order := M.alloc (| Ty.path "core::sync::atomic::Ordering", fetch_order |) in
+            let f := M.alloc (| impl_FnMut_u32__arrow_u32, f |) in
+            M.read (|
+              let~ prev : Ty.path "u32" :=
+                M.call_closure (|
+                  Ty.path "u32",
+                  M.get_associated_function (|
+                    Ty.path "core::sync::atomic::AtomicU32",
+                    "load",
+                    [],
+                    []
+                  |),
+                  [
+                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
+                    M.read (| fetch_order |)
+                  ]
+                |) in
+              M.loop (|
+                Ty.path "u32",
+                ltac:(M.monadic
+                  (M.alloc (|
+                    Ty.tuple [],
+                    M.match_operator (|
+                      Ty.tuple [],
+                      M.alloc (|
+                        Ty.apply
+                          (Ty.path "core::result::Result")
+                          []
+                          [ Ty.path "u32"; Ty.path "u32" ],
+                        M.call_closure (|
+                          Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [ Ty.path "u32"; Ty.path "u32" ],
+                          M.get_associated_function (|
+                            Ty.path "core::sync::atomic::AtomicU32",
+                            "compare_exchange_weak",
+                            [],
+                            []
+                          |),
+                          [
+                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
+                            M.read (| prev |);
+                            M.call_closure (|
+                              Ty.path "u32",
+                              M.get_trait_method (|
+                                "core::ops::function::FnMut",
+                                impl_FnMut_u32__arrow_u32,
+                                [],
+                                [ Ty.tuple [ Ty.path "u32" ] ],
+                                "call_mut",
+                                [],
+                                []
+                              |),
+                              [
+                                M.borrow (| Pointer.Kind.MutRef, f |);
+                                Value.Tuple [ M.read (| prev |) ]
+                              ]
+                            |);
+                            M.read (| set_order |);
+                            M.read (| fetch_order |)
+                          ]
+                        |)
+                      |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ0_0 :=
+                              M.SubPointer.get_struct_tuple_field (|
+                                γ,
+                                "core::result::Result::Ok",
+                                0
+                              |) in
+                            let x := M.copy (| Ty.path "u32", γ0_0 |) in
+                            M.never_to_any (| M.read (| M.break (||) |) |)));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ0_0 :=
+                              M.SubPointer.get_struct_tuple_field (|
+                                γ,
+                                "core::result::Result::Err",
+                                0
+                              |) in
+                            let next_prev := M.copy (| Ty.path "u32", γ0_0 |) in
+                            M.write (| prev, M.read (| next_prev |) |)))
+                      ]
+                    |)
+                  |)))
+              |)
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_update : M.IsAssociatedFunction.C Self "update" update.
+      Admitted.
+      Global Typeclasses Opaque update.
       
       (*
                   pub fn fetch_max(&self, val: $int_type, order: Ordering) -> $int_type {
@@ -14452,7 +16294,11 @@ Module sync.
             let order := M.alloc (| Ty.path "core::sync::atomic::Ordering", order |) in
             M.call_closure (|
               Ty.path "i64",
-              M.get_function (| "core::sync::atomic::atomic_add", [], [ Ty.path "i64" ] |),
+              M.get_function (|
+                "core::sync::atomic::atomic_add",
+                [],
+                [ Ty.path "i64"; Ty.path "i64" ]
+              |),
               [
                 M.call_closure (|
                   Ty.apply (Ty.path "*mut") [] [ Ty.path "i64" ],
@@ -14504,7 +16350,11 @@ Module sync.
             let order := M.alloc (| Ty.path "core::sync::atomic::Ordering", order |) in
             M.call_closure (|
               Ty.path "i64",
-              M.get_function (| "core::sync::atomic::atomic_sub", [], [ Ty.path "i64" ] |),
+              M.get_function (|
+                "core::sync::atomic::atomic_sub",
+                [],
+                [ Ty.path "i64"; Ty.path "i64" ]
+              |),
               [
                 M.call_closure (|
                   Ty.apply (Ty.path "*mut") [] [ Ty.path "i64" ],
@@ -14556,7 +16406,11 @@ Module sync.
             let order := M.alloc (| Ty.path "core::sync::atomic::Ordering", order |) in
             M.call_closure (|
               Ty.path "i64",
-              M.get_function (| "core::sync::atomic::atomic_and", [], [ Ty.path "i64" ] |),
+              M.get_function (|
+                "core::sync::atomic::atomic_and",
+                [],
+                [ Ty.path "i64"; Ty.path "i64" ]
+              |),
               [
                 M.call_closure (|
                   Ty.apply (Ty.path "*mut") [] [ Ty.path "i64" ],
@@ -14608,7 +16462,11 @@ Module sync.
             let order := M.alloc (| Ty.path "core::sync::atomic::Ordering", order |) in
             M.call_closure (|
               Ty.path "i64",
-              M.get_function (| "core::sync::atomic::atomic_nand", [], [ Ty.path "i64" ] |),
+              M.get_function (|
+                "core::sync::atomic::atomic_nand",
+                [],
+                [ Ty.path "i64"; Ty.path "i64" ]
+              |),
               [
                 M.call_closure (|
                   Ty.apply (Ty.path "*mut") [] [ Ty.path "i64" ],
@@ -14660,7 +16518,11 @@ Module sync.
             let order := M.alloc (| Ty.path "core::sync::atomic::Ordering", order |) in
             M.call_closure (|
               Ty.path "i64",
-              M.get_function (| "core::sync::atomic::atomic_or", [], [ Ty.path "i64" ] |),
+              M.get_function (|
+                "core::sync::atomic::atomic_or",
+                [],
+                [ Ty.path "i64"; Ty.path "i64" ]
+              |),
               [
                 M.call_closure (|
                   Ty.apply (Ty.path "*mut") [] [ Ty.path "i64" ],
@@ -14712,7 +16574,11 @@ Module sync.
             let order := M.alloc (| Ty.path "core::sync::atomic::Ordering", order |) in
             M.call_closure (|
               Ty.path "i64",
-              M.get_function (| "core::sync::atomic::atomic_xor", [], [ Ty.path "i64" ] |),
+              M.get_function (|
+                "core::sync::atomic::atomic_xor",
+                [],
+                [ Ty.path "i64"; Ty.path "i64" ]
+              |),
               [
                 M.call_closure (|
                   Ty.apply (Ty.path "*mut") [] [ Ty.path "i64" ],
@@ -14930,6 +16796,176 @@ Module sync.
         M.IsAssociatedFunction.C Self "fetch_update" fetch_update.
       Admitted.
       Global Typeclasses Opaque fetch_update.
+      
+      (*
+                  pub fn try_update(
+                      &self,
+                      set_order: Ordering,
+                      fetch_order: Ordering,
+                      f: impl FnMut($int_type) -> Option<$int_type>,
+                  ) -> Result<$int_type, $int_type> {
+                      // FIXME(atomic_try_update): this is currently an unstable alias to `fetch_update`;
+                      //      when stabilizing, turn `fetch_update` into a deprecated alias to `try_update`.
+                      self.fetch_update(set_order, fetch_order, f)
+                  }
+      *)
+      Definition try_update (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [ impl_FnMut_i64__arrow_Option_i64_ ], [ self; set_order; fetch_order; f ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "&") [] [ Ty.path "core::sync::atomic::AtomicI64" ],
+                self
+              |) in
+            let set_order := M.alloc (| Ty.path "core::sync::atomic::Ordering", set_order |) in
+            let fetch_order := M.alloc (| Ty.path "core::sync::atomic::Ordering", fetch_order |) in
+            let f := M.alloc (| impl_FnMut_i64__arrow_Option_i64_, f |) in
+            M.call_closure (|
+              Ty.apply (Ty.path "core::result::Result") [] [ Ty.path "i64"; Ty.path "i64" ],
+              M.get_associated_function (|
+                Ty.path "core::sync::atomic::AtomicI64",
+                "fetch_update",
+                [],
+                [ impl_FnMut_i64__arrow_Option_i64_ ]
+              |),
+              [
+                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
+                M.read (| set_order |);
+                M.read (| fetch_order |);
+                M.read (| f |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_try_update :
+        M.IsAssociatedFunction.C Self "try_update" try_update.
+      Admitted.
+      Global Typeclasses Opaque try_update.
+      
+      (*
+                  pub fn update(
+                      &self,
+                      set_order: Ordering,
+                      fetch_order: Ordering,
+                      mut f: impl FnMut($int_type) -> $int_type,
+                  ) -> $int_type {
+                      let mut prev = self.load(fetch_order);
+                      loop {
+                          match self.compare_exchange_weak(prev, f(prev), set_order, fetch_order) {
+                              Ok(x) => break x,
+                              Err(next_prev) => prev = next_prev,
+                          }
+                      }
+                  }
+      *)
+      Definition update (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [ impl_FnMut_i64__arrow_i64 ], [ self; set_order; fetch_order; f ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "&") [] [ Ty.path "core::sync::atomic::AtomicI64" ],
+                self
+              |) in
+            let set_order := M.alloc (| Ty.path "core::sync::atomic::Ordering", set_order |) in
+            let fetch_order := M.alloc (| Ty.path "core::sync::atomic::Ordering", fetch_order |) in
+            let f := M.alloc (| impl_FnMut_i64__arrow_i64, f |) in
+            M.read (|
+              let~ prev : Ty.path "i64" :=
+                M.call_closure (|
+                  Ty.path "i64",
+                  M.get_associated_function (|
+                    Ty.path "core::sync::atomic::AtomicI64",
+                    "load",
+                    [],
+                    []
+                  |),
+                  [
+                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
+                    M.read (| fetch_order |)
+                  ]
+                |) in
+              M.loop (|
+                Ty.path "i64",
+                ltac:(M.monadic
+                  (M.alloc (|
+                    Ty.tuple [],
+                    M.match_operator (|
+                      Ty.tuple [],
+                      M.alloc (|
+                        Ty.apply
+                          (Ty.path "core::result::Result")
+                          []
+                          [ Ty.path "i64"; Ty.path "i64" ],
+                        M.call_closure (|
+                          Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [ Ty.path "i64"; Ty.path "i64" ],
+                          M.get_associated_function (|
+                            Ty.path "core::sync::atomic::AtomicI64",
+                            "compare_exchange_weak",
+                            [],
+                            []
+                          |),
+                          [
+                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
+                            M.read (| prev |);
+                            M.call_closure (|
+                              Ty.path "i64",
+                              M.get_trait_method (|
+                                "core::ops::function::FnMut",
+                                impl_FnMut_i64__arrow_i64,
+                                [],
+                                [ Ty.tuple [ Ty.path "i64" ] ],
+                                "call_mut",
+                                [],
+                                []
+                              |),
+                              [
+                                M.borrow (| Pointer.Kind.MutRef, f |);
+                                Value.Tuple [ M.read (| prev |) ]
+                              ]
+                            |);
+                            M.read (| set_order |);
+                            M.read (| fetch_order |)
+                          ]
+                        |)
+                      |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ0_0 :=
+                              M.SubPointer.get_struct_tuple_field (|
+                                γ,
+                                "core::result::Result::Ok",
+                                0
+                              |) in
+                            let x := M.copy (| Ty.path "i64", γ0_0 |) in
+                            M.never_to_any (| M.read (| M.break (||) |) |)));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ0_0 :=
+                              M.SubPointer.get_struct_tuple_field (|
+                                γ,
+                                "core::result::Result::Err",
+                                0
+                              |) in
+                            let next_prev := M.copy (| Ty.path "i64", γ0_0 |) in
+                            M.write (| prev, M.read (| next_prev |) |)))
+                      ]
+                    |)
+                  |)))
+              |)
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_update : M.IsAssociatedFunction.C Self "update" update.
+      Admitted.
+      Global Typeclasses Opaque update.
       
       (*
                   pub fn fetch_max(&self, val: $int_type, order: Ordering) -> $int_type {
@@ -16017,7 +18053,11 @@ Module sync.
             let order := M.alloc (| Ty.path "core::sync::atomic::Ordering", order |) in
             M.call_closure (|
               Ty.path "u64",
-              M.get_function (| "core::sync::atomic::atomic_add", [], [ Ty.path "u64" ] |),
+              M.get_function (|
+                "core::sync::atomic::atomic_add",
+                [],
+                [ Ty.path "u64"; Ty.path "u64" ]
+              |),
               [
                 M.call_closure (|
                   Ty.apply (Ty.path "*mut") [] [ Ty.path "u64" ],
@@ -16069,7 +18109,11 @@ Module sync.
             let order := M.alloc (| Ty.path "core::sync::atomic::Ordering", order |) in
             M.call_closure (|
               Ty.path "u64",
-              M.get_function (| "core::sync::atomic::atomic_sub", [], [ Ty.path "u64" ] |),
+              M.get_function (|
+                "core::sync::atomic::atomic_sub",
+                [],
+                [ Ty.path "u64"; Ty.path "u64" ]
+              |),
               [
                 M.call_closure (|
                   Ty.apply (Ty.path "*mut") [] [ Ty.path "u64" ],
@@ -16121,7 +18165,11 @@ Module sync.
             let order := M.alloc (| Ty.path "core::sync::atomic::Ordering", order |) in
             M.call_closure (|
               Ty.path "u64",
-              M.get_function (| "core::sync::atomic::atomic_and", [], [ Ty.path "u64" ] |),
+              M.get_function (|
+                "core::sync::atomic::atomic_and",
+                [],
+                [ Ty.path "u64"; Ty.path "u64" ]
+              |),
               [
                 M.call_closure (|
                   Ty.apply (Ty.path "*mut") [] [ Ty.path "u64" ],
@@ -16173,7 +18221,11 @@ Module sync.
             let order := M.alloc (| Ty.path "core::sync::atomic::Ordering", order |) in
             M.call_closure (|
               Ty.path "u64",
-              M.get_function (| "core::sync::atomic::atomic_nand", [], [ Ty.path "u64" ] |),
+              M.get_function (|
+                "core::sync::atomic::atomic_nand",
+                [],
+                [ Ty.path "u64"; Ty.path "u64" ]
+              |),
               [
                 M.call_closure (|
                   Ty.apply (Ty.path "*mut") [] [ Ty.path "u64" ],
@@ -16225,7 +18277,11 @@ Module sync.
             let order := M.alloc (| Ty.path "core::sync::atomic::Ordering", order |) in
             M.call_closure (|
               Ty.path "u64",
-              M.get_function (| "core::sync::atomic::atomic_or", [], [ Ty.path "u64" ] |),
+              M.get_function (|
+                "core::sync::atomic::atomic_or",
+                [],
+                [ Ty.path "u64"; Ty.path "u64" ]
+              |),
               [
                 M.call_closure (|
                   Ty.apply (Ty.path "*mut") [] [ Ty.path "u64" ],
@@ -16277,7 +18333,11 @@ Module sync.
             let order := M.alloc (| Ty.path "core::sync::atomic::Ordering", order |) in
             M.call_closure (|
               Ty.path "u64",
-              M.get_function (| "core::sync::atomic::atomic_xor", [], [ Ty.path "u64" ] |),
+              M.get_function (|
+                "core::sync::atomic::atomic_xor",
+                [],
+                [ Ty.path "u64"; Ty.path "u64" ]
+              |),
               [
                 M.call_closure (|
                   Ty.apply (Ty.path "*mut") [] [ Ty.path "u64" ],
@@ -16495,6 +18555,176 @@ Module sync.
         M.IsAssociatedFunction.C Self "fetch_update" fetch_update.
       Admitted.
       Global Typeclasses Opaque fetch_update.
+      
+      (*
+                  pub fn try_update(
+                      &self,
+                      set_order: Ordering,
+                      fetch_order: Ordering,
+                      f: impl FnMut($int_type) -> Option<$int_type>,
+                  ) -> Result<$int_type, $int_type> {
+                      // FIXME(atomic_try_update): this is currently an unstable alias to `fetch_update`;
+                      //      when stabilizing, turn `fetch_update` into a deprecated alias to `try_update`.
+                      self.fetch_update(set_order, fetch_order, f)
+                  }
+      *)
+      Definition try_update (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [ impl_FnMut_u64__arrow_Option_u64_ ], [ self; set_order; fetch_order; f ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "&") [] [ Ty.path "core::sync::atomic::AtomicU64" ],
+                self
+              |) in
+            let set_order := M.alloc (| Ty.path "core::sync::atomic::Ordering", set_order |) in
+            let fetch_order := M.alloc (| Ty.path "core::sync::atomic::Ordering", fetch_order |) in
+            let f := M.alloc (| impl_FnMut_u64__arrow_Option_u64_, f |) in
+            M.call_closure (|
+              Ty.apply (Ty.path "core::result::Result") [] [ Ty.path "u64"; Ty.path "u64" ],
+              M.get_associated_function (|
+                Ty.path "core::sync::atomic::AtomicU64",
+                "fetch_update",
+                [],
+                [ impl_FnMut_u64__arrow_Option_u64_ ]
+              |),
+              [
+                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
+                M.read (| set_order |);
+                M.read (| fetch_order |);
+                M.read (| f |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_try_update :
+        M.IsAssociatedFunction.C Self "try_update" try_update.
+      Admitted.
+      Global Typeclasses Opaque try_update.
+      
+      (*
+                  pub fn update(
+                      &self,
+                      set_order: Ordering,
+                      fetch_order: Ordering,
+                      mut f: impl FnMut($int_type) -> $int_type,
+                  ) -> $int_type {
+                      let mut prev = self.load(fetch_order);
+                      loop {
+                          match self.compare_exchange_weak(prev, f(prev), set_order, fetch_order) {
+                              Ok(x) => break x,
+                              Err(next_prev) => prev = next_prev,
+                          }
+                      }
+                  }
+      *)
+      Definition update (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [ impl_FnMut_u64__arrow_u64 ], [ self; set_order; fetch_order; f ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "&") [] [ Ty.path "core::sync::atomic::AtomicU64" ],
+                self
+              |) in
+            let set_order := M.alloc (| Ty.path "core::sync::atomic::Ordering", set_order |) in
+            let fetch_order := M.alloc (| Ty.path "core::sync::atomic::Ordering", fetch_order |) in
+            let f := M.alloc (| impl_FnMut_u64__arrow_u64, f |) in
+            M.read (|
+              let~ prev : Ty.path "u64" :=
+                M.call_closure (|
+                  Ty.path "u64",
+                  M.get_associated_function (|
+                    Ty.path "core::sync::atomic::AtomicU64",
+                    "load",
+                    [],
+                    []
+                  |),
+                  [
+                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
+                    M.read (| fetch_order |)
+                  ]
+                |) in
+              M.loop (|
+                Ty.path "u64",
+                ltac:(M.monadic
+                  (M.alloc (|
+                    Ty.tuple [],
+                    M.match_operator (|
+                      Ty.tuple [],
+                      M.alloc (|
+                        Ty.apply
+                          (Ty.path "core::result::Result")
+                          []
+                          [ Ty.path "u64"; Ty.path "u64" ],
+                        M.call_closure (|
+                          Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [ Ty.path "u64"; Ty.path "u64" ],
+                          M.get_associated_function (|
+                            Ty.path "core::sync::atomic::AtomicU64",
+                            "compare_exchange_weak",
+                            [],
+                            []
+                          |),
+                          [
+                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
+                            M.read (| prev |);
+                            M.call_closure (|
+                              Ty.path "u64",
+                              M.get_trait_method (|
+                                "core::ops::function::FnMut",
+                                impl_FnMut_u64__arrow_u64,
+                                [],
+                                [ Ty.tuple [ Ty.path "u64" ] ],
+                                "call_mut",
+                                [],
+                                []
+                              |),
+                              [
+                                M.borrow (| Pointer.Kind.MutRef, f |);
+                                Value.Tuple [ M.read (| prev |) ]
+                              ]
+                            |);
+                            M.read (| set_order |);
+                            M.read (| fetch_order |)
+                          ]
+                        |)
+                      |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ0_0 :=
+                              M.SubPointer.get_struct_tuple_field (|
+                                γ,
+                                "core::result::Result::Ok",
+                                0
+                              |) in
+                            let x := M.copy (| Ty.path "u64", γ0_0 |) in
+                            M.never_to_any (| M.read (| M.break (||) |) |)));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ0_0 :=
+                              M.SubPointer.get_struct_tuple_field (|
+                                γ,
+                                "core::result::Result::Err",
+                                0
+                              |) in
+                            let next_prev := M.copy (| Ty.path "u64", γ0_0 |) in
+                            M.write (| prev, M.read (| next_prev |) |)))
+                      ]
+                    |)
+                  |)))
+              |)
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_update : M.IsAssociatedFunction.C Self "update" update.
+      Admitted.
+      Global Typeclasses Opaque update.
       
       (*
                   pub fn fetch_max(&self, val: $int_type, order: Ordering) -> $int_type {
@@ -17582,7 +19812,11 @@ Module sync.
             let order := M.alloc (| Ty.path "core::sync::atomic::Ordering", order |) in
             M.call_closure (|
               Ty.path "isize",
-              M.get_function (| "core::sync::atomic::atomic_add", [], [ Ty.path "isize" ] |),
+              M.get_function (|
+                "core::sync::atomic::atomic_add",
+                [],
+                [ Ty.path "isize"; Ty.path "isize" ]
+              |),
               [
                 M.call_closure (|
                   Ty.apply (Ty.path "*mut") [] [ Ty.path "isize" ],
@@ -17634,7 +19868,11 @@ Module sync.
             let order := M.alloc (| Ty.path "core::sync::atomic::Ordering", order |) in
             M.call_closure (|
               Ty.path "isize",
-              M.get_function (| "core::sync::atomic::atomic_sub", [], [ Ty.path "isize" ] |),
+              M.get_function (|
+                "core::sync::atomic::atomic_sub",
+                [],
+                [ Ty.path "isize"; Ty.path "isize" ]
+              |),
               [
                 M.call_closure (|
                   Ty.apply (Ty.path "*mut") [] [ Ty.path "isize" ],
@@ -17686,7 +19924,11 @@ Module sync.
             let order := M.alloc (| Ty.path "core::sync::atomic::Ordering", order |) in
             M.call_closure (|
               Ty.path "isize",
-              M.get_function (| "core::sync::atomic::atomic_and", [], [ Ty.path "isize" ] |),
+              M.get_function (|
+                "core::sync::atomic::atomic_and",
+                [],
+                [ Ty.path "isize"; Ty.path "isize" ]
+              |),
               [
                 M.call_closure (|
                   Ty.apply (Ty.path "*mut") [] [ Ty.path "isize" ],
@@ -17738,7 +19980,11 @@ Module sync.
             let order := M.alloc (| Ty.path "core::sync::atomic::Ordering", order |) in
             M.call_closure (|
               Ty.path "isize",
-              M.get_function (| "core::sync::atomic::atomic_nand", [], [ Ty.path "isize" ] |),
+              M.get_function (|
+                "core::sync::atomic::atomic_nand",
+                [],
+                [ Ty.path "isize"; Ty.path "isize" ]
+              |),
               [
                 M.call_closure (|
                   Ty.apply (Ty.path "*mut") [] [ Ty.path "isize" ],
@@ -17790,7 +20036,11 @@ Module sync.
             let order := M.alloc (| Ty.path "core::sync::atomic::Ordering", order |) in
             M.call_closure (|
               Ty.path "isize",
-              M.get_function (| "core::sync::atomic::atomic_or", [], [ Ty.path "isize" ] |),
+              M.get_function (|
+                "core::sync::atomic::atomic_or",
+                [],
+                [ Ty.path "isize"; Ty.path "isize" ]
+              |),
               [
                 M.call_closure (|
                   Ty.apply (Ty.path "*mut") [] [ Ty.path "isize" ],
@@ -17842,7 +20092,11 @@ Module sync.
             let order := M.alloc (| Ty.path "core::sync::atomic::Ordering", order |) in
             M.call_closure (|
               Ty.path "isize",
-              M.get_function (| "core::sync::atomic::atomic_xor", [], [ Ty.path "isize" ] |),
+              M.get_function (|
+                "core::sync::atomic::atomic_xor",
+                [],
+                [ Ty.path "isize"; Ty.path "isize" ]
+              |),
               [
                 M.call_closure (|
                   Ty.apply (Ty.path "*mut") [] [ Ty.path "isize" ],
@@ -18063,6 +20317,176 @@ Module sync.
         M.IsAssociatedFunction.C Self "fetch_update" fetch_update.
       Admitted.
       Global Typeclasses Opaque fetch_update.
+      
+      (*
+                  pub fn try_update(
+                      &self,
+                      set_order: Ordering,
+                      fetch_order: Ordering,
+                      f: impl FnMut($int_type) -> Option<$int_type>,
+                  ) -> Result<$int_type, $int_type> {
+                      // FIXME(atomic_try_update): this is currently an unstable alias to `fetch_update`;
+                      //      when stabilizing, turn `fetch_update` into a deprecated alias to `try_update`.
+                      self.fetch_update(set_order, fetch_order, f)
+                  }
+      *)
+      Definition try_update (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [ impl_FnMut_isize__arrow_Option_isize_ ], [ self; set_order; fetch_order; f ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "&") [] [ Ty.path "core::sync::atomic::AtomicIsize" ],
+                self
+              |) in
+            let set_order := M.alloc (| Ty.path "core::sync::atomic::Ordering", set_order |) in
+            let fetch_order := M.alloc (| Ty.path "core::sync::atomic::Ordering", fetch_order |) in
+            let f := M.alloc (| impl_FnMut_isize__arrow_Option_isize_, f |) in
+            M.call_closure (|
+              Ty.apply (Ty.path "core::result::Result") [] [ Ty.path "isize"; Ty.path "isize" ],
+              M.get_associated_function (|
+                Ty.path "core::sync::atomic::AtomicIsize",
+                "fetch_update",
+                [],
+                [ impl_FnMut_isize__arrow_Option_isize_ ]
+              |),
+              [
+                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
+                M.read (| set_order |);
+                M.read (| fetch_order |);
+                M.read (| f |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_try_update :
+        M.IsAssociatedFunction.C Self "try_update" try_update.
+      Admitted.
+      Global Typeclasses Opaque try_update.
+      
+      (*
+                  pub fn update(
+                      &self,
+                      set_order: Ordering,
+                      fetch_order: Ordering,
+                      mut f: impl FnMut($int_type) -> $int_type,
+                  ) -> $int_type {
+                      let mut prev = self.load(fetch_order);
+                      loop {
+                          match self.compare_exchange_weak(prev, f(prev), set_order, fetch_order) {
+                              Ok(x) => break x,
+                              Err(next_prev) => prev = next_prev,
+                          }
+                      }
+                  }
+      *)
+      Definition update (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [ impl_FnMut_isize__arrow_isize ], [ self; set_order; fetch_order; f ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "&") [] [ Ty.path "core::sync::atomic::AtomicIsize" ],
+                self
+              |) in
+            let set_order := M.alloc (| Ty.path "core::sync::atomic::Ordering", set_order |) in
+            let fetch_order := M.alloc (| Ty.path "core::sync::atomic::Ordering", fetch_order |) in
+            let f := M.alloc (| impl_FnMut_isize__arrow_isize, f |) in
+            M.read (|
+              let~ prev : Ty.path "isize" :=
+                M.call_closure (|
+                  Ty.path "isize",
+                  M.get_associated_function (|
+                    Ty.path "core::sync::atomic::AtomicIsize",
+                    "load",
+                    [],
+                    []
+                  |),
+                  [
+                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
+                    M.read (| fetch_order |)
+                  ]
+                |) in
+              M.loop (|
+                Ty.path "isize",
+                ltac:(M.monadic
+                  (M.alloc (|
+                    Ty.tuple [],
+                    M.match_operator (|
+                      Ty.tuple [],
+                      M.alloc (|
+                        Ty.apply
+                          (Ty.path "core::result::Result")
+                          []
+                          [ Ty.path "isize"; Ty.path "isize" ],
+                        M.call_closure (|
+                          Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [ Ty.path "isize"; Ty.path "isize" ],
+                          M.get_associated_function (|
+                            Ty.path "core::sync::atomic::AtomicIsize",
+                            "compare_exchange_weak",
+                            [],
+                            []
+                          |),
+                          [
+                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
+                            M.read (| prev |);
+                            M.call_closure (|
+                              Ty.path "isize",
+                              M.get_trait_method (|
+                                "core::ops::function::FnMut",
+                                impl_FnMut_isize__arrow_isize,
+                                [],
+                                [ Ty.tuple [ Ty.path "isize" ] ],
+                                "call_mut",
+                                [],
+                                []
+                              |),
+                              [
+                                M.borrow (| Pointer.Kind.MutRef, f |);
+                                Value.Tuple [ M.read (| prev |) ]
+                              ]
+                            |);
+                            M.read (| set_order |);
+                            M.read (| fetch_order |)
+                          ]
+                        |)
+                      |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ0_0 :=
+                              M.SubPointer.get_struct_tuple_field (|
+                                γ,
+                                "core::result::Result::Ok",
+                                0
+                              |) in
+                            let x := M.copy (| Ty.path "isize", γ0_0 |) in
+                            M.never_to_any (| M.read (| M.break (||) |) |)));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ0_0 :=
+                              M.SubPointer.get_struct_tuple_field (|
+                                γ,
+                                "core::result::Result::Err",
+                                0
+                              |) in
+                            let next_prev := M.copy (| Ty.path "isize", γ0_0 |) in
+                            M.write (| prev, M.read (| next_prev |) |)))
+                      ]
+                    |)
+                  |)))
+              |)
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_update : M.IsAssociatedFunction.C Self "update" update.
+      Admitted.
+      Global Typeclasses Opaque update.
       
       (*
                   pub fn fetch_max(&self, val: $int_type, order: Ordering) -> $int_type {
@@ -19150,7 +21574,11 @@ Module sync.
             let order := M.alloc (| Ty.path "core::sync::atomic::Ordering", order |) in
             M.call_closure (|
               Ty.path "usize",
-              M.get_function (| "core::sync::atomic::atomic_add", [], [ Ty.path "usize" ] |),
+              M.get_function (|
+                "core::sync::atomic::atomic_add",
+                [],
+                [ Ty.path "usize"; Ty.path "usize" ]
+              |),
               [
                 M.call_closure (|
                   Ty.apply (Ty.path "*mut") [] [ Ty.path "usize" ],
@@ -19202,7 +21630,11 @@ Module sync.
             let order := M.alloc (| Ty.path "core::sync::atomic::Ordering", order |) in
             M.call_closure (|
               Ty.path "usize",
-              M.get_function (| "core::sync::atomic::atomic_sub", [], [ Ty.path "usize" ] |),
+              M.get_function (|
+                "core::sync::atomic::atomic_sub",
+                [],
+                [ Ty.path "usize"; Ty.path "usize" ]
+              |),
               [
                 M.call_closure (|
                   Ty.apply (Ty.path "*mut") [] [ Ty.path "usize" ],
@@ -19254,7 +21686,11 @@ Module sync.
             let order := M.alloc (| Ty.path "core::sync::atomic::Ordering", order |) in
             M.call_closure (|
               Ty.path "usize",
-              M.get_function (| "core::sync::atomic::atomic_and", [], [ Ty.path "usize" ] |),
+              M.get_function (|
+                "core::sync::atomic::atomic_and",
+                [],
+                [ Ty.path "usize"; Ty.path "usize" ]
+              |),
               [
                 M.call_closure (|
                   Ty.apply (Ty.path "*mut") [] [ Ty.path "usize" ],
@@ -19306,7 +21742,11 @@ Module sync.
             let order := M.alloc (| Ty.path "core::sync::atomic::Ordering", order |) in
             M.call_closure (|
               Ty.path "usize",
-              M.get_function (| "core::sync::atomic::atomic_nand", [], [ Ty.path "usize" ] |),
+              M.get_function (|
+                "core::sync::atomic::atomic_nand",
+                [],
+                [ Ty.path "usize"; Ty.path "usize" ]
+              |),
               [
                 M.call_closure (|
                   Ty.apply (Ty.path "*mut") [] [ Ty.path "usize" ],
@@ -19358,7 +21798,11 @@ Module sync.
             let order := M.alloc (| Ty.path "core::sync::atomic::Ordering", order |) in
             M.call_closure (|
               Ty.path "usize",
-              M.get_function (| "core::sync::atomic::atomic_or", [], [ Ty.path "usize" ] |),
+              M.get_function (|
+                "core::sync::atomic::atomic_or",
+                [],
+                [ Ty.path "usize"; Ty.path "usize" ]
+              |),
               [
                 M.call_closure (|
                   Ty.apply (Ty.path "*mut") [] [ Ty.path "usize" ],
@@ -19410,7 +21854,11 @@ Module sync.
             let order := M.alloc (| Ty.path "core::sync::atomic::Ordering", order |) in
             M.call_closure (|
               Ty.path "usize",
-              M.get_function (| "core::sync::atomic::atomic_xor", [], [ Ty.path "usize" ] |),
+              M.get_function (|
+                "core::sync::atomic::atomic_xor",
+                [],
+                [ Ty.path "usize"; Ty.path "usize" ]
+              |),
               [
                 M.call_closure (|
                   Ty.apply (Ty.path "*mut") [] [ Ty.path "usize" ],
@@ -19631,6 +22079,176 @@ Module sync.
         M.IsAssociatedFunction.C Self "fetch_update" fetch_update.
       Admitted.
       Global Typeclasses Opaque fetch_update.
+      
+      (*
+                  pub fn try_update(
+                      &self,
+                      set_order: Ordering,
+                      fetch_order: Ordering,
+                      f: impl FnMut($int_type) -> Option<$int_type>,
+                  ) -> Result<$int_type, $int_type> {
+                      // FIXME(atomic_try_update): this is currently an unstable alias to `fetch_update`;
+                      //      when stabilizing, turn `fetch_update` into a deprecated alias to `try_update`.
+                      self.fetch_update(set_order, fetch_order, f)
+                  }
+      *)
+      Definition try_update (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [ impl_FnMut_usize__arrow_Option_usize_ ], [ self; set_order; fetch_order; f ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "&") [] [ Ty.path "core::sync::atomic::AtomicUsize" ],
+                self
+              |) in
+            let set_order := M.alloc (| Ty.path "core::sync::atomic::Ordering", set_order |) in
+            let fetch_order := M.alloc (| Ty.path "core::sync::atomic::Ordering", fetch_order |) in
+            let f := M.alloc (| impl_FnMut_usize__arrow_Option_usize_, f |) in
+            M.call_closure (|
+              Ty.apply (Ty.path "core::result::Result") [] [ Ty.path "usize"; Ty.path "usize" ],
+              M.get_associated_function (|
+                Ty.path "core::sync::atomic::AtomicUsize",
+                "fetch_update",
+                [],
+                [ impl_FnMut_usize__arrow_Option_usize_ ]
+              |),
+              [
+                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
+                M.read (| set_order |);
+                M.read (| fetch_order |);
+                M.read (| f |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_try_update :
+        M.IsAssociatedFunction.C Self "try_update" try_update.
+      Admitted.
+      Global Typeclasses Opaque try_update.
+      
+      (*
+                  pub fn update(
+                      &self,
+                      set_order: Ordering,
+                      fetch_order: Ordering,
+                      mut f: impl FnMut($int_type) -> $int_type,
+                  ) -> $int_type {
+                      let mut prev = self.load(fetch_order);
+                      loop {
+                          match self.compare_exchange_weak(prev, f(prev), set_order, fetch_order) {
+                              Ok(x) => break x,
+                              Err(next_prev) => prev = next_prev,
+                          }
+                      }
+                  }
+      *)
+      Definition update (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [ impl_FnMut_usize__arrow_usize ], [ self; set_order; fetch_order; f ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "&") [] [ Ty.path "core::sync::atomic::AtomicUsize" ],
+                self
+              |) in
+            let set_order := M.alloc (| Ty.path "core::sync::atomic::Ordering", set_order |) in
+            let fetch_order := M.alloc (| Ty.path "core::sync::atomic::Ordering", fetch_order |) in
+            let f := M.alloc (| impl_FnMut_usize__arrow_usize, f |) in
+            M.read (|
+              let~ prev : Ty.path "usize" :=
+                M.call_closure (|
+                  Ty.path "usize",
+                  M.get_associated_function (|
+                    Ty.path "core::sync::atomic::AtomicUsize",
+                    "load",
+                    [],
+                    []
+                  |),
+                  [
+                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
+                    M.read (| fetch_order |)
+                  ]
+                |) in
+              M.loop (|
+                Ty.path "usize",
+                ltac:(M.monadic
+                  (M.alloc (|
+                    Ty.tuple [],
+                    M.match_operator (|
+                      Ty.tuple [],
+                      M.alloc (|
+                        Ty.apply
+                          (Ty.path "core::result::Result")
+                          []
+                          [ Ty.path "usize"; Ty.path "usize" ],
+                        M.call_closure (|
+                          Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [ Ty.path "usize"; Ty.path "usize" ],
+                          M.get_associated_function (|
+                            Ty.path "core::sync::atomic::AtomicUsize",
+                            "compare_exchange_weak",
+                            [],
+                            []
+                          |),
+                          [
+                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
+                            M.read (| prev |);
+                            M.call_closure (|
+                              Ty.path "usize",
+                              M.get_trait_method (|
+                                "core::ops::function::FnMut",
+                                impl_FnMut_usize__arrow_usize,
+                                [],
+                                [ Ty.tuple [ Ty.path "usize" ] ],
+                                "call_mut",
+                                [],
+                                []
+                              |),
+                              [
+                                M.borrow (| Pointer.Kind.MutRef, f |);
+                                Value.Tuple [ M.read (| prev |) ]
+                              ]
+                            |);
+                            M.read (| set_order |);
+                            M.read (| fetch_order |)
+                          ]
+                        |)
+                      |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ0_0 :=
+                              M.SubPointer.get_struct_tuple_field (|
+                                γ,
+                                "core::result::Result::Ok",
+                                0
+                              |) in
+                            let x := M.copy (| Ty.path "usize", γ0_0 |) in
+                            M.never_to_any (| M.read (| M.break (||) |) |)));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ0_0 :=
+                              M.SubPointer.get_struct_tuple_field (|
+                                γ,
+                                "core::result::Result::Err",
+                                0
+                              |) in
+                            let next_prev := M.copy (| Ty.path "usize", γ0_0 |) in
+                            M.write (| prev, M.read (| next_prev |) |)))
+                      ]
+                    |)
+                  |)))
+              |)
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_update : M.IsAssociatedFunction.C Self "update" update.
+      Admitted.
+      Global Typeclasses Opaque update.
       
       (*
                   pub fn fetch_max(&self, val: $int_type, order: Ordering) -> $int_type {
@@ -19878,9 +22496,9 @@ Module sync.
         // SAFETY: the caller must uphold the safety contract for `atomic_store`.
         unsafe {
             match order {
-                Relaxed => intrinsics::atomic_store_relaxed(dst, val),
-                Release => intrinsics::atomic_store_release(dst, val),
-                SeqCst => intrinsics::atomic_store_seqcst(dst, val),
+                Relaxed => intrinsics::atomic_store::<T, { AO::Relaxed }>(dst, val),
+                Release => intrinsics::atomic_store::<T, { AO::Release }>(dst, val),
+                SeqCst => intrinsics::atomic_store::<T, { AO::SeqCst }>(dst, val),
                 Acquire => panic!("there is no such thing as an acquire store"),
                 AcqRel => panic!("there is no such thing as an acquire-release store"),
             }
@@ -19903,7 +22521,11 @@ Module sync.
                   (let _ := M.is_struct_tuple (| γ, "core::sync::atomic::Ordering::Relaxed" |) in
                   M.call_closure (|
                     Ty.tuple [],
-                    M.get_function (| "core::intrinsics::atomic_store_relaxed", [], [ T ] |),
+                    M.get_function (|
+                      "core::intrinsics::atomic_store",
+                      [ Value.StructTuple "core::intrinsics::AtomicOrdering::Relaxed" [] [] [] ],
+                      [ T ]
+                    |),
                     [ M.read (| dst |); M.read (| val |) ]
                   |)));
               fun γ =>
@@ -19911,7 +22533,11 @@ Module sync.
                   (let _ := M.is_struct_tuple (| γ, "core::sync::atomic::Ordering::Release" |) in
                   M.call_closure (|
                     Ty.tuple [],
-                    M.get_function (| "core::intrinsics::atomic_store_release", [], [ T ] |),
+                    M.get_function (|
+                      "core::intrinsics::atomic_store",
+                      [ Value.StructTuple "core::intrinsics::AtomicOrdering::Release" [] [] [] ],
+                      [ T ]
+                    |),
                     [ M.read (| dst |); M.read (| val |) ]
                   |)));
               fun γ =>
@@ -19919,7 +22545,11 @@ Module sync.
                   (let _ := M.is_struct_tuple (| γ, "core::sync::atomic::Ordering::SeqCst" |) in
                   M.call_closure (|
                     Ty.tuple [],
-                    M.get_function (| "core::intrinsics::atomic_store_seqcst", [], [ T ] |),
+                    M.get_function (|
+                      "core::intrinsics::atomic_store",
+                      [ Value.StructTuple "core::intrinsics::AtomicOrdering::SeqCst" [] [] [] ],
+                      [ T ]
+                    |),
                     [ M.read (| dst |); M.read (| val |) ]
                   |)));
               fun γ =>
@@ -19934,28 +22564,11 @@ Module sync.
                           Ty.path "core::fmt::Arguments",
                           M.get_associated_function (|
                             Ty.path "core::fmt::Arguments",
-                            "new_const",
-                            [ Value.Integer IntegerKind.Usize 1 ],
+                            "from_str",
+                            [],
                             []
                           |),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.alloc (|
-                                    Ty.apply
-                                      (Ty.path "array")
-                                      [ Value.Integer IntegerKind.Usize 1 ]
-                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                    Value.Array
-                                      [ mk_str (| "there is no such thing as an acquire store" |) ]
-                                  |)
-                                |)
-                              |)
-                            |)
-                          ]
+                          [ mk_str (| "there is no such thing as an acquire store" |) ]
                         |)
                       ]
                     |)
@@ -19972,32 +22585,11 @@ Module sync.
                           Ty.path "core::fmt::Arguments",
                           M.get_associated_function (|
                             Ty.path "core::fmt::Arguments",
-                            "new_const",
-                            [ Value.Integer IntegerKind.Usize 1 ],
+                            "from_str",
+                            [],
                             []
                           |),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.alloc (|
-                                    Ty.apply
-                                      (Ty.path "array")
-                                      [ Value.Integer IntegerKind.Usize 1 ]
-                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                    Value.Array
-                                      [
-                                        mk_str (|
-                                          "there is no such thing as an acquire-release store"
-                                        |)
-                                      ]
-                                  |)
-                                |)
-                              |)
-                            |)
-                          ]
+                          [ mk_str (| "there is no such thing as an acquire-release store" |) ]
                         |)
                       ]
                     |)
@@ -20017,9 +22609,9 @@ Module sync.
         // SAFETY: the caller must uphold the safety contract for `atomic_load`.
         unsafe {
             match order {
-                Relaxed => intrinsics::atomic_load_relaxed(dst),
-                Acquire => intrinsics::atomic_load_acquire(dst),
-                SeqCst => intrinsics::atomic_load_seqcst(dst),
+                Relaxed => intrinsics::atomic_load::<T, { AO::Relaxed }>(dst),
+                Acquire => intrinsics::atomic_load::<T, { AO::Acquire }>(dst),
+                SeqCst => intrinsics::atomic_load::<T, { AO::SeqCst }>(dst),
                 Release => panic!("there is no such thing as a release load"),
                 AcqRel => panic!("there is no such thing as an acquire-release load"),
             }
@@ -20041,7 +22633,11 @@ Module sync.
                   (let _ := M.is_struct_tuple (| γ, "core::sync::atomic::Ordering::Relaxed" |) in
                   M.call_closure (|
                     T,
-                    M.get_function (| "core::intrinsics::atomic_load_relaxed", [], [ T ] |),
+                    M.get_function (|
+                      "core::intrinsics::atomic_load",
+                      [ Value.StructTuple "core::intrinsics::AtomicOrdering::Relaxed" [] [] [] ],
+                      [ T ]
+                    |),
                     [ M.read (| dst |) ]
                   |)));
               fun γ =>
@@ -20049,7 +22645,11 @@ Module sync.
                   (let _ := M.is_struct_tuple (| γ, "core::sync::atomic::Ordering::Acquire" |) in
                   M.call_closure (|
                     T,
-                    M.get_function (| "core::intrinsics::atomic_load_acquire", [], [ T ] |),
+                    M.get_function (|
+                      "core::intrinsics::atomic_load",
+                      [ Value.StructTuple "core::intrinsics::AtomicOrdering::Acquire" [] [] [] ],
+                      [ T ]
+                    |),
                     [ M.read (| dst |) ]
                   |)));
               fun γ =>
@@ -20057,7 +22657,11 @@ Module sync.
                   (let _ := M.is_struct_tuple (| γ, "core::sync::atomic::Ordering::SeqCst" |) in
                   M.call_closure (|
                     T,
-                    M.get_function (| "core::intrinsics::atomic_load_seqcst", [], [ T ] |),
+                    M.get_function (|
+                      "core::intrinsics::atomic_load",
+                      [ Value.StructTuple "core::intrinsics::AtomicOrdering::SeqCst" [] [] [] ],
+                      [ T ]
+                    |),
                     [ M.read (| dst |) ]
                   |)));
               fun γ =>
@@ -20072,28 +22676,11 @@ Module sync.
                           Ty.path "core::fmt::Arguments",
                           M.get_associated_function (|
                             Ty.path "core::fmt::Arguments",
-                            "new_const",
-                            [ Value.Integer IntegerKind.Usize 1 ],
+                            "from_str",
+                            [],
                             []
                           |),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.alloc (|
-                                    Ty.apply
-                                      (Ty.path "array")
-                                      [ Value.Integer IntegerKind.Usize 1 ]
-                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                    Value.Array
-                                      [ mk_str (| "there is no such thing as a release load" |) ]
-                                  |)
-                                |)
-                              |)
-                            |)
-                          ]
+                          [ mk_str (| "there is no such thing as a release load" |) ]
                         |)
                       ]
                     |)
@@ -20110,32 +22697,11 @@ Module sync.
                           Ty.path "core::fmt::Arguments",
                           M.get_associated_function (|
                             Ty.path "core::fmt::Arguments",
-                            "new_const",
-                            [ Value.Integer IntegerKind.Usize 1 ],
+                            "from_str",
+                            [],
                             []
                           |),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.alloc (|
-                                    Ty.apply
-                                      (Ty.path "array")
-                                      [ Value.Integer IntegerKind.Usize 1 ]
-                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                    Value.Array
-                                      [
-                                        mk_str (|
-                                          "there is no such thing as an acquire-release load"
-                                        |)
-                                      ]
-                                  |)
-                                |)
-                              |)
-                            |)
-                          ]
+                          [ mk_str (| "there is no such thing as an acquire-release load" |) ]
                         |)
                       ]
                     |)
@@ -20155,11 +22721,11 @@ Module sync.
         // SAFETY: the caller must uphold the safety contract for `atomic_swap`.
         unsafe {
             match order {
-                Relaxed => intrinsics::atomic_xchg_relaxed(dst, val),
-                Acquire => intrinsics::atomic_xchg_acquire(dst, val),
-                Release => intrinsics::atomic_xchg_release(dst, val),
-                AcqRel => intrinsics::atomic_xchg_acqrel(dst, val),
-                SeqCst => intrinsics::atomic_xchg_seqcst(dst, val),
+                Relaxed => intrinsics::atomic_xchg::<T, { AO::Relaxed }>(dst, val),
+                Acquire => intrinsics::atomic_xchg::<T, { AO::Acquire }>(dst, val),
+                Release => intrinsics::atomic_xchg::<T, { AO::Release }>(dst, val),
+                AcqRel => intrinsics::atomic_xchg::<T, { AO::AcqRel }>(dst, val),
+                SeqCst => intrinsics::atomic_xchg::<T, { AO::SeqCst }>(dst, val),
             }
         }
     }
@@ -20180,7 +22746,11 @@ Module sync.
                   (let _ := M.is_struct_tuple (| γ, "core::sync::atomic::Ordering::Relaxed" |) in
                   M.call_closure (|
                     T,
-                    M.get_function (| "core::intrinsics::atomic_xchg_relaxed", [], [ T ] |),
+                    M.get_function (|
+                      "core::intrinsics::atomic_xchg",
+                      [ Value.StructTuple "core::intrinsics::AtomicOrdering::Relaxed" [] [] [] ],
+                      [ T ]
+                    |),
                     [ M.read (| dst |); M.read (| val |) ]
                   |)));
               fun γ =>
@@ -20188,7 +22758,11 @@ Module sync.
                   (let _ := M.is_struct_tuple (| γ, "core::sync::atomic::Ordering::Acquire" |) in
                   M.call_closure (|
                     T,
-                    M.get_function (| "core::intrinsics::atomic_xchg_acquire", [], [ T ] |),
+                    M.get_function (|
+                      "core::intrinsics::atomic_xchg",
+                      [ Value.StructTuple "core::intrinsics::AtomicOrdering::Acquire" [] [] [] ],
+                      [ T ]
+                    |),
                     [ M.read (| dst |); M.read (| val |) ]
                   |)));
               fun γ =>
@@ -20196,7 +22770,11 @@ Module sync.
                   (let _ := M.is_struct_tuple (| γ, "core::sync::atomic::Ordering::Release" |) in
                   M.call_closure (|
                     T,
-                    M.get_function (| "core::intrinsics::atomic_xchg_release", [], [ T ] |),
+                    M.get_function (|
+                      "core::intrinsics::atomic_xchg",
+                      [ Value.StructTuple "core::intrinsics::AtomicOrdering::Release" [] [] [] ],
+                      [ T ]
+                    |),
                     [ M.read (| dst |); M.read (| val |) ]
                   |)));
               fun γ =>
@@ -20204,7 +22782,11 @@ Module sync.
                   (let _ := M.is_struct_tuple (| γ, "core::sync::atomic::Ordering::AcqRel" |) in
                   M.call_closure (|
                     T,
-                    M.get_function (| "core::intrinsics::atomic_xchg_acqrel", [], [ T ] |),
+                    M.get_function (|
+                      "core::intrinsics::atomic_xchg",
+                      [ Value.StructTuple "core::intrinsics::AtomicOrdering::AcqRel" [] [] [] ],
+                      [ T ]
+                    |),
                     [ M.read (| dst |); M.read (| val |) ]
                   |)));
               fun γ =>
@@ -20212,7 +22794,11 @@ Module sync.
                   (let _ := M.is_struct_tuple (| γ, "core::sync::atomic::Ordering::SeqCst" |) in
                   M.call_closure (|
                     T,
-                    M.get_function (| "core::intrinsics::atomic_xchg_seqcst", [], [ T ] |),
+                    M.get_function (|
+                      "core::intrinsics::atomic_xchg",
+                      [ Value.StructTuple "core::intrinsics::AtomicOrdering::SeqCst" [] [] [] ],
+                      [ T ]
+                    |),
                     [ M.read (| dst |); M.read (| val |) ]
                   |)))
             ]
@@ -20226,25 +22812,25 @@ Module sync.
     Global Typeclasses Opaque atomic_swap.
     
     (*
-    unsafe fn atomic_add<T: Copy>(dst: *mut T, val: T, order: Ordering) -> T {
+    unsafe fn atomic_add<T: Copy, U: Copy>(dst: *mut T, val: U, order: Ordering) -> T {
         // SAFETY: the caller must uphold the safety contract for `atomic_add`.
         unsafe {
             match order {
-                Relaxed => intrinsics::atomic_xadd_relaxed(dst, val),
-                Acquire => intrinsics::atomic_xadd_acquire(dst, val),
-                Release => intrinsics::atomic_xadd_release(dst, val),
-                AcqRel => intrinsics::atomic_xadd_acqrel(dst, val),
-                SeqCst => intrinsics::atomic_xadd_seqcst(dst, val),
+                Relaxed => intrinsics::atomic_xadd::<T, U, { AO::Relaxed }>(dst, val),
+                Acquire => intrinsics::atomic_xadd::<T, U, { AO::Acquire }>(dst, val),
+                Release => intrinsics::atomic_xadd::<T, U, { AO::Release }>(dst, val),
+                AcqRel => intrinsics::atomic_xadd::<T, U, { AO::AcqRel }>(dst, val),
+                SeqCst => intrinsics::atomic_xadd::<T, U, { AO::SeqCst }>(dst, val),
             }
         }
     }
     *)
     Definition atomic_add (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       match ε, τ, α with
-      | [], [ T ], [ dst; val; order ] =>
+      | [], [ T; U ], [ dst; val; order ] =>
         ltac:(M.monadic
           (let dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], dst |) in
-          let val := M.alloc (| T, val |) in
+          let val := M.alloc (| U, val |) in
           let order := M.alloc (| Ty.path "core::sync::atomic::Ordering", order |) in
           M.match_operator (|
             T,
@@ -20255,7 +22841,11 @@ Module sync.
                   (let _ := M.is_struct_tuple (| γ, "core::sync::atomic::Ordering::Relaxed" |) in
                   M.call_closure (|
                     T,
-                    M.get_function (| "core::intrinsics::atomic_xadd_relaxed", [], [ T ] |),
+                    M.get_function (|
+                      "core::intrinsics::atomic_xadd",
+                      [ Value.StructTuple "core::intrinsics::AtomicOrdering::Relaxed" [] [] [] ],
+                      [ T; U ]
+                    |),
                     [ M.read (| dst |); M.read (| val |) ]
                   |)));
               fun γ =>
@@ -20263,7 +22853,11 @@ Module sync.
                   (let _ := M.is_struct_tuple (| γ, "core::sync::atomic::Ordering::Acquire" |) in
                   M.call_closure (|
                     T,
-                    M.get_function (| "core::intrinsics::atomic_xadd_acquire", [], [ T ] |),
+                    M.get_function (|
+                      "core::intrinsics::atomic_xadd",
+                      [ Value.StructTuple "core::intrinsics::AtomicOrdering::Acquire" [] [] [] ],
+                      [ T; U ]
+                    |),
                     [ M.read (| dst |); M.read (| val |) ]
                   |)));
               fun γ =>
@@ -20271,7 +22865,11 @@ Module sync.
                   (let _ := M.is_struct_tuple (| γ, "core::sync::atomic::Ordering::Release" |) in
                   M.call_closure (|
                     T,
-                    M.get_function (| "core::intrinsics::atomic_xadd_release", [], [ T ] |),
+                    M.get_function (|
+                      "core::intrinsics::atomic_xadd",
+                      [ Value.StructTuple "core::intrinsics::AtomicOrdering::Release" [] [] [] ],
+                      [ T; U ]
+                    |),
                     [ M.read (| dst |); M.read (| val |) ]
                   |)));
               fun γ =>
@@ -20279,7 +22877,11 @@ Module sync.
                   (let _ := M.is_struct_tuple (| γ, "core::sync::atomic::Ordering::AcqRel" |) in
                   M.call_closure (|
                     T,
-                    M.get_function (| "core::intrinsics::atomic_xadd_acqrel", [], [ T ] |),
+                    M.get_function (|
+                      "core::intrinsics::atomic_xadd",
+                      [ Value.StructTuple "core::intrinsics::AtomicOrdering::AcqRel" [] [] [] ],
+                      [ T; U ]
+                    |),
                     [ M.read (| dst |); M.read (| val |) ]
                   |)));
               fun γ =>
@@ -20287,7 +22889,11 @@ Module sync.
                   (let _ := M.is_struct_tuple (| γ, "core::sync::atomic::Ordering::SeqCst" |) in
                   M.call_closure (|
                     T,
-                    M.get_function (| "core::intrinsics::atomic_xadd_seqcst", [], [ T ] |),
+                    M.get_function (|
+                      "core::intrinsics::atomic_xadd",
+                      [ Value.StructTuple "core::intrinsics::AtomicOrdering::SeqCst" [] [] [] ],
+                      [ T; U ]
+                    |),
                     [ M.read (| dst |); M.read (| val |) ]
                   |)))
             ]
@@ -20301,25 +22907,25 @@ Module sync.
     Global Typeclasses Opaque atomic_add.
     
     (*
-    unsafe fn atomic_sub<T: Copy>(dst: *mut T, val: T, order: Ordering) -> T {
+    unsafe fn atomic_sub<T: Copy, U: Copy>(dst: *mut T, val: U, order: Ordering) -> T {
         // SAFETY: the caller must uphold the safety contract for `atomic_sub`.
         unsafe {
             match order {
-                Relaxed => intrinsics::atomic_xsub_relaxed(dst, val),
-                Acquire => intrinsics::atomic_xsub_acquire(dst, val),
-                Release => intrinsics::atomic_xsub_release(dst, val),
-                AcqRel => intrinsics::atomic_xsub_acqrel(dst, val),
-                SeqCst => intrinsics::atomic_xsub_seqcst(dst, val),
+                Relaxed => intrinsics::atomic_xsub::<T, U, { AO::Relaxed }>(dst, val),
+                Acquire => intrinsics::atomic_xsub::<T, U, { AO::Acquire }>(dst, val),
+                Release => intrinsics::atomic_xsub::<T, U, { AO::Release }>(dst, val),
+                AcqRel => intrinsics::atomic_xsub::<T, U, { AO::AcqRel }>(dst, val),
+                SeqCst => intrinsics::atomic_xsub::<T, U, { AO::SeqCst }>(dst, val),
             }
         }
     }
     *)
     Definition atomic_sub (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       match ε, τ, α with
-      | [], [ T ], [ dst; val; order ] =>
+      | [], [ T; U ], [ dst; val; order ] =>
         ltac:(M.monadic
           (let dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], dst |) in
-          let val := M.alloc (| T, val |) in
+          let val := M.alloc (| U, val |) in
           let order := M.alloc (| Ty.path "core::sync::atomic::Ordering", order |) in
           M.match_operator (|
             T,
@@ -20330,7 +22936,11 @@ Module sync.
                   (let _ := M.is_struct_tuple (| γ, "core::sync::atomic::Ordering::Relaxed" |) in
                   M.call_closure (|
                     T,
-                    M.get_function (| "core::intrinsics::atomic_xsub_relaxed", [], [ T ] |),
+                    M.get_function (|
+                      "core::intrinsics::atomic_xsub",
+                      [ Value.StructTuple "core::intrinsics::AtomicOrdering::Relaxed" [] [] [] ],
+                      [ T; U ]
+                    |),
                     [ M.read (| dst |); M.read (| val |) ]
                   |)));
               fun γ =>
@@ -20338,7 +22948,11 @@ Module sync.
                   (let _ := M.is_struct_tuple (| γ, "core::sync::atomic::Ordering::Acquire" |) in
                   M.call_closure (|
                     T,
-                    M.get_function (| "core::intrinsics::atomic_xsub_acquire", [], [ T ] |),
+                    M.get_function (|
+                      "core::intrinsics::atomic_xsub",
+                      [ Value.StructTuple "core::intrinsics::AtomicOrdering::Acquire" [] [] [] ],
+                      [ T; U ]
+                    |),
                     [ M.read (| dst |); M.read (| val |) ]
                   |)));
               fun γ =>
@@ -20346,7 +22960,11 @@ Module sync.
                   (let _ := M.is_struct_tuple (| γ, "core::sync::atomic::Ordering::Release" |) in
                   M.call_closure (|
                     T,
-                    M.get_function (| "core::intrinsics::atomic_xsub_release", [], [ T ] |),
+                    M.get_function (|
+                      "core::intrinsics::atomic_xsub",
+                      [ Value.StructTuple "core::intrinsics::AtomicOrdering::Release" [] [] [] ],
+                      [ T; U ]
+                    |),
                     [ M.read (| dst |); M.read (| val |) ]
                   |)));
               fun γ =>
@@ -20354,7 +22972,11 @@ Module sync.
                   (let _ := M.is_struct_tuple (| γ, "core::sync::atomic::Ordering::AcqRel" |) in
                   M.call_closure (|
                     T,
-                    M.get_function (| "core::intrinsics::atomic_xsub_acqrel", [], [ T ] |),
+                    M.get_function (|
+                      "core::intrinsics::atomic_xsub",
+                      [ Value.StructTuple "core::intrinsics::AtomicOrdering::AcqRel" [] [] [] ],
+                      [ T; U ]
+                    |),
                     [ M.read (| dst |); M.read (| val |) ]
                   |)));
               fun γ =>
@@ -20362,7 +22984,11 @@ Module sync.
                   (let _ := M.is_struct_tuple (| γ, "core::sync::atomic::Ordering::SeqCst" |) in
                   M.call_closure (|
                     T,
-                    M.get_function (| "core::intrinsics::atomic_xsub_seqcst", [], [ T ] |),
+                    M.get_function (|
+                      "core::intrinsics::atomic_xsub",
+                      [ Value.StructTuple "core::intrinsics::AtomicOrdering::SeqCst" [] [] [] ],
+                      [ T; U ]
+                    |),
                     [ M.read (| dst |); M.read (| val |) ]
                   |)))
             ]
@@ -20376,7 +23002,7 @@ Module sync.
     Global Typeclasses Opaque atomic_sub.
     
     (*
-    unsafe fn atomic_compare_exchange<T: Copy>(
+    pub unsafe fn atomic_compare_exchange<T: Copy>(
         dst: *mut T,
         old: T,
         new: T,
@@ -20386,21 +23012,51 @@ Module sync.
         // SAFETY: the caller must uphold the safety contract for `atomic_compare_exchange`.
         let (val, ok) = unsafe {
             match (success, failure) {
-                (Relaxed, Relaxed) => intrinsics::atomic_cxchg_relaxed_relaxed(dst, old, new),
-                (Relaxed, Acquire) => intrinsics::atomic_cxchg_relaxed_acquire(dst, old, new),
-                (Relaxed, SeqCst) => intrinsics::atomic_cxchg_relaxed_seqcst(dst, old, new),
-                (Acquire, Relaxed) => intrinsics::atomic_cxchg_acquire_relaxed(dst, old, new),
-                (Acquire, Acquire) => intrinsics::atomic_cxchg_acquire_acquire(dst, old, new),
-                (Acquire, SeqCst) => intrinsics::atomic_cxchg_acquire_seqcst(dst, old, new),
-                (Release, Relaxed) => intrinsics::atomic_cxchg_release_relaxed(dst, old, new),
-                (Release, Acquire) => intrinsics::atomic_cxchg_release_acquire(dst, old, new),
-                (Release, SeqCst) => intrinsics::atomic_cxchg_release_seqcst(dst, old, new),
-                (AcqRel, Relaxed) => intrinsics::atomic_cxchg_acqrel_relaxed(dst, old, new),
-                (AcqRel, Acquire) => intrinsics::atomic_cxchg_acqrel_acquire(dst, old, new),
-                (AcqRel, SeqCst) => intrinsics::atomic_cxchg_acqrel_seqcst(dst, old, new),
-                (SeqCst, Relaxed) => intrinsics::atomic_cxchg_seqcst_relaxed(dst, old, new),
-                (SeqCst, Acquire) => intrinsics::atomic_cxchg_seqcst_acquire(dst, old, new),
-                (SeqCst, SeqCst) => intrinsics::atomic_cxchg_seqcst_seqcst(dst, old, new),
+                (Relaxed, Relaxed) => {
+                    intrinsics::atomic_cxchg::<T, { AO::Relaxed }, { AO::Relaxed }>(dst, old, new)
+                }
+                (Relaxed, Acquire) => {
+                    intrinsics::atomic_cxchg::<T, { AO::Relaxed }, { AO::Acquire }>(dst, old, new)
+                }
+                (Relaxed, SeqCst) => {
+                    intrinsics::atomic_cxchg::<T, { AO::Relaxed }, { AO::SeqCst }>(dst, old, new)
+                }
+                (Acquire, Relaxed) => {
+                    intrinsics::atomic_cxchg::<T, { AO::Acquire }, { AO::Relaxed }>(dst, old, new)
+                }
+                (Acquire, Acquire) => {
+                    intrinsics::atomic_cxchg::<T, { AO::Acquire }, { AO::Acquire }>(dst, old, new)
+                }
+                (Acquire, SeqCst) => {
+                    intrinsics::atomic_cxchg::<T, { AO::Acquire }, { AO::SeqCst }>(dst, old, new)
+                }
+                (Release, Relaxed) => {
+                    intrinsics::atomic_cxchg::<T, { AO::Release }, { AO::Relaxed }>(dst, old, new)
+                }
+                (Release, Acquire) => {
+                    intrinsics::atomic_cxchg::<T, { AO::Release }, { AO::Acquire }>(dst, old, new)
+                }
+                (Release, SeqCst) => {
+                    intrinsics::atomic_cxchg::<T, { AO::Release }, { AO::SeqCst }>(dst, old, new)
+                }
+                (AcqRel, Relaxed) => {
+                    intrinsics::atomic_cxchg::<T, { AO::AcqRel }, { AO::Relaxed }>(dst, old, new)
+                }
+                (AcqRel, Acquire) => {
+                    intrinsics::atomic_cxchg::<T, { AO::AcqRel }, { AO::Acquire }>(dst, old, new)
+                }
+                (AcqRel, SeqCst) => {
+                    intrinsics::atomic_cxchg::<T, { AO::AcqRel }, { AO::SeqCst }>(dst, old, new)
+                }
+                (SeqCst, Relaxed) => {
+                    intrinsics::atomic_cxchg::<T, { AO::SeqCst }, { AO::Relaxed }>(dst, old, new)
+                }
+                (SeqCst, Acquire) => {
+                    intrinsics::atomic_cxchg::<T, { AO::SeqCst }, { AO::Acquire }>(dst, old, new)
+                }
+                (SeqCst, SeqCst) => {
+                    intrinsics::atomic_cxchg::<T, { AO::SeqCst }, { AO::SeqCst }>(dst, old, new)
+                }
                 (_, AcqRel) => panic!("there is no such thing as an acquire-release failure ordering"),
                 (_, Release) => panic!("there is no such thing as a release failure ordering"),
             }
@@ -20441,8 +23097,11 @@ Module sync.
                       M.call_closure (|
                         Ty.tuple [ T; Ty.path "bool" ],
                         M.get_function (|
-                          "core::intrinsics::atomic_cxchg_relaxed_relaxed",
-                          [],
+                          "core::intrinsics::atomic_cxchg",
+                          [
+                            Value.StructTuple "core::intrinsics::AtomicOrdering::Relaxed" [] [] [];
+                            Value.StructTuple "core::intrinsics::AtomicOrdering::Relaxed" [] [] []
+                          ],
                           [ T ]
                         |),
                         [ M.read (| dst |); M.read (| old |); M.read (| new |) ]
@@ -20458,8 +23117,11 @@ Module sync.
                       M.call_closure (|
                         Ty.tuple [ T; Ty.path "bool" ],
                         M.get_function (|
-                          "core::intrinsics::atomic_cxchg_relaxed_acquire",
-                          [],
+                          "core::intrinsics::atomic_cxchg",
+                          [
+                            Value.StructTuple "core::intrinsics::AtomicOrdering::Relaxed" [] [] [];
+                            Value.StructTuple "core::intrinsics::AtomicOrdering::Acquire" [] [] []
+                          ],
                           [ T ]
                         |),
                         [ M.read (| dst |); M.read (| old |); M.read (| new |) ]
@@ -20475,8 +23137,11 @@ Module sync.
                       M.call_closure (|
                         Ty.tuple [ T; Ty.path "bool" ],
                         M.get_function (|
-                          "core::intrinsics::atomic_cxchg_relaxed_seqcst",
-                          [],
+                          "core::intrinsics::atomic_cxchg",
+                          [
+                            Value.StructTuple "core::intrinsics::AtomicOrdering::Relaxed" [] [] [];
+                            Value.StructTuple "core::intrinsics::AtomicOrdering::SeqCst" [] [] []
+                          ],
                           [ T ]
                         |),
                         [ M.read (| dst |); M.read (| old |); M.read (| new |) ]
@@ -20492,8 +23157,11 @@ Module sync.
                       M.call_closure (|
                         Ty.tuple [ T; Ty.path "bool" ],
                         M.get_function (|
-                          "core::intrinsics::atomic_cxchg_acquire_relaxed",
-                          [],
+                          "core::intrinsics::atomic_cxchg",
+                          [
+                            Value.StructTuple "core::intrinsics::AtomicOrdering::Acquire" [] [] [];
+                            Value.StructTuple "core::intrinsics::AtomicOrdering::Relaxed" [] [] []
+                          ],
                           [ T ]
                         |),
                         [ M.read (| dst |); M.read (| old |); M.read (| new |) ]
@@ -20509,8 +23177,11 @@ Module sync.
                       M.call_closure (|
                         Ty.tuple [ T; Ty.path "bool" ],
                         M.get_function (|
-                          "core::intrinsics::atomic_cxchg_acquire_acquire",
-                          [],
+                          "core::intrinsics::atomic_cxchg",
+                          [
+                            Value.StructTuple "core::intrinsics::AtomicOrdering::Acquire" [] [] [];
+                            Value.StructTuple "core::intrinsics::AtomicOrdering::Acquire" [] [] []
+                          ],
                           [ T ]
                         |),
                         [ M.read (| dst |); M.read (| old |); M.read (| new |) ]
@@ -20526,8 +23197,11 @@ Module sync.
                       M.call_closure (|
                         Ty.tuple [ T; Ty.path "bool" ],
                         M.get_function (|
-                          "core::intrinsics::atomic_cxchg_acquire_seqcst",
-                          [],
+                          "core::intrinsics::atomic_cxchg",
+                          [
+                            Value.StructTuple "core::intrinsics::AtomicOrdering::Acquire" [] [] [];
+                            Value.StructTuple "core::intrinsics::AtomicOrdering::SeqCst" [] [] []
+                          ],
                           [ T ]
                         |),
                         [ M.read (| dst |); M.read (| old |); M.read (| new |) ]
@@ -20543,8 +23217,11 @@ Module sync.
                       M.call_closure (|
                         Ty.tuple [ T; Ty.path "bool" ],
                         M.get_function (|
-                          "core::intrinsics::atomic_cxchg_release_relaxed",
-                          [],
+                          "core::intrinsics::atomic_cxchg",
+                          [
+                            Value.StructTuple "core::intrinsics::AtomicOrdering::Release" [] [] [];
+                            Value.StructTuple "core::intrinsics::AtomicOrdering::Relaxed" [] [] []
+                          ],
                           [ T ]
                         |),
                         [ M.read (| dst |); M.read (| old |); M.read (| new |) ]
@@ -20560,8 +23237,11 @@ Module sync.
                       M.call_closure (|
                         Ty.tuple [ T; Ty.path "bool" ],
                         M.get_function (|
-                          "core::intrinsics::atomic_cxchg_release_acquire",
-                          [],
+                          "core::intrinsics::atomic_cxchg",
+                          [
+                            Value.StructTuple "core::intrinsics::AtomicOrdering::Release" [] [] [];
+                            Value.StructTuple "core::intrinsics::AtomicOrdering::Acquire" [] [] []
+                          ],
                           [ T ]
                         |),
                         [ M.read (| dst |); M.read (| old |); M.read (| new |) ]
@@ -20577,8 +23257,11 @@ Module sync.
                       M.call_closure (|
                         Ty.tuple [ T; Ty.path "bool" ],
                         M.get_function (|
-                          "core::intrinsics::atomic_cxchg_release_seqcst",
-                          [],
+                          "core::intrinsics::atomic_cxchg",
+                          [
+                            Value.StructTuple "core::intrinsics::AtomicOrdering::Release" [] [] [];
+                            Value.StructTuple "core::intrinsics::AtomicOrdering::SeqCst" [] [] []
+                          ],
                           [ T ]
                         |),
                         [ M.read (| dst |); M.read (| old |); M.read (| new |) ]
@@ -20594,8 +23277,11 @@ Module sync.
                       M.call_closure (|
                         Ty.tuple [ T; Ty.path "bool" ],
                         M.get_function (|
-                          "core::intrinsics::atomic_cxchg_acqrel_relaxed",
-                          [],
+                          "core::intrinsics::atomic_cxchg",
+                          [
+                            Value.StructTuple "core::intrinsics::AtomicOrdering::AcqRel" [] [] [];
+                            Value.StructTuple "core::intrinsics::AtomicOrdering::Relaxed" [] [] []
+                          ],
                           [ T ]
                         |),
                         [ M.read (| dst |); M.read (| old |); M.read (| new |) ]
@@ -20611,8 +23297,11 @@ Module sync.
                       M.call_closure (|
                         Ty.tuple [ T; Ty.path "bool" ],
                         M.get_function (|
-                          "core::intrinsics::atomic_cxchg_acqrel_acquire",
-                          [],
+                          "core::intrinsics::atomic_cxchg",
+                          [
+                            Value.StructTuple "core::intrinsics::AtomicOrdering::AcqRel" [] [] [];
+                            Value.StructTuple "core::intrinsics::AtomicOrdering::Acquire" [] [] []
+                          ],
                           [ T ]
                         |),
                         [ M.read (| dst |); M.read (| old |); M.read (| new |) ]
@@ -20628,8 +23317,11 @@ Module sync.
                       M.call_closure (|
                         Ty.tuple [ T; Ty.path "bool" ],
                         M.get_function (|
-                          "core::intrinsics::atomic_cxchg_acqrel_seqcst",
-                          [],
+                          "core::intrinsics::atomic_cxchg",
+                          [
+                            Value.StructTuple "core::intrinsics::AtomicOrdering::AcqRel" [] [] [];
+                            Value.StructTuple "core::intrinsics::AtomicOrdering::SeqCst" [] [] []
+                          ],
                           [ T ]
                         |),
                         [ M.read (| dst |); M.read (| old |); M.read (| new |) ]
@@ -20645,8 +23337,11 @@ Module sync.
                       M.call_closure (|
                         Ty.tuple [ T; Ty.path "bool" ],
                         M.get_function (|
-                          "core::intrinsics::atomic_cxchg_seqcst_relaxed",
-                          [],
+                          "core::intrinsics::atomic_cxchg",
+                          [
+                            Value.StructTuple "core::intrinsics::AtomicOrdering::SeqCst" [] [] [];
+                            Value.StructTuple "core::intrinsics::AtomicOrdering::Relaxed" [] [] []
+                          ],
                           [ T ]
                         |),
                         [ M.read (| dst |); M.read (| old |); M.read (| new |) ]
@@ -20662,8 +23357,11 @@ Module sync.
                       M.call_closure (|
                         Ty.tuple [ T; Ty.path "bool" ],
                         M.get_function (|
-                          "core::intrinsics::atomic_cxchg_seqcst_acquire",
-                          [],
+                          "core::intrinsics::atomic_cxchg",
+                          [
+                            Value.StructTuple "core::intrinsics::AtomicOrdering::SeqCst" [] [] [];
+                            Value.StructTuple "core::intrinsics::AtomicOrdering::Acquire" [] [] []
+                          ],
                           [ T ]
                         |),
                         [ M.read (| dst |); M.read (| old |); M.read (| new |) ]
@@ -20679,8 +23377,11 @@ Module sync.
                       M.call_closure (|
                         Ty.tuple [ T; Ty.path "bool" ],
                         M.get_function (|
-                          "core::intrinsics::atomic_cxchg_seqcst_seqcst",
-                          [],
+                          "core::intrinsics::atomic_cxchg",
+                          [
+                            Value.StructTuple "core::intrinsics::AtomicOrdering::SeqCst" [] [] [];
+                            Value.StructTuple "core::intrinsics::AtomicOrdering::SeqCst" [] [] []
+                          ],
                           [ T ]
                         |),
                         [ M.read (| dst |); M.read (| old |); M.read (| new |) ]
@@ -20700,30 +23401,13 @@ Module sync.
                               Ty.path "core::fmt::Arguments",
                               M.get_associated_function (|
                                 Ty.path "core::fmt::Arguments",
-                                "new_const",
-                                [ Value.Integer IntegerKind.Usize 1 ],
+                                "from_str",
+                                [],
                                 []
                               |),
                               [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.alloc (|
-                                        Ty.apply
-                                          (Ty.path "array")
-                                          [ Value.Integer IntegerKind.Usize 1 ]
-                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                        Value.Array
-                                          [
-                                            mk_str (|
-                                              "there is no such thing as an acquire-release failure ordering"
-                                            |)
-                                          ]
-                                      |)
-                                    |)
-                                  |)
+                                mk_str (|
+                                  "there is no such thing as an acquire-release failure ordering"
                                 |)
                               ]
                             |)
@@ -20745,31 +23429,11 @@ Module sync.
                               Ty.path "core::fmt::Arguments",
                               M.get_associated_function (|
                                 Ty.path "core::fmt::Arguments",
-                                "new_const",
-                                [ Value.Integer IntegerKind.Usize 1 ],
+                                "from_str",
+                                [],
                                 []
                               |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.alloc (|
-                                        Ty.apply
-                                          (Ty.path "array")
-                                          [ Value.Integer IntegerKind.Usize 1 ]
-                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                        Value.Array
-                                          [
-                                            mk_str (|
-                                              "there is no such thing as a release failure ordering"
-                                            |)
-                                          ]
-                                      |)
-                                    |)
-                                  |)
-                                |)
+                              [ mk_str (| "there is no such thing as a release failure ordering" |)
                               ]
                             |)
                           ]
@@ -20791,7 +23455,7 @@ Module sync.
                     [
                       fun γ =>
                         ltac:(M.monadic
-                          (let γ := M.use ok in
+                          (let γ := ok in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           Value.StructTuple
@@ -20829,21 +23493,51 @@ Module sync.
         // SAFETY: the caller must uphold the safety contract for `atomic_compare_exchange_weak`.
         let (val, ok) = unsafe {
             match (success, failure) {
-                (Relaxed, Relaxed) => intrinsics::atomic_cxchgweak_relaxed_relaxed(dst, old, new),
-                (Relaxed, Acquire) => intrinsics::atomic_cxchgweak_relaxed_acquire(dst, old, new),
-                (Relaxed, SeqCst) => intrinsics::atomic_cxchgweak_relaxed_seqcst(dst, old, new),
-                (Acquire, Relaxed) => intrinsics::atomic_cxchgweak_acquire_relaxed(dst, old, new),
-                (Acquire, Acquire) => intrinsics::atomic_cxchgweak_acquire_acquire(dst, old, new),
-                (Acquire, SeqCst) => intrinsics::atomic_cxchgweak_acquire_seqcst(dst, old, new),
-                (Release, Relaxed) => intrinsics::atomic_cxchgweak_release_relaxed(dst, old, new),
-                (Release, Acquire) => intrinsics::atomic_cxchgweak_release_acquire(dst, old, new),
-                (Release, SeqCst) => intrinsics::atomic_cxchgweak_release_seqcst(dst, old, new),
-                (AcqRel, Relaxed) => intrinsics::atomic_cxchgweak_acqrel_relaxed(dst, old, new),
-                (AcqRel, Acquire) => intrinsics::atomic_cxchgweak_acqrel_acquire(dst, old, new),
-                (AcqRel, SeqCst) => intrinsics::atomic_cxchgweak_acqrel_seqcst(dst, old, new),
-                (SeqCst, Relaxed) => intrinsics::atomic_cxchgweak_seqcst_relaxed(dst, old, new),
-                (SeqCst, Acquire) => intrinsics::atomic_cxchgweak_seqcst_acquire(dst, old, new),
-                (SeqCst, SeqCst) => intrinsics::atomic_cxchgweak_seqcst_seqcst(dst, old, new),
+                (Relaxed, Relaxed) => {
+                    intrinsics::atomic_cxchgweak::<T, { AO::Relaxed }, { AO::Relaxed }>(dst, old, new)
+                }
+                (Relaxed, Acquire) => {
+                    intrinsics::atomic_cxchgweak::<T, { AO::Relaxed }, { AO::Acquire }>(dst, old, new)
+                }
+                (Relaxed, SeqCst) => {
+                    intrinsics::atomic_cxchgweak::<T, { AO::Relaxed }, { AO::SeqCst }>(dst, old, new)
+                }
+                (Acquire, Relaxed) => {
+                    intrinsics::atomic_cxchgweak::<T, { AO::Acquire }, { AO::Relaxed }>(dst, old, new)
+                }
+                (Acquire, Acquire) => {
+                    intrinsics::atomic_cxchgweak::<T, { AO::Acquire }, { AO::Acquire }>(dst, old, new)
+                }
+                (Acquire, SeqCst) => {
+                    intrinsics::atomic_cxchgweak::<T, { AO::Acquire }, { AO::SeqCst }>(dst, old, new)
+                }
+                (Release, Relaxed) => {
+                    intrinsics::atomic_cxchgweak::<T, { AO::Release }, { AO::Relaxed }>(dst, old, new)
+                }
+                (Release, Acquire) => {
+                    intrinsics::atomic_cxchgweak::<T, { AO::Release }, { AO::Acquire }>(dst, old, new)
+                }
+                (Release, SeqCst) => {
+                    intrinsics::atomic_cxchgweak::<T, { AO::Release }, { AO::SeqCst }>(dst, old, new)
+                }
+                (AcqRel, Relaxed) => {
+                    intrinsics::atomic_cxchgweak::<T, { AO::AcqRel }, { AO::Relaxed }>(dst, old, new)
+                }
+                (AcqRel, Acquire) => {
+                    intrinsics::atomic_cxchgweak::<T, { AO::AcqRel }, { AO::Acquire }>(dst, old, new)
+                }
+                (AcqRel, SeqCst) => {
+                    intrinsics::atomic_cxchgweak::<T, { AO::AcqRel }, { AO::SeqCst }>(dst, old, new)
+                }
+                (SeqCst, Relaxed) => {
+                    intrinsics::atomic_cxchgweak::<T, { AO::SeqCst }, { AO::Relaxed }>(dst, old, new)
+                }
+                (SeqCst, Acquire) => {
+                    intrinsics::atomic_cxchgweak::<T, { AO::SeqCst }, { AO::Acquire }>(dst, old, new)
+                }
+                (SeqCst, SeqCst) => {
+                    intrinsics::atomic_cxchgweak::<T, { AO::SeqCst }, { AO::SeqCst }>(dst, old, new)
+                }
                 (_, AcqRel) => panic!("there is no such thing as an acquire-release failure ordering"),
                 (_, Release) => panic!("there is no such thing as a release failure ordering"),
             }
@@ -20888,8 +23582,11 @@ Module sync.
                       M.call_closure (|
                         Ty.tuple [ T; Ty.path "bool" ],
                         M.get_function (|
-                          "core::intrinsics::atomic_cxchgweak_relaxed_relaxed",
-                          [],
+                          "core::intrinsics::atomic_cxchgweak",
+                          [
+                            Value.StructTuple "core::intrinsics::AtomicOrdering::Relaxed" [] [] [];
+                            Value.StructTuple "core::intrinsics::AtomicOrdering::Relaxed" [] [] []
+                          ],
                           [ T ]
                         |),
                         [ M.read (| dst |); M.read (| old |); M.read (| new |) ]
@@ -20905,8 +23602,11 @@ Module sync.
                       M.call_closure (|
                         Ty.tuple [ T; Ty.path "bool" ],
                         M.get_function (|
-                          "core::intrinsics::atomic_cxchgweak_relaxed_acquire",
-                          [],
+                          "core::intrinsics::atomic_cxchgweak",
+                          [
+                            Value.StructTuple "core::intrinsics::AtomicOrdering::Relaxed" [] [] [];
+                            Value.StructTuple "core::intrinsics::AtomicOrdering::Acquire" [] [] []
+                          ],
                           [ T ]
                         |),
                         [ M.read (| dst |); M.read (| old |); M.read (| new |) ]
@@ -20922,8 +23622,11 @@ Module sync.
                       M.call_closure (|
                         Ty.tuple [ T; Ty.path "bool" ],
                         M.get_function (|
-                          "core::intrinsics::atomic_cxchgweak_relaxed_seqcst",
-                          [],
+                          "core::intrinsics::atomic_cxchgweak",
+                          [
+                            Value.StructTuple "core::intrinsics::AtomicOrdering::Relaxed" [] [] [];
+                            Value.StructTuple "core::intrinsics::AtomicOrdering::SeqCst" [] [] []
+                          ],
                           [ T ]
                         |),
                         [ M.read (| dst |); M.read (| old |); M.read (| new |) ]
@@ -20939,8 +23642,11 @@ Module sync.
                       M.call_closure (|
                         Ty.tuple [ T; Ty.path "bool" ],
                         M.get_function (|
-                          "core::intrinsics::atomic_cxchgweak_acquire_relaxed",
-                          [],
+                          "core::intrinsics::atomic_cxchgweak",
+                          [
+                            Value.StructTuple "core::intrinsics::AtomicOrdering::Acquire" [] [] [];
+                            Value.StructTuple "core::intrinsics::AtomicOrdering::Relaxed" [] [] []
+                          ],
                           [ T ]
                         |),
                         [ M.read (| dst |); M.read (| old |); M.read (| new |) ]
@@ -20956,8 +23662,11 @@ Module sync.
                       M.call_closure (|
                         Ty.tuple [ T; Ty.path "bool" ],
                         M.get_function (|
-                          "core::intrinsics::atomic_cxchgweak_acquire_acquire",
-                          [],
+                          "core::intrinsics::atomic_cxchgweak",
+                          [
+                            Value.StructTuple "core::intrinsics::AtomicOrdering::Acquire" [] [] [];
+                            Value.StructTuple "core::intrinsics::AtomicOrdering::Acquire" [] [] []
+                          ],
                           [ T ]
                         |),
                         [ M.read (| dst |); M.read (| old |); M.read (| new |) ]
@@ -20973,8 +23682,11 @@ Module sync.
                       M.call_closure (|
                         Ty.tuple [ T; Ty.path "bool" ],
                         M.get_function (|
-                          "core::intrinsics::atomic_cxchgweak_acquire_seqcst",
-                          [],
+                          "core::intrinsics::atomic_cxchgweak",
+                          [
+                            Value.StructTuple "core::intrinsics::AtomicOrdering::Acquire" [] [] [];
+                            Value.StructTuple "core::intrinsics::AtomicOrdering::SeqCst" [] [] []
+                          ],
                           [ T ]
                         |),
                         [ M.read (| dst |); M.read (| old |); M.read (| new |) ]
@@ -20990,8 +23702,11 @@ Module sync.
                       M.call_closure (|
                         Ty.tuple [ T; Ty.path "bool" ],
                         M.get_function (|
-                          "core::intrinsics::atomic_cxchgweak_release_relaxed",
-                          [],
+                          "core::intrinsics::atomic_cxchgweak",
+                          [
+                            Value.StructTuple "core::intrinsics::AtomicOrdering::Release" [] [] [];
+                            Value.StructTuple "core::intrinsics::AtomicOrdering::Relaxed" [] [] []
+                          ],
                           [ T ]
                         |),
                         [ M.read (| dst |); M.read (| old |); M.read (| new |) ]
@@ -21007,8 +23722,11 @@ Module sync.
                       M.call_closure (|
                         Ty.tuple [ T; Ty.path "bool" ],
                         M.get_function (|
-                          "core::intrinsics::atomic_cxchgweak_release_acquire",
-                          [],
+                          "core::intrinsics::atomic_cxchgweak",
+                          [
+                            Value.StructTuple "core::intrinsics::AtomicOrdering::Release" [] [] [];
+                            Value.StructTuple "core::intrinsics::AtomicOrdering::Acquire" [] [] []
+                          ],
                           [ T ]
                         |),
                         [ M.read (| dst |); M.read (| old |); M.read (| new |) ]
@@ -21024,8 +23742,11 @@ Module sync.
                       M.call_closure (|
                         Ty.tuple [ T; Ty.path "bool" ],
                         M.get_function (|
-                          "core::intrinsics::atomic_cxchgweak_release_seqcst",
-                          [],
+                          "core::intrinsics::atomic_cxchgweak",
+                          [
+                            Value.StructTuple "core::intrinsics::AtomicOrdering::Release" [] [] [];
+                            Value.StructTuple "core::intrinsics::AtomicOrdering::SeqCst" [] [] []
+                          ],
                           [ T ]
                         |),
                         [ M.read (| dst |); M.read (| old |); M.read (| new |) ]
@@ -21041,8 +23762,11 @@ Module sync.
                       M.call_closure (|
                         Ty.tuple [ T; Ty.path "bool" ],
                         M.get_function (|
-                          "core::intrinsics::atomic_cxchgweak_acqrel_relaxed",
-                          [],
+                          "core::intrinsics::atomic_cxchgweak",
+                          [
+                            Value.StructTuple "core::intrinsics::AtomicOrdering::AcqRel" [] [] [];
+                            Value.StructTuple "core::intrinsics::AtomicOrdering::Relaxed" [] [] []
+                          ],
                           [ T ]
                         |),
                         [ M.read (| dst |); M.read (| old |); M.read (| new |) ]
@@ -21058,8 +23782,11 @@ Module sync.
                       M.call_closure (|
                         Ty.tuple [ T; Ty.path "bool" ],
                         M.get_function (|
-                          "core::intrinsics::atomic_cxchgweak_acqrel_acquire",
-                          [],
+                          "core::intrinsics::atomic_cxchgweak",
+                          [
+                            Value.StructTuple "core::intrinsics::AtomicOrdering::AcqRel" [] [] [];
+                            Value.StructTuple "core::intrinsics::AtomicOrdering::Acquire" [] [] []
+                          ],
                           [ T ]
                         |),
                         [ M.read (| dst |); M.read (| old |); M.read (| new |) ]
@@ -21075,8 +23802,11 @@ Module sync.
                       M.call_closure (|
                         Ty.tuple [ T; Ty.path "bool" ],
                         M.get_function (|
-                          "core::intrinsics::atomic_cxchgweak_acqrel_seqcst",
-                          [],
+                          "core::intrinsics::atomic_cxchgweak",
+                          [
+                            Value.StructTuple "core::intrinsics::AtomicOrdering::AcqRel" [] [] [];
+                            Value.StructTuple "core::intrinsics::AtomicOrdering::SeqCst" [] [] []
+                          ],
                           [ T ]
                         |),
                         [ M.read (| dst |); M.read (| old |); M.read (| new |) ]
@@ -21092,8 +23822,11 @@ Module sync.
                       M.call_closure (|
                         Ty.tuple [ T; Ty.path "bool" ],
                         M.get_function (|
-                          "core::intrinsics::atomic_cxchgweak_seqcst_relaxed",
-                          [],
+                          "core::intrinsics::atomic_cxchgweak",
+                          [
+                            Value.StructTuple "core::intrinsics::AtomicOrdering::SeqCst" [] [] [];
+                            Value.StructTuple "core::intrinsics::AtomicOrdering::Relaxed" [] [] []
+                          ],
                           [ T ]
                         |),
                         [ M.read (| dst |); M.read (| old |); M.read (| new |) ]
@@ -21109,8 +23842,11 @@ Module sync.
                       M.call_closure (|
                         Ty.tuple [ T; Ty.path "bool" ],
                         M.get_function (|
-                          "core::intrinsics::atomic_cxchgweak_seqcst_acquire",
-                          [],
+                          "core::intrinsics::atomic_cxchgweak",
+                          [
+                            Value.StructTuple "core::intrinsics::AtomicOrdering::SeqCst" [] [] [];
+                            Value.StructTuple "core::intrinsics::AtomicOrdering::Acquire" [] [] []
+                          ],
                           [ T ]
                         |),
                         [ M.read (| dst |); M.read (| old |); M.read (| new |) ]
@@ -21126,8 +23862,11 @@ Module sync.
                       M.call_closure (|
                         Ty.tuple [ T; Ty.path "bool" ],
                         M.get_function (|
-                          "core::intrinsics::atomic_cxchgweak_seqcst_seqcst",
-                          [],
+                          "core::intrinsics::atomic_cxchgweak",
+                          [
+                            Value.StructTuple "core::intrinsics::AtomicOrdering::SeqCst" [] [] [];
+                            Value.StructTuple "core::intrinsics::AtomicOrdering::SeqCst" [] [] []
+                          ],
                           [ T ]
                         |),
                         [ M.read (| dst |); M.read (| old |); M.read (| new |) ]
@@ -21147,30 +23886,13 @@ Module sync.
                               Ty.path "core::fmt::Arguments",
                               M.get_associated_function (|
                                 Ty.path "core::fmt::Arguments",
-                                "new_const",
-                                [ Value.Integer IntegerKind.Usize 1 ],
+                                "from_str",
+                                [],
                                 []
                               |),
                               [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.alloc (|
-                                        Ty.apply
-                                          (Ty.path "array")
-                                          [ Value.Integer IntegerKind.Usize 1 ]
-                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                        Value.Array
-                                          [
-                                            mk_str (|
-                                              "there is no such thing as an acquire-release failure ordering"
-                                            |)
-                                          ]
-                                      |)
-                                    |)
-                                  |)
+                                mk_str (|
+                                  "there is no such thing as an acquire-release failure ordering"
                                 |)
                               ]
                             |)
@@ -21192,31 +23914,11 @@ Module sync.
                               Ty.path "core::fmt::Arguments",
                               M.get_associated_function (|
                                 Ty.path "core::fmt::Arguments",
-                                "new_const",
-                                [ Value.Integer IntegerKind.Usize 1 ],
+                                "from_str",
+                                [],
                                 []
                               |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.alloc (|
-                                        Ty.apply
-                                          (Ty.path "array")
-                                          [ Value.Integer IntegerKind.Usize 1 ]
-                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                        Value.Array
-                                          [
-                                            mk_str (|
-                                              "there is no such thing as a release failure ordering"
-                                            |)
-                                          ]
-                                      |)
-                                    |)
-                                  |)
-                                |)
+                              [ mk_str (| "there is no such thing as a release failure ordering" |)
                               ]
                             |)
                           ]
@@ -21238,7 +23940,7 @@ Module sync.
                     [
                       fun γ =>
                         ltac:(M.monadic
-                          (let γ := M.use ok in
+                          (let γ := ok in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           Value.StructTuple
@@ -21268,25 +23970,25 @@ Module sync.
     Global Typeclasses Opaque atomic_compare_exchange_weak.
     
     (*
-    unsafe fn atomic_and<T: Copy>(dst: *mut T, val: T, order: Ordering) -> T {
+    unsafe fn atomic_and<T: Copy, U: Copy>(dst: *mut T, val: U, order: Ordering) -> T {
         // SAFETY: the caller must uphold the safety contract for `atomic_and`
         unsafe {
             match order {
-                Relaxed => intrinsics::atomic_and_relaxed(dst, val),
-                Acquire => intrinsics::atomic_and_acquire(dst, val),
-                Release => intrinsics::atomic_and_release(dst, val),
-                AcqRel => intrinsics::atomic_and_acqrel(dst, val),
-                SeqCst => intrinsics::atomic_and_seqcst(dst, val),
+                Relaxed => intrinsics::atomic_and::<T, U, { AO::Relaxed }>(dst, val),
+                Acquire => intrinsics::atomic_and::<T, U, { AO::Acquire }>(dst, val),
+                Release => intrinsics::atomic_and::<T, U, { AO::Release }>(dst, val),
+                AcqRel => intrinsics::atomic_and::<T, U, { AO::AcqRel }>(dst, val),
+                SeqCst => intrinsics::atomic_and::<T, U, { AO::SeqCst }>(dst, val),
             }
         }
     }
     *)
     Definition atomic_and (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       match ε, τ, α with
-      | [], [ T ], [ dst; val; order ] =>
+      | [], [ T; U ], [ dst; val; order ] =>
         ltac:(M.monadic
           (let dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], dst |) in
-          let val := M.alloc (| T, val |) in
+          let val := M.alloc (| U, val |) in
           let order := M.alloc (| Ty.path "core::sync::atomic::Ordering", order |) in
           M.match_operator (|
             T,
@@ -21297,7 +23999,11 @@ Module sync.
                   (let _ := M.is_struct_tuple (| γ, "core::sync::atomic::Ordering::Relaxed" |) in
                   M.call_closure (|
                     T,
-                    M.get_function (| "core::intrinsics::atomic_and_relaxed", [], [ T ] |),
+                    M.get_function (|
+                      "core::intrinsics::atomic_and",
+                      [ Value.StructTuple "core::intrinsics::AtomicOrdering::Relaxed" [] [] [] ],
+                      [ T; U ]
+                    |),
                     [ M.read (| dst |); M.read (| val |) ]
                   |)));
               fun γ =>
@@ -21305,7 +24011,11 @@ Module sync.
                   (let _ := M.is_struct_tuple (| γ, "core::sync::atomic::Ordering::Acquire" |) in
                   M.call_closure (|
                     T,
-                    M.get_function (| "core::intrinsics::atomic_and_acquire", [], [ T ] |),
+                    M.get_function (|
+                      "core::intrinsics::atomic_and",
+                      [ Value.StructTuple "core::intrinsics::AtomicOrdering::Acquire" [] [] [] ],
+                      [ T; U ]
+                    |),
                     [ M.read (| dst |); M.read (| val |) ]
                   |)));
               fun γ =>
@@ -21313,7 +24023,11 @@ Module sync.
                   (let _ := M.is_struct_tuple (| γ, "core::sync::atomic::Ordering::Release" |) in
                   M.call_closure (|
                     T,
-                    M.get_function (| "core::intrinsics::atomic_and_release", [], [ T ] |),
+                    M.get_function (|
+                      "core::intrinsics::atomic_and",
+                      [ Value.StructTuple "core::intrinsics::AtomicOrdering::Release" [] [] [] ],
+                      [ T; U ]
+                    |),
                     [ M.read (| dst |); M.read (| val |) ]
                   |)));
               fun γ =>
@@ -21321,7 +24035,11 @@ Module sync.
                   (let _ := M.is_struct_tuple (| γ, "core::sync::atomic::Ordering::AcqRel" |) in
                   M.call_closure (|
                     T,
-                    M.get_function (| "core::intrinsics::atomic_and_acqrel", [], [ T ] |),
+                    M.get_function (|
+                      "core::intrinsics::atomic_and",
+                      [ Value.StructTuple "core::intrinsics::AtomicOrdering::AcqRel" [] [] [] ],
+                      [ T; U ]
+                    |),
                     [ M.read (| dst |); M.read (| val |) ]
                   |)));
               fun γ =>
@@ -21329,7 +24047,11 @@ Module sync.
                   (let _ := M.is_struct_tuple (| γ, "core::sync::atomic::Ordering::SeqCst" |) in
                   M.call_closure (|
                     T,
-                    M.get_function (| "core::intrinsics::atomic_and_seqcst", [], [ T ] |),
+                    M.get_function (|
+                      "core::intrinsics::atomic_and",
+                      [ Value.StructTuple "core::intrinsics::AtomicOrdering::SeqCst" [] [] [] ],
+                      [ T; U ]
+                    |),
                     [ M.read (| dst |); M.read (| val |) ]
                   |)))
             ]
@@ -21343,25 +24065,25 @@ Module sync.
     Global Typeclasses Opaque atomic_and.
     
     (*
-    unsafe fn atomic_nand<T: Copy>(dst: *mut T, val: T, order: Ordering) -> T {
+    unsafe fn atomic_nand<T: Copy, U: Copy>(dst: *mut T, val: U, order: Ordering) -> T {
         // SAFETY: the caller must uphold the safety contract for `atomic_nand`
         unsafe {
             match order {
-                Relaxed => intrinsics::atomic_nand_relaxed(dst, val),
-                Acquire => intrinsics::atomic_nand_acquire(dst, val),
-                Release => intrinsics::atomic_nand_release(dst, val),
-                AcqRel => intrinsics::atomic_nand_acqrel(dst, val),
-                SeqCst => intrinsics::atomic_nand_seqcst(dst, val),
+                Relaxed => intrinsics::atomic_nand::<T, U, { AO::Relaxed }>(dst, val),
+                Acquire => intrinsics::atomic_nand::<T, U, { AO::Acquire }>(dst, val),
+                Release => intrinsics::atomic_nand::<T, U, { AO::Release }>(dst, val),
+                AcqRel => intrinsics::atomic_nand::<T, U, { AO::AcqRel }>(dst, val),
+                SeqCst => intrinsics::atomic_nand::<T, U, { AO::SeqCst }>(dst, val),
             }
         }
     }
     *)
     Definition atomic_nand (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       match ε, τ, α with
-      | [], [ T ], [ dst; val; order ] =>
+      | [], [ T; U ], [ dst; val; order ] =>
         ltac:(M.monadic
           (let dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], dst |) in
-          let val := M.alloc (| T, val |) in
+          let val := M.alloc (| U, val |) in
           let order := M.alloc (| Ty.path "core::sync::atomic::Ordering", order |) in
           M.match_operator (|
             T,
@@ -21372,7 +24094,11 @@ Module sync.
                   (let _ := M.is_struct_tuple (| γ, "core::sync::atomic::Ordering::Relaxed" |) in
                   M.call_closure (|
                     T,
-                    M.get_function (| "core::intrinsics::atomic_nand_relaxed", [], [ T ] |),
+                    M.get_function (|
+                      "core::intrinsics::atomic_nand",
+                      [ Value.StructTuple "core::intrinsics::AtomicOrdering::Relaxed" [] [] [] ],
+                      [ T; U ]
+                    |),
                     [ M.read (| dst |); M.read (| val |) ]
                   |)));
               fun γ =>
@@ -21380,7 +24106,11 @@ Module sync.
                   (let _ := M.is_struct_tuple (| γ, "core::sync::atomic::Ordering::Acquire" |) in
                   M.call_closure (|
                     T,
-                    M.get_function (| "core::intrinsics::atomic_nand_acquire", [], [ T ] |),
+                    M.get_function (|
+                      "core::intrinsics::atomic_nand",
+                      [ Value.StructTuple "core::intrinsics::AtomicOrdering::Acquire" [] [] [] ],
+                      [ T; U ]
+                    |),
                     [ M.read (| dst |); M.read (| val |) ]
                   |)));
               fun γ =>
@@ -21388,7 +24118,11 @@ Module sync.
                   (let _ := M.is_struct_tuple (| γ, "core::sync::atomic::Ordering::Release" |) in
                   M.call_closure (|
                     T,
-                    M.get_function (| "core::intrinsics::atomic_nand_release", [], [ T ] |),
+                    M.get_function (|
+                      "core::intrinsics::atomic_nand",
+                      [ Value.StructTuple "core::intrinsics::AtomicOrdering::Release" [] [] [] ],
+                      [ T; U ]
+                    |),
                     [ M.read (| dst |); M.read (| val |) ]
                   |)));
               fun γ =>
@@ -21396,7 +24130,11 @@ Module sync.
                   (let _ := M.is_struct_tuple (| γ, "core::sync::atomic::Ordering::AcqRel" |) in
                   M.call_closure (|
                     T,
-                    M.get_function (| "core::intrinsics::atomic_nand_acqrel", [], [ T ] |),
+                    M.get_function (|
+                      "core::intrinsics::atomic_nand",
+                      [ Value.StructTuple "core::intrinsics::AtomicOrdering::AcqRel" [] [] [] ],
+                      [ T; U ]
+                    |),
                     [ M.read (| dst |); M.read (| val |) ]
                   |)));
               fun γ =>
@@ -21404,7 +24142,11 @@ Module sync.
                   (let _ := M.is_struct_tuple (| γ, "core::sync::atomic::Ordering::SeqCst" |) in
                   M.call_closure (|
                     T,
-                    M.get_function (| "core::intrinsics::atomic_nand_seqcst", [], [ T ] |),
+                    M.get_function (|
+                      "core::intrinsics::atomic_nand",
+                      [ Value.StructTuple "core::intrinsics::AtomicOrdering::SeqCst" [] [] [] ],
+                      [ T; U ]
+                    |),
                     [ M.read (| dst |); M.read (| val |) ]
                   |)))
             ]
@@ -21418,25 +24160,25 @@ Module sync.
     Global Typeclasses Opaque atomic_nand.
     
     (*
-    unsafe fn atomic_or<T: Copy>(dst: *mut T, val: T, order: Ordering) -> T {
+    unsafe fn atomic_or<T: Copy, U: Copy>(dst: *mut T, val: U, order: Ordering) -> T {
         // SAFETY: the caller must uphold the safety contract for `atomic_or`
         unsafe {
             match order {
-                SeqCst => intrinsics::atomic_or_seqcst(dst, val),
-                Acquire => intrinsics::atomic_or_acquire(dst, val),
-                Release => intrinsics::atomic_or_release(dst, val),
-                AcqRel => intrinsics::atomic_or_acqrel(dst, val),
-                Relaxed => intrinsics::atomic_or_relaxed(dst, val),
+                SeqCst => intrinsics::atomic_or::<T, U, { AO::SeqCst }>(dst, val),
+                Acquire => intrinsics::atomic_or::<T, U, { AO::Acquire }>(dst, val),
+                Release => intrinsics::atomic_or::<T, U, { AO::Release }>(dst, val),
+                AcqRel => intrinsics::atomic_or::<T, U, { AO::AcqRel }>(dst, val),
+                Relaxed => intrinsics::atomic_or::<T, U, { AO::Relaxed }>(dst, val),
             }
         }
     }
     *)
     Definition atomic_or (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       match ε, τ, α with
-      | [], [ T ], [ dst; val; order ] =>
+      | [], [ T; U ], [ dst; val; order ] =>
         ltac:(M.monadic
           (let dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], dst |) in
-          let val := M.alloc (| T, val |) in
+          let val := M.alloc (| U, val |) in
           let order := M.alloc (| Ty.path "core::sync::atomic::Ordering", order |) in
           M.match_operator (|
             T,
@@ -21447,7 +24189,11 @@ Module sync.
                   (let _ := M.is_struct_tuple (| γ, "core::sync::atomic::Ordering::SeqCst" |) in
                   M.call_closure (|
                     T,
-                    M.get_function (| "core::intrinsics::atomic_or_seqcst", [], [ T ] |),
+                    M.get_function (|
+                      "core::intrinsics::atomic_or",
+                      [ Value.StructTuple "core::intrinsics::AtomicOrdering::SeqCst" [] [] [] ],
+                      [ T; U ]
+                    |),
                     [ M.read (| dst |); M.read (| val |) ]
                   |)));
               fun γ =>
@@ -21455,7 +24201,11 @@ Module sync.
                   (let _ := M.is_struct_tuple (| γ, "core::sync::atomic::Ordering::Acquire" |) in
                   M.call_closure (|
                     T,
-                    M.get_function (| "core::intrinsics::atomic_or_acquire", [], [ T ] |),
+                    M.get_function (|
+                      "core::intrinsics::atomic_or",
+                      [ Value.StructTuple "core::intrinsics::AtomicOrdering::Acquire" [] [] [] ],
+                      [ T; U ]
+                    |),
                     [ M.read (| dst |); M.read (| val |) ]
                   |)));
               fun γ =>
@@ -21463,7 +24213,11 @@ Module sync.
                   (let _ := M.is_struct_tuple (| γ, "core::sync::atomic::Ordering::Release" |) in
                   M.call_closure (|
                     T,
-                    M.get_function (| "core::intrinsics::atomic_or_release", [], [ T ] |),
+                    M.get_function (|
+                      "core::intrinsics::atomic_or",
+                      [ Value.StructTuple "core::intrinsics::AtomicOrdering::Release" [] [] [] ],
+                      [ T; U ]
+                    |),
                     [ M.read (| dst |); M.read (| val |) ]
                   |)));
               fun γ =>
@@ -21471,7 +24225,11 @@ Module sync.
                   (let _ := M.is_struct_tuple (| γ, "core::sync::atomic::Ordering::AcqRel" |) in
                   M.call_closure (|
                     T,
-                    M.get_function (| "core::intrinsics::atomic_or_acqrel", [], [ T ] |),
+                    M.get_function (|
+                      "core::intrinsics::atomic_or",
+                      [ Value.StructTuple "core::intrinsics::AtomicOrdering::AcqRel" [] [] [] ],
+                      [ T; U ]
+                    |),
                     [ M.read (| dst |); M.read (| val |) ]
                   |)));
               fun γ =>
@@ -21479,7 +24237,11 @@ Module sync.
                   (let _ := M.is_struct_tuple (| γ, "core::sync::atomic::Ordering::Relaxed" |) in
                   M.call_closure (|
                     T,
-                    M.get_function (| "core::intrinsics::atomic_or_relaxed", [], [ T ] |),
+                    M.get_function (|
+                      "core::intrinsics::atomic_or",
+                      [ Value.StructTuple "core::intrinsics::AtomicOrdering::Relaxed" [] [] [] ],
+                      [ T; U ]
+                    |),
                     [ M.read (| dst |); M.read (| val |) ]
                   |)))
             ]
@@ -21493,25 +24255,25 @@ Module sync.
     Global Typeclasses Opaque atomic_or.
     
     (*
-    unsafe fn atomic_xor<T: Copy>(dst: *mut T, val: T, order: Ordering) -> T {
+    unsafe fn atomic_xor<T: Copy, U: Copy>(dst: *mut T, val: U, order: Ordering) -> T {
         // SAFETY: the caller must uphold the safety contract for `atomic_xor`
         unsafe {
             match order {
-                SeqCst => intrinsics::atomic_xor_seqcst(dst, val),
-                Acquire => intrinsics::atomic_xor_acquire(dst, val),
-                Release => intrinsics::atomic_xor_release(dst, val),
-                AcqRel => intrinsics::atomic_xor_acqrel(dst, val),
-                Relaxed => intrinsics::atomic_xor_relaxed(dst, val),
+                SeqCst => intrinsics::atomic_xor::<T, U, { AO::SeqCst }>(dst, val),
+                Acquire => intrinsics::atomic_xor::<T, U, { AO::Acquire }>(dst, val),
+                Release => intrinsics::atomic_xor::<T, U, { AO::Release }>(dst, val),
+                AcqRel => intrinsics::atomic_xor::<T, U, { AO::AcqRel }>(dst, val),
+                Relaxed => intrinsics::atomic_xor::<T, U, { AO::Relaxed }>(dst, val),
             }
         }
     }
     *)
     Definition atomic_xor (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       match ε, τ, α with
-      | [], [ T ], [ dst; val; order ] =>
+      | [], [ T; U ], [ dst; val; order ] =>
         ltac:(M.monadic
           (let dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], dst |) in
-          let val := M.alloc (| T, val |) in
+          let val := M.alloc (| U, val |) in
           let order := M.alloc (| Ty.path "core::sync::atomic::Ordering", order |) in
           M.match_operator (|
             T,
@@ -21522,7 +24284,11 @@ Module sync.
                   (let _ := M.is_struct_tuple (| γ, "core::sync::atomic::Ordering::SeqCst" |) in
                   M.call_closure (|
                     T,
-                    M.get_function (| "core::intrinsics::atomic_xor_seqcst", [], [ T ] |),
+                    M.get_function (|
+                      "core::intrinsics::atomic_xor",
+                      [ Value.StructTuple "core::intrinsics::AtomicOrdering::SeqCst" [] [] [] ],
+                      [ T; U ]
+                    |),
                     [ M.read (| dst |); M.read (| val |) ]
                   |)));
               fun γ =>
@@ -21530,7 +24296,11 @@ Module sync.
                   (let _ := M.is_struct_tuple (| γ, "core::sync::atomic::Ordering::Acquire" |) in
                   M.call_closure (|
                     T,
-                    M.get_function (| "core::intrinsics::atomic_xor_acquire", [], [ T ] |),
+                    M.get_function (|
+                      "core::intrinsics::atomic_xor",
+                      [ Value.StructTuple "core::intrinsics::AtomicOrdering::Acquire" [] [] [] ],
+                      [ T; U ]
+                    |),
                     [ M.read (| dst |); M.read (| val |) ]
                   |)));
               fun γ =>
@@ -21538,7 +24308,11 @@ Module sync.
                   (let _ := M.is_struct_tuple (| γ, "core::sync::atomic::Ordering::Release" |) in
                   M.call_closure (|
                     T,
-                    M.get_function (| "core::intrinsics::atomic_xor_release", [], [ T ] |),
+                    M.get_function (|
+                      "core::intrinsics::atomic_xor",
+                      [ Value.StructTuple "core::intrinsics::AtomicOrdering::Release" [] [] [] ],
+                      [ T; U ]
+                    |),
                     [ M.read (| dst |); M.read (| val |) ]
                   |)));
               fun γ =>
@@ -21546,7 +24320,11 @@ Module sync.
                   (let _ := M.is_struct_tuple (| γ, "core::sync::atomic::Ordering::AcqRel" |) in
                   M.call_closure (|
                     T,
-                    M.get_function (| "core::intrinsics::atomic_xor_acqrel", [], [ T ] |),
+                    M.get_function (|
+                      "core::intrinsics::atomic_xor",
+                      [ Value.StructTuple "core::intrinsics::AtomicOrdering::AcqRel" [] [] [] ],
+                      [ T; U ]
+                    |),
                     [ M.read (| dst |); M.read (| val |) ]
                   |)));
               fun γ =>
@@ -21554,7 +24332,11 @@ Module sync.
                   (let _ := M.is_struct_tuple (| γ, "core::sync::atomic::Ordering::Relaxed" |) in
                   M.call_closure (|
                     T,
-                    M.get_function (| "core::intrinsics::atomic_xor_relaxed", [], [ T ] |),
+                    M.get_function (|
+                      "core::intrinsics::atomic_xor",
+                      [ Value.StructTuple "core::intrinsics::AtomicOrdering::Relaxed" [] [] [] ],
+                      [ T; U ]
+                    |),
                     [ M.read (| dst |); M.read (| val |) ]
                   |)))
             ]
@@ -21572,11 +24354,11 @@ Module sync.
         // SAFETY: the caller must uphold the safety contract for `atomic_max`
         unsafe {
             match order {
-                Relaxed => intrinsics::atomic_max_relaxed(dst, val),
-                Acquire => intrinsics::atomic_max_acquire(dst, val),
-                Release => intrinsics::atomic_max_release(dst, val),
-                AcqRel => intrinsics::atomic_max_acqrel(dst, val),
-                SeqCst => intrinsics::atomic_max_seqcst(dst, val),
+                Relaxed => intrinsics::atomic_max::<T, { AO::Relaxed }>(dst, val),
+                Acquire => intrinsics::atomic_max::<T, { AO::Acquire }>(dst, val),
+                Release => intrinsics::atomic_max::<T, { AO::Release }>(dst, val),
+                AcqRel => intrinsics::atomic_max::<T, { AO::AcqRel }>(dst, val),
+                SeqCst => intrinsics::atomic_max::<T, { AO::SeqCst }>(dst, val),
             }
         }
     }
@@ -21597,7 +24379,11 @@ Module sync.
                   (let _ := M.is_struct_tuple (| γ, "core::sync::atomic::Ordering::Relaxed" |) in
                   M.call_closure (|
                     T,
-                    M.get_function (| "core::intrinsics::atomic_max_relaxed", [], [ T ] |),
+                    M.get_function (|
+                      "core::intrinsics::atomic_max",
+                      [ Value.StructTuple "core::intrinsics::AtomicOrdering::Relaxed" [] [] [] ],
+                      [ T ]
+                    |),
                     [ M.read (| dst |); M.read (| val |) ]
                   |)));
               fun γ =>
@@ -21605,7 +24391,11 @@ Module sync.
                   (let _ := M.is_struct_tuple (| γ, "core::sync::atomic::Ordering::Acquire" |) in
                   M.call_closure (|
                     T,
-                    M.get_function (| "core::intrinsics::atomic_max_acquire", [], [ T ] |),
+                    M.get_function (|
+                      "core::intrinsics::atomic_max",
+                      [ Value.StructTuple "core::intrinsics::AtomicOrdering::Acquire" [] [] [] ],
+                      [ T ]
+                    |),
                     [ M.read (| dst |); M.read (| val |) ]
                   |)));
               fun γ =>
@@ -21613,7 +24403,11 @@ Module sync.
                   (let _ := M.is_struct_tuple (| γ, "core::sync::atomic::Ordering::Release" |) in
                   M.call_closure (|
                     T,
-                    M.get_function (| "core::intrinsics::atomic_max_release", [], [ T ] |),
+                    M.get_function (|
+                      "core::intrinsics::atomic_max",
+                      [ Value.StructTuple "core::intrinsics::AtomicOrdering::Release" [] [] [] ],
+                      [ T ]
+                    |),
                     [ M.read (| dst |); M.read (| val |) ]
                   |)));
               fun γ =>
@@ -21621,7 +24415,11 @@ Module sync.
                   (let _ := M.is_struct_tuple (| γ, "core::sync::atomic::Ordering::AcqRel" |) in
                   M.call_closure (|
                     T,
-                    M.get_function (| "core::intrinsics::atomic_max_acqrel", [], [ T ] |),
+                    M.get_function (|
+                      "core::intrinsics::atomic_max",
+                      [ Value.StructTuple "core::intrinsics::AtomicOrdering::AcqRel" [] [] [] ],
+                      [ T ]
+                    |),
                     [ M.read (| dst |); M.read (| val |) ]
                   |)));
               fun γ =>
@@ -21629,7 +24427,11 @@ Module sync.
                   (let _ := M.is_struct_tuple (| γ, "core::sync::atomic::Ordering::SeqCst" |) in
                   M.call_closure (|
                     T,
-                    M.get_function (| "core::intrinsics::atomic_max_seqcst", [], [ T ] |),
+                    M.get_function (|
+                      "core::intrinsics::atomic_max",
+                      [ Value.StructTuple "core::intrinsics::AtomicOrdering::SeqCst" [] [] [] ],
+                      [ T ]
+                    |),
                     [ M.read (| dst |); M.read (| val |) ]
                   |)))
             ]
@@ -21647,11 +24449,11 @@ Module sync.
         // SAFETY: the caller must uphold the safety contract for `atomic_min`
         unsafe {
             match order {
-                Relaxed => intrinsics::atomic_min_relaxed(dst, val),
-                Acquire => intrinsics::atomic_min_acquire(dst, val),
-                Release => intrinsics::atomic_min_release(dst, val),
-                AcqRel => intrinsics::atomic_min_acqrel(dst, val),
-                SeqCst => intrinsics::atomic_min_seqcst(dst, val),
+                Relaxed => intrinsics::atomic_min::<T, { AO::Relaxed }>(dst, val),
+                Acquire => intrinsics::atomic_min::<T, { AO::Acquire }>(dst, val),
+                Release => intrinsics::atomic_min::<T, { AO::Release }>(dst, val),
+                AcqRel => intrinsics::atomic_min::<T, { AO::AcqRel }>(dst, val),
+                SeqCst => intrinsics::atomic_min::<T, { AO::SeqCst }>(dst, val),
             }
         }
     }
@@ -21672,7 +24474,11 @@ Module sync.
                   (let _ := M.is_struct_tuple (| γ, "core::sync::atomic::Ordering::Relaxed" |) in
                   M.call_closure (|
                     T,
-                    M.get_function (| "core::intrinsics::atomic_min_relaxed", [], [ T ] |),
+                    M.get_function (|
+                      "core::intrinsics::atomic_min",
+                      [ Value.StructTuple "core::intrinsics::AtomicOrdering::Relaxed" [] [] [] ],
+                      [ T ]
+                    |),
                     [ M.read (| dst |); M.read (| val |) ]
                   |)));
               fun γ =>
@@ -21680,7 +24486,11 @@ Module sync.
                   (let _ := M.is_struct_tuple (| γ, "core::sync::atomic::Ordering::Acquire" |) in
                   M.call_closure (|
                     T,
-                    M.get_function (| "core::intrinsics::atomic_min_acquire", [], [ T ] |),
+                    M.get_function (|
+                      "core::intrinsics::atomic_min",
+                      [ Value.StructTuple "core::intrinsics::AtomicOrdering::Acquire" [] [] [] ],
+                      [ T ]
+                    |),
                     [ M.read (| dst |); M.read (| val |) ]
                   |)));
               fun γ =>
@@ -21688,7 +24498,11 @@ Module sync.
                   (let _ := M.is_struct_tuple (| γ, "core::sync::atomic::Ordering::Release" |) in
                   M.call_closure (|
                     T,
-                    M.get_function (| "core::intrinsics::atomic_min_release", [], [ T ] |),
+                    M.get_function (|
+                      "core::intrinsics::atomic_min",
+                      [ Value.StructTuple "core::intrinsics::AtomicOrdering::Release" [] [] [] ],
+                      [ T ]
+                    |),
                     [ M.read (| dst |); M.read (| val |) ]
                   |)));
               fun γ =>
@@ -21696,7 +24510,11 @@ Module sync.
                   (let _ := M.is_struct_tuple (| γ, "core::sync::atomic::Ordering::AcqRel" |) in
                   M.call_closure (|
                     T,
-                    M.get_function (| "core::intrinsics::atomic_min_acqrel", [], [ T ] |),
+                    M.get_function (|
+                      "core::intrinsics::atomic_min",
+                      [ Value.StructTuple "core::intrinsics::AtomicOrdering::AcqRel" [] [] [] ],
+                      [ T ]
+                    |),
                     [ M.read (| dst |); M.read (| val |) ]
                   |)));
               fun γ =>
@@ -21704,7 +24522,11 @@ Module sync.
                   (let _ := M.is_struct_tuple (| γ, "core::sync::atomic::Ordering::SeqCst" |) in
                   M.call_closure (|
                     T,
-                    M.get_function (| "core::intrinsics::atomic_min_seqcst", [], [ T ] |),
+                    M.get_function (|
+                      "core::intrinsics::atomic_min",
+                      [ Value.StructTuple "core::intrinsics::AtomicOrdering::SeqCst" [] [] [] ],
+                      [ T ]
+                    |),
                     [ M.read (| dst |); M.read (| val |) ]
                   |)))
             ]
@@ -21722,11 +24544,11 @@ Module sync.
         // SAFETY: the caller must uphold the safety contract for `atomic_umax`
         unsafe {
             match order {
-                Relaxed => intrinsics::atomic_umax_relaxed(dst, val),
-                Acquire => intrinsics::atomic_umax_acquire(dst, val),
-                Release => intrinsics::atomic_umax_release(dst, val),
-                AcqRel => intrinsics::atomic_umax_acqrel(dst, val),
-                SeqCst => intrinsics::atomic_umax_seqcst(dst, val),
+                Relaxed => intrinsics::atomic_umax::<T, { AO::Relaxed }>(dst, val),
+                Acquire => intrinsics::atomic_umax::<T, { AO::Acquire }>(dst, val),
+                Release => intrinsics::atomic_umax::<T, { AO::Release }>(dst, val),
+                AcqRel => intrinsics::atomic_umax::<T, { AO::AcqRel }>(dst, val),
+                SeqCst => intrinsics::atomic_umax::<T, { AO::SeqCst }>(dst, val),
             }
         }
     }
@@ -21747,7 +24569,11 @@ Module sync.
                   (let _ := M.is_struct_tuple (| γ, "core::sync::atomic::Ordering::Relaxed" |) in
                   M.call_closure (|
                     T,
-                    M.get_function (| "core::intrinsics::atomic_umax_relaxed", [], [ T ] |),
+                    M.get_function (|
+                      "core::intrinsics::atomic_umax",
+                      [ Value.StructTuple "core::intrinsics::AtomicOrdering::Relaxed" [] [] [] ],
+                      [ T ]
+                    |),
                     [ M.read (| dst |); M.read (| val |) ]
                   |)));
               fun γ =>
@@ -21755,7 +24581,11 @@ Module sync.
                   (let _ := M.is_struct_tuple (| γ, "core::sync::atomic::Ordering::Acquire" |) in
                   M.call_closure (|
                     T,
-                    M.get_function (| "core::intrinsics::atomic_umax_acquire", [], [ T ] |),
+                    M.get_function (|
+                      "core::intrinsics::atomic_umax",
+                      [ Value.StructTuple "core::intrinsics::AtomicOrdering::Acquire" [] [] [] ],
+                      [ T ]
+                    |),
                     [ M.read (| dst |); M.read (| val |) ]
                   |)));
               fun γ =>
@@ -21763,7 +24593,11 @@ Module sync.
                   (let _ := M.is_struct_tuple (| γ, "core::sync::atomic::Ordering::Release" |) in
                   M.call_closure (|
                     T,
-                    M.get_function (| "core::intrinsics::atomic_umax_release", [], [ T ] |),
+                    M.get_function (|
+                      "core::intrinsics::atomic_umax",
+                      [ Value.StructTuple "core::intrinsics::AtomicOrdering::Release" [] [] [] ],
+                      [ T ]
+                    |),
                     [ M.read (| dst |); M.read (| val |) ]
                   |)));
               fun γ =>
@@ -21771,7 +24605,11 @@ Module sync.
                   (let _ := M.is_struct_tuple (| γ, "core::sync::atomic::Ordering::AcqRel" |) in
                   M.call_closure (|
                     T,
-                    M.get_function (| "core::intrinsics::atomic_umax_acqrel", [], [ T ] |),
+                    M.get_function (|
+                      "core::intrinsics::atomic_umax",
+                      [ Value.StructTuple "core::intrinsics::AtomicOrdering::AcqRel" [] [] [] ],
+                      [ T ]
+                    |),
                     [ M.read (| dst |); M.read (| val |) ]
                   |)));
               fun γ =>
@@ -21779,7 +24617,11 @@ Module sync.
                   (let _ := M.is_struct_tuple (| γ, "core::sync::atomic::Ordering::SeqCst" |) in
                   M.call_closure (|
                     T,
-                    M.get_function (| "core::intrinsics::atomic_umax_seqcst", [], [ T ] |),
+                    M.get_function (|
+                      "core::intrinsics::atomic_umax",
+                      [ Value.StructTuple "core::intrinsics::AtomicOrdering::SeqCst" [] [] [] ],
+                      [ T ]
+                    |),
                     [ M.read (| dst |); M.read (| val |) ]
                   |)))
             ]
@@ -21797,11 +24639,11 @@ Module sync.
         // SAFETY: the caller must uphold the safety contract for `atomic_umin`
         unsafe {
             match order {
-                Relaxed => intrinsics::atomic_umin_relaxed(dst, val),
-                Acquire => intrinsics::atomic_umin_acquire(dst, val),
-                Release => intrinsics::atomic_umin_release(dst, val),
-                AcqRel => intrinsics::atomic_umin_acqrel(dst, val),
-                SeqCst => intrinsics::atomic_umin_seqcst(dst, val),
+                Relaxed => intrinsics::atomic_umin::<T, { AO::Relaxed }>(dst, val),
+                Acquire => intrinsics::atomic_umin::<T, { AO::Acquire }>(dst, val),
+                Release => intrinsics::atomic_umin::<T, { AO::Release }>(dst, val),
+                AcqRel => intrinsics::atomic_umin::<T, { AO::AcqRel }>(dst, val),
+                SeqCst => intrinsics::atomic_umin::<T, { AO::SeqCst }>(dst, val),
             }
         }
     }
@@ -21822,7 +24664,11 @@ Module sync.
                   (let _ := M.is_struct_tuple (| γ, "core::sync::atomic::Ordering::Relaxed" |) in
                   M.call_closure (|
                     T,
-                    M.get_function (| "core::intrinsics::atomic_umin_relaxed", [], [ T ] |),
+                    M.get_function (|
+                      "core::intrinsics::atomic_umin",
+                      [ Value.StructTuple "core::intrinsics::AtomicOrdering::Relaxed" [] [] [] ],
+                      [ T ]
+                    |),
                     [ M.read (| dst |); M.read (| val |) ]
                   |)));
               fun γ =>
@@ -21830,7 +24676,11 @@ Module sync.
                   (let _ := M.is_struct_tuple (| γ, "core::sync::atomic::Ordering::Acquire" |) in
                   M.call_closure (|
                     T,
-                    M.get_function (| "core::intrinsics::atomic_umin_acquire", [], [ T ] |),
+                    M.get_function (|
+                      "core::intrinsics::atomic_umin",
+                      [ Value.StructTuple "core::intrinsics::AtomicOrdering::Acquire" [] [] [] ],
+                      [ T ]
+                    |),
                     [ M.read (| dst |); M.read (| val |) ]
                   |)));
               fun γ =>
@@ -21838,7 +24688,11 @@ Module sync.
                   (let _ := M.is_struct_tuple (| γ, "core::sync::atomic::Ordering::Release" |) in
                   M.call_closure (|
                     T,
-                    M.get_function (| "core::intrinsics::atomic_umin_release", [], [ T ] |),
+                    M.get_function (|
+                      "core::intrinsics::atomic_umin",
+                      [ Value.StructTuple "core::intrinsics::AtomicOrdering::Release" [] [] [] ],
+                      [ T ]
+                    |),
                     [ M.read (| dst |); M.read (| val |) ]
                   |)));
               fun γ =>
@@ -21846,7 +24700,11 @@ Module sync.
                   (let _ := M.is_struct_tuple (| γ, "core::sync::atomic::Ordering::AcqRel" |) in
                   M.call_closure (|
                     T,
-                    M.get_function (| "core::intrinsics::atomic_umin_acqrel", [], [ T ] |),
+                    M.get_function (|
+                      "core::intrinsics::atomic_umin",
+                      [ Value.StructTuple "core::intrinsics::AtomicOrdering::AcqRel" [] [] [] ],
+                      [ T ]
+                    |),
                     [ M.read (| dst |); M.read (| val |) ]
                   |)));
               fun γ =>
@@ -21854,7 +24712,11 @@ Module sync.
                   (let _ := M.is_struct_tuple (| γ, "core::sync::atomic::Ordering::SeqCst" |) in
                   M.call_closure (|
                     T,
-                    M.get_function (| "core::intrinsics::atomic_umin_seqcst", [], [ T ] |),
+                    M.get_function (|
+                      "core::intrinsics::atomic_umin",
+                      [ Value.StructTuple "core::intrinsics::AtomicOrdering::SeqCst" [] [] [] ],
+                      [ T ]
+                    |),
                     [ M.read (| dst |); M.read (| val |) ]
                   |)))
             ]
@@ -21872,10 +24734,10 @@ Module sync.
         // SAFETY: using an atomic fence is safe.
         unsafe {
             match order {
-                Acquire => intrinsics::atomic_fence_acquire(),
-                Release => intrinsics::atomic_fence_release(),
-                AcqRel => intrinsics::atomic_fence_acqrel(),
-                SeqCst => intrinsics::atomic_fence_seqcst(),
+                Acquire => intrinsics::atomic_fence::<{ AO::Acquire }>(),
+                Release => intrinsics::atomic_fence::<{ AO::Release }>(),
+                AcqRel => intrinsics::atomic_fence::<{ AO::AcqRel }>(),
+                SeqCst => intrinsics::atomic_fence::<{ AO::SeqCst }>(),
                 Relaxed => panic!("there is no such thing as a relaxed fence"),
             }
         }
@@ -21895,7 +24757,11 @@ Module sync.
                   (let _ := M.is_struct_tuple (| γ, "core::sync::atomic::Ordering::Acquire" |) in
                   M.call_closure (|
                     Ty.tuple [],
-                    M.get_function (| "core::intrinsics::atomic_fence_acquire", [], [] |),
+                    M.get_function (|
+                      "core::intrinsics::atomic_fence",
+                      [ Value.StructTuple "core::intrinsics::AtomicOrdering::Acquire" [] [] [] ],
+                      []
+                    |),
                     []
                   |)));
               fun γ =>
@@ -21903,7 +24769,11 @@ Module sync.
                   (let _ := M.is_struct_tuple (| γ, "core::sync::atomic::Ordering::Release" |) in
                   M.call_closure (|
                     Ty.tuple [],
-                    M.get_function (| "core::intrinsics::atomic_fence_release", [], [] |),
+                    M.get_function (|
+                      "core::intrinsics::atomic_fence",
+                      [ Value.StructTuple "core::intrinsics::AtomicOrdering::Release" [] [] [] ],
+                      []
+                    |),
                     []
                   |)));
               fun γ =>
@@ -21911,7 +24781,11 @@ Module sync.
                   (let _ := M.is_struct_tuple (| γ, "core::sync::atomic::Ordering::AcqRel" |) in
                   M.call_closure (|
                     Ty.tuple [],
-                    M.get_function (| "core::intrinsics::atomic_fence_acqrel", [], [] |),
+                    M.get_function (|
+                      "core::intrinsics::atomic_fence",
+                      [ Value.StructTuple "core::intrinsics::AtomicOrdering::AcqRel" [] [] [] ],
+                      []
+                    |),
                     []
                   |)));
               fun γ =>
@@ -21919,7 +24793,11 @@ Module sync.
                   (let _ := M.is_struct_tuple (| γ, "core::sync::atomic::Ordering::SeqCst" |) in
                   M.call_closure (|
                     Ty.tuple [],
-                    M.get_function (| "core::intrinsics::atomic_fence_seqcst", [], [] |),
+                    M.get_function (|
+                      "core::intrinsics::atomic_fence",
+                      [ Value.StructTuple "core::intrinsics::AtomicOrdering::SeqCst" [] [] [] ],
+                      []
+                    |),
                     []
                   |)));
               fun γ =>
@@ -21934,28 +24812,11 @@ Module sync.
                           Ty.path "core::fmt::Arguments",
                           M.get_associated_function (|
                             Ty.path "core::fmt::Arguments",
-                            "new_const",
-                            [ Value.Integer IntegerKind.Usize 1 ],
+                            "from_str",
+                            [],
                             []
                           |),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.alloc (|
-                                    Ty.apply
-                                      (Ty.path "array")
-                                      [ Value.Integer IntegerKind.Usize 1 ]
-                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                    Value.Array
-                                      [ mk_str (| "there is no such thing as a relaxed fence" |) ]
-                                  |)
-                                |)
-                              |)
-                            |)
-                          ]
+                          [ mk_str (| "there is no such thing as a relaxed fence" |) ]
                         |)
                       ]
                     |)
@@ -21974,11 +24835,11 @@ Module sync.
         // SAFETY: using an atomic fence is safe.
         unsafe {
             match order {
-                Acquire => intrinsics::atomic_singlethreadfence_acquire(),
-                Release => intrinsics::atomic_singlethreadfence_release(),
-                AcqRel => intrinsics::atomic_singlethreadfence_acqrel(),
-                SeqCst => intrinsics::atomic_singlethreadfence_seqcst(),
-                Relaxed => panic!("there is no such thing as a relaxed compiler fence"),
+                Acquire => intrinsics::atomic_singlethreadfence::<{ AO::Acquire }>(),
+                Release => intrinsics::atomic_singlethreadfence::<{ AO::Release }>(),
+                AcqRel => intrinsics::atomic_singlethreadfence::<{ AO::AcqRel }>(),
+                SeqCst => intrinsics::atomic_singlethreadfence::<{ AO::SeqCst }>(),
+                Relaxed => panic!("there is no such thing as a relaxed fence"),
             }
         }
     }
@@ -21998,8 +24859,8 @@ Module sync.
                   M.call_closure (|
                     Ty.tuple [],
                     M.get_function (|
-                      "core::intrinsics::atomic_singlethreadfence_acquire",
-                      [],
+                      "core::intrinsics::atomic_singlethreadfence",
+                      [ Value.StructTuple "core::intrinsics::AtomicOrdering::Acquire" [] [] [] ],
                       []
                     |),
                     []
@@ -22010,8 +24871,8 @@ Module sync.
                   M.call_closure (|
                     Ty.tuple [],
                     M.get_function (|
-                      "core::intrinsics::atomic_singlethreadfence_release",
-                      [],
+                      "core::intrinsics::atomic_singlethreadfence",
+                      [ Value.StructTuple "core::intrinsics::AtomicOrdering::Release" [] [] [] ],
                       []
                     |),
                     []
@@ -22022,8 +24883,8 @@ Module sync.
                   M.call_closure (|
                     Ty.tuple [],
                     M.get_function (|
-                      "core::intrinsics::atomic_singlethreadfence_acqrel",
-                      [],
+                      "core::intrinsics::atomic_singlethreadfence",
+                      [ Value.StructTuple "core::intrinsics::AtomicOrdering::AcqRel" [] [] [] ],
                       []
                     |),
                     []
@@ -22034,8 +24895,8 @@ Module sync.
                   M.call_closure (|
                     Ty.tuple [],
                     M.get_function (|
-                      "core::intrinsics::atomic_singlethreadfence_seqcst",
-                      [],
+                      "core::intrinsics::atomic_singlethreadfence",
+                      [ Value.StructTuple "core::intrinsics::AtomicOrdering::SeqCst" [] [] [] ],
                       []
                     |),
                     []
@@ -22052,32 +24913,11 @@ Module sync.
                           Ty.path "core::fmt::Arguments",
                           M.get_associated_function (|
                             Ty.path "core::fmt::Arguments",
-                            "new_const",
-                            [ Value.Integer IntegerKind.Usize 1 ],
+                            "from_str",
+                            [],
                             []
                           |),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.alloc (|
-                                    Ty.apply
-                                      (Ty.path "array")
-                                      [ Value.Integer IntegerKind.Usize 1 ]
-                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                    Value.Array
-                                      [
-                                        mk_str (|
-                                          "there is no such thing as a relaxed compiler fence"
-                                        |)
-                                      ]
-                                  |)
-                                |)
-                              |)
-                            |)
-                          ]
+                          [ mk_str (| "there is no such thing as a relaxed fence" |) ]
                         |)
                       ]
                     |)

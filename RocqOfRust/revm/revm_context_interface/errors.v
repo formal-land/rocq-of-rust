@@ -69,6 +69,9 @@ Module errors.
             ("take_error", InstanceField.Method (take_error T))
           ].
     End Impl_revm_context_interface_errors_ErrorGetter_where_revm_context_interface_errors_ErrorGetter_T_where_core_marker_Sized_T_for_ref_mut_T.
+  End underscore.
+  
+  Module underscore_1.
     Module Impl_revm_context_interface_errors_ErrorGetter_where_revm_context_interface_errors_ErrorGetter_T_where_core_marker_Sized_T_for_alloc_boxed_Box_T_alloc_alloc_Global.
       Definition Self (T : Ty.t) : Ty.t :=
         Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ].
@@ -137,6 +140,5 @@ Module errors.
             ("take_error", InstanceField.Method (take_error T))
           ].
     End Impl_revm_context_interface_errors_ErrorGetter_where_revm_context_interface_errors_ErrorGetter_T_where_core_marker_Sized_T_for_alloc_boxed_Box_T_alloc_alloc_Global.
-  End underscore.
-  
+  End underscore_1.
 End errors.

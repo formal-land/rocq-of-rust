@@ -2,7 +2,6 @@
 
 use super::Utf8Error;
 use crate::intrinsics::const_eval_select;
-use crate::mem;
 
 /// Returns the initial codepoint accumulator for the first byte.
 /// The first byte is special, only want bottom 5 bits for width 2, 4 bits
@@ -128,7 +127,7 @@ pub(super) const fn run_utf8_validation(v: &[u8]) -> Result<(), Utf8Error> {
     let mut index = 0;
     let len = v.len();
 
-    const USIZE_BYTES: usize = mem::size_of::<usize>();
+    const USIZE_BYTES: usize = size_of::<usize>();
 
     let ascii_block_size = 2 * USIZE_BYTES;
     let blocks_end = if len >= ascii_block_size { len - ascii_block_size + 1 } else { 0 };
@@ -220,7 +219,7 @@ pub(super) const fn run_utf8_validation(v: &[u8]) -> Result<(), Utf8Error> {
             // Ascii case, try to skip forward quickly.
             // When the pointer is aligned, read 2 words of data per iteration
             // until we find a word containing a non-ascii byte.
-            if align != usize::MAX && align.wrapping_sub(index) % USIZE_BYTES == 0 {
+            if align != usize::MAX && align.wrapping_sub(index).is_multiple_of(USIZE_BYTES) {
                 let ptr = v.as_ptr();
                 while index < blocks_end {
                     // SAFETY: since `align - index` and `ascii_block_size` are

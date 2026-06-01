@@ -642,6 +642,67 @@ Module sync.
           (* Instance *) [ ("call_mut", InstanceField.Method (call_mut F Args)) ].
     End Impl_core_ops_function_FnMut_where_core_ops_function_FnMut_F_Args_where_core_marker_Tuple_Args_Args_for_core_sync_exclusive_Exclusive_F.
     
+    Module Impl_core_ops_function_Fn_where_core_marker_Sync_F_where_core_ops_function_Fn_F_Args_where_core_marker_Tuple_Args_Args_for_core_sync_exclusive_Exclusive_F.
+      Definition Self (F Args : Ty.t) : Ty.t :=
+        Ty.apply (Ty.path "core::sync::exclusive::Exclusive") [] [ F ].
+      
+      (*
+          extern "rust-call" fn call(&self, args: Args) -> Self::Output {
+              self.as_ref().call(args)
+          }
+      *)
+      Definition call (F Args : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        let Self : Ty.t := Self F Args in
+        match ε, τ, α with
+        | [], [], [ self; args ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "core::sync::exclusive::Exclusive") [] [ F ] ],
+                self
+              |) in
+            let args := M.alloc (| Args, args |) in
+            M.call_closure (|
+              Ty.associated_in_trait "core::ops::function::FnOnce" [] [ Args ] F "Output",
+              M.get_trait_method (| "core::ops::function::Fn", F, [], [ Args ], "call", [], [] |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ F ],
+                      M.get_trait_method (|
+                        "core::convert::AsRef",
+                        Ty.apply (Ty.path "core::sync::exclusive::Exclusive") [] [ F ],
+                        [],
+                        [ F ],
+                        "as_ref",
+                        [],
+                        []
+                      |),
+                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                    |)
+                  |)
+                |);
+                M.read (| args |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Axiom Implements :
+        forall (F Args : Ty.t),
+        M.IsTraitInstance
+          "core::ops::function::Fn"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) [ Args ]
+          (Self F Args)
+          (* Instance *) [ ("call", InstanceField.Method (call F Args)) ].
+    End Impl_core_ops_function_Fn_where_core_marker_Sync_F_where_core_ops_function_Fn_F_Args_where_core_marker_Tuple_Args_Args_for_core_sync_exclusive_Exclusive_F.
+    
     Module Impl_core_future_future_Future_where_core_future_future_Future_T_where_core_marker_Sized_T_for_core_sync_exclusive_Exclusive_T.
       Definition Self (T : Ty.t) : Ty.t :=
         Ty.apply (Ty.path "core::sync::exclusive::Exclusive") [] [ T ].
@@ -796,5 +857,433 @@ Module sync.
             ("resume", InstanceField.Method (resume R G))
           ].
     End Impl_core_ops_coroutine_Coroutine_where_core_ops_coroutine_Coroutine_G_R_where_core_marker_Sized_G_R_for_core_sync_exclusive_Exclusive_G.
+    
+    Module Impl_core_convert_AsRef_where_core_marker_Sync_T_where_core_marker_Sized_T_T_for_core_sync_exclusive_Exclusive_T.
+      Definition Self (T : Ty.t) : Ty.t :=
+        Ty.apply (Ty.path "core::sync::exclusive::Exclusive") [] [ T ].
+      
+      (*
+          fn as_ref(&self) -> &T {
+              &self.inner
+          }
+      *)
+      Definition as_ref (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "core::sync::exclusive::Exclusive") [] [ T ] ],
+                self
+              |) in
+            M.borrow (|
+              Pointer.Kind.Ref,
+              M.deref (|
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.SubPointer.get_struct_record_field (|
+                    M.deref (| M.read (| self |) |),
+                    "core::sync::exclusive::Exclusive",
+                    "inner"
+                  |)
+                |)
+              |)
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Axiom Implements :
+        forall (T : Ty.t),
+        M.IsTraitInstance
+          "core::convert::AsRef"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) [ T ]
+          (Self T)
+          (* Instance *) [ ("as_ref", InstanceField.Method (as_ref T)) ].
+    End Impl_core_convert_AsRef_where_core_marker_Sync_T_where_core_marker_Sized_T_T_for_core_sync_exclusive_Exclusive_T.
+    
+    Module Impl_core_clone_Clone_where_core_marker_Sync_T_where_core_clone_Clone_T_for_core_sync_exclusive_Exclusive_T.
+      Definition Self (T : Ty.t) : Ty.t :=
+        Ty.apply (Ty.path "core::sync::exclusive::Exclusive") [] [ T ].
+      
+      (*
+          fn clone(&self) -> Self {
+              Self { inner: self.inner.clone() }
+          }
+      *)
+      Definition clone (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "core::sync::exclusive::Exclusive") [] [ T ] ],
+                self
+              |) in
+            Value.mkStructRecord
+              "core::sync::exclusive::Exclusive"
+              []
+              [ T ]
+              [
+                ("inner",
+                  M.call_closure (|
+                    T,
+                    M.get_trait_method (| "core::clone::Clone", T, [], [], "clone", [], [] |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "core::sync::exclusive::Exclusive",
+                          "inner"
+                        |)
+                      |)
+                    ]
+                  |))
+              ]))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Axiom Implements :
+        forall (T : Ty.t),
+        M.IsTraitInstance
+          "core::clone::Clone"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          (Self T)
+          (* Instance *) [ ("clone", InstanceField.Method (clone T)) ].
+    End Impl_core_clone_Clone_where_core_marker_Sync_T_where_core_clone_Clone_T_for_core_sync_exclusive_Exclusive_T.
+    
+    Module Impl_core_clone_TrivialClone_where_core_marker_Sync_T_where_core_clone_TrivialClone_T_for_core_sync_exclusive_Exclusive_T.
+      Definition Self (T : Ty.t) : Ty.t :=
+        Ty.apply (Ty.path "core::sync::exclusive::Exclusive") [] [ T ].
+      
+      Axiom Implements :
+        forall (T : Ty.t),
+        M.IsTraitInstance
+          "core::clone::TrivialClone"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          (Self T)
+          (* Instance *) [].
+    End Impl_core_clone_TrivialClone_where_core_marker_Sync_T_where_core_clone_TrivialClone_T_for_core_sync_exclusive_Exclusive_T.
+    
+    Module Impl_core_marker_Copy_where_core_marker_Sync_T_where_core_marker_Copy_T_for_core_sync_exclusive_Exclusive_T.
+      Definition Self (T : Ty.t) : Ty.t :=
+        Ty.apply (Ty.path "core::sync::exclusive::Exclusive") [] [ T ].
+      
+      Axiom Implements :
+        forall (T : Ty.t),
+        M.IsTraitInstance
+          "core::marker::Copy"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          (Self T)
+          (* Instance *) [].
+    End Impl_core_marker_Copy_where_core_marker_Sync_T_where_core_marker_Copy_T_for_core_sync_exclusive_Exclusive_T.
+    
+    Module Impl_core_cmp_PartialEq_where_core_marker_Sync_T_where_core_cmp_PartialEq_T_U_where_core_marker_Sized_T_where_core_marker_Sync_U_where_core_marker_Sized_U_core_sync_exclusive_Exclusive_U_for_core_sync_exclusive_Exclusive_T.
+      Definition Self (T U : Ty.t) : Ty.t :=
+        Ty.apply (Ty.path "core::sync::exclusive::Exclusive") [] [ T ].
+      
+      (*
+          fn eq(&self, other: &Exclusive<U>) -> bool {
+              self.inner == other.inner
+          }
+      *)
+      Definition eq (T U : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        let Self : Ty.t := Self T U in
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "core::sync::exclusive::Exclusive") [] [ T ] ],
+                self
+              |) in
+            let other :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "core::sync::exclusive::Exclusive") [] [ U ] ],
+                other
+              |) in
+            M.call_closure (|
+              Ty.path "bool",
+              M.get_trait_method (| "core::cmp::PartialEq", T, [], [ U ], "eq", [], [] |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.SubPointer.get_struct_record_field (|
+                    M.deref (| M.read (| self |) |),
+                    "core::sync::exclusive::Exclusive",
+                    "inner"
+                  |)
+                |);
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.SubPointer.get_struct_record_field (|
+                    M.deref (| M.read (| other |) |),
+                    "core::sync::exclusive::Exclusive",
+                    "inner"
+                  |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Axiom Implements :
+        forall (T U : Ty.t),
+        M.IsTraitInstance
+          "core::cmp::PartialEq"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *)
+          [ Ty.apply (Ty.path "core::sync::exclusive::Exclusive") [] [ U ] ]
+          (Self T U)
+          (* Instance *) [ ("eq", InstanceField.Method (eq T U)) ].
+    End Impl_core_cmp_PartialEq_where_core_marker_Sync_T_where_core_cmp_PartialEq_T_U_where_core_marker_Sized_T_where_core_marker_Sync_U_where_core_marker_Sized_U_core_sync_exclusive_Exclusive_U_for_core_sync_exclusive_Exclusive_T.
+    
+    Module Impl_core_marker_StructuralPartialEq_where_core_marker_Sync_T_where_core_marker_StructuralPartialEq_T_where_core_marker_Sized_T_for_core_sync_exclusive_Exclusive_T.
+      Definition Self (T : Ty.t) : Ty.t :=
+        Ty.apply (Ty.path "core::sync::exclusive::Exclusive") [] [ T ].
+      
+      Axiom Implements :
+        forall (T : Ty.t),
+        M.IsTraitInstance
+          "core::marker::StructuralPartialEq"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          (Self T)
+          (* Instance *) [].
+    End Impl_core_marker_StructuralPartialEq_where_core_marker_Sync_T_where_core_marker_StructuralPartialEq_T_where_core_marker_Sized_T_for_core_sync_exclusive_Exclusive_T.
+    
+    Module Impl_core_cmp_Eq_where_core_marker_Sync_T_where_core_cmp_Eq_T_where_core_marker_Sized_T_for_core_sync_exclusive_Exclusive_T.
+      Definition Self (T : Ty.t) : Ty.t :=
+        Ty.apply (Ty.path "core::sync::exclusive::Exclusive") [] [ T ].
+      
+      Axiom Implements :
+        forall (T : Ty.t),
+        M.IsTraitInstance
+          "core::cmp::Eq"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          (Self T)
+          (* Instance *) [].
+    End Impl_core_cmp_Eq_where_core_marker_Sync_T_where_core_cmp_Eq_T_where_core_marker_Sized_T_for_core_sync_exclusive_Exclusive_T.
+    
+    Module Impl_core_hash_Hash_where_core_marker_Sync_T_where_core_hash_Hash_T_where_core_marker_Sized_T_for_core_sync_exclusive_Exclusive_T.
+      Definition Self (T : Ty.t) : Ty.t :=
+        Ty.apply (Ty.path "core::sync::exclusive::Exclusive") [] [ T ].
+      
+      (*
+          fn hash<H: Hasher>(&self, state: &mut H) {
+              Hash::hash(&self.inner, state)
+          }
+      *)
+      Definition hash (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [ H ], [ self; state ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "core::sync::exclusive::Exclusive") [] [ T ] ],
+                self
+              |) in
+            let state := M.alloc (| Ty.apply (Ty.path "&mut") [] [ H ], state |) in
+            M.call_closure (|
+              Ty.tuple [],
+              M.get_trait_method (| "core::hash::Hash", T, [], [], "hash", [], [ H ] |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "core::sync::exclusive::Exclusive",
+                        "inner"
+                      |)
+                    |)
+                  |)
+                |);
+                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Axiom Implements :
+        forall (T : Ty.t),
+        M.IsTraitInstance
+          "core::hash::Hash"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          (Self T)
+          (* Instance *) [ ("hash", InstanceField.Method (hash T)) ].
+    End Impl_core_hash_Hash_where_core_marker_Sync_T_where_core_hash_Hash_T_where_core_marker_Sized_T_for_core_sync_exclusive_Exclusive_T.
+    
+    Module Impl_core_cmp_PartialOrd_where_core_marker_Sync_T_where_core_cmp_PartialOrd_T_U_where_core_marker_Sized_T_where_core_marker_Sync_U_where_core_marker_Sized_U_core_sync_exclusive_Exclusive_U_for_core_sync_exclusive_Exclusive_T.
+      Definition Self (T U : Ty.t) : Ty.t :=
+        Ty.apply (Ty.path "core::sync::exclusive::Exclusive") [] [ T ].
+      
+      (*
+          fn partial_cmp(&self, other: &Exclusive<U>) -> Option<Ordering> {
+              self.inner.partial_cmp(&other.inner)
+          }
+      *)
+      Definition partial_cmp
+          (T U : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T U in
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "core::sync::exclusive::Exclusive") [] [ T ] ],
+                self
+              |) in
+            let other :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "core::sync::exclusive::Exclusive") [] [ U ] ],
+                other
+              |) in
+            M.call_closure (|
+              Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "core::cmp::Ordering" ],
+              M.get_trait_method (| "core::cmp::PartialOrd", T, [], [ U ], "partial_cmp", [], [] |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.SubPointer.get_struct_record_field (|
+                    M.deref (| M.read (| self |) |),
+                    "core::sync::exclusive::Exclusive",
+                    "inner"
+                  |)
+                |);
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| other |) |),
+                        "core::sync::exclusive::Exclusive",
+                        "inner"
+                      |)
+                    |)
+                  |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Axiom Implements :
+        forall (T U : Ty.t),
+        M.IsTraitInstance
+          "core::cmp::PartialOrd"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *)
+          [ Ty.apply (Ty.path "core::sync::exclusive::Exclusive") [] [ U ] ]
+          (Self T U)
+          (* Instance *) [ ("partial_cmp", InstanceField.Method (partial_cmp T U)) ].
+    End Impl_core_cmp_PartialOrd_where_core_marker_Sync_T_where_core_cmp_PartialOrd_T_U_where_core_marker_Sized_T_where_core_marker_Sync_U_where_core_marker_Sized_U_core_sync_exclusive_Exclusive_U_for_core_sync_exclusive_Exclusive_T.
+    
+    Module Impl_core_cmp_Ord_where_core_marker_Sync_T_where_core_cmp_Ord_T_where_core_marker_Sized_T_for_core_sync_exclusive_Exclusive_T.
+      Definition Self (T : Ty.t) : Ty.t :=
+        Ty.apply (Ty.path "core::sync::exclusive::Exclusive") [] [ T ].
+      
+      (*
+          fn cmp(&self, other: &Self) -> Ordering {
+              self.inner.cmp(&other.inner)
+          }
+      *)
+      Definition cmp (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "core::sync::exclusive::Exclusive") [] [ T ] ],
+                self
+              |) in
+            let other :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "core::sync::exclusive::Exclusive") [] [ T ] ],
+                other
+              |) in
+            M.call_closure (|
+              Ty.path "core::cmp::Ordering",
+              M.get_trait_method (| "core::cmp::Ord", T, [], [], "cmp", [], [] |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.SubPointer.get_struct_record_field (|
+                    M.deref (| M.read (| self |) |),
+                    "core::sync::exclusive::Exclusive",
+                    "inner"
+                  |)
+                |);
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| other |) |),
+                        "core::sync::exclusive::Exclusive",
+                        "inner"
+                      |)
+                    |)
+                  |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Axiom Implements :
+        forall (T : Ty.t),
+        M.IsTraitInstance
+          "core::cmp::Ord"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          (Self T)
+          (* Instance *) [ ("cmp", InstanceField.Method (cmp T)) ].
+    End Impl_core_cmp_Ord_where_core_marker_Sync_T_where_core_cmp_Ord_T_where_core_marker_Sized_T_for_core_sync_exclusive_Exclusive_T.
   End exclusive.
 End sync.

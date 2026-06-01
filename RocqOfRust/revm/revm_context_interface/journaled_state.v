@@ -101,6 +101,18 @@ Module journaled_state.
         (* Instance *) [].
   End Impl_core_marker_Copy_for_revm_context_interface_journaled_state_TransferError.
   
+  Module Impl_core_clone_TrivialClone_for_revm_context_interface_journaled_state_TransferError.
+    Definition Self : Ty.t := Ty.path "revm_context_interface::journaled_state::TransferError".
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "core::clone::TrivialClone"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        Self
+        (* Instance *) [].
+  End Impl_core_clone_TrivialClone_for_revm_context_interface_journaled_state_TransferError.
+  
   Module Impl_core_clone_Clone_for_revm_context_interface_journaled_state_TransferError.
     Definition Self : Ty.t := Ty.path "revm_context_interface::journaled_state::TransferError".
     
@@ -439,6 +451,18 @@ Module journaled_state.
         Self
         (* Instance *) [].
   End Impl_core_marker_Copy_for_revm_context_interface_journaled_state_JournalCheckpoint.
+  
+  Module Impl_core_clone_TrivialClone_for_revm_context_interface_journaled_state_JournalCheckpoint.
+    Definition Self : Ty.t := Ty.path "revm_context_interface::journaled_state::JournalCheckpoint".
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "core::clone::TrivialClone"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        Self
+        (* Instance *) [].
+  End Impl_core_clone_TrivialClone_for_revm_context_interface_journaled_state_JournalCheckpoint.
   
   Module Impl_core_clone_Clone_for_revm_context_interface_journaled_state_JournalCheckpoint.
     Definition Self : Ty.t := Ty.path "revm_context_interface::journaled_state::JournalCheckpoint".
@@ -893,22 +917,20 @@ Module journaled_state.
           LogicalOp.and (|
             M.call_closure (|
               Ty.path "bool",
-              M.get_trait_method (| "core::cmp::PartialEq", T, [], [ T ], "eq", [], [] |),
+              BinOp.eq,
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
+                M.read (|
                   M.SubPointer.get_struct_record_field (|
                     M.deref (| M.read (| self |) |),
                     "revm_context_interface::journaled_state::StateLoad",
-                    "data"
+                    "is_cold"
                   |)
                 |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
+                M.read (|
                   M.SubPointer.get_struct_record_field (|
                     M.deref (| M.read (| other |) |),
                     "revm_context_interface::journaled_state::StateLoad",
-                    "data"
+                    "is_cold"
                   |)
                 |)
               ]
@@ -916,20 +938,22 @@ Module journaled_state.
             ltac:(M.monadic
               (M.call_closure (|
                 Ty.path "bool",
-                BinOp.eq,
+                M.get_trait_method (| "core::cmp::PartialEq", T, [], [ T ], "eq", [], [] |),
                 [
-                  M.read (|
+                  M.borrow (|
+                    Pointer.Kind.Ref,
                     M.SubPointer.get_struct_record_field (|
                       M.deref (| M.read (| self |) |),
                       "revm_context_interface::journaled_state::StateLoad",
-                      "is_cold"
+                      "data"
                     |)
                   |);
-                  M.read (|
+                  M.borrow (|
+                    Pointer.Kind.Ref,
                     M.SubPointer.get_struct_record_field (|
                       M.deref (| M.read (| other |) |),
                       "revm_context_interface::journaled_state::StateLoad",
-                      "is_cold"
+                      "data"
                     |)
                   |)
                 ]
@@ -1526,38 +1550,20 @@ Module journaled_state.
           LogicalOp.and (|
             M.call_closure (|
               Ty.path "bool",
-              M.get_trait_method (|
-                "core::cmp::PartialEq",
-                Ty.apply
-                  (Ty.path "revm_context_interface::journaled_state::Eip7702CodeLoad")
-                  []
-                  [ Ty.tuple [] ],
-                [],
-                [
-                  Ty.apply
-                    (Ty.path "revm_context_interface::journaled_state::Eip7702CodeLoad")
-                    []
-                    [ Ty.tuple [] ]
-                ],
-                "eq",
-                [],
-                []
-              |),
+              BinOp.eq,
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
+                M.read (|
                   M.SubPointer.get_struct_record_field (|
                     M.deref (| M.read (| self |) |),
                     "revm_context_interface::journaled_state::AccountLoad",
-                    "load"
+                    "is_empty"
                   |)
                 |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
+                M.read (|
                   M.SubPointer.get_struct_record_field (|
                     M.deref (| M.read (| other |) |),
                     "revm_context_interface::journaled_state::AccountLoad",
-                    "load"
+                    "is_empty"
                   |)
                 |)
               ]
@@ -1565,20 +1571,38 @@ Module journaled_state.
             ltac:(M.monadic
               (M.call_closure (|
                 Ty.path "bool",
-                BinOp.eq,
+                M.get_trait_method (|
+                  "core::cmp::PartialEq",
+                  Ty.apply
+                    (Ty.path "revm_context_interface::journaled_state::Eip7702CodeLoad")
+                    []
+                    [ Ty.tuple [] ],
+                  [],
+                  [
+                    Ty.apply
+                      (Ty.path "revm_context_interface::journaled_state::Eip7702CodeLoad")
+                      []
+                      [ Ty.tuple [] ]
+                  ],
+                  "eq",
+                  [],
+                  []
+                |),
                 [
-                  M.read (|
+                  M.borrow (|
+                    Pointer.Kind.Ref,
                     M.SubPointer.get_struct_record_field (|
                       M.deref (| M.read (| self |) |),
                       "revm_context_interface::journaled_state::AccountLoad",
-                      "is_empty"
+                      "load"
                     |)
                   |);
-                  M.read (|
+                  M.borrow (|
+                    Pointer.Kind.Ref,
                     M.SubPointer.get_struct_record_field (|
                       M.deref (| M.read (| other |) |),
                       "revm_context_interface::journaled_state::AccountLoad",
-                      "is_empty"
+                      "load"
                     |)
                   |)
                 ]

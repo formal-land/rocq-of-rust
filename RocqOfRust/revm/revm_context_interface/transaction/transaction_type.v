@@ -63,6 +63,19 @@ Module transaction.
         "revm_context_interface::transaction::transaction_type::TransactionType::Custom"
         5.
     
+    Module Impl_core_clone_TrivialClone_for_revm_context_interface_transaction_transaction_type_TransactionType.
+      Definition Self : Ty.t :=
+        Ty.path "revm_context_interface::transaction::transaction_type::TransactionType".
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::clone::TrivialClone"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [].
+    End Impl_core_clone_TrivialClone_for_revm_context_interface_transaction_transaction_type_TransactionType.
+    
     Module Impl_core_clone_Clone_for_revm_context_interface_transaction_transaction_type_TransactionType.
       Definition Self : Ty.t :=
         Ty.path "revm_context_interface::transaction::transaction_type::TransactionType".

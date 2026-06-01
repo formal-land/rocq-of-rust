@@ -166,6 +166,19 @@ Module interpreter.
           (* Instance *) [ ("default", InstanceField.Method default) ].
     End Impl_core_default_Default_for_revm_interpreter_interpreter_subroutine_stack_SubRoutineReturnFrame.
     
+    Module Impl_core_clone_TrivialClone_for_revm_interpreter_interpreter_subroutine_stack_SubRoutineReturnFrame.
+      Definition Self : Ty.t :=
+        Ty.path "revm_interpreter::interpreter::subroutine_stack::SubRoutineReturnFrame".
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::clone::TrivialClone"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [].
+    End Impl_core_clone_TrivialClone_for_revm_interpreter_interpreter_subroutine_stack_SubRoutineReturnFrame.
+    
     Module Impl_core_clone_Clone_for_revm_interpreter_interpreter_subroutine_stack_SubRoutineReturnFrame.
       Definition Self : Ty.t :=
         Ty.path "revm_interpreter::interpreter::subroutine_stack::SubRoutineReturnFrame".
@@ -1303,43 +1316,42 @@ Module interpreter.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
                                   Ty.path "bool",
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    BinOp.ge,
-                                    [
-                                      M.call_closure (|
-                                        Ty.path "usize",
-                                        M.get_associated_function (|
-                                          Ty.apply
-                                            (Ty.path "alloc::vec::Vec")
-                                            []
-                                            [
-                                              Ty.path
-                                                "revm_interpreter::interpreter::subroutine_stack::SubRoutineReturnFrame";
-                                              Ty.path "alloc::alloc::Global"
-                                            ],
-                                          "len",
-                                          [],
+                                  BinOp.ge,
+                                  [
+                                    M.call_closure (|
+                                      Ty.path "usize",
+                                      M.get_associated_function (|
+                                        Ty.apply
+                                          (Ty.path "alloc::vec::Vec")
                                           []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.SubPointer.get_struct_record_field (|
-                                              M.deref (| M.read (| self |) |),
-                                              "revm_interpreter::interpreter::subroutine_stack::SubRoutineImpl",
-                                              "return_stack"
-                                            |)
+                                          [
+                                            Ty.path
+                                              "revm_interpreter::interpreter::subroutine_stack::SubRoutineReturnFrame";
+                                            Ty.path "alloc::alloc::Global"
+                                          ],
+                                        "len",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.SubPointer.get_struct_record_field (|
+                                            M.deref (| M.read (| self |) |),
+                                            "revm_interpreter::interpreter::subroutine_stack::SubRoutineImpl",
+                                            "return_stack"
                                           |)
-                                        ]
-                                      |);
-                                      Value.Integer IntegerKind.Usize 1024
-                                    ]
-                                  |)
-                                |)) in
+                                        |)
+                                      ]
+                                    |);
+                                    Value.Integer IntegerKind.Usize 1024
+                                  ]
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.never_to_any (| M.read (| M.return_ (| Value.Bool false |) |) |)));

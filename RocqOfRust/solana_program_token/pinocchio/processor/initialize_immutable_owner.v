@@ -428,12 +428,25 @@ Module processor.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.match_operator (|
                                 Ty.path "bool",
-                                M.match_operator (|
-                                  Ty.path "bool",
-                                  M.alloc (|
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "core::ops::control_flow::ControlFlow")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::result::Result")
+                                        []
+                                        [
+                                          Ty.path "core::convert::Infallible";
+                                          Ty.path "pinocchio::program_error::ProgramError"
+                                        ];
+                                      Ty.path "bool"
+                                    ],
+                                  M.call_closure (|
                                     Ty.apply
                                       (Ty.path "core::ops::control_flow::ControlFlow")
                                       []
@@ -447,22 +460,23 @@ Module processor.
                                           ];
                                         Ty.path "bool"
                                       ],
-                                    M.call_closure (|
+                                    M.get_trait_method (|
+                                      "core::ops::try_trait::Try",
                                       Ty.apply
-                                        (Ty.path "core::ops::control_flow::ControlFlow")
+                                        (Ty.path "core::result::Result")
                                         []
                                         [
-                                          Ty.apply
-                                            (Ty.path "core::result::Result")
-                                            []
-                                            [
-                                              Ty.path "core::convert::Infallible";
-                                              Ty.path "pinocchio::program_error::ProgramError"
-                                            ];
-                                          Ty.path "bool"
+                                          Ty.path "bool";
+                                          Ty.path "pinocchio::program_error::ProgramError"
                                         ],
-                                      M.get_trait_method (|
-                                        "core::ops::try_trait::Try",
+                                      [],
+                                      [],
+                                      "branch",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.call_closure (|
                                         Ty.apply
                                           (Ty.path "core::result::Result")
                                           []
@@ -470,65 +484,59 @@ Module processor.
                                             Ty.path "bool";
                                             Ty.path "pinocchio::program_error::ProgramError"
                                           ],
-                                        [],
-                                        [],
-                                        "branch",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.call_closure (|
+                                        M.get_trait_method (|
+                                          "pinocchio_token_interface::state::Initializable",
+                                          Ty.path
+                                            "pinocchio_token_interface::state::account::Account",
+                                          [],
+                                          [],
+                                          "is_initialized",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| account |) |)
+                                          |)
+                                        ]
+                                      |)
+                                    ]
+                                  |)
+                                |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let γ0_0 :=
+                                        M.SubPointer.get_struct_tuple_field (|
+                                          γ,
+                                          "core::ops::control_flow::ControlFlow::Break",
+                                          0
+                                        |) in
+                                      let residual :=
+                                        M.copy (|
                                           Ty.apply
                                             (Ty.path "core::result::Result")
                                             []
                                             [
-                                              Ty.path "bool";
+                                              Ty.path "core::convert::Infallible";
                                               Ty.path "pinocchio::program_error::ProgramError"
                                             ],
-                                          M.get_trait_method (|
-                                            "pinocchio_token_interface::state::Initializable",
-                                            Ty.path
-                                              "pinocchio_token_interface::state::account::Account",
-                                            [],
-                                            [],
-                                            "is_initialized",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| account |) |)
-                                            |)
-                                          ]
-                                        |)
-                                      ]
-                                    |)
-                                  |),
-                                  [
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let γ0_0 :=
-                                          M.SubPointer.get_struct_tuple_field (|
-                                            γ,
-                                            "core::ops::control_flow::ControlFlow::Break",
-                                            0
-                                          |) in
-                                        let residual :=
-                                          M.copy (|
-                                            Ty.apply
-                                              (Ty.path "core::result::Result")
-                                              []
-                                              [
-                                                Ty.path "core::convert::Infallible";
-                                                Ty.path "pinocchio::program_error::ProgramError"
-                                              ],
-                                            γ0_0
-                                          |) in
-                                        M.never_to_any (|
-                                          M.read (|
-                                            M.return_ (|
-                                              M.call_closure (|
+                                          γ0_0
+                                        |) in
+                                      M.never_to_any (|
+                                        M.read (|
+                                          M.return_ (|
+                                            M.call_closure (|
+                                              Ty.apply
+                                                (Ty.path "core::result::Result")
+                                                []
+                                                [
+                                                  Ty.tuple [];
+                                                  Ty.path "pinocchio::program_error::ProgramError"
+                                                ],
+                                              M.get_trait_method (|
+                                                "core::ops::try_trait::FromResidual",
                                                 Ty.apply
                                                   (Ty.path "core::result::Result")
                                                   []
@@ -536,49 +544,39 @@ Module processor.
                                                     Ty.tuple [];
                                                     Ty.path "pinocchio::program_error::ProgramError"
                                                   ],
-                                                M.get_trait_method (|
-                                                  "core::ops::try_trait::FromResidual",
+                                                [],
+                                                [
                                                   Ty.apply
                                                     (Ty.path "core::result::Result")
                                                     []
                                                     [
-                                                      Ty.tuple [];
+                                                      Ty.path "core::convert::Infallible";
                                                       Ty.path
                                                         "pinocchio::program_error::ProgramError"
-                                                    ],
-                                                  [],
-                                                  [
-                                                    Ty.apply
-                                                      (Ty.path "core::result::Result")
-                                                      []
-                                                      [
-                                                        Ty.path "core::convert::Infallible";
-                                                        Ty.path
-                                                          "pinocchio::program_error::ProgramError"
-                                                      ]
-                                                  ],
-                                                  "from_residual",
-                                                  [],
-                                                  []
-                                                |),
-                                                [ M.read (| residual |) ]
-                                              |)
+                                                    ]
+                                                ],
+                                                "from_residual",
+                                                [],
+                                                []
+                                              |),
+                                              [ M.read (| residual |) ]
                                             |)
                                           |)
-                                        |)));
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let γ0_0 :=
-                                          M.SubPointer.get_struct_tuple_field (|
-                                            γ,
-                                            "core::ops::control_flow::ControlFlow::Continue",
-                                            0
-                                          |) in
-                                        let val := M.copy (| Ty.path "bool", γ0_0 |) in
-                                        M.read (| val |)))
-                                  ]
-                                |)
-                              |)) in
+                                        |)
+                                      |)));
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let γ0_0 :=
+                                        M.SubPointer.get_struct_tuple_field (|
+                                          γ,
+                                          "core::ops::control_flow::ControlFlow::Continue",
+                                          0
+                                        |) in
+                                      let val := M.copy (| Ty.path "bool", γ0_0 |) in
+                                      M.read (| val |)))
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
