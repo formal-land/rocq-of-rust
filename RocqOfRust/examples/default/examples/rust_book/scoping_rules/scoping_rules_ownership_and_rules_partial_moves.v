@@ -113,84 +113,118 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                             Ty.tuple [],
                             M.get_function (| "std::io::stdio::_print", [], [] |),
                             [
-                              M.call_closure (|
-                                Ty.path "core::fmt::Arguments",
-                                M.get_associated_function (|
-                                  Ty.path "core::fmt::Arguments",
-                                  "new_v1",
-                                  [
-                                    Value.Integer IntegerKind.Usize 2;
-                                    Value.Integer IntegerKind.Usize 1
-                                  ],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.alloc (|
-                                          Ty.apply
-                                            (Ty.path "array")
-                                            [ Value.Integer IntegerKind.Usize 2 ]
-                                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                          Value.Array
-                                            [ mk_str (| "The person's age is " |); mk_str (| "
-" |)
-                                            ]
-                                        |)
-                                      |)
-                                    |)
-                                  |);
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.alloc (|
-                                          Ty.apply
-                                            (Ty.path "array")
-                                            [ Value.Integer IntegerKind.Usize 1 ]
-                                            [ Ty.path "core::fmt::rt::Argument" ],
-                                          Value.Array
-                                            [
-                                              M.call_closure (|
-                                                Ty.path "core::fmt::rt::Argument",
-                                                M.get_associated_function (|
-                                                  Ty.path "core::fmt::rt::Argument",
-                                                  "new_display",
-                                                  [],
-                                                  [
-                                                    Ty.apply
-                                                      (Ty.path "&")
-                                                      []
-                                                      [
-                                                        Ty.apply
-                                                          (Ty.path "alloc::boxed::Box")
-                                                          []
-                                                          [
-                                                            Ty.path "u8";
-                                                            Ty.path "alloc::alloc::Global"
-                                                          ]
-                                                      ]
-                                                  ]
-                                                |),
-                                                [
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.deref (|
-                                                      M.borrow (| Pointer.Kind.Ref, age |)
-                                                    |)
-                                                  |)
-                                                ]
+                              M.read (|
+                                let~ args :
+                                    Ty.tuple
+                                      [
+                                        Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "alloc::boxed::Box")
+                                                  []
+                                                  [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ]
+                                              ]
+                                          ]
+                                      ] :=
+                                  Value.Tuple [ M.borrow (| Pointer.Kind.Ref, age |) ] in
+                                let~ args :
+                                    Ty.apply
+                                      (Ty.path "array")
+                                      [ Value.Integer IntegerKind.Usize 1 ]
+                                      [ Ty.path "core::fmt::rt::Argument" ] :=
+                                  Value.Array
+                                    [
+                                      M.call_closure (|
+                                        Ty.path "core::fmt::rt::Argument",
+                                        M.get_associated_function (|
+                                          Ty.path "core::fmt::rt::Argument",
+                                          "new_display",
+                                          [],
+                                          [
+                                            Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "alloc::boxed::Box")
+                                                  []
+                                                  [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ]
+                                              ]
+                                          ]
+                                        |),
+                                        [
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (|
+                                              M.read (|
+                                                M.SubPointer.get_tuple_field (| args, 0 |)
                                               |)
+                                            |)
+                                          |)
+                                        ]
+                                      |)
+                                    ] in
+                                M.alloc (|
+                                  Ty.path "core::fmt::Arguments",
+                                  M.call_closure (|
+                                    Ty.path "core::fmt::Arguments",
+                                    M.get_associated_function (|
+                                      Ty.path "core::fmt::Arguments",
+                                      "new",
+                                      [
+                                        Value.Integer IntegerKind.Usize 25;
+                                        Value.Integer IntegerKind.Usize 1
+                                      ],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.mk_byte_str_ref
+                                            25
+                                            [
+                                              20;
+                                              84;
+                                              104;
+                                              101;
+                                              32;
+                                              112;
+                                              101;
+                                              114;
+                                              115;
+                                              111;
+                                              110;
+                                              39;
+                                              115;
+                                              32;
+                                              97;
+                                              103;
+                                              101;
+                                              32;
+                                              105;
+                                              115;
+                                              32;
+                                              192;
+                                              1;
+                                              10;
+                                              0
                                             ]
                                         |)
+                                      |);
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
                                       |)
-                                    |)
+                                    ]
                                   |)
-                                ]
+                                |)
                               |)
                             ]
                           |) in
@@ -203,71 +237,99 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                             Ty.tuple [],
                             M.get_function (| "std::io::stdio::_print", [], [] |),
                             [
-                              M.call_closure (|
-                                Ty.path "core::fmt::Arguments",
-                                M.get_associated_function (|
-                                  Ty.path "core::fmt::Arguments",
-                                  "new_v1",
-                                  [
-                                    Value.Integer IntegerKind.Usize 2;
-                                    Value.Integer IntegerKind.Usize 1
-                                  ],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.alloc (|
-                                          Ty.apply
-                                            (Ty.path "array")
-                                            [ Value.Integer IntegerKind.Usize 2 ]
-                                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                          Value.Array
-                                            [ mk_str (| "The person's name is " |); mk_str (| "
-" |)
-                                            ]
-                                        |)
-                                      |)
-                                    |)
-                                  |);
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.alloc (|
-                                          Ty.apply
-                                            (Ty.path "array")
-                                            [ Value.Integer IntegerKind.Usize 1 ]
-                                            [ Ty.path "core::fmt::rt::Argument" ],
-                                          Value.Array
-                                            [
-                                              M.call_closure (|
-                                                Ty.path "core::fmt::rt::Argument",
-                                                M.get_associated_function (|
-                                                  Ty.path "core::fmt::rt::Argument",
-                                                  "new_display",
-                                                  [],
-                                                  [ Ty.path "alloc::string::String" ]
-                                                |),
-                                                [
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.deref (|
-                                                      M.borrow (| Pointer.Kind.Ref, name |)
-                                                    |)
-                                                  |)
-                                                ]
+                              M.read (|
+                                let~ args :
+                                    Ty.tuple
+                                      [
+                                        Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.path "alloc::string::String" ]
+                                      ] :=
+                                  Value.Tuple [ M.borrow (| Pointer.Kind.Ref, name |) ] in
+                                let~ args :
+                                    Ty.apply
+                                      (Ty.path "array")
+                                      [ Value.Integer IntegerKind.Usize 1 ]
+                                      [ Ty.path "core::fmt::rt::Argument" ] :=
+                                  Value.Array
+                                    [
+                                      M.call_closure (|
+                                        Ty.path "core::fmt::rt::Argument",
+                                        M.get_associated_function (|
+                                          Ty.path "core::fmt::rt::Argument",
+                                          "new_display",
+                                          [],
+                                          [ Ty.path "alloc::string::String" ]
+                                        |),
+                                        [
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (|
+                                              M.read (|
+                                                M.SubPointer.get_tuple_field (| args, 0 |)
                                               |)
+                                            |)
+                                          |)
+                                        ]
+                                      |)
+                                    ] in
+                                M.alloc (|
+                                  Ty.path "core::fmt::Arguments",
+                                  M.call_closure (|
+                                    Ty.path "core::fmt::Arguments",
+                                    M.get_associated_function (|
+                                      Ty.path "core::fmt::Arguments",
+                                      "new",
+                                      [
+                                        Value.Integer IntegerKind.Usize 26;
+                                        Value.Integer IntegerKind.Usize 1
+                                      ],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.mk_byte_str_ref
+                                            26
+                                            [
+                                              21;
+                                              84;
+                                              104;
+                                              101;
+                                              32;
+                                              112;
+                                              101;
+                                              114;
+                                              115;
+                                              111;
+                                              110;
+                                              39;
+                                              115;
+                                              32;
+                                              110;
+                                              97;
+                                              109;
+                                              101;
+                                              32;
+                                              105;
+                                              115;
+                                              32;
+                                              192;
+                                              1;
+                                              10;
+                                              0
                                             ]
                                         |)
+                                      |);
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
                                       |)
-                                    |)
+                                    ]
                                   |)
-                                ]
+                                |)
                               |)
                             ]
                           |) in
@@ -280,88 +342,137 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                             Ty.tuple [],
                             M.get_function (| "std::io::stdio::_print", [], [] |),
                             [
-                              M.call_closure (|
-                                Ty.path "core::fmt::Arguments",
-                                M.get_associated_function (|
-                                  Ty.path "core::fmt::Arguments",
-                                  "new_v1",
-                                  [
-                                    Value.Integer IntegerKind.Usize 2;
-                                    Value.Integer IntegerKind.Usize 1
-                                  ],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
+                              M.read (|
+                                let~ args :
+                                    Ty.tuple
+                                      [
+                                        Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "alloc::boxed::Box")
+                                              []
+                                              [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ]
+                                          ]
+                                      ] :=
+                                  Value.Tuple
+                                    [
                                       M.borrow (|
                                         Pointer.Kind.Ref,
-                                        M.alloc (|
-                                          Ty.apply
-                                            (Ty.path "array")
-                                            [ Value.Integer IntegerKind.Usize 2 ]
-                                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                          Value.Array
-                                            [
-                                              mk_str (|
-                                                "The person's age from person struct is "
-                                              |);
-                                              mk_str (| "
-" |)
-                                            ]
+                                        M.SubPointer.get_struct_record_field (|
+                                          person,
+                                          "scoping_rules_ownership_and_rules_partial_moves::main::Person",
+                                          "age"
                                         |)
                                       |)
-                                    |)
-                                  |);
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.alloc (|
-                                          Ty.apply
-                                            (Ty.path "array")
-                                            [ Value.Integer IntegerKind.Usize 1 ]
-                                            [ Ty.path "core::fmt::rt::Argument" ],
-                                          Value.Array
-                                            [
-                                              M.call_closure (|
-                                                Ty.path "core::fmt::rt::Argument",
-                                                M.get_associated_function (|
-                                                  Ty.path "core::fmt::rt::Argument",
-                                                  "new_display",
-                                                  [],
-                                                  [
-                                                    Ty.apply
-                                                      (Ty.path "alloc::boxed::Box")
-                                                      []
-                                                      [ Ty.path "u8"; Ty.path "alloc::alloc::Global"
-                                                      ]
-                                                  ]
-                                                |),
-                                                [
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.deref (|
-                                                      M.borrow (|
-                                                        Pointer.Kind.Ref,
-                                                        M.SubPointer.get_struct_record_field (|
-                                                          person,
-                                                          "scoping_rules_ownership_and_rules_partial_moves::main::Person",
-                                                          "age"
-                                                        |)
-                                                      |)
-                                                    |)
-                                                  |)
-                                                ]
+                                    ] in
+                                let~ args :
+                                    Ty.apply
+                                      (Ty.path "array")
+                                      [ Value.Integer IntegerKind.Usize 1 ]
+                                      [ Ty.path "core::fmt::rt::Argument" ] :=
+                                  Value.Array
+                                    [
+                                      M.call_closure (|
+                                        Ty.path "core::fmt::rt::Argument",
+                                        M.get_associated_function (|
+                                          Ty.path "core::fmt::rt::Argument",
+                                          "new_display",
+                                          [],
+                                          [
+                                            Ty.apply
+                                              (Ty.path "alloc::boxed::Box")
+                                              []
+                                              [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ]
+                                          ]
+                                        |),
+                                        [
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (|
+                                              M.read (|
+                                                M.SubPointer.get_tuple_field (| args, 0 |)
                                               |)
+                                            |)
+                                          |)
+                                        ]
+                                      |)
+                                    ] in
+                                M.alloc (|
+                                  Ty.path "core::fmt::Arguments",
+                                  M.call_closure (|
+                                    Ty.path "core::fmt::Arguments",
+                                    M.get_associated_function (|
+                                      Ty.path "core::fmt::Arguments",
+                                      "new",
+                                      [
+                                        Value.Integer IntegerKind.Usize 44;
+                                        Value.Integer IntegerKind.Usize 1
+                                      ],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.mk_byte_str_ref
+                                            44
+                                            [
+                                              39;
+                                              84;
+                                              104;
+                                              101;
+                                              32;
+                                              112;
+                                              101;
+                                              114;
+                                              115;
+                                              111;
+                                              110;
+                                              39;
+                                              115;
+                                              32;
+                                              97;
+                                              103;
+                                              101;
+                                              32;
+                                              102;
+                                              114;
+                                              111;
+                                              109;
+                                              32;
+                                              112;
+                                              101;
+                                              114;
+                                              115;
+                                              111;
+                                              110;
+                                              32;
+                                              115;
+                                              116;
+                                              114;
+                                              117;
+                                              99;
+                                              116;
+                                              32;
+                                              105;
+                                              115;
+                                              32;
+                                              192;
+                                              1;
+                                              10;
+                                              0
                                             ]
                                         |)
+                                      |);
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
                                       |)
-                                    |)
+                                    ]
                                   |)
-                                ]
+                                |)
                               |)
                             ]
                           |) in

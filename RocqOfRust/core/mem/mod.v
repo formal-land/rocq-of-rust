@@ -61,18 +61,14 @@ Module mem.
   
   (*
   pub const fn size_of<T>() -> usize {
-      intrinsics::size_of::<T>()
+      <T as SizedTypeProperties>::SIZE
   }
   *)
   Definition size_of (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
     | [], [ T ], [] =>
       ltac:(M.monadic
-        (M.call_closure (|
-          Ty.path "usize",
-          M.get_function (| "core::intrinsics::size_of", [], [ T ] |),
-          []
-        |)))
+        (M.read (| get_constant (| "core::mem::SizedTypeProperties::SIZE", Ty.path "usize" |) |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -130,18 +126,14 @@ Module mem.
   
   (*
   pub fn min_align_of<T>() -> usize {
-      intrinsics::min_align_of::<T>()
+      <T as SizedTypeProperties>::ALIGN
   }
   *)
   Definition min_align_of (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
     | [], [ T ], [] =>
       ltac:(M.monadic
-        (M.call_closure (|
-          Ty.path "usize",
-          M.get_function (| "core::intrinsics::min_align_of", [], [ T ] |),
-          []
-        |)))
+        (M.read (| get_constant (| "core::mem::SizedTypeProperties::ALIGN", Ty.path "usize" |) |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -153,7 +145,7 @@ Module mem.
   (*
   pub fn min_align_of_val<T: ?Sized>(val: &T) -> usize {
       // SAFETY: val is a reference, so it's a valid raw pointer
-      unsafe { intrinsics::min_align_of_val(val) }
+      unsafe { intrinsics::align_of_val(val) }
   }
   *)
   Definition min_align_of_val (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -163,7 +155,7 @@ Module mem.
         (let val := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], val |) in
         M.call_closure (|
           Ty.path "usize",
-          M.get_function (| "core::intrinsics::min_align_of_val", [], [ T ] |),
+          M.get_function (| "core::intrinsics::align_of_val", [], [ T ] |),
           [ M.borrow (| Pointer.Kind.ConstPointer, M.deref (| M.read (| val |) |) |) ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -176,18 +168,14 @@ Module mem.
   
   (*
   pub const fn align_of<T>() -> usize {
-      intrinsics::min_align_of::<T>()
+      <T as SizedTypeProperties>::ALIGN
   }
   *)
   Definition align_of (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
     | [], [ T ], [] =>
       ltac:(M.monadic
-        (M.call_closure (|
-          Ty.path "usize",
-          M.get_function (| "core::intrinsics::min_align_of", [], [ T ] |),
-          []
-        |)))
+        (M.read (| get_constant (| "core::mem::SizedTypeProperties::ALIGN", Ty.path "usize" |) |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -198,7 +186,7 @@ Module mem.
   (*
   pub const fn align_of_val<T: ?Sized>(val: &T) -> usize {
       // SAFETY: val is a reference, so it's a valid raw pointer
-      unsafe { intrinsics::min_align_of_val(val) }
+      unsafe { intrinsics::align_of_val(val) }
   }
   *)
   Definition align_of_val (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -208,7 +196,7 @@ Module mem.
         (let val := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], val |) in
         M.call_closure (|
           Ty.path "usize",
-          M.get_function (| "core::intrinsics::min_align_of_val", [], [ T ] |),
+          M.get_function (| "core::intrinsics::align_of_val", [], [ T ] |),
           [ M.borrow (| Pointer.Kind.ConstPointer, M.deref (| M.read (| val |) |) |) ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -222,7 +210,7 @@ Module mem.
   (*
   pub const unsafe fn align_of_val_raw<T: ?Sized>(val: *const T) -> usize {
       // SAFETY: the caller must provide a valid raw pointer
-      unsafe { intrinsics::min_align_of_val(val) }
+      unsafe { intrinsics::align_of_val(val) }
   }
   *)
   Definition align_of_val_raw (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -232,7 +220,7 @@ Module mem.
         (let val := M.alloc (| Ty.apply (Ty.path "*const") [] [ T ], val |) in
         M.call_closure (|
           Ty.path "usize",
-          M.get_function (| "core::intrinsics::min_align_of_val", [], [ T ] |),
+          M.get_function (| "core::intrinsics::align_of_val", [], [ T ] |),
           [ M.read (| val |) ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -245,18 +233,14 @@ Module mem.
   
   (*
   pub const fn needs_drop<T: ?Sized>() -> bool {
-      intrinsics::needs_drop::<T>()
+      const { intrinsics::needs_drop::<T>() }
   }
   *)
   Definition needs_drop (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
     | [], [ T ], [] =>
       ltac:(M.monadic
-        (M.call_closure (|
-          Ty.path "bool",
-          M.get_function (| "core::intrinsics::needs_drop", [], [ T ] |),
-          []
-        |)))
+        (M.read (| get_constant (| "core::mem::needs_drop_discriminant", Ty.path "bool" |) |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -364,11 +348,10 @@ Module mem.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
-                          Ty.path "bool",
-                          M.call_closure (| Ty.path "bool", UnOp.not, [ Value.Bool false ] |)
-                        |)) in
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (| Ty.path "bool", UnOp.not, [ Value.Bool false ] |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     M.read (|
                       let~ _ : Ty.tuple [] :=
@@ -426,7 +409,7 @@ Module mem.
   pub const fn swap<T>(x: &mut T, y: &mut T) {
       // SAFETY: `&mut` guarantees these are typed readable and writable
       // as well as non-overlapping.
-      unsafe { intrinsics::typed_swap(x, y) }
+      unsafe { intrinsics::typed_swap_nonoverlapping(x, y) }
   }
   *)
   Definition swap (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -437,7 +420,7 @@ Module mem.
         let y := M.alloc (| Ty.apply (Ty.path "&mut") [] [ T ], y |) in
         M.call_closure (|
           Ty.tuple [],
-          M.get_function (| "core::intrinsics::typed_swap", [], [ T ] |),
+          M.get_function (| "core::intrinsics::typed_swap_nonoverlapping", [], [ T ] |),
           [
             M.borrow (| Pointer.Kind.MutPointer, M.deref (| M.read (| x |) |) |);
             M.borrow (| Pointer.Kind.MutPointer, M.deref (| M.read (| y |) |) |)
@@ -451,7 +434,7 @@ Module mem.
   Global Typeclasses Opaque swap.
   
   (*
-  pub fn take<T: Default>(dest: &mut T) -> T {
+  pub const fn take<T: [const] Default>(dest: &mut T) -> T {
       replace(dest, T::default())
   }
   *)
@@ -489,8 +472,13 @@ Module mem.
       // such that the old value is not duplicated. Nothing is dropped and
       // nothing here can panic.
       unsafe {
-          let result = ptr::read(dest);
-          ptr::write(dest, src);
+          // Ideally we wouldn't use the intrinsics here, but going through the
+          // `ptr` methods introduces two unnecessary UbChecks, so until we can
+          // remove those for pointers that come from references, this uses the
+          // intrinsics instead so this stays very cheap in MIR (and debug).
+  
+          let result = crate::intrinsics::read_via_copy(dest);
+          crate::intrinsics::write_via_move(dest, src);
           result
       }
   }
@@ -505,13 +493,13 @@ Module mem.
           let~ result : T :=
             M.call_closure (|
               T,
-              M.get_function (| "core::ptr::read", [], [ T ] |),
+              M.get_function (| "core::intrinsics::read_via_copy", [], [ T ] |),
               [ M.borrow (| Pointer.Kind.ConstPointer, M.deref (| M.read (| dest |) |) |) ]
             |) in
           let~ _ : Ty.tuple [] :=
             M.call_closure (|
               Ty.tuple [],
-              M.get_function (| "core::ptr::write", [], [ T ] |),
+              M.get_function (| "core::intrinsics::write_via_move", [], [ T ] |),
               [
                 M.borrow (| Pointer.Kind.MutPointer, M.deref (| M.read (| dest |) |) |);
                 M.read (| src |)
@@ -526,7 +514,13 @@ Module mem.
   Admitted.
   Global Typeclasses Opaque replace.
   
-  (* pub fn drop<T>(_x: T) {} *)
+  (*
+  pub const fn drop<T>(_x: T)
+  where
+      T: [const] Destruct,
+  {
+  }
+  *)
   Definition drop (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
     | [], [ T ], [ _x ] =>
@@ -592,32 +586,31 @@ Module mem.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            UnOp.not,
-                            [
-                              M.call_closure (|
-                                Ty.path "bool",
-                                BinOp.ge,
-                                [
-                                  M.call_closure (|
-                                    Ty.path "usize",
-                                    M.get_function (| "core::mem::size_of", [], [ Src ] |),
-                                    []
-                                  |);
-                                  M.call_closure (|
-                                    Ty.path "usize",
-                                    M.get_function (| "core::mem::size_of", [], [ Dst ] |),
-                                    []
-                                  |)
-                                ]
-                              |)
-                            ]
-                          |)
-                        |)) in
+                          UnOp.not,
+                          [
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.ge,
+                              [
+                                M.call_closure (|
+                                  Ty.path "usize",
+                                  M.get_function (| "core::mem::size_of", [], [ Src ] |),
+                                  []
+                                |);
+                                M.call_closure (|
+                                  Ty.path "usize",
+                                  M.get_function (| "core::mem::size_of", [], [ Dst ] |),
+                                  []
+                                |)
+                              ]
+                            |)
+                          ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     M.never_to_any (|
                       M.call_closure (|
@@ -628,32 +621,11 @@ Module mem.
                             Ty.path "core::fmt::Arguments",
                             M.get_associated_function (|
                               Ty.path "core::fmt::Arguments",
-                              "new_const",
-                              [ Value.Integer IntegerKind.Usize 1 ],
+                              "from_str",
+                              [],
                               []
                             |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.alloc (|
-                                      Ty.apply
-                                        (Ty.path "array")
-                                        [ Value.Integer IntegerKind.Usize 1 ]
-                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                      Value.Array
-                                        [
-                                          mk_str (|
-                                            "cannot transmute_copy if Dst is larger than Src"
-                                          |)
-                                        ]
-                                    |)
-                                  |)
-                                |)
-                              |)
-                            ]
+                            [ mk_str (| "cannot transmute_copy if Dst is larger than Src" |) ]
                           |)
                         ]
                       |)
@@ -670,26 +642,25 @@ Module mem.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            BinOp.gt,
-                            [
-                              M.call_closure (|
-                                Ty.path "usize",
-                                M.get_function (| "core::mem::align_of", [], [ Dst ] |),
-                                []
-                              |);
-                              M.call_closure (|
-                                Ty.path "usize",
-                                M.get_function (| "core::mem::align_of", [], [ Src ] |),
-                                []
-                              |)
-                            ]
-                          |)
-                        |)) in
+                          BinOp.gt,
+                          [
+                            M.call_closure (|
+                              Ty.path "usize",
+                              M.get_function (| "core::mem::align_of", [], [ Dst ] |),
+                              []
+                            |);
+                            M.call_closure (|
+                              Ty.path "usize",
+                              M.get_function (| "core::mem::align_of", [], [ Src ] |),
+                              []
+                            |)
+                          ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     M.call_closure (|
                       Dst,
@@ -793,6 +764,19 @@ Module mem.
         (Self T)
         (* Instance *) [ ("clone", InstanceField.Method (clone T)) ].
   End Impl_core_clone_Clone_for_core_mem_Discriminant_T.
+  
+  Module Impl_core_clone_TrivialClone_for_core_mem_Discriminant_T.
+    Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "core::mem::Discriminant") [] [ T ].
+    
+    Axiom Implements :
+      forall (T : Ty.t),
+      M.IsTraitInstance
+        "core::clone::TrivialClone"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self T)
+        (* Instance *) [].
+  End Impl_core_clone_TrivialClone_for_core_mem_Discriminant_T.
   
   Module Impl_core_cmp_PartialEq_core_mem_Discriminant_T_for_core_mem_Discriminant_T.
     Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "core::mem::Discriminant") [] [ T ].
@@ -1083,18 +1067,14 @@ Module mem.
   
   (*
   pub const fn variant_count<T>() -> usize {
-      intrinsics::variant_count::<T>()
+      const { intrinsics::variant_count::<T>() }
   }
   *)
   Definition variant_count (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
     | [], [ T ], [] =>
       ltac:(M.monadic
-        (M.call_closure (|
-          Ty.path "usize",
-          M.get_function (| "core::intrinsics::variant_count", [], [ T ] |),
-          []
-        |)))
+        (M.read (| get_constant (| "core::mem::variant_count_discriminant", Ty.path "usize" |) |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -1118,4 +1098,106 @@ Module mem.
         (Self T)
         (* Instance *) [].
   End Impl_core_mem_SizedTypeProperties_for_T.
+  
+  (*
+  pub const unsafe fn conjure_zst<T>() -> T {
+      const_assert!(
+          size_of::<T>() == 0,
+          "mem::conjure_zst invoked on a nonzero-sized type",
+          "mem::conjure_zst invoked on type {t}, which is not zero-sized",
+          t: &str = stringify!(T)
+      );
+  
+      // SAFETY: because the caller must guarantee that it's inhabited and zero-sized,
+      // there's nothing in the representation that needs to be set.
+      // `assume_init` calls `assert_inhabited`, so we don't need to here.
+      unsafe {
+          #[allow(clippy::uninit_assumed_init)]
+          MaybeUninit::uninit().assume_init()
+      }
+  }
+  *)
+  Definition conjure_zst (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    match ε, τ, α with
+    | [], [ T ], [] =>
+      ltac:(M.monadic
+        (M.read (|
+          let~ _ : Ty.tuple [] :=
+            M.match_operator (|
+              Ty.tuple [],
+              M.alloc (| Ty.tuple [], Value.Tuple [] |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ :=
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
+                          Ty.path "bool",
+                          UnOp.not,
+                          [
+                            M.call_closure (|
+                              Ty.path "bool",
+                              M.get_function (| "core::intrinsics::likely", [], [] |),
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [
+                                    M.call_closure (|
+                                      Ty.path "usize",
+                                      M.get_function (| "core::mem::size_of", [], [ T ] |),
+                                      []
+                                    |);
+                                    Value.Integer IntegerKind.Usize 0
+                                  ]
+                                |)
+                              ]
+                            |)
+                          ]
+                        |)
+                      |) in
+                    let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                    M.never_to_any (|
+                      M.call_closure (|
+                        Ty.path "never",
+                        M.get_function (| "core::mem::conjure_zst.do_panic", [], [] |),
+                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "T" |) |) |) ]
+                      |)
+                    |)));
+                fun γ => ltac:(M.monadic (Value.Tuple []))
+              ]
+            |) in
+          M.alloc (|
+            T,
+            M.call_closure (|
+              T,
+              M.get_associated_function (|
+                Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ],
+                "assume_init",
+                [],
+                []
+              |),
+              [
+                M.call_closure (|
+                  Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ],
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ],
+                    "uninit",
+                    [],
+                    []
+                  |),
+                  []
+                |)
+              ]
+            |)
+          |)
+        |)))
+    | _, _, _ => M.impossible "wrong number of arguments"
+    end.
+  
+  Global Instance Instance_IsFunction_conjure_zst :
+    M.IsFunction.C "core::mem::conjure_zst" conjure_zst.
+  Admitted.
+  Global Typeclasses Opaque conjure_zst.
 End mem.

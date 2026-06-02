@@ -2,7 +2,6 @@ use crate::env::*;
 use crate::path::*;
 use crate::thir_expression::*;
 use crate::ty::*;
-use rustc_middle::ty::GenericArgKind;
 use rustc_span::def_id::DefId;
 use rustc_type_ir::TyKind;
 use std::rc::Rc;
@@ -64,16 +63,20 @@ pub(crate) fn compile_type<'a>(
             let path = compile_def_id(env, adt_def.did());
             let consts = substs
                 .iter()
-                .filter_map(|subst| match &subst.unpack() {
-                    GenericArgKind::Const(constant) => Some(compile_const(env, span, constant)),
-                    _ => None,
+                .filter_map(|subst| {
+                    subst
+                        .as_const()
+                        .as_ref()
+                        .map(|constant| compile_const(env, span, constant))
                 })
                 .collect();
             let tys = substs
                 .iter()
-                .filter_map(|subst| match &subst.unpack() {
-                    GenericArgKind::Type(ty) => Some(compile_type(env, span, generics, ty)),
-                    _ => None,
+                .filter_map(|subst| {
+                    subst
+                        .as_type()
+                        .as_ref()
+                        .map(|ty| compile_type(env, span, generics, ty))
                 })
                 .collect();
             Rc::new(RocqType::Application {
@@ -114,7 +117,7 @@ pub(crate) fn compile_type<'a>(
         TyKind::FnPtr(fn_sig, fn_header) => {
             compile_poly_fn_sig(env, span, generics, &fn_sig.with(*fn_header), false)
         }
-        TyKind::Dynamic(existential_predicates, _, _) => {
+        TyKind::Dynamic(existential_predicates, _) => {
             let traits = existential_predicates
                 .iter()
                 .filter_map(
@@ -160,6 +163,7 @@ pub(crate) fn compile_type<'a>(
                 .map(|ty| compile_type(env, span, generics, &ty))
                 .collect(),
         }),
+        TyKind::Pat(ty, _) => compile_type(env, span, generics, ty),
         TyKind::Alias(alias_kind, alias_ty) => match alias_kind {
             rustc_middle::ty::AliasTyKind::Projection => {
                 let self_ty = compile_type(env, span, generics, &alias_ty.self_ty());

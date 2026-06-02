@@ -24,6 +24,19 @@ Module block.
           (* Instance *) [].
     End Impl_core_marker_Copy_for_revm_context_interface_block_blob_BlobExcessGasAndPrice.
     
+    Module Impl_core_clone_TrivialClone_for_revm_context_interface_block_blob_BlobExcessGasAndPrice.
+      Definition Self : Ty.t :=
+        Ty.path "revm_context_interface::block::blob::BlobExcessGasAndPrice".
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::clone::TrivialClone"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [].
+    End Impl_core_clone_TrivialClone_for_revm_context_interface_block_blob_BlobExcessGasAndPrice.
+    
     Module Impl_core_clone_Clone_for_revm_context_interface_block_blob_BlobExcessGasAndPrice.
       Definition Self : Ty.t :=
         Ty.path "revm_context_interface::block::blob::BlobExcessGasAndPrice".
@@ -585,18 +598,17 @@ Module block.
                           fun γ =>
                             ltac:(M.monadic
                               (let γ :=
-                                M.use
-                                  (M.alloc (|
+                                M.alloc (|
+                                  Ty.path "bool",
+                                  M.call_closure (|
                                     Ty.path "bool",
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      BinOp.eq,
-                                      [
-                                        M.read (| M.deref (| M.read (| left_val |) |) |);
-                                        M.read (| M.deref (| M.read (| right_val |) |) |)
-                                      ]
-                                    |)
-                                  |)) in
+                                    BinOp.eq,
+                                    [
+                                      M.read (| M.deref (| M.read (| left_val |) |) |);
+                                      M.read (| M.deref (| M.read (| right_val |) |) |)
+                                    ]
+                                  |)
+                                |) in
                               let _ :=
                                 is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                               M.never_to_any (|
@@ -641,34 +653,11 @@ Module block.
                                               Ty.path "core::fmt::Arguments",
                                               M.get_associated_function (|
                                                 Ty.path "core::fmt::Arguments",
-                                                "new_const",
-                                                [ Value.Integer IntegerKind.Usize 1 ],
+                                                "from_str",
+                                                [],
                                                 []
                                               |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (|
-                                                    M.borrow (|
-                                                      Pointer.Kind.Ref,
-                                                      M.alloc (|
-                                                        Ty.apply
-                                                          (Ty.path "array")
-                                                          [ Value.Integer IntegerKind.Usize 1 ]
-                                                          [
-                                                            Ty.apply
-                                                              (Ty.path "&")
-                                                              []
-                                                              [ Ty.path "str" ]
-                                                          ],
-                                                        Value.Array
-                                                          [ mk_str (| "attempt to divide by zero" |)
-                                                          ]
-                                                      |)
-                                                    |)
-                                                  |)
-                                                |)
-                                              ]
+                                              [ mk_str (| "attempt to divide by zero" |) ]
                                             |)
                                           ]
                                       ]
@@ -707,18 +696,15 @@ Module block.
                           fun γ =>
                             ltac:(M.monadic
                               (let γ :=
-                                M.use
-                                  (M.alloc (|
+                                M.alloc (|
+                                  Ty.path "bool",
+                                  M.call_closure (|
                                     Ty.path "bool",
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      BinOp.gt,
-                                      [
-                                        M.read (| numerator_accum |);
-                                        Value.Integer IntegerKind.U128 0
-                                      ]
-                                    |)
-                                  |)) in
+                                    BinOp.gt,
+                                    [ M.read (| numerator_accum |); Value.Integer IntegerKind.U128 0
+                                    ]
+                                  |)
+                                |) in
                               let _ :=
                                 is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                               M.read (|

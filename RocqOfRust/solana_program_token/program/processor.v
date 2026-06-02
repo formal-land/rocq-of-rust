@@ -286,7 +286,7 @@ Module processor.
                     [
                       fun γ =>
                         ltac:(M.monadic
-                          (let γ := M.use rent_sysvar_account in
+                          (let γ := rent_sysvar_account in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.match_operator (|
@@ -1070,12 +1070,11 @@ Module processor.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.SubPointer.get_struct_record_field (|
-                                mint,
-                                "spl_token_interface::state::Mint",
-                                "is_initialized"
-                              |)) in
+                            M.SubPointer.get_struct_record_field (|
+                              mint,
+                              "spl_token_interface::state::Mint",
+                              "is_initialized"
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -1120,44 +1119,43 @@ Module processor.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  UnOp.not,
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      M.get_associated_function (|
-                                        Ty.path "solana_rent::Rent",
-                                        "is_exempt",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (| Pointer.Kind.Ref, rent |);
-                                        M.call_closure (|
-                                          Ty.path "u64",
-                                          M.get_associated_function (|
-                                            Ty.path "solana_account_info::AccountInfo",
-                                            "lamports",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| mint_info |) |)
-                                            |)
-                                          ]
-                                        |);
-                                        M.read (| mint_data_len |)
-                                      ]
-                                    |)
-                                  ]
-                                |)
-                              |)) in
+                                UnOp.not,
+                                [
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    M.get_associated_function (|
+                                      Ty.path "solana_rent::Rent",
+                                      "is_exempt",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (| Pointer.Kind.Ref, rent |);
+                                      M.call_closure (|
+                                        Ty.path "u64",
+                                        M.get_associated_function (|
+                                          Ty.path "solana_account_info::AccountInfo",
+                                          "lamports",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| mint_info |) |)
+                                          |)
+                                        ]
+                                      |);
+                                      M.read (| mint_data_len |)
+                                    ]
+                                  |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -2334,7 +2332,7 @@ Module processor.
                     [
                       fun γ =>
                         ltac:(M.monadic
-                          (let γ := M.use rent_sysvar_account in
+                          (let γ := rent_sysvar_account in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.match_operator (|
@@ -3118,23 +3116,22 @@ Module processor.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  M.get_trait_method (|
-                                    "solana_program_pack::IsInitialized",
-                                    Ty.path "spl_token_interface::state::Account",
-                                    [],
-                                    [],
-                                    "is_initialized",
-                                    [],
-                                    []
-                                  |),
-                                  [ M.borrow (| Pointer.Kind.Ref, account |) ]
-                                |)
-                              |)) in
+                                M.get_trait_method (|
+                                  "solana_program_pack::IsInitialized",
+                                  Ty.path "spl_token_interface::state::Account",
+                                  [],
+                                  [],
+                                  "is_initialized",
+                                  [],
+                                  []
+                                |),
+                                [ M.borrow (| Pointer.Kind.Ref, account |) ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -3179,44 +3176,43 @@ Module processor.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  UnOp.not,
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      M.get_associated_function (|
-                                        Ty.path "solana_rent::Rent",
-                                        "is_exempt",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (| Pointer.Kind.Ref, rent |);
-                                        M.call_closure (|
-                                          Ty.path "u64",
-                                          M.get_associated_function (|
-                                            Ty.path "solana_account_info::AccountInfo",
-                                            "lamports",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| new_account_info |) |)
-                                            |)
-                                          ]
-                                        |);
-                                        M.read (| new_account_info_data_len |)
-                                      ]
-                                    |)
-                                  ]
-                                |)
-                              |)) in
+                                UnOp.not,
+                                [
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    M.get_associated_function (|
+                                      Ty.path "solana_rent::Rent",
+                                      "is_exempt",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (| Pointer.Kind.Ref, rent |);
+                                      M.call_closure (|
+                                        Ty.path "u64",
+                                        M.get_associated_function (|
+                                          Ty.path "solana_account_info::AccountInfo",
+                                          "lamports",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| new_account_info |) |)
+                                          |)
+                                        ]
+                                      |);
+                                      M.read (| new_account_info_data_len |)
+                                    ]
+                                  |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -3301,15 +3297,14 @@ Module processor.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  UnOp.not,
-                                  [ M.read (| is_native_mint |) ]
-                                |)
-                              |)) in
+                                UnOp.not,
+                                [ M.read (| is_native_mint |) ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.read (|
@@ -3968,7 +3963,7 @@ Module processor.
                     [
                       fun γ =>
                         ltac:(M.monadic
-                          (let γ := M.use is_native_mint in
+                          (let γ := is_native_mint in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.read (|
@@ -4997,7 +4992,7 @@ Module processor.
                     [
                       fun γ =>
                         ltac:(M.monadic
-                          (let γ := M.use rent_sysvar_account in
+                          (let γ := rent_sysvar_account in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.match_operator (|
@@ -5781,12 +5776,11 @@ Module processor.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.SubPointer.get_struct_record_field (|
-                                multisig,
-                                "spl_token_interface::state::Multisig",
-                                "is_initialized"
-                              |)) in
+                            M.SubPointer.get_struct_record_field (|
+                              multisig,
+                              "spl_token_interface::state::Multisig",
+                              "is_initialized"
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -5831,44 +5825,43 @@ Module processor.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  UnOp.not,
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      M.get_associated_function (|
-                                        Ty.path "solana_rent::Rent",
-                                        "is_exempt",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (| Pointer.Kind.Ref, rent |);
-                                        M.call_closure (|
-                                          Ty.path "u64",
-                                          M.get_associated_function (|
-                                            Ty.path "solana_account_info::AccountInfo",
-                                            "lamports",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| multisig_info |) |)
-                                            |)
-                                          ]
-                                        |);
-                                        M.read (| multisig_info_data_len |)
-                                      ]
-                                    |)
-                                  ]
-                                |)
-                              |)) in
+                                UnOp.not,
+                                [
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    M.get_associated_function (|
+                                      Ty.path "solana_rent::Rent",
+                                      "is_exempt",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (| Pointer.Kind.Ref, rent |);
+                                      M.call_closure (|
+                                        Ty.path "u64",
+                                        M.get_associated_function (|
+                                          Ty.path "solana_account_info::AccountInfo",
+                                          "lamports",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| multisig_info |) |)
+                                          |)
+                                        ]
+                                      |);
+                                      M.read (| multisig_info_data_len |)
+                                    ]
+                                  |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -5969,35 +5962,34 @@ Module processor.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  UnOp.not,
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      M.get_function (|
-                                        "spl_token_interface::instruction::is_valid_signer_index",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.cast
-                                          (Ty.path "usize")
-                                          (M.read (|
-                                            M.SubPointer.get_struct_record_field (|
-                                              multisig,
-                                              "spl_token_interface::state::Multisig",
-                                              "n"
-                                            |)
-                                          |))
-                                      ]
-                                    |)
-                                  ]
-                                |)
-                              |)) in
+                                UnOp.not,
+                                [
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    M.get_function (|
+                                      "spl_token_interface::instruction::is_valid_signer_index",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.cast
+                                        (Ty.path "usize")
+                                        (M.read (|
+                                          M.SubPointer.get_struct_record_field (|
+                                            multisig,
+                                            "spl_token_interface::state::Multisig",
+                                            "n"
+                                          |)
+                                        |))
+                                    ]
+                                  |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -6042,35 +6034,34 @@ Module processor.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  UnOp.not,
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      M.get_function (|
-                                        "spl_token_interface::instruction::is_valid_signer_index",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.cast
-                                          (Ty.path "usize")
-                                          (M.read (|
-                                            M.SubPointer.get_struct_record_field (|
-                                              multisig,
-                                              "spl_token_interface::state::Multisig",
-                                              "m"
-                                            |)
-                                          |))
-                                      ]
-                                    |)
-                                  ]
-                                |)
-                              |)) in
+                                UnOp.not,
+                                [
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    M.get_function (|
+                                      "spl_token_interface::instruction::is_valid_signer_index",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.cast
+                                        (Ty.path "usize")
+                                        (M.read (|
+                                          M.SubPointer.get_struct_record_field (|
+                                            multisig,
+                                            "spl_token_interface::state::Multisig",
+                                            "m"
+                                          |)
+                                        |))
+                                    ]
+                                  |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -8269,11 +8260,21 @@ Module processor.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
-                                Ty.path "bool",
-                                LogicalOp.or (|
-                                  M.call_closure (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              LogicalOp.or (|
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  M.get_associated_function (|
+                                    Ty.path "spl_token_interface::state::Account",
+                                    "is_frozen",
+                                    [],
+                                    []
+                                  |),
+                                  [ M.borrow (| Pointer.Kind.Ref, source_account |) ]
+                                |),
+                                ltac:(M.monadic
+                                  (M.call_closure (|
                                     Ty.path "bool",
                                     M.get_associated_function (|
                                       Ty.path "spl_token_interface::state::Account",
@@ -8281,21 +8282,10 @@ Module processor.
                                       [],
                                       []
                                     |),
-                                    [ M.borrow (| Pointer.Kind.Ref, source_account |) ]
-                                  |),
-                                  ltac:(M.monadic
-                                    (M.call_closure (|
-                                      Ty.path "bool",
-                                      M.get_associated_function (|
-                                        Ty.path "spl_token_interface::state::Account",
-                                        "is_frozen",
-                                        [],
-                                        []
-                                      |),
-                                      [ M.borrow (| Pointer.Kind.Ref, destination_account |) ]
-                                    |)))
-                                |)
-                              |)) in
+                                    [ M.borrow (| Pointer.Kind.Ref, destination_account |) ]
+                                  |)))
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -8340,24 +8330,23 @@ Module processor.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  BinOp.lt,
-                                  [
-                                    M.read (|
-                                      M.SubPointer.get_struct_record_field (|
-                                        source_account,
-                                        "spl_token_interface::state::Account",
-                                        "amount"
-                                      |)
-                                    |);
-                                    M.read (| amount |)
-                                  ]
-                                |)
-                              |)) in
+                                BinOp.lt,
+                                [
+                                  M.read (|
+                                    M.SubPointer.get_struct_record_field (|
+                                      source_account,
+                                      "spl_token_interface::state::Account",
+                                      "amount"
+                                    |)
+                                  |);
+                                  M.read (| amount |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -8402,53 +8391,52 @@ Module processor.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  UnOp.not,
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      M.get_associated_function (|
-                                        Ty.path "spl_token::processor::Processor",
-                                        "cmp_pubkeys",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (|
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.SubPointer.get_struct_record_field (|
-                                                source_account,
-                                                "spl_token_interface::state::Account",
-                                                "mint"
-                                              |)
-                                            |)
-                                          |)
-                                        |);
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (|
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.SubPointer.get_struct_record_field (|
-                                                destination_account,
-                                                "spl_token_interface::state::Account",
-                                                "mint"
-                                              |)
+                                UnOp.not,
+                                [
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    M.get_associated_function (|
+                                      Ty.path "spl_token::processor::Processor",
+                                      "cmp_pubkeys",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.SubPointer.get_struct_record_field (|
+                                              source_account,
+                                              "spl_token_interface::state::Account",
+                                              "mint"
                                             |)
                                           |)
                                         |)
-                                      ]
-                                    |)
-                                  ]
-                                |)
-                              |)) in
+                                      |);
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.SubPointer.get_struct_record_field (|
+                                              destination_account,
+                                              "spl_token_interface::state::Account",
+                                              "mint"
+                                            |)
+                                          |)
+                                        |)
+                                      |)
+                                    ]
+                                  |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -8519,52 +8507,51 @@ Module processor.
                                   fun γ =>
                                     ltac:(M.monadic
                                       (let γ :=
-                                        M.use
-                                          (M.alloc (|
+                                        M.alloc (|
+                                          Ty.path "bool",
+                                          M.call_closure (|
                                             Ty.path "bool",
-                                            M.call_closure (|
-                                              Ty.path "bool",
-                                              UnOp.not,
-                                              [
-                                                M.call_closure (|
-                                                  Ty.path "bool",
-                                                  M.get_associated_function (|
-                                                    Ty.path "spl_token::processor::Processor",
-                                                    "cmp_pubkeys",
-                                                    [],
-                                                    []
-                                                  |),
-                                                  [
-                                                    M.borrow (|
-                                                      Pointer.Kind.Ref,
-                                                      M.deref (|
-                                                        M.read (|
-                                                          M.SubPointer.get_struct_record_field (|
-                                                            M.deref (| M.read (| mint_info |) |),
-                                                            "solana_account_info::AccountInfo",
-                                                            "key"
-                                                          |)
-                                                        |)
-                                                      |)
-                                                    |);
-                                                    M.borrow (|
-                                                      Pointer.Kind.Ref,
-                                                      M.deref (|
-                                                        M.borrow (|
-                                                          Pointer.Kind.Ref,
-                                                          M.SubPointer.get_struct_record_field (|
-                                                            source_account,
-                                                            "spl_token_interface::state::Account",
-                                                            "mint"
-                                                          |)
+                                            UnOp.not,
+                                            [
+                                              M.call_closure (|
+                                                Ty.path "bool",
+                                                M.get_associated_function (|
+                                                  Ty.path "spl_token::processor::Processor",
+                                                  "cmp_pubkeys",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (|
+                                                      M.read (|
+                                                        M.SubPointer.get_struct_record_field (|
+                                                          M.deref (| M.read (| mint_info |) |),
+                                                          "solana_account_info::AccountInfo",
+                                                          "key"
                                                         |)
                                                       |)
                                                     |)
-                                                  ]
-                                                |)
-                                              ]
-                                            |)
-                                          |)) in
+                                                  |);
+                                                  M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (|
+                                                      M.borrow (|
+                                                        Pointer.Kind.Ref,
+                                                        M.SubPointer.get_struct_record_field (|
+                                                          source_account,
+                                                          "spl_token_interface::state::Account",
+                                                          "mint"
+                                                        |)
+                                                      |)
+                                                    |)
+                                                  |)
+                                                ]
+                                              |)
+                                            ]
+                                          |)
+                                        |) in
                                       let _ :=
                                         is_constant_or_break_match (|
                                           M.read (| γ |),
@@ -8951,24 +8938,23 @@ Module processor.
                                   fun γ =>
                                     ltac:(M.monadic
                                       (let γ :=
-                                        M.use
-                                          (M.alloc (|
+                                        M.alloc (|
+                                          Ty.path "bool",
+                                          M.call_closure (|
                                             Ty.path "bool",
-                                            M.call_closure (|
-                                              Ty.path "bool",
-                                              BinOp.ne,
-                                              [
-                                                M.read (| expected_decimals |);
-                                                M.read (|
-                                                  M.SubPointer.get_struct_record_field (|
-                                                    mint,
-                                                    "spl_token_interface::state::Mint",
-                                                    "decimals"
-                                                  |)
+                                            BinOp.ne,
+                                            [
+                                              M.read (| expected_decimals |);
+                                              M.read (|
+                                                M.SubPointer.get_struct_record_field (|
+                                                  mint,
+                                                  "spl_token_interface::state::Mint",
+                                                  "decimals"
                                                 |)
-                                              ]
-                                            |)
-                                          |)) in
+                                              |)
+                                            ]
+                                          |)
+                                        |) in
                                       let _ :=
                                         is_constant_or_break_match (|
                                           M.read (| γ |),
@@ -9297,24 +9283,23 @@ Module processor.
                                   fun γ =>
                                     ltac:(M.monadic
                                       (let γ :=
-                                        M.use
-                                          (M.alloc (|
+                                        M.alloc (|
+                                          Ty.path "bool",
+                                          M.call_closure (|
                                             Ty.path "bool",
-                                            M.call_closure (|
-                                              Ty.path "bool",
-                                              BinOp.lt,
-                                              [
-                                                M.read (|
-                                                  M.SubPointer.get_struct_record_field (|
-                                                    source_account,
-                                                    "spl_token_interface::state::Account",
-                                                    "delegated_amount"
-                                                  |)
-                                                |);
-                                                M.read (| amount |)
-                                              ]
-                                            |)
-                                          |)) in
+                                            BinOp.lt,
+                                            [
+                                              M.read (|
+                                                M.SubPointer.get_struct_record_field (|
+                                                  source_account,
+                                                  "spl_token_interface::state::Account",
+                                                  "delegated_amount"
+                                                |)
+                                              |);
+                                              M.read (| amount |)
+                                            ]
+                                          |)
+                                        |) in
                                       let _ :=
                                         is_constant_or_break_match (|
                                           M.read (| γ |),
@@ -9368,15 +9353,14 @@ Module processor.
                                   fun γ =>
                                     ltac:(M.monadic
                                       (let γ :=
-                                        M.use
-                                          (M.alloc (|
+                                        M.alloc (|
+                                          Ty.path "bool",
+                                          M.call_closure (|
                                             Ty.path "bool",
-                                            M.call_closure (|
-                                              Ty.path "bool",
-                                              UnOp.not,
-                                              [ M.read (| self_transfer |) ]
-                                            |)
-                                          |)) in
+                                            UnOp.not,
+                                            [ M.read (| self_transfer |) ]
+                                          |)
+                                        |) in
                                       let _ :=
                                         is_constant_or_break_match (|
                                           M.read (| γ |),
@@ -9579,24 +9563,23 @@ Module processor.
                                               fun γ =>
                                                 ltac:(M.monadic
                                                   (let γ :=
-                                                    M.use
-                                                      (M.alloc (|
+                                                    M.alloc (|
+                                                      Ty.path "bool",
+                                                      M.call_closure (|
                                                         Ty.path "bool",
-                                                        M.call_closure (|
-                                                          Ty.path "bool",
-                                                          BinOp.eq,
-                                                          [
-                                                            M.read (|
-                                                              M.SubPointer.get_struct_record_field (|
-                                                                source_account,
-                                                                "spl_token_interface::state::Account",
-                                                                "delegated_amount"
-                                                              |)
-                                                            |);
-                                                            Value.Integer IntegerKind.U64 0
-                                                          ]
-                                                        |)
-                                                      |)) in
+                                                        BinOp.eq,
+                                                        [
+                                                          M.read (|
+                                                            M.SubPointer.get_struct_record_field (|
+                                                              source_account,
+                                                              "spl_token_interface::state::Account",
+                                                              "delegated_amount"
+                                                            |)
+                                                          |);
+                                                          Value.Integer IntegerKind.U64 0
+                                                        ]
+                                                      |)
+                                                    |) in
                                                   let _ :=
                                                     is_constant_or_break_match (|
                                                       M.read (| γ |),
@@ -9823,19 +9806,18 @@ Module processor.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
-                                Ty.path "bool",
-                                LogicalOp.or (|
-                                  M.read (| self_transfer |),
-                                  ltac:(M.monadic
-                                    (M.call_closure (|
-                                      Ty.path "bool",
-                                      BinOp.eq,
-                                      [ M.read (| amount |); Value.Integer IntegerKind.U64 0 ]
-                                    |)))
-                                |)
-                              |)) in
+                            M.alloc (|
+                              Ty.path "bool",
+                              LogicalOp.or (|
+                                M.read (| self_transfer |),
+                                ltac:(M.monadic
+                                  (M.call_closure (|
+                                    Ty.path "bool",
+                                    BinOp.eq,
+                                    [ M.read (| amount |); Value.Integer IntegerKind.U64 0 ]
+                                  |)))
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.read (|
@@ -10139,7 +10121,7 @@ Module processor.
                     [
                       fun γ =>
                         ltac:(M.monadic
-                          (let γ := M.use self_transfer in
+                          (let γ := self_transfer in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -10480,20 +10462,19 @@ Module processor.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  M.get_associated_function (|
-                                    Ty.path "spl_token_interface::state::Account",
-                                    "is_native",
-                                    [],
-                                    []
-                                  |),
-                                  [ M.borrow (| Pointer.Kind.Ref, source_account |) ]
-                                |)
-                              |)) in
+                                M.get_associated_function (|
+                                  Ty.path "spl_token_interface::state::Account",
+                                  "is_native",
+                                  [],
+                                  []
+                                |),
+                                [ M.borrow (| Pointer.Kind.Ref, source_account |) ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.read (|
@@ -12834,20 +12815,19 @@ Module processor.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  M.get_associated_function (|
-                                    Ty.path "spl_token_interface::state::Account",
-                                    "is_frozen",
-                                    [],
-                                    []
-                                  |),
-                                  [ M.borrow (| Pointer.Kind.Ref, source_account |) ]
-                                |)
-                              |)) in
+                                M.get_associated_function (|
+                                  Ty.path "spl_token_interface::state::Account",
+                                  "is_frozen",
+                                  [],
+                                  []
+                                |),
+                                [ M.borrow (| Pointer.Kind.Ref, source_account |) ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -12918,52 +12898,51 @@ Module processor.
                                   fun γ =>
                                     ltac:(M.monadic
                                       (let γ :=
-                                        M.use
-                                          (M.alloc (|
+                                        M.alloc (|
+                                          Ty.path "bool",
+                                          M.call_closure (|
                                             Ty.path "bool",
-                                            M.call_closure (|
-                                              Ty.path "bool",
-                                              UnOp.not,
-                                              [
-                                                M.call_closure (|
-                                                  Ty.path "bool",
-                                                  M.get_associated_function (|
-                                                    Ty.path "spl_token::processor::Processor",
-                                                    "cmp_pubkeys",
-                                                    [],
-                                                    []
-                                                  |),
-                                                  [
-                                                    M.borrow (|
-                                                      Pointer.Kind.Ref,
-                                                      M.deref (|
-                                                        M.read (|
-                                                          M.SubPointer.get_struct_record_field (|
-                                                            M.deref (| M.read (| mint_info |) |),
-                                                            "solana_account_info::AccountInfo",
-                                                            "key"
-                                                          |)
-                                                        |)
-                                                      |)
-                                                    |);
-                                                    M.borrow (|
-                                                      Pointer.Kind.Ref,
-                                                      M.deref (|
-                                                        M.borrow (|
-                                                          Pointer.Kind.Ref,
-                                                          M.SubPointer.get_struct_record_field (|
-                                                            source_account,
-                                                            "spl_token_interface::state::Account",
-                                                            "mint"
-                                                          |)
+                                            UnOp.not,
+                                            [
+                                              M.call_closure (|
+                                                Ty.path "bool",
+                                                M.get_associated_function (|
+                                                  Ty.path "spl_token::processor::Processor",
+                                                  "cmp_pubkeys",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (|
+                                                      M.read (|
+                                                        M.SubPointer.get_struct_record_field (|
+                                                          M.deref (| M.read (| mint_info |) |),
+                                                          "solana_account_info::AccountInfo",
+                                                          "key"
                                                         |)
                                                       |)
                                                     |)
-                                                  ]
-                                                |)
-                                              ]
-                                            |)
-                                          |)) in
+                                                  |);
+                                                  M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (|
+                                                      M.borrow (|
+                                                        Pointer.Kind.Ref,
+                                                        M.SubPointer.get_struct_record_field (|
+                                                          source_account,
+                                                          "spl_token_interface::state::Account",
+                                                          "mint"
+                                                        |)
+                                                      |)
+                                                    |)
+                                                  |)
+                                                ]
+                                              |)
+                                            ]
+                                          |)
+                                        |) in
                                       let _ :=
                                         is_constant_or_break_match (|
                                           M.read (| γ |),
@@ -13350,24 +13329,23 @@ Module processor.
                                   fun γ =>
                                     ltac:(M.monadic
                                       (let γ :=
-                                        M.use
-                                          (M.alloc (|
+                                        M.alloc (|
+                                          Ty.path "bool",
+                                          M.call_closure (|
                                             Ty.path "bool",
-                                            M.call_closure (|
-                                              Ty.path "bool",
-                                              BinOp.ne,
-                                              [
-                                                M.read (| expected_decimals |);
-                                                M.read (|
-                                                  M.SubPointer.get_struct_record_field (|
-                                                    mint,
-                                                    "spl_token_interface::state::Mint",
-                                                    "decimals"
-                                                  |)
+                                            BinOp.ne,
+                                            [
+                                              M.read (| expected_decimals |);
+                                              M.read (|
+                                                M.SubPointer.get_struct_record_field (|
+                                                  mint,
+                                                  "spl_token_interface::state::Mint",
+                                                  "decimals"
                                                 |)
-                                              ]
-                                            |)
-                                          |)) in
+                                              |)
+                                            ]
+                                          |)
+                                        |) in
                                       let _ :=
                                         is_constant_or_break_match (|
                                           M.read (| γ |),
@@ -14651,20 +14629,19 @@ Module processor.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  M.get_associated_function (|
-                                    Ty.path "spl_token_interface::state::Account",
-                                    "is_frozen",
-                                    [],
-                                    []
-                                  |),
-                                  [ M.borrow (| Pointer.Kind.Ref, source_account |) ]
-                                |)
-                              |)) in
+                                M.get_associated_function (|
+                                  Ty.path "spl_token_interface::state::Account",
+                                  "is_frozen",
+                                  [],
+                                  []
+                                |),
+                                [ M.borrow (| Pointer.Kind.Ref, source_account |) ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -15704,44 +15681,43 @@ Module processor.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  BinOp.eq,
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "usize",
-                                      M.get_associated_function (|
-                                        Ty.path "solana_account_info::AccountInfo",
-                                        "data_len",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| account_info |) |)
-                                        |)
-                                      ]
-                                    |);
-                                    M.call_closure (|
-                                      Ty.path "usize",
-                                      M.get_trait_method (|
-                                        "solana_program_pack::Pack",
-                                        Ty.path "spl_token_interface::state::Account",
-                                        [],
-                                        [],
-                                        "get_packed_len",
-                                        [],
-                                        []
-                                      |),
+                                BinOp.eq,
+                                [
+                                  M.call_closure (|
+                                    Ty.path "usize",
+                                    M.get_associated_function (|
+                                      Ty.path "solana_account_info::AccountInfo",
+                                      "data_len",
+                                      [],
                                       []
-                                    |)
-                                  ]
-                                |)
-                              |)) in
+                                    |),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| account_info |) |)
+                                      |)
+                                    ]
+                                  |);
+                                  M.call_closure (|
+                                    Ty.path "usize",
+                                    M.get_trait_method (|
+                                      "solana_program_pack::Pack",
+                                      Ty.path "spl_token_interface::state::Account",
+                                      [],
+                                      [],
+                                      "get_packed_len",
+                                      [],
+                                      []
+                                    |),
+                                    []
+                                  |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.read (|
@@ -16086,20 +16062,19 @@ Module processor.
                                   fun γ =>
                                     ltac:(M.monadic
                                       (let γ :=
-                                        M.use
-                                          (M.alloc (|
+                                        M.alloc (|
+                                          Ty.path "bool",
+                                          M.call_closure (|
                                             Ty.path "bool",
-                                            M.call_closure (|
-                                              Ty.path "bool",
-                                              M.get_associated_function (|
-                                                Ty.path "spl_token_interface::state::Account",
-                                                "is_frozen",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.borrow (| Pointer.Kind.Ref, account |) ]
-                                            |)
-                                          |)) in
+                                            M.get_associated_function (|
+                                              Ty.path "spl_token_interface::state::Account",
+                                              "is_frozen",
+                                              [],
+                                              []
+                                            |),
+                                            [ M.borrow (| Pointer.Kind.Ref, account |) ]
+                                          |)
+                                        |) in
                                       let _ :=
                                         is_constant_or_break_match (|
                                           M.read (| γ |),
@@ -16466,22 +16441,20 @@ Module processor.
                                               fun γ =>
                                                 ltac:(M.monadic
                                                   (let γ :=
-                                                    M.use
-                                                      (M.alloc (|
+                                                    M.alloc (|
+                                                      Ty.path "bool",
+                                                      M.call_closure (|
                                                         Ty.path "bool",
-                                                        M.call_closure (|
-                                                          Ty.path "bool",
-                                                          M.get_associated_function (|
-                                                            Ty.path
-                                                              "spl_token_interface::state::Account",
-                                                            "is_native",
-                                                            [],
-                                                            []
-                                                          |),
-                                                          [ M.borrow (| Pointer.Kind.Ref, account |)
-                                                          ]
-                                                        |)
-                                                      |)) in
+                                                        M.get_associated_function (|
+                                                          Ty.path
+                                                            "spl_token_interface::state::Account",
+                                                          "is_native",
+                                                          [],
+                                                          []
+                                                        |),
+                                                        [ M.borrow (| Pointer.Kind.Ref, account |) ]
+                                                      |)
+                                                    |) in
                                                   let _ :=
                                                     is_constant_or_break_match (|
                                                       M.read (| γ |),
@@ -17131,44 +17104,43 @@ Module processor.
                               fun γ =>
                                 ltac:(M.monadic
                                   (let γ :=
-                                    M.use
-                                      (M.alloc (|
+                                    M.alloc (|
+                                      Ty.path "bool",
+                                      M.call_closure (|
                                         Ty.path "bool",
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          BinOp.eq,
-                                          [
-                                            M.call_closure (|
-                                              Ty.path "usize",
-                                              M.get_associated_function (|
-                                                Ty.path "solana_account_info::AccountInfo",
-                                                "data_len",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (| M.read (| account_info |) |)
-                                                |)
-                                              ]
-                                            |);
-                                            M.call_closure (|
-                                              Ty.path "usize",
-                                              M.get_trait_method (|
-                                                "solana_program_pack::Pack",
-                                                Ty.path "spl_token_interface::state::Mint",
-                                                [],
-                                                [],
-                                                "get_packed_len",
-                                                [],
-                                                []
-                                              |),
+                                        BinOp.eq,
+                                        [
+                                          M.call_closure (|
+                                            Ty.path "usize",
+                                            M.get_associated_function (|
+                                              Ty.path "solana_account_info::AccountInfo",
+                                              "data_len",
+                                              [],
                                               []
-                                            |)
-                                          ]
-                                        |)
-                                      |)) in
+                                            |),
+                                            [
+                                              M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| account_info |) |)
+                                              |)
+                                            ]
+                                          |);
+                                          M.call_closure (|
+                                            Ty.path "usize",
+                                            M.get_trait_method (|
+                                              "solana_program_pack::Pack",
+                                              Ty.path "spl_token_interface::state::Mint",
+                                              [],
+                                              [],
+                                              "get_packed_len",
+                                              [],
+                                              []
+                                            |),
+                                            []
+                                          |)
+                                        ]
+                                      |)
+                                    |) in
                                   let _ :=
                                     is_constant_or_break_match (|
                                       M.read (| γ |),
@@ -19724,20 +19696,19 @@ Module processor.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  M.get_associated_function (|
-                                    Ty.path "spl_token_interface::state::Account",
-                                    "is_frozen",
-                                    [],
-                                    []
-                                  |),
-                                  [ M.borrow (| Pointer.Kind.Ref, destination_account |) ]
-                                |)
-                              |)) in
+                                M.get_associated_function (|
+                                  Ty.path "spl_token_interface::state::Account",
+                                  "is_frozen",
+                                  [],
+                                  []
+                                |),
+                                [ M.borrow (| Pointer.Kind.Ref, destination_account |) ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -19782,20 +19753,19 @@ Module processor.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  M.get_associated_function (|
-                                    Ty.path "spl_token_interface::state::Account",
-                                    "is_native",
-                                    [],
-                                    []
-                                  |),
-                                  [ M.borrow (| Pointer.Kind.Ref, destination_account |) ]
-                                |)
-                              |)) in
+                                M.get_associated_function (|
+                                  Ty.path "spl_token_interface::state::Account",
+                                  "is_native",
+                                  [],
+                                  []
+                                |),
+                                [ M.borrow (| Pointer.Kind.Ref, destination_account |) ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -19840,52 +19810,51 @@ Module processor.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  UnOp.not,
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      M.get_associated_function (|
-                                        Ty.path "spl_token::processor::Processor",
-                                        "cmp_pubkeys",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (|
-                                            M.read (|
-                                              M.SubPointer.get_struct_record_field (|
-                                                M.deref (| M.read (| mint_info |) |),
-                                                "solana_account_info::AccountInfo",
-                                                "key"
-                                              |)
-                                            |)
-                                          |)
-                                        |);
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (|
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.SubPointer.get_struct_record_field (|
-                                                destination_account,
-                                                "spl_token_interface::state::Account",
-                                                "mint"
-                                              |)
+                                UnOp.not,
+                                [
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    M.get_associated_function (|
+                                      Ty.path "spl_token::processor::Processor",
+                                      "cmp_pubkeys",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.read (|
+                                            M.SubPointer.get_struct_record_field (|
+                                              M.deref (| M.read (| mint_info |) |),
+                                              "solana_account_info::AccountInfo",
+                                              "key"
                                             |)
                                           |)
                                         |)
-                                      ]
-                                    |)
-                                  ]
-                                |)
-                              |)) in
+                                      |);
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.SubPointer.get_struct_record_field (|
+                                              destination_account,
+                                              "spl_token_interface::state::Account",
+                                              "mint"
+                                            |)
+                                          |)
+                                        |)
+                                      |)
+                                    ]
+                                  |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -20246,24 +20215,23 @@ Module processor.
                               fun γ =>
                                 ltac:(M.monadic
                                   (let γ :=
-                                    M.use
-                                      (M.alloc (|
+                                    M.alloc (|
+                                      Ty.path "bool",
+                                      M.call_closure (|
                                         Ty.path "bool",
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          BinOp.ne,
-                                          [
-                                            M.read (| expected_decimals |);
-                                            M.read (|
-                                              M.SubPointer.get_struct_record_field (|
-                                                mint,
-                                                "spl_token_interface::state::Mint",
-                                                "decimals"
-                                              |)
+                                        BinOp.ne,
+                                        [
+                                          M.read (| expected_decimals |);
+                                          M.read (|
+                                            M.SubPointer.get_struct_record_field (|
+                                              mint,
+                                              "spl_token_interface::state::Mint",
+                                              "decimals"
                                             |)
-                                          ]
-                                        |)
-                                      |)) in
+                                          |)
+                                        ]
+                                      |)
+                                    |) in
                                   let _ :=
                                     is_constant_or_break_match (|
                                       M.read (| γ |),
@@ -20549,15 +20517,14 @@ Module processor.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  BinOp.eq,
-                                  [ M.read (| amount |); Value.Integer IntegerKind.U64 0 ]
-                                |)
-                              |)) in
+                                BinOp.eq,
+                                [ M.read (| amount |); Value.Integer IntegerKind.U64 0 ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.read (|
@@ -23009,20 +22976,19 @@ Module processor.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  M.get_associated_function (|
-                                    Ty.path "spl_token_interface::state::Account",
-                                    "is_frozen",
-                                    [],
-                                    []
-                                  |),
-                                  [ M.borrow (| Pointer.Kind.Ref, source_account |) ]
-                                |)
-                              |)) in
+                                M.get_associated_function (|
+                                  Ty.path "spl_token_interface::state::Account",
+                                  "is_frozen",
+                                  [],
+                                  []
+                                |),
+                                [ M.borrow (| Pointer.Kind.Ref, source_account |) ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -23067,20 +23033,19 @@ Module processor.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  M.get_associated_function (|
-                                    Ty.path "spl_token_interface::state::Account",
-                                    "is_native",
-                                    [],
-                                    []
-                                  |),
-                                  [ M.borrow (| Pointer.Kind.Ref, source_account |) ]
-                                |)
-                              |)) in
+                                M.get_associated_function (|
+                                  Ty.path "spl_token_interface::state::Account",
+                                  "is_native",
+                                  [],
+                                  []
+                                |),
+                                [ M.borrow (| Pointer.Kind.Ref, source_account |) ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -23125,24 +23090,23 @@ Module processor.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  BinOp.lt,
-                                  [
-                                    M.read (|
-                                      M.SubPointer.get_struct_record_field (|
-                                        source_account,
-                                        "spl_token_interface::state::Account",
-                                        "amount"
-                                      |)
-                                    |);
-                                    M.read (| amount |)
-                                  ]
-                                |)
-                              |)) in
+                                BinOp.lt,
+                                [
+                                  M.read (|
+                                    M.SubPointer.get_struct_record_field (|
+                                      source_account,
+                                      "spl_token_interface::state::Account",
+                                      "amount"
+                                    |)
+                                  |);
+                                  M.read (| amount |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -23187,52 +23151,51 @@ Module processor.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  UnOp.not,
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      M.get_associated_function (|
-                                        Ty.path "spl_token::processor::Processor",
-                                        "cmp_pubkeys",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (|
-                                            M.read (|
-                                              M.SubPointer.get_struct_record_field (|
-                                                M.deref (| M.read (| mint_info |) |),
-                                                "solana_account_info::AccountInfo",
-                                                "key"
-                                              |)
-                                            |)
-                                          |)
-                                        |);
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (|
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.SubPointer.get_struct_record_field (|
-                                                source_account,
-                                                "spl_token_interface::state::Account",
-                                                "mint"
-                                              |)
+                                UnOp.not,
+                                [
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    M.get_associated_function (|
+                                      Ty.path "spl_token::processor::Processor",
+                                      "cmp_pubkeys",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.read (|
+                                            M.SubPointer.get_struct_record_field (|
+                                              M.deref (| M.read (| mint_info |) |),
+                                              "solana_account_info::AccountInfo",
+                                              "key"
                                             |)
                                           |)
                                         |)
-                                      ]
-                                    |)
-                                  ]
-                                |)
-                              |)) in
+                                      |);
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.SubPointer.get_struct_record_field (|
+                                              source_account,
+                                              "spl_token_interface::state::Account",
+                                              "mint"
+                                            |)
+                                          |)
+                                        |)
+                                      |)
+                                    ]
+                                  |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -23291,24 +23254,23 @@ Module processor.
                               fun γ =>
                                 ltac:(M.monadic
                                   (let γ :=
-                                    M.use
-                                      (M.alloc (|
+                                    M.alloc (|
+                                      Ty.path "bool",
+                                      M.call_closure (|
                                         Ty.path "bool",
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          BinOp.ne,
-                                          [
-                                            M.read (| expected_decimals |);
-                                            M.read (|
-                                              M.SubPointer.get_struct_record_field (|
-                                                mint,
-                                                "spl_token_interface::state::Mint",
-                                                "decimals"
-                                              |)
+                                        BinOp.ne,
+                                        [
+                                          M.read (| expected_decimals |);
+                                          M.read (|
+                                            M.SubPointer.get_struct_record_field (|
+                                              mint,
+                                              "spl_token_interface::state::Mint",
+                                              "decimals"
                                             |)
-                                          ]
-                                        |)
-                                      |)) in
+                                          |)
+                                        ]
+                                      |)
+                                    |) in
                                   let _ :=
                                     is_constant_or_break_match (|
                                       M.read (| γ |),
@@ -23362,26 +23324,25 @@ Module processor.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  UnOp.not,
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      M.get_associated_function (|
-                                        Ty.path "spl_token_interface::state::Account",
-                                        "is_owned_by_system_program_or_incinerator",
-                                        [],
-                                        []
-                                      |),
-                                      [ M.borrow (| Pointer.Kind.Ref, source_account |) ]
-                                    |)
-                                  ]
-                                |)
-                              |)) in
+                                UnOp.not,
+                                [
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    M.get_associated_function (|
+                                      Ty.path "spl_token_interface::state::Account",
+                                      "is_owned_by_system_program_or_incinerator",
+                                      [],
+                                      []
+                                    |),
+                                    [ M.borrow (| Pointer.Kind.Ref, source_account |) ]
+                                  |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.match_operator (|
@@ -23645,24 +23606,23 @@ Module processor.
                                           fun γ =>
                                             ltac:(M.monadic
                                               (let γ :=
-                                                M.use
-                                                  (M.alloc (|
+                                                M.alloc (|
+                                                  Ty.path "bool",
+                                                  M.call_closure (|
                                                     Ty.path "bool",
-                                                    M.call_closure (|
-                                                      Ty.path "bool",
-                                                      BinOp.lt,
-                                                      [
-                                                        M.read (|
-                                                          M.SubPointer.get_struct_record_field (|
-                                                            source_account,
-                                                            "spl_token_interface::state::Account",
-                                                            "delegated_amount"
-                                                          |)
-                                                        |);
-                                                        M.read (| amount |)
-                                                      ]
-                                                    |)
-                                                  |)) in
+                                                    BinOp.lt,
+                                                    [
+                                                      M.read (|
+                                                        M.SubPointer.get_struct_record_field (|
+                                                          source_account,
+                                                          "spl_token_interface::state::Account",
+                                                          "delegated_amount"
+                                                        |)
+                                                      |);
+                                                      M.read (| amount |)
+                                                    ]
+                                                  |)
+                                                |) in
                                               let _ :=
                                                 is_constant_or_break_match (|
                                                   M.read (| γ |),
@@ -23903,24 +23863,23 @@ Module processor.
                                           fun γ =>
                                             ltac:(M.monadic
                                               (let γ :=
-                                                M.use
-                                                  (M.alloc (|
+                                                M.alloc (|
+                                                  Ty.path "bool",
+                                                  M.call_closure (|
                                                     Ty.path "bool",
-                                                    M.call_closure (|
-                                                      Ty.path "bool",
-                                                      BinOp.eq,
-                                                      [
-                                                        M.read (|
-                                                          M.SubPointer.get_struct_record_field (|
-                                                            source_account,
-                                                            "spl_token_interface::state::Account",
-                                                            "delegated_amount"
-                                                          |)
-                                                        |);
-                                                        Value.Integer IntegerKind.U64 0
-                                                      ]
-                                                    |)
-                                                  |)) in
+                                                    BinOp.eq,
+                                                    [
+                                                      M.read (|
+                                                        M.SubPointer.get_struct_record_field (|
+                                                          source_account,
+                                                          "spl_token_interface::state::Account",
+                                                          "delegated_amount"
+                                                        |)
+                                                      |);
+                                                      Value.Integer IntegerKind.U64 0
+                                                    ]
+                                                  |)
+                                                |) in
                                               let _ :=
                                                 is_constant_or_break_match (|
                                                   M.read (| γ |),
@@ -24156,15 +24115,14 @@ Module processor.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  BinOp.eq,
-                                  [ M.read (| amount |); Value.Integer IntegerKind.U64 0 ]
-                                |)
-                              |)) in
+                                BinOp.eq,
+                                [ M.read (| amount |); Value.Integer IntegerKind.U64 0 ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.read (|
@@ -25960,45 +25918,44 @@ Module processor.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  M.get_associated_function (|
-                                    Ty.path "spl_token::processor::Processor",
-                                    "cmp_pubkeys",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (|
-                                        M.read (|
-                                          M.SubPointer.get_struct_record_field (|
-                                            M.deref (| M.read (| source_account_info |) |),
-                                            "solana_account_info::AccountInfo",
-                                            "key"
-                                          |)
-                                        |)
-                                      |)
-                                    |);
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (|
-                                        M.read (|
-                                          M.SubPointer.get_struct_record_field (|
-                                            M.deref (| M.read (| destination_account_info |) |),
-                                            "solana_account_info::AccountInfo",
-                                            "key"
-                                          |)
+                                M.get_associated_function (|
+                                  Ty.path "spl_token::processor::Processor",
+                                  "cmp_pubkeys",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (|
+                                      M.read (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| source_account_info |) |),
+                                          "solana_account_info::AccountInfo",
+                                          "key"
                                         |)
                                       |)
                                     |)
-                                  ]
-                                |)
-                              |)) in
+                                  |);
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (|
+                                      M.read (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| destination_account_info |) |),
+                                          "solana_account_info::AccountInfo",
+                                          "key"
+                                        |)
+                                      |)
+                                    |)
+                                  |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -26331,43 +26288,45 @@ Module processor.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                LogicalOp.and (|
+                                UnOp.not,
+                                [
                                   M.call_closure (|
                                     Ty.path "bool",
-                                    UnOp.not,
-                                    [
-                                      M.call_closure (|
-                                        Ty.path "bool",
-                                        M.get_associated_function (|
-                                          Ty.path "spl_token_interface::state::Account",
-                                          "is_native",
-                                          [],
-                                          []
-                                        |),
-                                        [ M.borrow (| Pointer.Kind.Ref, source_account |) ]
-                                      |)
-                                    ]
-                                  |),
-                                  ltac:(M.monadic
-                                    (M.call_closure (|
-                                      Ty.path "bool",
-                                      BinOp.ne,
-                                      [
-                                        M.read (|
-                                          M.SubPointer.get_struct_record_field (|
-                                            source_account,
-                                            "spl_token_interface::state::Account",
-                                            "amount"
-                                          |)
-                                        |);
-                                        Value.Integer IntegerKind.U64 0
-                                      ]
-                                    |)))
-                                |)
-                              |)) in
+                                    M.get_associated_function (|
+                                      Ty.path "spl_token_interface::state::Account",
+                                      "is_native",
+                                      [],
+                                      []
+                                    |),
+                                    [ M.borrow (| Pointer.Kind.Ref, source_account |) ]
+                                  |)
+                                ]
+                              |)
+                            |) in
+                          let _ :=
+                            is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                          let γ :=
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.ne,
+                                [
+                                  M.read (|
+                                    M.SubPointer.get_struct_record_field (|
+                                      source_account,
+                                      "spl_token_interface::state::Account",
+                                      "amount"
+                                    |)
+                                  |);
+                                  Value.Integer IntegerKind.U64 0
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -26441,26 +26400,25 @@ Module processor.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  UnOp.not,
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      M.get_associated_function (|
-                                        Ty.path "spl_token_interface::state::Account",
-                                        "is_owned_by_system_program_or_incinerator",
-                                        [],
-                                        []
-                                      |),
-                                      [ M.borrow (| Pointer.Kind.Ref, source_account |) ]
-                                    |)
-                                  ]
-                                |)
-                              |)) in
+                                UnOp.not,
+                                [
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    M.get_associated_function (|
+                                      Ty.path "spl_token_interface::state::Account",
+                                      "is_owned_by_system_program_or_incinerator",
+                                      [],
+                                      []
+                                    |),
+                                    [ M.borrow (| Pointer.Kind.Ref, source_account |) ]
+                                  |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.read (|
@@ -26654,40 +26612,39 @@ Module processor.
                               fun γ =>
                                 ltac:(M.monadic
                                   (let γ :=
-                                    M.use
-                                      (M.alloc (|
+                                    M.alloc (|
+                                      Ty.path "bool",
+                                      M.call_closure (|
                                         Ty.path "bool",
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          UnOp.not,
-                                          [
-                                            M.call_closure (|
-                                              Ty.path "bool",
-                                              M.get_function (|
-                                                "solana_sdk_ids::incinerator::check_id",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (|
-                                                    M.read (|
-                                                      M.SubPointer.get_struct_record_field (|
-                                                        M.deref (|
-                                                          M.read (| destination_account_info |)
-                                                        |),
-                                                        "solana_account_info::AccountInfo",
-                                                        "key"
-                                                      |)
+                                        UnOp.not,
+                                        [
+                                          M.call_closure (|
+                                            Ty.path "bool",
+                                            M.get_function (|
+                                              "solana_sdk_ids::incinerator::check_id",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (|
+                                                  M.read (|
+                                                    M.SubPointer.get_struct_record_field (|
+                                                      M.deref (|
+                                                        M.read (| destination_account_info |)
+                                                      |),
+                                                      "solana_account_info::AccountInfo",
+                                                      "key"
                                                     |)
                                                   |)
                                                 |)
-                                              ]
-                                            |)
-                                          ]
-                                        |)
-                                      |)) in
+                                              |)
+                                            ]
+                                          |)
+                                        ]
+                                      |)
+                                    |) in
                                   let _ :=
                                     is_constant_or_break_match (|
                                       M.read (| γ |),
@@ -28121,51 +28078,50 @@ Module processor.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
-                                Ty.path "bool",
-                                LogicalOp.or (|
-                                  LogicalOp.and (|
-                                    M.read (| freeze |),
+                            M.alloc (|
+                              Ty.path "bool",
+                              LogicalOp.or (|
+                                LogicalOp.and (|
+                                  M.read (| freeze |),
+                                  ltac:(M.monadic
+                                    (M.call_closure (|
+                                      Ty.path "bool",
+                                      M.get_associated_function (|
+                                        Ty.path "spl_token_interface::state::Account",
+                                        "is_frozen",
+                                        [],
+                                        []
+                                      |),
+                                      [ M.borrow (| Pointer.Kind.Ref, source_account |) ]
+                                    |)))
+                                |),
+                                ltac:(M.monadic
+                                  (LogicalOp.and (|
+                                    M.call_closure (|
+                                      Ty.path "bool",
+                                      UnOp.not,
+                                      [ M.read (| freeze |) ]
+                                    |),
                                     ltac:(M.monadic
                                       (M.call_closure (|
                                         Ty.path "bool",
-                                        M.get_associated_function (|
-                                          Ty.path "spl_token_interface::state::Account",
-                                          "is_frozen",
-                                          [],
-                                          []
-                                        |),
-                                        [ M.borrow (| Pointer.Kind.Ref, source_account |) ]
-                                      |)))
-                                  |),
-                                  ltac:(M.monadic
-                                    (LogicalOp.and (|
-                                      M.call_closure (|
-                                        Ty.path "bool",
                                         UnOp.not,
-                                        [ M.read (| freeze |) ]
-                                      |),
-                                      ltac:(M.monadic
-                                        (M.call_closure (|
-                                          Ty.path "bool",
-                                          UnOp.not,
-                                          [
-                                            M.call_closure (|
-                                              Ty.path "bool",
-                                              M.get_associated_function (|
-                                                Ty.path "spl_token_interface::state::Account",
-                                                "is_frozen",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.borrow (| Pointer.Kind.Ref, source_account |) ]
-                                            |)
-                                          ]
-                                        |)))
-                                    |)))
-                                |)
-                              |)) in
+                                        [
+                                          M.call_closure (|
+                                            Ty.path "bool",
+                                            M.get_associated_function (|
+                                              Ty.path "spl_token_interface::state::Account",
+                                              "is_frozen",
+                                              [],
+                                              []
+                                            |),
+                                            [ M.borrow (| Pointer.Kind.Ref, source_account |) ]
+                                          |)
+                                        ]
+                                      |)))
+                                  |)))
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -28210,20 +28166,19 @@ Module processor.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  M.get_associated_function (|
-                                    Ty.path "spl_token_interface::state::Account",
-                                    "is_native",
-                                    [],
-                                    []
-                                  |),
-                                  [ M.borrow (| Pointer.Kind.Ref, source_account |) ]
-                                |)
-                              |)) in
+                                M.get_associated_function (|
+                                  Ty.path "spl_token_interface::state::Account",
+                                  "is_native",
+                                  [],
+                                  []
+                                |),
+                                [ M.borrow (| Pointer.Kind.Ref, source_account |) ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -28268,52 +28223,51 @@ Module processor.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  UnOp.not,
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      M.get_associated_function (|
-                                        Ty.path "spl_token::processor::Processor",
-                                        "cmp_pubkeys",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (|
-                                            M.read (|
-                                              M.SubPointer.get_struct_record_field (|
-                                                M.deref (| M.read (| mint_info |) |),
-                                                "solana_account_info::AccountInfo",
-                                                "key"
-                                              |)
-                                            |)
-                                          |)
-                                        |);
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (|
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.SubPointer.get_struct_record_field (|
-                                                source_account,
-                                                "spl_token_interface::state::Account",
-                                                "mint"
-                                              |)
+                                UnOp.not,
+                                [
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    M.get_associated_function (|
+                                      Ty.path "spl_token::processor::Processor",
+                                      "cmp_pubkeys",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.read (|
+                                            M.SubPointer.get_struct_record_field (|
+                                              M.deref (| M.read (| mint_info |) |),
+                                              "solana_account_info::AccountInfo",
+                                              "key"
                                             |)
                                           |)
                                         |)
-                                      ]
-                                    |)
-                                  ]
-                                |)
-                              |)) in
+                                      |);
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.SubPointer.get_struct_record_field (|
+                                              source_account,
+                                              "spl_token_interface::state::Account",
+                                              "mint"
+                                            |)
+                                          |)
+                                        |)
+                                      |)
+                                    ]
+                                  |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -28889,7 +28843,7 @@ Module processor.
                       [
                         fun γ =>
                           ltac:(M.monadic
-                            (let γ := M.use freeze in
+                            (let γ := freeze in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             Value.StructTuple
@@ -30104,24 +30058,23 @@ Module processor.
                                   fun γ =>
                                     ltac:(M.monadic
                                       (let γ :=
-                                        M.use
-                                          (M.alloc (|
+                                        M.alloc (|
+                                          Ty.path "bool",
+                                          M.call_closure (|
                                             Ty.path "bool",
-                                            M.call_closure (|
-                                              Ty.path "bool",
-                                              BinOp.lt,
-                                              [
-                                                M.read (| new_amount |);
-                                                M.read (|
-                                                  M.SubPointer.get_struct_record_field (|
-                                                    native_account,
-                                                    "spl_token_interface::state::Account",
-                                                    "amount"
-                                                  |)
+                                            BinOp.lt,
+                                            [
+                                              M.read (| new_amount |);
+                                              M.read (|
+                                                M.SubPointer.get_struct_record_field (|
+                                                  native_account,
+                                                  "spl_token_interface::state::Account",
+                                                  "amount"
                                                 |)
-                                              ]
-                                            |)
-                                          |)) in
+                                              |)
+                                            ]
+                                          |)
+                                        |) in
                                       let _ :=
                                         is_constant_or_break_match (|
                                           M.read (| γ |),
@@ -31921,23 +31874,22 @@ Module processor.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  M.get_trait_method (|
-                                    "solana_program_pack::IsInitialized",
-                                    Ty.path "spl_token_interface::state::Account",
-                                    [],
-                                    [],
-                                    "is_initialized",
-                                    [],
-                                    []
-                                  |),
-                                  [ M.borrow (| Pointer.Kind.Ref, account |) ]
-                                |)
-                              |)) in
+                                M.get_trait_method (|
+                                  "solana_program_pack::IsInitialized",
+                                  Ty.path "spl_token_interface::state::Account",
+                                  [],
+                                  [],
+                                  "is_initialized",
+                                  [],
+                                  []
+                                |),
+                                [ M.borrow (| Pointer.Kind.Ref, account |) ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -35526,43 +35478,42 @@ Module processor.
               fun γ =>
                 ltac:(M.monadic
                   (let γ :=
-                    M.use
-                      (M.alloc (|
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
                         Ty.path "bool",
-                        M.call_closure (|
-                          Ty.path "bool",
-                          UnOp.not,
-                          [
-                            M.call_closure (|
-                              Ty.path "bool",
-                              M.get_associated_function (|
-                                Ty.path "spl_token::processor::Processor",
-                                "cmp_pubkeys",
-                                [],
-                                []
-                              |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (| M.read (| program_id |) |)
-                                |);
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.read (|
-                                      M.SubPointer.get_struct_record_field (|
-                                        M.deref (| M.read (| account_info |) |),
-                                        "solana_account_info::AccountInfo",
-                                        "owner"
-                                      |)
+                        UnOp.not,
+                        [
+                          M.call_closure (|
+                            Ty.path "bool",
+                            M.get_associated_function (|
+                              Ty.path "spl_token::processor::Processor",
+                              "cmp_pubkeys",
+                              [],
+                              []
+                            |),
+                            [
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (| M.read (| program_id |) |)
+                              |);
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (|
+                                  M.read (|
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| account_info |) |),
+                                      "solana_account_info::AccountInfo",
+                                      "owner"
                                     |)
                                   |)
                                 |)
-                              ]
-                            |)
-                          ]
-                        |)
-                      |)) in
+                              |)
+                            ]
+                          |)
+                        ]
+                      |)
+                    |) in
                   let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                   Value.StructTuple
                     "core::result::Result::Err"
@@ -35748,43 +35699,42 @@ Module processor.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  UnOp.not,
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      M.get_associated_function (|
-                                        Ty.path "spl_token::processor::Processor",
-                                        "cmp_pubkeys",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| expected_owner |) |)
-                                        |);
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (|
-                                            M.read (|
-                                              M.SubPointer.get_struct_record_field (|
-                                                M.deref (| M.read (| owner_account_info |) |),
-                                                "solana_account_info::AccountInfo",
-                                                "key"
-                                              |)
+                                UnOp.not,
+                                [
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    M.get_associated_function (|
+                                      Ty.path "spl_token::processor::Processor",
+                                      "cmp_pubkeys",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| expected_owner |) |)
+                                      |);
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.read (|
+                                            M.SubPointer.get_struct_record_field (|
+                                              M.deref (| M.read (| owner_account_info |) |),
+                                              "solana_account_info::AccountInfo",
+                                              "key"
                                             |)
                                           |)
                                         |)
-                                      ]
-                                    |)
-                                  ]
-                                |)
-                              |)) in
+                                      |)
+                                    ]
+                                  |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -35829,74 +35779,76 @@ Module processor.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                LogicalOp.and (|
+                                M.get_associated_function (|
+                                  Ty.path "spl_token::processor::Processor",
+                                  "cmp_pubkeys",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (| M.read (| program_id |) |)
+                                  |);
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (|
+                                      M.read (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| owner_account_info |) |),
+                                          "solana_account_info::AccountInfo",
+                                          "owner"
+                                        |)
+                                      |)
+                                    |)
+                                  |)
+                                ]
+                              |)
+                            |) in
+                          let _ :=
+                            is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                          let γ :=
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.eq,
+                                [
                                   M.call_closure (|
-                                    Ty.path "bool",
+                                    Ty.path "usize",
                                     M.get_associated_function (|
-                                      Ty.path "spl_token::processor::Processor",
-                                      "cmp_pubkeys",
+                                      Ty.path "solana_account_info::AccountInfo",
+                                      "data_len",
                                       [],
                                       []
                                     |),
                                     [
                                       M.borrow (|
                                         Pointer.Kind.Ref,
-                                        M.deref (| M.read (| program_id |) |)
-                                      |);
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.read (|
-                                            M.SubPointer.get_struct_record_field (|
-                                              M.deref (| M.read (| owner_account_info |) |),
-                                              "solana_account_info::AccountInfo",
-                                              "owner"
-                                            |)
-                                          |)
-                                        |)
+                                        M.deref (| M.read (| owner_account_info |) |)
                                       |)
                                     ]
-                                  |),
-                                  ltac:(M.monadic
-                                    (M.call_closure (|
-                                      Ty.path "bool",
-                                      BinOp.eq,
-                                      [
-                                        M.call_closure (|
-                                          Ty.path "usize",
-                                          M.get_associated_function (|
-                                            Ty.path "solana_account_info::AccountInfo",
-                                            "data_len",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| owner_account_info |) |)
-                                            |)
-                                          ]
-                                        |);
-                                        M.call_closure (|
-                                          Ty.path "usize",
-                                          M.get_trait_method (|
-                                            "solana_program_pack::Pack",
-                                            Ty.path "spl_token_interface::state::Multisig",
-                                            [],
-                                            [],
-                                            "get_packed_len",
-                                            [],
-                                            []
-                                          |),
-                                          []
-                                        |)
-                                      ]
-                                    |)))
-                                |)
-                              |)) in
+                                  |);
+                                  M.call_closure (|
+                                    Ty.path "usize",
+                                    M.get_trait_method (|
+                                      "solana_program_pack::Pack",
+                                      Ty.path "spl_token_interface::state::Multisig",
+                                      [],
+                                      [],
+                                      "get_packed_len",
+                                      [],
+                                      []
+                                    |),
+                                    []
+                                  |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -36780,66 +36732,77 @@ Module processor.
                                                                                                   ltac:(M.monadic
                                                                                                     (let
                                                                                                           γ :=
-                                                                                                      M.use
-                                                                                                        (M.alloc (|
+                                                                                                      M.alloc (|
+                                                                                                        Ty.path
+                                                                                                          "bool",
+                                                                                                        M.call_closure (|
                                                                                                           Ty.path
                                                                                                             "bool",
-                                                                                                          LogicalOp.and (|
-                                                                                                            M.call_closure (|
-                                                                                                              Ty.path
-                                                                                                                "bool",
-                                                                                                              M.get_associated_function (|
-                                                                                                                Ty.path
-                                                                                                                  "spl_token::processor::Processor",
-                                                                                                                "cmp_pubkeys",
-                                                                                                                [],
-                                                                                                                []
-                                                                                                              |),
-                                                                                                              [
-                                                                                                                M.borrow (|
-                                                                                                                  Pointer.Kind.Ref,
-                                                                                                                  M.deref (|
-                                                                                                                    M.read (|
-                                                                                                                      key
-                                                                                                                    |)
-                                                                                                                  |)
-                                                                                                                |);
-                                                                                                                M.borrow (|
-                                                                                                                  Pointer.Kind.Ref,
-                                                                                                                  M.deref (|
-                                                                                                                    M.read (|
-                                                                                                                      M.SubPointer.get_struct_record_field (|
-                                                                                                                        M.deref (|
-                                                                                                                          M.read (|
-                                                                                                                            signer
-                                                                                                                          |)
-                                                                                                                        |),
-                                                                                                                        "solana_account_info::AccountInfo",
-                                                                                                                        "key"
+                                                                                                          M.get_associated_function (|
+                                                                                                            Ty.path
+                                                                                                              "spl_token::processor::Processor",
+                                                                                                            "cmp_pubkeys",
+                                                                                                            [],
+                                                                                                            []
+                                                                                                          |),
+                                                                                                          [
+                                                                                                            M.borrow (|
+                                                                                                              Pointer.Kind.Ref,
+                                                                                                              M.deref (|
+                                                                                                                M.read (|
+                                                                                                                  key
+                                                                                                                |)
+                                                                                                              |)
+                                                                                                            |);
+                                                                                                            M.borrow (|
+                                                                                                              Pointer.Kind.Ref,
+                                                                                                              M.deref (|
+                                                                                                                M.read (|
+                                                                                                                  M.SubPointer.get_struct_record_field (|
+                                                                                                                    M.deref (|
+                                                                                                                      M.read (|
+                                                                                                                        signer
                                                                                                                       |)
-                                                                                                                    |)
+                                                                                                                    |),
+                                                                                                                    "solana_account_info::AccountInfo",
+                                                                                                                    "key"
                                                                                                                   |)
                                                                                                                 |)
-                                                                                                              ]
-                                                                                                            |),
-                                                                                                            ltac:(M.monadic
-                                                                                                              (M.call_closure (|
-                                                                                                                Ty.path
-                                                                                                                  "bool",
-                                                                                                                UnOp.not,
-                                                                                                                [
-                                                                                                                  M.read (|
-                                                                                                                    M.SubPointer.get_array_field (|
-                                                                                                                      matched,
-                                                                                                                      M.read (|
-                                                                                                                        position
-                                                                                                                      |)
-                                                                                                                    |)
-                                                                                                                  |)
-                                                                                                                ]
-                                                                                                              |)))
-                                                                                                          |)
-                                                                                                        |)) in
+                                                                                                              |)
+                                                                                                            |)
+                                                                                                          ]
+                                                                                                        |)
+                                                                                                      |) in
+                                                                                                    let
+                                                                                                          _ :=
+                                                                                                      is_constant_or_break_match (|
+                                                                                                        M.read (|
+                                                                                                          γ
+                                                                                                        |),
+                                                                                                        Value.Bool
+                                                                                                          true
+                                                                                                      |) in
+                                                                                                    let
+                                                                                                          γ :=
+                                                                                                      M.alloc (|
+                                                                                                        Ty.path
+                                                                                                          "bool",
+                                                                                                        M.call_closure (|
+                                                                                                          Ty.path
+                                                                                                            "bool",
+                                                                                                          UnOp.not,
+                                                                                                          [
+                                                                                                            M.read (|
+                                                                                                              M.SubPointer.get_array_field (|
+                                                                                                                matched,
+                                                                                                                M.read (|
+                                                                                                                  position
+                                                                                                                |)
+                                                                                                              |)
+                                                                                                            |)
+                                                                                                          ]
+                                                                                                        |)
+                                                                                                      |) in
                                                                                                     let
                                                                                                           _ :=
                                                                                                       is_constant_or_break_match (|
@@ -36869,29 +36832,28 @@ Module processor.
                                                                                                               ltac:(M.monadic
                                                                                                                 (let
                                                                                                                       γ :=
-                                                                                                                  M.use
-                                                                                                                    (M.alloc (|
+                                                                                                                  M.alloc (|
+                                                                                                                    Ty.path
+                                                                                                                      "bool",
+                                                                                                                    M.call_closure (|
                                                                                                                       Ty.path
                                                                                                                         "bool",
-                                                                                                                      M.call_closure (|
-                                                                                                                        Ty.path
-                                                                                                                          "bool",
-                                                                                                                        UnOp.not,
-                                                                                                                        [
-                                                                                                                          M.read (|
-                                                                                                                            M.SubPointer.get_struct_record_field (|
-                                                                                                                              M.deref (|
-                                                                                                                                M.read (|
-                                                                                                                                  signer
-                                                                                                                                |)
-                                                                                                                              |),
-                                                                                                                              "solana_account_info::AccountInfo",
-                                                                                                                              "is_signer"
-                                                                                                                            |)
+                                                                                                                      UnOp.not,
+                                                                                                                      [
+                                                                                                                        M.read (|
+                                                                                                                          M.SubPointer.get_struct_record_field (|
+                                                                                                                            M.deref (|
+                                                                                                                              M.read (|
+                                                                                                                                signer
+                                                                                                                              |)
+                                                                                                                            |),
+                                                                                                                            "solana_account_info::AccountInfo",
+                                                                                                                            "is_signer"
                                                                                                                           |)
-                                                                                                                        ]
-                                                                                                                      |)
-                                                                                                                    |)) in
+                                                                                                                        |)
+                                                                                                                      ]
+                                                                                                                    |)
+                                                                                                                  |) in
                                                                                                                 let
                                                                                                                       _ :=
                                                                                                                   is_constant_or_break_match (|
@@ -37010,24 +36972,23 @@ Module processor.
                                     fun γ =>
                                       ltac:(M.monadic
                                         (let γ :=
-                                          M.use
-                                            (M.alloc (|
+                                          M.alloc (|
+                                            Ty.path "bool",
+                                            M.call_closure (|
                                               Ty.path "bool",
-                                              M.call_closure (|
-                                                Ty.path "bool",
-                                                BinOp.lt,
-                                                [
-                                                  M.read (| num_signers |);
-                                                  M.read (|
-                                                    M.SubPointer.get_struct_record_field (|
-                                                      multisig,
-                                                      "spl_token_interface::state::Multisig",
-                                                      "m"
-                                                    |)
+                                              BinOp.lt,
+                                              [
+                                                M.read (| num_signers |);
+                                                M.read (|
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    multisig,
+                                                    "spl_token_interface::state::Multisig",
+                                                    "m"
                                                   |)
-                                                ]
-                                              |)
-                                            |)) in
+                                                |)
+                                              ]
+                                            |)
+                                          |) in
                                         let _ :=
                                           is_constant_or_break_match (|
                                             M.read (| γ |),
@@ -37074,23 +37035,22 @@ Module processor.
                               fun γ =>
                                 ltac:(M.monadic
                                   (let γ :=
-                                    M.use
-                                      (M.alloc (|
+                                    M.alloc (|
+                                      Ty.path "bool",
+                                      M.call_closure (|
                                         Ty.path "bool",
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          UnOp.not,
-                                          [
-                                            M.read (|
-                                              M.SubPointer.get_struct_record_field (|
-                                                M.deref (| M.read (| owner_account_info |) |),
-                                                "solana_account_info::AccountInfo",
-                                                "is_signer"
-                                              |)
+                                        UnOp.not,
+                                        [
+                                          M.read (|
+                                            M.SubPointer.get_struct_record_field (|
+                                              M.deref (| M.read (| owner_account_info |) |),
+                                              "solana_account_info::AccountInfo",
+                                              "is_signer"
                                             |)
-                                          ]
-                                        |)
-                                      |)) in
+                                          |)
+                                        ]
+                                      |)
+                                    |) in
                                   let _ :=
                                     is_constant_or_break_match (|
                                       M.read (| γ |),

@@ -6,7 +6,7 @@ Module ops.
     (* Trait *)
     (* Empty module 'CoerceUnsized' *)
     
-    Module Impl_core_ops_unsize_CoerceUnsized_where_core_marker_Sized_T_where_core_marker_Unsize_T_U_where_core_marker_Sized_U_ref_mut_U_for_ref_mut_T.
+    Module Impl_core_ops_unsize_CoerceUnsized_where_core_marker_PointeeSized_T_where_core_marker_Unsize_T_U_where_core_marker_PointeeSized_U_ref_mut_U_for_ref_mut_T.
       Definition Self (T U : Ty.t) : Ty.t := Ty.apply (Ty.path "&mut") [] [ T ].
       
       Axiom Implements :
@@ -17,9 +17,9 @@ Module ops.
           (* Trait polymorphic types *) [ Ty.apply (Ty.path "&mut") [] [ U ] ]
           (Self T U)
           (* Instance *) [].
-    End Impl_core_ops_unsize_CoerceUnsized_where_core_marker_Sized_T_where_core_marker_Unsize_T_U_where_core_marker_Sized_U_ref_mut_U_for_ref_mut_T.
+    End Impl_core_ops_unsize_CoerceUnsized_where_core_marker_PointeeSized_T_where_core_marker_Unsize_T_U_where_core_marker_PointeeSized_U_ref_mut_U_for_ref_mut_T.
     
-    Module Impl_core_ops_unsize_CoerceUnsized_where_core_marker_Sized_T_where_core_marker_Unsize_T_U_where_core_marker_Sized_U_ref__U_for_ref_mut_T.
+    Module Impl_core_ops_unsize_CoerceUnsized_where_core_marker_PointeeSized_T_where_core_marker_Unsize_T_U_where_core_marker_PointeeSized_U_ref__U_for_ref_mut_T.
       Definition Self (T U : Ty.t) : Ty.t := Ty.apply (Ty.path "&mut") [] [ T ].
       
       Axiom Implements :
@@ -30,9 +30,9 @@ Module ops.
           (* Trait polymorphic types *) [ Ty.apply (Ty.path "&") [] [ U ] ]
           (Self T U)
           (* Instance *) [].
-    End Impl_core_ops_unsize_CoerceUnsized_where_core_marker_Sized_T_where_core_marker_Unsize_T_U_where_core_marker_Sized_U_ref__U_for_ref_mut_T.
+    End Impl_core_ops_unsize_CoerceUnsized_where_core_marker_PointeeSized_T_where_core_marker_Unsize_T_U_where_core_marker_PointeeSized_U_ref__U_for_ref_mut_T.
     
-    Module Impl_core_ops_unsize_CoerceUnsized_where_core_marker_Sized_T_where_core_marker_Unsize_T_U_where_core_marker_Sized_U_pointer_mut_U_for_ref_mut_T.
+    Module Impl_core_ops_unsize_CoerceUnsized_where_core_marker_PointeeSized_T_where_core_marker_Unsize_T_U_where_core_marker_PointeeSized_U_pointer_mut_U_for_ref_mut_T.
       Definition Self (T U : Ty.t) : Ty.t := Ty.apply (Ty.path "&mut") [] [ T ].
       
       Axiom Implements :
@@ -43,9 +43,9 @@ Module ops.
           (* Trait polymorphic types *) [ Ty.apply (Ty.path "*mut") [] [ U ] ]
           (Self T U)
           (* Instance *) [].
-    End Impl_core_ops_unsize_CoerceUnsized_where_core_marker_Sized_T_where_core_marker_Unsize_T_U_where_core_marker_Sized_U_pointer_mut_U_for_ref_mut_T.
+    End Impl_core_ops_unsize_CoerceUnsized_where_core_marker_PointeeSized_T_where_core_marker_Unsize_T_U_where_core_marker_PointeeSized_U_pointer_mut_U_for_ref_mut_T.
     
-    Module Impl_core_ops_unsize_CoerceUnsized_where_core_marker_Sized_T_where_core_marker_Unsize_T_U_where_core_marker_Sized_U_pointer_const_U_for_ref_mut_T.
+    Module Impl_core_ops_unsize_CoerceUnsized_where_core_marker_PointeeSized_T_where_core_marker_Unsize_T_U_where_core_marker_PointeeSized_U_pointer_const_U_for_ref_mut_T.
       Definition Self (T U : Ty.t) : Ty.t := Ty.apply (Ty.path "&mut") [] [ T ].
       
       Axiom Implements :
@@ -56,9 +56,9 @@ Module ops.
           (* Trait polymorphic types *) [ Ty.apply (Ty.path "*const") [] [ U ] ]
           (Self T U)
           (* Instance *) [].
-    End Impl_core_ops_unsize_CoerceUnsized_where_core_marker_Sized_T_where_core_marker_Unsize_T_U_where_core_marker_Sized_U_pointer_const_U_for_ref_mut_T.
+    End Impl_core_ops_unsize_CoerceUnsized_where_core_marker_PointeeSized_T_where_core_marker_Unsize_T_U_where_core_marker_PointeeSized_U_pointer_const_U_for_ref_mut_T.
     
-    Module Impl_core_ops_unsize_CoerceUnsized_where_core_marker_Sized_T_where_core_marker_Unsize_T_U_where_core_marker_Sized_U_ref__U_for_ref__T.
+    Module Impl_core_ops_unsize_CoerceUnsized_where_core_marker_PointeeSized_T_where_core_marker_Unsize_T_U_where_core_marker_PointeeSized_U_ref__U_for_ref__T.
       Definition Self (T U : Ty.t) : Ty.t := Ty.apply (Ty.path "&") [] [ T ].
       
       Axiom Implements :
@@ -69,9 +69,9 @@ Module ops.
           (* Trait polymorphic types *) [ Ty.apply (Ty.path "&") [] [ U ] ]
           (Self T U)
           (* Instance *) [].
-    End Impl_core_ops_unsize_CoerceUnsized_where_core_marker_Sized_T_where_core_marker_Unsize_T_U_where_core_marker_Sized_U_ref__U_for_ref__T.
+    End Impl_core_ops_unsize_CoerceUnsized_where_core_marker_PointeeSized_T_where_core_marker_Unsize_T_U_where_core_marker_PointeeSized_U_ref__U_for_ref__T.
     
-    Module Impl_core_ops_unsize_CoerceUnsized_where_core_marker_Sized_T_where_core_marker_Unsize_T_U_where_core_marker_Sized_U_pointer_const_U_for_ref__T.
+    Module Impl_core_ops_unsize_CoerceUnsized_where_core_marker_PointeeSized_T_where_core_marker_Unsize_T_U_where_core_marker_PointeeSized_U_pointer_const_U_for_ref__T.
       Definition Self (T U : Ty.t) : Ty.t := Ty.apply (Ty.path "&") [] [ T ].
       
       Axiom Implements :
@@ -82,9 +82,9 @@ Module ops.
           (* Trait polymorphic types *) [ Ty.apply (Ty.path "*const") [] [ U ] ]
           (Self T U)
           (* Instance *) [].
-    End Impl_core_ops_unsize_CoerceUnsized_where_core_marker_Sized_T_where_core_marker_Unsize_T_U_where_core_marker_Sized_U_pointer_const_U_for_ref__T.
+    End Impl_core_ops_unsize_CoerceUnsized_where_core_marker_PointeeSized_T_where_core_marker_Unsize_T_U_where_core_marker_PointeeSized_U_pointer_const_U_for_ref__T.
     
-    Module Impl_core_ops_unsize_CoerceUnsized_where_core_marker_Sized_T_where_core_marker_Unsize_T_U_where_core_marker_Sized_U_pointer_mut_U_for_pointer_mut_T.
+    Module Impl_core_ops_unsize_CoerceUnsized_where_core_marker_PointeeSized_T_where_core_marker_Unsize_T_U_where_core_marker_PointeeSized_U_pointer_mut_U_for_pointer_mut_T.
       Definition Self (T U : Ty.t) : Ty.t := Ty.apply (Ty.path "*mut") [] [ T ].
       
       Axiom Implements :
@@ -95,9 +95,9 @@ Module ops.
           (* Trait polymorphic types *) [ Ty.apply (Ty.path "*mut") [] [ U ] ]
           (Self T U)
           (* Instance *) [].
-    End Impl_core_ops_unsize_CoerceUnsized_where_core_marker_Sized_T_where_core_marker_Unsize_T_U_where_core_marker_Sized_U_pointer_mut_U_for_pointer_mut_T.
+    End Impl_core_ops_unsize_CoerceUnsized_where_core_marker_PointeeSized_T_where_core_marker_Unsize_T_U_where_core_marker_PointeeSized_U_pointer_mut_U_for_pointer_mut_T.
     
-    Module Impl_core_ops_unsize_CoerceUnsized_where_core_marker_Sized_T_where_core_marker_Unsize_T_U_where_core_marker_Sized_U_pointer_const_U_for_pointer_mut_T.
+    Module Impl_core_ops_unsize_CoerceUnsized_where_core_marker_PointeeSized_T_where_core_marker_Unsize_T_U_where_core_marker_PointeeSized_U_pointer_const_U_for_pointer_mut_T.
       Definition Self (T U : Ty.t) : Ty.t := Ty.apply (Ty.path "*mut") [] [ T ].
       
       Axiom Implements :
@@ -108,9 +108,9 @@ Module ops.
           (* Trait polymorphic types *) [ Ty.apply (Ty.path "*const") [] [ U ] ]
           (Self T U)
           (* Instance *) [].
-    End Impl_core_ops_unsize_CoerceUnsized_where_core_marker_Sized_T_where_core_marker_Unsize_T_U_where_core_marker_Sized_U_pointer_const_U_for_pointer_mut_T.
+    End Impl_core_ops_unsize_CoerceUnsized_where_core_marker_PointeeSized_T_where_core_marker_Unsize_T_U_where_core_marker_PointeeSized_U_pointer_const_U_for_pointer_mut_T.
     
-    Module Impl_core_ops_unsize_CoerceUnsized_where_core_marker_Sized_T_where_core_marker_Unsize_T_U_where_core_marker_Sized_U_pointer_const_U_for_pointer_const_T.
+    Module Impl_core_ops_unsize_CoerceUnsized_where_core_marker_PointeeSized_T_where_core_marker_Unsize_T_U_where_core_marker_PointeeSized_U_pointer_const_U_for_pointer_const_T.
       Definition Self (T U : Ty.t) : Ty.t := Ty.apply (Ty.path "*const") [] [ T ].
       
       Axiom Implements :
@@ -121,12 +121,12 @@ Module ops.
           (* Trait polymorphic types *) [ Ty.apply (Ty.path "*const") [] [ U ] ]
           (Self T U)
           (* Instance *) [].
-    End Impl_core_ops_unsize_CoerceUnsized_where_core_marker_Sized_T_where_core_marker_Unsize_T_U_where_core_marker_Sized_U_pointer_const_U_for_pointer_const_T.
+    End Impl_core_ops_unsize_CoerceUnsized_where_core_marker_PointeeSized_T_where_core_marker_Unsize_T_U_where_core_marker_PointeeSized_U_pointer_const_U_for_pointer_const_T.
     
     (* Trait *)
     (* Empty module 'DispatchFromDyn' *)
     
-    Module Impl_core_ops_unsize_DispatchFromDyn_where_core_marker_Sized_T_where_core_marker_Unsize_T_U_where_core_marker_Sized_U_ref__U_for_ref__T.
+    Module Impl_core_ops_unsize_DispatchFromDyn_where_core_marker_PointeeSized_T_where_core_marker_Unsize_T_U_where_core_marker_PointeeSized_U_ref__U_for_ref__T.
       Definition Self (T U : Ty.t) : Ty.t := Ty.apply (Ty.path "&") [] [ T ].
       
       Axiom Implements :
@@ -137,9 +137,9 @@ Module ops.
           (* Trait polymorphic types *) [ Ty.apply (Ty.path "&") [] [ U ] ]
           (Self T U)
           (* Instance *) [].
-    End Impl_core_ops_unsize_DispatchFromDyn_where_core_marker_Sized_T_where_core_marker_Unsize_T_U_where_core_marker_Sized_U_ref__U_for_ref__T.
+    End Impl_core_ops_unsize_DispatchFromDyn_where_core_marker_PointeeSized_T_where_core_marker_Unsize_T_U_where_core_marker_PointeeSized_U_ref__U_for_ref__T.
     
-    Module Impl_core_ops_unsize_DispatchFromDyn_where_core_marker_Sized_T_where_core_marker_Unsize_T_U_where_core_marker_Sized_U_ref_mut_U_for_ref_mut_T.
+    Module Impl_core_ops_unsize_DispatchFromDyn_where_core_marker_PointeeSized_T_where_core_marker_Unsize_T_U_where_core_marker_PointeeSized_U_ref_mut_U_for_ref_mut_T.
       Definition Self (T U : Ty.t) : Ty.t := Ty.apply (Ty.path "&mut") [] [ T ].
       
       Axiom Implements :
@@ -150,9 +150,9 @@ Module ops.
           (* Trait polymorphic types *) [ Ty.apply (Ty.path "&mut") [] [ U ] ]
           (Self T U)
           (* Instance *) [].
-    End Impl_core_ops_unsize_DispatchFromDyn_where_core_marker_Sized_T_where_core_marker_Unsize_T_U_where_core_marker_Sized_U_ref_mut_U_for_ref_mut_T.
+    End Impl_core_ops_unsize_DispatchFromDyn_where_core_marker_PointeeSized_T_where_core_marker_Unsize_T_U_where_core_marker_PointeeSized_U_ref_mut_U_for_ref_mut_T.
     
-    Module Impl_core_ops_unsize_DispatchFromDyn_where_core_marker_Sized_T_where_core_marker_Unsize_T_U_where_core_marker_Sized_U_pointer_const_U_for_pointer_const_T.
+    Module Impl_core_ops_unsize_DispatchFromDyn_where_core_marker_PointeeSized_T_where_core_marker_Unsize_T_U_where_core_marker_PointeeSized_U_pointer_const_U_for_pointer_const_T.
       Definition Self (T U : Ty.t) : Ty.t := Ty.apply (Ty.path "*const") [] [ T ].
       
       Axiom Implements :
@@ -163,9 +163,9 @@ Module ops.
           (* Trait polymorphic types *) [ Ty.apply (Ty.path "*const") [] [ U ] ]
           (Self T U)
           (* Instance *) [].
-    End Impl_core_ops_unsize_DispatchFromDyn_where_core_marker_Sized_T_where_core_marker_Unsize_T_U_where_core_marker_Sized_U_pointer_const_U_for_pointer_const_T.
+    End Impl_core_ops_unsize_DispatchFromDyn_where_core_marker_PointeeSized_T_where_core_marker_Unsize_T_U_where_core_marker_PointeeSized_U_pointer_const_U_for_pointer_const_T.
     
-    Module Impl_core_ops_unsize_DispatchFromDyn_where_core_marker_Sized_T_where_core_marker_Unsize_T_U_where_core_marker_Sized_U_pointer_mut_U_for_pointer_mut_T.
+    Module Impl_core_ops_unsize_DispatchFromDyn_where_core_marker_PointeeSized_T_where_core_marker_Unsize_T_U_where_core_marker_PointeeSized_U_pointer_mut_U_for_pointer_mut_T.
       Definition Self (T U : Ty.t) : Ty.t := Ty.apply (Ty.path "*mut") [] [ T ].
       
       Axiom Implements :
@@ -176,6 +176,6 @@ Module ops.
           (* Trait polymorphic types *) [ Ty.apply (Ty.path "*mut") [] [ U ] ]
           (Self T U)
           (* Instance *) [].
-    End Impl_core_ops_unsize_DispatchFromDyn_where_core_marker_Sized_T_where_core_marker_Unsize_T_U_where_core_marker_Sized_U_pointer_mut_U_for_pointer_mut_T.
+    End Impl_core_ops_unsize_DispatchFromDyn_where_core_marker_PointeeSized_T_where_core_marker_Unsize_T_U_where_core_marker_PointeeSized_U_pointer_mut_U_for_pointer_mut_T.
   End unsize.
 End ops.

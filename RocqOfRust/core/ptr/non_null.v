@@ -11,7 +11,7 @@ Module ptr.
         fields := [ ("pointer", Ty.apply (Ty.path "*const") [] [ T ]) ];
       } *)
     
-    Module Impl_core_marker_Send_where_core_marker_Sized_T_for_core_ptr_non_null_NonNull_T.
+    Module Impl_core_marker_Send_where_core_marker_PointeeSized_T_for_core_ptr_non_null_NonNull_T.
       Definition Self (T : Ty.t) : Ty.t :=
         Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ].
       
@@ -23,9 +23,9 @@ Module ptr.
           (* Trait polymorphic types *) []
           (Self T)
           (* Instance *) [].
-    End Impl_core_marker_Send_where_core_marker_Sized_T_for_core_ptr_non_null_NonNull_T.
+    End Impl_core_marker_Send_where_core_marker_PointeeSized_T_for_core_ptr_non_null_NonNull_T.
     
-    Module Impl_core_marker_Sync_where_core_marker_Sized_T_for_core_ptr_non_null_NonNull_T.
+    Module Impl_core_marker_Sync_where_core_marker_PointeeSized_T_for_core_ptr_non_null_NonNull_T.
       Definition Self (T : Ty.t) : Ty.t :=
         Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ].
       
@@ -37,19 +37,74 @@ Module ptr.
           (* Trait polymorphic types *) []
           (Self T)
           (* Instance *) [].
-    End Impl_core_marker_Sync_where_core_marker_Sized_T_for_core_ptr_non_null_NonNull_T.
+    End Impl_core_marker_Sync_where_core_marker_PointeeSized_T_for_core_ptr_non_null_NonNull_T.
     
     Module Impl_core_ptr_non_null_NonNull_T.
       Definition Self (T : Ty.t) : Ty.t :=
         Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ].
       
       (*
+          pub const fn without_provenance(addr: NonZero<usize>) -> Self {
+              let pointer = crate::ptr::without_provenance(addr.get());
+              // SAFETY: we know `addr` is non-zero.
+              unsafe { NonNull { pointer } }
+          }
+      *)
+      Definition without_provenance
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ addr ] =>
+          ltac:(M.monadic
+            (let addr :=
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ],
+                addr
+              |) in
+            M.read (|
+              let~ pointer : Ty.apply (Ty.path "*const") [] [ T ] :=
+                M.call_closure (|
+                  Ty.apply (Ty.path "*const") [] [ T ],
+                  M.get_function (| "core::ptr::without_provenance", [], [ T ] |),
+                  [
+                    M.call_closure (|
+                      Ty.path "usize",
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ],
+                        "get",
+                        [],
+                        []
+                      |),
+                      [ M.read (| addr |) ]
+                    |)
+                  ]
+                |) in
+              M.alloc (|
+                Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
+                Value.mkStructRecord
+                  "core::ptr::non_null::NonNull"
+                  []
+                  [ T ]
+                  [ ("pointer", M.read (| pointer |)) ]
+              |)
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_without_provenance :
+        forall (T : Ty.t),
+        M.IsAssociatedFunction.C (Self T) "without_provenance" (without_provenance T).
+      Admitted.
+      Global Typeclasses Opaque without_provenance.
+      
+      (*
           pub const fn dangling() -> Self {
-              // SAFETY: ptr::dangling_mut() returns a non-null well-aligned pointer.
-              unsafe {
-                  let ptr = crate::ptr::dangling_mut::<T>();
-                  NonNull::new_unchecked(ptr)
-              }
+              let align = crate::ptr::Alignment::of::<T>();
+              NonNull::without_provenance(align.as_nonzero())
           }
       *)
       Definition dangling (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -58,11 +113,92 @@ Module ptr.
         | [], [], [] =>
           ltac:(M.monadic
             (M.read (|
+              let~ align : Ty.path "core::ptr::alignment::Alignment" :=
+                M.call_closure (|
+                  Ty.path "core::ptr::alignment::Alignment",
+                  M.get_associated_function (|
+                    Ty.path "core::ptr::alignment::Alignment",
+                    "of",
+                    [],
+                    [ T ]
+                  |),
+                  []
+                |) in
+              M.alloc (|
+                Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
+                M.call_closure (|
+                  Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
+                    "without_provenance",
+                    [],
+                    []
+                  |),
+                  [
+                    M.call_closure (|
+                      Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ],
+                      M.get_associated_function (|
+                        Ty.path "core::ptr::alignment::Alignment",
+                        "as_nonzero",
+                        [],
+                        []
+                      |),
+                      [ M.read (| align |) ]
+                    |)
+                  ]
+                |)
+              |)
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_dangling :
+        forall (T : Ty.t),
+        M.IsAssociatedFunction.C (Self T) "dangling" (dangling T).
+      Admitted.
+      Global Typeclasses Opaque dangling.
+      
+      (*
+          pub fn with_exposed_provenance(addr: NonZero<usize>) -> Self {
+              // SAFETY: we know `addr` is non-zero.
+              unsafe {
+                  let ptr = crate::ptr::with_exposed_provenance_mut(addr.get());
+                  NonNull::new_unchecked(ptr)
+              }
+          }
+      *)
+      Definition with_exposed_provenance
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ addr ] =>
+          ltac:(M.monadic
+            (let addr :=
+              M.alloc (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ],
+                addr
+              |) in
+            M.read (|
               let~ ptr : Ty.apply (Ty.path "*mut") [] [ T ] :=
                 M.call_closure (|
                   Ty.apply (Ty.path "*mut") [] [ T ],
-                  M.get_function (| "core::ptr::dangling_mut", [], [ T ] |),
-                  []
+                  M.get_function (| "core::ptr::with_exposed_provenance_mut", [], [ T ] |),
+                  [
+                    M.call_closure (|
+                      Ty.path "usize",
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ],
+                        "get",
+                        [],
+                        []
+                      |),
+                      [ M.read (| addr |) ]
+                    |)
+                  ]
                 |) in
               M.alloc (|
                 Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
@@ -81,11 +217,11 @@ Module ptr.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      Global Instance AssociatedFunction_dangling :
+      Global Instance AssociatedFunction_with_exposed_provenance :
         forall (T : Ty.t),
-        M.IsAssociatedFunction.C (Self T) "dangling" (dangling T).
+        M.IsAssociatedFunction.C (Self T) "with_exposed_provenance" (with_exposed_provenance T).
       Admitted.
-      Global Typeclasses Opaque dangling.
+      Global Typeclasses Opaque with_exposed_provenance.
       
       (*
           pub const unsafe fn as_uninit_ref<'a>(self) -> &'a MaybeUninit<T> {
@@ -248,6 +384,40 @@ Module ptr.
         M.IsAssociatedFunction.C (Self T) "as_uninit_mut" (as_uninit_mut T).
       Admitted.
       Global Typeclasses Opaque as_uninit_mut.
+      
+      (*
+          pub const fn cast_array<const N: usize>(self) -> NonNull<[T; N]> {
+              self.cast()
+          }
+      *)
+      Definition cast_array (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [ N ], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (| Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ], self |) in
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "core::ptr::non_null::NonNull")
+                []
+                [ Ty.apply (Ty.path "array") [ N ] [ T ] ],
+              M.get_associated_function (|
+                Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
+                "cast",
+                [],
+                [ Ty.apply (Ty.path "array") [ N ] [ T ] ]
+              |),
+              [ M.read (| self |) ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_cast_array :
+        forall (T : Ty.t),
+        M.IsAssociatedFunction.C (Self T) "cast_array" (cast_array T).
+      Admitted.
+      Global Typeclasses Opaque cast_array.
       (*
           pub const unsafe fn new_unchecked(ptr: *mut T) -> Self {
               // SAFETY: the caller must guarantee that `ptr` is non-null.
@@ -281,15 +451,14 @@ Module ptr.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                M.get_function (| "core::ub_checks::check_language_ub", [], [] |),
-                                []
-                              |)
-                            |)) in
+                              M.get_function (| "core::ub_checks::check_language_ub", [], [] |),
+                              []
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
@@ -368,26 +537,25 @@ Module ptr.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            UnOp.not,
-                            [
-                              M.call_closure (|
-                                Ty.path "bool",
-                                M.get_associated_function (|
-                                  Ty.apply (Ty.path "*mut") [] [ T ],
-                                  "is_null",
-                                  [],
-                                  []
-                                |),
-                                [ M.read (| ptr |) ]
-                              |)
-                            ]
-                          |)
-                        |)) in
+                          UnOp.not,
+                          [
+                            M.call_closure (|
+                              Ty.path "bool",
+                              M.get_associated_function (|
+                                Ty.apply (Ty.path "*mut") [] [ T ],
+                                "is_null",
+                                [],
+                                []
+                              |),
+                              [ M.read (| ptr |) ]
+                            |)
+                          ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     Value.StructTuple
                       "core::option::Option::Some"
@@ -692,6 +860,66 @@ Module ptr.
         M.IsAssociatedFunction.C (Self T) "addr" (addr T).
       Admitted.
       Global Typeclasses Opaque addr.
+      
+      (*
+          pub fn expose_provenance(self) -> NonZero<usize> {
+              // SAFETY: The pointer is guaranteed by the type to be non-null,
+              // meaning that the address will be non-zero.
+              unsafe { NonZero::new_unchecked(self.as_ptr().expose_provenance()) }
+          }
+      *)
+      Definition expose_provenance
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (| Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ], self |) in
+            M.call_closure (|
+              Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ],
+              M.get_associated_function (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ],
+                "new_unchecked",
+                [],
+                []
+              |),
+              [
+                M.call_closure (|
+                  Ty.path "usize",
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "*mut") [] [ T ],
+                    "expose_provenance",
+                    [],
+                    []
+                  |),
+                  [
+                    M.call_closure (|
+                      Ty.apply (Ty.path "*mut") [] [ T ],
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
+                        "as_ptr",
+                        [],
+                        []
+                      |),
+                      [ M.read (| self |) ]
+                    |)
+                  ]
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_expose_provenance :
+        forall (T : Ty.t),
+        M.IsAssociatedFunction.C (Self T) "expose_provenance" (expose_provenance T).
+      Admitted.
+      Global Typeclasses Opaque expose_provenance.
       
       (*
           pub fn with_addr(self, addr: NonZero<usize>) -> Self {
@@ -1038,6 +1266,88 @@ Module ptr.
       Global Typeclasses Opaque cast.
       
       (*
+          pub fn try_cast_aligned<U>(self) -> Option<NonNull<U>> {
+              if self.is_aligned_to(align_of::<U>()) { Some(self.cast()) } else { None }
+          }
+      *)
+      Definition try_cast_aligned
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [ U ], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (| Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ], self |) in
+            M.match_operator (|
+              Ty.apply
+                (Ty.path "core::option::Option")
+                []
+                [ Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ U ] ],
+              M.alloc (| Ty.tuple [], Value.Tuple [] |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ :=
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
+                          Ty.path "bool",
+                          M.get_associated_function (|
+                            Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
+                            "is_aligned_to",
+                            [],
+                            []
+                          |),
+                          [
+                            M.read (| self |);
+                            M.call_closure (|
+                              Ty.path "usize",
+                              M.get_function (| "core::mem::align_of", [], [ U ] |),
+                              []
+                            |)
+                          ]
+                        |)
+                      |) in
+                    let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                    Value.StructTuple
+                      "core::option::Option::Some"
+                      []
+                      [ Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ U ] ]
+                      [
+                        M.call_closure (|
+                          Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ U ],
+                          M.get_associated_function (|
+                            Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
+                            "cast",
+                            [],
+                            [ U ]
+                          |),
+                          [ M.read (| self |) ]
+                        |)
+                      ]));
+                fun γ =>
+                  ltac:(M.monadic
+                    (Value.StructTuple
+                      "core::option::Option::None"
+                      []
+                      [ Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ U ] ]
+                      []))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_try_cast_aligned :
+        forall (T : Ty.t),
+        M.IsAssociatedFunction.C (Self T) "try_cast_aligned" (try_cast_aligned T).
+      Admitted.
+      Global Typeclasses Opaque try_cast_aligned.
+      
+      (*
           pub const unsafe fn offset(self, count: isize) -> Self
           where
               T: Sized,
@@ -1330,11 +1640,7 @@ Module ptr.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (get_constant (|
-                          "core::mem::SizedTypeProperties::IS_ZST",
-                          Ty.path "bool"
-                        |)) in
+                      get_constant (| "core::mem::SizedTypeProperties::IS_ZST", Ty.path "bool" |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     M.read (| self |)));
                 fun γ =>
@@ -1569,15 +1875,20 @@ Module ptr.
       Global Typeclasses Opaque byte_offset_from.
       
       (*
-          pub const unsafe fn sub_ptr(self, subtracted: NonNull<T>) -> usize
+          pub const unsafe fn offset_from_unsigned(self, subtracted: NonNull<T>) -> usize
           where
               T: Sized,
           {
-              // SAFETY: the caller must uphold the safety contract for `sub_ptr`.
-              unsafe { self.as_ptr().sub_ptr(subtracted.as_ptr()) }
+              // SAFETY: the caller must uphold the safety contract for `offset_from_unsigned`.
+              unsafe { self.as_ptr().offset_from_unsigned(subtracted.as_ptr()) }
           }
       *)
-      Definition sub_ptr (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      Definition offset_from_unsigned
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
         let Self : Ty.t := Self T in
         match ε, τ, α with
         | [], [], [ self; subtracted ] =>
@@ -1591,7 +1902,12 @@ Module ptr.
               |) in
             M.call_closure (|
               Ty.path "usize",
-              M.get_associated_function (| Ty.apply (Ty.path "*mut") [] [ T ], "sub_ptr", [], [] |),
+              M.get_associated_function (|
+                Ty.apply (Ty.path "*mut") [] [ T ],
+                "offset_from_unsigned",
+                [],
+                []
+              |),
               [
                 M.call_closure (|
                   Ty.apply (Ty.path "*mut") [] [ T ],
@@ -1627,19 +1943,19 @@ Module ptr.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      Global Instance AssociatedFunction_sub_ptr :
+      Global Instance AssociatedFunction_offset_from_unsigned :
         forall (T : Ty.t),
-        M.IsAssociatedFunction.C (Self T) "sub_ptr" (sub_ptr T).
+        M.IsAssociatedFunction.C (Self T) "offset_from_unsigned" (offset_from_unsigned T).
       Admitted.
-      Global Typeclasses Opaque sub_ptr.
+      Global Typeclasses Opaque offset_from_unsigned.
       
       (*
-          pub const unsafe fn byte_sub_ptr<U: ?Sized>(self, origin: NonNull<U>) -> usize {
-              // SAFETY: the caller must uphold the safety contract for `byte_sub_ptr`.
-              unsafe { self.as_ptr().byte_sub_ptr(origin.as_ptr()) }
+          pub const unsafe fn byte_offset_from_unsigned<U: ?Sized>(self, origin: NonNull<U>) -> usize {
+              // SAFETY: the caller must uphold the safety contract for `byte_offset_from_unsigned`.
+              unsafe { self.as_ptr().byte_offset_from_unsigned(origin.as_ptr()) }
           }
       *)
-      Definition byte_sub_ptr
+      Definition byte_offset_from_unsigned
           (T : Ty.t)
           (ε : list Value.t)
           (τ : list Ty.t)
@@ -1657,7 +1973,7 @@ Module ptr.
               Ty.path "usize",
               M.get_associated_function (|
                 Ty.apply (Ty.path "*mut") [] [ T ],
-                "byte_sub_ptr",
+                "byte_offset_from_unsigned",
                 [],
                 [ U ]
               |),
@@ -1687,11 +2003,11 @@ Module ptr.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      Global Instance AssociatedFunction_byte_sub_ptr :
+      Global Instance AssociatedFunction_byte_offset_from_unsigned :
         forall (T : Ty.t),
-        M.IsAssociatedFunction.C (Self T) "byte_sub_ptr" (byte_sub_ptr T).
+        M.IsAssociatedFunction.C (Self T) "byte_offset_from_unsigned" (byte_offset_from_unsigned T).
       Admitted.
-      Global Typeclasses Opaque byte_sub_ptr.
+      Global Typeclasses Opaque byte_offset_from_unsigned.
       
       (*
           pub const unsafe fn read(self) -> T
@@ -1874,7 +2190,7 @@ Module ptr.
             let count := M.alloc (| Ty.path "usize", count |) in
             M.call_closure (|
               Ty.tuple [],
-              M.get_function (| "core::intrinsics::copy", [], [ T ] |),
+              M.get_function (| "core::ptr::copy", [], [ T ] |),
               [
                 M.call_closure (|
                   Ty.apply (Ty.path "*const") [] [ T ],
@@ -1943,7 +2259,7 @@ Module ptr.
             let count := M.alloc (| Ty.path "usize", count |) in
             M.call_closure (|
               Ty.tuple [],
-              M.get_function (| "core::intrinsics::copy_nonoverlapping", [], [ T ] |),
+              M.get_function (| "core::ptr::copy_nonoverlapping", [], [ T ] |),
               [
                 M.call_closure (|
                   Ty.apply (Ty.path "*const") [] [ T ],
@@ -2007,7 +2323,7 @@ Module ptr.
             let count := M.alloc (| Ty.path "usize", count |) in
             M.call_closure (|
               Ty.tuple [],
-              M.get_function (| "core::intrinsics::copy", [], [ T ] |),
+              M.get_function (| "core::ptr::copy", [], [ T ] |),
               [
                 M.call_closure (|
                   Ty.apply (Ty.path "*const") [] [ T ],
@@ -2076,7 +2392,7 @@ Module ptr.
             let count := M.alloc (| Ty.path "usize", count |) in
             M.call_closure (|
               Ty.tuple [],
-              M.get_function (| "core::intrinsics::copy_nonoverlapping", [], [ T ] |),
+              M.get_function (| "core::ptr::copy_nonoverlapping", [], [ T ] |),
               [
                 M.call_closure (|
                   Ty.apply (Ty.path "*const") [] [ T ],
@@ -2120,7 +2436,10 @@ Module ptr.
       Global Typeclasses Opaque copy_from_nonoverlapping.
       
       (*
-          pub unsafe fn drop_in_place(self) {
+          pub const unsafe fn drop_in_place(self)
+          where
+              T: [const] Destruct,
+          {
               // SAFETY: the caller must uphold the safety contract for `drop_in_place`.
               unsafe { ptr::drop_in_place(self.as_ptr()) }
           }
@@ -2225,7 +2544,7 @@ Module ptr.
             let count := M.alloc (| Ty.path "usize", count |) in
             M.call_closure (|
               Ty.tuple [],
-              M.get_function (| "core::intrinsics::write_bytes", [], [ T ] |),
+              M.get_function (| "core::ptr::write_bytes", [], [ T ] |),
               [
                 M.call_closure (|
                   Ty.apply (Ty.path "*mut") [] [ T ],
@@ -2347,7 +2666,7 @@ Module ptr.
       Global Typeclasses Opaque write_unaligned.
       
       (*
-          pub unsafe fn replace(self, src: T) -> T
+          pub const unsafe fn replace(self, src: T) -> T
           where
               T: Sized,
           {
@@ -2479,26 +2798,25 @@ Module ptr.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                UnOp.not,
-                                [
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    M.get_associated_function (|
-                                      Ty.path "usize",
-                                      "is_power_of_two",
-                                      [],
-                                      []
-                                    |),
-                                    [ M.read (| align |) ]
-                                  |)
-                                ]
-                              |)
-                            |)) in
+                              UnOp.not,
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  M.get_associated_function (|
+                                    Ty.path "usize",
+                                    "is_power_of_two",
+                                    [],
+                                    []
+                                  |),
+                                  [ M.read (| align |) ]
+                                |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.never_to_any (|
                           M.call_closure (|
@@ -2509,32 +2827,11 @@ Module ptr.
                                 Ty.path "core::fmt::Arguments",
                                 M.get_associated_function (|
                                   Ty.path "core::fmt::Arguments",
-                                  "new_const",
-                                  [ Value.Integer IntegerKind.Usize 1 ],
+                                  "from_str",
+                                  [],
                                   []
                                 |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.alloc (|
-                                          Ty.apply
-                                            (Ty.path "array")
-                                            [ Value.Integer IntegerKind.Usize 1 ]
-                                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                          Value.Array
-                                            [
-                                              mk_str (|
-                                                "align_offset: align is not a power-of-two"
-                                              |)
-                                            ]
-                                        |)
-                                      |)
-                                    |)
-                                  |)
-                                ]
+                                [ mk_str (| "align_offset: align is not a power-of-two" |) ]
                               |)
                             ]
                           |)
@@ -2674,8 +2971,90 @@ Module ptr.
         M.IsAssociatedFunction.C (Self T) "is_aligned_to" (is_aligned_to T).
       Admitted.
       Global Typeclasses Opaque is_aligned_to.
+      (*
+          pub const fn cast_uninit(self) -> NonNull<MaybeUninit<T>> {
+              self.cast()
+          }
+      *)
+      Definition cast_uninit (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (| Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ], self |) in
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "core::ptr::non_null::NonNull")
+                []
+                [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ],
+              M.get_associated_function (|
+                Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
+                "cast",
+                [],
+                [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]
+              |),
+              [ M.read (| self |) ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_cast_uninit :
+        forall (T : Ty.t),
+        M.IsAssociatedFunction.C (Self T) "cast_uninit" (cast_uninit T).
+      Admitted.
+      Global Typeclasses Opaque cast_uninit.
     End Impl_core_ptr_non_null_NonNull_T.
     
+    
+    
+    Module Impl_core_ptr_non_null_NonNull_core_mem_maybe_uninit_MaybeUninit_T.
+      Definition Self (T : Ty.t) : Ty.t :=
+        Ty.apply
+          (Ty.path "core::ptr::non_null::NonNull")
+          []
+          [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ].
+      
+      (*
+          pub const fn cast_init(self) -> NonNull<T> {
+              self.cast()
+          }
+      *)
+      Definition cast_init (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "core::ptr::non_null::NonNull")
+                  []
+                  [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ],
+                self
+              |) in
+            M.call_closure (|
+              Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
+              M.get_associated_function (|
+                Ty.apply
+                  (Ty.path "core::ptr::non_null::NonNull")
+                  []
+                  [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ],
+                "cast",
+                [],
+                [ T ]
+              |),
+              [ M.read (| self |) ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_cast_init :
+        forall (T : Ty.t),
+        M.IsAssociatedFunction.C (Self T) "cast_init" (cast_init T).
+      Admitted.
+      Global Typeclasses Opaque cast_init.
+    End Impl_core_ptr_non_null_NonNull_core_mem_maybe_uninit_MaybeUninit_T.
     
     Module Impl_core_ptr_non_null_NonNull_slice_T.
       Definition Self (T : Ty.t) : Ty.t :=
@@ -3193,9 +3572,9 @@ Module ptr.
       Global Typeclasses Opaque as_uninit_slice_mut.
       
       (*
-          pub unsafe fn get_unchecked_mut<I>(self, index: I) -> NonNull<I::Output>
+          pub const unsafe fn get_unchecked_mut<I>(self, index: I) -> NonNull<I::Output>
           where
-              I: SliceIndex<[T]>,
+              I: [const] SliceIndex<[T]>,
           {
               // SAFETY: the caller ensures that `self` is dereferenceable and `index` in-bounds.
               // As a consequence, the resulting pointer cannot be null.
@@ -3297,7 +3676,7 @@ Module ptr.
       Global Typeclasses Opaque get_unchecked_mut.
     End Impl_core_ptr_non_null_NonNull_slice_T.
     
-    Module Impl_core_clone_Clone_where_core_marker_Sized_T_for_core_ptr_non_null_NonNull_T.
+    Module Impl_core_clone_Clone_where_core_marker_PointeeSized_T_for_core_ptr_non_null_NonNull_T.
       Definition Self (T : Ty.t) : Ty.t :=
         Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ].
       
@@ -3331,9 +3710,9 @@ Module ptr.
           (* Trait polymorphic types *) []
           (Self T)
           (* Instance *) [ ("clone", InstanceField.Method (clone T)) ].
-    End Impl_core_clone_Clone_where_core_marker_Sized_T_for_core_ptr_non_null_NonNull_T.
+    End Impl_core_clone_Clone_where_core_marker_PointeeSized_T_for_core_ptr_non_null_NonNull_T.
     
-    Module Impl_core_marker_Copy_where_core_marker_Sized_T_for_core_ptr_non_null_NonNull_T.
+    Module Impl_core_marker_Copy_where_core_marker_PointeeSized_T_for_core_ptr_non_null_NonNull_T.
       Definition Self (T : Ty.t) : Ty.t :=
         Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ].
       
@@ -3345,9 +3724,23 @@ Module ptr.
           (* Trait polymorphic types *) []
           (Self T)
           (* Instance *) [].
-    End Impl_core_marker_Copy_where_core_marker_Sized_T_for_core_ptr_non_null_NonNull_T.
+    End Impl_core_marker_Copy_where_core_marker_PointeeSized_T_for_core_ptr_non_null_NonNull_T.
     
-    Module Impl_core_ops_unsize_CoerceUnsized_where_core_marker_Sized_T_where_core_marker_Sized_U_where_core_marker_Unsize_T_U_core_ptr_non_null_NonNull_U_for_core_ptr_non_null_NonNull_T.
+    Module Impl_core_clone_TrivialClone_where_core_marker_Sized_T_for_core_ptr_non_null_NonNull_T.
+      Definition Self (T : Ty.t) : Ty.t :=
+        Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ].
+      
+      Axiom Implements :
+        forall (T : Ty.t),
+        M.IsTraitInstance
+          "core::clone::TrivialClone"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          (Self T)
+          (* Instance *) [].
+    End Impl_core_clone_TrivialClone_where_core_marker_Sized_T_for_core_ptr_non_null_NonNull_T.
+    
+    Module Impl_core_ops_unsize_CoerceUnsized_where_core_marker_PointeeSized_T_where_core_marker_PointeeSized_U_where_core_marker_Unsize_T_U_core_ptr_non_null_NonNull_U_for_core_ptr_non_null_NonNull_T.
       Definition Self (T U : Ty.t) : Ty.t :=
         Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ].
       
@@ -3360,9 +3753,9 @@ Module ptr.
           [ Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ U ] ]
           (Self T U)
           (* Instance *) [].
-    End Impl_core_ops_unsize_CoerceUnsized_where_core_marker_Sized_T_where_core_marker_Sized_U_where_core_marker_Unsize_T_U_core_ptr_non_null_NonNull_U_for_core_ptr_non_null_NonNull_T.
+    End Impl_core_ops_unsize_CoerceUnsized_where_core_marker_PointeeSized_T_where_core_marker_PointeeSized_U_where_core_marker_Unsize_T_U_core_ptr_non_null_NonNull_U_for_core_ptr_non_null_NonNull_T.
     
-    Module Impl_core_ops_unsize_DispatchFromDyn_where_core_marker_Sized_T_where_core_marker_Sized_U_where_core_marker_Unsize_T_U_core_ptr_non_null_NonNull_U_for_core_ptr_non_null_NonNull_T.
+    Module Impl_core_ops_unsize_DispatchFromDyn_where_core_marker_PointeeSized_T_where_core_marker_PointeeSized_U_where_core_marker_Unsize_T_U_core_ptr_non_null_NonNull_U_for_core_ptr_non_null_NonNull_T.
       Definition Self (T U : Ty.t) : Ty.t :=
         Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ].
       
@@ -3375,9 +3768,9 @@ Module ptr.
           [ Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ U ] ]
           (Self T U)
           (* Instance *) [].
-    End Impl_core_ops_unsize_DispatchFromDyn_where_core_marker_Sized_T_where_core_marker_Sized_U_where_core_marker_Unsize_T_U_core_ptr_non_null_NonNull_U_for_core_ptr_non_null_NonNull_T.
+    End Impl_core_ops_unsize_DispatchFromDyn_where_core_marker_PointeeSized_T_where_core_marker_PointeeSized_U_where_core_marker_Unsize_T_U_core_ptr_non_null_NonNull_U_for_core_ptr_non_null_NonNull_T.
     
-    Module Impl_core_pin_PinCoerceUnsized_where_core_marker_Sized_T_for_core_ptr_non_null_NonNull_T.
+    Module Impl_core_pin_PinCoerceUnsized_where_core_marker_PointeeSized_T_for_core_ptr_non_null_NonNull_T.
       Definition Self (T : Ty.t) : Ty.t :=
         Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ].
       
@@ -3389,9 +3782,9 @@ Module ptr.
           (* Trait polymorphic types *) []
           (Self T)
           (* Instance *) [].
-    End Impl_core_pin_PinCoerceUnsized_where_core_marker_Sized_T_for_core_ptr_non_null_NonNull_T.
+    End Impl_core_pin_PinCoerceUnsized_where_core_marker_PointeeSized_T_for_core_ptr_non_null_NonNull_T.
     
-    Module Impl_core_fmt_Debug_where_core_marker_Sized_T_for_core_ptr_non_null_NonNull_T.
+    Module Impl_core_fmt_Debug_where_core_marker_PointeeSized_T_for_core_ptr_non_null_NonNull_T.
       Definition Self (T : Ty.t) : Ty.t :=
         Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ].
       
@@ -3465,9 +3858,9 @@ Module ptr.
           (* Trait polymorphic types *) []
           (Self T)
           (* Instance *) [ ("fmt", InstanceField.Method (fmt T)) ].
-    End Impl_core_fmt_Debug_where_core_marker_Sized_T_for_core_ptr_non_null_NonNull_T.
+    End Impl_core_fmt_Debug_where_core_marker_PointeeSized_T_for_core_ptr_non_null_NonNull_T.
     
-    Module Impl_core_fmt_Pointer_where_core_marker_Sized_T_for_core_ptr_non_null_NonNull_T.
+    Module Impl_core_fmt_Pointer_where_core_marker_PointeeSized_T_for_core_ptr_non_null_NonNull_T.
       Definition Self (T : Ty.t) : Ty.t :=
         Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ].
       
@@ -3541,9 +3934,9 @@ Module ptr.
           (* Trait polymorphic types *) []
           (Self T)
           (* Instance *) [ ("fmt", InstanceField.Method (fmt T)) ].
-    End Impl_core_fmt_Pointer_where_core_marker_Sized_T_for_core_ptr_non_null_NonNull_T.
+    End Impl_core_fmt_Pointer_where_core_marker_PointeeSized_T_for_core_ptr_non_null_NonNull_T.
     
-    Module Impl_core_cmp_Eq_where_core_marker_Sized_T_for_core_ptr_non_null_NonNull_T.
+    Module Impl_core_cmp_Eq_where_core_marker_PointeeSized_T_for_core_ptr_non_null_NonNull_T.
       Definition Self (T : Ty.t) : Ty.t :=
         Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ].
       
@@ -3555,9 +3948,9 @@ Module ptr.
           (* Trait polymorphic types *) []
           (Self T)
           (* Instance *) [].
-    End Impl_core_cmp_Eq_where_core_marker_Sized_T_for_core_ptr_non_null_NonNull_T.
+    End Impl_core_cmp_Eq_where_core_marker_PointeeSized_T_for_core_ptr_non_null_NonNull_T.
     
-    Module Impl_core_cmp_PartialEq_where_core_marker_Sized_T_core_ptr_non_null_NonNull_T_for_core_ptr_non_null_NonNull_T.
+    Module Impl_core_cmp_PartialEq_where_core_marker_PointeeSized_T_core_ptr_non_null_NonNull_T_for_core_ptr_non_null_NonNull_T.
       Definition Self (T : Ty.t) : Ty.t :=
         Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ].
       
@@ -3625,9 +4018,9 @@ Module ptr.
           [ Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ] ]
           (Self T)
           (* Instance *) [ ("eq", InstanceField.Method (eq T)) ].
-    End Impl_core_cmp_PartialEq_where_core_marker_Sized_T_core_ptr_non_null_NonNull_T_for_core_ptr_non_null_NonNull_T.
+    End Impl_core_cmp_PartialEq_where_core_marker_PointeeSized_T_core_ptr_non_null_NonNull_T_for_core_ptr_non_null_NonNull_T.
     
-    Module Impl_core_cmp_Ord_where_core_marker_Sized_T_for_core_ptr_non_null_NonNull_T.
+    Module Impl_core_cmp_Ord_where_core_marker_PointeeSized_T_for_core_ptr_non_null_NonNull_T.
       Definition Self (T : Ty.t) : Ty.t :=
         Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ].
       
@@ -3719,9 +4112,9 @@ Module ptr.
           (* Trait polymorphic types *) []
           (Self T)
           (* Instance *) [ ("cmp", InstanceField.Method (cmp T)) ].
-    End Impl_core_cmp_Ord_where_core_marker_Sized_T_for_core_ptr_non_null_NonNull_T.
+    End Impl_core_cmp_Ord_where_core_marker_PointeeSized_T_for_core_ptr_non_null_NonNull_T.
     
-    Module Impl_core_cmp_PartialOrd_where_core_marker_Sized_T_core_ptr_non_null_NonNull_T_for_core_ptr_non_null_NonNull_T.
+    Module Impl_core_cmp_PartialOrd_where_core_marker_PointeeSized_T_core_ptr_non_null_NonNull_T_for_core_ptr_non_null_NonNull_T.
       Definition Self (T : Ty.t) : Ty.t :=
         Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ].
       
@@ -3814,9 +4207,9 @@ Module ptr.
           [ Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ] ]
           (Self T)
           (* Instance *) [ ("partial_cmp", InstanceField.Method (partial_cmp T)) ].
-    End Impl_core_cmp_PartialOrd_where_core_marker_Sized_T_core_ptr_non_null_NonNull_T_for_core_ptr_non_null_NonNull_T.
+    End Impl_core_cmp_PartialOrd_where_core_marker_PointeeSized_T_core_ptr_non_null_NonNull_T_for_core_ptr_non_null_NonNull_T.
     
-    Module Impl_core_hash_Hash_where_core_marker_Sized_T_for_core_ptr_non_null_NonNull_T.
+    Module Impl_core_hash_Hash_where_core_marker_PointeeSized_T_for_core_ptr_non_null_NonNull_T.
       Definition Self (T : Ty.t) : Ty.t :=
         Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ].
       
@@ -3881,9 +4274,9 @@ Module ptr.
           (* Trait polymorphic types *) []
           (Self T)
           (* Instance *) [ ("hash", InstanceField.Method (hash T)) ].
-    End Impl_core_hash_Hash_where_core_marker_Sized_T_for_core_ptr_non_null_NonNull_T.
+    End Impl_core_hash_Hash_where_core_marker_PointeeSized_T_for_core_ptr_non_null_NonNull_T.
     
-    Module Impl_core_convert_From_where_core_marker_Sized_T_core_ptr_unique_Unique_T_for_core_ptr_non_null_NonNull_T.
+    Module Impl_core_convert_From_where_core_marker_PointeeSized_T_core_ptr_unique_Unique_T_for_core_ptr_non_null_NonNull_T.
       Definition Self (T : Ty.t) : Ty.t :=
         Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ].
       
@@ -3920,9 +4313,9 @@ Module ptr.
           (* Trait polymorphic types *) [ Ty.apply (Ty.path "core::ptr::unique::Unique") [] [ T ] ]
           (Self T)
           (* Instance *) [ ("from", InstanceField.Method (from T)) ].
-    End Impl_core_convert_From_where_core_marker_Sized_T_core_ptr_unique_Unique_T_for_core_ptr_non_null_NonNull_T.
+    End Impl_core_convert_From_where_core_marker_PointeeSized_T_core_ptr_unique_Unique_T_for_core_ptr_non_null_NonNull_T.
     
-    Module Impl_core_convert_From_where_core_marker_Sized_T_ref_mut_T_for_core_ptr_non_null_NonNull_T.
+    Module Impl_core_convert_From_where_core_marker_PointeeSized_T_ref_mut_T_for_core_ptr_non_null_NonNull_T.
       Definition Self (T : Ty.t) : Ty.t :=
         Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ].
       
@@ -3958,9 +4351,9 @@ Module ptr.
           (* Trait polymorphic types *) [ Ty.apply (Ty.path "&mut") [] [ T ] ]
           (Self T)
           (* Instance *) [ ("from", InstanceField.Method (from T)) ].
-    End Impl_core_convert_From_where_core_marker_Sized_T_ref_mut_T_for_core_ptr_non_null_NonNull_T.
+    End Impl_core_convert_From_where_core_marker_PointeeSized_T_ref_mut_T_for_core_ptr_non_null_NonNull_T.
     
-    Module Impl_core_convert_From_where_core_marker_Sized_T_ref__T_for_core_ptr_non_null_NonNull_T.
+    Module Impl_core_convert_From_where_core_marker_PointeeSized_T_ref__T_for_core_ptr_non_null_NonNull_T.
       Definition Self (T : Ty.t) : Ty.t :=
         Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ].
       
@@ -3996,6 +4389,6 @@ Module ptr.
           (* Trait polymorphic types *) [ Ty.apply (Ty.path "&") [] [ T ] ]
           (Self T)
           (* Instance *) [ ("from", InstanceField.Method (from T)) ].
-    End Impl_core_convert_From_where_core_marker_Sized_T_ref__T_for_core_ptr_non_null_NonNull_T.
+    End Impl_core_convert_From_where_core_marker_PointeeSized_T_ref__T_for_core_ptr_non_null_NonNull_T.
   End non_null.
 End ptr.

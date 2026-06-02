@@ -23,6 +23,18 @@ Module Impl_core_default_Default_for_contract_transfer_AccountId.
       (* Instance *) [ ("default", InstanceField.Method default) ].
 End Impl_core_default_Default_for_contract_transfer_AccountId.
 
+Module Impl_core_clone_TrivialClone_for_contract_transfer_AccountId.
+  Definition Self : Ty.t := Ty.path "contract_transfer::AccountId".
+  
+  Axiom Implements :
+    M.IsTraitInstance
+      "core::clone::TrivialClone"
+      (* Trait polymorphic consts *) []
+      (* Trait polymorphic types *) []
+      Self
+      (* Instance *) [].
+End Impl_core_clone_TrivialClone_for_contract_transfer_AccountId.
+
 Module Impl_core_clone_Clone_for_contract_transfer_AccountId.
   Definition Self : Ty.t := Ty.path "contract_transfer::AccountId".
   

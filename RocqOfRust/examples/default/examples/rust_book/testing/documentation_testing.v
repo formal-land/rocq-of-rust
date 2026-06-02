@@ -44,15 +44,14 @@ Definition div (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
               fun γ =>
                 ltac:(M.monadic
                   (let γ :=
-                    M.use
-                      (M.alloc (|
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
                         Ty.path "bool",
-                        M.call_closure (|
-                          Ty.path "bool",
-                          BinOp.eq,
-                          [ M.read (| b |); Value.Integer IntegerKind.I32 0 ]
-                        |)
-                      |)) in
+                        BinOp.eq,
+                        [ M.read (| b |); Value.Integer IntegerKind.I32 0 ]
+                      |)
+                    |) in
                   let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                   M.never_to_any (|
                     M.call_closure (|

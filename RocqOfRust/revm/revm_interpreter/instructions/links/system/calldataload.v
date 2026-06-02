@@ -11,6 +11,7 @@ Require Import core.links.array.
 Require Import core.links.cmp.
 Require Import core.links.option.
 Require Import core.links.panicking.
+Require Import core.links.ptr.
 Require Import core.links.result.
 Require Import core.ops.links.range.
 Require Import core.num.links.mod.

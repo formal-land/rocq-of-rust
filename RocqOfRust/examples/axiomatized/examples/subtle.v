@@ -21,6 +21,18 @@ Module Impl_core_marker_Copy_for_subtle_Choice.
       (* Instance *) [].
 End Impl_core_marker_Copy_for_subtle_Choice.
 
+Module Impl_core_clone_TrivialClone_for_subtle_Choice.
+  Definition Self : Ty.t := Ty.path "subtle::Choice".
+  
+  Axiom Implements :
+    M.IsTraitInstance
+      "core::clone::TrivialClone"
+      (* Trait polymorphic consts *) []
+      (* Trait polymorphic types *) []
+      Self
+      (* Instance *) [].
+End Impl_core_clone_TrivialClone_for_subtle_Choice.
+
 Module Impl_core_clone_Clone_for_subtle_Choice.
   Definition Self : Ty.t := Ty.path "subtle::Choice".
   

@@ -448,7 +448,7 @@ Module boxed.
           where
               T: Unsize<Dyn>,
           {
-              if mem::size_of::<T>() == 0 {
+              if size_of::<T>() == 0 {
                   let ptr = WithOpaqueHeader::new_unsize_zst::<Dyn, T>(value);
                   ThinBox { ptr, _marker: PhantomData }
               } else {
@@ -476,22 +476,21 @@ Module boxed.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            BinOp.eq,
-                            [
-                              M.call_closure (|
-                                Ty.path "usize",
-                                M.get_function (| "core::mem::size_of", [], [ T ] |),
-                                []
-                              |);
-                              Value.Integer IntegerKind.Usize 0
-                            ]
-                          |)
-                        |)) in
+                          BinOp.eq,
+                          [
+                            M.call_closure (|
+                              Ty.path "usize",
+                              M.get_function (| "core::mem::size_of", [], [ T ] |),
+                              []
+                            |);
+                            Value.Integer IntegerKind.Usize 0
+                          ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     M.read (|
                       let~ ptr : Ty.path "alloc::boxed::thin::WithOpaqueHeader" :=
@@ -1381,27 +1380,26 @@ Module boxed.
                                 fun γ =>
                                   ltac:(M.monadic
                                     (let γ :=
-                                      M.use
-                                        (M.alloc (|
+                                      M.alloc (|
+                                        Ty.path "bool",
+                                        M.call_closure (|
                                           Ty.path "bool",
-                                          M.call_closure (|
-                                            Ty.path "bool",
-                                            BinOp.eq,
-                                            [
-                                              M.call_closure (|
-                                                Ty.path "usize",
-                                                M.get_associated_function (|
-                                                  Ty.path "core::alloc::layout::Layout",
-                                                  "size",
-                                                  [],
-                                                  []
-                                                |),
-                                                [ M.borrow (| Pointer.Kind.Ref, layout |) ]
-                                              |);
-                                              Value.Integer IntegerKind.Usize 0
-                                            ]
-                                          |)
-                                        |)) in
+                                          BinOp.eq,
+                                          [
+                                            M.call_closure (|
+                                              Ty.path "usize",
+                                              M.get_associated_function (|
+                                                Ty.path "core::alloc::layout::Layout",
+                                                "size",
+                                                [],
+                                                []
+                                              |),
+                                              [ M.borrow (| Pointer.Kind.Ref, layout |) ]
+                                            |);
+                                            Value.Integer IntegerKind.Usize 0
+                                          ]
+                                        |)
+                                      |) in
                                     let _ :=
                                       is_constant_or_break_match (|
                                         M.read (| γ |),
@@ -1416,11 +1414,7 @@ Module boxed.
                                             fun γ =>
                                               ltac:(M.monadic
                                                 (let γ :=
-                                                  M.use
-                                                    (M.alloc (|
-                                                      Ty.path "bool",
-                                                      Value.Bool true
-                                                    |)) in
+                                                  M.alloc (| Ty.path "bool", Value.Bool true |) in
                                                 let _ :=
                                                   is_constant_or_break_match (|
                                                     M.read (| γ |),
@@ -1435,34 +1429,25 @@ Module boxed.
                                                         fun γ =>
                                                           ltac:(M.monadic
                                                             (let γ :=
-                                                              M.use
-                                                                (M.alloc (|
+                                                              M.alloc (|
+                                                                Ty.path "bool",
+                                                                M.call_closure (|
                                                                   Ty.path "bool",
-                                                                  M.call_closure (|
-                                                                    Ty.path "bool",
-                                                                    UnOp.not,
-                                                                    [
+                                                                  UnOp.not,
+                                                                  [
+                                                                    LogicalOp.and (|
                                                                       LogicalOp.and (|
-                                                                        LogicalOp.and (|
-                                                                          M.call_closure (|
-                                                                            Ty.path "bool",
-                                                                            BinOp.eq,
-                                                                            [
-                                                                              M.read (|
-                                                                                value_offset
-                                                                              |);
-                                                                              Value.Integer
-                                                                                IntegerKind.Usize
-                                                                                0
-                                                                            ]
-                                                                          |),
-                                                                          ltac:(M.monadic
-                                                                            (M.read (|
-                                                                              get_constant (|
-                                                                                "core::mem::SizedTypeProperties::IS_ZST",
-                                                                                Ty.path "bool"
-                                                                              |)
-                                                                            |)))
+                                                                        M.call_closure (|
+                                                                          Ty.path "bool",
+                                                                          BinOp.eq,
+                                                                          [
+                                                                            M.read (|
+                                                                              value_offset
+                                                                            |);
+                                                                            Value.Integer
+                                                                              IntegerKind.Usize
+                                                                              0
+                                                                          ]
                                                                         |),
                                                                         ltac:(M.monadic
                                                                           (M.read (|
@@ -1471,10 +1456,18 @@ Module boxed.
                                                                               Ty.path "bool"
                                                                             |)
                                                                           |)))
-                                                                      |)
-                                                                    ]
-                                                                  |)
-                                                                |)) in
+                                                                      |),
+                                                                      ltac:(M.monadic
+                                                                        (M.read (|
+                                                                          get_constant (|
+                                                                            "core::mem::SizedTypeProperties::IS_ZST",
+                                                                            Ty.path "bool"
+                                                                          |)
+                                                                        |)))
+                                                                    |)
+                                                                  ]
+                                                                |)
+                                                              |) in
                                                             let _ :=
                                                               is_constant_or_break_match (|
                                                                 M.read (| γ |),
@@ -1540,23 +1533,22 @@ Module boxed.
                                             fun γ =>
                                               ltac:(M.monadic
                                                 (let γ :=
-                                                  M.use
-                                                    (M.alloc (|
+                                                  M.alloc (|
+                                                    Ty.path "bool",
+                                                    M.call_closure (|
                                                       Ty.path "bool",
-                                                      M.call_closure (|
-                                                        Ty.path "bool",
-                                                        M.get_associated_function (|
-                                                          Ty.apply
-                                                            (Ty.path "*mut")
-                                                            []
-                                                            [ Ty.path "u8" ],
-                                                          "is_null",
-                                                          [],
+                                                      M.get_associated_function (|
+                                                        Ty.apply
+                                                          (Ty.path "*mut")
                                                           []
-                                                        |),
-                                                        [ M.read (| ptr |) ]
-                                                      |)
-                                                    |)) in
+                                                          [ Ty.path "u8" ],
+                                                        "is_null",
+                                                        [],
+                                                        []
+                                                      |),
+                                                      [ M.read (| ptr |) ]
+                                                    |)
+                                                  |) in
                                                 let _ :=
                                                   is_constant_or_break_match (|
                                                     M.read (| γ |),
@@ -1721,9 +1713,7 @@ Module boxed.
                   let ptr = if layout.size() == 0 {
                       // Some paranoia checking, mostly so that the ThinBox tests are
                       // more able to catch issues.
-                      debug_assert!(
-                          value_offset == 0 && mem::size_of::<T>() == 0 && mem::size_of::<H>() == 0
-                      );
+                      debug_assert!(value_offset == 0 && size_of::<T>() == 0 && size_of::<H>() == 0);
                       layout.dangling()
                   } else {
                       let ptr = alloc::alloc(layout);
@@ -1845,27 +1835,26 @@ Module boxed.
                                     fun γ =>
                                       ltac:(M.monadic
                                         (let γ :=
-                                          M.use
-                                            (M.alloc (|
+                                          M.alloc (|
+                                            Ty.path "bool",
+                                            M.call_closure (|
                                               Ty.path "bool",
-                                              M.call_closure (|
-                                                Ty.path "bool",
-                                                BinOp.eq,
-                                                [
-                                                  M.call_closure (|
-                                                    Ty.path "usize",
-                                                    M.get_associated_function (|
-                                                      Ty.path "core::alloc::layout::Layout",
-                                                      "size",
-                                                      [],
-                                                      []
-                                                    |),
-                                                    [ M.borrow (| Pointer.Kind.Ref, layout |) ]
-                                                  |);
-                                                  Value.Integer IntegerKind.Usize 0
-                                                ]
-                                              |)
-                                            |)) in
+                                              BinOp.eq,
+                                              [
+                                                M.call_closure (|
+                                                  Ty.path "usize",
+                                                  M.get_associated_function (|
+                                                    Ty.path "core::alloc::layout::Layout",
+                                                    "size",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [ M.borrow (| Pointer.Kind.Ref, layout |) ]
+                                                |);
+                                                Value.Integer IntegerKind.Usize 0
+                                              ]
+                                            |)
+                                          |) in
                                         let _ :=
                                           is_constant_or_break_match (|
                                             M.read (| γ |),
@@ -1880,11 +1869,10 @@ Module boxed.
                                                 fun γ =>
                                                   ltac:(M.monadic
                                                     (let γ :=
-                                                      M.use
-                                                        (M.alloc (|
-                                                          Ty.path "bool",
-                                                          Value.Bool true
-                                                        |)) in
+                                                      M.alloc (|
+                                                        Ty.path "bool",
+                                                        Value.Bool true
+                                                      |) in
                                                     let _ :=
                                                       is_constant_or_break_match (|
                                                         M.read (| γ |),
@@ -1899,47 +1887,25 @@ Module boxed.
                                                             fun γ =>
                                                               ltac:(M.monadic
                                                                 (let γ :=
-                                                                  M.use
-                                                                    (M.alloc (|
+                                                                  M.alloc (|
+                                                                    Ty.path "bool",
+                                                                    M.call_closure (|
                                                                       Ty.path "bool",
-                                                                      M.call_closure (|
-                                                                        Ty.path "bool",
-                                                                        UnOp.not,
-                                                                        [
+                                                                      UnOp.not,
+                                                                      [
+                                                                        LogicalOp.and (|
                                                                           LogicalOp.and (|
-                                                                            LogicalOp.and (|
-                                                                              M.call_closure (|
-                                                                                Ty.path "bool",
-                                                                                BinOp.eq,
-                                                                                [
-                                                                                  M.read (|
-                                                                                    value_offset
-                                                                                  |);
-                                                                                  Value.Integer
-                                                                                    IntegerKind.Usize
-                                                                                    0
-                                                                                ]
-                                                                              |),
-                                                                              ltac:(M.monadic
-                                                                                (M.call_closure (|
-                                                                                  Ty.path "bool",
-                                                                                  BinOp.eq,
-                                                                                  [
-                                                                                    M.call_closure (|
-                                                                                      Ty.path
-                                                                                        "usize",
-                                                                                      M.get_function (|
-                                                                                        "core::mem::size_of",
-                                                                                        [],
-                                                                                        [ T ]
-                                                                                      |),
-                                                                                      []
-                                                                                    |);
-                                                                                    Value.Integer
-                                                                                      IntegerKind.Usize
-                                                                                      0
-                                                                                  ]
-                                                                                |)))
+                                                                            M.call_closure (|
+                                                                              Ty.path "bool",
+                                                                              BinOp.eq,
+                                                                              [
+                                                                                M.read (|
+                                                                                  value_offset
+                                                                                |);
+                                                                                Value.Integer
+                                                                                  IntegerKind.Usize
+                                                                                  0
+                                                                              ]
                                                                             |),
                                                                             ltac:(M.monadic
                                                                               (M.call_closure (|
@@ -1951,7 +1917,7 @@ Module boxed.
                                                                                     M.get_function (|
                                                                                       "core::mem::size_of",
                                                                                       [],
-                                                                                      [ H ]
+                                                                                      [ T ]
                                                                                     |),
                                                                                     []
                                                                                   |);
@@ -1960,10 +1926,30 @@ Module boxed.
                                                                                     0
                                                                                 ]
                                                                               |)))
-                                                                          |)
-                                                                        ]
-                                                                      |)
-                                                                    |)) in
+                                                                          |),
+                                                                          ltac:(M.monadic
+                                                                            (M.call_closure (|
+                                                                              Ty.path "bool",
+                                                                              BinOp.eq,
+                                                                              [
+                                                                                M.call_closure (|
+                                                                                  Ty.path "usize",
+                                                                                  M.get_function (|
+                                                                                    "core::mem::size_of",
+                                                                                    [],
+                                                                                    [ H ]
+                                                                                  |),
+                                                                                  []
+                                                                                |);
+                                                                                Value.Integer
+                                                                                  IntegerKind.Usize
+                                                                                  0
+                                                                              ]
+                                                                            |)))
+                                                                        |)
+                                                                      ]
+                                                                    |)
+                                                                  |) in
                                                                 let _ :=
                                                                   is_constant_or_break_match (|
                                                                     M.read (| γ |),
@@ -1979,7 +1965,7 @@ Module boxed.
                                                                     |),
                                                                     [
                                                                       mk_str (|
-                                                                        "assertion failed: value_offset == 0 && mem::size_of::<T>() == 0 && mem::size_of::<H>() == 0"
+                                                                        "assertion failed: value_offset == 0 && size_of::<T>() == 0 && size_of::<H>() == 0"
                                                                       |)
                                                                     ]
                                                                   |)
@@ -2031,23 +2017,22 @@ Module boxed.
                                                 fun γ =>
                                                   ltac:(M.monadic
                                                     (let γ :=
-                                                      M.use
-                                                        (M.alloc (|
+                                                      M.alloc (|
+                                                        Ty.path "bool",
+                                                        M.call_closure (|
                                                           Ty.path "bool",
-                                                          M.call_closure (|
-                                                            Ty.path "bool",
-                                                            M.get_associated_function (|
-                                                              Ty.apply
-                                                                (Ty.path "*mut")
-                                                                []
-                                                                [ Ty.path "u8" ],
-                                                              "is_null",
-                                                              [],
+                                                          M.get_associated_function (|
+                                                            Ty.apply
+                                                              (Ty.path "*mut")
                                                               []
-                                                            |),
-                                                            [ M.read (| ptr |) ]
-                                                          |)
-                                                        |)) in
+                                                              [ Ty.path "u8" ],
+                                                            "is_null",
+                                                            [],
+                                                            []
+                                                          |),
+                                                          [ M.read (| ptr |) ]
+                                                        |)
+                                                      |) in
                                                     let _ :=
                                                       is_constant_or_break_match (|
                                                         M.read (| γ |),
@@ -2234,7 +2219,7 @@ Module boxed.
               Dyn: Pointee<Metadata = H> + ?Sized,
               T: Unsize<Dyn>,
           {
-              assert!(mem::size_of::<T>() == 0);
+              assert!(size_of::<T>() == 0);
       
               const fn max(a: usize, b: usize) -> usize {
                   if a > b { a } else { b }
@@ -2248,26 +2233,25 @@ Module boxed.
                   // FIXME: just call `WithHeader::alloc_layout` with size reset to 0.
                   // Currently that's blocked on `Layout::extend` not being `const fn`.
       
-                  let alloc_align =
-                      max(mem::align_of::<T>(), mem::align_of::<<Dyn as Pointee>::Metadata>());
+                  let alloc_align = max(align_of::<T>(), align_of::<<Dyn as Pointee>::Metadata>());
       
-                  let alloc_size =
-                      max(mem::align_of::<T>(), mem::size_of::<<Dyn as Pointee>::Metadata>());
+                  let alloc_size = max(align_of::<T>(), size_of::<<Dyn as Pointee>::Metadata>());
       
                   unsafe {
                       // SAFETY: align is power of two because it is the maximum of two alignments.
                       let alloc: *mut u8 = const_allocate(alloc_size, alloc_align);
       
                       let metadata_offset =
-                          alloc_size.checked_sub(mem::size_of::<<Dyn as Pointee>::Metadata>()).unwrap();
+                          alloc_size.checked_sub(size_of::<<Dyn as Pointee>::Metadata>()).unwrap();
                       // SAFETY: adding offset within the allocation.
                       let metadata_ptr: *mut <Dyn as Pointee>::Metadata =
                           alloc.add(metadata_offset).cast();
                       // SAFETY: `*metadata_ptr` is within the allocation.
                       metadata_ptr.write(ptr::metadata::<Dyn>(ptr::dangling::<T>() as *const Dyn));
-      
+                      // SAFETY: valid heap allocation
+                      const_make_global(alloc);
                       // SAFETY: we have just written the metadata.
-                      &*(metadata_ptr)
+                      &*metadata_ptr
                   }
               };
       
@@ -2299,34 +2283,33 @@ Module boxed.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                UnOp.not,
-                                [
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    BinOp.eq,
-                                    [
-                                      M.call_closure (|
-                                        Ty.path "usize",
-                                        M.get_function (| "core::mem::size_of", [], [ T ] |),
-                                        []
-                                      |);
-                                      Value.Integer IntegerKind.Usize 0
-                                    ]
-                                  |)
-                                ]
-                              |)
-                            |)) in
+                              UnOp.not,
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [
+                                    M.call_closure (|
+                                      Ty.path "usize",
+                                      M.get_function (| "core::mem::size_of", [], [ T ] |),
+                                      []
+                                    |);
+                                    Value.Integer IntegerKind.Usize 0
+                                  ]
+                                |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.never_to_any (|
                           M.call_closure (|
                             Ty.path "never",
                             M.get_function (| "core::panicking::panic", [], [] |),
-                            [ mk_str (| "assertion failed: mem::size_of::<T>() == 0" |) ]
+                            [ mk_str (| "assertion failed: size_of::<T>() == 0" |) ]
                           |)
                         |)));
                     fun γ => ltac:(M.monadic (Value.Tuple []))
@@ -2391,7 +2374,7 @@ Module boxed.
                   [
                     fun γ =>
                       ltac:(M.monadic
-                        (let γ := M.use (M.alloc (| Ty.path "bool", Value.Bool true |)) in
+                        (let γ := M.alloc (| Ty.path "bool", Value.Bool true |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
@@ -2402,26 +2385,25 @@ Module boxed.
                                 fun γ =>
                                   ltac:(M.monadic
                                     (let γ :=
-                                      M.use
-                                        (M.alloc (|
+                                      M.alloc (|
+                                        Ty.path "bool",
+                                        M.call_closure (|
                                           Ty.path "bool",
-                                          M.call_closure (|
-                                            Ty.path "bool",
-                                            UnOp.not,
-                                            [
-                                              M.call_closure (|
-                                                Ty.path "bool",
-                                                M.get_associated_function (|
-                                                  Ty.apply (Ty.path "*mut") [] [ T ],
-                                                  "is_aligned",
-                                                  [],
-                                                  []
-                                                |),
-                                                [ M.read (| value_ptr |) ]
-                                              |)
-                                            ]
-                                          |)
-                                        |)) in
+                                          UnOp.not,
+                                          [
+                                            M.call_closure (|
+                                              Ty.path "bool",
+                                              M.get_associated_function (|
+                                                Ty.apply (Ty.path "*mut") [] [ T ],
+                                                "is_aligned",
+                                                [],
+                                                []
+                                              |),
+                                              [ M.read (| value_ptr |) ]
+                                            |)
+                                          ]
+                                        |)
+                                      |) in
                                     let _ :=
                                       is_constant_or_break_match (|
                                         M.read (| γ |),
@@ -2693,7 +2675,7 @@ Module boxed.
                   [
                     fun γ =>
                       ltac:(M.monadic
-                        (let γ := M.use (M.alloc (| Ty.path "bool", Value.Bool true |)) in
+                        (let γ := M.alloc (| Ty.path "bool", Value.Bool true |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
@@ -2704,26 +2686,25 @@ Module boxed.
                                 fun γ =>
                                   ltac:(M.monadic
                                     (let γ :=
-                                      M.use
-                                        (M.alloc (|
+                                      M.alloc (|
+                                        Ty.path "bool",
+                                        M.call_closure (|
                                           Ty.path "bool",
-                                          M.call_closure (|
-                                            Ty.path "bool",
-                                            UnOp.not,
-                                            [
-                                              M.call_closure (|
-                                                Ty.path "bool",
-                                                M.get_associated_function (|
-                                                  Ty.apply (Ty.path "*mut") [] [ H ],
-                                                  "is_aligned",
-                                                  [],
-                                                  []
-                                                |),
-                                                [ M.read (| hp |) ]
-                                              |)
-                                            ]
-                                          |)
-                                        |)) in
+                                          UnOp.not,
+                                          [
+                                            M.call_closure (|
+                                              Ty.path "bool",
+                                              M.get_associated_function (|
+                                                Ty.apply (Ty.path "*mut") [] [ H ],
+                                                "is_aligned",
+                                                [],
+                                                []
+                                              |),
+                                              [ M.read (| hp |) ]
+                                            |)
+                                          ]
+                                        |)
+                                      |) in
                                     let _ :=
                                       is_constant_or_break_match (|
                                         M.read (| γ |),
@@ -2802,7 +2783,7 @@ Module boxed.
       
       (*
           const fn header_size() -> usize {
-              mem::size_of::<H>()
+              size_of::<H>()
           }
       *)
       Definition header_size (H : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=

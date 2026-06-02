@@ -5,22 +5,22 @@ Module iter.
   Module sources.
     Module once_with.
       (*
-      pub fn once_with<A, F: FnOnce() -> A>(gen: F) -> OnceWith<F> {
-          OnceWith { gen: Some(gen) }
+      pub fn once_with<A, F: FnOnce() -> A>(make: F) -> OnceWith<F> {
+          OnceWith { make: Some(make) }
       }
       *)
       Definition once_with (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
-        | [], [ A; F ], [ gen ] =>
+        | [], [ A; F ], [ make ] =>
           ltac:(M.monadic
-            (let gen := M.alloc (| F, gen |) in
+            (let make := M.alloc (| F, make |) in
             Value.mkStructRecord
               "core::iter::sources::once_with::OnceWith"
               []
               [ F ]
               [
-                ("gen",
-                  Value.StructTuple "core::option::Option::Some" [] [ F ] [ M.read (| gen |) ])
+                ("make",
+                  Value.StructTuple "core::option::Option::Some" [] [ F ] [ M.read (| make |) ])
               ]))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
@@ -35,7 +35,7 @@ Module iter.
           name := "OnceWith";
           const_params := [];
           ty_params := [ "F" ];
-          fields := [ ("gen", Ty.apply (Ty.path "core::option::Option") [] [ F ]) ];
+          fields := [ ("make", Ty.apply (Ty.path "core::option::Option") [] [ F ]) ];
         } *)
       
       Module Impl_core_clone_Clone_where_core_clone_Clone_F_for_core_iter_sources_once_with_OnceWith_F.
@@ -61,7 +61,7 @@ Module iter.
                 []
                 [ F ]
                 [
-                  ("gen",
+                  ("make",
                     M.call_closure (|
                       Ty.apply (Ty.path "core::option::Option") [] [ F ],
                       M.get_trait_method (|
@@ -82,7 +82,7 @@ Module iter.
                               M.SubPointer.get_struct_record_field (|
                                 M.deref (| M.read (| self |) |),
                                 "core::iter::sources::once_with::OnceWith",
-                                "gen"
+                                "make"
                               |)
                             |)
                           |)
@@ -109,7 +109,7 @@ Module iter.
         
         (*
             fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-                if self.gen.is_some() {
+                if self.make.is_some() {
                     f.write_str("OnceWith(Some(_))")
                 } else {
                     f.write_str("OnceWith(None)")
@@ -141,29 +141,28 @@ Module iter.
                   fun γ =>
                     ltac:(M.monadic
                       (let γ :=
-                        M.use
-                          (M.alloc (|
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
                             Ty.path "bool",
-                            M.call_closure (|
-                              Ty.path "bool",
-                              M.get_associated_function (|
-                                Ty.apply (Ty.path "core::option::Option") [] [ F ],
-                                "is_some",
-                                [],
-                                []
-                              |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "core::iter::sources::once_with::OnceWith",
-                                    "gen"
-                                  |)
+                            M.get_associated_function (|
+                              Ty.apply (Ty.path "core::option::Option") [] [ F ],
+                              "is_some",
+                              [],
+                              []
+                            |),
+                            [
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "core::iter::sources::once_with::OnceWith",
+                                  "make"
                                 |)
-                              ]
-                            |)
-                          |)) in
+                              |)
+                            ]
+                          |)
+                        |) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       M.call_closure (|
                         Ty.apply
@@ -229,7 +228,7 @@ Module iter.
         
         (*
             fn next(&mut self) -> Option<A> {
-                let f = self.gen.take()?;
+                let f = self.make.take()?;
                 Some(f())
             }
         *)
@@ -298,7 +297,7 @@ Module iter.
                                     M.SubPointer.get_struct_record_field (|
                                       M.deref (| M.read (| self |) |),
                                       "core::iter::sources::once_with::OnceWith",
-                                      "gen"
+                                      "make"
                                     |)
                                   |)
                                 ]
@@ -388,7 +387,7 @@ Module iter.
         
         (*
             fn size_hint(&self) -> (usize, Option<usize>) {
-                self.gen.iter().size_hint()
+                self.make.iter().size_hint()
             }
         *)
         Definition size_hint
@@ -443,7 +442,7 @@ Module iter.
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| self |) |),
                               "core::iter::sources::once_with::OnceWith",
-                              "gen"
+                              "make"
                             |)
                           |)
                         ]
@@ -529,7 +528,7 @@ Module iter.
         
         (*
             fn len(&self) -> usize {
-                self.gen.iter().len()
+                self.make.iter().len()
             }
         *)
         Definition len (A F : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -575,7 +574,7 @@ Module iter.
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| self |) |),
                               "core::iter::sources::once_with::OnceWith",
-                              "gen"
+                              "make"
                             |)
                           |)
                         ]

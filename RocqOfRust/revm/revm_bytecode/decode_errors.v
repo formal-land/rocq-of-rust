@@ -26,6 +26,18 @@ Module decode_errors.
   Axiom IsDiscriminant_BytecodeDecodeError_Eip7702 :
     M.IsDiscriminant "revm_bytecode::decode_errors::BytecodeDecodeError::Eip7702" 1.
   
+  Module Impl_core_clone_TrivialClone_for_revm_bytecode_decode_errors_BytecodeDecodeError.
+    Definition Self : Ty.t := Ty.path "revm_bytecode::decode_errors::BytecodeDecodeError".
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "core::clone::TrivialClone"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        Self
+        (* Instance *) [].
+  End Impl_core_clone_TrivialClone_for_revm_bytecode_decode_errors_BytecodeDecodeError.
+  
   Module Impl_core_clone_Clone_for_revm_bytecode_decode_errors_BytecodeDecodeError.
     Definition Self : Ty.t := Ty.path "revm_bytecode::decode_errors::BytecodeDecodeError".
     

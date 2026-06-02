@@ -27,6 +27,18 @@ Module signed.
     Axiom IsDiscriminant_Sign_Positive :
       M.IsDiscriminant "alloy_primitives::signed::sign::Sign::Positive" 1.
     
+    Module Impl_core_clone_TrivialClone_for_alloy_primitives_signed_sign_Sign.
+      Definition Self : Ty.t := Ty.path "alloy_primitives::signed::sign::Sign".
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::clone::TrivialClone"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [].
+    End Impl_core_clone_TrivialClone_for_alloy_primitives_signed_sign_Sign.
+    
     Module Impl_core_clone_Clone_for_alloy_primitives_signed_sign_Sign.
       Definition Self : Ty.t := Ty.path "alloy_primitives::signed::sign::Sign".
       

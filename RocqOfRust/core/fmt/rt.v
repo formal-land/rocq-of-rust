@@ -3,464 +3,6 @@ Require Import RocqOfRust.RocqOfRust.
 
 Module fmt.
   Module rt.
-    (* StructRecord
-      {
-        name := "Placeholder";
-        const_params := [];
-        ty_params := [];
-        fields :=
-          [
-            ("position", Ty.path "usize");
-            ("fill", Ty.path "char");
-            ("align", Ty.path "core::fmt::rt::Alignment");
-            ("flags", Ty.path "u32");
-            ("precision", Ty.path "core::fmt::rt::Count");
-            ("width", Ty.path "core::fmt::rt::Count")
-          ];
-      } *)
-    
-    Module Impl_core_marker_Copy_for_core_fmt_rt_Placeholder.
-      Definition Self : Ty.t := Ty.path "core::fmt::rt::Placeholder".
-      
-      Axiom Implements :
-        M.IsTraitInstance
-          "core::marker::Copy"
-          (* Trait polymorphic consts *) []
-          (* Trait polymorphic types *) []
-          Self
-          (* Instance *) [].
-    End Impl_core_marker_Copy_for_core_fmt_rt_Placeholder.
-    
-    Module Impl_core_clone_Clone_for_core_fmt_rt_Placeholder.
-      Definition Self : Ty.t := Ty.path "core::fmt::rt::Placeholder".
-      
-      (* Clone *)
-      Definition clone (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [ self ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (|
-                Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::rt::Placeholder" ],
-                self
-              |) in
-            M.match_operator (|
-              Ty.path "core::fmt::rt::Placeholder",
-              Value.DeclaredButUndefined,
-              [
-                fun γ =>
-                  ltac:(M.monadic
-                    (M.match_operator (|
-                      Ty.path "core::fmt::rt::Placeholder",
-                      Value.DeclaredButUndefined,
-                      [
-                        fun γ =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.path "core::fmt::rt::Placeholder",
-                              Value.DeclaredButUndefined,
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (M.match_operator (|
-                                      Ty.path "core::fmt::rt::Placeholder",
-                                      Value.DeclaredButUndefined,
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (M.match_operator (|
-                                              Ty.path "core::fmt::rt::Placeholder",
-                                              Value.DeclaredButUndefined,
-                                              [
-                                                fun γ =>
-                                                  ltac:(M.monadic
-                                                    (M.read (| M.deref (| M.read (| self |) |) |)))
-                                              ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                      ]
-                    |)))
-              ]
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Axiom Implements :
-        M.IsTraitInstance
-          "core::clone::Clone"
-          (* Trait polymorphic consts *) []
-          (* Trait polymorphic types *) []
-          Self
-          (* Instance *) [ ("clone", InstanceField.Method clone) ].
-    End Impl_core_clone_Clone_for_core_fmt_rt_Placeholder.
-    
-    Module Impl_core_fmt_rt_Placeholder.
-      Definition Self : Ty.t := Ty.path "core::fmt::rt::Placeholder".
-      
-      (*
-          pub const fn new(
-              position: usize,
-              fill: char,
-              align: Alignment,
-              flags: u32,
-              precision: Count,
-              width: Count,
-          ) -> Self {
-              Self { position, fill, align, flags, precision, width }
-          }
-      *)
-      Definition new (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [ position; fill; align; flags; precision; width ] =>
-          ltac:(M.monadic
-            (let position := M.alloc (| Ty.path "usize", position |) in
-            let fill := M.alloc (| Ty.path "char", fill |) in
-            let align := M.alloc (| Ty.path "core::fmt::rt::Alignment", align |) in
-            let flags := M.alloc (| Ty.path "u32", flags |) in
-            let precision := M.alloc (| Ty.path "core::fmt::rt::Count", precision |) in
-            let width := M.alloc (| Ty.path "core::fmt::rt::Count", width |) in
-            Value.mkStructRecord
-              "core::fmt::rt::Placeholder"
-              []
-              []
-              [
-                ("position", M.read (| position |));
-                ("fill", M.read (| fill |));
-                ("align", M.read (| align |));
-                ("flags", M.read (| flags |));
-                ("precision", M.read (| precision |));
-                ("width", M.read (| width |))
-              ]))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
-      Admitted.
-      Global Typeclasses Opaque new.
-    End Impl_core_fmt_rt_Placeholder.
-    
-    (*
-    Enum Alignment
-    {
-      const_params := [];
-      ty_params := [];
-      variants :=
-        [
-          {
-            name := "Left";
-            item := StructTuple [];
-          };
-          {
-            name := "Right";
-            item := StructTuple [];
-          };
-          {
-            name := "Center";
-            item := StructTuple [];
-          };
-          {
-            name := "Unknown";
-            item := StructTuple [];
-          }
-        ];
-    }
-    *)
-    
-    Axiom IsDiscriminant_Alignment_Left : M.IsDiscriminant "core::fmt::rt::Alignment::Left" 0.
-    Axiom IsDiscriminant_Alignment_Right : M.IsDiscriminant "core::fmt::rt::Alignment::Right" 1.
-    Axiom IsDiscriminant_Alignment_Center : M.IsDiscriminant "core::fmt::rt::Alignment::Center" 2.
-    Axiom IsDiscriminant_Alignment_Unknown : M.IsDiscriminant "core::fmt::rt::Alignment::Unknown" 3.
-    
-    Module Impl_core_marker_Copy_for_core_fmt_rt_Alignment.
-      Definition Self : Ty.t := Ty.path "core::fmt::rt::Alignment".
-      
-      Axiom Implements :
-        M.IsTraitInstance
-          "core::marker::Copy"
-          (* Trait polymorphic consts *) []
-          (* Trait polymorphic types *) []
-          Self
-          (* Instance *) [].
-    End Impl_core_marker_Copy_for_core_fmt_rt_Alignment.
-    
-    Module Impl_core_clone_Clone_for_core_fmt_rt_Alignment.
-      Definition Self : Ty.t := Ty.path "core::fmt::rt::Alignment".
-      
-      (* Clone *)
-      Definition clone (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [ self ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (|
-                Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::rt::Alignment" ],
-                self
-              |) in
-            M.read (| M.deref (| M.read (| self |) |) |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Axiom Implements :
-        M.IsTraitInstance
-          "core::clone::Clone"
-          (* Trait polymorphic consts *) []
-          (* Trait polymorphic types *) []
-          Self
-          (* Instance *) [ ("clone", InstanceField.Method clone) ].
-    End Impl_core_clone_Clone_for_core_fmt_rt_Alignment.
-    
-    Module Impl_core_marker_StructuralPartialEq_for_core_fmt_rt_Alignment.
-      Definition Self : Ty.t := Ty.path "core::fmt::rt::Alignment".
-      
-      Axiom Implements :
-        M.IsTraitInstance
-          "core::marker::StructuralPartialEq"
-          (* Trait polymorphic consts *) []
-          (* Trait polymorphic types *) []
-          Self
-          (* Instance *) [].
-    End Impl_core_marker_StructuralPartialEq_for_core_fmt_rt_Alignment.
-    
-    Module Impl_core_cmp_PartialEq_core_fmt_rt_Alignment_for_core_fmt_rt_Alignment.
-      Definition Self : Ty.t := Ty.path "core::fmt::rt::Alignment".
-      
-      (* PartialEq *)
-      Definition eq (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [ self; other ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (|
-                Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::rt::Alignment" ],
-                self
-              |) in
-            let other :=
-              M.alloc (|
-                Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::rt::Alignment" ],
-                other
-              |) in
-            M.read (|
-              let~ __self_discr : Ty.path "isize" :=
-                M.call_closure (|
-                  Ty.path "isize",
-                  M.get_function (|
-                    "core::intrinsics::discriminant_value",
-                    [],
-                    [ Ty.path "core::fmt::rt::Alignment" ]
-                  |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                |) in
-              let~ __arg1_discr : Ty.path "isize" :=
-                M.call_closure (|
-                  Ty.path "isize",
-                  M.get_function (|
-                    "core::intrinsics::discriminant_value",
-                    [],
-                    [ Ty.path "core::fmt::rt::Alignment" ]
-                  |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
-                |) in
-              M.alloc (|
-                Ty.path "bool",
-                M.call_closure (|
-                  Ty.path "bool",
-                  BinOp.eq,
-                  [ M.read (| __self_discr |); M.read (| __arg1_discr |) ]
-                |)
-              |)
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Axiom Implements :
-        M.IsTraitInstance
-          "core::cmp::PartialEq"
-          (* Trait polymorphic consts *) []
-          (* Trait polymorphic types *) [ Ty.path "core::fmt::rt::Alignment" ]
-          Self
-          (* Instance *) [ ("eq", InstanceField.Method eq) ].
-    End Impl_core_cmp_PartialEq_core_fmt_rt_Alignment_for_core_fmt_rt_Alignment.
-    
-    Module Impl_core_cmp_Eq_for_core_fmt_rt_Alignment.
-      Definition Self : Ty.t := Ty.path "core::fmt::rt::Alignment".
-      
-      (* Eq *)
-      Definition assert_receiver_is_total_eq
-          (ε : list Value.t)
-          (τ : list Ty.t)
-          (α : list Value.t)
-          : M :=
-        match ε, τ, α with
-        | [], [], [ self ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (|
-                Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::rt::Alignment" ],
-                self
-              |) in
-            Value.Tuple []))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Axiom Implements :
-        M.IsTraitInstance
-          "core::cmp::Eq"
-          (* Trait polymorphic consts *) []
-          (* Trait polymorphic types *) []
-          Self
-          (* Instance *)
-          [ ("assert_receiver_is_total_eq", InstanceField.Method assert_receiver_is_total_eq) ].
-    End Impl_core_cmp_Eq_for_core_fmt_rt_Alignment.
-    
-    (*
-    Enum Count
-    {
-      const_params := [];
-      ty_params := [];
-      variants :=
-        [
-          {
-            name := "Is";
-            item := StructTuple [ Ty.path "usize" ];
-          };
-          {
-            name := "Param";
-            item := StructTuple [ Ty.path "usize" ];
-          };
-          {
-            name := "Implied";
-            item := StructTuple [];
-          }
-        ];
-    }
-    *)
-    
-    Axiom IsDiscriminant_Count_Is : M.IsDiscriminant "core::fmt::rt::Count::Is" 0.
-    Axiom IsDiscriminant_Count_Param : M.IsDiscriminant "core::fmt::rt::Count::Param" 1.
-    Axiom IsDiscriminant_Count_Implied : M.IsDiscriminant "core::fmt::rt::Count::Implied" 2.
-    
-    Module Impl_core_marker_Copy_for_core_fmt_rt_Count.
-      Definition Self : Ty.t := Ty.path "core::fmt::rt::Count".
-      
-      Axiom Implements :
-        M.IsTraitInstance
-          "core::marker::Copy"
-          (* Trait polymorphic consts *) []
-          (* Trait polymorphic types *) []
-          Self
-          (* Instance *) [].
-    End Impl_core_marker_Copy_for_core_fmt_rt_Count.
-    
-    Module Impl_core_clone_Clone_for_core_fmt_rt_Count.
-      Definition Self : Ty.t := Ty.path "core::fmt::rt::Count".
-      
-      (* Clone *)
-      Definition clone (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [ self ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::rt::Count" ], self |) in
-            M.match_operator (|
-              Ty.path "core::fmt::rt::Count",
-              Value.DeclaredButUndefined,
-              [ fun γ => ltac:(M.monadic (M.read (| M.deref (| M.read (| self |) |) |))) ]
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Axiom Implements :
-        M.IsTraitInstance
-          "core::clone::Clone"
-          (* Trait polymorphic consts *) []
-          (* Trait polymorphic types *) []
-          Self
-          (* Instance *) [ ("clone", InstanceField.Method clone) ].
-    End Impl_core_clone_Clone_for_core_fmt_rt_Count.
-    
-    (*
-    Enum Flag
-    {
-      const_params := [];
-      ty_params := [];
-      variants :=
-        [
-          {
-            name := "SignPlus";
-            item := StructTuple [];
-          };
-          {
-            name := "SignMinus";
-            item := StructTuple [];
-          };
-          {
-            name := "Alternate";
-            item := StructTuple [];
-          };
-          {
-            name := "SignAwareZeroPad";
-            item := StructTuple [];
-          };
-          {
-            name := "DebugLowerHex";
-            item := StructTuple [];
-          };
-          {
-            name := "DebugUpperHex";
-            item := StructTuple [];
-          }
-        ];
-    }
-    *)
-    
-    Axiom IsDiscriminant_Flag_SignPlus : M.IsDiscriminant "core::fmt::rt::Flag::SignPlus" 0.
-    Axiom IsDiscriminant_Flag_SignMinus : M.IsDiscriminant "core::fmt::rt::Flag::SignMinus" 1.
-    Axiom IsDiscriminant_Flag_Alternate : M.IsDiscriminant "core::fmt::rt::Flag::Alternate" 2.
-    Axiom IsDiscriminant_Flag_SignAwareZeroPad :
-      M.IsDiscriminant "core::fmt::rt::Flag::SignAwareZeroPad" 3.
-    Axiom IsDiscriminant_Flag_DebugLowerHex :
-      M.IsDiscriminant "core::fmt::rt::Flag::DebugLowerHex" 4.
-    Axiom IsDiscriminant_Flag_DebugUpperHex :
-      M.IsDiscriminant "core::fmt::rt::Flag::DebugUpperHex" 5.
-    
-    Module Impl_core_marker_Copy_for_core_fmt_rt_Flag.
-      Definition Self : Ty.t := Ty.path "core::fmt::rt::Flag".
-      
-      Axiom Implements :
-        M.IsTraitInstance
-          "core::marker::Copy"
-          (* Trait polymorphic consts *) []
-          (* Trait polymorphic types *) []
-          Self
-          (* Instance *) [].
-    End Impl_core_marker_Copy_for_core_fmt_rt_Flag.
-    
-    Module Impl_core_clone_Clone_for_core_fmt_rt_Flag.
-      Definition Self : Ty.t := Ty.path "core::fmt::rt::Flag".
-      
-      (* Clone *)
-      Definition clone (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [ self ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::rt::Flag" ], self |) in
-            M.read (| M.deref (| M.read (| self |) |) |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Axiom Implements :
-        M.IsTraitInstance
-          "core::clone::Clone"
-          (* Trait polymorphic consts *) []
-          (* Trait polymorphic types *) []
-          Self
-          (* Instance *) [ ("clone", InstanceField.Method clone) ].
-    End Impl_core_clone_Clone_for_core_fmt_rt_Flag.
-    
     (*
     Enum ArgumentType
     {
@@ -493,7 +35,7 @@ Module fmt.
           };
           {
             name := "Count";
-            item := StructTuple [ Ty.path "usize" ];
+            item := StructTuple [ Ty.path "u16" ];
           }
         ];
     }
@@ -515,6 +57,18 @@ Module fmt.
           Self
           (* Instance *) [].
     End Impl_core_marker_Copy_for_core_fmt_rt_ArgumentType.
+    
+    Module Impl_core_clone_TrivialClone_for_core_fmt_rt_ArgumentType.
+      Definition Self : Ty.t := Ty.path "core::fmt::rt::ArgumentType".
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::clone::TrivialClone"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [].
+    End Impl_core_clone_TrivialClone_for_core_fmt_rt_ArgumentType.
     
     Module Impl_core_clone_Clone_for_core_fmt_rt_ArgumentType.
       Definition Self : Ty.t := Ty.path "core::fmt::rt::ArgumentType".
@@ -594,6 +148,18 @@ Module fmt.
           (* Instance *) [].
     End Impl_core_marker_Copy_for_core_fmt_rt_Argument.
     
+    Module Impl_core_clone_TrivialClone_for_core_fmt_rt_Argument.
+      Definition Self : Ty.t := Ty.path "core::fmt::rt::Argument".
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::clone::TrivialClone"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [].
+    End Impl_core_clone_TrivialClone_for_core_fmt_rt_Argument.
+    
     Module Impl_core_clone_Clone_for_core_fmt_rt_Argument.
       Definition Self : Ty.t := Ty.path "core::fmt::rt::Argument".
       
@@ -625,37 +191,15 @@ Module fmt.
       Definition Self : Ty.t := Ty.path "core::fmt::rt::Argument".
       
       (*
-          fn new<'a, T>(x: &'a T, f: fn(&T, &mut Formatter<'_>) -> Result) -> Argument<'a> {
-              Argument {
-                  // INVARIANT: this creates an `ArgumentType<'a>` from a `&'a T` and
-                  // a `fn(&T, ...)`, so the invariant is maintained.
-                  ty: ArgumentType::Placeholder {
-                      value: NonNull::from(x).cast(),
-                      // SAFETY: function pointers always have the same layout.
-                      formatter: unsafe { mem::transmute(f) },
-                      _lifetime: PhantomData,
-                  },
-              }
+          pub const fn new_display<T: Display>(x: &T) -> Argument<'_> {
+              argument_new!(T, x, <T as Display>::fmt)
           }
       *)
-      Definition new (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      Definition new_display (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
-        | [], [ T ], [ x; f ] =>
+        | [], [ T ], [ x ] =>
           ltac:(M.monadic
             (let x := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], x |) in
-            let f :=
-              M.alloc (|
-                Ty.function
-                  [
-                    Ty.apply (Ty.path "&") [] [ T ];
-                    Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
-                  ]
-                  (Ty.apply
-                    (Ty.path "core::result::Result")
-                    []
-                    [ Ty.tuple []; Ty.path "core::fmt::Error" ]),
-                f
-              |) in
             Value.mkStructRecord
               "core::fmt::rt::Argument"
               []
@@ -679,34 +223,19 @@ Module fmt.
                           [
                             M.call_closure (|
                               Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
-                              M.get_trait_method (|
-                                "core::convert::From",
+                              M.get_associated_function (|
                                 Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
-                                [],
-                                [ Ty.apply (Ty.path "&") [] [ T ] ],
-                                "from",
+                                "from_ref",
                                 [],
                                 []
                               |),
-                              [ M.read (| x |) ]
+                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| x |) |) |) ]
                             |)
                           ]
                         |));
                       ("formatter",
-                        M.call_closure (|
-                          Ty.function
-                            [
-                              Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ Ty.tuple [] ];
-                              Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
-                            ]
-                            (Ty.apply
-                              (Ty.path "core::result::Result")
-                              []
-                              [ Ty.tuple []; Ty.path "core::fmt::Error" ]),
-                          M.get_function (|
-                            "core::intrinsics::transmute",
-                            [],
-                            [
+                        M.read (|
+                          let~ f :
                               Ty.function
                                 [
                                   Ty.apply (Ty.path "&") [] [ T ];
@@ -715,7 +244,63 @@ Module fmt.
                                 (Ty.apply
                                   (Ty.path "core::result::Result")
                                   []
-                                  [ Ty.tuple []; Ty.path "core::fmt::Error" ]);
+                                  [ Ty.tuple []; Ty.path "core::fmt::Error" ]) :=
+                            M.call_closure (|
+                              Ty.function
+                                [
+                                  Ty.apply (Ty.path "&") [] [ T ];
+                                  Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
+                                ]
+                                (Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [ Ty.tuple []; Ty.path "core::fmt::Error" ]),
+                              M.pointer_coercion
+                                M.PointerCoercion.ReifyFnPointer
+                                (Ty.function
+                                  [
+                                    Ty.apply (Ty.path "&") [] [ T ];
+                                    Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
+                                  ]
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [ Ty.tuple []; Ty.path "core::fmt::Error" ]))
+                                (Ty.function
+                                  [
+                                    Ty.apply (Ty.path "&") [] [ T ];
+                                    Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
+                                  ]
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [ Ty.tuple []; Ty.path "core::fmt::Error" ])),
+                              [
+                                M.get_trait_method (|
+                                  "core::fmt::Display",
+                                  T,
+                                  [],
+                                  [],
+                                  "fmt",
+                                  [],
+                                  []
+                                |)
+                              ]
+                            |) in
+                          M.alloc (|
+                            Ty.function
+                              [
+                                Ty.apply
+                                  (Ty.path "core::ptr::non_null::NonNull")
+                                  []
+                                  [ Ty.tuple [] ];
+                                Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
+                              ]
+                              (Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [ Ty.tuple []; Ty.path "core::fmt::Error" ]),
+                            M.call_closure (|
                               Ty.function
                                 [
                                   Ty.apply
@@ -727,10 +312,43 @@ Module fmt.
                                 (Ty.apply
                                   (Ty.path "core::result::Result")
                                   []
-                                  [ Ty.tuple []; Ty.path "core::fmt::Error" ])
-                            ]
-                          |),
-                          [ M.read (| f |) ]
+                                  [ Ty.tuple []; Ty.path "core::fmt::Error" ]),
+                              M.get_function (|
+                                "core::intrinsics::transmute",
+                                [],
+                                [
+                                  Ty.function
+                                    [
+                                      Ty.apply (Ty.path "&") [] [ T ];
+                                      Ty.apply
+                                        (Ty.path "&mut")
+                                        []
+                                        [ Ty.path "core::fmt::Formatter" ]
+                                    ]
+                                    (Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [ Ty.tuple []; Ty.path "core::fmt::Error" ]);
+                                  Ty.function
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::ptr::non_null::NonNull")
+                                        []
+                                        [ Ty.tuple [] ];
+                                      Ty.apply
+                                        (Ty.path "&mut")
+                                        []
+                                        [ Ty.path "core::fmt::Formatter" ]
+                                    ]
+                                    (Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [ Ty.tuple []; Ty.path "core::fmt::Error" ])
+                                ]
+                              |),
+                              [ M.read (| f |) ]
+                            |)
+                          |)
                         |));
                       ("_lifetime",
                         Value.StructTuple
@@ -743,70 +361,14 @@ Module fmt.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
-      Admitted.
-      Global Typeclasses Opaque new.
-      
-      (*
-          pub fn new_display<T: Display>(x: &T) -> Argument<'_> {
-              Self::new(x, Display::fmt)
-          }
-      *)
-      Definition new_display (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [ T ], [ x ] =>
-          ltac:(M.monadic
-            (let x := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], x |) in
-            M.call_closure (|
-              Ty.path "core::fmt::rt::Argument",
-              M.get_associated_function (| Ty.path "core::fmt::rt::Argument", "new", [], [ T ] |),
-              [
-                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| x |) |) |);
-                M.call_closure (|
-                  Ty.function
-                    [
-                      Ty.apply (Ty.path "&") [] [ T ];
-                      Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
-                    ]
-                    (Ty.apply
-                      (Ty.path "core::result::Result")
-                      []
-                      [ Ty.tuple []; Ty.path "core::fmt::Error" ]),
-                  M.pointer_coercion
-                    M.PointerCoercion.ReifyFnPointer
-                    (Ty.function
-                      [
-                        Ty.apply (Ty.path "&") [] [ T ];
-                        Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
-                      ]
-                      (Ty.apply
-                        (Ty.path "core::result::Result")
-                        []
-                        [ Ty.tuple []; Ty.path "core::fmt::Error" ]))
-                    (Ty.function
-                      [
-                        Ty.apply (Ty.path "&") [] [ T ];
-                        Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
-                      ]
-                      (Ty.apply
-                        (Ty.path "core::result::Result")
-                        []
-                        [ Ty.tuple []; Ty.path "core::fmt::Error" ])),
-                  [ M.get_trait_method (| "core::fmt::Display", T, [], [], "fmt", [], [] |) ]
-                |)
-              ]
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
       Global Instance AssociatedFunction_new_display :
         M.IsAssociatedFunction.C Self "new_display" new_display.
       Admitted.
       Global Typeclasses Opaque new_display.
       
       (*
-          pub fn new_debug<T: Debug>(x: &T) -> Argument<'_> {
-              Self::new(x, Debug::fmt)
+          pub const fn new_debug<T: Debug>(x: &T) -> Argument<'_> {
+              argument_new!(T, x, <T as Debug>::fmt)
           }
       *)
       Definition new_debug (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -814,45 +376,164 @@ Module fmt.
         | [], [ T ], [ x ] =>
           ltac:(M.monadic
             (let x := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], x |) in
-            M.call_closure (|
-              Ty.path "core::fmt::rt::Argument",
-              M.get_associated_function (| Ty.path "core::fmt::rt::Argument", "new", [], [ T ] |),
+            Value.mkStructRecord
+              "core::fmt::rt::Argument"
+              []
+              []
               [
-                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| x |) |) |);
-                M.call_closure (|
-                  Ty.function
+                ("ty",
+                  Value.mkStructRecord
+                    "core::fmt::rt::ArgumentType::Placeholder"
+                    []
+                    []
                     [
-                      Ty.apply (Ty.path "&") [] [ T ];
-                      Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
-                    ]
-                    (Ty.apply
-                      (Ty.path "core::result::Result")
-                      []
-                      [ Ty.tuple []; Ty.path "core::fmt::Error" ]),
-                  M.pointer_coercion
-                    M.PointerCoercion.ReifyFnPointer
-                    (Ty.function
-                      [
-                        Ty.apply (Ty.path "&") [] [ T ];
-                        Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
-                      ]
-                      (Ty.apply
-                        (Ty.path "core::result::Result")
-                        []
-                        [ Ty.tuple []; Ty.path "core::fmt::Error" ]))
-                    (Ty.function
-                      [
-                        Ty.apply (Ty.path "&") [] [ T ];
-                        Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
-                      ]
-                      (Ty.apply
-                        (Ty.path "core::result::Result")
-                        []
-                        [ Ty.tuple []; Ty.path "core::fmt::Error" ])),
-                  [ M.get_trait_method (| "core::fmt::Debug", T, [], [], "fmt", [], [] |) ]
-                |)
-              ]
-            |)))
+                      ("value",
+                        M.call_closure (|
+                          Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ Ty.tuple [] ],
+                          M.get_associated_function (|
+                            Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
+                            "cast",
+                            [],
+                            [ Ty.tuple [] ]
+                          |),
+                          [
+                            M.call_closure (|
+                              Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
+                              M.get_associated_function (|
+                                Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
+                                "from_ref",
+                                [],
+                                []
+                              |),
+                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| x |) |) |) ]
+                            |)
+                          ]
+                        |));
+                      ("formatter",
+                        M.read (|
+                          let~ f :
+                              Ty.function
+                                [
+                                  Ty.apply (Ty.path "&") [] [ T ];
+                                  Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
+                                ]
+                                (Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [ Ty.tuple []; Ty.path "core::fmt::Error" ]) :=
+                            M.call_closure (|
+                              Ty.function
+                                [
+                                  Ty.apply (Ty.path "&") [] [ T ];
+                                  Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
+                                ]
+                                (Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [ Ty.tuple []; Ty.path "core::fmt::Error" ]),
+                              M.pointer_coercion
+                                M.PointerCoercion.ReifyFnPointer
+                                (Ty.function
+                                  [
+                                    Ty.apply (Ty.path "&") [] [ T ];
+                                    Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
+                                  ]
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [ Ty.tuple []; Ty.path "core::fmt::Error" ]))
+                                (Ty.function
+                                  [
+                                    Ty.apply (Ty.path "&") [] [ T ];
+                                    Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
+                                  ]
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [ Ty.tuple []; Ty.path "core::fmt::Error" ])),
+                              [
+                                M.get_trait_method (|
+                                  "core::fmt::Debug",
+                                  T,
+                                  [],
+                                  [],
+                                  "fmt",
+                                  [],
+                                  []
+                                |)
+                              ]
+                            |) in
+                          M.alloc (|
+                            Ty.function
+                              [
+                                Ty.apply
+                                  (Ty.path "core::ptr::non_null::NonNull")
+                                  []
+                                  [ Ty.tuple [] ];
+                                Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
+                              ]
+                              (Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [ Ty.tuple []; Ty.path "core::fmt::Error" ]),
+                            M.call_closure (|
+                              Ty.function
+                                [
+                                  Ty.apply
+                                    (Ty.path "core::ptr::non_null::NonNull")
+                                    []
+                                    [ Ty.tuple [] ];
+                                  Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
+                                ]
+                                (Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [ Ty.tuple []; Ty.path "core::fmt::Error" ]),
+                              M.get_function (|
+                                "core::intrinsics::transmute",
+                                [],
+                                [
+                                  Ty.function
+                                    [
+                                      Ty.apply (Ty.path "&") [] [ T ];
+                                      Ty.apply
+                                        (Ty.path "&mut")
+                                        []
+                                        [ Ty.path "core::fmt::Formatter" ]
+                                    ]
+                                    (Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [ Ty.tuple []; Ty.path "core::fmt::Error" ]);
+                                  Ty.function
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::ptr::non_null::NonNull")
+                                        []
+                                        [ Ty.tuple [] ];
+                                      Ty.apply
+                                        (Ty.path "&mut")
+                                        []
+                                        [ Ty.path "core::fmt::Formatter" ]
+                                    ]
+                                    (Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [ Ty.tuple []; Ty.path "core::fmt::Error" ])
+                                ]
+                              |),
+                              [ M.read (| f |) ]
+                            |)
+                          |)
+                        |));
+                      ("_lifetime",
+                        Value.StructTuple
+                          "core::marker::PhantomData"
+                          []
+                          [ Ty.apply (Ty.path "&") [] [ Ty.tuple [] ] ]
+                          [])
+                    ])
+              ]))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -862,8 +543,8 @@ Module fmt.
       Global Typeclasses Opaque new_debug.
       
       (*
-          pub fn new_debug_noop<T: Debug>(x: &T) -> Argument<'_> {
-              Self::new(x, |_, _| Ok(()))
+          pub const fn new_debug_noop<T: Debug>(x: &T) -> Argument<'_> {
+              argument_new!(T, x, |_: &T, _| Ok(()))
           }
       *)
       Definition new_debug_noop (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -871,87 +552,199 @@ Module fmt.
         | [], [ T ], [ x ] =>
           ltac:(M.monadic
             (let x := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], x |) in
-            M.call_closure (|
-              Ty.path "core::fmt::rt::Argument",
-              M.get_associated_function (| Ty.path "core::fmt::rt::Argument", "new", [], [ T ] |),
+            Value.mkStructRecord
+              "core::fmt::rt::Argument"
+              []
+              []
               [
-                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| x |) |) |);
-                M.call_closure (|
-                  Ty.function
+                ("ty",
+                  Value.mkStructRecord
+                    "core::fmt::rt::ArgumentType::Placeholder"
+                    []
+                    []
                     [
-                      Ty.apply (Ty.path "&") [] [ T ];
-                      Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
-                    ]
-                    (Ty.apply
-                      (Ty.path "core::result::Result")
-                      []
-                      [ Ty.tuple []; Ty.path "core::fmt::Error" ]),
-                  M.pointer_coercion
-                    (M.PointerCoercion.ClosureFnPointer M.PointerCoercion.Safety.Safe)
-                    (Ty.function
-                      [
-                        Ty.apply (Ty.path "&") [] [ T ];
-                        Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
-                      ]
-                      (Ty.apply
-                        (Ty.path "core::result::Result")
-                        []
-                        [ Ty.tuple []; Ty.path "core::fmt::Error" ]))
-                    (Ty.function
-                      [
-                        Ty.apply (Ty.path "&") [] [ T ];
-                        Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
-                      ]
-                      (Ty.apply
-                        (Ty.path "core::result::Result")
-                        []
-                        [ Ty.tuple []; Ty.path "core::fmt::Error" ])),
-                  [
-                    M.closure
-                      (fun γ =>
-                        ltac:(M.monadic
-                          match γ with
-                          | [ α0; α1 ] =>
-                            ltac:(M.monadic
-                              (M.match_operator (|
-                                Ty.apply
+                      ("value",
+                        M.call_closure (|
+                          Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ Ty.tuple [] ],
+                          M.get_associated_function (|
+                            Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
+                            "cast",
+                            [],
+                            [ Ty.tuple [] ]
+                          |),
+                          [
+                            M.call_closure (|
+                              Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
+                              M.get_associated_function (|
+                                Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
+                                "from_ref",
+                                [],
+                                []
+                              |),
+                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| x |) |) |) ]
+                            |)
+                          ]
+                        |));
+                      ("formatter",
+                        M.read (|
+                          let~ f :
+                              Ty.function
+                                [
+                                  Ty.apply (Ty.path "&") [] [ T ];
+                                  Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
+                                ]
+                                (Ty.apply
                                   (Ty.path "core::result::Result")
                                   []
-                                  [ Ty.tuple []; Ty.path "core::fmt::Error" ],
-                                M.alloc (| Ty.apply (Ty.path "&") [] [ T ], α0 |),
+                                  [ Ty.tuple []; Ty.path "core::fmt::Error" ]) :=
+                            M.call_closure (|
+                              Ty.function
                                 [
-                                  fun γ =>
-                                    ltac:(M.monadic
-                                      (M.match_operator (|
-                                        Ty.apply
-                                          (Ty.path "core::result::Result")
-                                          []
-                                          [ Ty.tuple []; Ty.path "core::fmt::Error" ],
-                                        M.alloc (|
-                                          Ty.apply
-                                            (Ty.path "&mut")
-                                            []
-                                            [ Ty.path "core::fmt::Formatter" ],
-                                          α1
-                                        |),
-                                        [
-                                          fun γ =>
-                                            ltac:(M.monadic
-                                              (Value.StructTuple
-                                                "core::result::Result::Ok"
-                                                []
-                                                [ Ty.tuple []; Ty.path "core::fmt::Error" ]
-                                                [ Value.Tuple [] ]))
-                                        ]
-                                      |)))
+                                  Ty.apply (Ty.path "&") [] [ T ];
+                                  Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
                                 ]
-                              |)))
-                          | _ => M.impossible "wrong number of arguments"
-                          end))
-                  ]
-                |)
-              ]
-            |)))
+                                (Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [ Ty.tuple []; Ty.path "core::fmt::Error" ]),
+                              M.pointer_coercion
+                                (M.PointerCoercion.ClosureFnPointer M.PointerCoercion.Safety.Safe)
+                                (Ty.function
+                                  [
+                                    Ty.apply (Ty.path "&") [] [ T ];
+                                    Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
+                                  ]
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [ Ty.tuple []; Ty.path "core::fmt::Error" ]))
+                                (Ty.function
+                                  [
+                                    Ty.apply (Ty.path "&") [] [ T ];
+                                    Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
+                                  ]
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [ Ty.tuple []; Ty.path "core::fmt::Error" ])),
+                              [
+                                M.closure
+                                  (fun γ =>
+                                    ltac:(M.monadic
+                                      match γ with
+                                      | [ α0; α1 ] =>
+                                        ltac:(M.monadic
+                                          (M.match_operator (|
+                                            Ty.apply
+                                              (Ty.path "core::result::Result")
+                                              []
+                                              [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                                            M.alloc (| Ty.apply (Ty.path "&") [] [ T ], α0 |),
+                                            [
+                                              fun γ =>
+                                                ltac:(M.monadic
+                                                  (M.match_operator (|
+                                                    Ty.apply
+                                                      (Ty.path "core::result::Result")
+                                                      []
+                                                      [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                                                    M.alloc (|
+                                                      Ty.apply
+                                                        (Ty.path "&mut")
+                                                        []
+                                                        [ Ty.path "core::fmt::Formatter" ],
+                                                      α1
+                                                    |),
+                                                    [
+                                                      fun γ =>
+                                                        ltac:(M.monadic
+                                                          (Value.StructTuple
+                                                            "core::result::Result::Ok"
+                                                            []
+                                                            [
+                                                              Ty.tuple [];
+                                                              Ty.path "core::fmt::Error"
+                                                            ]
+                                                            [ Value.Tuple [] ]))
+                                                    ]
+                                                  |)))
+                                            ]
+                                          |)))
+                                      | _ => M.impossible "wrong number of arguments"
+                                      end))
+                              ]
+                            |) in
+                          M.alloc (|
+                            Ty.function
+                              [
+                                Ty.apply
+                                  (Ty.path "core::ptr::non_null::NonNull")
+                                  []
+                                  [ Ty.tuple [] ];
+                                Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
+                              ]
+                              (Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [ Ty.tuple []; Ty.path "core::fmt::Error" ]),
+                            M.call_closure (|
+                              Ty.function
+                                [
+                                  Ty.apply
+                                    (Ty.path "core::ptr::non_null::NonNull")
+                                    []
+                                    [ Ty.tuple [] ];
+                                  Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
+                                ]
+                                (Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [ Ty.tuple []; Ty.path "core::fmt::Error" ]),
+                              M.get_function (|
+                                "core::intrinsics::transmute",
+                                [],
+                                [
+                                  Ty.function
+                                    [
+                                      Ty.apply (Ty.path "&") [] [ T ];
+                                      Ty.apply
+                                        (Ty.path "&mut")
+                                        []
+                                        [ Ty.path "core::fmt::Formatter" ]
+                                    ]
+                                    (Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [ Ty.tuple []; Ty.path "core::fmt::Error" ]);
+                                  Ty.function
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::ptr::non_null::NonNull")
+                                        []
+                                        [ Ty.tuple [] ];
+                                      Ty.apply
+                                        (Ty.path "&mut")
+                                        []
+                                        [ Ty.path "core::fmt::Formatter" ]
+                                    ]
+                                    (Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [ Ty.tuple []; Ty.path "core::fmt::Error" ])
+                                ]
+                              |),
+                              [ M.read (| f |) ]
+                            |)
+                          |)
+                        |));
+                      ("_lifetime",
+                        Value.StructTuple
+                          "core::marker::PhantomData"
+                          []
+                          [ Ty.apply (Ty.path "&") [] [ Ty.tuple [] ] ]
+                          [])
+                    ])
+              ]))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -961,8 +754,8 @@ Module fmt.
       Global Typeclasses Opaque new_debug_noop.
       
       (*
-          pub fn new_octal<T: Octal>(x: &T) -> Argument<'_> {
-              Self::new(x, Octal::fmt)
+          pub const fn new_octal<T: Octal>(x: &T) -> Argument<'_> {
+              argument_new!(T, x, <T as Octal>::fmt)
           }
       *)
       Definition new_octal (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -970,45 +763,164 @@ Module fmt.
         | [], [ T ], [ x ] =>
           ltac:(M.monadic
             (let x := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], x |) in
-            M.call_closure (|
-              Ty.path "core::fmt::rt::Argument",
-              M.get_associated_function (| Ty.path "core::fmt::rt::Argument", "new", [], [ T ] |),
+            Value.mkStructRecord
+              "core::fmt::rt::Argument"
+              []
+              []
               [
-                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| x |) |) |);
-                M.call_closure (|
-                  Ty.function
+                ("ty",
+                  Value.mkStructRecord
+                    "core::fmt::rt::ArgumentType::Placeholder"
+                    []
+                    []
                     [
-                      Ty.apply (Ty.path "&") [] [ T ];
-                      Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
-                    ]
-                    (Ty.apply
-                      (Ty.path "core::result::Result")
-                      []
-                      [ Ty.tuple []; Ty.path "core::fmt::Error" ]),
-                  M.pointer_coercion
-                    M.PointerCoercion.ReifyFnPointer
-                    (Ty.function
-                      [
-                        Ty.apply (Ty.path "&") [] [ T ];
-                        Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
-                      ]
-                      (Ty.apply
-                        (Ty.path "core::result::Result")
-                        []
-                        [ Ty.tuple []; Ty.path "core::fmt::Error" ]))
-                    (Ty.function
-                      [
-                        Ty.apply (Ty.path "&") [] [ T ];
-                        Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
-                      ]
-                      (Ty.apply
-                        (Ty.path "core::result::Result")
-                        []
-                        [ Ty.tuple []; Ty.path "core::fmt::Error" ])),
-                  [ M.get_trait_method (| "core::fmt::Octal", T, [], [], "fmt", [], [] |) ]
-                |)
-              ]
-            |)))
+                      ("value",
+                        M.call_closure (|
+                          Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ Ty.tuple [] ],
+                          M.get_associated_function (|
+                            Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
+                            "cast",
+                            [],
+                            [ Ty.tuple [] ]
+                          |),
+                          [
+                            M.call_closure (|
+                              Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
+                              M.get_associated_function (|
+                                Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
+                                "from_ref",
+                                [],
+                                []
+                              |),
+                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| x |) |) |) ]
+                            |)
+                          ]
+                        |));
+                      ("formatter",
+                        M.read (|
+                          let~ f :
+                              Ty.function
+                                [
+                                  Ty.apply (Ty.path "&") [] [ T ];
+                                  Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
+                                ]
+                                (Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [ Ty.tuple []; Ty.path "core::fmt::Error" ]) :=
+                            M.call_closure (|
+                              Ty.function
+                                [
+                                  Ty.apply (Ty.path "&") [] [ T ];
+                                  Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
+                                ]
+                                (Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [ Ty.tuple []; Ty.path "core::fmt::Error" ]),
+                              M.pointer_coercion
+                                M.PointerCoercion.ReifyFnPointer
+                                (Ty.function
+                                  [
+                                    Ty.apply (Ty.path "&") [] [ T ];
+                                    Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
+                                  ]
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [ Ty.tuple []; Ty.path "core::fmt::Error" ]))
+                                (Ty.function
+                                  [
+                                    Ty.apply (Ty.path "&") [] [ T ];
+                                    Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
+                                  ]
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [ Ty.tuple []; Ty.path "core::fmt::Error" ])),
+                              [
+                                M.get_trait_method (|
+                                  "core::fmt::Octal",
+                                  T,
+                                  [],
+                                  [],
+                                  "fmt",
+                                  [],
+                                  []
+                                |)
+                              ]
+                            |) in
+                          M.alloc (|
+                            Ty.function
+                              [
+                                Ty.apply
+                                  (Ty.path "core::ptr::non_null::NonNull")
+                                  []
+                                  [ Ty.tuple [] ];
+                                Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
+                              ]
+                              (Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [ Ty.tuple []; Ty.path "core::fmt::Error" ]),
+                            M.call_closure (|
+                              Ty.function
+                                [
+                                  Ty.apply
+                                    (Ty.path "core::ptr::non_null::NonNull")
+                                    []
+                                    [ Ty.tuple [] ];
+                                  Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
+                                ]
+                                (Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [ Ty.tuple []; Ty.path "core::fmt::Error" ]),
+                              M.get_function (|
+                                "core::intrinsics::transmute",
+                                [],
+                                [
+                                  Ty.function
+                                    [
+                                      Ty.apply (Ty.path "&") [] [ T ];
+                                      Ty.apply
+                                        (Ty.path "&mut")
+                                        []
+                                        [ Ty.path "core::fmt::Formatter" ]
+                                    ]
+                                    (Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [ Ty.tuple []; Ty.path "core::fmt::Error" ]);
+                                  Ty.function
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::ptr::non_null::NonNull")
+                                        []
+                                        [ Ty.tuple [] ];
+                                      Ty.apply
+                                        (Ty.path "&mut")
+                                        []
+                                        [ Ty.path "core::fmt::Formatter" ]
+                                    ]
+                                    (Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [ Ty.tuple []; Ty.path "core::fmt::Error" ])
+                                ]
+                              |),
+                              [ M.read (| f |) ]
+                            |)
+                          |)
+                        |));
+                      ("_lifetime",
+                        Value.StructTuple
+                          "core::marker::PhantomData"
+                          []
+                          [ Ty.apply (Ty.path "&") [] [ Ty.tuple [] ] ]
+                          [])
+                    ])
+              ]))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -1018,8 +930,8 @@ Module fmt.
       Global Typeclasses Opaque new_octal.
       
       (*
-          pub fn new_lower_hex<T: LowerHex>(x: &T) -> Argument<'_> {
-              Self::new(x, LowerHex::fmt)
+          pub const fn new_lower_hex<T: LowerHex>(x: &T) -> Argument<'_> {
+              argument_new!(T, x, <T as LowerHex>::fmt)
           }
       *)
       Definition new_lower_hex (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -1027,45 +939,164 @@ Module fmt.
         | [], [ T ], [ x ] =>
           ltac:(M.monadic
             (let x := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], x |) in
-            M.call_closure (|
-              Ty.path "core::fmt::rt::Argument",
-              M.get_associated_function (| Ty.path "core::fmt::rt::Argument", "new", [], [ T ] |),
+            Value.mkStructRecord
+              "core::fmt::rt::Argument"
+              []
+              []
               [
-                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| x |) |) |);
-                M.call_closure (|
-                  Ty.function
+                ("ty",
+                  Value.mkStructRecord
+                    "core::fmt::rt::ArgumentType::Placeholder"
+                    []
+                    []
                     [
-                      Ty.apply (Ty.path "&") [] [ T ];
-                      Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
-                    ]
-                    (Ty.apply
-                      (Ty.path "core::result::Result")
-                      []
-                      [ Ty.tuple []; Ty.path "core::fmt::Error" ]),
-                  M.pointer_coercion
-                    M.PointerCoercion.ReifyFnPointer
-                    (Ty.function
-                      [
-                        Ty.apply (Ty.path "&") [] [ T ];
-                        Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
-                      ]
-                      (Ty.apply
-                        (Ty.path "core::result::Result")
-                        []
-                        [ Ty.tuple []; Ty.path "core::fmt::Error" ]))
-                    (Ty.function
-                      [
-                        Ty.apply (Ty.path "&") [] [ T ];
-                        Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
-                      ]
-                      (Ty.apply
-                        (Ty.path "core::result::Result")
-                        []
-                        [ Ty.tuple []; Ty.path "core::fmt::Error" ])),
-                  [ M.get_trait_method (| "core::fmt::LowerHex", T, [], [], "fmt", [], [] |) ]
-                |)
-              ]
-            |)))
+                      ("value",
+                        M.call_closure (|
+                          Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ Ty.tuple [] ],
+                          M.get_associated_function (|
+                            Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
+                            "cast",
+                            [],
+                            [ Ty.tuple [] ]
+                          |),
+                          [
+                            M.call_closure (|
+                              Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
+                              M.get_associated_function (|
+                                Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
+                                "from_ref",
+                                [],
+                                []
+                              |),
+                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| x |) |) |) ]
+                            |)
+                          ]
+                        |));
+                      ("formatter",
+                        M.read (|
+                          let~ f :
+                              Ty.function
+                                [
+                                  Ty.apply (Ty.path "&") [] [ T ];
+                                  Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
+                                ]
+                                (Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [ Ty.tuple []; Ty.path "core::fmt::Error" ]) :=
+                            M.call_closure (|
+                              Ty.function
+                                [
+                                  Ty.apply (Ty.path "&") [] [ T ];
+                                  Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
+                                ]
+                                (Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [ Ty.tuple []; Ty.path "core::fmt::Error" ]),
+                              M.pointer_coercion
+                                M.PointerCoercion.ReifyFnPointer
+                                (Ty.function
+                                  [
+                                    Ty.apply (Ty.path "&") [] [ T ];
+                                    Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
+                                  ]
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [ Ty.tuple []; Ty.path "core::fmt::Error" ]))
+                                (Ty.function
+                                  [
+                                    Ty.apply (Ty.path "&") [] [ T ];
+                                    Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
+                                  ]
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [ Ty.tuple []; Ty.path "core::fmt::Error" ])),
+                              [
+                                M.get_trait_method (|
+                                  "core::fmt::LowerHex",
+                                  T,
+                                  [],
+                                  [],
+                                  "fmt",
+                                  [],
+                                  []
+                                |)
+                              ]
+                            |) in
+                          M.alloc (|
+                            Ty.function
+                              [
+                                Ty.apply
+                                  (Ty.path "core::ptr::non_null::NonNull")
+                                  []
+                                  [ Ty.tuple [] ];
+                                Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
+                              ]
+                              (Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [ Ty.tuple []; Ty.path "core::fmt::Error" ]),
+                            M.call_closure (|
+                              Ty.function
+                                [
+                                  Ty.apply
+                                    (Ty.path "core::ptr::non_null::NonNull")
+                                    []
+                                    [ Ty.tuple [] ];
+                                  Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
+                                ]
+                                (Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [ Ty.tuple []; Ty.path "core::fmt::Error" ]),
+                              M.get_function (|
+                                "core::intrinsics::transmute",
+                                [],
+                                [
+                                  Ty.function
+                                    [
+                                      Ty.apply (Ty.path "&") [] [ T ];
+                                      Ty.apply
+                                        (Ty.path "&mut")
+                                        []
+                                        [ Ty.path "core::fmt::Formatter" ]
+                                    ]
+                                    (Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [ Ty.tuple []; Ty.path "core::fmt::Error" ]);
+                                  Ty.function
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::ptr::non_null::NonNull")
+                                        []
+                                        [ Ty.tuple [] ];
+                                      Ty.apply
+                                        (Ty.path "&mut")
+                                        []
+                                        [ Ty.path "core::fmt::Formatter" ]
+                                    ]
+                                    (Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [ Ty.tuple []; Ty.path "core::fmt::Error" ])
+                                ]
+                              |),
+                              [ M.read (| f |) ]
+                            |)
+                          |)
+                        |));
+                      ("_lifetime",
+                        Value.StructTuple
+                          "core::marker::PhantomData"
+                          []
+                          [ Ty.apply (Ty.path "&") [] [ Ty.tuple [] ] ]
+                          [])
+                    ])
+              ]))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -1075,8 +1106,8 @@ Module fmt.
       Global Typeclasses Opaque new_lower_hex.
       
       (*
-          pub fn new_upper_hex<T: UpperHex>(x: &T) -> Argument<'_> {
-              Self::new(x, UpperHex::fmt)
+          pub const fn new_upper_hex<T: UpperHex>(x: &T) -> Argument<'_> {
+              argument_new!(T, x, <T as UpperHex>::fmt)
           }
       *)
       Definition new_upper_hex (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -1084,45 +1115,164 @@ Module fmt.
         | [], [ T ], [ x ] =>
           ltac:(M.monadic
             (let x := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], x |) in
-            M.call_closure (|
-              Ty.path "core::fmt::rt::Argument",
-              M.get_associated_function (| Ty.path "core::fmt::rt::Argument", "new", [], [ T ] |),
+            Value.mkStructRecord
+              "core::fmt::rt::Argument"
+              []
+              []
               [
-                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| x |) |) |);
-                M.call_closure (|
-                  Ty.function
+                ("ty",
+                  Value.mkStructRecord
+                    "core::fmt::rt::ArgumentType::Placeholder"
+                    []
+                    []
                     [
-                      Ty.apply (Ty.path "&") [] [ T ];
-                      Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
-                    ]
-                    (Ty.apply
-                      (Ty.path "core::result::Result")
-                      []
-                      [ Ty.tuple []; Ty.path "core::fmt::Error" ]),
-                  M.pointer_coercion
-                    M.PointerCoercion.ReifyFnPointer
-                    (Ty.function
-                      [
-                        Ty.apply (Ty.path "&") [] [ T ];
-                        Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
-                      ]
-                      (Ty.apply
-                        (Ty.path "core::result::Result")
-                        []
-                        [ Ty.tuple []; Ty.path "core::fmt::Error" ]))
-                    (Ty.function
-                      [
-                        Ty.apply (Ty.path "&") [] [ T ];
-                        Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
-                      ]
-                      (Ty.apply
-                        (Ty.path "core::result::Result")
-                        []
-                        [ Ty.tuple []; Ty.path "core::fmt::Error" ])),
-                  [ M.get_trait_method (| "core::fmt::UpperHex", T, [], [], "fmt", [], [] |) ]
-                |)
-              ]
-            |)))
+                      ("value",
+                        M.call_closure (|
+                          Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ Ty.tuple [] ],
+                          M.get_associated_function (|
+                            Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
+                            "cast",
+                            [],
+                            [ Ty.tuple [] ]
+                          |),
+                          [
+                            M.call_closure (|
+                              Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
+                              M.get_associated_function (|
+                                Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
+                                "from_ref",
+                                [],
+                                []
+                              |),
+                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| x |) |) |) ]
+                            |)
+                          ]
+                        |));
+                      ("formatter",
+                        M.read (|
+                          let~ f :
+                              Ty.function
+                                [
+                                  Ty.apply (Ty.path "&") [] [ T ];
+                                  Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
+                                ]
+                                (Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [ Ty.tuple []; Ty.path "core::fmt::Error" ]) :=
+                            M.call_closure (|
+                              Ty.function
+                                [
+                                  Ty.apply (Ty.path "&") [] [ T ];
+                                  Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
+                                ]
+                                (Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [ Ty.tuple []; Ty.path "core::fmt::Error" ]),
+                              M.pointer_coercion
+                                M.PointerCoercion.ReifyFnPointer
+                                (Ty.function
+                                  [
+                                    Ty.apply (Ty.path "&") [] [ T ];
+                                    Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
+                                  ]
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [ Ty.tuple []; Ty.path "core::fmt::Error" ]))
+                                (Ty.function
+                                  [
+                                    Ty.apply (Ty.path "&") [] [ T ];
+                                    Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
+                                  ]
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [ Ty.tuple []; Ty.path "core::fmt::Error" ])),
+                              [
+                                M.get_trait_method (|
+                                  "core::fmt::UpperHex",
+                                  T,
+                                  [],
+                                  [],
+                                  "fmt",
+                                  [],
+                                  []
+                                |)
+                              ]
+                            |) in
+                          M.alloc (|
+                            Ty.function
+                              [
+                                Ty.apply
+                                  (Ty.path "core::ptr::non_null::NonNull")
+                                  []
+                                  [ Ty.tuple [] ];
+                                Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
+                              ]
+                              (Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [ Ty.tuple []; Ty.path "core::fmt::Error" ]),
+                            M.call_closure (|
+                              Ty.function
+                                [
+                                  Ty.apply
+                                    (Ty.path "core::ptr::non_null::NonNull")
+                                    []
+                                    [ Ty.tuple [] ];
+                                  Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
+                                ]
+                                (Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [ Ty.tuple []; Ty.path "core::fmt::Error" ]),
+                              M.get_function (|
+                                "core::intrinsics::transmute",
+                                [],
+                                [
+                                  Ty.function
+                                    [
+                                      Ty.apply (Ty.path "&") [] [ T ];
+                                      Ty.apply
+                                        (Ty.path "&mut")
+                                        []
+                                        [ Ty.path "core::fmt::Formatter" ]
+                                    ]
+                                    (Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [ Ty.tuple []; Ty.path "core::fmt::Error" ]);
+                                  Ty.function
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::ptr::non_null::NonNull")
+                                        []
+                                        [ Ty.tuple [] ];
+                                      Ty.apply
+                                        (Ty.path "&mut")
+                                        []
+                                        [ Ty.path "core::fmt::Formatter" ]
+                                    ]
+                                    (Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [ Ty.tuple []; Ty.path "core::fmt::Error" ])
+                                ]
+                              |),
+                              [ M.read (| f |) ]
+                            |)
+                          |)
+                        |));
+                      ("_lifetime",
+                        Value.StructTuple
+                          "core::marker::PhantomData"
+                          []
+                          [ Ty.apply (Ty.path "&") [] [ Ty.tuple [] ] ]
+                          [])
+                    ])
+              ]))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -1132,8 +1282,8 @@ Module fmt.
       Global Typeclasses Opaque new_upper_hex.
       
       (*
-          pub fn new_pointer<T: Pointer>(x: &T) -> Argument<'_> {
-              Self::new(x, Pointer::fmt)
+          pub const fn new_pointer<T: Pointer>(x: &T) -> Argument<'_> {
+              argument_new!(T, x, <T as Pointer>::fmt)
           }
       *)
       Definition new_pointer (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -1141,45 +1291,164 @@ Module fmt.
         | [], [ T ], [ x ] =>
           ltac:(M.monadic
             (let x := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], x |) in
-            M.call_closure (|
-              Ty.path "core::fmt::rt::Argument",
-              M.get_associated_function (| Ty.path "core::fmt::rt::Argument", "new", [], [ T ] |),
+            Value.mkStructRecord
+              "core::fmt::rt::Argument"
+              []
+              []
               [
-                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| x |) |) |);
-                M.call_closure (|
-                  Ty.function
+                ("ty",
+                  Value.mkStructRecord
+                    "core::fmt::rt::ArgumentType::Placeholder"
+                    []
+                    []
                     [
-                      Ty.apply (Ty.path "&") [] [ T ];
-                      Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
-                    ]
-                    (Ty.apply
-                      (Ty.path "core::result::Result")
-                      []
-                      [ Ty.tuple []; Ty.path "core::fmt::Error" ]),
-                  M.pointer_coercion
-                    M.PointerCoercion.ReifyFnPointer
-                    (Ty.function
-                      [
-                        Ty.apply (Ty.path "&") [] [ T ];
-                        Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
-                      ]
-                      (Ty.apply
-                        (Ty.path "core::result::Result")
-                        []
-                        [ Ty.tuple []; Ty.path "core::fmt::Error" ]))
-                    (Ty.function
-                      [
-                        Ty.apply (Ty.path "&") [] [ T ];
-                        Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
-                      ]
-                      (Ty.apply
-                        (Ty.path "core::result::Result")
-                        []
-                        [ Ty.tuple []; Ty.path "core::fmt::Error" ])),
-                  [ M.get_trait_method (| "core::fmt::Pointer", T, [], [], "fmt", [], [] |) ]
-                |)
-              ]
-            |)))
+                      ("value",
+                        M.call_closure (|
+                          Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ Ty.tuple [] ],
+                          M.get_associated_function (|
+                            Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
+                            "cast",
+                            [],
+                            [ Ty.tuple [] ]
+                          |),
+                          [
+                            M.call_closure (|
+                              Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
+                              M.get_associated_function (|
+                                Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
+                                "from_ref",
+                                [],
+                                []
+                              |),
+                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| x |) |) |) ]
+                            |)
+                          ]
+                        |));
+                      ("formatter",
+                        M.read (|
+                          let~ f :
+                              Ty.function
+                                [
+                                  Ty.apply (Ty.path "&") [] [ T ];
+                                  Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
+                                ]
+                                (Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [ Ty.tuple []; Ty.path "core::fmt::Error" ]) :=
+                            M.call_closure (|
+                              Ty.function
+                                [
+                                  Ty.apply (Ty.path "&") [] [ T ];
+                                  Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
+                                ]
+                                (Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [ Ty.tuple []; Ty.path "core::fmt::Error" ]),
+                              M.pointer_coercion
+                                M.PointerCoercion.ReifyFnPointer
+                                (Ty.function
+                                  [
+                                    Ty.apply (Ty.path "&") [] [ T ];
+                                    Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
+                                  ]
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [ Ty.tuple []; Ty.path "core::fmt::Error" ]))
+                                (Ty.function
+                                  [
+                                    Ty.apply (Ty.path "&") [] [ T ];
+                                    Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
+                                  ]
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [ Ty.tuple []; Ty.path "core::fmt::Error" ])),
+                              [
+                                M.get_trait_method (|
+                                  "core::fmt::Pointer",
+                                  T,
+                                  [],
+                                  [],
+                                  "fmt",
+                                  [],
+                                  []
+                                |)
+                              ]
+                            |) in
+                          M.alloc (|
+                            Ty.function
+                              [
+                                Ty.apply
+                                  (Ty.path "core::ptr::non_null::NonNull")
+                                  []
+                                  [ Ty.tuple [] ];
+                                Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
+                              ]
+                              (Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [ Ty.tuple []; Ty.path "core::fmt::Error" ]),
+                            M.call_closure (|
+                              Ty.function
+                                [
+                                  Ty.apply
+                                    (Ty.path "core::ptr::non_null::NonNull")
+                                    []
+                                    [ Ty.tuple [] ];
+                                  Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
+                                ]
+                                (Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [ Ty.tuple []; Ty.path "core::fmt::Error" ]),
+                              M.get_function (|
+                                "core::intrinsics::transmute",
+                                [],
+                                [
+                                  Ty.function
+                                    [
+                                      Ty.apply (Ty.path "&") [] [ T ];
+                                      Ty.apply
+                                        (Ty.path "&mut")
+                                        []
+                                        [ Ty.path "core::fmt::Formatter" ]
+                                    ]
+                                    (Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [ Ty.tuple []; Ty.path "core::fmt::Error" ]);
+                                  Ty.function
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::ptr::non_null::NonNull")
+                                        []
+                                        [ Ty.tuple [] ];
+                                      Ty.apply
+                                        (Ty.path "&mut")
+                                        []
+                                        [ Ty.path "core::fmt::Formatter" ]
+                                    ]
+                                    (Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [ Ty.tuple []; Ty.path "core::fmt::Error" ])
+                                ]
+                              |),
+                              [ M.read (| f |) ]
+                            |)
+                          |)
+                        |));
+                      ("_lifetime",
+                        Value.StructTuple
+                          "core::marker::PhantomData"
+                          []
+                          [ Ty.apply (Ty.path "&") [] [ Ty.tuple [] ] ]
+                          [])
+                    ])
+              ]))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -1189,8 +1458,8 @@ Module fmt.
       Global Typeclasses Opaque new_pointer.
       
       (*
-          pub fn new_binary<T: Binary>(x: &T) -> Argument<'_> {
-              Self::new(x, Binary::fmt)
+          pub const fn new_binary<T: Binary>(x: &T) -> Argument<'_> {
+              argument_new!(T, x, <T as Binary>::fmt)
           }
       *)
       Definition new_binary (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -1198,45 +1467,164 @@ Module fmt.
         | [], [ T ], [ x ] =>
           ltac:(M.monadic
             (let x := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], x |) in
-            M.call_closure (|
-              Ty.path "core::fmt::rt::Argument",
-              M.get_associated_function (| Ty.path "core::fmt::rt::Argument", "new", [], [ T ] |),
+            Value.mkStructRecord
+              "core::fmt::rt::Argument"
+              []
+              []
               [
-                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| x |) |) |);
-                M.call_closure (|
-                  Ty.function
+                ("ty",
+                  Value.mkStructRecord
+                    "core::fmt::rt::ArgumentType::Placeholder"
+                    []
+                    []
                     [
-                      Ty.apply (Ty.path "&") [] [ T ];
-                      Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
-                    ]
-                    (Ty.apply
-                      (Ty.path "core::result::Result")
-                      []
-                      [ Ty.tuple []; Ty.path "core::fmt::Error" ]),
-                  M.pointer_coercion
-                    M.PointerCoercion.ReifyFnPointer
-                    (Ty.function
-                      [
-                        Ty.apply (Ty.path "&") [] [ T ];
-                        Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
-                      ]
-                      (Ty.apply
-                        (Ty.path "core::result::Result")
-                        []
-                        [ Ty.tuple []; Ty.path "core::fmt::Error" ]))
-                    (Ty.function
-                      [
-                        Ty.apply (Ty.path "&") [] [ T ];
-                        Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
-                      ]
-                      (Ty.apply
-                        (Ty.path "core::result::Result")
-                        []
-                        [ Ty.tuple []; Ty.path "core::fmt::Error" ])),
-                  [ M.get_trait_method (| "core::fmt::Binary", T, [], [], "fmt", [], [] |) ]
-                |)
-              ]
-            |)))
+                      ("value",
+                        M.call_closure (|
+                          Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ Ty.tuple [] ],
+                          M.get_associated_function (|
+                            Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
+                            "cast",
+                            [],
+                            [ Ty.tuple [] ]
+                          |),
+                          [
+                            M.call_closure (|
+                              Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
+                              M.get_associated_function (|
+                                Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
+                                "from_ref",
+                                [],
+                                []
+                              |),
+                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| x |) |) |) ]
+                            |)
+                          ]
+                        |));
+                      ("formatter",
+                        M.read (|
+                          let~ f :
+                              Ty.function
+                                [
+                                  Ty.apply (Ty.path "&") [] [ T ];
+                                  Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
+                                ]
+                                (Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [ Ty.tuple []; Ty.path "core::fmt::Error" ]) :=
+                            M.call_closure (|
+                              Ty.function
+                                [
+                                  Ty.apply (Ty.path "&") [] [ T ];
+                                  Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
+                                ]
+                                (Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [ Ty.tuple []; Ty.path "core::fmt::Error" ]),
+                              M.pointer_coercion
+                                M.PointerCoercion.ReifyFnPointer
+                                (Ty.function
+                                  [
+                                    Ty.apply (Ty.path "&") [] [ T ];
+                                    Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
+                                  ]
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [ Ty.tuple []; Ty.path "core::fmt::Error" ]))
+                                (Ty.function
+                                  [
+                                    Ty.apply (Ty.path "&") [] [ T ];
+                                    Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
+                                  ]
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [ Ty.tuple []; Ty.path "core::fmt::Error" ])),
+                              [
+                                M.get_trait_method (|
+                                  "core::fmt::Binary",
+                                  T,
+                                  [],
+                                  [],
+                                  "fmt",
+                                  [],
+                                  []
+                                |)
+                              ]
+                            |) in
+                          M.alloc (|
+                            Ty.function
+                              [
+                                Ty.apply
+                                  (Ty.path "core::ptr::non_null::NonNull")
+                                  []
+                                  [ Ty.tuple [] ];
+                                Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
+                              ]
+                              (Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [ Ty.tuple []; Ty.path "core::fmt::Error" ]),
+                            M.call_closure (|
+                              Ty.function
+                                [
+                                  Ty.apply
+                                    (Ty.path "core::ptr::non_null::NonNull")
+                                    []
+                                    [ Ty.tuple [] ];
+                                  Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
+                                ]
+                                (Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [ Ty.tuple []; Ty.path "core::fmt::Error" ]),
+                              M.get_function (|
+                                "core::intrinsics::transmute",
+                                [],
+                                [
+                                  Ty.function
+                                    [
+                                      Ty.apply (Ty.path "&") [] [ T ];
+                                      Ty.apply
+                                        (Ty.path "&mut")
+                                        []
+                                        [ Ty.path "core::fmt::Formatter" ]
+                                    ]
+                                    (Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [ Ty.tuple []; Ty.path "core::fmt::Error" ]);
+                                  Ty.function
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::ptr::non_null::NonNull")
+                                        []
+                                        [ Ty.tuple [] ];
+                                      Ty.apply
+                                        (Ty.path "&mut")
+                                        []
+                                        [ Ty.path "core::fmt::Formatter" ]
+                                    ]
+                                    (Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [ Ty.tuple []; Ty.path "core::fmt::Error" ])
+                                ]
+                              |),
+                              [ M.read (| f |) ]
+                            |)
+                          |)
+                        |));
+                      ("_lifetime",
+                        Value.StructTuple
+                          "core::marker::PhantomData"
+                          []
+                          [ Ty.apply (Ty.path "&") [] [ Ty.tuple [] ] ]
+                          [])
+                    ])
+              ]))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -1246,8 +1634,8 @@ Module fmt.
       Global Typeclasses Opaque new_binary.
       
       (*
-          pub fn new_lower_exp<T: LowerExp>(x: &T) -> Argument<'_> {
-              Self::new(x, LowerExp::fmt)
+          pub const fn new_lower_exp<T: LowerExp>(x: &T) -> Argument<'_> {
+              argument_new!(T, x, <T as LowerExp>::fmt)
           }
       *)
       Definition new_lower_exp (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -1255,45 +1643,164 @@ Module fmt.
         | [], [ T ], [ x ] =>
           ltac:(M.monadic
             (let x := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], x |) in
-            M.call_closure (|
-              Ty.path "core::fmt::rt::Argument",
-              M.get_associated_function (| Ty.path "core::fmt::rt::Argument", "new", [], [ T ] |),
+            Value.mkStructRecord
+              "core::fmt::rt::Argument"
+              []
+              []
               [
-                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| x |) |) |);
-                M.call_closure (|
-                  Ty.function
+                ("ty",
+                  Value.mkStructRecord
+                    "core::fmt::rt::ArgumentType::Placeholder"
+                    []
+                    []
                     [
-                      Ty.apply (Ty.path "&") [] [ T ];
-                      Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
-                    ]
-                    (Ty.apply
-                      (Ty.path "core::result::Result")
-                      []
-                      [ Ty.tuple []; Ty.path "core::fmt::Error" ]),
-                  M.pointer_coercion
-                    M.PointerCoercion.ReifyFnPointer
-                    (Ty.function
-                      [
-                        Ty.apply (Ty.path "&") [] [ T ];
-                        Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
-                      ]
-                      (Ty.apply
-                        (Ty.path "core::result::Result")
-                        []
-                        [ Ty.tuple []; Ty.path "core::fmt::Error" ]))
-                    (Ty.function
-                      [
-                        Ty.apply (Ty.path "&") [] [ T ];
-                        Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
-                      ]
-                      (Ty.apply
-                        (Ty.path "core::result::Result")
-                        []
-                        [ Ty.tuple []; Ty.path "core::fmt::Error" ])),
-                  [ M.get_trait_method (| "core::fmt::LowerExp", T, [], [], "fmt", [], [] |) ]
-                |)
-              ]
-            |)))
+                      ("value",
+                        M.call_closure (|
+                          Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ Ty.tuple [] ],
+                          M.get_associated_function (|
+                            Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
+                            "cast",
+                            [],
+                            [ Ty.tuple [] ]
+                          |),
+                          [
+                            M.call_closure (|
+                              Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
+                              M.get_associated_function (|
+                                Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
+                                "from_ref",
+                                [],
+                                []
+                              |),
+                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| x |) |) |) ]
+                            |)
+                          ]
+                        |));
+                      ("formatter",
+                        M.read (|
+                          let~ f :
+                              Ty.function
+                                [
+                                  Ty.apply (Ty.path "&") [] [ T ];
+                                  Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
+                                ]
+                                (Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [ Ty.tuple []; Ty.path "core::fmt::Error" ]) :=
+                            M.call_closure (|
+                              Ty.function
+                                [
+                                  Ty.apply (Ty.path "&") [] [ T ];
+                                  Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
+                                ]
+                                (Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [ Ty.tuple []; Ty.path "core::fmt::Error" ]),
+                              M.pointer_coercion
+                                M.PointerCoercion.ReifyFnPointer
+                                (Ty.function
+                                  [
+                                    Ty.apply (Ty.path "&") [] [ T ];
+                                    Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
+                                  ]
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [ Ty.tuple []; Ty.path "core::fmt::Error" ]))
+                                (Ty.function
+                                  [
+                                    Ty.apply (Ty.path "&") [] [ T ];
+                                    Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
+                                  ]
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [ Ty.tuple []; Ty.path "core::fmt::Error" ])),
+                              [
+                                M.get_trait_method (|
+                                  "core::fmt::LowerExp",
+                                  T,
+                                  [],
+                                  [],
+                                  "fmt",
+                                  [],
+                                  []
+                                |)
+                              ]
+                            |) in
+                          M.alloc (|
+                            Ty.function
+                              [
+                                Ty.apply
+                                  (Ty.path "core::ptr::non_null::NonNull")
+                                  []
+                                  [ Ty.tuple [] ];
+                                Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
+                              ]
+                              (Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [ Ty.tuple []; Ty.path "core::fmt::Error" ]),
+                            M.call_closure (|
+                              Ty.function
+                                [
+                                  Ty.apply
+                                    (Ty.path "core::ptr::non_null::NonNull")
+                                    []
+                                    [ Ty.tuple [] ];
+                                  Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
+                                ]
+                                (Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [ Ty.tuple []; Ty.path "core::fmt::Error" ]),
+                              M.get_function (|
+                                "core::intrinsics::transmute",
+                                [],
+                                [
+                                  Ty.function
+                                    [
+                                      Ty.apply (Ty.path "&") [] [ T ];
+                                      Ty.apply
+                                        (Ty.path "&mut")
+                                        []
+                                        [ Ty.path "core::fmt::Formatter" ]
+                                    ]
+                                    (Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [ Ty.tuple []; Ty.path "core::fmt::Error" ]);
+                                  Ty.function
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::ptr::non_null::NonNull")
+                                        []
+                                        [ Ty.tuple [] ];
+                                      Ty.apply
+                                        (Ty.path "&mut")
+                                        []
+                                        [ Ty.path "core::fmt::Formatter" ]
+                                    ]
+                                    (Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [ Ty.tuple []; Ty.path "core::fmt::Error" ])
+                                ]
+                              |),
+                              [ M.read (| f |) ]
+                            |)
+                          |)
+                        |));
+                      ("_lifetime",
+                        Value.StructTuple
+                          "core::marker::PhantomData"
+                          []
+                          [ Ty.apply (Ty.path "&") [] [ Ty.tuple [] ] ]
+                          [])
+                    ])
+              ]))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -1303,8 +1810,8 @@ Module fmt.
       Global Typeclasses Opaque new_lower_exp.
       
       (*
-          pub fn new_upper_exp<T: UpperExp>(x: &T) -> Argument<'_> {
-              Self::new(x, UpperExp::fmt)
+          pub const fn new_upper_exp<T: UpperExp>(x: &T) -> Argument<'_> {
+              argument_new!(T, x, <T as UpperExp>::fmt)
           }
       *)
       Definition new_upper_exp (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -1312,45 +1819,164 @@ Module fmt.
         | [], [ T ], [ x ] =>
           ltac:(M.monadic
             (let x := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], x |) in
-            M.call_closure (|
-              Ty.path "core::fmt::rt::Argument",
-              M.get_associated_function (| Ty.path "core::fmt::rt::Argument", "new", [], [ T ] |),
+            Value.mkStructRecord
+              "core::fmt::rt::Argument"
+              []
+              []
               [
-                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| x |) |) |);
-                M.call_closure (|
-                  Ty.function
+                ("ty",
+                  Value.mkStructRecord
+                    "core::fmt::rt::ArgumentType::Placeholder"
+                    []
+                    []
                     [
-                      Ty.apply (Ty.path "&") [] [ T ];
-                      Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
-                    ]
-                    (Ty.apply
-                      (Ty.path "core::result::Result")
-                      []
-                      [ Ty.tuple []; Ty.path "core::fmt::Error" ]),
-                  M.pointer_coercion
-                    M.PointerCoercion.ReifyFnPointer
-                    (Ty.function
-                      [
-                        Ty.apply (Ty.path "&") [] [ T ];
-                        Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
-                      ]
-                      (Ty.apply
-                        (Ty.path "core::result::Result")
-                        []
-                        [ Ty.tuple []; Ty.path "core::fmt::Error" ]))
-                    (Ty.function
-                      [
-                        Ty.apply (Ty.path "&") [] [ T ];
-                        Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
-                      ]
-                      (Ty.apply
-                        (Ty.path "core::result::Result")
-                        []
-                        [ Ty.tuple []; Ty.path "core::fmt::Error" ])),
-                  [ M.get_trait_method (| "core::fmt::UpperExp", T, [], [], "fmt", [], [] |) ]
-                |)
-              ]
-            |)))
+                      ("value",
+                        M.call_closure (|
+                          Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ Ty.tuple [] ],
+                          M.get_associated_function (|
+                            Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
+                            "cast",
+                            [],
+                            [ Ty.tuple [] ]
+                          |),
+                          [
+                            M.call_closure (|
+                              Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
+                              M.get_associated_function (|
+                                Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
+                                "from_ref",
+                                [],
+                                []
+                              |),
+                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| x |) |) |) ]
+                            |)
+                          ]
+                        |));
+                      ("formatter",
+                        M.read (|
+                          let~ f :
+                              Ty.function
+                                [
+                                  Ty.apply (Ty.path "&") [] [ T ];
+                                  Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
+                                ]
+                                (Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [ Ty.tuple []; Ty.path "core::fmt::Error" ]) :=
+                            M.call_closure (|
+                              Ty.function
+                                [
+                                  Ty.apply (Ty.path "&") [] [ T ];
+                                  Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
+                                ]
+                                (Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [ Ty.tuple []; Ty.path "core::fmt::Error" ]),
+                              M.pointer_coercion
+                                M.PointerCoercion.ReifyFnPointer
+                                (Ty.function
+                                  [
+                                    Ty.apply (Ty.path "&") [] [ T ];
+                                    Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
+                                  ]
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [ Ty.tuple []; Ty.path "core::fmt::Error" ]))
+                                (Ty.function
+                                  [
+                                    Ty.apply (Ty.path "&") [] [ T ];
+                                    Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
+                                  ]
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [ Ty.tuple []; Ty.path "core::fmt::Error" ])),
+                              [
+                                M.get_trait_method (|
+                                  "core::fmt::UpperExp",
+                                  T,
+                                  [],
+                                  [],
+                                  "fmt",
+                                  [],
+                                  []
+                                |)
+                              ]
+                            |) in
+                          M.alloc (|
+                            Ty.function
+                              [
+                                Ty.apply
+                                  (Ty.path "core::ptr::non_null::NonNull")
+                                  []
+                                  [ Ty.tuple [] ];
+                                Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
+                              ]
+                              (Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [ Ty.tuple []; Ty.path "core::fmt::Error" ]),
+                            M.call_closure (|
+                              Ty.function
+                                [
+                                  Ty.apply
+                                    (Ty.path "core::ptr::non_null::NonNull")
+                                    []
+                                    [ Ty.tuple [] ];
+                                  Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]
+                                ]
+                                (Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [ Ty.tuple []; Ty.path "core::fmt::Error" ]),
+                              M.get_function (|
+                                "core::intrinsics::transmute",
+                                [],
+                                [
+                                  Ty.function
+                                    [
+                                      Ty.apply (Ty.path "&") [] [ T ];
+                                      Ty.apply
+                                        (Ty.path "&mut")
+                                        []
+                                        [ Ty.path "core::fmt::Formatter" ]
+                                    ]
+                                    (Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [ Ty.tuple []; Ty.path "core::fmt::Error" ]);
+                                  Ty.function
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::ptr::non_null::NonNull")
+                                        []
+                                        [ Ty.tuple [] ];
+                                      Ty.apply
+                                        (Ty.path "&mut")
+                                        []
+                                        [ Ty.path "core::fmt::Formatter" ]
+                                    ]
+                                    (Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [ Ty.tuple []; Ty.path "core::fmt::Error" ])
+                                ]
+                              |),
+                              [ M.read (| f |) ]
+                            |)
+                          |)
+                        |));
+                      ("_lifetime",
+                        Value.StructTuple
+                          "core::marker::PhantomData"
+                          []
+                          [ Ty.apply (Ty.path "&") [] [ Ty.tuple [] ] ]
+                          [])
+                    ])
+              ]))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -1360,8 +1986,11 @@ Module fmt.
       Global Typeclasses Opaque new_upper_exp.
       
       (*
-          pub fn from_usize(x: &usize) -> Argument<'_> {
-              Argument { ty: ArgumentType::Count( *x) }
+          pub const fn from_usize(x: &usize) -> Argument<'_> {
+              if *x > u16::MAX as usize {
+                  panic!("Formatting argument out of range");
+              }
+              Argument { ty: ArgumentType::Count( *x as u16) }
           }
       *)
       Definition from_usize (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -1369,18 +1998,72 @@ Module fmt.
         | [], [], [ x ] =>
           ltac:(M.monadic
             (let x := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], x |) in
-            Value.mkStructRecord
-              "core::fmt::rt::Argument"
-              []
-              []
-              [
-                ("ty",
-                  Value.StructTuple
-                    "core::fmt::rt::ArgumentType::Count"
-                    []
-                    []
-                    [ M.read (| M.deref (| M.read (| x |) |) |) ])
-              ]))
+            M.read (|
+              let~ _ : Ty.tuple [] :=
+                M.match_operator (|
+                  Ty.tuple [],
+                  M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                  [
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ :=
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.gt,
+                              [
+                                M.read (| M.deref (| M.read (| x |) |) |);
+                                M.cast
+                                  (Ty.path "usize")
+                                  (M.read (|
+                                    get_associated_constant (|
+                                      Ty.path "u16",
+                                      "MAX",
+                                      Ty.path "u16"
+                                    |)
+                                  |))
+                              ]
+                            |)
+                          |) in
+                        let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                        M.never_to_any (|
+                          M.call_closure (|
+                            Ty.path "never",
+                            M.get_function (| "core::panicking::panic_fmt", [], [] |),
+                            [
+                              M.call_closure (|
+                                Ty.path "core::fmt::Arguments",
+                                M.get_associated_function (|
+                                  Ty.path "core::fmt::Arguments",
+                                  "from_str",
+                                  [],
+                                  []
+                                |),
+                                [ mk_str (| "Formatting argument out of range" |) ]
+                              |)
+                            ]
+                          |)
+                        |)));
+                    fun γ => ltac:(M.monadic (Value.Tuple []))
+                  ]
+                |) in
+              M.alloc (|
+                Ty.path "core::fmt::rt::Argument",
+                Value.mkStructRecord
+                  "core::fmt::rt::Argument"
+                  []
+                  []
+                  [
+                    ("ty",
+                      Value.StructTuple
+                        "core::fmt::rt::ArgumentType::Count"
+                        []
+                        []
+                        [ M.cast (Ty.path "u16") (M.read (| M.deref (| M.read (| x |) |) |)) ])
+                  ]
+              |)
+            |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -1492,21 +2175,21 @@ Module fmt.
       Global Typeclasses Opaque fmt.
       
       (*
-          pub(super) fn as_usize(&self) -> Option<usize> {
+          pub(super) const fn as_u16(&self) -> Option<u16> {
               match self.ty {
                   ArgumentType::Count(count) => Some(count),
                   ArgumentType::Placeholder { .. } => None,
               }
           }
       *)
-      Definition as_usize (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      Definition as_u16 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self ] =>
           ltac:(M.monadic
             (let self :=
               M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::rt::Argument" ], self |) in
             M.match_operator (|
-              Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ],
+              Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u16" ],
               M.SubPointer.get_struct_record_field (|
                 M.deref (| M.read (| self |) |),
                 "core::fmt::rt::Argument",
@@ -1521,74 +2204,25 @@ Module fmt.
                         "core::fmt::rt::ArgumentType::Count",
                         0
                       |) in
-                    let count := M.copy (| Ty.path "usize", γ0_0 |) in
+                    let count := M.copy (| Ty.path "u16", γ0_0 |) in
                     Value.StructTuple
                       "core::option::Option::Some"
                       []
-                      [ Ty.path "usize" ]
+                      [ Ty.path "u16" ]
                       [ M.read (| count |) ]));
                 fun γ =>
                   ltac:(M.monadic
                     (let _ :=
                       M.is_struct_tuple (| γ, "core::fmt::rt::ArgumentType::Placeholder" |) in
-                    Value.StructTuple "core::option::Option::None" [] [ Ty.path "usize" ] []))
+                    Value.StructTuple "core::option::Option::None" [] [ Ty.path "u16" ] []))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      Global Instance AssociatedFunction_as_usize :
-        M.IsAssociatedFunction.C Self "as_usize" as_usize.
+      Global Instance AssociatedFunction_as_u16 : M.IsAssociatedFunction.C Self "as_u16" as_u16.
       Admitted.
-      Global Typeclasses Opaque as_usize.
-      
-      (*
-          pub fn none() -> [Self; 0] {
-              []
-          }
-      *)
-      Definition none (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [] => ltac:(M.monadic (Value.Array []))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Global Instance AssociatedFunction_none : M.IsAssociatedFunction.C Self "none" none.
-      Admitted.
-      Global Typeclasses Opaque none.
+      Global Typeclasses Opaque as_u16.
     End Impl_core_fmt_rt_Argument.
-    
-    (* StructRecord
-      {
-        name := "UnsafeArg";
-        const_params := [];
-        ty_params := [];
-        fields := [ ("_private", Ty.tuple []) ];
-      } *)
-    
-    Module Impl_core_fmt_rt_UnsafeArg.
-      Definition Self : Ty.t := Ty.path "core::fmt::rt::UnsafeArg".
-      
-      (*
-          pub unsafe fn new() -> Self {
-              Self { _private: () }
-          }
-      *)
-      Definition new (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [] =>
-          ltac:(M.monadic
-            (Value.mkStructRecord
-              "core::fmt::rt::UnsafeArg"
-              []
-              []
-              [ ("_private", Value.Tuple []) ]))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Global Instance AssociatedFunction_new : M.IsAssociatedFunction.C Self "new" new.
-      Admitted.
-      Global Typeclasses Opaque new.
-    End Impl_core_fmt_rt_UnsafeArg.
   End rt.
 End fmt.

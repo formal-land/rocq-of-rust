@@ -1421,37 +1421,36 @@ Module ability_field_requirements.
                                                                                     fun γ =>
                                                                                       ltac:(M.monadic
                                                                                         (let γ :=
-                                                                                          M.use
-                                                                                            (M.alloc (|
+                                                                                          M.alloc (|
+                                                                                            Ty.path
+                                                                                              "bool",
+                                                                                            M.call_closure (|
                                                                                               Ty.path
                                                                                                 "bool",
-                                                                                              M.call_closure (|
-                                                                                                Ty.path
-                                                                                                  "bool",
-                                                                                                UnOp.not,
-                                                                                                [
-                                                                                                  M.call_closure (|
+                                                                                              UnOp.not,
+                                                                                              [
+                                                                                                M.call_closure (|
+                                                                                                  Ty.path
+                                                                                                    "bool",
+                                                                                                  M.get_associated_function (|
                                                                                                     Ty.path
-                                                                                                      "bool",
-                                                                                                    M.get_associated_function (|
-                                                                                                      Ty.path
-                                                                                                        "move_binary_format::file_format::AbilitySet",
-                                                                                                      "is_subset",
-                                                                                                      [],
-                                                                                                      []
-                                                                                                    |),
-                                                                                                    [
-                                                                                                      M.read (|
-                                                                                                        required_abilities
-                                                                                                      |);
-                                                                                                      M.read (|
-                                                                                                        field_abilities
-                                                                                                      |)
-                                                                                                    ]
-                                                                                                  |)
-                                                                                                ]
-                                                                                              |)
-                                                                                            |)) in
+                                                                                                      "move_binary_format::file_format::AbilitySet",
+                                                                                                    "is_subset",
+                                                                                                    [],
+                                                                                                    []
+                                                                                                  |),
+                                                                                                  [
+                                                                                                    M.read (|
+                                                                                                      required_abilities
+                                                                                                    |);
+                                                                                                    M.read (|
+                                                                                                      field_abilities
+                                                                                                    |)
+                                                                                                  ]
+                                                                                                |)
+                                                                                              ]
+                                                                                            |)
+                                                                                          |) in
                                                                                         let _ :=
                                                                                           is_constant_or_break_match (|
                                                                                             M.read (|

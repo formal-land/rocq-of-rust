@@ -219,7 +219,6 @@ impl ToOwned for str {
 }
 
 /// Methods for string slices.
-#[cfg(not(test))]
 impl str {
     /// Converts a `Box<str>` into a `Box<[u8]>` without copying or allocating.
     ///
@@ -235,7 +234,7 @@ impl str {
     #[stable(feature = "str_box_extras", since = "1.20.0")]
     #[must_use = "`self` will be dropped if the result is not used"]
     #[inline]
-    pub fn into_boxed_bytes(self: Box<str>) -> Box<[u8]> {
+    pub fn into_boxed_bytes(self: Box<Self>) -> Box<[u8]> {
         self.into()
     }
 
@@ -246,8 +245,6 @@ impl str {
     /// replaces them with the replacement string slice.
     ///
     /// # Examples
-    ///
-    /// Basic usage:
     ///
     /// ```
     /// let s = "this is old";
@@ -304,8 +301,6 @@ impl str {
     ///
     /// # Examples
     ///
-    /// Basic usage:
-    ///
     /// ```
     /// let s = "foo foo 123 foo";
     /// assert_eq!("new new 123 foo", s.replacen("foo", "new", 2));
@@ -321,6 +316,7 @@ impl str {
     /// ```
     #[cfg(not(no_global_oom_handling))]
     #[rustc_allow_incoherent_impl]
+    #[doc(alias = "replace_first")]
     #[must_use = "this returns the replaced string as a new allocation, \
                   without modifying the original"]
     #[stable(feature = "str_replacen", since = "1.16.0")]
@@ -422,9 +418,8 @@ impl str {
         }
 
         fn case_ignorable_then_cased<I: Iterator<Item = char>>(iter: I) -> bool {
-            use core::unicode::{Case_Ignorable, Cased};
-            match iter.skip_while(|&c| Case_Ignorable(c)).next() {
-                Some(c) => Cased(c),
+            match iter.skip_while(|&c| c.is_case_ignorable()).next() {
+                Some(c) => c.is_cased(),
                 None => false,
             }
         }
@@ -502,7 +497,7 @@ impl str {
     #[rustc_allow_incoherent_impl]
     #[must_use = "`self` will be dropped if the result is not used"]
     #[inline]
-    pub fn into_string(self: Box<str>) -> String {
+    pub fn into_string(self: Box<Self>) -> String {
         let slice = Box::<[u8]>::from(self);
         unsafe { String::from_utf8_unchecked(slice.into_vec()) }
     }
@@ -604,6 +599,10 @@ impl str {
 /// Converts a boxed slice of bytes to a boxed string slice without checking
 /// that the string contains valid UTF-8.
 ///
+/// # Safety
+///
+/// * The provided bytes must contain a valid UTF-8 sequence.
+///
 /// # Examples
 ///
 /// ```
@@ -631,7 +630,6 @@ pub unsafe fn from_boxed_utf8_unchecked(v: Box<[u8]>) -> Box<str> {
 #[unstable(feature = "str_internals", issue = "none")]
 #[doc(hidden)]
 #[inline]
-#[cfg(not(test))]
 #[cfg(not(no_global_oom_handling))]
 pub fn convert_while_ascii(s: &str, convert: fn(&u8) -> u8) -> (String, &str) {
     // Process the input in chunks of 16 bytes to enable auto-vectorization.
@@ -704,7 +702,6 @@ pub fn convert_while_ascii(s: &str, convert: fn(&u8) -> u8) -> (String, &str) {
     }
 }
 #[inline]
-#[cfg(not(test))]
 #[cfg(not(no_global_oom_handling))]
 #[allow(dead_code)]
 /// Faster implementation of string replacement for ASCII to ASCII cases.

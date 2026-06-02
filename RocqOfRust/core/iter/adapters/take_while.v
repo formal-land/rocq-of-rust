@@ -387,12 +387,11 @@ Module iter.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "core::iter::adapters::take_while::TakeWhile",
-                                "flag"
-                              |)) in
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "core::iter::adapters::take_while::TakeWhile",
+                              "flag"
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           Value.StructTuple
@@ -622,56 +621,53 @@ Module iter.
                                   fun γ =>
                                     ltac:(M.monadic
                                       (let γ :=
-                                        M.use
-                                          (M.alloc (|
+                                        M.alloc (|
+                                          Ty.path "bool",
+                                          M.call_closure (|
                                             Ty.path "bool",
-                                            M.call_closure (|
-                                              Ty.path "bool",
-                                              M.get_trait_method (|
-                                                "core::ops::function::FnMut",
-                                                P,
-                                                [],
-                                                [
-                                                  Ty.tuple
-                                                    [
-                                                      Ty.apply
-                                                        (Ty.path "&")
-                                                        []
-                                                        [
-                                                          Ty.associated_in_trait
-                                                            "core::iter::traits::iterator::Iterator"
-                                                            []
-                                                            []
-                                                            I
-                                                            "Item"
-                                                        ]
-                                                    ]
-                                                ],
-                                                "call_mut",
-                                                [],
-                                                []
-                                              |),
+                                            M.get_trait_method (|
+                                              "core::ops::function::FnMut",
+                                              P,
+                                              [],
                                               [
-                                                M.borrow (|
-                                                  Pointer.Kind.MutRef,
-                                                  M.SubPointer.get_struct_record_field (|
-                                                    M.deref (| M.read (| self |) |),
-                                                    "core::iter::adapters::take_while::TakeWhile",
-                                                    "predicate"
-                                                  |)
-                                                |);
-                                                Value.Tuple
+                                                Ty.tuple
                                                   [
-                                                    M.borrow (|
-                                                      Pointer.Kind.Ref,
-                                                      M.deref (|
-                                                        M.borrow (| Pointer.Kind.Ref, x |)
-                                                      |)
-                                                    |)
+                                                    Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.associated_in_trait
+                                                          "core::iter::traits::iterator::Iterator"
+                                                          []
+                                                          []
+                                                          I
+                                                          "Item"
+                                                      ]
                                                   ]
-                                              ]
-                                            |)
-                                          |)) in
+                                              ],
+                                              "call_mut",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.borrow (|
+                                                Pointer.Kind.MutRef,
+                                                M.SubPointer.get_struct_record_field (|
+                                                  M.deref (| M.read (| self |) |),
+                                                  "core::iter::adapters::take_while::TakeWhile",
+                                                  "predicate"
+                                                |)
+                                              |);
+                                              Value.Tuple
+                                                [
+                                                  M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (| M.borrow (| Pointer.Kind.Ref, x |) |)
+                                                  |)
+                                                ]
+                                            ]
+                                          |)
+                                        |) in
                                       let _ :=
                                         is_constant_or_break_match (|
                                           M.read (| γ |),
@@ -777,12 +773,11 @@ Module iter.
                   fun γ =>
                     ltac:(M.monadic
                       (let γ :=
-                        M.use
-                          (M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::iter::adapters::take_while::TakeWhile",
-                            "flag"
-                          |)) in
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "core::iter::adapters::take_while::TakeWhile",
+                          "flag"
+                        |) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       Value.Tuple
                         [
@@ -912,12 +907,11 @@ Module iter.
                   fun γ =>
                     ltac:(M.monadic
                       (let γ :=
-                        M.use
-                          (M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::iter::adapters::take_while::TakeWhile",
-                            "flag"
-                          |)) in
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "core::iter::adapters::take_while::TakeWhile",
+                          "flag"
+                        |) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       M.call_closure (|
                         R,

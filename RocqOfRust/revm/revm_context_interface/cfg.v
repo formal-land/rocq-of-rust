@@ -330,6 +330,9 @@ Module cfg.
             ("is_base_fee_check_disabled", InstanceField.Method (is_base_fee_check_disabled T))
           ].
     End Impl_revm_context_interface_cfg_Cfg_where_revm_context_interface_cfg_Cfg_T_where_core_marker_Sized_T_for_ref__T.
+  End underscore.
+  
+  Module underscore_1.
     Module Impl_revm_context_interface_cfg_Cfg_where_revm_context_interface_cfg_Cfg_T_where_core_marker_Sized_T_for_ref_mut_T.
       Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "&mut") [] [ T ].
       
@@ -681,6 +684,9 @@ Module cfg.
             ("is_base_fee_check_disabled", InstanceField.Method (is_base_fee_check_disabled T))
           ].
     End Impl_revm_context_interface_cfg_Cfg_where_revm_context_interface_cfg_Cfg_T_where_core_marker_Sized_T_for_ref_mut_T.
+  End underscore_1.
+  
+  Module underscore_2.
     Module Impl_revm_context_interface_cfg_Cfg_where_revm_context_interface_cfg_Cfg_T_where_core_marker_Sized_T_for_alloc_boxed_Box_T_alloc_alloc_Global.
       Definition Self (T : Ty.t) : Ty.t :=
         Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ].
@@ -1069,6 +1075,9 @@ Module cfg.
             ("is_base_fee_check_disabled", InstanceField.Method (is_base_fee_check_disabled T))
           ].
     End Impl_revm_context_interface_cfg_Cfg_where_revm_context_interface_cfg_Cfg_T_where_core_marker_Sized_T_for_alloc_boxed_Box_T_alloc_alloc_Global.
+  End underscore_2.
+  
+  Module underscore_3.
     Module Impl_revm_context_interface_cfg_Cfg_where_revm_context_interface_cfg_Cfg_T_where_core_marker_Sized_T_for_alloc_sync_Arc_T_alloc_alloc_Global.
       Definition Self (T : Ty.t) : Ty.t :=
         Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; Ty.path "alloc::alloc::Global" ].
@@ -1610,266 +1619,7 @@ Module cfg.
             ("is_base_fee_check_disabled", InstanceField.Method (is_base_fee_check_disabled T))
           ].
     End Impl_revm_context_interface_cfg_Cfg_where_revm_context_interface_cfg_Cfg_T_where_core_marker_Sized_T_for_alloc_sync_Arc_T_alloc_alloc_Global.
-    Module Impl_revm_context_interface_cfg_CfgGetter_where_revm_context_interface_cfg_CfgGetter_T_where_core_marker_Sized_T_for_ref__T.
-      Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "&") [] [ T ].
-      
-      (* #[auto_impl(&, &mut, Box, Arc)] *)
-      Definition _Cfg (T : Ty.t) : Ty.t :=
-        Ty.associated_in_trait "revm_context_interface::cfg::CfgGetter" [] [] T "Cfg".
-      
-      (* #[auto_impl(&, &mut, Box, Arc)] *)
-      Definition cfg (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        let Self : Ty.t := Self T in
-        match ε, τ, α with
-        | [], [], [ self ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ T ] ], self |) in
-            M.borrow (|
-              Pointer.Kind.Ref,
-              M.deref (|
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "&")
-                    []
-                    [ Ty.associated_in_trait "revm_context_interface::cfg::CfgGetter" [] [] T "Cfg"
-                    ],
-                  M.get_trait_method (|
-                    "revm_context_interface::cfg::CfgGetter",
-                    T,
-                    [],
-                    [],
-                    "cfg",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                    |)
-                  ]
-                |)
-              |)
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Axiom Implements :
-        forall (T : Ty.t),
-        M.IsTraitInstance
-          "revm_context_interface::cfg::CfgGetter"
-          (* Trait polymorphic consts *) []
-          (* Trait polymorphic types *) []
-          (Self T)
-          (* Instance *)
-          [ ("Cfg", InstanceField.Ty (_Cfg T)); ("cfg", InstanceField.Method (cfg T)) ].
-    End Impl_revm_context_interface_cfg_CfgGetter_where_revm_context_interface_cfg_CfgGetter_T_where_core_marker_Sized_T_for_ref__T.
-    Module Impl_revm_context_interface_cfg_CfgGetter_where_revm_context_interface_cfg_CfgGetter_T_where_core_marker_Sized_T_for_ref_mut_T.
-      Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "&mut") [] [ T ].
-      
-      (* #[auto_impl(&, &mut, Box, Arc)] *)
-      Definition _Cfg (T : Ty.t) : Ty.t :=
-        Ty.associated_in_trait "revm_context_interface::cfg::CfgGetter" [] [] T "Cfg".
-      
-      (* #[auto_impl(&, &mut, Box, Arc)] *)
-      Definition cfg (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        let Self : Ty.t := Self T in
-        match ε, τ, α with
-        | [], [], [ self ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (|
-                Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&mut") [] [ T ] ],
-                self
-              |) in
-            M.borrow (|
-              Pointer.Kind.Ref,
-              M.deref (|
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "&")
-                    []
-                    [ Ty.associated_in_trait "revm_context_interface::cfg::CfgGetter" [] [] T "Cfg"
-                    ],
-                  M.get_trait_method (|
-                    "revm_context_interface::cfg::CfgGetter",
-                    T,
-                    [],
-                    [],
-                    "cfg",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                    |)
-                  ]
-                |)
-              |)
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Axiom Implements :
-        forall (T : Ty.t),
-        M.IsTraitInstance
-          "revm_context_interface::cfg::CfgGetter"
-          (* Trait polymorphic consts *) []
-          (* Trait polymorphic types *) []
-          (Self T)
-          (* Instance *)
-          [ ("Cfg", InstanceField.Ty (_Cfg T)); ("cfg", InstanceField.Method (cfg T)) ].
-    End Impl_revm_context_interface_cfg_CfgGetter_where_revm_context_interface_cfg_CfgGetter_T_where_core_marker_Sized_T_for_ref_mut_T.
-    Module Impl_revm_context_interface_cfg_CfgGetter_where_revm_context_interface_cfg_CfgGetter_T_where_core_marker_Sized_T_for_alloc_boxed_Box_T_alloc_alloc_Global.
-      Definition Self (T : Ty.t) : Ty.t :=
-        Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ].
-      
-      (* #[auto_impl(&, &mut, Box, Arc)] *)
-      Definition _Cfg (T : Ty.t) : Ty.t :=
-        Ty.associated_in_trait "revm_context_interface::cfg::CfgGetter" [] [] T "Cfg".
-      
-      (* #[auto_impl(&, &mut, Box, Arc)] *)
-      Definition cfg (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        let Self : Ty.t := Self T in
-        match ε, τ, α with
-        | [], [], [ self ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (|
-                Ty.apply
-                  (Ty.path "&")
-                  []
-                  [ Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ]
-                  ],
-                self
-              |) in
-            M.borrow (|
-              Pointer.Kind.Ref,
-              M.deref (|
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "&")
-                    []
-                    [ Ty.associated_in_trait "revm_context_interface::cfg::CfgGetter" [] [] T "Cfg"
-                    ],
-                  M.get_trait_method (|
-                    "revm_context_interface::cfg::CfgGetter",
-                    T,
-                    [],
-                    [],
-                    "cfg",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                    |)
-                  ]
-                |)
-              |)
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Axiom Implements :
-        forall (T : Ty.t),
-        M.IsTraitInstance
-          "revm_context_interface::cfg::CfgGetter"
-          (* Trait polymorphic consts *) []
-          (* Trait polymorphic types *) []
-          (Self T)
-          (* Instance *)
-          [ ("Cfg", InstanceField.Ty (_Cfg T)); ("cfg", InstanceField.Method (cfg T)) ].
-    End Impl_revm_context_interface_cfg_CfgGetter_where_revm_context_interface_cfg_CfgGetter_T_where_core_marker_Sized_T_for_alloc_boxed_Box_T_alloc_alloc_Global.
-    Module Impl_revm_context_interface_cfg_CfgGetter_where_revm_context_interface_cfg_CfgGetter_T_where_core_marker_Sized_T_for_alloc_sync_Arc_T_alloc_alloc_Global.
-      Definition Self (T : Ty.t) : Ty.t :=
-        Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; Ty.path "alloc::alloc::Global" ].
-      
-      (* #[auto_impl(&, &mut, Box, Arc)] *)
-      Definition _Cfg (T : Ty.t) : Ty.t :=
-        Ty.associated_in_trait "revm_context_interface::cfg::CfgGetter" [] [] T "Cfg".
-      
-      (* #[auto_impl(&, &mut, Box, Arc)] *)
-      Definition cfg (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        let Self : Ty.t := Self T in
-        match ε, τ, α with
-        | [], [], [ self ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (|
-                Ty.apply
-                  (Ty.path "&")
-                  []
-                  [ Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; Ty.path "alloc::alloc::Global" ]
-                  ],
-                self
-              |) in
-            M.borrow (|
-              Pointer.Kind.Ref,
-              M.deref (|
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "&")
-                    []
-                    [ Ty.associated_in_trait "revm_context_interface::cfg::CfgGetter" [] [] T "Cfg"
-                    ],
-                  M.get_trait_method (|
-                    "revm_context_interface::cfg::CfgGetter",
-                    T,
-                    [],
-                    [],
-                    "cfg",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.call_closure (|
-                          Ty.apply (Ty.path "&") [] [ T ],
-                          M.get_trait_method (|
-                            "core::ops::deref::Deref",
-                            Ty.apply
-                              (Ty.path "alloc::sync::Arc")
-                              []
-                              [ T; Ty.path "alloc::alloc::Global" ],
-                            [],
-                            [],
-                            "deref",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                        |)
-                      |)
-                    |)
-                  ]
-                |)
-              |)
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Axiom Implements :
-        forall (T : Ty.t),
-        M.IsTraitInstance
-          "revm_context_interface::cfg::CfgGetter"
-          (* Trait polymorphic consts *) []
-          (* Trait polymorphic types *) []
-          (Self T)
-          (* Instance *)
-          [ ("Cfg", InstanceField.Ty (_Cfg T)); ("cfg", InstanceField.Method (cfg T)) ].
-    End Impl_revm_context_interface_cfg_CfgGetter_where_revm_context_interface_cfg_CfgGetter_T_where_core_marker_Sized_T_for_alloc_sync_Arc_T_alloc_alloc_Global.
-  End underscore.
-  
-  
-  
+  End underscore_3.
   
   (*
   Enum AnalysisKind
@@ -2221,6 +1971,18 @@ Module cfg.
     M.IsDiscriminant "revm_context_interface::cfg::CreateScheme::Create" 0.
   Axiom IsDiscriminant_CreateScheme_Create2 :
     M.IsDiscriminant "revm_context_interface::cfg::CreateScheme::Create2" 1.
+  
+  Module Impl_core_clone_TrivialClone_for_revm_context_interface_cfg_CreateScheme.
+    Definition Self : Ty.t := Ty.path "revm_context_interface::cfg::CreateScheme".
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "core::clone::TrivialClone"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        Self
+        (* Instance *) [].
+  End Impl_core_clone_TrivialClone_for_revm_context_interface_cfg_CreateScheme.
   
   Module Impl_core_clone_Clone_for_revm_context_interface_cfg_CreateScheme.
     Definition Self : Ty.t := Ty.path "revm_context_interface::cfg::CreateScheme".
@@ -2732,7 +2494,271 @@ Module cfg.
   (* Trait *)
   (* Empty module 'CfgGetter' *)
   
+  Module underscore_4.
+    Module Impl_revm_context_interface_cfg_CfgGetter_where_revm_context_interface_cfg_CfgGetter_T_where_core_marker_Sized_T_for_ref__T.
+      Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "&") [] [ T ].
+      
+      (* #[auto_impl(&, &mut, Box, Arc)] *)
+      Definition _Cfg (T : Ty.t) : Ty.t :=
+        Ty.associated_in_trait "revm_context_interface::cfg::CfgGetter" [] [] T "Cfg".
+      
+      (* #[auto_impl(&, &mut, Box, Arc)] *)
+      Definition cfg (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ T ] ], self |) in
+            M.borrow (|
+              Pointer.Kind.Ref,
+              M.deref (|
+                M.call_closure (|
+                  Ty.apply
+                    (Ty.path "&")
+                    []
+                    [ Ty.associated_in_trait "revm_context_interface::cfg::CfgGetter" [] [] T "Cfg"
+                    ],
+                  M.get_trait_method (|
+                    "revm_context_interface::cfg::CfgGetter",
+                    T,
+                    [],
+                    [],
+                    "cfg",
+                    [],
+                    []
+                  |),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                    |)
+                  ]
+                |)
+              |)
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Axiom Implements :
+        forall (T : Ty.t),
+        M.IsTraitInstance
+          "revm_context_interface::cfg::CfgGetter"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          (Self T)
+          (* Instance *)
+          [ ("Cfg", InstanceField.Ty (_Cfg T)); ("cfg", InstanceField.Method (cfg T)) ].
+    End Impl_revm_context_interface_cfg_CfgGetter_where_revm_context_interface_cfg_CfgGetter_T_where_core_marker_Sized_T_for_ref__T.
+  End underscore_4.
   
+  Module underscore_5.
+    Module Impl_revm_context_interface_cfg_CfgGetter_where_revm_context_interface_cfg_CfgGetter_T_where_core_marker_Sized_T_for_ref_mut_T.
+      Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "&mut") [] [ T ].
+      
+      (* #[auto_impl(&, &mut, Box, Arc)] *)
+      Definition _Cfg (T : Ty.t) : Ty.t :=
+        Ty.associated_in_trait "revm_context_interface::cfg::CfgGetter" [] [] T "Cfg".
+      
+      (* #[auto_impl(&, &mut, Box, Arc)] *)
+      Definition cfg (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&mut") [] [ T ] ],
+                self
+              |) in
+            M.borrow (|
+              Pointer.Kind.Ref,
+              M.deref (|
+                M.call_closure (|
+                  Ty.apply
+                    (Ty.path "&")
+                    []
+                    [ Ty.associated_in_trait "revm_context_interface::cfg::CfgGetter" [] [] T "Cfg"
+                    ],
+                  M.get_trait_method (|
+                    "revm_context_interface::cfg::CfgGetter",
+                    T,
+                    [],
+                    [],
+                    "cfg",
+                    [],
+                    []
+                  |),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                    |)
+                  ]
+                |)
+              |)
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Axiom Implements :
+        forall (T : Ty.t),
+        M.IsTraitInstance
+          "revm_context_interface::cfg::CfgGetter"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          (Self T)
+          (* Instance *)
+          [ ("Cfg", InstanceField.Ty (_Cfg T)); ("cfg", InstanceField.Method (cfg T)) ].
+    End Impl_revm_context_interface_cfg_CfgGetter_where_revm_context_interface_cfg_CfgGetter_T_where_core_marker_Sized_T_for_ref_mut_T.
+  End underscore_5.
   
+  Module underscore_6.
+    Module Impl_revm_context_interface_cfg_CfgGetter_where_revm_context_interface_cfg_CfgGetter_T_where_core_marker_Sized_T_for_alloc_boxed_Box_T_alloc_alloc_Global.
+      Definition Self (T : Ty.t) : Ty.t :=
+        Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ].
+      
+      (* #[auto_impl(&, &mut, Box, Arc)] *)
+      Definition _Cfg (T : Ty.t) : Ty.t :=
+        Ty.associated_in_trait "revm_context_interface::cfg::CfgGetter" [] [] T "Cfg".
+      
+      (* #[auto_impl(&, &mut, Box, Arc)] *)
+      Definition cfg (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ]
+                  ],
+                self
+              |) in
+            M.borrow (|
+              Pointer.Kind.Ref,
+              M.deref (|
+                M.call_closure (|
+                  Ty.apply
+                    (Ty.path "&")
+                    []
+                    [ Ty.associated_in_trait "revm_context_interface::cfg::CfgGetter" [] [] T "Cfg"
+                    ],
+                  M.get_trait_method (|
+                    "revm_context_interface::cfg::CfgGetter",
+                    T,
+                    [],
+                    [],
+                    "cfg",
+                    [],
+                    []
+                  |),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                    |)
+                  ]
+                |)
+              |)
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Axiom Implements :
+        forall (T : Ty.t),
+        M.IsTraitInstance
+          "revm_context_interface::cfg::CfgGetter"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          (Self T)
+          (* Instance *)
+          [ ("Cfg", InstanceField.Ty (_Cfg T)); ("cfg", InstanceField.Method (cfg T)) ].
+    End Impl_revm_context_interface_cfg_CfgGetter_where_revm_context_interface_cfg_CfgGetter_T_where_core_marker_Sized_T_for_alloc_boxed_Box_T_alloc_alloc_Global.
+  End underscore_6.
   
+  Module underscore_7.
+    Module Impl_revm_context_interface_cfg_CfgGetter_where_revm_context_interface_cfg_CfgGetter_T_where_core_marker_Sized_T_for_alloc_sync_Arc_T_alloc_alloc_Global.
+      Definition Self (T : Ty.t) : Ty.t :=
+        Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; Ty.path "alloc::alloc::Global" ].
+      
+      (* #[auto_impl(&, &mut, Box, Arc)] *)
+      Definition _Cfg (T : Ty.t) : Ty.t :=
+        Ty.associated_in_trait "revm_context_interface::cfg::CfgGetter" [] [] T "Cfg".
+      
+      (* #[auto_impl(&, &mut, Box, Arc)] *)
+      Definition cfg (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; Ty.path "alloc::alloc::Global" ]
+                  ],
+                self
+              |) in
+            M.borrow (|
+              Pointer.Kind.Ref,
+              M.deref (|
+                M.call_closure (|
+                  Ty.apply
+                    (Ty.path "&")
+                    []
+                    [ Ty.associated_in_trait "revm_context_interface::cfg::CfgGetter" [] [] T "Cfg"
+                    ],
+                  M.get_trait_method (|
+                    "revm_context_interface::cfg::CfgGetter",
+                    T,
+                    [],
+                    [],
+                    "cfg",
+                    [],
+                    []
+                  |),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ T ],
+                          M.get_trait_method (|
+                            "core::ops::deref::Deref",
+                            Ty.apply
+                              (Ty.path "alloc::sync::Arc")
+                              []
+                              [ T; Ty.path "alloc::alloc::Global" ],
+                            [],
+                            [],
+                            "deref",
+                            [],
+                            []
+                          |),
+                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                        |)
+                      |)
+                    |)
+                  ]
+                |)
+              |)
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Axiom Implements :
+        forall (T : Ty.t),
+        M.IsTraitInstance
+          "revm_context_interface::cfg::CfgGetter"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          (Self T)
+          (* Instance *)
+          [ ("Cfg", InstanceField.Ty (_Cfg T)); ("cfg", InstanceField.Method (cfg T)) ].
+    End Impl_revm_context_interface_cfg_CfgGetter_where_revm_context_interface_cfg_CfgGetter_T_where_core_marker_Sized_T_for_alloc_sync_Arc_T_alloc_alloc_Global.
+  End underscore_7.
 End cfg.

@@ -4,13 +4,13 @@ Require Import RocqOfRust.RocqOfRust.
 Module panicking.
   (*
   pub const fn panic_fmt(fmt: fmt::Arguments<'_>) -> ! {
-      if cfg!(feature = "panic_immediate_abort") {
+      if cfg!(panic = "immediate-abort") {
           super::intrinsics::abort()
       }
   
       // NOTE This function never crosses the FFI boundary; it's a Rust-to-Rust call
       // that gets resolved to the `#[panic_handler]` function.
-      extern "Rust" {
+      unsafe extern "Rust" {
           #[lang = "panic_impl"]
           fn panic_impl(pi: &PanicInfo<'_>) -> !;
       }
@@ -39,7 +39,7 @@ Module panicking.
               [
                 fun γ =>
                   ltac:(M.monadic
-                    (let γ := M.use (M.alloc (| Ty.path "bool", Value.Bool false |)) in
+                    (let γ := M.alloc (| Ty.path "bool", Value.Bool false |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     M.never_to_any (|
                       M.call_closure (|
@@ -114,13 +114,13 @@ Module panicking.
               // We don't unwind anyway at compile-time so we can call the regular `panic_fmt`.
               panic_fmt(fmt)
           } else #[track_caller] {
-              if cfg!(feature = "panic_immediate_abort") {
+              if cfg!(panic = "immediate-abort") {
                   super::intrinsics::abort()
               }
   
               // NOTE This function never crosses the FFI boundary; it's a Rust-to-Rust call
               // that gets resolved to the `#[panic_handler]` function.
-              extern "Rust" {
+              unsafe extern "Rust" {
                   #[lang = "panic_impl"]
                   fn panic_impl(pi: &PanicInfo<'_>) -> !;
               }
@@ -183,18 +183,18 @@ Module panicking.
   
   (*
   pub const fn panic(expr: &'static str) -> ! {
-      // Use Arguments::new_const instead of format_args!("{expr}") to potentially
+      // Use Arguments::from_str instead of format_args!("{expr}") to potentially
       // reduce size overhead. The format_args! macro uses str's Display trait to
       // write expr, which calls Formatter::pad, which must accommodate string
       // truncation and padding (even though none is used here). Using
-      // Arguments::new_const may allow the compiler to omit Formatter::pad from the
+      // Arguments::from_str may allow the compiler to omit Formatter::pad from the
       // output binary, saving up to a few kilobytes.
-      // However, this optimization only works for `'static` strings: `new_const` also makes this
+      // However, this optimization only works for `'static` strings: `from_str` also makes this
       // message return `Some` from `Arguments::as_str`, which means it can become part of the panic
       // payload without any allocation or copying. Shorter-lived strings would become invalid as
       // stack frames get popped during unwinding, and couldn't be directly referenced from the
       // payload.
-      panic_fmt(fmt::Arguments::new_const(&[expr]));
+      panic_fmt(fmt::Arguments::from_str(expr));
   }
   *)
   Definition panic (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -208,29 +208,8 @@ Module panicking.
           [
             M.call_closure (|
               Ty.path "core::fmt::Arguments",
-              M.get_associated_function (|
-                Ty.path "core::fmt::Arguments",
-                "new_const",
-                [ Value.Integer IntegerKind.Usize 1 ],
-                []
-              |),
-              [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.alloc (|
-                        Ty.apply
-                          (Ty.path "array")
-                          [ Value.Integer IntegerKind.Usize 1 ]
-                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                        Value.Array [ M.read (| expr |) ]
-                      |)
-                    |)
-                  |)
-                |)
-              ]
+              M.get_associated_function (| Ty.path "core::fmt::Arguments", "from_str", [], [] |),
+              [ M.read (| expr |) ]
             |)
           ]
         |)))
@@ -243,15 +222,10 @@ Module panicking.
   
   Module panic_const.
     (*
-                    pub const fn $lang() -> ! {
-                        // Use Arguments::new_const instead of format_args!("{expr}") to potentially
-                        // reduce size overhead. The format_args! macro uses str's Display trait to
-                        // write expr, which calls Formatter::pad, which must accommodate string
-                        // truncation and padding (even though none is used here). Using
-                        // Arguments::new_const may allow the compiler to omit Formatter::pad from the
-                        // output binary, saving up to a few kilobytes.
-                        panic_fmt(fmt::Arguments::new_const(&[$message]));
-                    }
+                pub const fn $lang() -> ! {
+                    // See the comment in `panic(&'static str)` for why we use `Arguments::from_str` here.
+                    panic_fmt(fmt::Arguments::from_str($message));
+                }
     *)
     Definition panic_const_add_overflow (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       match ε, τ, α with
@@ -263,29 +237,8 @@ Module panicking.
             [
               M.call_closure (|
                 Ty.path "core::fmt::Arguments",
-                M.get_associated_function (|
-                  Ty.path "core::fmt::Arguments",
-                  "new_const",
-                  [ Value.Integer IntegerKind.Usize 1 ],
-                  []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply
-                            (Ty.path "array")
-                            [ Value.Integer IntegerKind.Usize 1 ]
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                          Value.Array [ mk_str (| "attempt to add with overflow" |) ]
-                        |)
-                      |)
-                    |)
-                  |)
-                ]
+                M.get_associated_function (| Ty.path "core::fmt::Arguments", "from_str", [], [] |),
+                [ mk_str (| "attempt to add with overflow" |) ]
               |)
             ]
           |)))
@@ -300,15 +253,10 @@ Module panicking.
     Global Typeclasses Opaque panic_const_add_overflow.
     
     (*
-                    pub const fn $lang() -> ! {
-                        // Use Arguments::new_const instead of format_args!("{expr}") to potentially
-                        // reduce size overhead. The format_args! macro uses str's Display trait to
-                        // write expr, which calls Formatter::pad, which must accommodate string
-                        // truncation and padding (even though none is used here). Using
-                        // Arguments::new_const may allow the compiler to omit Formatter::pad from the
-                        // output binary, saving up to a few kilobytes.
-                        panic_fmt(fmt::Arguments::new_const(&[$message]));
-                    }
+                pub const fn $lang() -> ! {
+                    // See the comment in `panic(&'static str)` for why we use `Arguments::from_str` here.
+                    panic_fmt(fmt::Arguments::from_str($message));
+                }
     *)
     Definition panic_const_sub_overflow (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       match ε, τ, α with
@@ -320,29 +268,8 @@ Module panicking.
             [
               M.call_closure (|
                 Ty.path "core::fmt::Arguments",
-                M.get_associated_function (|
-                  Ty.path "core::fmt::Arguments",
-                  "new_const",
-                  [ Value.Integer IntegerKind.Usize 1 ],
-                  []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply
-                            (Ty.path "array")
-                            [ Value.Integer IntegerKind.Usize 1 ]
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                          Value.Array [ mk_str (| "attempt to subtract with overflow" |) ]
-                        |)
-                      |)
-                    |)
-                  |)
-                ]
+                M.get_associated_function (| Ty.path "core::fmt::Arguments", "from_str", [], [] |),
+                [ mk_str (| "attempt to subtract with overflow" |) ]
               |)
             ]
           |)))
@@ -357,15 +284,10 @@ Module panicking.
     Global Typeclasses Opaque panic_const_sub_overflow.
     
     (*
-                    pub const fn $lang() -> ! {
-                        // Use Arguments::new_const instead of format_args!("{expr}") to potentially
-                        // reduce size overhead. The format_args! macro uses str's Display trait to
-                        // write expr, which calls Formatter::pad, which must accommodate string
-                        // truncation and padding (even though none is used here). Using
-                        // Arguments::new_const may allow the compiler to omit Formatter::pad from the
-                        // output binary, saving up to a few kilobytes.
-                        panic_fmt(fmt::Arguments::new_const(&[$message]));
-                    }
+                pub const fn $lang() -> ! {
+                    // See the comment in `panic(&'static str)` for why we use `Arguments::from_str` here.
+                    panic_fmt(fmt::Arguments::from_str($message));
+                }
     *)
     Definition panic_const_mul_overflow (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       match ε, τ, α with
@@ -377,29 +299,8 @@ Module panicking.
             [
               M.call_closure (|
                 Ty.path "core::fmt::Arguments",
-                M.get_associated_function (|
-                  Ty.path "core::fmt::Arguments",
-                  "new_const",
-                  [ Value.Integer IntegerKind.Usize 1 ],
-                  []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply
-                            (Ty.path "array")
-                            [ Value.Integer IntegerKind.Usize 1 ]
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                          Value.Array [ mk_str (| "attempt to multiply with overflow" |) ]
-                        |)
-                      |)
-                    |)
-                  |)
-                ]
+                M.get_associated_function (| Ty.path "core::fmt::Arguments", "from_str", [], [] |),
+                [ mk_str (| "attempt to multiply with overflow" |) ]
               |)
             ]
           |)))
@@ -414,15 +315,10 @@ Module panicking.
     Global Typeclasses Opaque panic_const_mul_overflow.
     
     (*
-                    pub const fn $lang() -> ! {
-                        // Use Arguments::new_const instead of format_args!("{expr}") to potentially
-                        // reduce size overhead. The format_args! macro uses str's Display trait to
-                        // write expr, which calls Formatter::pad, which must accommodate string
-                        // truncation and padding (even though none is used here). Using
-                        // Arguments::new_const may allow the compiler to omit Formatter::pad from the
-                        // output binary, saving up to a few kilobytes.
-                        panic_fmt(fmt::Arguments::new_const(&[$message]));
-                    }
+                pub const fn $lang() -> ! {
+                    // See the comment in `panic(&'static str)` for why we use `Arguments::from_str` here.
+                    panic_fmt(fmt::Arguments::from_str($message));
+                }
     *)
     Definition panic_const_div_overflow (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       match ε, τ, α with
@@ -434,29 +330,8 @@ Module panicking.
             [
               M.call_closure (|
                 Ty.path "core::fmt::Arguments",
-                M.get_associated_function (|
-                  Ty.path "core::fmt::Arguments",
-                  "new_const",
-                  [ Value.Integer IntegerKind.Usize 1 ],
-                  []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply
-                            (Ty.path "array")
-                            [ Value.Integer IntegerKind.Usize 1 ]
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                          Value.Array [ mk_str (| "attempt to divide with overflow" |) ]
-                        |)
-                      |)
-                    |)
-                  |)
-                ]
+                M.get_associated_function (| Ty.path "core::fmt::Arguments", "from_str", [], [] |),
+                [ mk_str (| "attempt to divide with overflow" |) ]
               |)
             ]
           |)))
@@ -471,15 +346,10 @@ Module panicking.
     Global Typeclasses Opaque panic_const_div_overflow.
     
     (*
-                    pub const fn $lang() -> ! {
-                        // Use Arguments::new_const instead of format_args!("{expr}") to potentially
-                        // reduce size overhead. The format_args! macro uses str's Display trait to
-                        // write expr, which calls Formatter::pad, which must accommodate string
-                        // truncation and padding (even though none is used here). Using
-                        // Arguments::new_const may allow the compiler to omit Formatter::pad from the
-                        // output binary, saving up to a few kilobytes.
-                        panic_fmt(fmt::Arguments::new_const(&[$message]));
-                    }
+                pub const fn $lang() -> ! {
+                    // See the comment in `panic(&'static str)` for why we use `Arguments::from_str` here.
+                    panic_fmt(fmt::Arguments::from_str($message));
+                }
     *)
     Definition panic_const_rem_overflow (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       match ε, τ, α with
@@ -491,30 +361,8 @@ Module panicking.
             [
               M.call_closure (|
                 Ty.path "core::fmt::Arguments",
-                M.get_associated_function (|
-                  Ty.path "core::fmt::Arguments",
-                  "new_const",
-                  [ Value.Integer IntegerKind.Usize 1 ],
-                  []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply
-                            (Ty.path "array")
-                            [ Value.Integer IntegerKind.Usize 1 ]
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                          Value.Array
-                            [ mk_str (| "attempt to calculate the remainder with overflow" |) ]
-                        |)
-                      |)
-                    |)
-                  |)
-                ]
+                M.get_associated_function (| Ty.path "core::fmt::Arguments", "from_str", [], [] |),
+                [ mk_str (| "attempt to calculate the remainder with overflow" |) ]
               |)
             ]
           |)))
@@ -529,15 +377,10 @@ Module panicking.
     Global Typeclasses Opaque panic_const_rem_overflow.
     
     (*
-                    pub const fn $lang() -> ! {
-                        // Use Arguments::new_const instead of format_args!("{expr}") to potentially
-                        // reduce size overhead. The format_args! macro uses str's Display trait to
-                        // write expr, which calls Formatter::pad, which must accommodate string
-                        // truncation and padding (even though none is used here). Using
-                        // Arguments::new_const may allow the compiler to omit Formatter::pad from the
-                        // output binary, saving up to a few kilobytes.
-                        panic_fmt(fmt::Arguments::new_const(&[$message]));
-                    }
+                pub const fn $lang() -> ! {
+                    // See the comment in `panic(&'static str)` for why we use `Arguments::from_str` here.
+                    panic_fmt(fmt::Arguments::from_str($message));
+                }
     *)
     Definition panic_const_neg_overflow (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       match ε, τ, α with
@@ -549,29 +392,8 @@ Module panicking.
             [
               M.call_closure (|
                 Ty.path "core::fmt::Arguments",
-                M.get_associated_function (|
-                  Ty.path "core::fmt::Arguments",
-                  "new_const",
-                  [ Value.Integer IntegerKind.Usize 1 ],
-                  []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply
-                            (Ty.path "array")
-                            [ Value.Integer IntegerKind.Usize 1 ]
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                          Value.Array [ mk_str (| "attempt to negate with overflow" |) ]
-                        |)
-                      |)
-                    |)
-                  |)
-                ]
+                M.get_associated_function (| Ty.path "core::fmt::Arguments", "from_str", [], [] |),
+                [ mk_str (| "attempt to negate with overflow" |) ]
               |)
             ]
           |)))
@@ -586,15 +408,10 @@ Module panicking.
     Global Typeclasses Opaque panic_const_neg_overflow.
     
     (*
-                    pub const fn $lang() -> ! {
-                        // Use Arguments::new_const instead of format_args!("{expr}") to potentially
-                        // reduce size overhead. The format_args! macro uses str's Display trait to
-                        // write expr, which calls Formatter::pad, which must accommodate string
-                        // truncation and padding (even though none is used here). Using
-                        // Arguments::new_const may allow the compiler to omit Formatter::pad from the
-                        // output binary, saving up to a few kilobytes.
-                        panic_fmt(fmt::Arguments::new_const(&[$message]));
-                    }
+                pub const fn $lang() -> ! {
+                    // See the comment in `panic(&'static str)` for why we use `Arguments::from_str` here.
+                    panic_fmt(fmt::Arguments::from_str($message));
+                }
     *)
     Definition panic_const_shr_overflow (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       match ε, τ, α with
@@ -606,29 +423,8 @@ Module panicking.
             [
               M.call_closure (|
                 Ty.path "core::fmt::Arguments",
-                M.get_associated_function (|
-                  Ty.path "core::fmt::Arguments",
-                  "new_const",
-                  [ Value.Integer IntegerKind.Usize 1 ],
-                  []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply
-                            (Ty.path "array")
-                            [ Value.Integer IntegerKind.Usize 1 ]
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                          Value.Array [ mk_str (| "attempt to shift right with overflow" |) ]
-                        |)
-                      |)
-                    |)
-                  |)
-                ]
+                M.get_associated_function (| Ty.path "core::fmt::Arguments", "from_str", [], [] |),
+                [ mk_str (| "attempt to shift right with overflow" |) ]
               |)
             ]
           |)))
@@ -643,15 +439,10 @@ Module panicking.
     Global Typeclasses Opaque panic_const_shr_overflow.
     
     (*
-                    pub const fn $lang() -> ! {
-                        // Use Arguments::new_const instead of format_args!("{expr}") to potentially
-                        // reduce size overhead. The format_args! macro uses str's Display trait to
-                        // write expr, which calls Formatter::pad, which must accommodate string
-                        // truncation and padding (even though none is used here). Using
-                        // Arguments::new_const may allow the compiler to omit Formatter::pad from the
-                        // output binary, saving up to a few kilobytes.
-                        panic_fmt(fmt::Arguments::new_const(&[$message]));
-                    }
+                pub const fn $lang() -> ! {
+                    // See the comment in `panic(&'static str)` for why we use `Arguments::from_str` here.
+                    panic_fmt(fmt::Arguments::from_str($message));
+                }
     *)
     Definition panic_const_shl_overflow (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       match ε, τ, α with
@@ -663,29 +454,8 @@ Module panicking.
             [
               M.call_closure (|
                 Ty.path "core::fmt::Arguments",
-                M.get_associated_function (|
-                  Ty.path "core::fmt::Arguments",
-                  "new_const",
-                  [ Value.Integer IntegerKind.Usize 1 ],
-                  []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply
-                            (Ty.path "array")
-                            [ Value.Integer IntegerKind.Usize 1 ]
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                          Value.Array [ mk_str (| "attempt to shift left with overflow" |) ]
-                        |)
-                      |)
-                    |)
-                  |)
-                ]
+                M.get_associated_function (| Ty.path "core::fmt::Arguments", "from_str", [], [] |),
+                [ mk_str (| "attempt to shift left with overflow" |) ]
               |)
             ]
           |)))
@@ -700,15 +470,10 @@ Module panicking.
     Global Typeclasses Opaque panic_const_shl_overflow.
     
     (*
-                    pub const fn $lang() -> ! {
-                        // Use Arguments::new_const instead of format_args!("{expr}") to potentially
-                        // reduce size overhead. The format_args! macro uses str's Display trait to
-                        // write expr, which calls Formatter::pad, which must accommodate string
-                        // truncation and padding (even though none is used here). Using
-                        // Arguments::new_const may allow the compiler to omit Formatter::pad from the
-                        // output binary, saving up to a few kilobytes.
-                        panic_fmt(fmt::Arguments::new_const(&[$message]));
-                    }
+                pub const fn $lang() -> ! {
+                    // See the comment in `panic(&'static str)` for why we use `Arguments::from_str` here.
+                    panic_fmt(fmt::Arguments::from_str($message));
+                }
     *)
     Definition panic_const_div_by_zero (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       match ε, τ, α with
@@ -720,29 +485,8 @@ Module panicking.
             [
               M.call_closure (|
                 Ty.path "core::fmt::Arguments",
-                M.get_associated_function (|
-                  Ty.path "core::fmt::Arguments",
-                  "new_const",
-                  [ Value.Integer IntegerKind.Usize 1 ],
-                  []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply
-                            (Ty.path "array")
-                            [ Value.Integer IntegerKind.Usize 1 ]
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                          Value.Array [ mk_str (| "attempt to divide by zero" |) ]
-                        |)
-                      |)
-                    |)
-                  |)
-                ]
+                M.get_associated_function (| Ty.path "core::fmt::Arguments", "from_str", [], [] |),
+                [ mk_str (| "attempt to divide by zero" |) ]
               |)
             ]
           |)))
@@ -757,15 +501,10 @@ Module panicking.
     Global Typeclasses Opaque panic_const_div_by_zero.
     
     (*
-                    pub const fn $lang() -> ! {
-                        // Use Arguments::new_const instead of format_args!("{expr}") to potentially
-                        // reduce size overhead. The format_args! macro uses str's Display trait to
-                        // write expr, which calls Formatter::pad, which must accommodate string
-                        // truncation and padding (even though none is used here). Using
-                        // Arguments::new_const may allow the compiler to omit Formatter::pad from the
-                        // output binary, saving up to a few kilobytes.
-                        panic_fmt(fmt::Arguments::new_const(&[$message]));
-                    }
+                pub const fn $lang() -> ! {
+                    // See the comment in `panic(&'static str)` for why we use `Arguments::from_str` here.
+                    panic_fmt(fmt::Arguments::from_str($message));
+                }
     *)
     Definition panic_const_rem_by_zero (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       match ε, τ, α with
@@ -777,34 +516,8 @@ Module panicking.
             [
               M.call_closure (|
                 Ty.path "core::fmt::Arguments",
-                M.get_associated_function (|
-                  Ty.path "core::fmt::Arguments",
-                  "new_const",
-                  [ Value.Integer IntegerKind.Usize 1 ],
-                  []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply
-                            (Ty.path "array")
-                            [ Value.Integer IntegerKind.Usize 1 ]
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                          Value.Array
-                            [
-                              mk_str (|
-                                "attempt to calculate the remainder with a divisor of zero"
-                              |)
-                            ]
-                        |)
-                      |)
-                    |)
-                  |)
-                ]
+                M.get_associated_function (| Ty.path "core::fmt::Arguments", "from_str", [], [] |),
+                [ mk_str (| "attempt to calculate the remainder with a divisor of zero" |) ]
               |)
             ]
           |)))
@@ -819,15 +532,10 @@ Module panicking.
     Global Typeclasses Opaque panic_const_rem_by_zero.
     
     (*
-                    pub const fn $lang() -> ! {
-                        // Use Arguments::new_const instead of format_args!("{expr}") to potentially
-                        // reduce size overhead. The format_args! macro uses str's Display trait to
-                        // write expr, which calls Formatter::pad, which must accommodate string
-                        // truncation and padding (even though none is used here). Using
-                        // Arguments::new_const may allow the compiler to omit Formatter::pad from the
-                        // output binary, saving up to a few kilobytes.
-                        panic_fmt(fmt::Arguments::new_const(&[$message]));
-                    }
+                pub const fn $lang() -> ! {
+                    // See the comment in `panic(&'static str)` for why we use `Arguments::from_str` here.
+                    panic_fmt(fmt::Arguments::from_str($message));
+                }
     *)
     Definition panic_const_coroutine_resumed
         (ε : list Value.t)
@@ -843,29 +551,8 @@ Module panicking.
             [
               M.call_closure (|
                 Ty.path "core::fmt::Arguments",
-                M.get_associated_function (|
-                  Ty.path "core::fmt::Arguments",
-                  "new_const",
-                  [ Value.Integer IntegerKind.Usize 1 ],
-                  []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply
-                            (Ty.path "array")
-                            [ Value.Integer IntegerKind.Usize 1 ]
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                          Value.Array [ mk_str (| "coroutine resumed after completion" |) ]
-                        |)
-                      |)
-                    |)
-                  |)
-                ]
+                M.get_associated_function (| Ty.path "core::fmt::Arguments", "from_str", [], [] |),
+                [ mk_str (| "coroutine resumed after completion" |) ]
               |)
             ]
           |)))
@@ -880,15 +567,10 @@ Module panicking.
     Global Typeclasses Opaque panic_const_coroutine_resumed.
     
     (*
-                    pub const fn $lang() -> ! {
-                        // Use Arguments::new_const instead of format_args!("{expr}") to potentially
-                        // reduce size overhead. The format_args! macro uses str's Display trait to
-                        // write expr, which calls Formatter::pad, which must accommodate string
-                        // truncation and padding (even though none is used here). Using
-                        // Arguments::new_const may allow the compiler to omit Formatter::pad from the
-                        // output binary, saving up to a few kilobytes.
-                        panic_fmt(fmt::Arguments::new_const(&[$message]));
-                    }
+                pub const fn $lang() -> ! {
+                    // See the comment in `panic(&'static str)` for why we use `Arguments::from_str` here.
+                    panic_fmt(fmt::Arguments::from_str($message));
+                }
     *)
     Definition panic_const_async_fn_resumed
         (ε : list Value.t)
@@ -904,29 +586,8 @@ Module panicking.
             [
               M.call_closure (|
                 Ty.path "core::fmt::Arguments",
-                M.get_associated_function (|
-                  Ty.path "core::fmt::Arguments",
-                  "new_const",
-                  [ Value.Integer IntegerKind.Usize 1 ],
-                  []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply
-                            (Ty.path "array")
-                            [ Value.Integer IntegerKind.Usize 1 ]
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                          Value.Array [ mk_str (| "`async fn` resumed after completion" |) ]
-                        |)
-                      |)
-                    |)
-                  |)
-                ]
+                M.get_associated_function (| Ty.path "core::fmt::Arguments", "from_str", [], [] |),
+                [ mk_str (| "`async fn` resumed after completion" |) ]
               |)
             ]
           |)))
@@ -941,15 +602,10 @@ Module panicking.
     Global Typeclasses Opaque panic_const_async_fn_resumed.
     
     (*
-                    pub const fn $lang() -> ! {
-                        // Use Arguments::new_const instead of format_args!("{expr}") to potentially
-                        // reduce size overhead. The format_args! macro uses str's Display trait to
-                        // write expr, which calls Formatter::pad, which must accommodate string
-                        // truncation and padding (even though none is used here). Using
-                        // Arguments::new_const may allow the compiler to omit Formatter::pad from the
-                        // output binary, saving up to a few kilobytes.
-                        panic_fmt(fmt::Arguments::new_const(&[$message]));
-                    }
+                pub const fn $lang() -> ! {
+                    // See the comment in `panic(&'static str)` for why we use `Arguments::from_str` here.
+                    panic_fmt(fmt::Arguments::from_str($message));
+                }
     *)
     Definition panic_const_async_gen_fn_resumed
         (ε : list Value.t)
@@ -965,29 +621,8 @@ Module panicking.
             [
               M.call_closure (|
                 Ty.path "core::fmt::Arguments",
-                M.get_associated_function (|
-                  Ty.path "core::fmt::Arguments",
-                  "new_const",
-                  [ Value.Integer IntegerKind.Usize 1 ],
-                  []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply
-                            (Ty.path "array")
-                            [ Value.Integer IntegerKind.Usize 1 ]
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                          Value.Array [ mk_str (| "`async gen fn` resumed after completion" |) ]
-                        |)
-                      |)
-                    |)
-                  |)
-                ]
+                M.get_associated_function (| Ty.path "core::fmt::Arguments", "from_str", [], [] |),
+                [ mk_str (| "`async gen fn` resumed after completion" |) ]
               |)
             ]
           |)))
@@ -1002,15 +637,10 @@ Module panicking.
     Global Typeclasses Opaque panic_const_async_gen_fn_resumed.
     
     (*
-                    pub const fn $lang() -> ! {
-                        // Use Arguments::new_const instead of format_args!("{expr}") to potentially
-                        // reduce size overhead. The format_args! macro uses str's Display trait to
-                        // write expr, which calls Formatter::pad, which must accommodate string
-                        // truncation and padding (even though none is used here). Using
-                        // Arguments::new_const may allow the compiler to omit Formatter::pad from the
-                        // output binary, saving up to a few kilobytes.
-                        panic_fmt(fmt::Arguments::new_const(&[$message]));
-                    }
+                pub const fn $lang() -> ! {
+                    // See the comment in `panic(&'static str)` for why we use `Arguments::from_str` here.
+                    panic_fmt(fmt::Arguments::from_str($message));
+                }
     *)
     Definition panic_const_gen_fn_none (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       match ε, τ, α with
@@ -1022,34 +652,8 @@ Module panicking.
             [
               M.call_closure (|
                 Ty.path "core::fmt::Arguments",
-                M.get_associated_function (|
-                  Ty.path "core::fmt::Arguments",
-                  "new_const",
-                  [ Value.Integer IntegerKind.Usize 1 ],
-                  []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply
-                            (Ty.path "array")
-                            [ Value.Integer IntegerKind.Usize 1 ]
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                          Value.Array
-                            [
-                              mk_str (|
-                                "`gen fn` should just keep returning `None` after completion"
-                              |)
-                            ]
-                        |)
-                      |)
-                    |)
-                  |)
-                ]
+                M.get_associated_function (| Ty.path "core::fmt::Arguments", "from_str", [], [] |),
+                [ mk_str (| "`gen fn` should just keep returning `None` after completion" |) ]
               |)
             ]
           |)))
@@ -1064,15 +668,10 @@ Module panicking.
     Global Typeclasses Opaque panic_const_gen_fn_none.
     
     (*
-                    pub const fn $lang() -> ! {
-                        // Use Arguments::new_const instead of format_args!("{expr}") to potentially
-                        // reduce size overhead. The format_args! macro uses str's Display trait to
-                        // write expr, which calls Formatter::pad, which must accommodate string
-                        // truncation and padding (even though none is used here). Using
-                        // Arguments::new_const may allow the compiler to omit Formatter::pad from the
-                        // output binary, saving up to a few kilobytes.
-                        panic_fmt(fmt::Arguments::new_const(&[$message]));
-                    }
+                pub const fn $lang() -> ! {
+                    // See the comment in `panic(&'static str)` for why we use `Arguments::from_str` here.
+                    panic_fmt(fmt::Arguments::from_str($message));
+                }
     *)
     Definition panic_const_coroutine_resumed_panic
         (ε : list Value.t)
@@ -1088,29 +687,8 @@ Module panicking.
             [
               M.call_closure (|
                 Ty.path "core::fmt::Arguments",
-                M.get_associated_function (|
-                  Ty.path "core::fmt::Arguments",
-                  "new_const",
-                  [ Value.Integer IntegerKind.Usize 1 ],
-                  []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply
-                            (Ty.path "array")
-                            [ Value.Integer IntegerKind.Usize 1 ]
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                          Value.Array [ mk_str (| "coroutine resumed after panicking" |) ]
-                        |)
-                      |)
-                    |)
-                  |)
-                ]
+                M.get_associated_function (| Ty.path "core::fmt::Arguments", "from_str", [], [] |),
+                [ mk_str (| "coroutine resumed after panicking" |) ]
               |)
             ]
           |)))
@@ -1125,15 +703,10 @@ Module panicking.
     Global Typeclasses Opaque panic_const_coroutine_resumed_panic.
     
     (*
-                    pub const fn $lang() -> ! {
-                        // Use Arguments::new_const instead of format_args!("{expr}") to potentially
-                        // reduce size overhead. The format_args! macro uses str's Display trait to
-                        // write expr, which calls Formatter::pad, which must accommodate string
-                        // truncation and padding (even though none is used here). Using
-                        // Arguments::new_const may allow the compiler to omit Formatter::pad from the
-                        // output binary, saving up to a few kilobytes.
-                        panic_fmt(fmt::Arguments::new_const(&[$message]));
-                    }
+                pub const fn $lang() -> ! {
+                    // See the comment in `panic(&'static str)` for why we use `Arguments::from_str` here.
+                    panic_fmt(fmt::Arguments::from_str($message));
+                }
     *)
     Definition panic_const_async_fn_resumed_panic
         (ε : list Value.t)
@@ -1149,29 +722,8 @@ Module panicking.
             [
               M.call_closure (|
                 Ty.path "core::fmt::Arguments",
-                M.get_associated_function (|
-                  Ty.path "core::fmt::Arguments",
-                  "new_const",
-                  [ Value.Integer IntegerKind.Usize 1 ],
-                  []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply
-                            (Ty.path "array")
-                            [ Value.Integer IntegerKind.Usize 1 ]
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                          Value.Array [ mk_str (| "`async fn` resumed after panicking" |) ]
-                        |)
-                      |)
-                    |)
-                  |)
-                ]
+                M.get_associated_function (| Ty.path "core::fmt::Arguments", "from_str", [], [] |),
+                [ mk_str (| "`async fn` resumed after panicking" |) ]
               |)
             ]
           |)))
@@ -1186,15 +738,10 @@ Module panicking.
     Global Typeclasses Opaque panic_const_async_fn_resumed_panic.
     
     (*
-                    pub const fn $lang() -> ! {
-                        // Use Arguments::new_const instead of format_args!("{expr}") to potentially
-                        // reduce size overhead. The format_args! macro uses str's Display trait to
-                        // write expr, which calls Formatter::pad, which must accommodate string
-                        // truncation and padding (even though none is used here). Using
-                        // Arguments::new_const may allow the compiler to omit Formatter::pad from the
-                        // output binary, saving up to a few kilobytes.
-                        panic_fmt(fmt::Arguments::new_const(&[$message]));
-                    }
+                pub const fn $lang() -> ! {
+                    // See the comment in `panic(&'static str)` for why we use `Arguments::from_str` here.
+                    panic_fmt(fmt::Arguments::from_str($message));
+                }
     *)
     Definition panic_const_async_gen_fn_resumed_panic
         (ε : list Value.t)
@@ -1210,29 +757,8 @@ Module panicking.
             [
               M.call_closure (|
                 Ty.path "core::fmt::Arguments",
-                M.get_associated_function (|
-                  Ty.path "core::fmt::Arguments",
-                  "new_const",
-                  [ Value.Integer IntegerKind.Usize 1 ],
-                  []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply
-                            (Ty.path "array")
-                            [ Value.Integer IntegerKind.Usize 1 ]
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                          Value.Array [ mk_str (| "`async gen fn` resumed after panicking" |) ]
-                        |)
-                      |)
-                    |)
-                  |)
-                ]
+                M.get_associated_function (| Ty.path "core::fmt::Arguments", "from_str", [], [] |),
+                [ mk_str (| "`async gen fn` resumed after panicking" |) ]
               |)
             ]
           |)))
@@ -1247,15 +773,10 @@ Module panicking.
     Global Typeclasses Opaque panic_const_async_gen_fn_resumed_panic.
     
     (*
-                    pub const fn $lang() -> ! {
-                        // Use Arguments::new_const instead of format_args!("{expr}") to potentially
-                        // reduce size overhead. The format_args! macro uses str's Display trait to
-                        // write expr, which calls Formatter::pad, which must accommodate string
-                        // truncation and padding (even though none is used here). Using
-                        // Arguments::new_const may allow the compiler to omit Formatter::pad from the
-                        // output binary, saving up to a few kilobytes.
-                        panic_fmt(fmt::Arguments::new_const(&[$message]));
-                    }
+                pub const fn $lang() -> ! {
+                    // See the comment in `panic(&'static str)` for why we use `Arguments::from_str` here.
+                    panic_fmt(fmt::Arguments::from_str($message));
+                }
     *)
     Definition panic_const_gen_fn_none_panic
         (ε : list Value.t)
@@ -1271,34 +792,8 @@ Module panicking.
             [
               M.call_closure (|
                 Ty.path "core::fmt::Arguments",
-                M.get_associated_function (|
-                  Ty.path "core::fmt::Arguments",
-                  "new_const",
-                  [ Value.Integer IntegerKind.Usize 1 ],
-                  []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply
-                            (Ty.path "array")
-                            [ Value.Integer IntegerKind.Usize 1 ]
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                          Value.Array
-                            [
-                              mk_str (|
-                                "`gen fn` should just keep returning `None` after panicking"
-                              |)
-                            ]
-                        |)
-                      |)
-                    |)
-                  |)
-                ]
+                M.get_associated_function (| Ty.path "core::fmt::Arguments", "from_str", [], [] |),
+                [ mk_str (| "`gen fn` should just keep returning `None` after panicking" |) ]
               |)
             ]
           |)))
@@ -1311,11 +806,151 @@ Module panicking.
         panic_const_gen_fn_none_panic.
     Admitted.
     Global Typeclasses Opaque panic_const_gen_fn_none_panic.
+    
+    (*
+                pub const fn $lang() -> ! {
+                    // See the comment in `panic(&'static str)` for why we use `Arguments::from_str` here.
+                    panic_fmt(fmt::Arguments::from_str($message));
+                }
+    *)
+    Definition panic_const_coroutine_resumed_drop
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      match ε, τ, α with
+      | [], [], [] =>
+        ltac:(M.monadic
+          (M.call_closure (|
+            Ty.path "never",
+            M.get_function (| "core::panicking::panic_fmt", [], [] |),
+            [
+              M.call_closure (|
+                Ty.path "core::fmt::Arguments",
+                M.get_associated_function (| Ty.path "core::fmt::Arguments", "from_str", [], [] |),
+                [ mk_str (| "coroutine resumed after async drop" |) ]
+              |)
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance Instance_IsFunction_panic_const_coroutine_resumed_drop :
+      M.IsFunction.C
+        "core::panicking::panic_const::panic_const_coroutine_resumed_drop"
+        panic_const_coroutine_resumed_drop.
+    Admitted.
+    Global Typeclasses Opaque panic_const_coroutine_resumed_drop.
+    
+    (*
+                pub const fn $lang() -> ! {
+                    // See the comment in `panic(&'static str)` for why we use `Arguments::from_str` here.
+                    panic_fmt(fmt::Arguments::from_str($message));
+                }
+    *)
+    Definition panic_const_async_fn_resumed_drop
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      match ε, τ, α with
+      | [], [], [] =>
+        ltac:(M.monadic
+          (M.call_closure (|
+            Ty.path "never",
+            M.get_function (| "core::panicking::panic_fmt", [], [] |),
+            [
+              M.call_closure (|
+                Ty.path "core::fmt::Arguments",
+                M.get_associated_function (| Ty.path "core::fmt::Arguments", "from_str", [], [] |),
+                [ mk_str (| "`async fn` resumed after async drop" |) ]
+              |)
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance Instance_IsFunction_panic_const_async_fn_resumed_drop :
+      M.IsFunction.C
+        "core::panicking::panic_const::panic_const_async_fn_resumed_drop"
+        panic_const_async_fn_resumed_drop.
+    Admitted.
+    Global Typeclasses Opaque panic_const_async_fn_resumed_drop.
+    
+    (*
+                pub const fn $lang() -> ! {
+                    // See the comment in `panic(&'static str)` for why we use `Arguments::from_str` here.
+                    panic_fmt(fmt::Arguments::from_str($message));
+                }
+    *)
+    Definition panic_const_async_gen_fn_resumed_drop
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      match ε, τ, α with
+      | [], [], [] =>
+        ltac:(M.monadic
+          (M.call_closure (|
+            Ty.path "never",
+            M.get_function (| "core::panicking::panic_fmt", [], [] |),
+            [
+              M.call_closure (|
+                Ty.path "core::fmt::Arguments",
+                M.get_associated_function (| Ty.path "core::fmt::Arguments", "from_str", [], [] |),
+                [ mk_str (| "`async gen fn` resumed after async drop" |) ]
+              |)
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance Instance_IsFunction_panic_const_async_gen_fn_resumed_drop :
+      M.IsFunction.C
+        "core::panicking::panic_const::panic_const_async_gen_fn_resumed_drop"
+        panic_const_async_gen_fn_resumed_drop.
+    Admitted.
+    Global Typeclasses Opaque panic_const_async_gen_fn_resumed_drop.
+    
+    (*
+                pub const fn $lang() -> ! {
+                    // See the comment in `panic(&'static str)` for why we use `Arguments::from_str` here.
+                    panic_fmt(fmt::Arguments::from_str($message));
+                }
+    *)
+    Definition panic_const_gen_fn_none_drop
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      match ε, τ, α with
+      | [], [], [] =>
+        ltac:(M.monadic
+          (M.call_closure (|
+            Ty.path "never",
+            M.get_function (| "core::panicking::panic_fmt", [], [] |),
+            [
+              M.call_closure (|
+                Ty.path "core::fmt::Arguments",
+                M.get_associated_function (| Ty.path "core::fmt::Arguments", "from_str", [], [] |),
+                [ mk_str (| "`gen fn` resumed after async drop" |) ]
+              |)
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance Instance_IsFunction_panic_const_gen_fn_none_drop :
+      M.IsFunction.C
+        "core::panicking::panic_const::panic_const_gen_fn_none_drop"
+        panic_const_gen_fn_none_drop.
+    Admitted.
+    Global Typeclasses Opaque panic_const_gen_fn_none_drop.
   End panic_const.
   
   (*
   pub const fn panic_nounwind(expr: &'static str) -> ! {
-      panic_nounwind_fmt(fmt::Arguments::new_const(&[expr]), /* force_no_backtrace */ false);
+      panic_nounwind_fmt(fmt::Arguments::from_str(expr), /* force_no_backtrace */ false);
   }
   *)
   Definition panic_nounwind (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -1329,29 +964,8 @@ Module panicking.
           [
             M.call_closure (|
               Ty.path "core::fmt::Arguments",
-              M.get_associated_function (|
-                Ty.path "core::fmt::Arguments",
-                "new_const",
-                [ Value.Integer IntegerKind.Usize 1 ],
-                []
-              |),
-              [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.alloc (|
-                        Ty.apply
-                          (Ty.path "array")
-                          [ Value.Integer IntegerKind.Usize 1 ]
-                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                        Value.Array [ M.read (| expr |) ]
-                      |)
-                    |)
-                  |)
-                |)
-              ]
+              M.get_associated_function (| Ty.path "core::fmt::Arguments", "from_str", [], [] |),
+              [ M.read (| expr |) ]
             |);
             Value.Bool false
           ]
@@ -1366,7 +980,7 @@ Module panicking.
   
   (*
   pub fn panic_nounwind_nobacktrace(expr: &'static str) -> ! {
-      panic_nounwind_fmt(fmt::Arguments::new_const(&[expr]), /* force_no_backtrace */ true);
+      panic_nounwind_fmt(fmt::Arguments::from_str(expr), /* force_no_backtrace */ true);
   }
   *)
   Definition panic_nounwind_nobacktrace (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -1380,29 +994,8 @@ Module panicking.
           [
             M.call_closure (|
               Ty.path "core::fmt::Arguments",
-              M.get_associated_function (|
-                Ty.path "core::fmt::Arguments",
-                "new_const",
-                [ Value.Integer IntegerKind.Usize 1 ],
-                []
-              |),
-              [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.alloc (|
-                        Ty.apply
-                          (Ty.path "array")
-                          [ Value.Integer IntegerKind.Usize 1 ]
-                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                        Value.Array [ M.read (| expr |) ]
-                      |)
-                    |)
-                  |)
-                |)
-              ]
+              M.get_associated_function (| Ty.path "core::fmt::Arguments", "from_str", [], [] |),
+              [ M.read (| expr |) ]
             |);
             Value.Bool true
           ]
@@ -1414,45 +1007,6 @@ Module panicking.
     M.IsFunction.C "core::panicking::panic_nounwind_nobacktrace" panic_nounwind_nobacktrace.
   Admitted.
   Global Typeclasses Opaque panic_nounwind_nobacktrace.
-  
-  (*
-  pub const fn panic_explicit() -> ! {
-      panic_display(&"explicit panic");
-  }
-  *)
-  Definition panic_explicit (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-    match ε, τ, α with
-    | [], [], [] =>
-      ltac:(M.monadic
-        (M.call_closure (|
-          Ty.path "never",
-          M.get_function (|
-            "core::panicking::panic_display",
-            [],
-            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-          |),
-          [
-            M.borrow (|
-              Pointer.Kind.Ref,
-              M.deref (|
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                    mk_str (| "explicit panic" |)
-                  |)
-                |)
-              |)
-            |)
-          ]
-        |)))
-    | _, _, _ => M.impossible "wrong number of arguments"
-    end.
-  
-  Global Instance Instance_IsFunction_panic_explicit :
-    M.IsFunction.C "core::panicking::panic_explicit" panic_explicit.
-  Admitted.
-  Global Typeclasses Opaque panic_explicit.
   
   (*
   pub fn unreachable_display<T: fmt::Display>(x: &T) -> ! {
@@ -1468,65 +1022,104 @@ Module panicking.
           Ty.path "never",
           M.get_function (| "core::panicking::panic_fmt", [], [] |),
           [
-            M.call_closure (|
-              Ty.path "core::fmt::Arguments",
-              M.get_associated_function (|
-                Ty.path "core::fmt::Arguments",
-                "new_v1",
-                [ Value.Integer IntegerKind.Usize 1; Value.Integer IntegerKind.Usize 1 ],
-                []
-              |),
-              [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.alloc (|
-                        Ty.apply
-                          (Ty.path "array")
-                          [ Value.Integer IntegerKind.Usize 1 ]
-                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                        Value.Array [ mk_str (| "internal error: entered unreachable code: " |) ]
-                      |)
+            M.read (|
+              let~ args : Ty.tuple [ Ty.apply (Ty.path "&") [] [ T ] ] :=
+                Value.Tuple [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| x |) |) |) ] in
+              let~ args :
+                  Ty.apply
+                    (Ty.path "array")
+                    [ Value.Integer IntegerKind.Usize 1 ]
+                    [ Ty.path "core::fmt::rt::Argument" ] :=
+                Value.Array
+                  [
+                    M.call_closure (|
+                      Ty.path "core::fmt::rt::Argument",
+                      M.get_associated_function (|
+                        Ty.path "core::fmt::rt::Argument",
+                        "new_display",
+                        [],
+                        [ T ]
+                      |),
+                      [
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| M.read (| M.SubPointer.get_tuple_field (| args, 0 |) |) |)
+                        |)
+                      ]
                     |)
-                  |)
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
+                  ] in
+              M.alloc (|
+                Ty.path "core::fmt::Arguments",
+                M.call_closure (|
+                  Ty.path "core::fmt::Arguments",
+                  M.get_associated_function (|
+                    Ty.path "core::fmt::Arguments",
+                    "new",
+                    [ Value.Integer IntegerKind.Usize 45; Value.Integer IntegerKind.Usize 1 ],
+                    []
+                  |),
+                  [
                     M.borrow (|
                       Pointer.Kind.Ref,
-                      M.alloc (|
-                        Ty.apply
-                          (Ty.path "array")
-                          [ Value.Integer IntegerKind.Usize 1 ]
-                          [ Ty.path "core::fmt::rt::Argument" ],
-                        Value.Array
+                      M.deref (|
+                        M.mk_byte_str_ref
+                          45
                           [
-                            M.call_closure (|
-                              Ty.path "core::fmt::rt::Argument",
-                              M.get_associated_function (|
-                                Ty.path "core::fmt::rt::Argument",
-                                "new_display",
-                                [],
-                                [ T ]
-                              |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| x |) |) |)
-                                  |)
-                                |)
-                              ]
-                            |)
+                            42;
+                            105;
+                            110;
+                            116;
+                            101;
+                            114;
+                            110;
+                            97;
+                            108;
+                            32;
+                            101;
+                            114;
+                            114;
+                            111;
+                            114;
+                            58;
+                            32;
+                            101;
+                            110;
+                            116;
+                            101;
+                            114;
+                            101;
+                            100;
+                            32;
+                            117;
+                            110;
+                            114;
+                            101;
+                            97;
+                            99;
+                            104;
+                            97;
+                            98;
+                            108;
+                            101;
+                            32;
+                            99;
+                            111;
+                            100;
+                            101;
+                            58;
+                            32;
+                            192;
+                            0
                           ]
                       |)
+                    |);
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
                     |)
-                  |)
+                  ]
                 |)
-              ]
+              |)
             |)
           ]
         |)))
@@ -1579,65 +1172,51 @@ Module panicking.
           Ty.path "never",
           M.get_function (| "core::panicking::panic_fmt", [], [] |),
           [
-            M.call_closure (|
-              Ty.path "core::fmt::Arguments",
-              M.get_associated_function (|
+            M.read (|
+              let~ args : Ty.tuple [ Ty.apply (Ty.path "&") [] [ T ] ] :=
+                Value.Tuple [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| x |) |) |) ] in
+              let~ args :
+                  Ty.apply
+                    (Ty.path "array")
+                    [ Value.Integer IntegerKind.Usize 1 ]
+                    [ Ty.path "core::fmt::rt::Argument" ] :=
+                Value.Array
+                  [
+                    M.call_closure (|
+                      Ty.path "core::fmt::rt::Argument",
+                      M.get_associated_function (|
+                        Ty.path "core::fmt::rt::Argument",
+                        "new_display",
+                        [],
+                        [ T ]
+                      |),
+                      [
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| M.read (| M.SubPointer.get_tuple_field (| args, 0 |) |) |)
+                        |)
+                      ]
+                    |)
+                  ] in
+              M.alloc (|
                 Ty.path "core::fmt::Arguments",
-                "new_v1",
-                [ Value.Integer IntegerKind.Usize 1; Value.Integer IntegerKind.Usize 1 ],
-                []
-              |),
-              [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
+                M.call_closure (|
+                  Ty.path "core::fmt::Arguments",
+                  M.get_associated_function (|
+                    Ty.path "core::fmt::Arguments",
+                    "new",
+                    [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 1 ],
+                    []
+                  |),
+                  [
+                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.mk_byte_str_ref 2 [ 192; 0 ] |) |);
                     M.borrow (|
                       Pointer.Kind.Ref,
-                      M.alloc (|
-                        Ty.apply
-                          (Ty.path "array")
-                          [ Value.Integer IntegerKind.Usize 1 ]
-                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                        Value.Array [ mk_str (| "" |) ]
-                      |)
+                      M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
                     |)
-                  |)
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.alloc (|
-                        Ty.apply
-                          (Ty.path "array")
-                          [ Value.Integer IntegerKind.Usize 1 ]
-                          [ Ty.path "core::fmt::rt::Argument" ],
-                        Value.Array
-                          [
-                            M.call_closure (|
-                              Ty.path "core::fmt::rt::Argument",
-                              M.get_associated_function (|
-                                Ty.path "core::fmt::rt::Argument",
-                                "new_display",
-                                [],
-                                [ T ]
-                              |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| x |) |) |)
-                                  |)
-                                |)
-                              ]
-                            |)
-                          ]
-                      |)
-                    |)
-                  |)
+                  ]
                 |)
-              ]
+              |)
             |)
           ]
         |)))
@@ -1651,7 +1230,7 @@ Module panicking.
   
   (*
   fn panic_bounds_check(index: usize, len: usize) -> ! {
-      if cfg!(feature = "panic_immediate_abort") {
+      if cfg!(panic = "immediate-abort") {
           super::intrinsics::abort()
       }
   
@@ -1672,7 +1251,7 @@ Module panicking.
               [
                 fun γ =>
                   ltac:(M.monadic
-                    (let γ := M.use (M.alloc (| Ty.path "bool", Value.Bool false |)) in
+                    (let γ := M.alloc (| Ty.path "bool", Value.Bool false |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     M.never_to_any (|
                       M.call_closure (|
@@ -1690,82 +1269,136 @@ Module panicking.
               Ty.path "never",
               M.get_function (| "core::panicking::panic_fmt", [], [] |),
               [
-                M.call_closure (|
-                  Ty.path "core::fmt::Arguments",
-                  M.get_associated_function (|
+                M.read (|
+                  let~ args :
+                      Ty.tuple
+                        [
+                          Ty.apply (Ty.path "&") [] [ Ty.path "usize" ];
+                          Ty.apply (Ty.path "&") [] [ Ty.path "usize" ]
+                        ] :=
+                    Value.Tuple
+                      [ M.borrow (| Pointer.Kind.Ref, len |); M.borrow (| Pointer.Kind.Ref, index |)
+                      ] in
+                  let~ args :
+                      Ty.apply
+                        (Ty.path "array")
+                        [ Value.Integer IntegerKind.Usize 2 ]
+                        [ Ty.path "core::fmt::rt::Argument" ] :=
+                    Value.Array
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::rt::Argument",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::rt::Argument",
+                            "new_display",
+                            [],
+                            [ Ty.path "usize" ]
+                          |),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| M.read (| M.SubPointer.get_tuple_field (| args, 0 |) |) |)
+                            |)
+                          ]
+                        |);
+                        M.call_closure (|
+                          Ty.path "core::fmt::rt::Argument",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::rt::Argument",
+                            "new_display",
+                            [],
+                            [ Ty.path "usize" ]
+                          |),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| M.read (| M.SubPointer.get_tuple_field (| args, 1 |) |) |)
+                            |)
+                          ]
+                        |)
+                      ] in
+                  M.alloc (|
                     Ty.path "core::fmt::Arguments",
-                    "new_v1",
-                    [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 2 ],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
+                    M.call_closure (|
+                      Ty.path "core::fmt::Arguments",
+                      M.get_associated_function (|
+                        Ty.path "core::fmt::Arguments",
+                        "new",
+                        [ Value.Integer IntegerKind.Usize 55; Value.Integer IntegerKind.Usize 2 ],
+                        []
+                      |),
+                      [
                         M.borrow (|
                           Pointer.Kind.Ref,
-                          M.alloc (|
-                            Ty.apply
-                              (Ty.path "array")
-                              [ Value.Integer IntegerKind.Usize 2 ]
-                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                            Value.Array
+                          M.deref (|
+                            M.mk_byte_str_ref
+                              55
                               [
-                                mk_str (| "index out of bounds: the len is " |);
-                                mk_str (| " but the index is " |)
+                                32;
+                                105;
+                                110;
+                                100;
+                                101;
+                                120;
+                                32;
+                                111;
+                                117;
+                                116;
+                                32;
+                                111;
+                                102;
+                                32;
+                                98;
+                                111;
+                                117;
+                                110;
+                                100;
+                                115;
+                                58;
+                                32;
+                                116;
+                                104;
+                                101;
+                                32;
+                                108;
+                                101;
+                                110;
+                                32;
+                                105;
+                                115;
+                                32;
+                                192;
+                                18;
+                                32;
+                                98;
+                                117;
+                                116;
+                                32;
+                                116;
+                                104;
+                                101;
+                                32;
+                                105;
+                                110;
+                                100;
+                                101;
+                                120;
+                                32;
+                                105;
+                                115;
+                                32;
+                                192;
+                                0
                               ]
                           |)
-                        |)
-                      |)
-                    |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
+                        |);
                         M.borrow (|
                           Pointer.Kind.Ref,
-                          M.alloc (|
-                            Ty.apply
-                              (Ty.path "array")
-                              [ Value.Integer IntegerKind.Usize 2 ]
-                              [ Ty.path "core::fmt::rt::Argument" ],
-                            Value.Array
-                              [
-                                M.call_closure (|
-                                  Ty.path "core::fmt::rt::Argument",
-                                  M.get_associated_function (|
-                                    Ty.path "core::fmt::rt::Argument",
-                                    "new_display",
-                                    [],
-                                    [ Ty.path "usize" ]
-                                  |),
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (| M.borrow (| Pointer.Kind.Ref, len |) |)
-                                    |)
-                                  ]
-                                |);
-                                M.call_closure (|
-                                  Ty.path "core::fmt::rt::Argument",
-                                  M.get_associated_function (|
-                                    Ty.path "core::fmt::rt::Argument",
-                                    "new_display",
-                                    [],
-                                    [ Ty.path "usize" ]
-                                  |),
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (| M.borrow (| Pointer.Kind.Ref, index |) |)
-                                    |)
-                                  ]
-                                |)
-                              ]
-                          |)
+                          M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
                         |)
-                      |)
+                      ]
                     |)
-                  ]
+                  |)
                 |)
               ]
             |)
@@ -1781,7 +1414,7 @@ Module panicking.
   
   (*
   fn panic_misaligned_pointer_dereference(required: usize, found: usize) -> ! {
-      if cfg!(feature = "panic_immediate_abort") {
+      if cfg!(panic = "immediate-abort") {
           super::intrinsics::abort()
       }
   
@@ -1811,7 +1444,229 @@ Module panicking.
               [
                 fun γ =>
                   ltac:(M.monadic
-                    (let γ := M.use (M.alloc (| Ty.path "bool", Value.Bool false |)) in
+                    (let γ := M.alloc (| Ty.path "bool", Value.Bool false |) in
+                    let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                    M.never_to_any (|
+                      M.call_closure (|
+                        Ty.path "never",
+                        M.get_function (| "core::intrinsics::abort", [], [] |),
+                        []
+                      |)
+                    |)));
+                fun γ => ltac:(M.monadic (Value.Tuple []))
+              ]
+            |) in
+          M.alloc (|
+            Ty.path "never",
+            M.call_closure (|
+              Ty.path "never",
+              M.get_function (| "core::panicking::panic_nounwind_fmt", [], [] |),
+              [
+                M.read (|
+                  let~ args :
+                      Ty.tuple
+                        [
+                          Ty.apply (Ty.path "&") [] [ Ty.path "usize" ];
+                          Ty.apply (Ty.path "&") [] [ Ty.path "usize" ]
+                        ] :=
+                    Value.Tuple
+                      [
+                        M.borrow (| Pointer.Kind.Ref, required |);
+                        M.borrow (| Pointer.Kind.Ref, found |)
+                      ] in
+                  let~ args :
+                      Ty.apply
+                        (Ty.path "array")
+                        [ Value.Integer IntegerKind.Usize 2 ]
+                        [ Ty.path "core::fmt::rt::Argument" ] :=
+                    Value.Array
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::rt::Argument",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::rt::Argument",
+                            "new_lower_hex",
+                            [],
+                            [ Ty.path "usize" ]
+                          |),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| M.read (| M.SubPointer.get_tuple_field (| args, 0 |) |) |)
+                            |)
+                          ]
+                        |);
+                        M.call_closure (|
+                          Ty.path "core::fmt::rt::Argument",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::rt::Argument",
+                            "new_lower_hex",
+                            [],
+                            [ Ty.path "usize" ]
+                          |),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| M.read (| M.SubPointer.get_tuple_field (| args, 1 |) |) |)
+                            |)
+                          ]
+                        |)
+                      ] in
+                  M.alloc (|
+                    Ty.path "core::fmt::Arguments",
+                    M.call_closure (|
+                      Ty.path "core::fmt::Arguments",
+                      M.get_associated_function (|
+                        Ty.path "core::fmt::Arguments",
+                        "new",
+                        [ Value.Integer IntegerKind.Usize 83; Value.Integer IntegerKind.Usize 2 ],
+                        []
+                      |),
+                      [
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.mk_byte_str_ref
+                              83
+                              [
+                                62;
+                                109;
+                                105;
+                                115;
+                                97;
+                                108;
+                                105;
+                                103;
+                                110;
+                                101;
+                                100;
+                                32;
+                                112;
+                                111;
+                                105;
+                                110;
+                                116;
+                                101;
+                                114;
+                                32;
+                                100;
+                                101;
+                                114;
+                                101;
+                                102;
+                                101;
+                                114;
+                                101;
+                                110;
+                                99;
+                                101;
+                                58;
+                                32;
+                                97;
+                                100;
+                                100;
+                                114;
+                                101;
+                                115;
+                                115;
+                                32;
+                                109;
+                                117;
+                                115;
+                                116;
+                                32;
+                                98;
+                                101;
+                                32;
+                                97;
+                                32;
+                                109;
+                                117;
+                                108;
+                                116;
+                                105;
+                                112;
+                                108;
+                                101;
+                                32;
+                                111;
+                                102;
+                                32;
+                                193;
+                                32;
+                                0;
+                                128;
+                                96;
+                                8;
+                                32;
+                                98;
+                                117;
+                                116;
+                                32;
+                                105;
+                                115;
+                                32;
+                                193;
+                                32;
+                                0;
+                                128;
+                                96;
+                                0
+                              ]
+                          |)
+                        |);
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
+                        |)
+                      ]
+                    |)
+                  |)
+                |);
+                Value.Bool false
+              ]
+            |)
+          |)
+        |)))
+    | _, _, _ => M.impossible "wrong number of arguments"
+    end.
+  
+  Global Instance Instance_IsFunction_panic_misaligned_pointer_dereference :
+    M.IsFunction.C
+      "core::panicking::panic_misaligned_pointer_dereference"
+      panic_misaligned_pointer_dereference.
+  Admitted.
+  Global Typeclasses Opaque panic_misaligned_pointer_dereference.
+  
+  (*
+  fn panic_null_pointer_dereference() -> ! {
+      if cfg!(panic = "immediate-abort") {
+          super::intrinsics::abort()
+      }
+  
+      panic_nounwind_fmt(
+          format_args!("null pointer dereference occurred"),
+          /* force_no_backtrace */ false,
+      )
+  }
+  *)
+  Definition panic_null_pointer_dereference
+      (ε : list Value.t)
+      (τ : list Ty.t)
+      (α : list Value.t)
+      : M :=
+    match ε, τ, α with
+    | [], [], [] =>
+      ltac:(M.monadic
+        (M.read (|
+          let~ _ : Ty.tuple [] :=
+            M.match_operator (|
+              Ty.tuple [],
+              M.alloc (| Ty.tuple [], Value.Tuple [] |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ := M.alloc (| Ty.path "bool", Value.Bool false |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     M.never_to_any (|
                       M.call_closure (|
@@ -1833,229 +1688,11 @@ Module panicking.
                   Ty.path "core::fmt::Arguments",
                   M.get_associated_function (|
                     Ty.path "core::fmt::Arguments",
-                    "new_v1_formatted",
+                    "from_str",
                     [],
                     []
                   |),
-                  [
-                    M.call_closure (|
-                      Ty.apply
-                        (Ty.path "&")
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "slice")
-                            []
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                        ],
-                      M.pointer_coercion
-                        M.PointerCoercion.Unsize
-                        (Ty.apply
-                          (Ty.path "&")
-                          []
-                          [
-                            Ty.apply
-                              (Ty.path "array")
-                              [ Value.Integer IntegerKind.Usize 2 ]
-                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                          ])
-                        (Ty.apply
-                          (Ty.path "&")
-                          []
-                          [
-                            Ty.apply
-                              (Ty.path "slice")
-                              []
-                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                          ]),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (|
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.alloc (|
-                                Ty.apply
-                                  (Ty.path "array")
-                                  [ Value.Integer IntegerKind.Usize 2 ]
-                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                Value.Array
-                                  [
-                                    mk_str (|
-                                      "misaligned pointer dereference: address must be a multiple of "
-                                    |);
-                                    mk_str (| " but is " |)
-                                  ]
-                              |)
-                            |)
-                          |)
-                        |)
-                      ]
-                    |);
-                    M.call_closure (|
-                      Ty.apply
-                        (Ty.path "&")
-                        []
-                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "core::fmt::rt::Argument" ] ],
-                      M.pointer_coercion
-                        M.PointerCoercion.Unsize
-                        (Ty.apply
-                          (Ty.path "&")
-                          []
-                          [
-                            Ty.apply
-                              (Ty.path "array")
-                              [ Value.Integer IntegerKind.Usize 2 ]
-                              [ Ty.path "core::fmt::rt::Argument" ]
-                          ])
-                        (Ty.apply
-                          (Ty.path "&")
-                          []
-                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "core::fmt::rt::Argument" ] ]),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (|
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.alloc (|
-                                Ty.apply
-                                  (Ty.path "array")
-                                  [ Value.Integer IntegerKind.Usize 2 ]
-                                  [ Ty.path "core::fmt::rt::Argument" ],
-                                Value.Array
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "core::fmt::rt::Argument",
-                                      M.get_associated_function (|
-                                        Ty.path "core::fmt::rt::Argument",
-                                        "new_lower_hex",
-                                        [],
-                                        [ Ty.path "usize" ]
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.borrow (| Pointer.Kind.Ref, required |) |)
-                                        |)
-                                      ]
-                                    |);
-                                    M.call_closure (|
-                                      Ty.path "core::fmt::rt::Argument",
-                                      M.get_associated_function (|
-                                        Ty.path "core::fmt::rt::Argument",
-                                        "new_lower_hex",
-                                        [],
-                                        [ Ty.path "usize" ]
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.borrow (| Pointer.Kind.Ref, found |) |)
-                                        |)
-                                      ]
-                                    |)
-                                  ]
-                              |)
-                            |)
-                          |)
-                        |)
-                      ]
-                    |);
-                    M.call_closure (|
-                      Ty.apply
-                        (Ty.path "&")
-                        []
-                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "core::fmt::rt::Placeholder" ] ],
-                      M.pointer_coercion
-                        M.PointerCoercion.Unsize
-                        (Ty.apply
-                          (Ty.path "&")
-                          []
-                          [
-                            Ty.apply
-                              (Ty.path "array")
-                              [ Value.Integer IntegerKind.Usize 2 ]
-                              [ Ty.path "core::fmt::rt::Placeholder" ]
-                          ])
-                        (Ty.apply
-                          (Ty.path "&")
-                          []
-                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "core::fmt::rt::Placeholder" ]
-                          ]),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (|
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.alloc (|
-                                Ty.apply
-                                  (Ty.path "array")
-                                  [ Value.Integer IntegerKind.Usize 2 ]
-                                  [ Ty.path "core::fmt::rt::Placeholder" ],
-                                Value.Array
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "core::fmt::rt::Placeholder",
-                                      M.get_associated_function (|
-                                        Ty.path "core::fmt::rt::Placeholder",
-                                        "new",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        Value.Integer IntegerKind.Usize 0;
-                                        Value.UnicodeChar 32;
-                                        Value.StructTuple
-                                          "core::fmt::rt::Alignment::Unknown"
-                                          []
-                                          []
-                                          [];
-                                        Value.Integer IntegerKind.U32 4;
-                                        Value.StructTuple "core::fmt::rt::Count::Implied" [] [] [];
-                                        Value.StructTuple "core::fmt::rt::Count::Implied" [] [] []
-                                      ]
-                                    |);
-                                    M.call_closure (|
-                                      Ty.path "core::fmt::rt::Placeholder",
-                                      M.get_associated_function (|
-                                        Ty.path "core::fmt::rt::Placeholder",
-                                        "new",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        Value.Integer IntegerKind.Usize 1;
-                                        Value.UnicodeChar 32;
-                                        Value.StructTuple
-                                          "core::fmt::rt::Alignment::Unknown"
-                                          []
-                                          []
-                                          [];
-                                        Value.Integer IntegerKind.U32 4;
-                                        Value.StructTuple "core::fmt::rt::Count::Implied" [] [] [];
-                                        Value.StructTuple "core::fmt::rt::Count::Implied" [] [] []
-                                      ]
-                                    |)
-                                  ]
-                              |)
-                            |)
-                          |)
-                        |)
-                      ]
-                    |);
-                    M.call_closure (|
-                      Ty.path "core::fmt::rt::UnsafeArg",
-                      M.get_associated_function (|
-                        Ty.path "core::fmt::rt::UnsafeArg",
-                        "new",
-                        [],
-                        []
-                      |),
-                      []
-                    |)
-                  ]
+                  [ mk_str (| "null pointer dereference occurred" |) ]
                 |);
                 Value.Bool false
               ]
@@ -2065,12 +1702,183 @@ Module panicking.
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
-  Global Instance Instance_IsFunction_panic_misaligned_pointer_dereference :
-    M.IsFunction.C
-      "core::panicking::panic_misaligned_pointer_dereference"
-      panic_misaligned_pointer_dereference.
+  Global Instance Instance_IsFunction_panic_null_pointer_dereference :
+    M.IsFunction.C "core::panicking::panic_null_pointer_dereference" panic_null_pointer_dereference.
   Admitted.
-  Global Typeclasses Opaque panic_misaligned_pointer_dereference.
+  Global Typeclasses Opaque panic_null_pointer_dereference.
+  
+  (*
+  fn panic_invalid_enum_construction(source: u128) -> ! {
+      if cfg!(panic = "immediate-abort") {
+          super::intrinsics::abort()
+      }
+  
+      panic_nounwind_fmt(
+          format_args!("trying to construct an enum from an invalid value {source:#x}"),
+          /* force_no_backtrace */ false,
+      )
+  }
+  *)
+  Definition panic_invalid_enum_construction
+      (ε : list Value.t)
+      (τ : list Ty.t)
+      (α : list Value.t)
+      : M :=
+    match ε, τ, α with
+    | [], [], [ source ] =>
+      ltac:(M.monadic
+        (let source := M.alloc (| Ty.path "u128", source |) in
+        M.read (|
+          let~ _ : Ty.tuple [] :=
+            M.match_operator (|
+              Ty.tuple [],
+              M.alloc (| Ty.tuple [], Value.Tuple [] |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ := M.alloc (| Ty.path "bool", Value.Bool false |) in
+                    let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                    M.never_to_any (|
+                      M.call_closure (|
+                        Ty.path "never",
+                        M.get_function (| "core::intrinsics::abort", [], [] |),
+                        []
+                      |)
+                    |)));
+                fun γ => ltac:(M.monadic (Value.Tuple []))
+              ]
+            |) in
+          M.alloc (|
+            Ty.path "never",
+            M.call_closure (|
+              Ty.path "never",
+              M.get_function (| "core::panicking::panic_nounwind_fmt", [], [] |),
+              [
+                M.read (|
+                  let~ args : Ty.tuple [ Ty.apply (Ty.path "&") [] [ Ty.path "u128" ] ] :=
+                    Value.Tuple [ M.borrow (| Pointer.Kind.Ref, source |) ] in
+                  let~ args :
+                      Ty.apply
+                        (Ty.path "array")
+                        [ Value.Integer IntegerKind.Usize 1 ]
+                        [ Ty.path "core::fmt::rt::Argument" ] :=
+                    Value.Array
+                      [
+                        M.call_closure (|
+                          Ty.path "core::fmt::rt::Argument",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::rt::Argument",
+                            "new_lower_hex",
+                            [],
+                            [ Ty.path "u128" ]
+                          |),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| M.read (| M.SubPointer.get_tuple_field (| args, 0 |) |) |)
+                            |)
+                          ]
+                        |)
+                      ] in
+                  M.alloc (|
+                    Ty.path "core::fmt::Arguments",
+                    M.call_closure (|
+                      Ty.path "core::fmt::Arguments",
+                      M.get_associated_function (|
+                        Ty.path "core::fmt::Arguments",
+                        "new",
+                        [ Value.Integer IntegerKind.Usize 57; Value.Integer IntegerKind.Usize 1 ],
+                        []
+                      |),
+                      [
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.mk_byte_str_ref
+                              57
+                              [
+                                50;
+                                116;
+                                114;
+                                121;
+                                105;
+                                110;
+                                103;
+                                32;
+                                116;
+                                111;
+                                32;
+                                99;
+                                111;
+                                110;
+                                115;
+                                116;
+                                114;
+                                117;
+                                99;
+                                116;
+                                32;
+                                97;
+                                110;
+                                32;
+                                101;
+                                110;
+                                117;
+                                109;
+                                32;
+                                102;
+                                114;
+                                111;
+                                109;
+                                32;
+                                97;
+                                110;
+                                32;
+                                105;
+                                110;
+                                118;
+                                97;
+                                108;
+                                105;
+                                100;
+                                32;
+                                118;
+                                97;
+                                108;
+                                117;
+                                101;
+                                32;
+                                193;
+                                32;
+                                0;
+                                128;
+                                96;
+                                0
+                              ]
+                          |)
+                        |);
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
+                        |)
+                      ]
+                    |)
+                  |)
+                |);
+                Value.Bool false
+              ]
+            |)
+          |)
+        |)))
+    | _, _, _ => M.impossible "wrong number of arguments"
+    end.
+  
+  Global Instance Instance_IsFunction_panic_invalid_enum_construction :
+    M.IsFunction.C
+      "core::panicking::panic_invalid_enum_construction"
+      panic_invalid_enum_construction.
+  Admitted.
+  Global Typeclasses Opaque panic_invalid_enum_construction.
   
   (*
   fn panic_cannot_unwind() -> ! {
@@ -2181,16 +1989,10 @@ Module panicking.
                 |)));
             fun γ =>
               ltac:(M.monadic
-                (M.read (|
-                  let~ _ : Ty.tuple [] :=
-                    M.never_to_any (|
-                      M.call_closure (|
-                        Ty.path "never",
-                        M.get_function (| "core::hint::unreachable_unchecked", [], [] |),
-                        []
-                      |)
-                    |) in
-                  M.alloc (| Ty.tuple [], Value.Tuple [] |)
+                (M.call_closure (|
+                  Ty.path "never",
+                  M.get_function (| "core::hint::unreachable_unchecked", [], [] |),
+                  []
                 |)))
           ]
         |)))
@@ -2583,127 +2385,216 @@ Module panicking.
                       Ty.path "never",
                       M.get_function (| "core::panicking::panic_fmt", [], [] |),
                       [
-                        M.call_closure (|
-                          Ty.path "core::fmt::Arguments",
-                          M.get_associated_function (|
+                        M.read (|
+                          let~ args :
+                              Ty.tuple
+                                [
+                                  Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ];
+                                  Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::Arguments" ];
+                                  Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]
+                                    ];
+                                  Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]
+                                    ]
+                                ] :=
+                            Value.Tuple
+                              [
+                                M.borrow (| Pointer.Kind.Ref, op |);
+                                M.borrow (| Pointer.Kind.Ref, args |);
+                                M.borrow (| Pointer.Kind.Ref, left |);
+                                M.borrow (| Pointer.Kind.Ref, right |)
+                              ] in
+                          let~ args :
+                              Ty.apply
+                                (Ty.path "array")
+                                [ Value.Integer IntegerKind.Usize 4 ]
+                                [ Ty.path "core::fmt::rt::Argument" ] :=
+                            Value.Array
+                              [
+                                M.call_closure (|
+                                  Ty.path "core::fmt::rt::Argument",
+                                  M.get_associated_function (|
+                                    Ty.path "core::fmt::rt::Argument",
+                                    "new_display",
+                                    [],
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                  |),
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (|
+                                        M.read (| M.SubPointer.get_tuple_field (| args, 0 |) |)
+                                      |)
+                                    |)
+                                  ]
+                                |);
+                                M.call_closure (|
+                                  Ty.path "core::fmt::rt::Argument",
+                                  M.get_associated_function (|
+                                    Ty.path "core::fmt::rt::Argument",
+                                    "new_display",
+                                    [],
+                                    [ Ty.path "core::fmt::Arguments" ]
+                                  |),
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (|
+                                        M.read (| M.SubPointer.get_tuple_field (| args, 1 |) |)
+                                      |)
+                                    |)
+                                  ]
+                                |);
+                                M.call_closure (|
+                                  Ty.path "core::fmt::rt::Argument",
+                                  M.get_associated_function (|
+                                    Ty.path "core::fmt::rt::Argument",
+                                    "new_debug",
+                                    [],
+                                    [
+                                      Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]
+                                    ]
+                                  |),
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (|
+                                        M.read (| M.SubPointer.get_tuple_field (| args, 2 |) |)
+                                      |)
+                                    |)
+                                  ]
+                                |);
+                                M.call_closure (|
+                                  Ty.path "core::fmt::rt::Argument",
+                                  M.get_associated_function (|
+                                    Ty.path "core::fmt::rt::Argument",
+                                    "new_debug",
+                                    [],
+                                    [
+                                      Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]
+                                    ]
+                                  |),
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (|
+                                        M.read (| M.SubPointer.get_tuple_field (| args, 3 |) |)
+                                      |)
+                                    |)
+                                  ]
+                                |)
+                              ] in
+                          M.alloc (|
                             Ty.path "core::fmt::Arguments",
-                            "new_v1",
-                            [ Value.Integer IntegerKind.Usize 4; Value.Integer IntegerKind.Usize 4
-                            ],
-                            []
-                          |),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
+                            M.call_closure (|
+                              Ty.path "core::fmt::Arguments",
+                              M.get_associated_function (|
+                                Ty.path "core::fmt::Arguments",
+                                "new",
+                                [
+                                  Value.Integer IntegerKind.Usize 59;
+                                  Value.Integer IntegerKind.Usize 4
+                                ],
+                                []
+                              |),
+                              [
                                 M.borrow (|
                                   Pointer.Kind.Ref,
-                                  M.alloc (|
-                                    Ty.apply
-                                      (Ty.path "array")
-                                      [ Value.Integer IntegerKind.Usize 4 ]
-                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                    Value.Array
+                                  M.deref (|
+                                    M.mk_byte_str_ref
+                                      59
                                       [
-                                        mk_str (| "assertion `left " |);
-                                        mk_str (| " right` failed: " |);
-                                        mk_str (| "
-  left: " |);
-                                        mk_str (| "
- right: " |)
+                                        16;
+                                        97;
+                                        115;
+                                        115;
+                                        101;
+                                        114;
+                                        116;
+                                        105;
+                                        111;
+                                        110;
+                                        32;
+                                        96;
+                                        108;
+                                        101;
+                                        102;
+                                        116;
+                                        32;
+                                        192;
+                                        16;
+                                        32;
+                                        114;
+                                        105;
+                                        103;
+                                        104;
+                                        116;
+                                        96;
+                                        32;
+                                        102;
+                                        97;
+                                        105;
+                                        108;
+                                        101;
+                                        100;
+                                        58;
+                                        32;
+                                        192;
+                                        9;
+                                        10;
+                                        32;
+                                        32;
+                                        108;
+                                        101;
+                                        102;
+                                        116;
+                                        58;
+                                        32;
+                                        192;
+                                        9;
+                                        10;
+                                        32;
+                                        114;
+                                        105;
+                                        103;
+                                        104;
+                                        116;
+                                        58;
+                                        32;
+                                        192;
+                                        0
                                       ]
                                   |)
-                                |)
-                              |)
-                            |);
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
+                                |);
                                 M.borrow (|
                                   Pointer.Kind.Ref,
-                                  M.alloc (|
-                                    Ty.apply
-                                      (Ty.path "array")
-                                      [ Value.Integer IntegerKind.Usize 4 ]
-                                      [ Ty.path "core::fmt::rt::Argument" ],
-                                    Value.Array
-                                      [
-                                        M.call_closure (|
-                                          Ty.path "core::fmt::rt::Argument",
-                                          M.get_associated_function (|
-                                            Ty.path "core::fmt::rt::Argument",
-                                            "new_display",
-                                            [],
-                                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.borrow (| Pointer.Kind.Ref, op |) |)
-                                            |)
-                                          ]
-                                        |);
-                                        M.call_closure (|
-                                          Ty.path "core::fmt::rt::Argument",
-                                          M.get_associated_function (|
-                                            Ty.path "core::fmt::rt::Argument",
-                                            "new_display",
-                                            [],
-                                            [ Ty.path "core::fmt::Arguments" ]
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
-                                            |)
-                                          ]
-                                        |);
-                                        M.call_closure (|
-                                          Ty.path "core::fmt::rt::Argument",
-                                          M.get_associated_function (|
-                                            Ty.path "core::fmt::rt::Argument",
-                                            "new_debug",
-                                            [],
-                                            [
-                                              Ty.apply
-                                                (Ty.path "&")
-                                                []
-                                                [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]
-                                            ]
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.borrow (| Pointer.Kind.Ref, left |) |)
-                                            |)
-                                          ]
-                                        |);
-                                        M.call_closure (|
-                                          Ty.path "core::fmt::rt::Argument",
-                                          M.get_associated_function (|
-                                            Ty.path "core::fmt::rt::Argument",
-                                            "new_debug",
-                                            [],
-                                            [
-                                              Ty.apply
-                                                (Ty.path "&")
-                                                []
-                                                [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]
-                                            ]
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.borrow (| Pointer.Kind.Ref, right |) |)
-                                            |)
-                                          ]
-                                        |)
-                                      ]
-                                  |)
+                                  M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
                                 |)
-                              |)
+                              ]
                             |)
-                          ]
+                          |)
                         |)
                       ]
                     |)));
@@ -2714,111 +2605,193 @@ Module panicking.
                       Ty.path "never",
                       M.get_function (| "core::panicking::panic_fmt", [], [] |),
                       [
-                        M.call_closure (|
-                          Ty.path "core::fmt::Arguments",
-                          M.get_associated_function (|
+                        M.read (|
+                          let~ args :
+                              Ty.tuple
+                                [
+                                  Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ];
+                                  Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]
+                                    ];
+                                  Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]
+                                    ]
+                                ] :=
+                            Value.Tuple
+                              [
+                                M.borrow (| Pointer.Kind.Ref, op |);
+                                M.borrow (| Pointer.Kind.Ref, left |);
+                                M.borrow (| Pointer.Kind.Ref, right |)
+                              ] in
+                          let~ args :
+                              Ty.apply
+                                (Ty.path "array")
+                                [ Value.Integer IntegerKind.Usize 3 ]
+                                [ Ty.path "core::fmt::rt::Argument" ] :=
+                            Value.Array
+                              [
+                                M.call_closure (|
+                                  Ty.path "core::fmt::rt::Argument",
+                                  M.get_associated_function (|
+                                    Ty.path "core::fmt::rt::Argument",
+                                    "new_display",
+                                    [],
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                  |),
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (|
+                                        M.read (| M.SubPointer.get_tuple_field (| args, 0 |) |)
+                                      |)
+                                    |)
+                                  ]
+                                |);
+                                M.call_closure (|
+                                  Ty.path "core::fmt::rt::Argument",
+                                  M.get_associated_function (|
+                                    Ty.path "core::fmt::rt::Argument",
+                                    "new_debug",
+                                    [],
+                                    [
+                                      Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]
+                                    ]
+                                  |),
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (|
+                                        M.read (| M.SubPointer.get_tuple_field (| args, 1 |) |)
+                                      |)
+                                    |)
+                                  ]
+                                |);
+                                M.call_closure (|
+                                  Ty.path "core::fmt::rt::Argument",
+                                  M.get_associated_function (|
+                                    Ty.path "core::fmt::rt::Argument",
+                                    "new_debug",
+                                    [],
+                                    [
+                                      Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]
+                                    ]
+                                  |),
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (|
+                                        M.read (| M.SubPointer.get_tuple_field (| args, 2 |) |)
+                                      |)
+                                    |)
+                                  ]
+                                |)
+                              ] in
+                          M.alloc (|
                             Ty.path "core::fmt::Arguments",
-                            "new_v1",
-                            [ Value.Integer IntegerKind.Usize 3; Value.Integer IntegerKind.Usize 3
-                            ],
-                            []
-                          |),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
+                            M.call_closure (|
+                              Ty.path "core::fmt::Arguments",
+                              M.get_associated_function (|
+                                Ty.path "core::fmt::Arguments",
+                                "new",
+                                [
+                                  Value.Integer IntegerKind.Usize 55;
+                                  Value.Integer IntegerKind.Usize 3
+                                ],
+                                []
+                              |),
+                              [
                                 M.borrow (|
                                   Pointer.Kind.Ref,
-                                  M.alloc (|
-                                    Ty.apply
-                                      (Ty.path "array")
-                                      [ Value.Integer IntegerKind.Usize 3 ]
-                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                    Value.Array
+                                  M.deref (|
+                                    M.mk_byte_str_ref
+                                      55
                                       [
-                                        mk_str (| "assertion `left " |);
-                                        mk_str (| " right` failed
-  left: " |);
-                                        mk_str (| "
- right: " |)
+                                        16;
+                                        97;
+                                        115;
+                                        115;
+                                        101;
+                                        114;
+                                        116;
+                                        105;
+                                        111;
+                                        110;
+                                        32;
+                                        96;
+                                        108;
+                                        101;
+                                        102;
+                                        116;
+                                        32;
+                                        192;
+                                        23;
+                                        32;
+                                        114;
+                                        105;
+                                        103;
+                                        104;
+                                        116;
+                                        96;
+                                        32;
+                                        102;
+                                        97;
+                                        105;
+                                        108;
+                                        101;
+                                        100;
+                                        10;
+                                        32;
+                                        32;
+                                        108;
+                                        101;
+                                        102;
+                                        116;
+                                        58;
+                                        32;
+                                        192;
+                                        9;
+                                        10;
+                                        32;
+                                        114;
+                                        105;
+                                        103;
+                                        104;
+                                        116;
+                                        58;
+                                        32;
+                                        192;
+                                        0
                                       ]
                                   |)
-                                |)
-                              |)
-                            |);
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
+                                |);
                                 M.borrow (|
                                   Pointer.Kind.Ref,
-                                  M.alloc (|
-                                    Ty.apply
-                                      (Ty.path "array")
-                                      [ Value.Integer IntegerKind.Usize 3 ]
-                                      [ Ty.path "core::fmt::rt::Argument" ],
-                                    Value.Array
-                                      [
-                                        M.call_closure (|
-                                          Ty.path "core::fmt::rt::Argument",
-                                          M.get_associated_function (|
-                                            Ty.path "core::fmt::rt::Argument",
-                                            "new_display",
-                                            [],
-                                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.borrow (| Pointer.Kind.Ref, op |) |)
-                                            |)
-                                          ]
-                                        |);
-                                        M.call_closure (|
-                                          Ty.path "core::fmt::rt::Argument",
-                                          M.get_associated_function (|
-                                            Ty.path "core::fmt::rt::Argument",
-                                            "new_debug",
-                                            [],
-                                            [
-                                              Ty.apply
-                                                (Ty.path "&")
-                                                []
-                                                [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]
-                                            ]
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.borrow (| Pointer.Kind.Ref, left |) |)
-                                            |)
-                                          ]
-                                        |);
-                                        M.call_closure (|
-                                          Ty.path "core::fmt::rt::Argument",
-                                          M.get_associated_function (|
-                                            Ty.path "core::fmt::rt::Argument",
-                                            "new_debug",
-                                            [],
-                                            [
-                                              Ty.apply
-                                                (Ty.path "&")
-                                                []
-                                                [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]
-                                            ]
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.borrow (| Pointer.Kind.Ref, right |) |)
-                                            |)
-                                          ]
-                                        |)
-                                      ]
-                                  |)
+                                  M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
                                 |)
-                              |)
+                              ]
                             |)
-                          ]
+                          |)
                         |)
                       ]
                     |)))

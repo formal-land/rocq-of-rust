@@ -321,64 +321,140 @@ Definition try_logon (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : 
                 Ty.tuple [],
                 M.get_function (| "std::io::stdio::_print", [], [] |),
                 [
-                  M.call_closure (|
-                    Ty.path "core::fmt::Arguments",
-                    M.get_associated_function (|
+                  M.read (|
+                    let~ args :
+                        Ty.tuple
+                          [
+                            Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                          ] :=
+                      Value.Tuple [ M.borrow (| Pointer.Kind.Ref, username |) ] in
+                    let~ args :
+                        Ty.apply
+                          (Ty.path "array")
+                          [ Value.Integer IntegerKind.Usize 1 ]
+                          [ Ty.path "core::fmt::rt::Argument" ] :=
+                      Value.Array
+                        [
+                          M.call_closure (|
+                            Ty.path "core::fmt::rt::Argument",
+                            M.get_associated_function (|
+                              Ty.path "core::fmt::rt::Argument",
+                              "new_display",
+                              [],
+                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                            |),
+                            [
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (|
+                                  M.read (| M.SubPointer.get_tuple_field (| args, 0 |) |)
+                                |)
+                              |)
+                            ]
+                          |)
+                        ] in
+                    M.alloc (|
                       Ty.path "core::fmt::Arguments",
-                      "new_v1",
-                      [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 1 ],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
+                      M.call_closure (|
+                        Ty.path "core::fmt::Arguments",
+                        M.get_associated_function (|
+                          Ty.path "core::fmt::Arguments",
+                          "new",
+                          [ Value.Integer IntegerKind.Usize 15; Value.Integer IntegerKind.Usize 1 ],
+                          []
+                        |),
+                        [
                           M.borrow (|
                             Pointer.Kind.Ref,
-                            M.alloc (|
-                              Ty.apply
-                                (Ty.path "array")
-                                [ Value.Integer IntegerKind.Usize 2 ]
-                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                              Value.Array [ mk_str (| "Username: " |); mk_str (| "
-" |) ]
+                            M.deref (|
+                              M.mk_byte_str_ref
+                                15
+                                [ 10; 85; 115; 101; 114; 110; 97; 109; 101; 58; 32; 192; 1; 10; 0 ]
                             |)
-                          |)
-                        |)
-                      |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
+                          |);
                           M.borrow (|
                             Pointer.Kind.Ref,
-                            M.alloc (|
-                              Ty.apply
-                                (Ty.path "array")
-                                [ Value.Integer IntegerKind.Usize 1 ]
-                                [ Ty.path "core::fmt::rt::Argument" ],
-                              Value.Array
-                                [
-                                  M.call_closure (|
-                                    Ty.path "core::fmt::rt::Argument",
-                                    M.get_associated_function (|
-                                      Ty.path "core::fmt::rt::Argument",
-                                      "new_display",
-                                      [],
-                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.borrow (| Pointer.Kind.Ref, username |) |)
-                                      |)
-                                    ]
-                                  |)
-                                ]
-                            |)
+                            M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
                           |)
-                        |)
+                        ]
                       |)
-                    ]
+                    |)
+                  |)
+                ]
+              |) in
+            M.alloc (| Ty.tuple [], Value.Tuple [] |)
+          |) in
+        let~ _ : Ty.tuple [] :=
+          M.read (|
+            let~ _ : Ty.tuple [] :=
+              M.call_closure (|
+                Ty.tuple [],
+                M.get_function (| "std::io::stdio::_print", [], [] |),
+                [
+                  M.read (|
+                    let~ args :
+                        Ty.tuple
+                          [
+                            Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                          ] :=
+                      Value.Tuple [ M.borrow (| Pointer.Kind.Ref, password |) ] in
+                    let~ args :
+                        Ty.apply
+                          (Ty.path "array")
+                          [ Value.Integer IntegerKind.Usize 1 ]
+                          [ Ty.path "core::fmt::rt::Argument" ] :=
+                      Value.Array
+                        [
+                          M.call_closure (|
+                            Ty.path "core::fmt::rt::Argument",
+                            M.get_associated_function (|
+                              Ty.path "core::fmt::rt::Argument",
+                              "new_display",
+                              [],
+                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                            |),
+                            [
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (|
+                                  M.read (| M.SubPointer.get_tuple_field (| args, 0 |) |)
+                                |)
+                              |)
+                            ]
+                          |)
+                        ] in
+                    M.alloc (|
+                      Ty.path "core::fmt::Arguments",
+                      M.call_closure (|
+                        Ty.path "core::fmt::Arguments",
+                        M.get_associated_function (|
+                          Ty.path "core::fmt::Arguments",
+                          "new",
+                          [ Value.Integer IntegerKind.Usize 15; Value.Integer IntegerKind.Usize 1 ],
+                          []
+                        |),
+                        [
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (|
+                              M.mk_byte_str_ref
+                                15
+                                [ 10; 80; 97; 115; 115; 119; 111; 114; 100; 58; 32; 192; 1; 10; 0 ]
+                            |)
+                          |);
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
+                          |)
+                        ]
+                      |)
+                    |)
                   |)
                 ]
               |) in
@@ -395,98 +471,12 @@ Definition try_logon (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : 
                     Ty.path "core::fmt::Arguments",
                     M.get_associated_function (|
                       Ty.path "core::fmt::Arguments",
-                      "new_v1",
-                      [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 1 ],
+                      "from_str",
+                      [],
                       []
                     |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.alloc (|
-                              Ty.apply
-                                (Ty.path "array")
-                                [ Value.Integer IntegerKind.Usize 2 ]
-                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                              Value.Array [ mk_str (| "Password: " |); mk_str (| "
+                    [ mk_str (| "Attempting logon...
 " |) ]
-                            |)
-                          |)
-                        |)
-                      |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.alloc (|
-                              Ty.apply
-                                (Ty.path "array")
-                                [ Value.Integer IntegerKind.Usize 1 ]
-                                [ Ty.path "core::fmt::rt::Argument" ],
-                              Value.Array
-                                [
-                                  M.call_closure (|
-                                    Ty.path "core::fmt::rt::Argument",
-                                    M.get_associated_function (|
-                                      Ty.path "core::fmt::rt::Argument",
-                                      "new_display",
-                                      [],
-                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.borrow (| Pointer.Kind.Ref, password |) |)
-                                      |)
-                                    ]
-                                  |)
-                                ]
-                            |)
-                          |)
-                        |)
-                      |)
-                    ]
-                  |)
-                ]
-              |) in
-            M.alloc (| Ty.tuple [], Value.Tuple [] |)
-          |) in
-        let~ _ : Ty.tuple [] :=
-          M.read (|
-            let~ _ : Ty.tuple [] :=
-              M.call_closure (|
-                Ty.tuple [],
-                M.get_function (| "std::io::stdio::_print", [], [] |),
-                [
-                  M.call_closure (|
-                    Ty.path "core::fmt::Arguments",
-                    M.get_associated_function (|
-                      Ty.path "core::fmt::Arguments",
-                      "new_const",
-                      [ Value.Integer IntegerKind.Usize 1 ],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.alloc (|
-                              Ty.apply
-                                (Ty.path "array")
-                                [ Value.Integer IntegerKind.Usize 1 ]
-                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                              Value.Array [ mk_str (| "Attempting logon...
-" |) ]
-                            |)
-                          |)
-                        |)
-                      |)
-                    ]
                   |)
                 ]
               |) in
@@ -572,28 +562,12 @@ Definition try_logon (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : 
                                 Ty.path "core::fmt::Arguments",
                                 M.get_associated_function (|
                                   Ty.path "core::fmt::Arguments",
-                                  "new_const",
-                                  [ Value.Integer IntegerKind.Usize 1 ],
+                                  "from_str",
+                                  [],
                                   []
                                 |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.alloc (|
-                                          Ty.apply
-                                            (Ty.path "array")
-                                            [ Value.Integer IntegerKind.Usize 1 ]
-                                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                          Value.Array [ mk_str (| "Successful logon!
+                                [ mk_str (| "Successful logon!
 " |) ]
-                                        |)
-                                      |)
-                                    |)
-                                  |)
-                                ]
                               |)
                             ]
                           |) in
@@ -606,76 +580,82 @@ Definition try_logon (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : 
                             Ty.tuple [],
                             M.get_function (| "std::io::stdio::_print", [], [] |),
                             [
-                              M.call_closure (|
-                                Ty.path "core::fmt::Arguments",
-                                M.get_associated_function (|
-                                  Ty.path "core::fmt::Arguments",
-                                  "new_v1",
-                                  [
-                                    Value.Integer IntegerKind.Usize 2;
-                                    Value.Integer IntegerKind.Usize 1
-                                  ],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
+                              M.read (|
+                                let~ args :
+                                    Ty.tuple
+                                      [
+                                        Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                      ] :=
+                                  Value.Tuple
+                                    [
                                       M.borrow (|
                                         Pointer.Kind.Ref,
-                                        M.alloc (|
-                                          Ty.apply
-                                            (Ty.path "array")
-                                            [ Value.Integer IntegerKind.Usize 2 ]
-                                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                          Value.Array [ mk_str (| "Name: " |); mk_str (| "
-" |) ]
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| account_info |) |),
+                                          "hash_map_alternate_or_custom_key_types::AccountInfo",
+                                          "name"
                                         |)
                                       |)
-                                    |)
-                                  |);
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.alloc (|
-                                          Ty.apply
-                                            (Ty.path "array")
-                                            [ Value.Integer IntegerKind.Usize 1 ]
-                                            [ Ty.path "core::fmt::rt::Argument" ],
-                                          Value.Array
-                                            [
-                                              M.call_closure (|
-                                                Ty.path "core::fmt::rt::Argument",
-                                                M.get_associated_function (|
-                                                  Ty.path "core::fmt::rt::Argument",
-                                                  "new_display",
-                                                  [],
-                                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                                                |),
-                                                [
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.deref (|
-                                                      M.borrow (|
-                                                        Pointer.Kind.Ref,
-                                                        M.SubPointer.get_struct_record_field (|
-                                                          M.deref (| M.read (| account_info |) |),
-                                                          "hash_map_alternate_or_custom_key_types::AccountInfo",
-                                                          "name"
-                                                        |)
-                                                      |)
-                                                    |)
-                                                  |)
-                                                ]
+                                    ] in
+                                let~ args :
+                                    Ty.apply
+                                      (Ty.path "array")
+                                      [ Value.Integer IntegerKind.Usize 1 ]
+                                      [ Ty.path "core::fmt::rt::Argument" ] :=
+                                  Value.Array
+                                    [
+                                      M.call_closure (|
+                                        Ty.path "core::fmt::rt::Argument",
+                                        M.get_associated_function (|
+                                          Ty.path "core::fmt::rt::Argument",
+                                          "new_display",
+                                          [],
+                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                        |),
+                                        [
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (|
+                                              M.read (|
+                                                M.SubPointer.get_tuple_field (| args, 0 |)
                                               |)
-                                            ]
-                                        |)
+                                            |)
+                                          |)
+                                        ]
                                       |)
-                                    |)
+                                    ] in
+                                M.alloc (|
+                                  Ty.path "core::fmt::Arguments",
+                                  M.call_closure (|
+                                    Ty.path "core::fmt::Arguments",
+                                    M.get_associated_function (|
+                                      Ty.path "core::fmt::Arguments",
+                                      "new",
+                                      [
+                                        Value.Integer IntegerKind.Usize 11;
+                                        Value.Integer IntegerKind.Usize 1
+                                      ],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.mk_byte_str_ref
+                                            11
+                                            [ 6; 78; 97; 109; 101; 58; 32; 192; 1; 10; 0 ]
+                                        |)
+                                      |);
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
+                                      |)
+                                    ]
                                   |)
-                                ]
+                                |)
                               |)
                             ]
                           |) in
@@ -688,76 +668,82 @@ Definition try_logon (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : 
                             Ty.tuple [],
                             M.get_function (| "std::io::stdio::_print", [], [] |),
                             [
-                              M.call_closure (|
-                                Ty.path "core::fmt::Arguments",
-                                M.get_associated_function (|
-                                  Ty.path "core::fmt::Arguments",
-                                  "new_v1",
-                                  [
-                                    Value.Integer IntegerKind.Usize 2;
-                                    Value.Integer IntegerKind.Usize 1
-                                  ],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
+                              M.read (|
+                                let~ args :
+                                    Ty.tuple
+                                      [
+                                        Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                      ] :=
+                                  Value.Tuple
+                                    [
                                       M.borrow (|
                                         Pointer.Kind.Ref,
-                                        M.alloc (|
-                                          Ty.apply
-                                            (Ty.path "array")
-                                            [ Value.Integer IntegerKind.Usize 2 ]
-                                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                          Value.Array [ mk_str (| "Email: " |); mk_str (| "
-" |) ]
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| account_info |) |),
+                                          "hash_map_alternate_or_custom_key_types::AccountInfo",
+                                          "email"
                                         |)
                                       |)
-                                    |)
-                                  |);
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.alloc (|
-                                          Ty.apply
-                                            (Ty.path "array")
-                                            [ Value.Integer IntegerKind.Usize 1 ]
-                                            [ Ty.path "core::fmt::rt::Argument" ],
-                                          Value.Array
-                                            [
-                                              M.call_closure (|
-                                                Ty.path "core::fmt::rt::Argument",
-                                                M.get_associated_function (|
-                                                  Ty.path "core::fmt::rt::Argument",
-                                                  "new_display",
-                                                  [],
-                                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                                                |),
-                                                [
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.deref (|
-                                                      M.borrow (|
-                                                        Pointer.Kind.Ref,
-                                                        M.SubPointer.get_struct_record_field (|
-                                                          M.deref (| M.read (| account_info |) |),
-                                                          "hash_map_alternate_or_custom_key_types::AccountInfo",
-                                                          "email"
-                                                        |)
-                                                      |)
-                                                    |)
-                                                  |)
-                                                ]
+                                    ] in
+                                let~ args :
+                                    Ty.apply
+                                      (Ty.path "array")
+                                      [ Value.Integer IntegerKind.Usize 1 ]
+                                      [ Ty.path "core::fmt::rt::Argument" ] :=
+                                  Value.Array
+                                    [
+                                      M.call_closure (|
+                                        Ty.path "core::fmt::rt::Argument",
+                                        M.get_associated_function (|
+                                          Ty.path "core::fmt::rt::Argument",
+                                          "new_display",
+                                          [],
+                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                        |),
+                                        [
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (|
+                                              M.read (|
+                                                M.SubPointer.get_tuple_field (| args, 0 |)
                                               |)
-                                            ]
-                                        |)
+                                            |)
+                                          |)
+                                        ]
                                       |)
-                                    |)
+                                    ] in
+                                M.alloc (|
+                                  Ty.path "core::fmt::Arguments",
+                                  M.call_closure (|
+                                    Ty.path "core::fmt::Arguments",
+                                    M.get_associated_function (|
+                                      Ty.path "core::fmt::Arguments",
+                                      "new",
+                                      [
+                                        Value.Integer IntegerKind.Usize 12;
+                                        Value.Integer IntegerKind.Usize 1
+                                      ],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.mk_byte_str_ref
+                                            12
+                                            [ 7; 69; 109; 97; 105; 108; 58; 32; 192; 1; 10; 0 ]
+                                        |)
+                                      |);
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
+                                      |)
+                                    ]
                                   |)
-                                ]
+                                |)
                               |)
                             ]
                           |) in
@@ -777,28 +763,12 @@ Definition try_logon (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : 
                             Ty.path "core::fmt::Arguments",
                             M.get_associated_function (|
                               Ty.path "core::fmt::Arguments",
-                              "new_const",
-                              [ Value.Integer IntegerKind.Usize 1 ],
+                              "from_str",
+                              [],
                               []
                             |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.alloc (|
-                                      Ty.apply
-                                        (Ty.path "array")
-                                        [ Value.Integer IntegerKind.Usize 1 ]
-                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                      Value.Array [ mk_str (| "Login failed!
+                            [ mk_str (| "Login failed!
 " |) ]
-                                    |)
-                                  |)
-                                |)
-                              |)
-                            ]
                           |)
                         ]
                       |) in

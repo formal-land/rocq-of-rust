@@ -67,12 +67,8 @@ Module intrinsics.
           (M.never_to_any (|
             M.call_closure (|
               Ty.path "never",
-              M.get_function (|
-                "core::intrinsics::mir::UnwindContinue.panic_cold_explicit",
-                [],
-                []
-              |),
-              []
+              M.get_function (| "core::panicking::panic", [], [] |),
+              [ mk_str (| "explicit panic" |) ]
             |)
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -91,12 +87,8 @@ Module intrinsics.
           (M.never_to_any (|
             M.call_closure (|
               Ty.path "never",
-              M.get_function (|
-                "core::intrinsics::mir::UnwindUnreachable.panic_cold_explicit",
-                [],
-                []
-              |),
-              []
+              M.get_function (| "core::panicking::panic", [], [] |),
+              [ mk_str (| "explicit panic" |) ]
             |)
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -117,12 +109,8 @@ Module intrinsics.
           M.never_to_any (|
             M.call_closure (|
               Ty.path "never",
-              M.get_function (|
-                "core::intrinsics::mir::UnwindTerminate.panic_cold_explicit",
-                [],
-                []
-              |),
-              []
+              M.get_function (| "core::panicking::panic", [], [] |),
+              [ mk_str (| "explicit panic" |) ]
             |)
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -142,12 +130,8 @@ Module intrinsics.
           M.never_to_any (|
             M.call_closure (|
               Ty.path "never",
-              M.get_function (|
-                "core::intrinsics::mir::UnwindCleanup.panic_cold_explicit",
-                [],
-                []
-              |),
-              []
+              M.get_function (| "core::panicking::panic", [], [] |),
+              [ mk_str (| "explicit panic" |) ]
             |)
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -175,8 +159,8 @@ Module intrinsics.
           M.never_to_any (|
             M.call_closure (|
               Ty.path "never",
-              M.get_function (| "core::intrinsics::mir::ReturnTo.panic_cold_explicit", [], [] |),
-              []
+              M.get_function (| "core::panicking::panic", [], [] |),
+              [ mk_str (| "explicit panic" |) ]
             |)
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -195,8 +179,8 @@ Module intrinsics.
           (M.never_to_any (|
             M.call_closure (|
               Ty.path "never",
-              M.get_function (| "core::intrinsics::mir::Return.panic_cold_explicit", [], [] |),
-              []
+              M.get_function (| "core::panicking::panic", [], [] |),
+              [ mk_str (| "explicit panic" |) ]
             |)
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -217,8 +201,8 @@ Module intrinsics.
           M.never_to_any (|
             M.call_closure (|
               Ty.path "never",
-              M.get_function (| "core::intrinsics::mir::Goto.panic_cold_explicit", [], [] |),
-              []
+              M.get_function (| "core::panicking::panic", [], [] |),
+              [ mk_str (| "explicit panic" |) ]
             |)
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -237,8 +221,8 @@ Module intrinsics.
           (M.never_to_any (|
             M.call_closure (|
               Ty.path "never",
-              M.get_function (| "core::intrinsics::mir::Unreachable.panic_cold_explicit", [], [] |),
-              []
+              M.get_function (| "core::panicking::panic", [], [] |),
+              [ mk_str (| "explicit panic" |) ]
             |)
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -261,8 +245,8 @@ Module intrinsics.
           M.never_to_any (|
             M.call_closure (|
               Ty.path "never",
-              M.get_function (| "core::intrinsics::mir::Drop.panic_cold_explicit", [], [] |),
-              []
+              M.get_function (| "core::panicking::panic", [], [] |),
+              [ mk_str (| "explicit panic" |) ]
             |)
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -285,8 +269,8 @@ Module intrinsics.
           M.never_to_any (|
             M.call_closure (|
               Ty.path "never",
-              M.get_function (| "core::intrinsics::mir::Call.panic_cold_explicit", [], [] |),
-              []
+              M.get_function (| "core::panicking::panic", [], [] |),
+              [ mk_str (| "explicit panic" |) ]
             |)
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -306,8 +290,8 @@ Module intrinsics.
           M.never_to_any (|
             M.call_closure (|
               Ty.path "never",
-              M.get_function (| "core::intrinsics::mir::TailCall.panic_cold_explicit", [], [] |),
-              []
+              M.get_function (| "core::panicking::panic", [], [] |),
+              [ mk_str (| "explicit panic" |) ]
             |)
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -326,12 +310,8 @@ Module intrinsics.
           (M.never_to_any (|
             M.call_closure (|
               Ty.path "never",
-              M.get_function (|
-                "core::intrinsics::mir::UnwindResume.panic_cold_explicit",
-                [],
-                []
-              |),
-              []
+              M.get_function (| "core::panicking::panic", [], [] |),
+              [ mk_str (| "explicit panic" |) ]
             |)
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -351,8 +331,8 @@ Module intrinsics.
           M.never_to_any (|
             M.call_closure (|
               Ty.path "never",
-              M.get_function (| "core::intrinsics::mir::StorageLive.panic_cold_explicit", [], [] |),
-              []
+              M.get_function (| "core::panicking::panic", [], [] |),
+              [ mk_str (| "explicit panic" |) ]
             |)
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -372,8 +352,8 @@ Module intrinsics.
           M.never_to_any (|
             M.call_closure (|
               Ty.path "never",
-              M.get_function (| "core::intrinsics::mir::StorageDead.panic_cold_explicit", [], [] |),
-              []
+              M.get_function (| "core::panicking::panic", [], [] |),
+              [ mk_str (| "explicit panic" |) ]
             |)
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -393,8 +373,8 @@ Module intrinsics.
           M.never_to_any (|
             M.call_closure (|
               Ty.path "never",
-              M.get_function (| "core::intrinsics::mir::Assume.panic_cold_explicit", [], [] |),
-              []
+              M.get_function (| "core::panicking::panic", [], [] |),
+              [ mk_str (| "explicit panic" |) ]
             |)
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -406,27 +386,6 @@ Module intrinsics.
     Global Typeclasses Opaque value_Assume.
     
     (*         pub fn $($sig)* { panic!() } *)
-    Definition value_Deinit (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      match ε, τ, α with
-      | [], [ T ], [ place ] =>
-        ltac:(M.monadic
-          (let place := M.alloc (| T, place |) in
-          M.never_to_any (|
-            M.call_closure (|
-              Ty.path "never",
-              M.get_function (| "core::intrinsics::mir::Deinit.panic_cold_explicit", [], [] |),
-              []
-            |)
-          |)))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Global Instance Instance_IsFunction_value_Deinit :
-      M.IsFunction.C "core::intrinsics::mir::Deinit" value_Deinit.
-    Admitted.
-    Global Typeclasses Opaque value_Deinit.
-    
-    (*         pub fn $($sig)* { panic!() } *)
     Definition value_Checked (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       match ε, τ, α with
       | [], [ T ], [ binop ] =>
@@ -435,8 +394,8 @@ Module intrinsics.
           M.never_to_any (|
             M.call_closure (|
               Ty.path "never",
-              M.get_function (| "core::intrinsics::mir::Checked.panic_cold_explicit", [], [] |),
-              []
+              M.get_function (| "core::panicking::panic", [], [] |),
+              [ mk_str (| "explicit panic" |) ]
             |)
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -448,27 +407,6 @@ Module intrinsics.
     Global Typeclasses Opaque value_Checked.
     
     (*         pub fn $($sig)* { panic!() } *)
-    Definition value_Len (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      match ε, τ, α with
-      | [], [ T ], [ place ] =>
-        ltac:(M.monadic
-          (let place := M.alloc (| T, place |) in
-          M.never_to_any (|
-            M.call_closure (|
-              Ty.path "never",
-              M.get_function (| "core::intrinsics::mir::Len.panic_cold_explicit", [], [] |),
-              []
-            |)
-          |)))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Global Instance Instance_IsFunction_value_Len :
-      M.IsFunction.C "core::intrinsics::mir::Len" value_Len.
-    Admitted.
-    Global Typeclasses Opaque value_Len.
-    
-    (*         pub fn $($sig)* { panic!() } *)
     Definition value_PtrMetadata (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       match ε, τ, α with
       | [], [ P ], [ place ] =>
@@ -477,8 +415,8 @@ Module intrinsics.
           M.never_to_any (|
             M.call_closure (|
               Ty.path "never",
-              M.get_function (| "core::intrinsics::mir::PtrMetadata.panic_cold_explicit", [], [] |),
-              []
+              M.get_function (| "core::panicking::panic", [], [] |),
+              [ mk_str (| "explicit panic" |) ]
             |)
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -490,31 +428,6 @@ Module intrinsics.
     Global Typeclasses Opaque value_PtrMetadata.
     
     (*         pub fn $($sig)* { panic!() } *)
-    Definition value_CopyForDeref (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      match ε, τ, α with
-      | [], [ T ], [ place ] =>
-        ltac:(M.monadic
-          (let place := M.alloc (| T, place |) in
-          M.never_to_any (|
-            M.call_closure (|
-              Ty.path "never",
-              M.get_function (|
-                "core::intrinsics::mir::CopyForDeref.panic_cold_explicit",
-                [],
-                []
-              |),
-              []
-            |)
-          |)))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Global Instance Instance_IsFunction_value_CopyForDeref :
-      M.IsFunction.C "core::intrinsics::mir::CopyForDeref" value_CopyForDeref.
-    Admitted.
-    Global Typeclasses Opaque value_CopyForDeref.
-    
-    (*         pub fn $($sig)* { panic!() } *)
     Definition value_Retag (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       match ε, τ, α with
       | [], [ T ], [ place ] =>
@@ -523,8 +436,8 @@ Module intrinsics.
           M.never_to_any (|
             M.call_closure (|
               Ty.path "never",
-              M.get_function (| "core::intrinsics::mir::Retag.panic_cold_explicit", [], [] |),
-              []
+              M.get_function (| "core::panicking::panic", [], [] |),
+              [ mk_str (| "explicit panic" |) ]
             |)
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -544,8 +457,8 @@ Module intrinsics.
           M.never_to_any (|
             M.call_closure (|
               Ty.path "never",
-              M.get_function (| "core::intrinsics::mir::Move.panic_cold_explicit", [], [] |),
-              []
+              M.get_function (| "core::panicking::panic", [], [] |),
+              [ mk_str (| "explicit panic" |) ]
             |)
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -565,8 +478,8 @@ Module intrinsics.
           M.never_to_any (|
             M.call_closure (|
               Ty.path "never",
-              M.get_function (| "core::intrinsics::mir::Static.panic_cold_explicit", [], [] |),
-              []
+              M.get_function (| "core::panicking::panic", [], [] |),
+              [ mk_str (| "explicit panic" |) ]
             |)
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -586,8 +499,8 @@ Module intrinsics.
           M.never_to_any (|
             M.call_closure (|
               Ty.path "never",
-              M.get_function (| "core::intrinsics::mir::StaticMut.panic_cold_explicit", [], [] |),
-              []
+              M.get_function (| "core::panicking::panic", [], [] |),
+              [ mk_str (| "explicit panic" |) ]
             |)
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -607,12 +520,8 @@ Module intrinsics.
           M.never_to_any (|
             M.call_closure (|
               Ty.path "never",
-              M.get_function (|
-                "core::intrinsics::mir::Discriminant.panic_cold_explicit",
-                [],
-                []
-              |),
-              []
+              M.get_function (| "core::panicking::panic", [], [] |),
+              [ mk_str (| "explicit panic" |) ]
             |)
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -633,12 +542,8 @@ Module intrinsics.
           M.never_to_any (|
             M.call_closure (|
               Ty.path "never",
-              M.get_function (|
-                "core::intrinsics::mir::SetDiscriminant.panic_cold_explicit",
-                [],
-                []
-              |),
-              []
+              M.get_function (| "core::panicking::panic", [], [] |),
+              [ mk_str (| "explicit panic" |) ]
             |)
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -659,8 +564,8 @@ Module intrinsics.
           M.never_to_any (|
             M.call_closure (|
               Ty.path "never",
-              M.get_function (| "core::intrinsics::mir::Offset.panic_cold_explicit", [], [] |),
-              []
+              M.get_function (| "core::panicking::panic", [], [] |),
+              [ mk_str (| "explicit panic" |) ]
             |)
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -681,8 +586,8 @@ Module intrinsics.
           M.never_to_any (|
             M.call_closure (|
               Ty.path "never",
-              M.get_function (| "core::intrinsics::mir::Field.panic_cold_explicit", [], [] |),
-              []
+              M.get_function (| "core::panicking::panic", [], [] |),
+              [ mk_str (| "explicit panic" |) ]
             |)
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -703,8 +608,8 @@ Module intrinsics.
           M.never_to_any (|
             M.call_closure (|
               Ty.path "never",
-              M.get_function (| "core::intrinsics::mir::Variant.panic_cold_explicit", [], [] |),
-              []
+              M.get_function (| "core::panicking::panic", [], [] |),
+              [ mk_str (| "explicit panic" |) ]
             |)
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -724,12 +629,8 @@ Module intrinsics.
           M.never_to_any (|
             M.call_closure (|
               Ty.path "never",
-              M.get_function (|
-                "core::intrinsics::mir::CastTransmute.panic_cold_explicit",
-                [],
-                []
-              |),
-              []
+              M.get_function (| "core::panicking::panic", [], [] |),
+              [ mk_str (| "explicit panic" |) ]
             |)
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -749,12 +650,8 @@ Module intrinsics.
           M.never_to_any (|
             M.call_closure (|
               Ty.path "never",
-              M.get_function (|
-                "core::intrinsics::mir::CastPtrToPtr.panic_cold_explicit",
-                [],
-                []
-              |),
-              []
+              M.get_function (| "core::panicking::panic", [], [] |),
+              [ mk_str (| "explicit panic" |) ]
             |)
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -766,6 +663,27 @@ Module intrinsics.
     Global Typeclasses Opaque value_CastPtrToPtr.
     
     (*         pub fn $($sig)* { panic!() } *)
+    Definition value_CastUnsize (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [ T; U ], [ operand ] =>
+        ltac:(M.monadic
+          (let operand := M.alloc (| T, operand |) in
+          M.never_to_any (|
+            M.call_closure (|
+              Ty.path "never",
+              M.get_function (| "core::panicking::panic", [], [] |),
+              [ mk_str (| "explicit panic" |) ]
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance Instance_IsFunction_value_CastUnsize :
+      M.IsFunction.C "core::intrinsics::mir::CastUnsize" value_CastUnsize.
+    Admitted.
+    Global Typeclasses Opaque value_CastUnsize.
+    
+    (*         pub fn $($sig)* { panic!() } *)
     Definition __internal_make_place (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       match ε, τ, α with
       | [], [ T ], [ place ] =>
@@ -774,12 +692,8 @@ Module intrinsics.
           M.never_to_any (|
             M.call_closure (|
               Ty.path "never",
-              M.get_function (|
-                "core::intrinsics::mir::__internal_make_place.panic_cold_explicit",
-                [],
-                []
-              |),
-              []
+              M.get_function (| "core::panicking::panic", [], [] |),
+              [ mk_str (| "explicit panic" |) ]
             |)
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -800,8 +714,8 @@ Module intrinsics.
           M.never_to_any (|
             M.call_closure (|
               Ty.path "never",
-              M.get_function (| "core::intrinsics::mir::__debuginfo.panic_cold_explicit", [], [] |),
-              []
+              M.get_function (| "core::panicking::panic", [], [] |),
+              [ mk_str (| "explicit panic" |) ]
             |)
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"

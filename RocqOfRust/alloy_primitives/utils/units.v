@@ -793,70 +793,96 @@ Module utils.
                       |),
                       [
                         M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                        M.call_closure (|
-                          Ty.path "core::fmt::Arguments",
-                          M.get_associated_function (|
-                            Ty.path "core::fmt::Arguments",
-                            "new_v1",
-                            [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 1
-                            ],
-                            []
-                          |),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.alloc (|
-                                    Ty.apply
-                                      (Ty.path "array")
-                                      [ Value.Integer IntegerKind.Usize 2 ]
-                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                    Value.Array
-                                      [ mk_str (| "" |); mk_str (| " is not a valid unit" |) ]
-                                  |)
+                        M.read (|
+                          let~ args :
+                              Ty.tuple
+                                [
+                                  Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ]
+                                    ]
+                                ] :=
+                            Value.Tuple [ M.borrow (| Pointer.Kind.Ref, s |) ] in
+                          let~ args :
+                              Ty.apply
+                                (Ty.path "array")
+                                [ Value.Integer IntegerKind.Usize 1 ]
+                                [ Ty.path "core::fmt::rt::Argument" ] :=
+                            Value.Array
+                              [
+                                M.call_closure (|
+                                  Ty.path "core::fmt::rt::Argument",
+                                  M.get_associated_function (|
+                                    Ty.path "core::fmt::rt::Argument",
+                                    "new_debug",
+                                    [],
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ]
+                                    ]
+                                  |),
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (|
+                                        M.read (| M.SubPointer.get_tuple_field (| args, 0 |) |)
+                                      |)
+                                    |)
+                                  ]
                                 |)
-                              |)
-                            |);
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
+                              ] in
+                          M.alloc (|
+                            Ty.path "core::fmt::Arguments",
+                            M.call_closure (|
+                              Ty.path "core::fmt::Arguments",
+                              M.get_associated_function (|
+                                Ty.path "core::fmt::Arguments",
+                                "new",
+                                [
+                                  Value.Integer IntegerKind.Usize 23;
+                                  Value.Integer IntegerKind.Usize 1
+                                ],
+                                []
+                              |),
+                              [
                                 M.borrow (|
                                   Pointer.Kind.Ref,
-                                  M.alloc (|
-                                    Ty.apply
-                                      (Ty.path "array")
-                                      [ Value.Integer IntegerKind.Usize 1 ]
-                                      [ Ty.path "core::fmt::rt::Argument" ],
-                                    Value.Array
+                                  M.deref (|
+                                    M.mk_byte_str_ref
+                                      23
                                       [
-                                        M.call_closure (|
-                                          Ty.path "core::fmt::rt::Argument",
-                                          M.get_associated_function (|
-                                            Ty.path "core::fmt::rt::Argument",
-                                            "new_debug",
-                                            [],
-                                            [
-                                              Ty.apply
-                                                (Ty.path "&")
-                                                []
-                                                [ Ty.path "alloc::string::String" ]
-                                            ]
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.borrow (| Pointer.Kind.Ref, s |) |)
-                                            |)
-                                          ]
-                                        |)
+                                        192;
+                                        20;
+                                        32;
+                                        105;
+                                        115;
+                                        32;
+                                        110;
+                                        111;
+                                        116;
+                                        32;
+                                        97;
+                                        32;
+                                        118;
+                                        97;
+                                        108;
+                                        105;
+                                        100;
+                                        32;
+                                        117;
+                                        110;
+                                        105;
+                                        116;
+                                        0
                                       ]
                                   |)
+                                |);
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
                                 |)
-                              |)
+                              ]
                             |)
-                          ]
+                          |)
                         |)
                       ]
                     |)));
@@ -1023,6 +1049,18 @@ Module utils.
       M.IsDiscriminant "alloy_primitives::utils::units::ParseUnits::U256" 0.
     Axiom IsDiscriminant_ParseUnits_I256 :
       M.IsDiscriminant "alloy_primitives::utils::units::ParseUnits::I256" 1.
+    
+    Module Impl_core_clone_TrivialClone_for_alloy_primitives_utils_units_ParseUnits.
+      Definition Self : Ty.t := Ty.path "alloy_primitives::utils::units::ParseUnits".
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::clone::TrivialClone"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [].
+    End Impl_core_clone_TrivialClone_for_alloy_primitives_utils_units_ParseUnits.
     
     Module Impl_core_clone_Clone_for_alloy_primitives_utils_units_ParseUnits.
       Definition Self : Ty.t := Ty.path "alloy_primitives::utils::units::ParseUnits".
@@ -4058,15 +4096,14 @@ Module utils.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
                                   Ty.path "bool",
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    BinOp.gt,
-                                    [ M.read (| dec_len |); M.read (| exponent |) ]
-                                  |)
-                                |)) in
+                                  BinOp.gt,
+                                  [ M.read (| dec_len |); M.read (| exponent |) ]
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.read (|
@@ -4152,7 +4189,7 @@ Module utils.
                                   [
                                     fun γ =>
                                       ltac:(M.monadic
-                                        (let γ := M.use negative in
+                                        (let γ := negative in
                                         let _ :=
                                           is_constant_or_break_match (|
                                             M.read (| γ |),
@@ -4171,43 +4208,39 @@ Module utils.
                                             fun γ =>
                                               ltac:(M.monadic
                                                 (let γ :=
-                                                  M.use
-                                                    (M.alloc (|
+                                                  M.alloc (|
+                                                    Ty.path "bool",
+                                                    M.call_closure (|
                                                       Ty.path "bool",
-                                                      M.call_closure (|
-                                                        Ty.path "bool",
-                                                        M.get_trait_method (|
-                                                          "core::cmp::PartialEq",
+                                                      M.get_trait_method (|
+                                                        "core::cmp::PartialEq",
+                                                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                                                        [],
+                                                        [
                                                           Ty.apply
                                                             (Ty.path "&")
                                                             []
-                                                            [ Ty.path "str" ],
-                                                          [],
-                                                          [
+                                                            [ Ty.path "str" ]
+                                                        ],
+                                                        "eq",
+                                                        [],
+                                                        []
+                                                      |),
+                                                      [
+                                                        M.borrow (| Pointer.Kind.Ref, amount |);
+                                                        M.borrow (|
+                                                          Pointer.Kind.Ref,
+                                                          M.alloc (|
                                                             Ty.apply
                                                               (Ty.path "&")
                                                               []
-                                                              [ Ty.path "str" ]
-                                                          ],
-                                                          "eq",
-                                                          [],
-                                                          []
-                                                        |),
-                                                        [
-                                                          M.borrow (| Pointer.Kind.Ref, amount |);
-                                                          M.borrow (|
-                                                            Pointer.Kind.Ref,
-                                                            M.alloc (|
-                                                              Ty.apply
-                                                                (Ty.path "&")
-                                                                []
-                                                                [ Ty.path "str" ],
-                                                              mk_str (| "-" |)
-                                                            |)
+                                                              [ Ty.path "str" ],
+                                                            mk_str (| "-" |)
                                                           |)
-                                                        ]
-                                                      |)
-                                                    |)) in
+                                                        |)
+                                                      ]
+                                                    |)
+                                                  |) in
                                                 let _ :=
                                                   is_constant_or_break_match (|
                                                     M.read (| γ |),
@@ -4746,7 +4779,7 @@ Module utils.
                               [
                                 fun γ =>
                                   ltac:(M.monadic
-                                    (let γ := M.use negative in
+                                    (let γ := negative in
                                     let _ :=
                                       is_constant_or_break_match (|
                                         M.read (| γ |),
@@ -4765,36 +4798,31 @@ Module utils.
                                         fun γ =>
                                           ltac:(M.monadic
                                             (let γ :=
-                                              M.use
-                                                (M.alloc (|
+                                              M.alloc (|
+                                                Ty.path "bool",
+                                                M.call_closure (|
                                                   Ty.path "bool",
-                                                  M.call_closure (|
-                                                    Ty.path "bool",
-                                                    M.get_trait_method (|
-                                                      "core::cmp::PartialEq",
-                                                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                                                      [],
-                                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                                                      ],
-                                                      "eq",
-                                                      [],
-                                                      []
-                                                    |),
-                                                    [
-                                                      M.borrow (| Pointer.Kind.Ref, amount |);
-                                                      M.borrow (|
-                                                        Pointer.Kind.Ref,
-                                                        M.alloc (|
-                                                          Ty.apply
-                                                            (Ty.path "&")
-                                                            []
-                                                            [ Ty.path "str" ],
-                                                          mk_str (| "-" |)
-                                                        |)
+                                                  M.get_trait_method (|
+                                                    "core::cmp::PartialEq",
+                                                    Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                                                    [],
+                                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                                    "eq",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [
+                                                    M.borrow (| Pointer.Kind.Ref, amount |);
+                                                    M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.alloc (|
+                                                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                                                        mk_str (| "-" |)
                                                       |)
-                                                    ]
-                                                  |)
-                                                |)) in
+                                                    |)
+                                                  ]
+                                                |)
+                                              |) in
                                             let _ :=
                                               is_constant_or_break_match (|
                                                 M.read (| γ |),
@@ -6158,47 +6186,47 @@ Module utils.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              LogicalOp.and (|
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  M.get_associated_function (|
-                                    Ty.path "alloy_primitives::utils::units::ParseUnits",
-                                    "is_signed",
-                                    [],
-                                    []
-                                  |),
-                                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |)
-                                  ]
-                                |),
-                                ltac:(M.monadic
-                                  (M.call_closure (|
-                                    Ty.path "bool",
-                                    M.get_trait_method (|
-                                      "core::cmp::PartialEq",
-                                      Ty.path "alloy_primitives::utils::units::Unit",
-                                      [],
-                                      [ Ty.path "alloy_primitives::utils::units::Unit" ],
-                                      "eq",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (| Pointer.Kind.Ref, unit_ |);
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        get_associated_constant (|
-                                          Ty.path "alloy_primitives::utils::units::Unit",
-                                          "MAX",
-                                          Ty.path "alloy_primitives::utils::units::Unit"
-                                        |)
-                                      |)
-                                    ]
-                                  |)))
-                              |)
-                            |)) in
+                              M.get_associated_function (|
+                                Ty.path "alloy_primitives::utils::units::ParseUnits",
+                                "is_signed",
+                                [],
+                                []
+                              |),
+                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                            |)
+                          |) in
+                        let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                        let γ :=
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
+                              Ty.path "bool",
+                              M.get_trait_method (|
+                                "core::cmp::PartialEq",
+                                Ty.path "alloy_primitives::utils::units::Unit",
+                                [],
+                                [ Ty.path "alloy_primitives::utils::units::Unit" ],
+                                "eq",
+                                [],
+                                []
+                              |),
+                              [
+                                M.borrow (| Pointer.Kind.Ref, unit_ |);
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  get_associated_constant (|
+                                    Ty.path "alloy_primitives::utils::units::Unit",
+                                    "MAX",
+                                    Ty.path "alloy_primitives::utils::units::Unit"
+                                  |)
+                                |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
@@ -6437,328 +6465,142 @@ Module utils.
                                 [ Ty.path "alloc::string::String" ]
                               |),
                               [
-                                M.read (|
-                                  let~ res : Ty.path "alloc::string::String" :=
-                                    M.call_closure (|
-                                      Ty.path "alloc::string::String",
-                                      M.get_function (| "alloc::fmt::format", [], [] |),
-                                      [
+                                M.call_closure (|
+                                  Ty.path "alloc::string::String",
+                                  M.get_function (| "alloc::fmt::format", [], [] |),
+                                  [
+                                    M.read (|
+                                      let~ args :
+                                          Ty.tuple
+                                            [
+                                              Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "ruint::Uint")
+                                                    [
+                                                      Value.Integer IntegerKind.Usize 256;
+                                                      Value.Integer IntegerKind.Usize 4
+                                                    ]
+                                                    []
+                                                ];
+                                              Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [ Ty.path "alloc::string::String" ];
+                                              Ty.apply (Ty.path "&") [] [ Ty.path "usize" ]
+                                            ] :=
+                                        Value.Tuple
+                                          [
+                                            M.borrow (| Pointer.Kind.Ref, integer |);
+                                            M.borrow (| Pointer.Kind.Ref, decimals |);
+                                            M.borrow (| Pointer.Kind.Ref, units |)
+                                          ] in
+                                      let~ args :
+                                          Ty.apply
+                                            (Ty.path "array")
+                                            [ Value.Integer IntegerKind.Usize 3 ]
+                                            [ Ty.path "core::fmt::rt::Argument" ] :=
+                                        Value.Array
+                                          [
+                                            M.call_closure (|
+                                              Ty.path "core::fmt::rt::Argument",
+                                              M.get_associated_function (|
+                                                Ty.path "core::fmt::rt::Argument",
+                                                "new_display",
+                                                [],
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "ruint::Uint")
+                                                    [
+                                                      Value.Integer IntegerKind.Usize 256;
+                                                      Value.Integer IntegerKind.Usize 4
+                                                    ]
+                                                    []
+                                                ]
+                                              |),
+                                              [
+                                                M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (|
+                                                    M.read (|
+                                                      M.SubPointer.get_tuple_field (| args, 0 |)
+                                                    |)
+                                                  |)
+                                                |)
+                                              ]
+                                            |);
+                                            M.call_closure (|
+                                              Ty.path "core::fmt::rt::Argument",
+                                              M.get_associated_function (|
+                                                Ty.path "core::fmt::rt::Argument",
+                                                "new_display",
+                                                [],
+                                                [ Ty.path "alloc::string::String" ]
+                                              |),
+                                              [
+                                                M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (|
+                                                    M.read (|
+                                                      M.SubPointer.get_tuple_field (| args, 1 |)
+                                                    |)
+                                                  |)
+                                                |)
+                                              ]
+                                            |);
+                                            M.call_closure (|
+                                              Ty.path "core::fmt::rt::Argument",
+                                              M.get_associated_function (|
+                                                Ty.path "core::fmt::rt::Argument",
+                                                "from_usize",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (|
+                                                    M.read (|
+                                                      M.SubPointer.get_tuple_field (| args, 2 |)
+                                                    |)
+                                                  |)
+                                                |)
+                                              ]
+                                            |)
+                                          ] in
+                                      M.alloc (|
+                                        Ty.path "core::fmt::Arguments",
                                         M.call_closure (|
                                           Ty.path "core::fmt::Arguments",
                                           M.get_associated_function (|
                                             Ty.path "core::fmt::Arguments",
-                                            "new_v1_formatted",
-                                            [],
+                                            "new",
+                                            [
+                                              Value.Integer IntegerKind.Usize 11;
+                                              Value.Integer IntegerKind.Usize 3
+                                            ],
                                             []
                                           |),
                                           [
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "&")
-                                                []
-                                                [
-                                                  Ty.apply
-                                                    (Ty.path "slice")
-                                                    []
-                                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                                                ],
-                                              M.pointer_coercion
-                                                M.PointerCoercion.Unsize
-                                                (Ty.apply
-                                                  (Ty.path "&")
-                                                  []
-                                                  [
-                                                    Ty.apply
-                                                      (Ty.path "array")
-                                                      [ Value.Integer IntegerKind.Usize 2 ]
-                                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                                                      ]
-                                                  ])
-                                                (Ty.apply
-                                                  (Ty.path "&")
-                                                  []
-                                                  [
-                                                    Ty.apply
-                                                      (Ty.path "slice")
-                                                      []
-                                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                                                      ]
-                                                  ]),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (|
-                                                    M.borrow (|
-                                                      Pointer.Kind.Ref,
-                                                      M.alloc (|
-                                                        Ty.apply
-                                                          (Ty.path "array")
-                                                          [ Value.Integer IntegerKind.Usize 2 ]
-                                                          [
-                                                            Ty.apply
-                                                              (Ty.path "&")
-                                                              []
-                                                              [ Ty.path "str" ]
-                                                          ],
-                                                        Value.Array
-                                                          [ mk_str (| "" |); mk_str (| "." |) ]
-                                                      |)
-                                                    |)
-                                                  |)
-                                                |)
-                                              ]
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (|
+                                                M.mk_byte_str_ref
+                                                  11
+                                                  [ 192; 1; 46; 211; 48; 0; 0; 40; 2; 0; 0 ]
+                                              |)
                                             |);
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "&")
-                                                []
-                                                [
-                                                  Ty.apply
-                                                    (Ty.path "slice")
-                                                    []
-                                                    [ Ty.path "core::fmt::rt::Argument" ]
-                                                ],
-                                              M.pointer_coercion
-                                                M.PointerCoercion.Unsize
-                                                (Ty.apply
-                                                  (Ty.path "&")
-                                                  []
-                                                  [
-                                                    Ty.apply
-                                                      (Ty.path "array")
-                                                      [ Value.Integer IntegerKind.Usize 3 ]
-                                                      [ Ty.path "core::fmt::rt::Argument" ]
-                                                  ])
-                                                (Ty.apply
-                                                  (Ty.path "&")
-                                                  []
-                                                  [
-                                                    Ty.apply
-                                                      (Ty.path "slice")
-                                                      []
-                                                      [ Ty.path "core::fmt::rt::Argument" ]
-                                                  ]),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (|
-                                                    M.borrow (|
-                                                      Pointer.Kind.Ref,
-                                                      M.alloc (|
-                                                        Ty.apply
-                                                          (Ty.path "array")
-                                                          [ Value.Integer IntegerKind.Usize 3 ]
-                                                          [ Ty.path "core::fmt::rt::Argument" ],
-                                                        Value.Array
-                                                          [
-                                                            M.call_closure (|
-                                                              Ty.path "core::fmt::rt::Argument",
-                                                              M.get_associated_function (|
-                                                                Ty.path "core::fmt::rt::Argument",
-                                                                "new_display",
-                                                                [],
-                                                                [
-                                                                  Ty.apply
-                                                                    (Ty.path "ruint::Uint")
-                                                                    [
-                                                                      Value.Integer
-                                                                        IntegerKind.Usize
-                                                                        256;
-                                                                      Value.Integer
-                                                                        IntegerKind.Usize
-                                                                        4
-                                                                    ]
-                                                                    []
-                                                                ]
-                                                              |),
-                                                              [
-                                                                M.borrow (|
-                                                                  Pointer.Kind.Ref,
-                                                                  M.deref (|
-                                                                    M.borrow (|
-                                                                      Pointer.Kind.Ref,
-                                                                      integer
-                                                                    |)
-                                                                  |)
-                                                                |)
-                                                              ]
-                                                            |);
-                                                            M.call_closure (|
-                                                              Ty.path "core::fmt::rt::Argument",
-                                                              M.get_associated_function (|
-                                                                Ty.path "core::fmt::rt::Argument",
-                                                                "new_display",
-                                                                [],
-                                                                [ Ty.path "alloc::string::String" ]
-                                                              |),
-                                                              [
-                                                                M.borrow (|
-                                                                  Pointer.Kind.Ref,
-                                                                  M.deref (|
-                                                                    M.borrow (|
-                                                                      Pointer.Kind.Ref,
-                                                                      decimals
-                                                                    |)
-                                                                  |)
-                                                                |)
-                                                              ]
-                                                            |);
-                                                            M.call_closure (|
-                                                              Ty.path "core::fmt::rt::Argument",
-                                                              M.get_associated_function (|
-                                                                Ty.path "core::fmt::rt::Argument",
-                                                                "from_usize",
-                                                                [],
-                                                                []
-                                                              |),
-                                                              [
-                                                                M.borrow (|
-                                                                  Pointer.Kind.Ref,
-                                                                  M.deref (|
-                                                                    M.borrow (|
-                                                                      Pointer.Kind.Ref,
-                                                                      units
-                                                                    |)
-                                                                  |)
-                                                                |)
-                                                              ]
-                                                            |)
-                                                          ]
-                                                      |)
-                                                    |)
-                                                  |)
-                                                |)
-                                              ]
-                                            |);
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "&")
-                                                []
-                                                [
-                                                  Ty.apply
-                                                    (Ty.path "slice")
-                                                    []
-                                                    [ Ty.path "core::fmt::rt::Placeholder" ]
-                                                ],
-                                              M.pointer_coercion
-                                                M.PointerCoercion.Unsize
-                                                (Ty.apply
-                                                  (Ty.path "&")
-                                                  []
-                                                  [
-                                                    Ty.apply
-                                                      (Ty.path "array")
-                                                      [ Value.Integer IntegerKind.Usize 2 ]
-                                                      [ Ty.path "core::fmt::rt::Placeholder" ]
-                                                  ])
-                                                (Ty.apply
-                                                  (Ty.path "&")
-                                                  []
-                                                  [
-                                                    Ty.apply
-                                                      (Ty.path "slice")
-                                                      []
-                                                      [ Ty.path "core::fmt::rt::Placeholder" ]
-                                                  ]),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (|
-                                                    M.borrow (|
-                                                      Pointer.Kind.Ref,
-                                                      M.alloc (|
-                                                        Ty.apply
-                                                          (Ty.path "array")
-                                                          [ Value.Integer IntegerKind.Usize 2 ]
-                                                          [ Ty.path "core::fmt::rt::Placeholder" ],
-                                                        Value.Array
-                                                          [
-                                                            M.call_closure (|
-                                                              Ty.path "core::fmt::rt::Placeholder",
-                                                              M.get_associated_function (|
-                                                                Ty.path
-                                                                  "core::fmt::rt::Placeholder",
-                                                                "new",
-                                                                [],
-                                                                []
-                                                              |),
-                                                              [
-                                                                Value.Integer IntegerKind.Usize 0;
-                                                                Value.UnicodeChar 32;
-                                                                Value.StructTuple
-                                                                  "core::fmt::rt::Alignment::Unknown"
-                                                                  []
-                                                                  []
-                                                                  [];
-                                                                Value.Integer IntegerKind.U32 0;
-                                                                Value.StructTuple
-                                                                  "core::fmt::rt::Count::Implied"
-                                                                  []
-                                                                  []
-                                                                  [];
-                                                                Value.StructTuple
-                                                                  "core::fmt::rt::Count::Implied"
-                                                                  []
-                                                                  []
-                                                                  []
-                                                              ]
-                                                            |);
-                                                            M.call_closure (|
-                                                              Ty.path "core::fmt::rt::Placeholder",
-                                                              M.get_associated_function (|
-                                                                Ty.path
-                                                                  "core::fmt::rt::Placeholder",
-                                                                "new",
-                                                                [],
-                                                                []
-                                                              |),
-                                                              [
-                                                                Value.Integer IntegerKind.Usize 1;
-                                                                Value.UnicodeChar 48;
-                                                                Value.StructTuple
-                                                                  "core::fmt::rt::Alignment::Right"
-                                                                  []
-                                                                  []
-                                                                  [];
-                                                                Value.Integer IntegerKind.U32 0;
-                                                                Value.StructTuple
-                                                                  "core::fmt::rt::Count::Implied"
-                                                                  []
-                                                                  []
-                                                                  [];
-                                                                Value.StructTuple
-                                                                  "core::fmt::rt::Count::Param"
-                                                                  []
-                                                                  []
-                                                                  [
-                                                                    Value.Integer
-                                                                      IntegerKind.Usize
-                                                                      2
-                                                                  ]
-                                                              ]
-                                                            |)
-                                                          ]
-                                                      |)
-                                                    |)
-                                                  |)
-                                                |)
-                                              ]
-                                            |);
-                                            M.call_closure (|
-                                              Ty.path "core::fmt::rt::UnsafeArg",
-                                              M.get_associated_function (|
-                                                Ty.path "core::fmt::rt::UnsafeArg",
-                                                "new",
-                                                [],
-                                                []
-                                              |),
-                                              []
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
                                             |)
                                           ]
                                         |)
-                                      ]
-                                    |) in
-                                  res
+                                      |)
+                                    |)
+                                  ]
                                 |)
                               ]
                             |)
@@ -6822,26 +6664,25 @@ Module utils.
                                 fun γ =>
                                   ltac:(M.monadic
                                     (let γ :=
-                                      M.use
-                                        (M.alloc (|
+                                      M.alloc (|
+                                        Ty.path "bool",
+                                        M.call_closure (|
                                           Ty.path "bool",
-                                          M.call_closure (|
-                                            Ty.path "bool",
-                                            M.get_associated_function (|
-                                              Ty.apply
-                                                (Ty.path "alloy_primitives::signed::int::Signed")
-                                                [
-                                                  Value.Integer IntegerKind.Usize 256;
-                                                  Value.Integer IntegerKind.Usize 4
-                                                ]
-                                                [],
-                                              "is_negative",
+                                          M.get_associated_function (|
+                                            Ty.apply
+                                              (Ty.path "alloy_primitives::signed::int::Signed")
+                                              [
+                                                Value.Integer IntegerKind.Usize 256;
+                                                Value.Integer IntegerKind.Usize 4
+                                              ]
                                               [],
-                                              []
-                                            |),
-                                            [ M.borrow (| Pointer.Kind.Ref, amount |) ]
-                                          |)
-                                        |)) in
+                                            "is_negative",
+                                            [],
+                                            []
+                                          |),
+                                          [ M.borrow (| Pointer.Kind.Ref, amount |) ]
+                                        |)
+                                      |) in
                                     let _ :=
                                       is_constant_or_break_match (|
                                         M.read (| γ |),
@@ -7019,387 +6860,166 @@ Module utils.
                                 [ Ty.path "alloc::string::String" ]
                               |),
                               [
-                                M.read (|
-                                  let~ res : Ty.path "alloc::string::String" :=
-                                    M.call_closure (|
-                                      Ty.path "alloc::string::String",
-                                      M.get_function (| "alloc::fmt::format", [], [] |),
-                                      [
+                                M.call_closure (|
+                                  Ty.path "alloc::string::String",
+                                  M.get_function (| "alloc::fmt::format", [], [] |),
+                                  [
+                                    M.read (|
+                                      let~ args :
+                                          Ty.tuple
+                                            [
+                                              Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ];
+                                              Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "ruint::Uint")
+                                                    [
+                                                      Value.Integer IntegerKind.Usize 256;
+                                                      Value.Integer IntegerKind.Usize 4
+                                                    ]
+                                                    []
+                                                ];
+                                              Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [ Ty.path "alloc::string::String" ];
+                                              Ty.apply (Ty.path "&") [] [ Ty.path "usize" ]
+                                            ] :=
+                                        Value.Tuple
+                                          [
+                                            M.borrow (| Pointer.Kind.Ref, sign |);
+                                            M.borrow (| Pointer.Kind.Ref, integer |);
+                                            M.borrow (| Pointer.Kind.Ref, decimals |);
+                                            M.borrow (| Pointer.Kind.Ref, units |)
+                                          ] in
+                                      let~ args :
+                                          Ty.apply
+                                            (Ty.path "array")
+                                            [ Value.Integer IntegerKind.Usize 4 ]
+                                            [ Ty.path "core::fmt::rt::Argument" ] :=
+                                        Value.Array
+                                          [
+                                            M.call_closure (|
+                                              Ty.path "core::fmt::rt::Argument",
+                                              M.get_associated_function (|
+                                                Ty.path "core::fmt::rt::Argument",
+                                                "new_display",
+                                                [],
+                                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                              |),
+                                              [
+                                                M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (|
+                                                    M.read (|
+                                                      M.SubPointer.get_tuple_field (| args, 0 |)
+                                                    |)
+                                                  |)
+                                                |)
+                                              ]
+                                            |);
+                                            M.call_closure (|
+                                              Ty.path "core::fmt::rt::Argument",
+                                              M.get_associated_function (|
+                                                Ty.path "core::fmt::rt::Argument",
+                                                "new_display",
+                                                [],
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "ruint::Uint")
+                                                    [
+                                                      Value.Integer IntegerKind.Usize 256;
+                                                      Value.Integer IntegerKind.Usize 4
+                                                    ]
+                                                    []
+                                                ]
+                                              |),
+                                              [
+                                                M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (|
+                                                    M.read (|
+                                                      M.SubPointer.get_tuple_field (| args, 1 |)
+                                                    |)
+                                                  |)
+                                                |)
+                                              ]
+                                            |);
+                                            M.call_closure (|
+                                              Ty.path "core::fmt::rt::Argument",
+                                              M.get_associated_function (|
+                                                Ty.path "core::fmt::rt::Argument",
+                                                "new_display",
+                                                [],
+                                                [ Ty.path "alloc::string::String" ]
+                                              |),
+                                              [
+                                                M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (|
+                                                    M.read (|
+                                                      M.SubPointer.get_tuple_field (| args, 2 |)
+                                                    |)
+                                                  |)
+                                                |)
+                                              ]
+                                            |);
+                                            M.call_closure (|
+                                              Ty.path "core::fmt::rt::Argument",
+                                              M.get_associated_function (|
+                                                Ty.path "core::fmt::rt::Argument",
+                                                "from_usize",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (|
+                                                    M.read (|
+                                                      M.SubPointer.get_tuple_field (| args, 3 |)
+                                                    |)
+                                                  |)
+                                                |)
+                                              ]
+                                            |)
+                                          ] in
+                                      M.alloc (|
+                                        Ty.path "core::fmt::Arguments",
                                         M.call_closure (|
                                           Ty.path "core::fmt::Arguments",
                                           M.get_associated_function (|
                                             Ty.path "core::fmt::Arguments",
-                                            "new_v1_formatted",
-                                            [],
+                                            "new",
+                                            [
+                                              Value.Integer IntegerKind.Usize 12;
+                                              Value.Integer IntegerKind.Usize 4
+                                            ],
                                             []
                                           |),
                                           [
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "&")
-                                                []
-                                                [
-                                                  Ty.apply
-                                                    (Ty.path "slice")
-                                                    []
-                                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                                                ],
-                                              M.pointer_coercion
-                                                M.PointerCoercion.Unsize
-                                                (Ty.apply
-                                                  (Ty.path "&")
-                                                  []
-                                                  [
-                                                    Ty.apply
-                                                      (Ty.path "array")
-                                                      [ Value.Integer IntegerKind.Usize 3 ]
-                                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                                                      ]
-                                                  ])
-                                                (Ty.apply
-                                                  (Ty.path "&")
-                                                  []
-                                                  [
-                                                    Ty.apply
-                                                      (Ty.path "slice")
-                                                      []
-                                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                                                      ]
-                                                  ]),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (|
-                                                    M.borrow (|
-                                                      Pointer.Kind.Ref,
-                                                      M.alloc (|
-                                                        Ty.apply
-                                                          (Ty.path "array")
-                                                          [ Value.Integer IntegerKind.Usize 3 ]
-                                                          [
-                                                            Ty.apply
-                                                              (Ty.path "&")
-                                                              []
-                                                              [ Ty.path "str" ]
-                                                          ],
-                                                        Value.Array
-                                                          [
-                                                            mk_str (| "" |);
-                                                            mk_str (| "" |);
-                                                            mk_str (| "." |)
-                                                          ]
-                                                      |)
-                                                    |)
-                                                  |)
-                                                |)
-                                              ]
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (|
+                                                M.mk_byte_str_ref
+                                                  12
+                                                  [ 192; 192; 1; 46; 211; 48; 0; 0; 40; 3; 0; 0 ]
+                                              |)
                                             |);
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "&")
-                                                []
-                                                [
-                                                  Ty.apply
-                                                    (Ty.path "slice")
-                                                    []
-                                                    [ Ty.path "core::fmt::rt::Argument" ]
-                                                ],
-                                              M.pointer_coercion
-                                                M.PointerCoercion.Unsize
-                                                (Ty.apply
-                                                  (Ty.path "&")
-                                                  []
-                                                  [
-                                                    Ty.apply
-                                                      (Ty.path "array")
-                                                      [ Value.Integer IntegerKind.Usize 4 ]
-                                                      [ Ty.path "core::fmt::rt::Argument" ]
-                                                  ])
-                                                (Ty.apply
-                                                  (Ty.path "&")
-                                                  []
-                                                  [
-                                                    Ty.apply
-                                                      (Ty.path "slice")
-                                                      []
-                                                      [ Ty.path "core::fmt::rt::Argument" ]
-                                                  ]),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (|
-                                                    M.borrow (|
-                                                      Pointer.Kind.Ref,
-                                                      M.alloc (|
-                                                        Ty.apply
-                                                          (Ty.path "array")
-                                                          [ Value.Integer IntegerKind.Usize 4 ]
-                                                          [ Ty.path "core::fmt::rt::Argument" ],
-                                                        Value.Array
-                                                          [
-                                                            M.call_closure (|
-                                                              Ty.path "core::fmt::rt::Argument",
-                                                              M.get_associated_function (|
-                                                                Ty.path "core::fmt::rt::Argument",
-                                                                "new_display",
-                                                                [],
-                                                                [
-                                                                  Ty.apply
-                                                                    (Ty.path "&")
-                                                                    []
-                                                                    [ Ty.path "str" ]
-                                                                ]
-                                                              |),
-                                                              [
-                                                                M.borrow (|
-                                                                  Pointer.Kind.Ref,
-                                                                  M.deref (|
-                                                                    M.borrow (|
-                                                                      Pointer.Kind.Ref,
-                                                                      sign
-                                                                    |)
-                                                                  |)
-                                                                |)
-                                                              ]
-                                                            |);
-                                                            M.call_closure (|
-                                                              Ty.path "core::fmt::rt::Argument",
-                                                              M.get_associated_function (|
-                                                                Ty.path "core::fmt::rt::Argument",
-                                                                "new_display",
-                                                                [],
-                                                                [
-                                                                  Ty.apply
-                                                                    (Ty.path "ruint::Uint")
-                                                                    [
-                                                                      Value.Integer
-                                                                        IntegerKind.Usize
-                                                                        256;
-                                                                      Value.Integer
-                                                                        IntegerKind.Usize
-                                                                        4
-                                                                    ]
-                                                                    []
-                                                                ]
-                                                              |),
-                                                              [
-                                                                M.borrow (|
-                                                                  Pointer.Kind.Ref,
-                                                                  M.deref (|
-                                                                    M.borrow (|
-                                                                      Pointer.Kind.Ref,
-                                                                      integer
-                                                                    |)
-                                                                  |)
-                                                                |)
-                                                              ]
-                                                            |);
-                                                            M.call_closure (|
-                                                              Ty.path "core::fmt::rt::Argument",
-                                                              M.get_associated_function (|
-                                                                Ty.path "core::fmt::rt::Argument",
-                                                                "new_display",
-                                                                [],
-                                                                [ Ty.path "alloc::string::String" ]
-                                                              |),
-                                                              [
-                                                                M.borrow (|
-                                                                  Pointer.Kind.Ref,
-                                                                  M.deref (|
-                                                                    M.borrow (|
-                                                                      Pointer.Kind.Ref,
-                                                                      decimals
-                                                                    |)
-                                                                  |)
-                                                                |)
-                                                              ]
-                                                            |);
-                                                            M.call_closure (|
-                                                              Ty.path "core::fmt::rt::Argument",
-                                                              M.get_associated_function (|
-                                                                Ty.path "core::fmt::rt::Argument",
-                                                                "from_usize",
-                                                                [],
-                                                                []
-                                                              |),
-                                                              [
-                                                                M.borrow (|
-                                                                  Pointer.Kind.Ref,
-                                                                  M.deref (|
-                                                                    M.borrow (|
-                                                                      Pointer.Kind.Ref,
-                                                                      units
-                                                                    |)
-                                                                  |)
-                                                                |)
-                                                              ]
-                                                            |)
-                                                          ]
-                                                      |)
-                                                    |)
-                                                  |)
-                                                |)
-                                              ]
-                                            |);
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "&")
-                                                []
-                                                [
-                                                  Ty.apply
-                                                    (Ty.path "slice")
-                                                    []
-                                                    [ Ty.path "core::fmt::rt::Placeholder" ]
-                                                ],
-                                              M.pointer_coercion
-                                                M.PointerCoercion.Unsize
-                                                (Ty.apply
-                                                  (Ty.path "&")
-                                                  []
-                                                  [
-                                                    Ty.apply
-                                                      (Ty.path "array")
-                                                      [ Value.Integer IntegerKind.Usize 3 ]
-                                                      [ Ty.path "core::fmt::rt::Placeholder" ]
-                                                  ])
-                                                (Ty.apply
-                                                  (Ty.path "&")
-                                                  []
-                                                  [
-                                                    Ty.apply
-                                                      (Ty.path "slice")
-                                                      []
-                                                      [ Ty.path "core::fmt::rt::Placeholder" ]
-                                                  ]),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (|
-                                                    M.borrow (|
-                                                      Pointer.Kind.Ref,
-                                                      M.alloc (|
-                                                        Ty.apply
-                                                          (Ty.path "array")
-                                                          [ Value.Integer IntegerKind.Usize 3 ]
-                                                          [ Ty.path "core::fmt::rt::Placeholder" ],
-                                                        Value.Array
-                                                          [
-                                                            M.call_closure (|
-                                                              Ty.path "core::fmt::rt::Placeholder",
-                                                              M.get_associated_function (|
-                                                                Ty.path
-                                                                  "core::fmt::rt::Placeholder",
-                                                                "new",
-                                                                [],
-                                                                []
-                                                              |),
-                                                              [
-                                                                Value.Integer IntegerKind.Usize 0;
-                                                                Value.UnicodeChar 32;
-                                                                Value.StructTuple
-                                                                  "core::fmt::rt::Alignment::Unknown"
-                                                                  []
-                                                                  []
-                                                                  [];
-                                                                Value.Integer IntegerKind.U32 0;
-                                                                Value.StructTuple
-                                                                  "core::fmt::rt::Count::Implied"
-                                                                  []
-                                                                  []
-                                                                  [];
-                                                                Value.StructTuple
-                                                                  "core::fmt::rt::Count::Implied"
-                                                                  []
-                                                                  []
-                                                                  []
-                                                              ]
-                                                            |);
-                                                            M.call_closure (|
-                                                              Ty.path "core::fmt::rt::Placeholder",
-                                                              M.get_associated_function (|
-                                                                Ty.path
-                                                                  "core::fmt::rt::Placeholder",
-                                                                "new",
-                                                                [],
-                                                                []
-                                                              |),
-                                                              [
-                                                                Value.Integer IntegerKind.Usize 1;
-                                                                Value.UnicodeChar 32;
-                                                                Value.StructTuple
-                                                                  "core::fmt::rt::Alignment::Unknown"
-                                                                  []
-                                                                  []
-                                                                  [];
-                                                                Value.Integer IntegerKind.U32 0;
-                                                                Value.StructTuple
-                                                                  "core::fmt::rt::Count::Implied"
-                                                                  []
-                                                                  []
-                                                                  [];
-                                                                Value.StructTuple
-                                                                  "core::fmt::rt::Count::Implied"
-                                                                  []
-                                                                  []
-                                                                  []
-                                                              ]
-                                                            |);
-                                                            M.call_closure (|
-                                                              Ty.path "core::fmt::rt::Placeholder",
-                                                              M.get_associated_function (|
-                                                                Ty.path
-                                                                  "core::fmt::rt::Placeholder",
-                                                                "new",
-                                                                [],
-                                                                []
-                                                              |),
-                                                              [
-                                                                Value.Integer IntegerKind.Usize 2;
-                                                                Value.UnicodeChar 48;
-                                                                Value.StructTuple
-                                                                  "core::fmt::rt::Alignment::Right"
-                                                                  []
-                                                                  []
-                                                                  [];
-                                                                Value.Integer IntegerKind.U32 0;
-                                                                Value.StructTuple
-                                                                  "core::fmt::rt::Count::Implied"
-                                                                  []
-                                                                  []
-                                                                  [];
-                                                                Value.StructTuple
-                                                                  "core::fmt::rt::Count::Param"
-                                                                  []
-                                                                  []
-                                                                  [
-                                                                    Value.Integer
-                                                                      IntegerKind.Usize
-                                                                      3
-                                                                  ]
-                                                              ]
-                                                            |)
-                                                          ]
-                                                      |)
-                                                    |)
-                                                  |)
-                                                |)
-                                              ]
-                                            |);
-                                            M.call_closure (|
-                                              Ty.path "core::fmt::rt::UnsafeArg",
-                                              M.get_associated_function (|
-                                                Ty.path "core::fmt::rt::UnsafeArg",
-                                                "new",
-                                                [],
-                                                []
-                                              |),
-                                              []
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
                                             |)
                                           ]
                                         |)
-                                      ]
-                                    |) in
-                                  res
+                                      |)
+                                    |)
+                                  ]
                                 |)
                               ]
                             |)
@@ -7925,6 +7545,18 @@ Module utils.
         ty_params := [];
         fields := [ Ty.path "u8" ];
       } *)
+    
+    Module Impl_core_clone_TrivialClone_for_alloy_primitives_utils_units_Unit.
+      Definition Self : Ty.t := Ty.path "alloy_primitives::utils::units::Unit".
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::clone::TrivialClone"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [].
+    End Impl_core_clone_TrivialClone_for_alloy_primitives_utils_units_Unit.
     
     Module Impl_core_clone_Clone_for_alloy_primitives_utils_units_Unit.
       Definition Self : Ty.t := Ty.path "alloy_primitives::utils::units::Unit".
@@ -9578,35 +9210,34 @@ Module utils.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            BinOp.le,
-                            [
-                              M.read (| units |);
-                              M.call_closure (|
-                                Ty.path "u8",
-                                M.get_associated_function (|
-                                  Ty.path "alloy_primitives::utils::units::Unit",
-                                  "get",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.read (|
-                                    get_associated_constant (|
-                                      Ty.path "alloy_primitives::utils::units::Unit",
-                                      "MAX",
-                                      Ty.path "alloy_primitives::utils::units::Unit"
-                                    |)
+                          BinOp.le,
+                          [
+                            M.read (| units |);
+                            M.call_closure (|
+                              Ty.path "u8",
+                              M.get_associated_function (|
+                                Ty.path "alloy_primitives::utils::units::Unit",
+                                "get",
+                                [],
+                                []
+                              |),
+                              [
+                                M.read (|
+                                  get_associated_constant (|
+                                    Ty.path "alloy_primitives::utils::units::Unit",
+                                    "MAX",
+                                    Ty.path "alloy_primitives::utils::units::Unit"
                                   |)
-                                ]
-                              |)
-                            ]
-                          |)
-                        |)) in
+                                |)
+                              ]
+                            |)
+                          ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     Value.StructTuple
                       "core::option::Option::Some"
@@ -9683,32 +9314,31 @@ Module utils.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            BinOp.le,
-                            [
-                              M.call_closure (|
-                                Ty.path "u8",
-                                M.get_associated_function (|
-                                  Ty.path "alloy_primitives::utils::units::Unit",
-                                  "get",
-                                  [],
-                                  []
-                                |),
-                                [ M.read (| self |) ]
-                              |);
-                              M.read (|
-                                get_constant (|
-                                  "alloy_primitives::utils::units::MAX_U64_EXPONENT",
-                                  Ty.path "u8"
-                                |)
+                          BinOp.le,
+                          [
+                            M.call_closure (|
+                              Ty.path "u8",
+                              M.get_associated_function (|
+                                Ty.path "alloy_primitives::utils::units::Unit",
+                                "get",
+                                [],
+                                []
+                              |),
+                              [ M.read (| self |) ]
+                            |);
+                            M.read (|
+                              get_constant (|
+                                "alloy_primitives::utils::units::MAX_U64_EXPONENT",
+                                Ty.path "u8"
                               |)
-                            ]
-                          |)
-                        |)) in
+                            |)
+                          ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     M.call_closure (|
                       Ty.apply
@@ -9824,32 +9454,31 @@ Module utils.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                BinOp.gt,
-                                [
-                                  M.call_closure (|
-                                    Ty.path "u8",
-                                    M.get_associated_function (|
-                                      Ty.path "alloy_primitives::utils::units::Unit",
-                                      "get",
-                                      [],
-                                      []
-                                    |),
-                                    [ M.read (| self |) ]
-                                  |);
-                                  M.read (|
-                                    get_constant (|
-                                      "alloy_primitives::utils::units::MAX_U64_EXPONENT",
-                                      Ty.path "u8"
-                                    |)
+                              BinOp.gt,
+                              [
+                                M.call_closure (|
+                                  Ty.path "u8",
+                                  M.get_associated_function (|
+                                    Ty.path "alloy_primitives::utils::units::Unit",
+                                    "get",
+                                    [],
+                                    []
+                                  |),
+                                  [ M.read (| self |) ]
+                                |);
+                                M.read (|
+                                  get_constant (|
+                                    "alloy_primitives::utils::units::MAX_U64_EXPONENT",
+                                    Ty.path "u8"
                                   |)
-                                ]
-                              |)
-                            |)) in
+                                |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.never_to_any (|
                           M.call_closure (|
@@ -9860,27 +9489,11 @@ Module utils.
                                 Ty.path "core::fmt::Arguments",
                                 M.get_associated_function (|
                                   Ty.path "core::fmt::Arguments",
-                                  "new_const",
-                                  [ Value.Integer IntegerKind.Usize 1 ],
+                                  "from_str",
+                                  [],
                                   []
                                 |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.alloc (|
-                                          Ty.apply
-                                            (Ty.path "array")
-                                            [ Value.Integer IntegerKind.Usize 1 ]
-                                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                          Value.Array [ mk_str (| "overflow" |) ]
-                                        |)
-                                      |)
-                                    |)
-                                  |)
-                                ]
+                                [ mk_str (| "overflow" |) ]
                               |)
                             ]
                           |)

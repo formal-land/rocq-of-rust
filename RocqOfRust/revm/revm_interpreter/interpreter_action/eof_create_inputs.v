@@ -1461,78 +1461,6 @@ Module interpreter_action.
                 LogicalOp.and (|
                   M.call_closure (|
                     Ty.path "bool",
-                    M.get_trait_method (|
-                      "core::cmp::PartialEq",
-                      Ty.path "alloy_primitives::bits::address::Address",
-                      [],
-                      [ Ty.path "alloy_primitives::bits::address::Address" ],
-                      "eq",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "revm_interpreter::interpreter_action::eof_create_inputs::EOFCreateInputs",
-                          "caller"
-                        |)
-                      |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| other |) |),
-                          "revm_interpreter::interpreter_action::eof_create_inputs::EOFCreateInputs",
-                          "caller"
-                        |)
-                      |)
-                    ]
-                  |),
-                  ltac:(M.monadic
-                    (M.call_closure (|
-                      Ty.path "bool",
-                      M.get_trait_method (|
-                        "core::cmp::PartialEq",
-                        Ty.apply
-                          (Ty.path "ruint::Uint")
-                          [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
-                          [],
-                        [],
-                        [
-                          Ty.apply
-                            (Ty.path "ruint::Uint")
-                            [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4
-                            ]
-                            []
-                        ],
-                        "eq",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "revm_interpreter::interpreter_action::eof_create_inputs::EOFCreateInputs",
-                            "value"
-                          |)
-                        |);
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| other |) |),
-                            "revm_interpreter::interpreter_action::eof_create_inputs::EOFCreateInputs",
-                            "value"
-                          |)
-                        |)
-                      ]
-                    |)))
-                |),
-                ltac:(M.monadic
-                  (M.call_closure (|
-                    Ty.path "bool",
                     BinOp.eq,
                     [
                       M.read (|
@@ -1547,6 +1475,77 @@ Module interpreter_action.
                           M.deref (| M.read (| other |) |),
                           "revm_interpreter::interpreter_action::eof_create_inputs::EOFCreateInputs",
                           "gas_limit"
+                        |)
+                      |)
+                    ]
+                  |),
+                  ltac:(M.monadic
+                    (M.call_closure (|
+                      Ty.path "bool",
+                      M.get_trait_method (|
+                        "core::cmp::PartialEq",
+                        Ty.path "alloy_primitives::bits::address::Address",
+                        [],
+                        [ Ty.path "alloy_primitives::bits::address::Address" ],
+                        "eq",
+                        [],
+                        []
+                      |),
+                      [
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "revm_interpreter::interpreter_action::eof_create_inputs::EOFCreateInputs",
+                            "caller"
+                          |)
+                        |);
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| other |) |),
+                            "revm_interpreter::interpreter_action::eof_create_inputs::EOFCreateInputs",
+                            "caller"
+                          |)
+                        |)
+                      ]
+                    |)))
+                |),
+                ltac:(M.monadic
+                  (M.call_closure (|
+                    Ty.path "bool",
+                    M.get_trait_method (|
+                      "core::cmp::PartialEq",
+                      Ty.apply
+                        (Ty.path "ruint::Uint")
+                        [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                        [],
+                      [],
+                      [
+                        Ty.apply
+                          (Ty.path "ruint::Uint")
+                          [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                          []
+                      ],
+                      "eq",
+                      [],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "revm_interpreter::interpreter_action::eof_create_inputs::EOFCreateInputs",
+                          "value"
+                        |)
+                      |);
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| other |) |),
+                          "revm_interpreter::interpreter_action::eof_create_inputs::EOFCreateInputs",
+                          "value"
                         |)
                       |)
                     ]

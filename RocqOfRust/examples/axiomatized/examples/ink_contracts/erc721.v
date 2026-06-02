@@ -96,6 +96,18 @@ Module Impl_core_default_Default_for_erc721_AccountId.
       (* Instance *) [ ("default", InstanceField.Method default) ].
 End Impl_core_default_Default_for_erc721_AccountId.
 
+Module Impl_core_clone_TrivialClone_for_erc721_AccountId.
+  Definition Self : Ty.t := Ty.path "erc721::AccountId".
+  
+  Axiom Implements :
+    M.IsTraitInstance
+      "core::clone::TrivialClone"
+      (* Trait polymorphic consts *) []
+      (* Trait polymorphic types *) []
+      Self
+      (* Instance *) [].
+End Impl_core_clone_TrivialClone_for_erc721_AccountId.
+
 Module Impl_core_clone_Clone_for_erc721_AccountId.
   Definition Self : Ty.t := Ty.path "erc721::AccountId".
   
@@ -297,6 +309,18 @@ Module Impl_core_cmp_Eq_for_erc721_Error.
       (* Instance *)
       [ ("assert_receiver_is_total_eq", InstanceField.Method assert_receiver_is_total_eq) ].
 End Impl_core_cmp_Eq_for_erc721_Error.
+
+Module Impl_core_clone_TrivialClone_for_erc721_Error.
+  Definition Self : Ty.t := Ty.path "erc721::Error".
+  
+  Axiom Implements :
+    M.IsTraitInstance
+      "core::clone::TrivialClone"
+      (* Trait polymorphic consts *) []
+      (* Trait polymorphic types *) []
+      Self
+      (* Instance *) [].
+End Impl_core_clone_TrivialClone_for_erc721_Error.
 
 Module Impl_core_clone_Clone_for_erc721_Error.
   Definition Self : Ty.t := Ty.path "erc721::Error".

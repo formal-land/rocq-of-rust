@@ -1019,6 +1019,61 @@ Module cell.
           ].
     End Impl_core_ops_deref_Deref_where_core_ops_function_FnOnce_F_Tuple__for_core_cell_lazy_LazyCell_T_F.
     
+    Module Impl_core_ops_deref_DerefMut_where_core_ops_function_FnOnce_F_Tuple__for_core_cell_lazy_LazyCell_T_F.
+      Definition Self (T F : Ty.t) : Ty.t :=
+        Ty.apply (Ty.path "core::cell::lazy::LazyCell") [] [ T; F ].
+      
+      (*
+          fn deref_mut(&mut self) -> &mut T {
+              LazyCell::force_mut(self)
+          }
+      *)
+      Definition deref_mut (T F : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        let Self : Ty.t := Self T F in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&mut")
+                  []
+                  [ Ty.apply (Ty.path "core::cell::lazy::LazyCell") [] [ T; F ] ],
+                self
+              |) in
+            M.borrow (|
+              Pointer.Kind.MutRef,
+              M.deref (|
+                M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&mut") [] [ T ],
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "core::cell::lazy::LazyCell") [] [ T; F ],
+                        "force_mut",
+                        [],
+                        []
+                      |),
+                      [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |) ]
+                    |)
+                  |)
+                |)
+              |)
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Axiom Implements :
+        forall (T F : Ty.t),
+        M.IsTraitInstance
+          "core::ops::deref::DerefMut"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          (Self T F)
+          (* Instance *) [ ("deref_mut", InstanceField.Method (deref_mut T F)) ].
+    End Impl_core_ops_deref_DerefMut_where_core_ops_function_FnOnce_F_Tuple__for_core_cell_lazy_LazyCell_T_F.
+    
     Module Impl_core_default_Default_where_core_default_Default_T_for_core_cell_lazy_LazyCell_T_ToT.
       Definition Self (T : Ty.t) : Ty.t :=
         Ty.apply (Ty.path "core::cell::lazy::LazyCell") [] [ T; Ty.function [] T ].
@@ -1214,32 +1269,11 @@ Module cell.
                                               Ty.path "core::fmt::Arguments",
                                               M.get_associated_function (|
                                                 Ty.path "core::fmt::Arguments",
-                                                "new_const",
-                                                [ Value.Integer IntegerKind.Usize 1 ],
+                                                "from_str",
+                                                [],
                                                 []
                                               |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (|
-                                                    M.borrow (|
-                                                      Pointer.Kind.Ref,
-                                                      M.alloc (|
-                                                        Ty.apply
-                                                          (Ty.path "array")
-                                                          [ Value.Integer IntegerKind.Usize 1 ]
-                                                          [
-                                                            Ty.apply
-                                                              (Ty.path "&")
-                                                              []
-                                                              [ Ty.path "str" ]
-                                                          ],
-                                                        Value.Array [ mk_str (| "<uninit>" |) ]
-                                                      |)
-                                                    |)
-                                                  |)
-                                                |)
-                                              ]
+                                              [ mk_str (| "<uninit>" |) ]
                                             |)
                                           |)
                                         |)
@@ -1301,30 +1335,8 @@ Module cell.
             [
               M.call_closure (|
                 Ty.path "core::fmt::Arguments",
-                M.get_associated_function (|
-                  Ty.path "core::fmt::Arguments",
-                  "new_const",
-                  [ Value.Integer IntegerKind.Usize 1 ],
-                  []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply
-                            (Ty.path "array")
-                            [ Value.Integer IntegerKind.Usize 1 ]
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                          Value.Array
-                            [ mk_str (| "LazyCell instance has previously been poisoned" |) ]
-                        |)
-                      |)
-                    |)
-                  |)
-                ]
+                M.get_associated_function (| Ty.path "core::fmt::Arguments", "from_str", [], [] |),
+                [ mk_str (| "LazyCell instance has previously been poisoned" |) ]
               |)
             ]
           |)))

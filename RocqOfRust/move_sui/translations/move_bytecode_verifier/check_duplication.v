@@ -4479,35 +4479,34 @@ Module check_duplication.
                                                         fun γ =>
                                                           ltac:(M.monadic
                                                             (let γ :=
-                                                              M.use
-                                                                (M.alloc (|
+                                                              M.alloc (|
+                                                                Ty.path "bool",
+                                                                M.call_closure (|
                                                                   Ty.path "bool",
-                                                                  M.call_closure (|
-                                                                    Ty.path "bool",
-                                                                    M.get_associated_function (|
-                                                                      Ty.apply
-                                                                        (Ty.path "alloc::vec::Vec")
-                                                                        []
-                                                                        [
-                                                                          Ty.path
-                                                                            "move_binary_format::file_format::FieldDefinition";
-                                                                          Ty.path
-                                                                            "alloc::alloc::Global"
-                                                                        ],
-                                                                      "is_empty",
-                                                                      [],
+                                                                  M.get_associated_function (|
+                                                                    Ty.apply
+                                                                      (Ty.path "alloc::vec::Vec")
                                                                       []
-                                                                    |),
-                                                                    [
-                                                                      M.borrow (|
-                                                                        Pointer.Kind.Ref,
-                                                                        M.deref (|
-                                                                          M.read (| fields |)
-                                                                        |)
+                                                                      [
+                                                                        Ty.path
+                                                                          "move_binary_format::file_format::FieldDefinition";
+                                                                        Ty.path
+                                                                          "alloc::alloc::Global"
+                                                                      ],
+                                                                    "is_empty",
+                                                                    [],
+                                                                    []
+                                                                  |),
+                                                                  [
+                                                                    M.borrow (|
+                                                                      Pointer.Kind.Ref,
+                                                                      M.deref (|
+                                                                        M.read (| fields |)
                                                                       |)
-                                                                    ]
-                                                                  |)
-                                                                |)) in
+                                                                    |)
+                                                                  ]
+                                                                |)
+                                                              |) in
                                                             let _ :=
                                                               is_constant_or_break_match (|
                                                                 M.read (| γ |),
@@ -6389,60 +6388,58 @@ Module check_duplication.
                                                         fun γ =>
                                                           ltac:(M.monadic
                                                             (let γ :=
-                                                              M.use
-                                                                (M.alloc (|
+                                                              M.alloc (|
+                                                                Ty.path "bool",
+                                                                M.call_closure (|
                                                                   Ty.path "bool",
-                                                                  M.call_closure (|
-                                                                    Ty.path "bool",
-                                                                    M.get_associated_function (|
-                                                                      Ty.apply
-                                                                        (Ty.path
-                                                                          "core::option::Option")
-                                                                        []
-                                                                        [ Ty.path "u16" ],
-                                                                      "is_some",
-                                                                      [],
+                                                                  M.get_associated_function (|
+                                                                    Ty.apply
+                                                                      (Ty.path
+                                                                        "core::option::Option")
                                                                       []
-                                                                    |),
-                                                                    [
-                                                                      M.borrow (|
-                                                                        Pointer.Kind.Ref,
-                                                                        M.alloc (|
+                                                                      [ Ty.path "u16" ],
+                                                                    "is_some",
+                                                                    [],
+                                                                    []
+                                                                  |),
+                                                                  [
+                                                                    M.borrow (|
+                                                                      Pointer.Kind.Ref,
+                                                                      M.alloc (|
+                                                                        Ty.apply
+                                                                          (Ty.path
+                                                                            "core::option::Option")
+                                                                          []
+                                                                          [ Ty.path "u16" ],
+                                                                        M.call_closure (|
                                                                           Ty.apply
                                                                             (Ty.path
                                                                               "core::option::Option")
                                                                             []
                                                                             [ Ty.path "u16" ],
-                                                                          M.call_closure (|
-                                                                            Ty.apply
-                                                                              (Ty.path
-                                                                                "core::option::Option")
-                                                                              []
-                                                                              [ Ty.path "u16" ],
-                                                                            M.get_associated_function (|
-                                                                              Ty.path
-                                                                                "move_bytecode_verifier::check_duplication::DuplicationChecker",
-                                                                              "first_duplicate_element",
-                                                                              [],
-                                                                              [
-                                                                                Ty.apply
-                                                                                  (Ty.path
-                                                                                    "core::slice::iter::Iter")
-                                                                                  []
-                                                                                  [
-                                                                                    Ty.path
-                                                                                      "move_binary_format::file_format::StructDefinitionIndex"
-                                                                                  ]
-                                                                              ]
-                                                                            |),
-                                                                            [ M.read (| acquires |)
+                                                                          M.get_associated_function (|
+                                                                            Ty.path
+                                                                              "move_bytecode_verifier::check_duplication::DuplicationChecker",
+                                                                            "first_duplicate_element",
+                                                                            [],
+                                                                            [
+                                                                              Ty.apply
+                                                                                (Ty.path
+                                                                                  "core::slice::iter::Iter")
+                                                                                []
+                                                                                [
+                                                                                  Ty.path
+                                                                                    "move_binary_format::file_format::StructDefinitionIndex"
+                                                                                ]
                                                                             ]
-                                                                          |)
+                                                                          |),
+                                                                          [ M.read (| acquires |) ]
                                                                         |)
                                                                       |)
-                                                                    ]
-                                                                  |)
-                                                                |)) in
+                                                                    |)
+                                                                  ]
+                                                                |)
+                                                              |) in
                                                             let _ :=
                                                               is_constant_or_break_match (|
                                                                 M.read (| γ |),
@@ -7634,45 +7631,44 @@ Module check_duplication.
                                                     fun γ =>
                                                       ltac:(M.monadic
                                                         (let γ :=
-                                                          M.use
-                                                            (M.alloc (|
+                                                          M.alloc (|
+                                                            Ty.path "bool",
+                                                            M.call_closure (|
                                                               Ty.path "bool",
-                                                              M.call_closure (|
-                                                                Ty.path "bool",
-                                                                UnOp.not,
-                                                                [
-                                                                  M.call_closure (|
-                                                                    Ty.path "bool",
-                                                                    M.get_associated_function (|
-                                                                      Ty.apply
-                                                                        (Ty.path
-                                                                          "std::collections::hash::set::HashSet")
-                                                                        []
-                                                                        [
-                                                                          Ty.associated_in_trait
-                                                                            "core::iter::traits::collect::IntoIterator"
-                                                                            []
-                                                                            []
-                                                                            T
-                                                                            "Item";
-                                                                          Ty.path
-                                                                            "std::hash::random::RandomState"
-                                                                        ],
-                                                                      "insert",
-                                                                      [],
+                                                              UnOp.not,
+                                                              [
+                                                                M.call_closure (|
+                                                                  Ty.path "bool",
+                                                                  M.get_associated_function (|
+                                                                    Ty.apply
+                                                                      (Ty.path
+                                                                        "std::collections::hash::set::HashSet")
                                                                       []
-                                                                    |),
-                                                                    [
-                                                                      M.borrow (|
-                                                                        Pointer.Kind.MutRef,
-                                                                        uniq
-                                                                      |);
-                                                                      M.read (| x |)
-                                                                    ]
-                                                                  |)
-                                                                ]
-                                                              |)
-                                                            |)) in
+                                                                      [
+                                                                        Ty.associated_in_trait
+                                                                          "core::iter::traits::collect::IntoIterator"
+                                                                          []
+                                                                          []
+                                                                          T
+                                                                          "Item";
+                                                                        Ty.path
+                                                                          "std::hash::random::RandomState"
+                                                                      ],
+                                                                    "insert",
+                                                                    [],
+                                                                    []
+                                                                  |),
+                                                                  [
+                                                                    M.borrow (|
+                                                                      Pointer.Kind.MutRef,
+                                                                      uniq
+                                                                    |);
+                                                                    M.read (| x |)
+                                                                  ]
+                                                                |)
+                                                              ]
+                                                            |)
+                                                          |) in
                                                         let _ :=
                                                           is_constant_or_break_match (|
                                                             M.read (| γ |),

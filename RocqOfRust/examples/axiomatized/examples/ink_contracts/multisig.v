@@ -110,6 +110,18 @@ Module Impl_core_fmt_Debug_for_multisig_AccountId.
       (* Instance *) [ ("fmt", InstanceField.Method fmt) ].
 End Impl_core_fmt_Debug_for_multisig_AccountId.
 
+Module Impl_core_clone_TrivialClone_for_multisig_AccountId.
+  Definition Self : Ty.t := Ty.path "multisig::AccountId".
+  
+  Axiom Implements :
+    M.IsTraitInstance
+      "core::clone::TrivialClone"
+      (* Trait polymorphic consts *) []
+      (* Trait polymorphic types *) []
+      Self
+      (* Instance *) [].
+End Impl_core_clone_TrivialClone_for_multisig_AccountId.
+
 Module Impl_core_clone_Clone_for_multisig_AccountId.
   Definition Self : Ty.t := Ty.path "multisig::AccountId".
   
@@ -261,6 +273,18 @@ Axiom IsDiscriminant_ConfirmationStatus_Confirmed :
 Axiom IsDiscriminant_ConfirmationStatus_ConfirmationsNeeded :
   M.IsDiscriminant "multisig::ConfirmationStatus::ConfirmationsNeeded" 1.
 
+Module Impl_core_clone_TrivialClone_for_multisig_ConfirmationStatus.
+  Definition Self : Ty.t := Ty.path "multisig::ConfirmationStatus".
+  
+  Axiom Implements :
+    M.IsTraitInstance
+      "core::clone::TrivialClone"
+      (* Trait polymorphic consts *) []
+      (* Trait polymorphic types *) []
+      Self
+      (* Instance *) [].
+End Impl_core_clone_TrivialClone_for_multisig_ConfirmationStatus.
+
 Module Impl_core_clone_Clone_for_multisig_ConfirmationStatus.
   Definition Self : Ty.t := Ty.path "multisig::ConfirmationStatus".
   
@@ -336,6 +360,18 @@ Enum Error
 
 Axiom IsDiscriminant_Error_TransactionFailed :
   M.IsDiscriminant "multisig::Error::TransactionFailed" 0.
+
+Module Impl_core_clone_TrivialClone_for_multisig_Error.
+  Definition Self : Ty.t := Ty.path "multisig::Error".
+  
+  Axiom Implements :
+    M.IsTraitInstance
+      "core::clone::TrivialClone"
+      (* Trait polymorphic consts *) []
+      (* Trait polymorphic types *) []
+      Self
+      (* Instance *) [].
+End Impl_core_clone_TrivialClone_for_multisig_Error.
 
 Module Impl_core_clone_Clone_for_multisig_Error.
   Definition Self : Ty.t := Ty.path "multisig::Error".

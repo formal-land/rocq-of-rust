@@ -53,36 +53,31 @@ Module alloc.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                UnOp.not,
-                                [
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    M.get_associated_function (|
-                                      Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                      "is_null",
-                                      [],
-                                      []
-                                    |),
-                                    [ M.read (| ptr |) ]
-                                  |)
-                                ]
-                              |)
-                            |)) in
+                              UnOp.not,
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                    "is_null",
+                                    [],
+                                    []
+                                  |),
+                                  [ M.read (| ptr |) ]
+                                |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
                             M.call_closure (|
                               Ty.tuple [],
-                              M.get_function (|
-                                "core::intrinsics::write_bytes",
-                                [],
-                                [ Ty.path "u8" ]
-                              |),
+                              M.get_function (| "core::ptr::write_bytes", [], [ Ty.path "u8" ] |),
                               [ M.read (| ptr |); Value.Integer IntegerKind.U8 0; M.read (| size |)
                               ]
                             |) in
@@ -155,33 +150,32 @@ Module alloc.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                UnOp.not,
-                                [
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    M.get_associated_function (|
-                                      Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                      "is_null",
-                                      [],
-                                      []
-                                    |),
-                                    [ M.read (| new_ptr |) ]
-                                  |)
-                                ]
-                              |)
-                            |)) in
+                              UnOp.not,
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                    "is_null",
+                                    [],
+                                    []
+                                  |),
+                                  [ M.read (| new_ptr |) ]
+                                |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
                             M.call_closure (|
                               Ty.tuple [],
                               M.get_function (|
-                                "core::intrinsics::copy_nonoverlapping",
+                                "core::ptr::copy_nonoverlapping",
                                 [],
                                 [ Ty.path "u8" ]
                               |),

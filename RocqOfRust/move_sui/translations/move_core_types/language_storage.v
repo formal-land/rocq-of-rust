@@ -743,6 +743,9 @@ Module language_storage.
           Self
           (* Instance *) [ ("serialize", InstanceField.Method serialize) ].
     End Impl_serde_ser_Serialize_for_move_core_types_language_storage_TypeTag.
+  End underscore.
+  
+  Module underscore_1.
     Module Impl_serde_de_Deserialize_for_move_core_types_language_storage_TypeTag.
       Definition Self : Ty.t := Ty.path "move_core_types::language_storage::TypeTag".
       
@@ -817,1650 +820,7 @@ Module language_storage.
           Self
           (* Instance *) [ ("deserialize", InstanceField.Method deserialize) ].
     End Impl_serde_de_Deserialize_for_move_core_types_language_storage_TypeTag.
-    Module Impl_serde_ser_Serialize_for_move_core_types_language_storage_StructTag.
-      Definition Self : Ty.t := Ty.path "move_core_types::language_storage::StructTag".
-      
-      (* Serialize *)
-      Definition serialize (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [ __S ], [ self; __serializer ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (|
-                Ty.apply
-                  (Ty.path "&")
-                  []
-                  [ Ty.path "move_core_types::language_storage::StructTag" ],
-                self
-              |) in
-            let __serializer := M.alloc (| __S, __serializer |) in
-            M.catch_return
-              (Ty.apply
-                (Ty.path "core::result::Result")
-                []
-                [
-                  Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Ok";
-                  Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error"
-                ]) (|
-              ltac:(M.monadic
-                (M.read (|
-                  let~ __serde_state :
-                      Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "SerializeStruct" :=
-                    M.match_operator (|
-                      Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "SerializeStruct",
-                      M.alloc (|
-                        Ty.apply
-                          (Ty.path "core::result::Result")
-                          []
-                          [
-                            Ty.associated_in_trait
-                              "serde::ser::Serializer"
-                              []
-                              []
-                              __S
-                              "SerializeStruct";
-                            Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error"
-                          ],
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "core::result::Result")
-                            []
-                            [
-                              Ty.associated_in_trait
-                                "serde::ser::Serializer"
-                                []
-                                []
-                                __S
-                                "SerializeStruct";
-                              Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error"
-                            ],
-                          M.get_trait_method (|
-                            "serde::ser::Serializer",
-                            __S,
-                            [],
-                            [],
-                            "serialize_struct",
-                            [],
-                            []
-                          |),
-                          [
-                            M.read (| __serializer |);
-                            mk_str (| "StructTag" |);
-                            M.call_closure (|
-                              Ty.path "usize",
-                              BinOp.Wrap.add,
-                              [
-                                M.call_closure (|
-                                  Ty.path "usize",
-                                  BinOp.Wrap.add,
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "usize",
-                                      BinOp.Wrap.add,
-                                      [
-                                        M.call_closure (|
-                                          Ty.path "usize",
-                                          BinOp.Wrap.add,
-                                          [
-                                            M.cast (Ty.path "usize") (Value.Bool false);
-                                            Value.Integer IntegerKind.Usize 1
-                                          ]
-                                        |);
-                                        Value.Integer IntegerKind.Usize 1
-                                      ]
-                                    |);
-                                    Value.Integer IntegerKind.Usize 1
-                                  ]
-                                |);
-                                Value.Integer IntegerKind.Usize 1
-                              ]
-                            |)
-                          ]
-                        |)
-                      |),
-                      [
-                        fun γ =>
-                          ltac:(M.monadic
-                            (let γ0_0 :=
-                              M.SubPointer.get_struct_tuple_field (|
-                                γ,
-                                "core::result::Result::Ok",
-                                0
-                              |) in
-                            let __val :=
-                              M.copy (|
-                                Ty.associated_in_trait
-                                  "serde::ser::Serializer"
-                                  []
-                                  []
-                                  __S
-                                  "SerializeStruct",
-                                γ0_0
-                              |) in
-                            M.read (| __val |)));
-                        fun γ =>
-                          ltac:(M.monadic
-                            (let γ0_0 :=
-                              M.SubPointer.get_struct_tuple_field (|
-                                γ,
-                                "core::result::Result::Err",
-                                0
-                              |) in
-                            let __err :=
-                              M.copy (|
-                                Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error",
-                                γ0_0
-                              |) in
-                            M.never_to_any (|
-                              M.read (|
-                                M.return_ (|
-                                  Value.StructTuple
-                                    "core::result::Result::Err"
-                                    []
-                                    [
-                                      Ty.associated_in_trait
-                                        "serde::ser::Serializer"
-                                        []
-                                        []
-                                        __S
-                                        "Ok";
-                                      Ty.associated_in_trait
-                                        "serde::ser::Serializer"
-                                        []
-                                        []
-                                        __S
-                                        "Error"
-                                    ]
-                                    [ M.read (| __err |) ]
-                                |)
-                              |)
-                            |)))
-                      ]
-                    |) in
-                  let~ _ : Ty.tuple [] :=
-                    M.match_operator (|
-                      Ty.tuple [],
-                      M.alloc (|
-                        Ty.apply
-                          (Ty.path "core::result::Result")
-                          []
-                          [
-                            Ty.tuple [];
-                            Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error"
-                          ],
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "core::result::Result")
-                            []
-                            [
-                              Ty.tuple [];
-                              Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error"
-                            ],
-                          M.get_trait_method (|
-                            "serde::ser::SerializeStruct",
-                            Ty.associated_in_trait
-                              "serde::ser::Serializer"
-                              []
-                              []
-                              __S
-                              "SerializeStruct",
-                            [],
-                            [],
-                            "serialize_field",
-                            [],
-                            [ Ty.path "move_core_types::account_address::AccountAddress" ]
-                          |),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.MutRef,
-                              M.deref (| M.borrow (| Pointer.Kind.MutRef, __serde_state |) |)
-                            |);
-                            mk_str (| "address" |);
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "move_core_types::language_storage::StructTag",
-                                    "address"
-                                  |)
-                                |)
-                              |)
-                            |)
-                          ]
-                        |)
-                      |),
-                      [
-                        fun γ =>
-                          ltac:(M.monadic
-                            (let γ0_0 :=
-                              M.SubPointer.get_struct_tuple_field (|
-                                γ,
-                                "core::result::Result::Ok",
-                                0
-                              |) in
-                            let __val := M.copy (| Ty.tuple [], γ0_0 |) in
-                            M.read (| __val |)));
-                        fun γ =>
-                          ltac:(M.monadic
-                            (let γ0_0 :=
-                              M.SubPointer.get_struct_tuple_field (|
-                                γ,
-                                "core::result::Result::Err",
-                                0
-                              |) in
-                            let __err :=
-                              M.copy (|
-                                Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error",
-                                γ0_0
-                              |) in
-                            M.never_to_any (|
-                              M.read (|
-                                M.return_ (|
-                                  Value.StructTuple
-                                    "core::result::Result::Err"
-                                    []
-                                    [
-                                      Ty.associated_in_trait
-                                        "serde::ser::Serializer"
-                                        []
-                                        []
-                                        __S
-                                        "Ok";
-                                      Ty.associated_in_trait
-                                        "serde::ser::Serializer"
-                                        []
-                                        []
-                                        __S
-                                        "Error"
-                                    ]
-                                    [ M.read (| __err |) ]
-                                |)
-                              |)
-                            |)))
-                      ]
-                    |) in
-                  let~ _ : Ty.tuple [] :=
-                    M.match_operator (|
-                      Ty.tuple [],
-                      M.alloc (|
-                        Ty.apply
-                          (Ty.path "core::result::Result")
-                          []
-                          [
-                            Ty.tuple [];
-                            Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error"
-                          ],
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "core::result::Result")
-                            []
-                            [
-                              Ty.tuple [];
-                              Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error"
-                            ],
-                          M.get_trait_method (|
-                            "serde::ser::SerializeStruct",
-                            Ty.associated_in_trait
-                              "serde::ser::Serializer"
-                              []
-                              []
-                              __S
-                              "SerializeStruct",
-                            [],
-                            [],
-                            "serialize_field",
-                            [],
-                            [ Ty.path "move_core_types::identifier::Identifier" ]
-                          |),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.MutRef,
-                              M.deref (| M.borrow (| Pointer.Kind.MutRef, __serde_state |) |)
-                            |);
-                            mk_str (| "module" |);
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "move_core_types::language_storage::StructTag",
-                                    "module"
-                                  |)
-                                |)
-                              |)
-                            |)
-                          ]
-                        |)
-                      |),
-                      [
-                        fun γ =>
-                          ltac:(M.monadic
-                            (let γ0_0 :=
-                              M.SubPointer.get_struct_tuple_field (|
-                                γ,
-                                "core::result::Result::Ok",
-                                0
-                              |) in
-                            let __val := M.copy (| Ty.tuple [], γ0_0 |) in
-                            M.read (| __val |)));
-                        fun γ =>
-                          ltac:(M.monadic
-                            (let γ0_0 :=
-                              M.SubPointer.get_struct_tuple_field (|
-                                γ,
-                                "core::result::Result::Err",
-                                0
-                              |) in
-                            let __err :=
-                              M.copy (|
-                                Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error",
-                                γ0_0
-                              |) in
-                            M.never_to_any (|
-                              M.read (|
-                                M.return_ (|
-                                  Value.StructTuple
-                                    "core::result::Result::Err"
-                                    []
-                                    [
-                                      Ty.associated_in_trait
-                                        "serde::ser::Serializer"
-                                        []
-                                        []
-                                        __S
-                                        "Ok";
-                                      Ty.associated_in_trait
-                                        "serde::ser::Serializer"
-                                        []
-                                        []
-                                        __S
-                                        "Error"
-                                    ]
-                                    [ M.read (| __err |) ]
-                                |)
-                              |)
-                            |)))
-                      ]
-                    |) in
-                  let~ _ : Ty.tuple [] :=
-                    M.match_operator (|
-                      Ty.tuple [],
-                      M.alloc (|
-                        Ty.apply
-                          (Ty.path "core::result::Result")
-                          []
-                          [
-                            Ty.tuple [];
-                            Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error"
-                          ],
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "core::result::Result")
-                            []
-                            [
-                              Ty.tuple [];
-                              Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error"
-                            ],
-                          M.get_trait_method (|
-                            "serde::ser::SerializeStruct",
-                            Ty.associated_in_trait
-                              "serde::ser::Serializer"
-                              []
-                              []
-                              __S
-                              "SerializeStruct",
-                            [],
-                            [],
-                            "serialize_field",
-                            [],
-                            [ Ty.path "move_core_types::identifier::Identifier" ]
-                          |),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.MutRef,
-                              M.deref (| M.borrow (| Pointer.Kind.MutRef, __serde_state |) |)
-                            |);
-                            mk_str (| "name" |);
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "move_core_types::language_storage::StructTag",
-                                    "name"
-                                  |)
-                                |)
-                              |)
-                            |)
-                          ]
-                        |)
-                      |),
-                      [
-                        fun γ =>
-                          ltac:(M.monadic
-                            (let γ0_0 :=
-                              M.SubPointer.get_struct_tuple_field (|
-                                γ,
-                                "core::result::Result::Ok",
-                                0
-                              |) in
-                            let __val := M.copy (| Ty.tuple [], γ0_0 |) in
-                            M.read (| __val |)));
-                        fun γ =>
-                          ltac:(M.monadic
-                            (let γ0_0 :=
-                              M.SubPointer.get_struct_tuple_field (|
-                                γ,
-                                "core::result::Result::Err",
-                                0
-                              |) in
-                            let __err :=
-                              M.copy (|
-                                Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error",
-                                γ0_0
-                              |) in
-                            M.never_to_any (|
-                              M.read (|
-                                M.return_ (|
-                                  Value.StructTuple
-                                    "core::result::Result::Err"
-                                    []
-                                    [
-                                      Ty.associated_in_trait
-                                        "serde::ser::Serializer"
-                                        []
-                                        []
-                                        __S
-                                        "Ok";
-                                      Ty.associated_in_trait
-                                        "serde::ser::Serializer"
-                                        []
-                                        []
-                                        __S
-                                        "Error"
-                                    ]
-                                    [ M.read (| __err |) ]
-                                |)
-                              |)
-                            |)))
-                      ]
-                    |) in
-                  let~ _ : Ty.tuple [] :=
-                    M.match_operator (|
-                      Ty.tuple [],
-                      M.alloc (|
-                        Ty.apply
-                          (Ty.path "core::result::Result")
-                          []
-                          [
-                            Ty.tuple [];
-                            Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error"
-                          ],
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "core::result::Result")
-                            []
-                            [
-                              Ty.tuple [];
-                              Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error"
-                            ],
-                          M.get_trait_method (|
-                            "serde::ser::SerializeStruct",
-                            Ty.associated_in_trait
-                              "serde::ser::Serializer"
-                              []
-                              []
-                              __S
-                              "SerializeStruct",
-                            [],
-                            [],
-                            "serialize_field",
-                            [],
-                            [
-                              Ty.apply
-                                (Ty.path "alloc::vec::Vec")
-                                []
-                                [
-                                  Ty.path "move_core_types::language_storage::TypeTag";
-                                  Ty.path "alloc::alloc::Global"
-                                ]
-                            ]
-                          |),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.MutRef,
-                              M.deref (| M.borrow (| Pointer.Kind.MutRef, __serde_state |) |)
-                            |);
-                            mk_str (| "type_args" |);
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "move_core_types::language_storage::StructTag",
-                                    "type_params"
-                                  |)
-                                |)
-                              |)
-                            |)
-                          ]
-                        |)
-                      |),
-                      [
-                        fun γ =>
-                          ltac:(M.monadic
-                            (let γ0_0 :=
-                              M.SubPointer.get_struct_tuple_field (|
-                                γ,
-                                "core::result::Result::Ok",
-                                0
-                              |) in
-                            let __val := M.copy (| Ty.tuple [], γ0_0 |) in
-                            M.read (| __val |)));
-                        fun γ =>
-                          ltac:(M.monadic
-                            (let γ0_0 :=
-                              M.SubPointer.get_struct_tuple_field (|
-                                γ,
-                                "core::result::Result::Err",
-                                0
-                              |) in
-                            let __err :=
-                              M.copy (|
-                                Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error",
-                                γ0_0
-                              |) in
-                            M.never_to_any (|
-                              M.read (|
-                                M.return_ (|
-                                  Value.StructTuple
-                                    "core::result::Result::Err"
-                                    []
-                                    [
-                                      Ty.associated_in_trait
-                                        "serde::ser::Serializer"
-                                        []
-                                        []
-                                        __S
-                                        "Ok";
-                                      Ty.associated_in_trait
-                                        "serde::ser::Serializer"
-                                        []
-                                        []
-                                        __S
-                                        "Error"
-                                    ]
-                                    [ M.read (| __err |) ]
-                                |)
-                              |)
-                            |)))
-                      ]
-                    |) in
-                  M.alloc (|
-                    Ty.apply
-                      (Ty.path "core::result::Result")
-                      []
-                      [
-                        Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Ok";
-                        Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error"
-                      ],
-                    M.call_closure (|
-                      Ty.apply
-                        (Ty.path "core::result::Result")
-                        []
-                        [
-                          Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Ok";
-                          Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error"
-                        ],
-                      M.get_trait_method (|
-                        "serde::ser::SerializeStruct",
-                        Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "SerializeStruct",
-                        [],
-                        [],
-                        "end",
-                        [],
-                        []
-                      |),
-                      [ M.read (| __serde_state |) ]
-                    |)
-                  |)
-                |)))
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Axiom Implements :
-        M.IsTraitInstance
-          "serde::ser::Serialize"
-          (* Trait polymorphic consts *) []
-          (* Trait polymorphic types *) []
-          Self
-          (* Instance *) [ ("serialize", InstanceField.Method serialize) ].
-    End Impl_serde_ser_Serialize_for_move_core_types_language_storage_StructTag.
-    Module Impl_serde_de_Deserialize_for_move_core_types_language_storage_StructTag.
-      Definition Self : Ty.t := Ty.path "move_core_types::language_storage::StructTag".
-      
-      (* Deserialize *)
-      Definition deserialize (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [ __D ], [ __deserializer ] =>
-          ltac:(M.monadic
-            (let __deserializer := M.alloc (| __D, __deserializer |) in
-            M.call_closure (|
-              Ty.apply
-                (Ty.path "core::result::Result")
-                []
-                [
-                  Ty.path "move_core_types::language_storage::StructTag";
-                  Ty.associated_in_trait "serde::de::Deserializer" [] [] __D "Error"
-                ],
-              M.get_trait_method (|
-                "serde::de::Deserializer",
-                __D,
-                [],
-                [],
-                "deserialize_struct",
-                [],
-                [ Ty.path "move_core_types::language_storage::_'3::deserialize::__Visitor" ]
-              |),
-              [
-                M.read (| __deserializer |);
-                mk_str (| "StructTag" |);
-                M.read (|
-                  get_constant (|
-                    "move_core_types::language_storage::_'3::deserialize::FIELDS",
-                    Ty.apply
-                      (Ty.path "&")
-                      []
-                      [
-                        Ty.apply
-                          (Ty.path "slice")
-                          []
-                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                      ]
-                  |)
-                |);
-                Value.mkStructRecord
-                  "move_core_types::language_storage::_'3::deserialize::__Visitor"
-                  []
-                  []
-                  [
-                    ("marker",
-                      Value.StructTuple
-                        "core::marker::PhantomData"
-                        []
-                        [ Ty.path "move_core_types::language_storage::StructTag" ]
-                        []);
-                    ("lifetime",
-                      Value.StructTuple
-                        "core::marker::PhantomData"
-                        []
-                        [ Ty.apply (Ty.path "&") [] [ Ty.tuple [] ] ]
-                        [])
-                  ]
-              ]
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Axiom Implements :
-        M.IsTraitInstance
-          "serde::de::Deserialize"
-          (* Trait polymorphic consts *) []
-          (* Trait polymorphic types *) []
-          Self
-          (* Instance *) [ ("deserialize", InstanceField.Method deserialize) ].
-    End Impl_serde_de_Deserialize_for_move_core_types_language_storage_StructTag.
-    Module Impl_serde_ser_Serialize_for_move_core_types_language_storage_ResourceKey.
-      Definition Self : Ty.t := Ty.path "move_core_types::language_storage::ResourceKey".
-      
-      (* Serialize *)
-      Definition serialize (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [ __S ], [ self; __serializer ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (|
-                Ty.apply
-                  (Ty.path "&")
-                  []
-                  [ Ty.path "move_core_types::language_storage::ResourceKey" ],
-                self
-              |) in
-            let __serializer := M.alloc (| __S, __serializer |) in
-            M.catch_return
-              (Ty.apply
-                (Ty.path "core::result::Result")
-                []
-                [
-                  Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Ok";
-                  Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error"
-                ]) (|
-              ltac:(M.monadic
-                (M.read (|
-                  let~ __serde_state :
-                      Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "SerializeStruct" :=
-                    M.match_operator (|
-                      Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "SerializeStruct",
-                      M.alloc (|
-                        Ty.apply
-                          (Ty.path "core::result::Result")
-                          []
-                          [
-                            Ty.associated_in_trait
-                              "serde::ser::Serializer"
-                              []
-                              []
-                              __S
-                              "SerializeStruct";
-                            Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error"
-                          ],
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "core::result::Result")
-                            []
-                            [
-                              Ty.associated_in_trait
-                                "serde::ser::Serializer"
-                                []
-                                []
-                                __S
-                                "SerializeStruct";
-                              Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error"
-                            ],
-                          M.get_trait_method (|
-                            "serde::ser::Serializer",
-                            __S,
-                            [],
-                            [],
-                            "serialize_struct",
-                            [],
-                            []
-                          |),
-                          [
-                            M.read (| __serializer |);
-                            mk_str (| "ResourceKey" |);
-                            M.call_closure (|
-                              Ty.path "usize",
-                              BinOp.Wrap.add,
-                              [
-                                M.call_closure (|
-                                  Ty.path "usize",
-                                  BinOp.Wrap.add,
-                                  [
-                                    M.cast (Ty.path "usize") (Value.Bool false);
-                                    Value.Integer IntegerKind.Usize 1
-                                  ]
-                                |);
-                                Value.Integer IntegerKind.Usize 1
-                              ]
-                            |)
-                          ]
-                        |)
-                      |),
-                      [
-                        fun γ =>
-                          ltac:(M.monadic
-                            (let γ0_0 :=
-                              M.SubPointer.get_struct_tuple_field (|
-                                γ,
-                                "core::result::Result::Ok",
-                                0
-                              |) in
-                            let __val :=
-                              M.copy (|
-                                Ty.associated_in_trait
-                                  "serde::ser::Serializer"
-                                  []
-                                  []
-                                  __S
-                                  "SerializeStruct",
-                                γ0_0
-                              |) in
-                            M.read (| __val |)));
-                        fun γ =>
-                          ltac:(M.monadic
-                            (let γ0_0 :=
-                              M.SubPointer.get_struct_tuple_field (|
-                                γ,
-                                "core::result::Result::Err",
-                                0
-                              |) in
-                            let __err :=
-                              M.copy (|
-                                Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error",
-                                γ0_0
-                              |) in
-                            M.never_to_any (|
-                              M.read (|
-                                M.return_ (|
-                                  Value.StructTuple
-                                    "core::result::Result::Err"
-                                    []
-                                    [
-                                      Ty.associated_in_trait
-                                        "serde::ser::Serializer"
-                                        []
-                                        []
-                                        __S
-                                        "Ok";
-                                      Ty.associated_in_trait
-                                        "serde::ser::Serializer"
-                                        []
-                                        []
-                                        __S
-                                        "Error"
-                                    ]
-                                    [ M.read (| __err |) ]
-                                |)
-                              |)
-                            |)))
-                      ]
-                    |) in
-                  let~ _ : Ty.tuple [] :=
-                    M.match_operator (|
-                      Ty.tuple [],
-                      M.alloc (|
-                        Ty.apply
-                          (Ty.path "core::result::Result")
-                          []
-                          [
-                            Ty.tuple [];
-                            Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error"
-                          ],
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "core::result::Result")
-                            []
-                            [
-                              Ty.tuple [];
-                              Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error"
-                            ],
-                          M.get_trait_method (|
-                            "serde::ser::SerializeStruct",
-                            Ty.associated_in_trait
-                              "serde::ser::Serializer"
-                              []
-                              []
-                              __S
-                              "SerializeStruct",
-                            [],
-                            [],
-                            "serialize_field",
-                            [],
-                            [ Ty.path "move_core_types::account_address::AccountAddress" ]
-                          |),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.MutRef,
-                              M.deref (| M.borrow (| Pointer.Kind.MutRef, __serde_state |) |)
-                            |);
-                            mk_str (| "address" |);
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "move_core_types::language_storage::ResourceKey",
-                                    "address"
-                                  |)
-                                |)
-                              |)
-                            |)
-                          ]
-                        |)
-                      |),
-                      [
-                        fun γ =>
-                          ltac:(M.monadic
-                            (let γ0_0 :=
-                              M.SubPointer.get_struct_tuple_field (|
-                                γ,
-                                "core::result::Result::Ok",
-                                0
-                              |) in
-                            let __val := M.copy (| Ty.tuple [], γ0_0 |) in
-                            M.read (| __val |)));
-                        fun γ =>
-                          ltac:(M.monadic
-                            (let γ0_0 :=
-                              M.SubPointer.get_struct_tuple_field (|
-                                γ,
-                                "core::result::Result::Err",
-                                0
-                              |) in
-                            let __err :=
-                              M.copy (|
-                                Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error",
-                                γ0_0
-                              |) in
-                            M.never_to_any (|
-                              M.read (|
-                                M.return_ (|
-                                  Value.StructTuple
-                                    "core::result::Result::Err"
-                                    []
-                                    [
-                                      Ty.associated_in_trait
-                                        "serde::ser::Serializer"
-                                        []
-                                        []
-                                        __S
-                                        "Ok";
-                                      Ty.associated_in_trait
-                                        "serde::ser::Serializer"
-                                        []
-                                        []
-                                        __S
-                                        "Error"
-                                    ]
-                                    [ M.read (| __err |) ]
-                                |)
-                              |)
-                            |)))
-                      ]
-                    |) in
-                  let~ _ : Ty.tuple [] :=
-                    M.match_operator (|
-                      Ty.tuple [],
-                      M.alloc (|
-                        Ty.apply
-                          (Ty.path "core::result::Result")
-                          []
-                          [
-                            Ty.tuple [];
-                            Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error"
-                          ],
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "core::result::Result")
-                            []
-                            [
-                              Ty.tuple [];
-                              Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error"
-                            ],
-                          M.get_trait_method (|
-                            "serde::ser::SerializeStruct",
-                            Ty.associated_in_trait
-                              "serde::ser::Serializer"
-                              []
-                              []
-                              __S
-                              "SerializeStruct",
-                            [],
-                            [],
-                            "serialize_field",
-                            [],
-                            [ Ty.path "move_core_types::language_storage::StructTag" ]
-                          |),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.MutRef,
-                              M.deref (| M.borrow (| Pointer.Kind.MutRef, __serde_state |) |)
-                            |);
-                            mk_str (| "type_" |);
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "move_core_types::language_storage::ResourceKey",
-                                    "type_"
-                                  |)
-                                |)
-                              |)
-                            |)
-                          ]
-                        |)
-                      |),
-                      [
-                        fun γ =>
-                          ltac:(M.monadic
-                            (let γ0_0 :=
-                              M.SubPointer.get_struct_tuple_field (|
-                                γ,
-                                "core::result::Result::Ok",
-                                0
-                              |) in
-                            let __val := M.copy (| Ty.tuple [], γ0_0 |) in
-                            M.read (| __val |)));
-                        fun γ =>
-                          ltac:(M.monadic
-                            (let γ0_0 :=
-                              M.SubPointer.get_struct_tuple_field (|
-                                γ,
-                                "core::result::Result::Err",
-                                0
-                              |) in
-                            let __err :=
-                              M.copy (|
-                                Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error",
-                                γ0_0
-                              |) in
-                            M.never_to_any (|
-                              M.read (|
-                                M.return_ (|
-                                  Value.StructTuple
-                                    "core::result::Result::Err"
-                                    []
-                                    [
-                                      Ty.associated_in_trait
-                                        "serde::ser::Serializer"
-                                        []
-                                        []
-                                        __S
-                                        "Ok";
-                                      Ty.associated_in_trait
-                                        "serde::ser::Serializer"
-                                        []
-                                        []
-                                        __S
-                                        "Error"
-                                    ]
-                                    [ M.read (| __err |) ]
-                                |)
-                              |)
-                            |)))
-                      ]
-                    |) in
-                  M.alloc (|
-                    Ty.apply
-                      (Ty.path "core::result::Result")
-                      []
-                      [
-                        Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Ok";
-                        Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error"
-                      ],
-                    M.call_closure (|
-                      Ty.apply
-                        (Ty.path "core::result::Result")
-                        []
-                        [
-                          Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Ok";
-                          Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error"
-                        ],
-                      M.get_trait_method (|
-                        "serde::ser::SerializeStruct",
-                        Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "SerializeStruct",
-                        [],
-                        [],
-                        "end",
-                        [],
-                        []
-                      |),
-                      [ M.read (| __serde_state |) ]
-                    |)
-                  |)
-                |)))
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Axiom Implements :
-        M.IsTraitInstance
-          "serde::ser::Serialize"
-          (* Trait polymorphic consts *) []
-          (* Trait polymorphic types *) []
-          Self
-          (* Instance *) [ ("serialize", InstanceField.Method serialize) ].
-    End Impl_serde_ser_Serialize_for_move_core_types_language_storage_ResourceKey.
-    Module Impl_serde_de_Deserialize_for_move_core_types_language_storage_ResourceKey.
-      Definition Self : Ty.t := Ty.path "move_core_types::language_storage::ResourceKey".
-      
-      (* Deserialize *)
-      Definition deserialize (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [ __D ], [ __deserializer ] =>
-          ltac:(M.monadic
-            (let __deserializer := M.alloc (| __D, __deserializer |) in
-            M.call_closure (|
-              Ty.apply
-                (Ty.path "core::result::Result")
-                []
-                [
-                  Ty.path "move_core_types::language_storage::ResourceKey";
-                  Ty.associated_in_trait "serde::de::Deserializer" [] [] __D "Error"
-                ],
-              M.get_trait_method (|
-                "serde::de::Deserializer",
-                __D,
-                [],
-                [],
-                "deserialize_struct",
-                [],
-                [ Ty.path "move_core_types::language_storage::_'5::deserialize::__Visitor" ]
-              |),
-              [
-                M.read (| __deserializer |);
-                mk_str (| "ResourceKey" |);
-                M.read (|
-                  get_constant (|
-                    "move_core_types::language_storage::_'5::deserialize::FIELDS",
-                    Ty.apply
-                      (Ty.path "&")
-                      []
-                      [
-                        Ty.apply
-                          (Ty.path "slice")
-                          []
-                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                      ]
-                  |)
-                |);
-                Value.mkStructRecord
-                  "move_core_types::language_storage::_'5::deserialize::__Visitor"
-                  []
-                  []
-                  [
-                    ("marker",
-                      Value.StructTuple
-                        "core::marker::PhantomData"
-                        []
-                        [ Ty.path "move_core_types::language_storage::ResourceKey" ]
-                        []);
-                    ("lifetime",
-                      Value.StructTuple
-                        "core::marker::PhantomData"
-                        []
-                        [ Ty.apply (Ty.path "&") [] [ Ty.tuple [] ] ]
-                        [])
-                  ]
-              ]
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Axiom Implements :
-        M.IsTraitInstance
-          "serde::de::Deserialize"
-          (* Trait polymorphic consts *) []
-          (* Trait polymorphic types *) []
-          Self
-          (* Instance *) [ ("deserialize", InstanceField.Method deserialize) ].
-    End Impl_serde_de_Deserialize_for_move_core_types_language_storage_ResourceKey.
-    Module Impl_serde_ser_Serialize_for_move_core_types_language_storage_ModuleId.
-      Definition Self : Ty.t := Ty.path "move_core_types::language_storage::ModuleId".
-      
-      (* Serialize *)
-      Definition serialize (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [ __S ], [ self; __serializer ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (|
-                Ty.apply (Ty.path "&") [] [ Ty.path "move_core_types::language_storage::ModuleId" ],
-                self
-              |) in
-            let __serializer := M.alloc (| __S, __serializer |) in
-            M.catch_return
-              (Ty.apply
-                (Ty.path "core::result::Result")
-                []
-                [
-                  Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Ok";
-                  Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error"
-                ]) (|
-              ltac:(M.monadic
-                (M.read (|
-                  let~ __serde_state :
-                      Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "SerializeStruct" :=
-                    M.match_operator (|
-                      Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "SerializeStruct",
-                      M.alloc (|
-                        Ty.apply
-                          (Ty.path "core::result::Result")
-                          []
-                          [
-                            Ty.associated_in_trait
-                              "serde::ser::Serializer"
-                              []
-                              []
-                              __S
-                              "SerializeStruct";
-                            Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error"
-                          ],
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "core::result::Result")
-                            []
-                            [
-                              Ty.associated_in_trait
-                                "serde::ser::Serializer"
-                                []
-                                []
-                                __S
-                                "SerializeStruct";
-                              Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error"
-                            ],
-                          M.get_trait_method (|
-                            "serde::ser::Serializer",
-                            __S,
-                            [],
-                            [],
-                            "serialize_struct",
-                            [],
-                            []
-                          |),
-                          [
-                            M.read (| __serializer |);
-                            mk_str (| "ModuleId" |);
-                            M.call_closure (|
-                              Ty.path "usize",
-                              BinOp.Wrap.add,
-                              [
-                                M.call_closure (|
-                                  Ty.path "usize",
-                                  BinOp.Wrap.add,
-                                  [
-                                    M.cast (Ty.path "usize") (Value.Bool false);
-                                    Value.Integer IntegerKind.Usize 1
-                                  ]
-                                |);
-                                Value.Integer IntegerKind.Usize 1
-                              ]
-                            |)
-                          ]
-                        |)
-                      |),
-                      [
-                        fun γ =>
-                          ltac:(M.monadic
-                            (let γ0_0 :=
-                              M.SubPointer.get_struct_tuple_field (|
-                                γ,
-                                "core::result::Result::Ok",
-                                0
-                              |) in
-                            let __val :=
-                              M.copy (|
-                                Ty.associated_in_trait
-                                  "serde::ser::Serializer"
-                                  []
-                                  []
-                                  __S
-                                  "SerializeStruct",
-                                γ0_0
-                              |) in
-                            M.read (| __val |)));
-                        fun γ =>
-                          ltac:(M.monadic
-                            (let γ0_0 :=
-                              M.SubPointer.get_struct_tuple_field (|
-                                γ,
-                                "core::result::Result::Err",
-                                0
-                              |) in
-                            let __err :=
-                              M.copy (|
-                                Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error",
-                                γ0_0
-                              |) in
-                            M.never_to_any (|
-                              M.read (|
-                                M.return_ (|
-                                  Value.StructTuple
-                                    "core::result::Result::Err"
-                                    []
-                                    [
-                                      Ty.associated_in_trait
-                                        "serde::ser::Serializer"
-                                        []
-                                        []
-                                        __S
-                                        "Ok";
-                                      Ty.associated_in_trait
-                                        "serde::ser::Serializer"
-                                        []
-                                        []
-                                        __S
-                                        "Error"
-                                    ]
-                                    [ M.read (| __err |) ]
-                                |)
-                              |)
-                            |)))
-                      ]
-                    |) in
-                  let~ _ : Ty.tuple [] :=
-                    M.match_operator (|
-                      Ty.tuple [],
-                      M.alloc (|
-                        Ty.apply
-                          (Ty.path "core::result::Result")
-                          []
-                          [
-                            Ty.tuple [];
-                            Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error"
-                          ],
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "core::result::Result")
-                            []
-                            [
-                              Ty.tuple [];
-                              Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error"
-                            ],
-                          M.get_trait_method (|
-                            "serde::ser::SerializeStruct",
-                            Ty.associated_in_trait
-                              "serde::ser::Serializer"
-                              []
-                              []
-                              __S
-                              "SerializeStruct",
-                            [],
-                            [],
-                            "serialize_field",
-                            [],
-                            [ Ty.path "move_core_types::account_address::AccountAddress" ]
-                          |),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.MutRef,
-                              M.deref (| M.borrow (| Pointer.Kind.MutRef, __serde_state |) |)
-                            |);
-                            mk_str (| "address" |);
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "move_core_types::language_storage::ModuleId",
-                                    "address"
-                                  |)
-                                |)
-                              |)
-                            |)
-                          ]
-                        |)
-                      |),
-                      [
-                        fun γ =>
-                          ltac:(M.monadic
-                            (let γ0_0 :=
-                              M.SubPointer.get_struct_tuple_field (|
-                                γ,
-                                "core::result::Result::Ok",
-                                0
-                              |) in
-                            let __val := M.copy (| Ty.tuple [], γ0_0 |) in
-                            M.read (| __val |)));
-                        fun γ =>
-                          ltac:(M.monadic
-                            (let γ0_0 :=
-                              M.SubPointer.get_struct_tuple_field (|
-                                γ,
-                                "core::result::Result::Err",
-                                0
-                              |) in
-                            let __err :=
-                              M.copy (|
-                                Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error",
-                                γ0_0
-                              |) in
-                            M.never_to_any (|
-                              M.read (|
-                                M.return_ (|
-                                  Value.StructTuple
-                                    "core::result::Result::Err"
-                                    []
-                                    [
-                                      Ty.associated_in_trait
-                                        "serde::ser::Serializer"
-                                        []
-                                        []
-                                        __S
-                                        "Ok";
-                                      Ty.associated_in_trait
-                                        "serde::ser::Serializer"
-                                        []
-                                        []
-                                        __S
-                                        "Error"
-                                    ]
-                                    [ M.read (| __err |) ]
-                                |)
-                              |)
-                            |)))
-                      ]
-                    |) in
-                  let~ _ : Ty.tuple [] :=
-                    M.match_operator (|
-                      Ty.tuple [],
-                      M.alloc (|
-                        Ty.apply
-                          (Ty.path "core::result::Result")
-                          []
-                          [
-                            Ty.tuple [];
-                            Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error"
-                          ],
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "core::result::Result")
-                            []
-                            [
-                              Ty.tuple [];
-                              Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error"
-                            ],
-                          M.get_trait_method (|
-                            "serde::ser::SerializeStruct",
-                            Ty.associated_in_trait
-                              "serde::ser::Serializer"
-                              []
-                              []
-                              __S
-                              "SerializeStruct",
-                            [],
-                            [],
-                            "serialize_field",
-                            [],
-                            [ Ty.path "move_core_types::identifier::Identifier" ]
-                          |),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.MutRef,
-                              M.deref (| M.borrow (| Pointer.Kind.MutRef, __serde_state |) |)
-                            |);
-                            mk_str (| "name" |);
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "move_core_types::language_storage::ModuleId",
-                                    "name"
-                                  |)
-                                |)
-                              |)
-                            |)
-                          ]
-                        |)
-                      |),
-                      [
-                        fun γ =>
-                          ltac:(M.monadic
-                            (let γ0_0 :=
-                              M.SubPointer.get_struct_tuple_field (|
-                                γ,
-                                "core::result::Result::Ok",
-                                0
-                              |) in
-                            let __val := M.copy (| Ty.tuple [], γ0_0 |) in
-                            M.read (| __val |)));
-                        fun γ =>
-                          ltac:(M.monadic
-                            (let γ0_0 :=
-                              M.SubPointer.get_struct_tuple_field (|
-                                γ,
-                                "core::result::Result::Err",
-                                0
-                              |) in
-                            let __err :=
-                              M.copy (|
-                                Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error",
-                                γ0_0
-                              |) in
-                            M.never_to_any (|
-                              M.read (|
-                                M.return_ (|
-                                  Value.StructTuple
-                                    "core::result::Result::Err"
-                                    []
-                                    [
-                                      Ty.associated_in_trait
-                                        "serde::ser::Serializer"
-                                        []
-                                        []
-                                        __S
-                                        "Ok";
-                                      Ty.associated_in_trait
-                                        "serde::ser::Serializer"
-                                        []
-                                        []
-                                        __S
-                                        "Error"
-                                    ]
-                                    [ M.read (| __err |) ]
-                                |)
-                              |)
-                            |)))
-                      ]
-                    |) in
-                  M.alloc (|
-                    Ty.apply
-                      (Ty.path "core::result::Result")
-                      []
-                      [
-                        Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Ok";
-                        Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error"
-                      ],
-                    M.call_closure (|
-                      Ty.apply
-                        (Ty.path "core::result::Result")
-                        []
-                        [
-                          Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Ok";
-                          Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error"
-                        ],
-                      M.get_trait_method (|
-                        "serde::ser::SerializeStruct",
-                        Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "SerializeStruct",
-                        [],
-                        [],
-                        "end",
-                        [],
-                        []
-                      |),
-                      [ M.read (| __serde_state |) ]
-                    |)
-                  |)
-                |)))
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Axiom Implements :
-        M.IsTraitInstance
-          "serde::ser::Serialize"
-          (* Trait polymorphic consts *) []
-          (* Trait polymorphic types *) []
-          Self
-          (* Instance *) [ ("serialize", InstanceField.Method serialize) ].
-    End Impl_serde_ser_Serialize_for_move_core_types_language_storage_ModuleId.
-    Module Impl_serde_de_Deserialize_for_move_core_types_language_storage_ModuleId.
-      Definition Self : Ty.t := Ty.path "move_core_types::language_storage::ModuleId".
-      
-      (* Deserialize *)
-      Definition deserialize (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [ __D ], [ __deserializer ] =>
-          ltac:(M.monadic
-            (let __deserializer := M.alloc (| __D, __deserializer |) in
-            M.call_closure (|
-              Ty.apply
-                (Ty.path "core::result::Result")
-                []
-                [
-                  Ty.path "move_core_types::language_storage::ModuleId";
-                  Ty.associated_in_trait "serde::de::Deserializer" [] [] __D "Error"
-                ],
-              M.get_trait_method (|
-                "serde::de::Deserializer",
-                __D,
-                [],
-                [],
-                "deserialize_struct",
-                [],
-                [ Ty.path "move_core_types::language_storage::_'7::deserialize::__Visitor" ]
-              |),
-              [
-                M.read (| __deserializer |);
-                mk_str (| "ModuleId" |);
-                M.read (|
-                  get_constant (|
-                    "move_core_types::language_storage::_'7::deserialize::FIELDS",
-                    Ty.apply
-                      (Ty.path "&")
-                      []
-                      [
-                        Ty.apply
-                          (Ty.path "slice")
-                          []
-                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                      ]
-                  |)
-                |);
-                Value.mkStructRecord
-                  "move_core_types::language_storage::_'7::deserialize::__Visitor"
-                  []
-                  []
-                  [
-                    ("marker",
-                      Value.StructTuple
-                        "core::marker::PhantomData"
-                        []
-                        [ Ty.path "move_core_types::language_storage::ModuleId" ]
-                        []);
-                    ("lifetime",
-                      Value.StructTuple
-                        "core::marker::PhantomData"
-                        []
-                        [ Ty.apply (Ty.path "&") [] [ Ty.tuple [] ] ]
-                        [])
-                  ]
-              ]
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Axiom Implements :
-        M.IsTraitInstance
-          "serde::de::Deserialize"
-          (* Trait polymorphic consts *) []
-          (* Trait polymorphic types *) []
-          Self
-          (* Instance *) [ ("deserialize", InstanceField.Method deserialize) ].
-    End Impl_serde_de_Deserialize_for_move_core_types_language_storage_ModuleId.
-  End underscore.
-  
+  End underscore_1.
   
   Module Impl_core_fmt_Debug_for_move_core_types_language_storage_TypeTag.
     Definition Self : Ty.t := Ty.path "move_core_types::language_storage::TypeTag".
@@ -4583,7 +2943,714 @@ Module language_storage.
         ];
     } *)
   
+  Module underscore_2.
+    Module Impl_serde_ser_Serialize_for_move_core_types_language_storage_StructTag.
+      Definition Self : Ty.t := Ty.path "move_core_types::language_storage::StructTag".
+      
+      (* Serialize *)
+      Definition serialize (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [ __S ], [ self; __serializer ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.path "move_core_types::language_storage::StructTag" ],
+                self
+              |) in
+            let __serializer := M.alloc (| __S, __serializer |) in
+            M.catch_return
+              (Ty.apply
+                (Ty.path "core::result::Result")
+                []
+                [
+                  Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Ok";
+                  Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error"
+                ]) (|
+              ltac:(M.monadic
+                (M.read (|
+                  let~ __serde_state :
+                      Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "SerializeStruct" :=
+                    M.match_operator (|
+                      Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "SerializeStruct",
+                      M.alloc (|
+                        Ty.apply
+                          (Ty.path "core::result::Result")
+                          []
+                          [
+                            Ty.associated_in_trait
+                              "serde::ser::Serializer"
+                              []
+                              []
+                              __S
+                              "SerializeStruct";
+                            Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error"
+                          ],
+                        M.call_closure (|
+                          Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [
+                              Ty.associated_in_trait
+                                "serde::ser::Serializer"
+                                []
+                                []
+                                __S
+                                "SerializeStruct";
+                              Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error"
+                            ],
+                          M.get_trait_method (|
+                            "serde::ser::Serializer",
+                            __S,
+                            [],
+                            [],
+                            "serialize_struct",
+                            [],
+                            []
+                          |),
+                          [
+                            M.read (| __serializer |);
+                            mk_str (| "StructTag" |);
+                            M.call_closure (|
+                              Ty.path "usize",
+                              BinOp.Wrap.add,
+                              [
+                                M.call_closure (|
+                                  Ty.path "usize",
+                                  BinOp.Wrap.add,
+                                  [
+                                    M.call_closure (|
+                                      Ty.path "usize",
+                                      BinOp.Wrap.add,
+                                      [
+                                        M.call_closure (|
+                                          Ty.path "usize",
+                                          BinOp.Wrap.add,
+                                          [
+                                            M.cast (Ty.path "usize") (Value.Bool false);
+                                            Value.Integer IntegerKind.Usize 1
+                                          ]
+                                        |);
+                                        Value.Integer IntegerKind.Usize 1
+                                      ]
+                                    |);
+                                    Value.Integer IntegerKind.Usize 1
+                                  ]
+                                |);
+                                Value.Integer IntegerKind.Usize 1
+                              ]
+                            |)
+                          ]
+                        |)
+                      |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ0_0 :=
+                              M.SubPointer.get_struct_tuple_field (|
+                                γ,
+                                "core::result::Result::Ok",
+                                0
+                              |) in
+                            let __val :=
+                              M.copy (|
+                                Ty.associated_in_trait
+                                  "serde::ser::Serializer"
+                                  []
+                                  []
+                                  __S
+                                  "SerializeStruct",
+                                γ0_0
+                              |) in
+                            M.read (| __val |)));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ0_0 :=
+                              M.SubPointer.get_struct_tuple_field (|
+                                γ,
+                                "core::result::Result::Err",
+                                0
+                              |) in
+                            let __err :=
+                              M.copy (|
+                                Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error",
+                                γ0_0
+                              |) in
+                            M.never_to_any (|
+                              M.read (|
+                                M.return_ (|
+                                  Value.StructTuple
+                                    "core::result::Result::Err"
+                                    []
+                                    [
+                                      Ty.associated_in_trait
+                                        "serde::ser::Serializer"
+                                        []
+                                        []
+                                        __S
+                                        "Ok";
+                                      Ty.associated_in_trait
+                                        "serde::ser::Serializer"
+                                        []
+                                        []
+                                        __S
+                                        "Error"
+                                    ]
+                                    [ M.read (| __err |) ]
+                                |)
+                              |)
+                            |)))
+                      ]
+                    |) in
+                  let~ _ : Ty.tuple [] :=
+                    M.match_operator (|
+                      Ty.tuple [],
+                      M.alloc (|
+                        Ty.apply
+                          (Ty.path "core::result::Result")
+                          []
+                          [
+                            Ty.tuple [];
+                            Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error"
+                          ],
+                        M.call_closure (|
+                          Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [
+                              Ty.tuple [];
+                              Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error"
+                            ],
+                          M.get_trait_method (|
+                            "serde::ser::SerializeStruct",
+                            Ty.associated_in_trait
+                              "serde::ser::Serializer"
+                              []
+                              []
+                              __S
+                              "SerializeStruct",
+                            [],
+                            [],
+                            "serialize_field",
+                            [],
+                            [ Ty.path "move_core_types::account_address::AccountAddress" ]
+                          |),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.MutRef,
+                              M.deref (| M.borrow (| Pointer.Kind.MutRef, __serde_state |) |)
+                            |);
+                            mk_str (| "address" |);
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (|
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (| M.read (| self |) |),
+                                    "move_core_types::language_storage::StructTag",
+                                    "address"
+                                  |)
+                                |)
+                              |)
+                            |)
+                          ]
+                        |)
+                      |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ0_0 :=
+                              M.SubPointer.get_struct_tuple_field (|
+                                γ,
+                                "core::result::Result::Ok",
+                                0
+                              |) in
+                            let __val := M.copy (| Ty.tuple [], γ0_0 |) in
+                            M.read (| __val |)));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ0_0 :=
+                              M.SubPointer.get_struct_tuple_field (|
+                                γ,
+                                "core::result::Result::Err",
+                                0
+                              |) in
+                            let __err :=
+                              M.copy (|
+                                Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error",
+                                γ0_0
+                              |) in
+                            M.never_to_any (|
+                              M.read (|
+                                M.return_ (|
+                                  Value.StructTuple
+                                    "core::result::Result::Err"
+                                    []
+                                    [
+                                      Ty.associated_in_trait
+                                        "serde::ser::Serializer"
+                                        []
+                                        []
+                                        __S
+                                        "Ok";
+                                      Ty.associated_in_trait
+                                        "serde::ser::Serializer"
+                                        []
+                                        []
+                                        __S
+                                        "Error"
+                                    ]
+                                    [ M.read (| __err |) ]
+                                |)
+                              |)
+                            |)))
+                      ]
+                    |) in
+                  let~ _ : Ty.tuple [] :=
+                    M.match_operator (|
+                      Ty.tuple [],
+                      M.alloc (|
+                        Ty.apply
+                          (Ty.path "core::result::Result")
+                          []
+                          [
+                            Ty.tuple [];
+                            Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error"
+                          ],
+                        M.call_closure (|
+                          Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [
+                              Ty.tuple [];
+                              Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error"
+                            ],
+                          M.get_trait_method (|
+                            "serde::ser::SerializeStruct",
+                            Ty.associated_in_trait
+                              "serde::ser::Serializer"
+                              []
+                              []
+                              __S
+                              "SerializeStruct",
+                            [],
+                            [],
+                            "serialize_field",
+                            [],
+                            [ Ty.path "move_core_types::identifier::Identifier" ]
+                          |),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.MutRef,
+                              M.deref (| M.borrow (| Pointer.Kind.MutRef, __serde_state |) |)
+                            |);
+                            mk_str (| "module" |);
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (|
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (| M.read (| self |) |),
+                                    "move_core_types::language_storage::StructTag",
+                                    "module"
+                                  |)
+                                |)
+                              |)
+                            |)
+                          ]
+                        |)
+                      |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ0_0 :=
+                              M.SubPointer.get_struct_tuple_field (|
+                                γ,
+                                "core::result::Result::Ok",
+                                0
+                              |) in
+                            let __val := M.copy (| Ty.tuple [], γ0_0 |) in
+                            M.read (| __val |)));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ0_0 :=
+                              M.SubPointer.get_struct_tuple_field (|
+                                γ,
+                                "core::result::Result::Err",
+                                0
+                              |) in
+                            let __err :=
+                              M.copy (|
+                                Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error",
+                                γ0_0
+                              |) in
+                            M.never_to_any (|
+                              M.read (|
+                                M.return_ (|
+                                  Value.StructTuple
+                                    "core::result::Result::Err"
+                                    []
+                                    [
+                                      Ty.associated_in_trait
+                                        "serde::ser::Serializer"
+                                        []
+                                        []
+                                        __S
+                                        "Ok";
+                                      Ty.associated_in_trait
+                                        "serde::ser::Serializer"
+                                        []
+                                        []
+                                        __S
+                                        "Error"
+                                    ]
+                                    [ M.read (| __err |) ]
+                                |)
+                              |)
+                            |)))
+                      ]
+                    |) in
+                  let~ _ : Ty.tuple [] :=
+                    M.match_operator (|
+                      Ty.tuple [],
+                      M.alloc (|
+                        Ty.apply
+                          (Ty.path "core::result::Result")
+                          []
+                          [
+                            Ty.tuple [];
+                            Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error"
+                          ],
+                        M.call_closure (|
+                          Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [
+                              Ty.tuple [];
+                              Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error"
+                            ],
+                          M.get_trait_method (|
+                            "serde::ser::SerializeStruct",
+                            Ty.associated_in_trait
+                              "serde::ser::Serializer"
+                              []
+                              []
+                              __S
+                              "SerializeStruct",
+                            [],
+                            [],
+                            "serialize_field",
+                            [],
+                            [ Ty.path "move_core_types::identifier::Identifier" ]
+                          |),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.MutRef,
+                              M.deref (| M.borrow (| Pointer.Kind.MutRef, __serde_state |) |)
+                            |);
+                            mk_str (| "name" |);
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (|
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (| M.read (| self |) |),
+                                    "move_core_types::language_storage::StructTag",
+                                    "name"
+                                  |)
+                                |)
+                              |)
+                            |)
+                          ]
+                        |)
+                      |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ0_0 :=
+                              M.SubPointer.get_struct_tuple_field (|
+                                γ,
+                                "core::result::Result::Ok",
+                                0
+                              |) in
+                            let __val := M.copy (| Ty.tuple [], γ0_0 |) in
+                            M.read (| __val |)));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ0_0 :=
+                              M.SubPointer.get_struct_tuple_field (|
+                                γ,
+                                "core::result::Result::Err",
+                                0
+                              |) in
+                            let __err :=
+                              M.copy (|
+                                Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error",
+                                γ0_0
+                              |) in
+                            M.never_to_any (|
+                              M.read (|
+                                M.return_ (|
+                                  Value.StructTuple
+                                    "core::result::Result::Err"
+                                    []
+                                    [
+                                      Ty.associated_in_trait
+                                        "serde::ser::Serializer"
+                                        []
+                                        []
+                                        __S
+                                        "Ok";
+                                      Ty.associated_in_trait
+                                        "serde::ser::Serializer"
+                                        []
+                                        []
+                                        __S
+                                        "Error"
+                                    ]
+                                    [ M.read (| __err |) ]
+                                |)
+                              |)
+                            |)))
+                      ]
+                    |) in
+                  let~ _ : Ty.tuple [] :=
+                    M.match_operator (|
+                      Ty.tuple [],
+                      M.alloc (|
+                        Ty.apply
+                          (Ty.path "core::result::Result")
+                          []
+                          [
+                            Ty.tuple [];
+                            Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error"
+                          ],
+                        M.call_closure (|
+                          Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [
+                              Ty.tuple [];
+                              Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error"
+                            ],
+                          M.get_trait_method (|
+                            "serde::ser::SerializeStruct",
+                            Ty.associated_in_trait
+                              "serde::ser::Serializer"
+                              []
+                              []
+                              __S
+                              "SerializeStruct",
+                            [],
+                            [],
+                            "serialize_field",
+                            [],
+                            [
+                              Ty.apply
+                                (Ty.path "alloc::vec::Vec")
+                                []
+                                [
+                                  Ty.path "move_core_types::language_storage::TypeTag";
+                                  Ty.path "alloc::alloc::Global"
+                                ]
+                            ]
+                          |),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.MutRef,
+                              M.deref (| M.borrow (| Pointer.Kind.MutRef, __serde_state |) |)
+                            |);
+                            mk_str (| "type_args" |);
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (|
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (| M.read (| self |) |),
+                                    "move_core_types::language_storage::StructTag",
+                                    "type_params"
+                                  |)
+                                |)
+                              |)
+                            |)
+                          ]
+                        |)
+                      |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ0_0 :=
+                              M.SubPointer.get_struct_tuple_field (|
+                                γ,
+                                "core::result::Result::Ok",
+                                0
+                              |) in
+                            let __val := M.copy (| Ty.tuple [], γ0_0 |) in
+                            M.read (| __val |)));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ0_0 :=
+                              M.SubPointer.get_struct_tuple_field (|
+                                γ,
+                                "core::result::Result::Err",
+                                0
+                              |) in
+                            let __err :=
+                              M.copy (|
+                                Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error",
+                                γ0_0
+                              |) in
+                            M.never_to_any (|
+                              M.read (|
+                                M.return_ (|
+                                  Value.StructTuple
+                                    "core::result::Result::Err"
+                                    []
+                                    [
+                                      Ty.associated_in_trait
+                                        "serde::ser::Serializer"
+                                        []
+                                        []
+                                        __S
+                                        "Ok";
+                                      Ty.associated_in_trait
+                                        "serde::ser::Serializer"
+                                        []
+                                        []
+                                        __S
+                                        "Error"
+                                    ]
+                                    [ M.read (| __err |) ]
+                                |)
+                              |)
+                            |)))
+                      ]
+                    |) in
+                  M.alloc (|
+                    Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Ok";
+                        Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error"
+                      ],
+                    M.call_closure (|
+                      Ty.apply
+                        (Ty.path "core::result::Result")
+                        []
+                        [
+                          Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Ok";
+                          Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error"
+                        ],
+                      M.get_trait_method (|
+                        "serde::ser::SerializeStruct",
+                        Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "SerializeStruct",
+                        [],
+                        [],
+                        "end",
+                        [],
+                        []
+                      |),
+                      [ M.read (| __serde_state |) ]
+                    |)
+                  |)
+                |)))
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "serde::ser::Serialize"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [ ("serialize", InstanceField.Method serialize) ].
+    End Impl_serde_ser_Serialize_for_move_core_types_language_storage_StructTag.
+  End underscore_2.
   
+  Module underscore_3.
+    Module Impl_serde_de_Deserialize_for_move_core_types_language_storage_StructTag.
+      Definition Self : Ty.t := Ty.path "move_core_types::language_storage::StructTag".
+      
+      (* Deserialize *)
+      Definition deserialize (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [ __D ], [ __deserializer ] =>
+          ltac:(M.monadic
+            (let __deserializer := M.alloc (| __D, __deserializer |) in
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "core::result::Result")
+                []
+                [
+                  Ty.path "move_core_types::language_storage::StructTag";
+                  Ty.associated_in_trait "serde::de::Deserializer" [] [] __D "Error"
+                ],
+              M.get_trait_method (|
+                "serde::de::Deserializer",
+                __D,
+                [],
+                [],
+                "deserialize_struct",
+                [],
+                [ Ty.path "move_core_types::language_storage::_'3::deserialize::__Visitor" ]
+              |),
+              [
+                M.read (| __deserializer |);
+                mk_str (| "StructTag" |);
+                M.read (|
+                  get_constant (|
+                    "move_core_types::language_storage::_'3::deserialize::FIELDS",
+                    Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "slice")
+                          []
+                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                      ]
+                  |)
+                |);
+                Value.mkStructRecord
+                  "move_core_types::language_storage::_'3::deserialize::__Visitor"
+                  []
+                  []
+                  [
+                    ("marker",
+                      Value.StructTuple
+                        "core::marker::PhantomData"
+                        []
+                        [ Ty.path "move_core_types::language_storage::StructTag" ]
+                        []);
+                    ("lifetime",
+                      Value.StructTuple
+                        "core::marker::PhantomData"
+                        []
+                        [ Ty.apply (Ty.path "&") [] [ Ty.tuple [] ] ]
+                        [])
+                  ]
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "serde::de::Deserialize"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [ ("deserialize", InstanceField.Method deserialize) ].
+    End Impl_serde_de_Deserialize_for_move_core_types_language_storage_StructTag.
+  End underscore_3.
   
   Module Impl_core_fmt_Debug_for_move_core_types_language_storage_StructTag.
     Definition Self : Ty.t := Ty.path "move_core_types::language_storage::StructTag".
@@ -7097,7 +6164,482 @@ Module language_storage.
         ];
     } *)
   
+  Module underscore_4.
+    Module Impl_serde_ser_Serialize_for_move_core_types_language_storage_ResourceKey.
+      Definition Self : Ty.t := Ty.path "move_core_types::language_storage::ResourceKey".
+      
+      (* Serialize *)
+      Definition serialize (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [ __S ], [ self; __serializer ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.path "move_core_types::language_storage::ResourceKey" ],
+                self
+              |) in
+            let __serializer := M.alloc (| __S, __serializer |) in
+            M.catch_return
+              (Ty.apply
+                (Ty.path "core::result::Result")
+                []
+                [
+                  Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Ok";
+                  Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error"
+                ]) (|
+              ltac:(M.monadic
+                (M.read (|
+                  let~ __serde_state :
+                      Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "SerializeStruct" :=
+                    M.match_operator (|
+                      Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "SerializeStruct",
+                      M.alloc (|
+                        Ty.apply
+                          (Ty.path "core::result::Result")
+                          []
+                          [
+                            Ty.associated_in_trait
+                              "serde::ser::Serializer"
+                              []
+                              []
+                              __S
+                              "SerializeStruct";
+                            Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error"
+                          ],
+                        M.call_closure (|
+                          Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [
+                              Ty.associated_in_trait
+                                "serde::ser::Serializer"
+                                []
+                                []
+                                __S
+                                "SerializeStruct";
+                              Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error"
+                            ],
+                          M.get_trait_method (|
+                            "serde::ser::Serializer",
+                            __S,
+                            [],
+                            [],
+                            "serialize_struct",
+                            [],
+                            []
+                          |),
+                          [
+                            M.read (| __serializer |);
+                            mk_str (| "ResourceKey" |);
+                            M.call_closure (|
+                              Ty.path "usize",
+                              BinOp.Wrap.add,
+                              [
+                                M.call_closure (|
+                                  Ty.path "usize",
+                                  BinOp.Wrap.add,
+                                  [
+                                    M.cast (Ty.path "usize") (Value.Bool false);
+                                    Value.Integer IntegerKind.Usize 1
+                                  ]
+                                |);
+                                Value.Integer IntegerKind.Usize 1
+                              ]
+                            |)
+                          ]
+                        |)
+                      |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ0_0 :=
+                              M.SubPointer.get_struct_tuple_field (|
+                                γ,
+                                "core::result::Result::Ok",
+                                0
+                              |) in
+                            let __val :=
+                              M.copy (|
+                                Ty.associated_in_trait
+                                  "serde::ser::Serializer"
+                                  []
+                                  []
+                                  __S
+                                  "SerializeStruct",
+                                γ0_0
+                              |) in
+                            M.read (| __val |)));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ0_0 :=
+                              M.SubPointer.get_struct_tuple_field (|
+                                γ,
+                                "core::result::Result::Err",
+                                0
+                              |) in
+                            let __err :=
+                              M.copy (|
+                                Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error",
+                                γ0_0
+                              |) in
+                            M.never_to_any (|
+                              M.read (|
+                                M.return_ (|
+                                  Value.StructTuple
+                                    "core::result::Result::Err"
+                                    []
+                                    [
+                                      Ty.associated_in_trait
+                                        "serde::ser::Serializer"
+                                        []
+                                        []
+                                        __S
+                                        "Ok";
+                                      Ty.associated_in_trait
+                                        "serde::ser::Serializer"
+                                        []
+                                        []
+                                        __S
+                                        "Error"
+                                    ]
+                                    [ M.read (| __err |) ]
+                                |)
+                              |)
+                            |)))
+                      ]
+                    |) in
+                  let~ _ : Ty.tuple [] :=
+                    M.match_operator (|
+                      Ty.tuple [],
+                      M.alloc (|
+                        Ty.apply
+                          (Ty.path "core::result::Result")
+                          []
+                          [
+                            Ty.tuple [];
+                            Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error"
+                          ],
+                        M.call_closure (|
+                          Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [
+                              Ty.tuple [];
+                              Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error"
+                            ],
+                          M.get_trait_method (|
+                            "serde::ser::SerializeStruct",
+                            Ty.associated_in_trait
+                              "serde::ser::Serializer"
+                              []
+                              []
+                              __S
+                              "SerializeStruct",
+                            [],
+                            [],
+                            "serialize_field",
+                            [],
+                            [ Ty.path "move_core_types::account_address::AccountAddress" ]
+                          |),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.MutRef,
+                              M.deref (| M.borrow (| Pointer.Kind.MutRef, __serde_state |) |)
+                            |);
+                            mk_str (| "address" |);
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (|
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (| M.read (| self |) |),
+                                    "move_core_types::language_storage::ResourceKey",
+                                    "address"
+                                  |)
+                                |)
+                              |)
+                            |)
+                          ]
+                        |)
+                      |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ0_0 :=
+                              M.SubPointer.get_struct_tuple_field (|
+                                γ,
+                                "core::result::Result::Ok",
+                                0
+                              |) in
+                            let __val := M.copy (| Ty.tuple [], γ0_0 |) in
+                            M.read (| __val |)));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ0_0 :=
+                              M.SubPointer.get_struct_tuple_field (|
+                                γ,
+                                "core::result::Result::Err",
+                                0
+                              |) in
+                            let __err :=
+                              M.copy (|
+                                Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error",
+                                γ0_0
+                              |) in
+                            M.never_to_any (|
+                              M.read (|
+                                M.return_ (|
+                                  Value.StructTuple
+                                    "core::result::Result::Err"
+                                    []
+                                    [
+                                      Ty.associated_in_trait
+                                        "serde::ser::Serializer"
+                                        []
+                                        []
+                                        __S
+                                        "Ok";
+                                      Ty.associated_in_trait
+                                        "serde::ser::Serializer"
+                                        []
+                                        []
+                                        __S
+                                        "Error"
+                                    ]
+                                    [ M.read (| __err |) ]
+                                |)
+                              |)
+                            |)))
+                      ]
+                    |) in
+                  let~ _ : Ty.tuple [] :=
+                    M.match_operator (|
+                      Ty.tuple [],
+                      M.alloc (|
+                        Ty.apply
+                          (Ty.path "core::result::Result")
+                          []
+                          [
+                            Ty.tuple [];
+                            Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error"
+                          ],
+                        M.call_closure (|
+                          Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [
+                              Ty.tuple [];
+                              Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error"
+                            ],
+                          M.get_trait_method (|
+                            "serde::ser::SerializeStruct",
+                            Ty.associated_in_trait
+                              "serde::ser::Serializer"
+                              []
+                              []
+                              __S
+                              "SerializeStruct",
+                            [],
+                            [],
+                            "serialize_field",
+                            [],
+                            [ Ty.path "move_core_types::language_storage::StructTag" ]
+                          |),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.MutRef,
+                              M.deref (| M.borrow (| Pointer.Kind.MutRef, __serde_state |) |)
+                            |);
+                            mk_str (| "type_" |);
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (|
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (| M.read (| self |) |),
+                                    "move_core_types::language_storage::ResourceKey",
+                                    "type_"
+                                  |)
+                                |)
+                              |)
+                            |)
+                          ]
+                        |)
+                      |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ0_0 :=
+                              M.SubPointer.get_struct_tuple_field (|
+                                γ,
+                                "core::result::Result::Ok",
+                                0
+                              |) in
+                            let __val := M.copy (| Ty.tuple [], γ0_0 |) in
+                            M.read (| __val |)));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ0_0 :=
+                              M.SubPointer.get_struct_tuple_field (|
+                                γ,
+                                "core::result::Result::Err",
+                                0
+                              |) in
+                            let __err :=
+                              M.copy (|
+                                Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error",
+                                γ0_0
+                              |) in
+                            M.never_to_any (|
+                              M.read (|
+                                M.return_ (|
+                                  Value.StructTuple
+                                    "core::result::Result::Err"
+                                    []
+                                    [
+                                      Ty.associated_in_trait
+                                        "serde::ser::Serializer"
+                                        []
+                                        []
+                                        __S
+                                        "Ok";
+                                      Ty.associated_in_trait
+                                        "serde::ser::Serializer"
+                                        []
+                                        []
+                                        __S
+                                        "Error"
+                                    ]
+                                    [ M.read (| __err |) ]
+                                |)
+                              |)
+                            |)))
+                      ]
+                    |) in
+                  M.alloc (|
+                    Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Ok";
+                        Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error"
+                      ],
+                    M.call_closure (|
+                      Ty.apply
+                        (Ty.path "core::result::Result")
+                        []
+                        [
+                          Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Ok";
+                          Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error"
+                        ],
+                      M.get_trait_method (|
+                        "serde::ser::SerializeStruct",
+                        Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "SerializeStruct",
+                        [],
+                        [],
+                        "end",
+                        [],
+                        []
+                      |),
+                      [ M.read (| __serde_state |) ]
+                    |)
+                  |)
+                |)))
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "serde::ser::Serialize"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [ ("serialize", InstanceField.Method serialize) ].
+    End Impl_serde_ser_Serialize_for_move_core_types_language_storage_ResourceKey.
+  End underscore_4.
   
+  Module underscore_5.
+    Module Impl_serde_de_Deserialize_for_move_core_types_language_storage_ResourceKey.
+      Definition Self : Ty.t := Ty.path "move_core_types::language_storage::ResourceKey".
+      
+      (* Deserialize *)
+      Definition deserialize (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [ __D ], [ __deserializer ] =>
+          ltac:(M.monadic
+            (let __deserializer := M.alloc (| __D, __deserializer |) in
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "core::result::Result")
+                []
+                [
+                  Ty.path "move_core_types::language_storage::ResourceKey";
+                  Ty.associated_in_trait "serde::de::Deserializer" [] [] __D "Error"
+                ],
+              M.get_trait_method (|
+                "serde::de::Deserializer",
+                __D,
+                [],
+                [],
+                "deserialize_struct",
+                [],
+                [ Ty.path "move_core_types::language_storage::_'5::deserialize::__Visitor" ]
+              |),
+              [
+                M.read (| __deserializer |);
+                mk_str (| "ResourceKey" |);
+                M.read (|
+                  get_constant (|
+                    "move_core_types::language_storage::_'5::deserialize::FIELDS",
+                    Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "slice")
+                          []
+                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                      ]
+                  |)
+                |);
+                Value.mkStructRecord
+                  "move_core_types::language_storage::_'5::deserialize::__Visitor"
+                  []
+                  []
+                  [
+                    ("marker",
+                      Value.StructTuple
+                        "core::marker::PhantomData"
+                        []
+                        [ Ty.path "move_core_types::language_storage::ResourceKey" ]
+                        []);
+                    ("lifetime",
+                      Value.StructTuple
+                        "core::marker::PhantomData"
+                        []
+                        [ Ty.apply (Ty.path "&") [] [ Ty.tuple [] ] ]
+                        [])
+                  ]
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "serde::de::Deserialize"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [ ("deserialize", InstanceField.Method deserialize) ].
+    End Impl_serde_de_Deserialize_for_move_core_types_language_storage_ResourceKey.
+  End underscore_5.
   
   Module Impl_core_fmt_Debug_for_move_core_types_language_storage_ResourceKey.
     Definition Self : Ty.t := Ty.path "move_core_types::language_storage::ResourceKey".
@@ -7929,7 +7471,479 @@ Module language_storage.
         ];
     } *)
   
+  Module underscore_6.
+    Module Impl_serde_ser_Serialize_for_move_core_types_language_storage_ModuleId.
+      Definition Self : Ty.t := Ty.path "move_core_types::language_storage::ModuleId".
+      
+      (* Serialize *)
+      Definition serialize (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [ __S ], [ self; __serializer ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "&") [] [ Ty.path "move_core_types::language_storage::ModuleId" ],
+                self
+              |) in
+            let __serializer := M.alloc (| __S, __serializer |) in
+            M.catch_return
+              (Ty.apply
+                (Ty.path "core::result::Result")
+                []
+                [
+                  Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Ok";
+                  Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error"
+                ]) (|
+              ltac:(M.monadic
+                (M.read (|
+                  let~ __serde_state :
+                      Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "SerializeStruct" :=
+                    M.match_operator (|
+                      Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "SerializeStruct",
+                      M.alloc (|
+                        Ty.apply
+                          (Ty.path "core::result::Result")
+                          []
+                          [
+                            Ty.associated_in_trait
+                              "serde::ser::Serializer"
+                              []
+                              []
+                              __S
+                              "SerializeStruct";
+                            Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error"
+                          ],
+                        M.call_closure (|
+                          Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [
+                              Ty.associated_in_trait
+                                "serde::ser::Serializer"
+                                []
+                                []
+                                __S
+                                "SerializeStruct";
+                              Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error"
+                            ],
+                          M.get_trait_method (|
+                            "serde::ser::Serializer",
+                            __S,
+                            [],
+                            [],
+                            "serialize_struct",
+                            [],
+                            []
+                          |),
+                          [
+                            M.read (| __serializer |);
+                            mk_str (| "ModuleId" |);
+                            M.call_closure (|
+                              Ty.path "usize",
+                              BinOp.Wrap.add,
+                              [
+                                M.call_closure (|
+                                  Ty.path "usize",
+                                  BinOp.Wrap.add,
+                                  [
+                                    M.cast (Ty.path "usize") (Value.Bool false);
+                                    Value.Integer IntegerKind.Usize 1
+                                  ]
+                                |);
+                                Value.Integer IntegerKind.Usize 1
+                              ]
+                            |)
+                          ]
+                        |)
+                      |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ0_0 :=
+                              M.SubPointer.get_struct_tuple_field (|
+                                γ,
+                                "core::result::Result::Ok",
+                                0
+                              |) in
+                            let __val :=
+                              M.copy (|
+                                Ty.associated_in_trait
+                                  "serde::ser::Serializer"
+                                  []
+                                  []
+                                  __S
+                                  "SerializeStruct",
+                                γ0_0
+                              |) in
+                            M.read (| __val |)));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ0_0 :=
+                              M.SubPointer.get_struct_tuple_field (|
+                                γ,
+                                "core::result::Result::Err",
+                                0
+                              |) in
+                            let __err :=
+                              M.copy (|
+                                Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error",
+                                γ0_0
+                              |) in
+                            M.never_to_any (|
+                              M.read (|
+                                M.return_ (|
+                                  Value.StructTuple
+                                    "core::result::Result::Err"
+                                    []
+                                    [
+                                      Ty.associated_in_trait
+                                        "serde::ser::Serializer"
+                                        []
+                                        []
+                                        __S
+                                        "Ok";
+                                      Ty.associated_in_trait
+                                        "serde::ser::Serializer"
+                                        []
+                                        []
+                                        __S
+                                        "Error"
+                                    ]
+                                    [ M.read (| __err |) ]
+                                |)
+                              |)
+                            |)))
+                      ]
+                    |) in
+                  let~ _ : Ty.tuple [] :=
+                    M.match_operator (|
+                      Ty.tuple [],
+                      M.alloc (|
+                        Ty.apply
+                          (Ty.path "core::result::Result")
+                          []
+                          [
+                            Ty.tuple [];
+                            Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error"
+                          ],
+                        M.call_closure (|
+                          Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [
+                              Ty.tuple [];
+                              Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error"
+                            ],
+                          M.get_trait_method (|
+                            "serde::ser::SerializeStruct",
+                            Ty.associated_in_trait
+                              "serde::ser::Serializer"
+                              []
+                              []
+                              __S
+                              "SerializeStruct",
+                            [],
+                            [],
+                            "serialize_field",
+                            [],
+                            [ Ty.path "move_core_types::account_address::AccountAddress" ]
+                          |),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.MutRef,
+                              M.deref (| M.borrow (| Pointer.Kind.MutRef, __serde_state |) |)
+                            |);
+                            mk_str (| "address" |);
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (|
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (| M.read (| self |) |),
+                                    "move_core_types::language_storage::ModuleId",
+                                    "address"
+                                  |)
+                                |)
+                              |)
+                            |)
+                          ]
+                        |)
+                      |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ0_0 :=
+                              M.SubPointer.get_struct_tuple_field (|
+                                γ,
+                                "core::result::Result::Ok",
+                                0
+                              |) in
+                            let __val := M.copy (| Ty.tuple [], γ0_0 |) in
+                            M.read (| __val |)));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ0_0 :=
+                              M.SubPointer.get_struct_tuple_field (|
+                                γ,
+                                "core::result::Result::Err",
+                                0
+                              |) in
+                            let __err :=
+                              M.copy (|
+                                Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error",
+                                γ0_0
+                              |) in
+                            M.never_to_any (|
+                              M.read (|
+                                M.return_ (|
+                                  Value.StructTuple
+                                    "core::result::Result::Err"
+                                    []
+                                    [
+                                      Ty.associated_in_trait
+                                        "serde::ser::Serializer"
+                                        []
+                                        []
+                                        __S
+                                        "Ok";
+                                      Ty.associated_in_trait
+                                        "serde::ser::Serializer"
+                                        []
+                                        []
+                                        __S
+                                        "Error"
+                                    ]
+                                    [ M.read (| __err |) ]
+                                |)
+                              |)
+                            |)))
+                      ]
+                    |) in
+                  let~ _ : Ty.tuple [] :=
+                    M.match_operator (|
+                      Ty.tuple [],
+                      M.alloc (|
+                        Ty.apply
+                          (Ty.path "core::result::Result")
+                          []
+                          [
+                            Ty.tuple [];
+                            Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error"
+                          ],
+                        M.call_closure (|
+                          Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [
+                              Ty.tuple [];
+                              Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error"
+                            ],
+                          M.get_trait_method (|
+                            "serde::ser::SerializeStruct",
+                            Ty.associated_in_trait
+                              "serde::ser::Serializer"
+                              []
+                              []
+                              __S
+                              "SerializeStruct",
+                            [],
+                            [],
+                            "serialize_field",
+                            [],
+                            [ Ty.path "move_core_types::identifier::Identifier" ]
+                          |),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.MutRef,
+                              M.deref (| M.borrow (| Pointer.Kind.MutRef, __serde_state |) |)
+                            |);
+                            mk_str (| "name" |);
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (|
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (| M.read (| self |) |),
+                                    "move_core_types::language_storage::ModuleId",
+                                    "name"
+                                  |)
+                                |)
+                              |)
+                            |)
+                          ]
+                        |)
+                      |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ0_0 :=
+                              M.SubPointer.get_struct_tuple_field (|
+                                γ,
+                                "core::result::Result::Ok",
+                                0
+                              |) in
+                            let __val := M.copy (| Ty.tuple [], γ0_0 |) in
+                            M.read (| __val |)));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ0_0 :=
+                              M.SubPointer.get_struct_tuple_field (|
+                                γ,
+                                "core::result::Result::Err",
+                                0
+                              |) in
+                            let __err :=
+                              M.copy (|
+                                Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error",
+                                γ0_0
+                              |) in
+                            M.never_to_any (|
+                              M.read (|
+                                M.return_ (|
+                                  Value.StructTuple
+                                    "core::result::Result::Err"
+                                    []
+                                    [
+                                      Ty.associated_in_trait
+                                        "serde::ser::Serializer"
+                                        []
+                                        []
+                                        __S
+                                        "Ok";
+                                      Ty.associated_in_trait
+                                        "serde::ser::Serializer"
+                                        []
+                                        []
+                                        __S
+                                        "Error"
+                                    ]
+                                    [ M.read (| __err |) ]
+                                |)
+                              |)
+                            |)))
+                      ]
+                    |) in
+                  M.alloc (|
+                    Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Ok";
+                        Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error"
+                      ],
+                    M.call_closure (|
+                      Ty.apply
+                        (Ty.path "core::result::Result")
+                        []
+                        [
+                          Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Ok";
+                          Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "Error"
+                        ],
+                      M.get_trait_method (|
+                        "serde::ser::SerializeStruct",
+                        Ty.associated_in_trait "serde::ser::Serializer" [] [] __S "SerializeStruct",
+                        [],
+                        [],
+                        "end",
+                        [],
+                        []
+                      |),
+                      [ M.read (| __serde_state |) ]
+                    |)
+                  |)
+                |)))
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "serde::ser::Serialize"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [ ("serialize", InstanceField.Method serialize) ].
+    End Impl_serde_ser_Serialize_for_move_core_types_language_storage_ModuleId.
+  End underscore_6.
   
+  Module underscore_7.
+    Module Impl_serde_de_Deserialize_for_move_core_types_language_storage_ModuleId.
+      Definition Self : Ty.t := Ty.path "move_core_types::language_storage::ModuleId".
+      
+      (* Deserialize *)
+      Definition deserialize (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [ __D ], [ __deserializer ] =>
+          ltac:(M.monadic
+            (let __deserializer := M.alloc (| __D, __deserializer |) in
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "core::result::Result")
+                []
+                [
+                  Ty.path "move_core_types::language_storage::ModuleId";
+                  Ty.associated_in_trait "serde::de::Deserializer" [] [] __D "Error"
+                ],
+              M.get_trait_method (|
+                "serde::de::Deserializer",
+                __D,
+                [],
+                [],
+                "deserialize_struct",
+                [],
+                [ Ty.path "move_core_types::language_storage::_'7::deserialize::__Visitor" ]
+              |),
+              [
+                M.read (| __deserializer |);
+                mk_str (| "ModuleId" |);
+                M.read (|
+                  get_constant (|
+                    "move_core_types::language_storage::_'7::deserialize::FIELDS",
+                    Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "slice")
+                          []
+                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                      ]
+                  |)
+                |);
+                Value.mkStructRecord
+                  "move_core_types::language_storage::_'7::deserialize::__Visitor"
+                  []
+                  []
+                  [
+                    ("marker",
+                      Value.StructTuple
+                        "core::marker::PhantomData"
+                        []
+                        [ Ty.path "move_core_types::language_storage::ModuleId" ]
+                        []);
+                    ("lifetime",
+                      Value.StructTuple
+                        "core::marker::PhantomData"
+                        []
+                        [ Ty.apply (Ty.path "&") [] [ Ty.tuple [] ] ]
+                        [])
+                  ]
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "serde::de::Deserialize"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [ ("deserialize", InstanceField.Method deserialize) ].
+    End Impl_serde_de_Deserialize_for_move_core_types_language_storage_ModuleId.
+  End underscore_7.
   
   Module Impl_core_fmt_Debug_for_move_core_types_language_storage_ModuleId.
     Definition Self : Ty.t := Ty.path "move_core_types::language_storage::ModuleId".
@@ -9100,124 +9114,122 @@ Module language_storage.
             Ty.path "alloc::string::String",
             M.get_function (| "core::hint::must_use", [], [ Ty.path "alloc::string::String" ] |),
             [
-              M.read (|
-                let~ res : Ty.path "alloc::string::String" :=
-                  M.call_closure (|
-                    Ty.path "alloc::string::String",
-                    M.get_function (| "alloc::fmt::format", [], [] |),
-                    [
-                      M.call_closure (|
-                        Ty.path "core::fmt::Arguments",
-                        M.get_associated_function (|
-                          Ty.path "core::fmt::Arguments",
-                          "new_v1",
-                          [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 2 ],
-                          []
-                        |),
+              M.call_closure (|
+                Ty.path "alloc::string::String",
+                M.get_function (| "alloc::fmt::format", [], [] |),
+                [
+                  M.read (|
+                    let~ args :
+                        Ty.tuple
+                          [
+                            Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ];
+                            Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.path "move_core_types::identifier::Identifier" ]
+                          ] :=
+                      Value.Tuple
                         [
                           M.borrow (|
                             Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.alloc (|
-                                  Ty.apply
-                                    (Ty.path "array")
-                                    [ Value.Integer IntegerKind.Usize 2 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array [ mk_str (| "0x" |); mk_str (| "::" |) ]
-                                |)
+                            M.alloc (|
+                              Ty.path "alloc::string::String",
+                              M.call_closure (|
+                                Ty.path "alloc::string::String",
+                                M.get_associated_function (|
+                                  Ty.path "move_core_types::account_address::AccountAddress",
+                                  "short_str_lossless",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "move_core_types::language_storage::ModuleId",
+                                      "address"
+                                    |)
+                                  |)
+                                ]
                               |)
                             |)
                           |);
                           M.borrow (|
                             Pointer.Kind.Ref,
-                            M.deref (|
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "move_core_types::language_storage::ModuleId",
+                              "name"
+                            |)
+                          |)
+                        ] in
+                    let~ args :
+                        Ty.apply
+                          (Ty.path "array")
+                          [ Value.Integer IntegerKind.Usize 2 ]
+                          [ Ty.path "core::fmt::rt::Argument" ] :=
+                      Value.Array
+                        [
+                          M.call_closure (|
+                            Ty.path "core::fmt::rt::Argument",
+                            M.get_associated_function (|
+                              Ty.path "core::fmt::rt::Argument",
+                              "new_display",
+                              [],
+                              [ Ty.path "alloc::string::String" ]
+                            |),
+                            [
                               M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
-                                  Ty.apply
-                                    (Ty.path "array")
-                                    [ Value.Integer IntegerKind.Usize 2 ]
-                                    [ Ty.path "core::fmt::rt::Argument" ],
-                                  Value.Array
-                                    [
-                                      M.call_closure (|
-                                        Ty.path "core::fmt::rt::Argument",
-                                        M.get_associated_function (|
-                                          Ty.path "core::fmt::rt::Argument",
-                                          "new_display",
-                                          [],
-                                          [ Ty.path "alloc::string::String" ]
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (|
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.alloc (|
-                                                  Ty.path "alloc::string::String",
-                                                  M.call_closure (|
-                                                    Ty.path "alloc::string::String",
-                                                    M.get_associated_function (|
-                                                      Ty.path
-                                                        "move_core_types::account_address::AccountAddress",
-                                                      "short_str_lossless",
-                                                      [],
-                                                      []
-                                                    |),
-                                                    [
-                                                      M.borrow (|
-                                                        Pointer.Kind.Ref,
-                                                        M.SubPointer.get_struct_record_field (|
-                                                          M.deref (| M.read (| self |) |),
-                                                          "move_core_types::language_storage::ModuleId",
-                                                          "address"
-                                                        |)
-                                                      |)
-                                                    ]
-                                                  |)
-                                                |)
-                                              |)
-                                            |)
-                                          |)
-                                        ]
-                                      |);
-                                      M.call_closure (|
-                                        Ty.path "core::fmt::rt::Argument",
-                                        M.get_associated_function (|
-                                          Ty.path "core::fmt::rt::Argument",
-                                          "new_display",
-                                          [],
-                                          [ Ty.path "move_core_types::identifier::Identifier" ]
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (|
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| self |) |),
-                                                  "move_core_types::language_storage::ModuleId",
-                                                  "name"
-                                                |)
-                                              |)
-                                            |)
-                                          |)
-                                        ]
-                                      |)
-                                    ]
+                                M.deref (|
+                                  M.read (| M.SubPointer.get_tuple_field (| args, 0 |) |)
                                 |)
                               |)
-                            |)
+                            ]
+                          |);
+                          M.call_closure (|
+                            Ty.path "core::fmt::rt::Argument",
+                            M.get_associated_function (|
+                              Ty.path "core::fmt::rt::Argument",
+                              "new_display",
+                              [],
+                              [ Ty.path "move_core_types::identifier::Identifier" ]
+                            |),
+                            [
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (|
+                                  M.read (| M.SubPointer.get_tuple_field (| args, 1 |) |)
+                                |)
+                              |)
+                            ]
+                          |)
+                        ] in
+                    M.alloc (|
+                      Ty.path "core::fmt::Arguments",
+                      M.call_closure (|
+                        Ty.path "core::fmt::Arguments",
+                        M.get_associated_function (|
+                          Ty.path "core::fmt::Arguments",
+                          "new",
+                          [ Value.Integer IntegerKind.Usize 9; Value.Integer IntegerKind.Usize 2 ],
+                          []
+                        |),
+                        [
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (| M.mk_byte_str_ref 9 [ 2; 48; 120; 192; 2; 58; 58; 192; 0 ] |)
+                          |);
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
                           |)
                         ]
                       |)
-                    ]
-                  |) in
-                res
+                    |)
+                  |)
+                ]
               |)
             ]
           |)))
@@ -9257,86 +9269,72 @@ Module language_storage.
             M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_fmt", [], [] |),
             [
               M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-              M.call_closure (|
-                Ty.path "core::fmt::Arguments",
-                M.get_associated_function (|
-                  Ty.path "core::fmt::Arguments",
-                  "new_v1",
-                  [ Value.Integer IntegerKind.Usize 1; Value.Integer IntegerKind.Usize 1 ],
-                  []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
+              M.read (|
+                let~ args : Ty.tuple [ Ty.apply (Ty.path "&") [] [ Ty.associated_unknown ] ] :=
+                  Value.Tuple
+                    [
                       M.borrow (|
                         Pointer.Kind.Ref,
                         M.alloc (|
-                          Ty.apply
-                            (Ty.path "array")
-                            [ Value.Integer IntegerKind.Usize 1 ]
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                          Value.Array [ mk_str (| "" |) ]
-                        |)
-                      |)
-                    |)
-                  |);
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply
-                            (Ty.path "array")
-                            [ Value.Integer IntegerKind.Usize 1 ]
-                            [ Ty.path "core::fmt::rt::Argument" ],
-                          Value.Array
+                          Ty.associated_unknown,
+                          M.call_closure (|
+                            Ty.associated_unknown,
+                            M.get_associated_function (|
+                              Ty.path "move_core_types::language_storage::ModuleId",
+                              "to_canonical_display",
+                              [],
+                              []
+                            |),
                             [
-                              M.call_closure (|
-                                Ty.path "core::fmt::rt::Argument",
-                                M.get_associated_function (|
-                                  Ty.path "core::fmt::rt::Argument",
-                                  "new_display",
-                                  [],
-                                  [ Ty.associated_unknown ]
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.alloc (|
-                                          Ty.associated_unknown,
-                                          M.call_closure (|
-                                            Ty.associated_unknown,
-                                            M.get_associated_function (|
-                                              Ty.path "move_core_types::language_storage::ModuleId",
-                                              "to_canonical_display",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (| M.read (| self |) |)
-                                              |);
-                                              Value.Bool false
-                                            ]
-                                          |)
-                                        |)
-                                      |)
-                                    |)
-                                  |)
-                                ]
-                              |)
+                              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
+                              Value.Bool false
                             ]
+                          |)
                         |)
                       |)
-                    |)
+                    ] in
+                let~ args :
+                    Ty.apply
+                      (Ty.path "array")
+                      [ Value.Integer IntegerKind.Usize 1 ]
+                      [ Ty.path "core::fmt::rt::Argument" ] :=
+                  Value.Array
+                    [
+                      M.call_closure (|
+                        Ty.path "core::fmt::rt::Argument",
+                        M.get_associated_function (|
+                          Ty.path "core::fmt::rt::Argument",
+                          "new_display",
+                          [],
+                          [ Ty.associated_unknown ]
+                        |),
+                        [
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (| M.read (| M.SubPointer.get_tuple_field (| args, 0 |) |) |)
+                          |)
+                        ]
+                      |)
+                    ] in
+                M.alloc (|
+                  Ty.path "core::fmt::Arguments",
+                  M.call_closure (|
+                    Ty.path "core::fmt::Arguments",
+                    M.get_associated_function (|
+                      Ty.path "core::fmt::Arguments",
+                      "new",
+                      [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 1 ],
+                      []
+                    |),
+                    [
+                      M.borrow (| Pointer.Kind.Ref, M.deref (| M.mk_byte_str_ref 2 [ 192; 0 ] |) |);
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
+                      |)
+                    ]
                   |)
-                ]
+                |)
               |)
             ]
           |)))
@@ -9445,152 +9443,162 @@ Module language_storage.
                             |),
                             [
                               M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                              M.call_closure (|
-                                Ty.path "core::fmt::Arguments",
-                                M.get_associated_function (|
-                                  Ty.path "core::fmt::Arguments",
-                                  "new_v1",
-                                  [
-                                    Value.Integer IntegerKind.Usize 3;
-                                    Value.Integer IntegerKind.Usize 3
-                                  ],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
+                              M.read (|
+                                let~ args :
+                                    Ty.tuple
+                                      [
+                                        Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.path "alloc::string::String" ];
+                                        Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.path "move_core_types::identifier::Identifier" ];
+                                        Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.path "move_core_types::identifier::Identifier" ]
+                                      ] :=
+                                  Value.Tuple
+                                    [
                                       M.borrow (|
                                         Pointer.Kind.Ref,
                                         M.alloc (|
-                                          Ty.apply
-                                            (Ty.path "array")
-                                            [ Value.Integer IntegerKind.Usize 3 ]
-                                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                          Value.Array
+                                          Ty.path "alloc::string::String",
+                                          M.call_closure (|
+                                            Ty.path "alloc::string::String",
+                                            M.get_associated_function (|
+                                              Ty.path
+                                                "move_core_types::account_address::AccountAddress",
+                                              "short_str_lossless",
+                                              [],
+                                              []
+                                            |),
                                             [
-                                              mk_str (| "0x" |);
-                                              mk_str (| "::" |);
-                                              mk_str (| "::" |)
-                                            ]
-                                        |)
-                                      |)
-                                    |)
-                                  |);
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.alloc (|
-                                          Ty.apply
-                                            (Ty.path "array")
-                                            [ Value.Integer IntegerKind.Usize 3 ]
-                                            [ Ty.path "core::fmt::rt::Argument" ],
-                                          Value.Array
-                                            [
-                                              M.call_closure (|
-                                                Ty.path "core::fmt::rt::Argument",
-                                                M.get_associated_function (|
-                                                  Ty.path "core::fmt::rt::Argument",
-                                                  "new_display",
-                                                  [],
-                                                  [ Ty.path "alloc::string::String" ]
-                                                |),
-                                                [
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.deref (|
-                                                      M.borrow (|
-                                                        Pointer.Kind.Ref,
-                                                        M.alloc (|
-                                                          Ty.path "alloc::string::String",
-                                                          M.call_closure (|
-                                                            Ty.path "alloc::string::String",
-                                                            M.get_associated_function (|
-                                                              Ty.path
-                                                                "move_core_types::account_address::AccountAddress",
-                                                              "short_str_lossless",
-                                                              [],
-                                                              []
-                                                            |),
-                                                            [
-                                                              M.borrow (|
-                                                                Pointer.Kind.Ref,
-                                                                M.SubPointer.get_struct_record_field (|
-                                                                  M.deref (| M.read (| self |) |),
-                                                                  "move_core_types::language_storage::StructTag",
-                                                                  "address"
-                                                                |)
-                                                              |)
-                                                            ]
-                                                          |)
-                                                        |)
-                                                      |)
-                                                    |)
-                                                  |)
-                                                ]
-                                              |);
-                                              M.call_closure (|
-                                                Ty.path "core::fmt::rt::Argument",
-                                                M.get_associated_function (|
-                                                  Ty.path "core::fmt::rt::Argument",
-                                                  "new_display",
-                                                  [],
-                                                  [
-                                                    Ty.path
-                                                      "move_core_types::identifier::Identifier"
-                                                  ]
-                                                |),
-                                                [
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.deref (|
-                                                      M.borrow (|
-                                                        Pointer.Kind.Ref,
-                                                        M.SubPointer.get_struct_record_field (|
-                                                          M.deref (| M.read (| self |) |),
-                                                          "move_core_types::language_storage::StructTag",
-                                                          "module"
-                                                        |)
-                                                      |)
-                                                    |)
-                                                  |)
-                                                ]
-                                              |);
-                                              M.call_closure (|
-                                                Ty.path "core::fmt::rt::Argument",
-                                                M.get_associated_function (|
-                                                  Ty.path "core::fmt::rt::Argument",
-                                                  "new_display",
-                                                  [],
-                                                  [
-                                                    Ty.path
-                                                      "move_core_types::identifier::Identifier"
-                                                  ]
-                                                |),
-                                                [
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.deref (|
-                                                      M.borrow (|
-                                                        Pointer.Kind.Ref,
-                                                        M.SubPointer.get_struct_record_field (|
-                                                          M.deref (| M.read (| self |) |),
-                                                          "move_core_types::language_storage::StructTag",
-                                                          "name"
-                                                        |)
-                                                      |)
-                                                    |)
-                                                  |)
-                                                ]
+                                              M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.SubPointer.get_struct_record_field (|
+                                                  M.deref (| M.read (| self |) |),
+                                                  "move_core_types::language_storage::StructTag",
+                                                  "address"
+                                                |)
                                               |)
                                             ]
+                                          |)
+                                        |)
+                                      |);
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "move_core_types::language_storage::StructTag",
+                                          "module"
+                                        |)
+                                      |);
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "move_core_types::language_storage::StructTag",
+                                          "name"
                                         |)
                                       |)
-                                    |)
+                                    ] in
+                                let~ args :
+                                    Ty.apply
+                                      (Ty.path "array")
+                                      [ Value.Integer IntegerKind.Usize 3 ]
+                                      [ Ty.path "core::fmt::rt::Argument" ] :=
+                                  Value.Array
+                                    [
+                                      M.call_closure (|
+                                        Ty.path "core::fmt::rt::Argument",
+                                        M.get_associated_function (|
+                                          Ty.path "core::fmt::rt::Argument",
+                                          "new_display",
+                                          [],
+                                          [ Ty.path "alloc::string::String" ]
+                                        |),
+                                        [
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (|
+                                              M.read (|
+                                                M.SubPointer.get_tuple_field (| args, 0 |)
+                                              |)
+                                            |)
+                                          |)
+                                        ]
+                                      |);
+                                      M.call_closure (|
+                                        Ty.path "core::fmt::rt::Argument",
+                                        M.get_associated_function (|
+                                          Ty.path "core::fmt::rt::Argument",
+                                          "new_display",
+                                          [],
+                                          [ Ty.path "move_core_types::identifier::Identifier" ]
+                                        |),
+                                        [
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (|
+                                              M.read (|
+                                                M.SubPointer.get_tuple_field (| args, 1 |)
+                                              |)
+                                            |)
+                                          |)
+                                        ]
+                                      |);
+                                      M.call_closure (|
+                                        Ty.path "core::fmt::rt::Argument",
+                                        M.get_associated_function (|
+                                          Ty.path "core::fmt::rt::Argument",
+                                          "new_display",
+                                          [],
+                                          [ Ty.path "move_core_types::identifier::Identifier" ]
+                                        |),
+                                        [
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (|
+                                              M.read (|
+                                                M.SubPointer.get_tuple_field (| args, 2 |)
+                                              |)
+                                            |)
+                                          |)
+                                        ]
+                                      |)
+                                    ] in
+                                M.alloc (|
+                                  Ty.path "core::fmt::Arguments",
+                                  M.call_closure (|
+                                    Ty.path "core::fmt::Arguments",
+                                    M.get_associated_function (|
+                                      Ty.path "core::fmt::Arguments",
+                                      "new",
+                                      [
+                                        Value.Integer IntegerKind.Usize 13;
+                                        Value.Integer IntegerKind.Usize 3
+                                      ],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.mk_byte_str_ref
+                                            13
+                                            [ 2; 48; 120; 192; 2; 58; 58; 192; 2; 58; 58; 192; 0 ]
+                                        |)
+                                      |);
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
+                                      |)
+                                    ]
                                   |)
-                                ]
+                                |)
                               |)
                             ]
                           |)
@@ -9821,32 +9829,11 @@ Module language_storage.
                                             Ty.path "core::fmt::Arguments",
                                             M.get_associated_function (|
                                               Ty.path "core::fmt::Arguments",
-                                              "new_const",
-                                              [ Value.Integer IntegerKind.Usize 1 ],
+                                              "from_str",
+                                              [],
                                               []
                                             |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (|
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.alloc (|
-                                                      Ty.apply
-                                                        (Ty.path "array")
-                                                        [ Value.Integer IntegerKind.Usize 1 ]
-                                                        [
-                                                          Ty.apply
-                                                            (Ty.path "&")
-                                                            []
-                                                            [ Ty.path "str" ]
-                                                        ],
-                                                      Value.Array [ mk_str (| "<" |) ]
-                                                    |)
-                                                  |)
-                                                |)
-                                              |)
-                                            ]
+                                            [ mk_str (| "<" |) ]
                                           |)
                                         ]
                                       |)
@@ -9978,84 +9965,90 @@ Module language_storage.
                                             Pointer.Kind.MutRef,
                                             M.deref (| M.read (| f |) |)
                                           |);
-                                          M.call_closure (|
-                                            Ty.path "core::fmt::Arguments",
-                                            M.get_associated_function (|
-                                              Ty.path "core::fmt::Arguments",
-                                              "new_v1",
-                                              [
-                                                Value.Integer IntegerKind.Usize 1;
-                                                Value.Integer IntegerKind.Usize 1
-                                              ],
-                                              []
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (|
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.alloc (|
-                                                      Ty.apply
-                                                        (Ty.path "array")
-                                                        [ Value.Integer IntegerKind.Usize 1 ]
-                                                        [
-                                                          Ty.apply
-                                                            (Ty.path "&")
-                                                            []
-                                                            [ Ty.path "str" ]
-                                                        ],
-                                                      Value.Array [ mk_str (| "" |) ]
-                                                    |)
-                                                  |)
-                                                |)
-                                              |);
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (|
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.alloc (|
-                                                      Ty.apply
-                                                        (Ty.path "array")
-                                                        [ Value.Integer IntegerKind.Usize 1 ]
-                                                        [ Ty.path "core::fmt::rt::Argument" ],
-                                                      Value.Array
-                                                        [
-                                                          M.call_closure (|
-                                                            Ty.path "core::fmt::rt::Argument",
-                                                            M.get_associated_function (|
-                                                              Ty.path "core::fmt::rt::Argument",
-                                                              "new_display",
-                                                              [],
-                                                              [
-                                                                Ty.apply
-                                                                  (Ty.path "&")
-                                                                  []
-                                                                  [
-                                                                    Ty.path
-                                                                      "move_core_types::language_storage::TypeTag"
-                                                                  ]
-                                                              ]
-                                                            |),
-                                                            [
-                                                              M.borrow (|
-                                                                Pointer.Kind.Ref,
-                                                                M.deref (|
-                                                                  M.borrow (|
-                                                                    Pointer.Kind.Ref,
-                                                                    first_ty
-                                                                  |)
-                                                                |)
-                                                              |)
-                                                            ]
+                                          M.read (|
+                                            let~ args :
+                                                Ty.tuple
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "&")
+                                                          []
+                                                          [
+                                                            Ty.path
+                                                              "move_core_types::language_storage::TypeTag"
+                                                          ]
+                                                      ]
+                                                  ] :=
+                                              Value.Tuple
+                                                [ M.borrow (| Pointer.Kind.Ref, first_ty |) ] in
+                                            let~ args :
+                                                Ty.apply
+                                                  (Ty.path "array")
+                                                  [ Value.Integer IntegerKind.Usize 1 ]
+                                                  [ Ty.path "core::fmt::rt::Argument" ] :=
+                                              Value.Array
+                                                [
+                                                  M.call_closure (|
+                                                    Ty.path "core::fmt::rt::Argument",
+                                                    M.get_associated_function (|
+                                                      Ty.path "core::fmt::rt::Argument",
+                                                      "new_display",
+                                                      [],
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "&")
+                                                          []
+                                                          [
+                                                            Ty.path
+                                                              "move_core_types::language_storage::TypeTag"
+                                                          ]
+                                                      ]
+                                                    |),
+                                                    [
+                                                      M.borrow (|
+                                                        Pointer.Kind.Ref,
+                                                        M.deref (|
+                                                          M.read (|
+                                                            M.SubPointer.get_tuple_field (|
+                                                              args,
+                                                              0
+                                                            |)
                                                           |)
-                                                        ]
+                                                        |)
+                                                      |)
+                                                    ]
+                                                  |)
+                                                ] in
+                                            M.alloc (|
+                                              Ty.path "core::fmt::Arguments",
+                                              M.call_closure (|
+                                                Ty.path "core::fmt::Arguments",
+                                                M.get_associated_function (|
+                                                  Ty.path "core::fmt::Arguments",
+                                                  "new",
+                                                  [
+                                                    Value.Integer IntegerKind.Usize 2;
+                                                    Value.Integer IntegerKind.Usize 1
+                                                  ],
+                                                  []
+                                                |),
+                                                [
+                                                  M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (| M.mk_byte_str_ref 2 [ 192; 0 ] |)
+                                                  |);
+                                                  M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (|
+                                                      M.borrow (| Pointer.Kind.Ref, args |)
                                                     |)
                                                   |)
-                                                |)
+                                                ]
                                               |)
-                                            ]
+                                            |)
                                           |)
                                         ]
                                       |)
@@ -10479,115 +10472,128 @@ Module language_storage.
                                                                                 M.read (| f |)
                                                                               |)
                                                                             |);
-                                                                            M.call_closure (|
-                                                                              Ty.path
-                                                                                "core::fmt::Arguments",
-                                                                              M.get_associated_function (|
+                                                                            M.read (|
+                                                                              let~ args :
+                                                                                  Ty.tuple
+                                                                                    [
+                                                                                      Ty.apply
+                                                                                        (Ty.path
+                                                                                          "&")
+                                                                                        []
+                                                                                        [
+                                                                                          Ty.apply
+                                                                                            (Ty.path
+                                                                                              "&")
+                                                                                            []
+                                                                                            [
+                                                                                              Ty.path
+                                                                                                "move_core_types::language_storage::TypeTag"
+                                                                                            ]
+                                                                                        ]
+                                                                                    ] :=
+                                                                                Value.Tuple
+                                                                                  [
+                                                                                    M.borrow (|
+                                                                                      Pointer.Kind.Ref,
+                                                                                      ty
+                                                                                    |)
+                                                                                  ] in
+                                                                              let~ args :
+                                                                                  Ty.apply
+                                                                                    (Ty.path
+                                                                                      "array")
+                                                                                    [
+                                                                                      Value.Integer
+                                                                                        IntegerKind.Usize
+                                                                                        1
+                                                                                    ]
+                                                                                    [
+                                                                                      Ty.path
+                                                                                        "core::fmt::rt::Argument"
+                                                                                    ] :=
+                                                                                Value.Array
+                                                                                  [
+                                                                                    M.call_closure (|
+                                                                                      Ty.path
+                                                                                        "core::fmt::rt::Argument",
+                                                                                      M.get_associated_function (|
+                                                                                        Ty.path
+                                                                                          "core::fmt::rt::Argument",
+                                                                                        "new_display",
+                                                                                        [],
+                                                                                        [
+                                                                                          Ty.apply
+                                                                                            (Ty.path
+                                                                                              "&")
+                                                                                            []
+                                                                                            [
+                                                                                              Ty.path
+                                                                                                "move_core_types::language_storage::TypeTag"
+                                                                                            ]
+                                                                                        ]
+                                                                                      |),
+                                                                                      [
+                                                                                        M.borrow (|
+                                                                                          Pointer.Kind.Ref,
+                                                                                          M.deref (|
+                                                                                            M.read (|
+                                                                                              M.SubPointer.get_tuple_field (|
+                                                                                                args,
+                                                                                                0
+                                                                                              |)
+                                                                                            |)
+                                                                                          |)
+                                                                                        |)
+                                                                                      ]
+                                                                                    |)
+                                                                                  ] in
+                                                                              M.alloc (|
                                                                                 Ty.path
                                                                                   "core::fmt::Arguments",
-                                                                                "new_v1",
-                                                                                [
-                                                                                  Value.Integer
-                                                                                    IntegerKind.Usize
-                                                                                    1;
-                                                                                  Value.Integer
-                                                                                    IntegerKind.Usize
-                                                                                    1
-                                                                                ],
-                                                                                []
-                                                                              |),
-                                                                              [
-                                                                                M.borrow (|
-                                                                                  Pointer.Kind.Ref,
-                                                                                  M.deref (|
+                                                                                M.call_closure (|
+                                                                                  Ty.path
+                                                                                    "core::fmt::Arguments",
+                                                                                  M.get_associated_function (|
+                                                                                    Ty.path
+                                                                                      "core::fmt::Arguments",
+                                                                                    "new",
+                                                                                    [
+                                                                                      Value.Integer
+                                                                                        IntegerKind.Usize
+                                                                                        5;
+                                                                                      Value.Integer
+                                                                                        IntegerKind.Usize
+                                                                                        1
+                                                                                    ],
+                                                                                    []
+                                                                                  |),
+                                                                                  [
                                                                                     M.borrow (|
                                                                                       Pointer.Kind.Ref,
-                                                                                      M.alloc (|
-                                                                                        Ty.apply
-                                                                                          (Ty.path
-                                                                                            "array")
+                                                                                      M.deref (|
+                                                                                        M.mk_byte_str_ref
+                                                                                          5
                                                                                           [
-                                                                                            Value.Integer
-                                                                                              IntegerKind.Usize
-                                                                                              1
-                                                                                          ]
-                                                                                          [
-                                                                                            Ty.apply
-                                                                                              (Ty.path
-                                                                                                "&")
-                                                                                              []
-                                                                                              [
-                                                                                                Ty.path
-                                                                                                  "str"
-                                                                                              ]
-                                                                                          ],
-                                                                                        Value.Array
-                                                                                          [
-                                                                                            mk_str (|
-                                                                                              ", "
-                                                                                            |)
+                                                                                            2;
+                                                                                            44;
+                                                                                            32;
+                                                                                            192;
+                                                                                            0
                                                                                           ]
                                                                                       |)
-                                                                                    |)
-                                                                                  |)
-                                                                                |);
-                                                                                M.borrow (|
-                                                                                  Pointer.Kind.Ref,
-                                                                                  M.deref (|
+                                                                                    |);
                                                                                     M.borrow (|
                                                                                       Pointer.Kind.Ref,
-                                                                                      M.alloc (|
-                                                                                        Ty.apply
-                                                                                          (Ty.path
-                                                                                            "array")
-                                                                                          [
-                                                                                            Value.Integer
-                                                                                              IntegerKind.Usize
-                                                                                              1
-                                                                                          ]
-                                                                                          [
-                                                                                            Ty.path
-                                                                                              "core::fmt::rt::Argument"
-                                                                                          ],
-                                                                                        Value.Array
-                                                                                          [
-                                                                                            M.call_closure (|
-                                                                                              Ty.path
-                                                                                                "core::fmt::rt::Argument",
-                                                                                              M.get_associated_function (|
-                                                                                                Ty.path
-                                                                                                  "core::fmt::rt::Argument",
-                                                                                                "new_display",
-                                                                                                [],
-                                                                                                [
-                                                                                                  Ty.apply
-                                                                                                    (Ty.path
-                                                                                                      "&")
-                                                                                                    []
-                                                                                                    [
-                                                                                                      Ty.path
-                                                                                                        "move_core_types::language_storage::TypeTag"
-                                                                                                    ]
-                                                                                                ]
-                                                                                              |),
-                                                                                              [
-                                                                                                M.borrow (|
-                                                                                                  Pointer.Kind.Ref,
-                                                                                                  M.deref (|
-                                                                                                    M.borrow (|
-                                                                                                      Pointer.Kind.Ref,
-                                                                                                      ty
-                                                                                                    |)
-                                                                                                  |)
-                                                                                                |)
-                                                                                              ]
-                                                                                            |)
-                                                                                          ]
+                                                                                      M.deref (|
+                                                                                        M.borrow (|
+                                                                                          Pointer.Kind.Ref,
+                                                                                          args
+                                                                                        |)
                                                                                       |)
                                                                                     |)
-                                                                                  |)
+                                                                                  ]
                                                                                 |)
-                                                                              ]
+                                                                              |)
                                                                             |)
                                                                           ]
                                                                         |)
@@ -10761,32 +10767,11 @@ Module language_storage.
                                             Ty.path "core::fmt::Arguments",
                                             M.get_associated_function (|
                                               Ty.path "core::fmt::Arguments",
-                                              "new_const",
-                                              [ Value.Integer IntegerKind.Usize 1 ],
+                                              "from_str",
+                                              [],
                                               []
                                             |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (|
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.alloc (|
-                                                      Ty.apply
-                                                        (Ty.path "array")
-                                                        [ Value.Integer IntegerKind.Usize 1 ]
-                                                        [
-                                                          Ty.apply
-                                                            (Ty.path "&")
-                                                            []
-                                                            [ Ty.path "str" ]
-                                                        ],
-                                                      Value.Array [ mk_str (| ">" |) ]
-                                                    |)
-                                                  |)
-                                                |)
-                                              |)
-                                            ]
+                                            [ mk_str (| ">" |) ]
                                           |)
                                         ]
                                       |)
@@ -10964,77 +10949,90 @@ Module language_storage.
                     |),
                     [
                       M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.call_closure (|
-                        Ty.path "core::fmt::Arguments",
-                        M.get_associated_function (|
-                          Ty.path "core::fmt::Arguments",
-                          "new_v1",
-                          [ Value.Integer IntegerKind.Usize 1; Value.Integer IntegerKind.Usize 1 ],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.alloc (|
-                                  Ty.apply
-                                    (Ty.path "array")
-                                    [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array [ mk_str (| "" |) ]
-                                |)
-                              |)
-                            |)
-                          |);
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.alloc (|
-                                  Ty.apply
-                                    (Ty.path "array")
-                                    [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.path "core::fmt::rt::Argument" ],
-                                  Value.Array
-                                    [
-                                      M.call_closure (|
-                                        Ty.path "core::fmt::rt::Argument",
-                                        M.get_associated_function (|
-                                          Ty.path "core::fmt::rt::Argument",
-                                          "new_display",
-                                          [],
+                      M.read (|
+                        let~ args :
+                            Ty.tuple
+                              [
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "alloc::boxed::Box")
+                                          []
                                           [
-                                            Ty.apply
-                                              (Ty.path "&")
-                                              []
-                                              [
-                                                Ty.apply
-                                                  (Ty.path "alloc::boxed::Box")
-                                                  []
-                                                  [
-                                                    Ty.path
-                                                      "move_core_types::language_storage::StructTag";
-                                                    Ty.path "alloc::alloc::Global"
-                                                  ]
-                                              ]
+                                            Ty.path "move_core_types::language_storage::StructTag";
+                                            Ty.path "alloc::alloc::Global"
                                           ]
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.borrow (| Pointer.Kind.Ref, s |) |)
-                                          |)
-                                        ]
-                                      |)
-                                    ]
-                                |)
+                                      ]
+                                  ]
+                              ] :=
+                          Value.Tuple [ M.borrow (| Pointer.Kind.Ref, s |) ] in
+                        let~ args :
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 1 ]
+                              [ Ty.path "core::fmt::rt::Argument" ] :=
+                          Value.Array
+                            [
+                              M.call_closure (|
+                                Ty.path "core::fmt::rt::Argument",
+                                M.get_associated_function (|
+                                  Ty.path "core::fmt::rt::Argument",
+                                  "new_display",
+                                  [],
+                                  [
+                                    Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "alloc::boxed::Box")
+                                          []
+                                          [
+                                            Ty.path "move_core_types::language_storage::StructTag";
+                                            Ty.path "alloc::alloc::Global"
+                                          ]
+                                      ]
+                                  ]
+                                |),
+                                [
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (|
+                                      M.read (| M.SubPointer.get_tuple_field (| args, 0 |) |)
+                                    |)
+                                  |)
+                                ]
                               |)
-                            |)
+                            ] in
+                        M.alloc (|
+                          Ty.path "core::fmt::Arguments",
+                          M.call_closure (|
+                            Ty.path "core::fmt::Arguments",
+                            M.get_associated_function (|
+                              Ty.path "core::fmt::Arguments",
+                              "new",
+                              [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 1
+                              ],
+                              []
+                            |),
+                            [
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (| M.mk_byte_str_ref 2 [ 192; 0 ] |)
+                              |);
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
+                              |)
+                            ]
                           |)
-                        ]
+                        |)
                       |)
                     ]
                   |)));
@@ -11076,77 +11074,96 @@ Module language_storage.
                     |),
                     [
                       M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.call_closure (|
-                        Ty.path "core::fmt::Arguments",
-                        M.get_associated_function (|
-                          Ty.path "core::fmt::Arguments",
-                          "new_v1",
-                          [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 1 ],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.alloc (|
-                                  Ty.apply
-                                    (Ty.path "array")
-                                    [ Value.Integer IntegerKind.Usize 2 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array [ mk_str (| "vector<" |); mk_str (| ">" |) ]
-                                |)
-                              |)
-                            |)
-                          |);
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.alloc (|
-                                  Ty.apply
-                                    (Ty.path "array")
-                                    [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.path "core::fmt::rt::Argument" ],
-                                  Value.Array
-                                    [
-                                      M.call_closure (|
-                                        Ty.path "core::fmt::rt::Argument",
-                                        M.get_associated_function (|
-                                          Ty.path "core::fmt::rt::Argument",
-                                          "new_display",
-                                          [],
+                      M.read (|
+                        let~ args :
+                            Ty.tuple
+                              [
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "alloc::boxed::Box")
+                                          []
                                           [
-                                            Ty.apply
-                                              (Ty.path "&")
-                                              []
-                                              [
-                                                Ty.apply
-                                                  (Ty.path "alloc::boxed::Box")
-                                                  []
-                                                  [
-                                                    Ty.path
-                                                      "move_core_types::language_storage::TypeTag";
-                                                    Ty.path "alloc::alloc::Global"
-                                                  ]
-                                              ]
+                                            Ty.path "move_core_types::language_storage::TypeTag";
+                                            Ty.path "alloc::alloc::Global"
                                           ]
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.borrow (| Pointer.Kind.Ref, ty |) |)
-                                          |)
-                                        ]
-                                      |)
-                                    ]
-                                |)
+                                      ]
+                                  ]
+                              ] :=
+                          Value.Tuple [ M.borrow (| Pointer.Kind.Ref, ty |) ] in
+                        let~ args :
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 1 ]
+                              [ Ty.path "core::fmt::rt::Argument" ] :=
+                          Value.Array
+                            [
+                              M.call_closure (|
+                                Ty.path "core::fmt::rt::Argument",
+                                M.get_associated_function (|
+                                  Ty.path "core::fmt::rt::Argument",
+                                  "new_display",
+                                  [],
+                                  [
+                                    Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "alloc::boxed::Box")
+                                          []
+                                          [
+                                            Ty.path "move_core_types::language_storage::TypeTag";
+                                            Ty.path "alloc::alloc::Global"
+                                          ]
+                                      ]
+                                  ]
+                                |),
+                                [
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (|
+                                      M.read (| M.SubPointer.get_tuple_field (| args, 0 |) |)
+                                    |)
+                                  |)
+                                ]
                               |)
-                            |)
+                            ] in
+                        M.alloc (|
+                          Ty.path "core::fmt::Arguments",
+                          M.call_closure (|
+                            Ty.path "core::fmt::Arguments",
+                            M.get_associated_function (|
+                              Ty.path "core::fmt::Arguments",
+                              "new",
+                              [
+                                Value.Integer IntegerKind.Usize 12;
+                                Value.Integer IntegerKind.Usize 1
+                              ],
+                              []
+                            |),
+                            [
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (|
+                                  M.mk_byte_str_ref
+                                    12
+                                    [ 7; 118; 101; 99; 116; 111; 114; 60; 192; 1; 62; 0 ]
+                                |)
+                              |);
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
+                              |)
+                            ]
                           |)
-                        ]
+                        |)
                       |)
                     ]
                   |)));
@@ -11172,27 +11189,11 @@ Module language_storage.
                         Ty.path "core::fmt::Arguments",
                         M.get_associated_function (|
                           Ty.path "core::fmt::Arguments",
-                          "new_const",
-                          [ Value.Integer IntegerKind.Usize 1 ],
+                          "from_str",
+                          [],
                           []
                         |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.alloc (|
-                                  Ty.apply
-                                    (Ty.path "array")
-                                    [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array [ mk_str (| "u8" |) ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
+                        [ mk_str (| "u8" |) ]
                       |)
                     ]
                   |)));
@@ -11218,27 +11219,11 @@ Module language_storage.
                         Ty.path "core::fmt::Arguments",
                         M.get_associated_function (|
                           Ty.path "core::fmt::Arguments",
-                          "new_const",
-                          [ Value.Integer IntegerKind.Usize 1 ],
+                          "from_str",
+                          [],
                           []
                         |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.alloc (|
-                                  Ty.apply
-                                    (Ty.path "array")
-                                    [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array [ mk_str (| "u16" |) ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
+                        [ mk_str (| "u16" |) ]
                       |)
                     ]
                   |)));
@@ -11264,27 +11249,11 @@ Module language_storage.
                         Ty.path "core::fmt::Arguments",
                         M.get_associated_function (|
                           Ty.path "core::fmt::Arguments",
-                          "new_const",
-                          [ Value.Integer IntegerKind.Usize 1 ],
+                          "from_str",
+                          [],
                           []
                         |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.alloc (|
-                                  Ty.apply
-                                    (Ty.path "array")
-                                    [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array [ mk_str (| "u32" |) ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
+                        [ mk_str (| "u32" |) ]
                       |)
                     ]
                   |)));
@@ -11310,27 +11279,11 @@ Module language_storage.
                         Ty.path "core::fmt::Arguments",
                         M.get_associated_function (|
                           Ty.path "core::fmt::Arguments",
-                          "new_const",
-                          [ Value.Integer IntegerKind.Usize 1 ],
+                          "from_str",
+                          [],
                           []
                         |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.alloc (|
-                                  Ty.apply
-                                    (Ty.path "array")
-                                    [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array [ mk_str (| "u64" |) ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
+                        [ mk_str (| "u64" |) ]
                       |)
                     ]
                   |)));
@@ -11356,27 +11309,11 @@ Module language_storage.
                         Ty.path "core::fmt::Arguments",
                         M.get_associated_function (|
                           Ty.path "core::fmt::Arguments",
-                          "new_const",
-                          [ Value.Integer IntegerKind.Usize 1 ],
+                          "from_str",
+                          [],
                           []
                         |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.alloc (|
-                                  Ty.apply
-                                    (Ty.path "array")
-                                    [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array [ mk_str (| "u128" |) ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
+                        [ mk_str (| "u128" |) ]
                       |)
                     ]
                   |)));
@@ -11402,27 +11339,11 @@ Module language_storage.
                         Ty.path "core::fmt::Arguments",
                         M.get_associated_function (|
                           Ty.path "core::fmt::Arguments",
-                          "new_const",
-                          [ Value.Integer IntegerKind.Usize 1 ],
+                          "from_str",
+                          [],
                           []
                         |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.alloc (|
-                                  Ty.apply
-                                    (Ty.path "array")
-                                    [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array [ mk_str (| "u256" |) ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
+                        [ mk_str (| "u256" |) ]
                       |)
                     ]
                   |)));
@@ -11451,27 +11372,11 @@ Module language_storage.
                         Ty.path "core::fmt::Arguments",
                         M.get_associated_function (|
                           Ty.path "core::fmt::Arguments",
-                          "new_const",
-                          [ Value.Integer IntegerKind.Usize 1 ],
+                          "from_str",
+                          [],
                           []
                         |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.alloc (|
-                                  Ty.apply
-                                    (Ty.path "array")
-                                    [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array [ mk_str (| "address" |) ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
+                        [ mk_str (| "address" |) ]
                       |)
                     ]
                   |)));
@@ -11500,27 +11405,11 @@ Module language_storage.
                         Ty.path "core::fmt::Arguments",
                         M.get_associated_function (|
                           Ty.path "core::fmt::Arguments",
-                          "new_const",
-                          [ Value.Integer IntegerKind.Usize 1 ],
+                          "from_str",
+                          [],
                           []
                         |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.alloc (|
-                                  Ty.apply
-                                    (Ty.path "array")
-                                    [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array [ mk_str (| "signer" |) ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
+                        [ mk_str (| "signer" |) ]
                       |)
                     ]
                   |)));
@@ -11546,27 +11435,11 @@ Module language_storage.
                         Ty.path "core::fmt::Arguments",
                         M.get_associated_function (|
                           Ty.path "core::fmt::Arguments",
-                          "new_const",
-                          [ Value.Integer IntegerKind.Usize 1 ],
+                          "from_str",
+                          [],
                           []
                         |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.alloc (|
-                                  Ty.apply
-                                    (Ty.path "array")
-                                    [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array [ mk_str (| "bool" |) ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
+                        [ mk_str (| "bool" |) ]
                       |)
                     ]
                   |)))
@@ -11614,114 +11487,112 @@ Module language_storage.
             M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_fmt", [], [] |),
             [
               M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-              M.call_closure (|
-                Ty.path "core::fmt::Arguments",
-                M.get_associated_function (|
-                  Ty.path "core::fmt::Arguments",
-                  "new_v1",
-                  [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 2 ],
-                  []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
+              M.read (|
+                let~ args :
+                    Ty.tuple
+                      [
+                        Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ];
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.path "move_core_types::language_storage::StructTag" ]
+                      ] :=
+                  Value.Tuple
+                    [
                       M.borrow (|
                         Pointer.Kind.Ref,
                         M.alloc (|
-                          Ty.apply
-                            (Ty.path "array")
-                            [ Value.Integer IntegerKind.Usize 2 ]
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                          Value.Array [ mk_str (| "0x" |); mk_str (| "/" |) ]
-                        |)
-                      |)
-                    |)
-                  |);
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply
-                            (Ty.path "array")
-                            [ Value.Integer IntegerKind.Usize 2 ]
-                            [ Ty.path "core::fmt::rt::Argument" ],
-                          Value.Array
+                          Ty.path "alloc::string::String",
+                          M.call_closure (|
+                            Ty.path "alloc::string::String",
+                            M.get_associated_function (|
+                              Ty.path "move_core_types::account_address::AccountAddress",
+                              "short_str_lossless",
+                              [],
+                              []
+                            |),
                             [
-                              M.call_closure (|
-                                Ty.path "core::fmt::rt::Argument",
-                                M.get_associated_function (|
-                                  Ty.path "core::fmt::rt::Argument",
-                                  "new_display",
-                                  [],
-                                  [ Ty.path "alloc::string::String" ]
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.alloc (|
-                                          Ty.path "alloc::string::String",
-                                          M.call_closure (|
-                                            Ty.path "alloc::string::String",
-                                            M.get_associated_function (|
-                                              Ty.path
-                                                "move_core_types::account_address::AccountAddress",
-                                              "short_str_lossless",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| self |) |),
-                                                  "move_core_types::language_storage::ResourceKey",
-                                                  "address"
-                                                |)
-                                              |)
-                                            ]
-                                          |)
-                                        |)
-                                      |)
-                                    |)
-                                  |)
-                                ]
-                              |);
-                              M.call_closure (|
-                                Ty.path "core::fmt::rt::Argument",
-                                M.get_associated_function (|
-                                  Ty.path "core::fmt::rt::Argument",
-                                  "new_display",
-                                  [],
-                                  [ Ty.path "move_core_types::language_storage::StructTag" ]
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.SubPointer.get_struct_record_field (|
-                                          M.deref (| M.read (| self |) |),
-                                          "move_core_types::language_storage::ResourceKey",
-                                          "type_"
-                                        |)
-                                      |)
-                                    |)
-                                  |)
-                                ]
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "move_core_types::language_storage::ResourceKey",
+                                  "address"
+                                |)
                               |)
                             ]
+                          |)
+                        |)
+                      |);
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "move_core_types::language_storage::ResourceKey",
+                          "type_"
                         |)
                       |)
-                    |)
+                    ] in
+                let~ args :
+                    Ty.apply
+                      (Ty.path "array")
+                      [ Value.Integer IntegerKind.Usize 2 ]
+                      [ Ty.path "core::fmt::rt::Argument" ] :=
+                  Value.Array
+                    [
+                      M.call_closure (|
+                        Ty.path "core::fmt::rt::Argument",
+                        M.get_associated_function (|
+                          Ty.path "core::fmt::rt::Argument",
+                          "new_display",
+                          [],
+                          [ Ty.path "alloc::string::String" ]
+                        |),
+                        [
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (| M.read (| M.SubPointer.get_tuple_field (| args, 0 |) |) |)
+                          |)
+                        ]
+                      |);
+                      M.call_closure (|
+                        Ty.path "core::fmt::rt::Argument",
+                        M.get_associated_function (|
+                          Ty.path "core::fmt::rt::Argument",
+                          "new_display",
+                          [],
+                          [ Ty.path "move_core_types::language_storage::StructTag" ]
+                        |),
+                        [
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (| M.read (| M.SubPointer.get_tuple_field (| args, 1 |) |) |)
+                          |)
+                        ]
+                      |)
+                    ] in
+                M.alloc (|
+                  Ty.path "core::fmt::Arguments",
+                  M.call_closure (|
+                    Ty.path "core::fmt::Arguments",
+                    M.get_associated_function (|
+                      Ty.path "core::fmt::Arguments",
+                      "new",
+                      [ Value.Integer IntegerKind.Usize 8; Value.Integer IntegerKind.Usize 2 ],
+                      []
+                    |),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| M.mk_byte_str_ref 8 [ 2; 48; 120; 192; 1; 47; 192; 0 ] |)
+                      |);
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
+                      |)
+                    ]
                   |)
-                ]
+                |)
               |)
             ]
           |)))

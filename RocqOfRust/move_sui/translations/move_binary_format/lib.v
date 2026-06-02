@@ -139,6 +139,18 @@ Module Impl_core_marker_Copy_for_move_binary_format_IndexKind.
       (* Instance *) [].
 End Impl_core_marker_Copy_for_move_binary_format_IndexKind.
 
+Module Impl_core_clone_TrivialClone_for_move_binary_format_IndexKind.
+  Definition Self : Ty.t := Ty.path "move_binary_format::IndexKind".
+  
+  Axiom Implements :
+    M.IsTraitInstance
+      "core::clone::TrivialClone"
+      (* Trait polymorphic consts *) []
+      (* Trait polymorphic types *) []
+      Self
+      (* Instance *) [].
+End Impl_core_clone_TrivialClone_for_move_binary_format_IndexKind.
+
 Module Impl_core_clone_Clone_for_move_binary_format_IndexKind.
   Definition Self : Ty.t := Ty.path "move_binary_format::IndexKind".
   
@@ -1076,6 +1088,18 @@ Module Impl_core_marker_Copy_for_move_binary_format_SignatureTokenKind.
       Self
       (* Instance *) [].
 End Impl_core_marker_Copy_for_move_binary_format_SignatureTokenKind.
+
+Module Impl_core_clone_TrivialClone_for_move_binary_format_SignatureTokenKind.
+  Definition Self : Ty.t := Ty.path "move_binary_format::SignatureTokenKind".
+  
+  Axiom Implements :
+    M.IsTraitInstance
+      "core::clone::TrivialClone"
+      (* Trait polymorphic consts *) []
+      (* Trait polymorphic types *) []
+      Self
+      (* Instance *) [].
+End Impl_core_clone_TrivialClone_for_move_binary_format_SignatureTokenKind.
 
 Module Impl_core_clone_Clone_for_move_binary_format_SignatureTokenKind.
   Definition Self : Ty.t := Ty.path "move_binary_format::SignatureTokenKind".

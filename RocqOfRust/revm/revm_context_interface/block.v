@@ -514,6 +514,9 @@ Module block.
             ("blob_excess_gas", InstanceField.Method (blob_excess_gas T))
           ].
     End Impl_revm_context_interface_block_Block_where_revm_context_interface_block_Block_T_where_core_marker_Sized_T_for_ref__T.
+  End underscore.
+  
+  Module underscore_1.
     Module Impl_revm_context_interface_block_Block_where_revm_context_interface_block_Block_T_where_core_marker_Sized_T_for_ref_mut_T.
       Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "&mut") [] [ T ].
       
@@ -887,6 +890,9 @@ Module block.
             ("blob_excess_gas", InstanceField.Method (blob_excess_gas T))
           ].
     End Impl_revm_context_interface_block_Block_where_revm_context_interface_block_Block_T_where_core_marker_Sized_T_for_ref_mut_T.
+  End underscore_1.
+  
+  Module underscore_2.
     Module Impl_revm_context_interface_block_Block_where_revm_context_interface_block_Block_T_where_core_marker_Sized_T_for_alloc_boxed_Box_T_alloc_alloc_Global.
       Definition Self (T : Ty.t) : Ty.t :=
         Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ].
@@ -1301,6 +1307,9 @@ Module block.
             ("blob_excess_gas", InstanceField.Method (blob_excess_gas T))
           ].
     End Impl_revm_context_interface_block_Block_where_revm_context_interface_block_Block_T_where_core_marker_Sized_T_for_alloc_boxed_Box_T_alloc_alloc_Global.
+  End underscore_2.
+  
+  Module underscore_3.
     Module Impl_revm_context_interface_block_Block_where_revm_context_interface_block_Block_T_where_core_marker_Sized_T_for_alloc_sync_Arc_T_alloc_alloc_Global.
       Definition Self (T : Ty.t) : Ty.t :=
         Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; Ty.path "alloc::alloc::Global" ].
@@ -1885,6 +1894,12 @@ Module block.
             ("blob_excess_gas", InstanceField.Method (blob_excess_gas T))
           ].
     End Impl_revm_context_interface_block_Block_where_revm_context_interface_block_Block_T_where_core_marker_Sized_T_for_alloc_sync_Arc_T_alloc_alloc_Global.
+  End underscore_3.
+  
+  (* Trait *)
+  (* Empty module 'BlockGetter' *)
+  
+  Module underscore_4.
     Module Impl_revm_context_interface_block_BlockGetter_where_revm_context_interface_block_BlockGetter_T_where_core_marker_Sized_T_for_ref__T.
       Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "&") [] [ T ].
       
@@ -1946,6 +1961,9 @@ Module block.
           (* Instance *)
           [ ("Block", InstanceField.Ty (_Block T)); ("block", InstanceField.Method (block T)) ].
     End Impl_revm_context_interface_block_BlockGetter_where_revm_context_interface_block_BlockGetter_T_where_core_marker_Sized_T_for_ref__T.
+  End underscore_4.
+  
+  Module underscore_5.
     Module Impl_revm_context_interface_block_BlockGetter_where_revm_context_interface_block_BlockGetter_T_where_core_marker_Sized_T_for_ref_mut_T.
       Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "&mut") [] [ T ].
       
@@ -2010,6 +2028,9 @@ Module block.
           (* Instance *)
           [ ("Block", InstanceField.Ty (_Block T)); ("block", InstanceField.Method (block T)) ].
     End Impl_revm_context_interface_block_BlockGetter_where_revm_context_interface_block_BlockGetter_T_where_core_marker_Sized_T_for_ref_mut_T.
+  End underscore_5.
+  
+  Module underscore_6.
     Module Impl_revm_context_interface_block_BlockGetter_where_revm_context_interface_block_BlockGetter_T_where_core_marker_Sized_T_for_alloc_boxed_Box_T_alloc_alloc_Global.
       Definition Self (T : Ty.t) : Ty.t :=
         Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ].
@@ -2079,6 +2100,9 @@ Module block.
           (* Instance *)
           [ ("Block", InstanceField.Ty (_Block T)); ("block", InstanceField.Method (block T)) ].
     End Impl_revm_context_interface_block_BlockGetter_where_revm_context_interface_block_BlockGetter_T_where_core_marker_Sized_T_for_alloc_boxed_Box_T_alloc_alloc_Global.
+  End underscore_6.
+  
+  Module underscore_7.
     Module Impl_revm_context_interface_block_BlockGetter_where_revm_context_interface_block_BlockGetter_T_where_core_marker_Sized_T_for_alloc_sync_Arc_T_alloc_alloc_Global.
       Definition Self (T : Ty.t) : Ty.t :=
         Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; Ty.path "alloc::alloc::Global" ].
@@ -2165,17 +2189,7 @@ Module block.
           (* Instance *)
           [ ("Block", InstanceField.Ty (_Block T)); ("block", InstanceField.Method (block T)) ].
     End Impl_revm_context_interface_block_BlockGetter_where_revm_context_interface_block_BlockGetter_T_where_core_marker_Sized_T_for_alloc_sync_Arc_T_alloc_alloc_Global.
-  End underscore.
-  
-  
-  
-  
-  (* Trait *)
-  (* Empty module 'BlockGetter' *)
-  
-  
-  
-  
+  End underscore_7.
   
   (* Trait *)
   (* Empty module 'BlockSetter' *)

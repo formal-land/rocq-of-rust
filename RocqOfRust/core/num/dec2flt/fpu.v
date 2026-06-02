@@ -5,7 +5,7 @@ Module num.
   Module dec2flt.
     Module fpu.
       Module fpu_precision.
-        (*     pub fn set_precision<T>() {} *)
+        (*     pub(crate) fn set_precision<T>() {} *)
         Definition set_precision (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
           match ε, τ, α with
           | [], [ T ], [] => ltac:(M.monadic (Value.Tuple []))

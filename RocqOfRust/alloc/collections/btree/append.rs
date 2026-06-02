@@ -16,7 +16,7 @@ impl<K, V> Root<K, V> {
     /// a `BTreeMap`, both iterators should produce keys in strictly ascending
     /// order, each greater than all keys in the tree, including any keys
     /// already in the tree upon entry.
-    pub fn append_from_sorted_iters<I, A: Allocator + Clone>(
+    pub(super) fn append_from_sorted_iters<I, A: Allocator + Clone>(
         &mut self,
         left: I,
         right: I,
@@ -36,8 +36,12 @@ impl<K, V> Root<K, V> {
     /// Pushes all key-value pairs to the end of the tree, incrementing a
     /// `length` variable along the way. The latter makes it easier for the
     /// caller to avoid a leak when the iterator panicks.
-    pub fn bulk_push<I, A: Allocator + Clone>(&mut self, iter: I, length: &mut usize, alloc: A)
-    where
+    pub(super) fn bulk_push<I, A: Allocator + Clone>(
+        &mut self,
+        iter: I,
+        length: &mut usize,
+        alloc: A,
+    ) where
         I: Iterator<Item = (K, V)>,
     {
         let mut cur_node = self.borrow_mut().last_leaf_edge().into_node();
@@ -100,9 +104,14 @@ where
 {
     type Item = (K, V);
 
-    /// If two keys are equal, returns the key-value pair from the right source.
+    /// If two keys are equal, returns the key from the left and the value from the right.
     fn next(&mut self) -> Option<(K, V)> {
         let (a_next, b_next) = self.0.nexts(|a: &(K, V), b: &(K, V)| K::cmp(&a.0, &b.0));
-        b_next.or(a_next)
+        match (a_next, b_next) {
+            (Some((a_k, _)), Some((_, b_v))) => Some((a_k, b_v)),
+            (Some(a), None) => Some(a),
+            (None, Some(b)) => Some(b),
+            (None, None) => None,
+        }
     }
 }

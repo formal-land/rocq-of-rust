@@ -9,7 +9,7 @@ Module ptr.
     (* Error TraitAlias *)
     
     (*
-    pub const fn metadata<T: ?Sized>(ptr: *const T) -> <T as Pointee>::Metadata {
+    pub const fn metadata<T: PointeeSized>(ptr: *const T) -> <T as Pointee>::Metadata {
         ptr_metadata(ptr)
     }
     *)
@@ -36,7 +36,7 @@ Module ptr.
     Global Typeclasses Opaque metadata.
     
     (*
-    pub const fn from_raw_parts<T: ?Sized>(
+    pub const fn from_raw_parts<T: PointeeSized>(
         data_pointer: *const impl Thin,
         metadata: <T as Pointee>::Metadata,
     ) -> *const T {
@@ -76,7 +76,7 @@ Module ptr.
     Global Typeclasses Opaque from_raw_parts.
     
     (*
-    pub const fn from_raw_parts_mut<T: ?Sized>(
+    pub const fn from_raw_parts_mut<T: PointeeSized>(
         data_pointer: *mut impl Thin,
         metadata: <T as Pointee>::Metadata,
     ) -> *mut T {
@@ -327,7 +327,7 @@ Module ptr.
       Global Typeclasses Opaque layout.
     End Impl_core_ptr_metadata_DynMetadata_Dyn.
     
-    Module Impl_core_marker_Send_where_core_marker_Sized_Dyn_for_core_ptr_metadata_DynMetadata_Dyn.
+    Module Impl_core_marker_Send_where_core_marker_PointeeSized_Dyn_for_core_ptr_metadata_DynMetadata_Dyn.
       Definition Self (Dyn : Ty.t) : Ty.t :=
         Ty.apply (Ty.path "core::ptr::metadata::DynMetadata") [] [ Dyn ].
       
@@ -339,9 +339,9 @@ Module ptr.
           (* Trait polymorphic types *) []
           (Self Dyn)
           (* Instance *) [].
-    End Impl_core_marker_Send_where_core_marker_Sized_Dyn_for_core_ptr_metadata_DynMetadata_Dyn.
+    End Impl_core_marker_Send_where_core_marker_PointeeSized_Dyn_for_core_ptr_metadata_DynMetadata_Dyn.
     
-    Module Impl_core_marker_Sync_where_core_marker_Sized_Dyn_for_core_ptr_metadata_DynMetadata_Dyn.
+    Module Impl_core_marker_Sync_where_core_marker_PointeeSized_Dyn_for_core_ptr_metadata_DynMetadata_Dyn.
       Definition Self (Dyn : Ty.t) : Ty.t :=
         Ty.apply (Ty.path "core::ptr::metadata::DynMetadata") [] [ Dyn ].
       
@@ -353,9 +353,9 @@ Module ptr.
           (* Trait polymorphic types *) []
           (Self Dyn)
           (* Instance *) [].
-    End Impl_core_marker_Sync_where_core_marker_Sized_Dyn_for_core_ptr_metadata_DynMetadata_Dyn.
+    End Impl_core_marker_Sync_where_core_marker_PointeeSized_Dyn_for_core_ptr_metadata_DynMetadata_Dyn.
     
-    Module Impl_core_fmt_Debug_where_core_marker_Sized_Dyn_for_core_ptr_metadata_DynMetadata_Dyn.
+    Module Impl_core_fmt_Debug_where_core_marker_PointeeSized_Dyn_for_core_ptr_metadata_DynMetadata_Dyn.
       Definition Self (Dyn : Ty.t) : Ty.t :=
         Ty.apply (Ty.path "core::ptr::metadata::DynMetadata") [] [ Dyn ].
       
@@ -492,9 +492,9 @@ Module ptr.
           (* Trait polymorphic types *) []
           (Self Dyn)
           (* Instance *) [ ("fmt", InstanceField.Method (fmt Dyn)) ].
-    End Impl_core_fmt_Debug_where_core_marker_Sized_Dyn_for_core_ptr_metadata_DynMetadata_Dyn.
+    End Impl_core_fmt_Debug_where_core_marker_PointeeSized_Dyn_for_core_ptr_metadata_DynMetadata_Dyn.
     
-    Module Impl_core_marker_Unpin_where_core_marker_Sized_Dyn_for_core_ptr_metadata_DynMetadata_Dyn.
+    Module Impl_core_marker_Unpin_where_core_marker_PointeeSized_Dyn_for_core_ptr_metadata_DynMetadata_Dyn.
       Definition Self (Dyn : Ty.t) : Ty.t :=
         Ty.apply (Ty.path "core::ptr::metadata::DynMetadata") [] [ Dyn ].
       
@@ -506,9 +506,9 @@ Module ptr.
           (* Trait polymorphic types *) []
           (Self Dyn)
           (* Instance *) [].
-    End Impl_core_marker_Unpin_where_core_marker_Sized_Dyn_for_core_ptr_metadata_DynMetadata_Dyn.
+    End Impl_core_marker_Unpin_where_core_marker_PointeeSized_Dyn_for_core_ptr_metadata_DynMetadata_Dyn.
     
-    Module Impl_core_marker_Copy_where_core_marker_Sized_Dyn_for_core_ptr_metadata_DynMetadata_Dyn.
+    Module Impl_core_marker_Copy_where_core_marker_PointeeSized_Dyn_for_core_ptr_metadata_DynMetadata_Dyn.
       Definition Self (Dyn : Ty.t) : Ty.t :=
         Ty.apply (Ty.path "core::ptr::metadata::DynMetadata") [] [ Dyn ].
       
@@ -520,9 +520,9 @@ Module ptr.
           (* Trait polymorphic types *) []
           (Self Dyn)
           (* Instance *) [].
-    End Impl_core_marker_Copy_where_core_marker_Sized_Dyn_for_core_ptr_metadata_DynMetadata_Dyn.
+    End Impl_core_marker_Copy_where_core_marker_PointeeSized_Dyn_for_core_ptr_metadata_DynMetadata_Dyn.
     
-    Module Impl_core_clone_Clone_where_core_marker_Sized_Dyn_for_core_ptr_metadata_DynMetadata_Dyn.
+    Module Impl_core_clone_Clone_where_core_marker_PointeeSized_Dyn_for_core_ptr_metadata_DynMetadata_Dyn.
       Definition Self (Dyn : Ty.t) : Ty.t :=
         Ty.apply (Ty.path "core::ptr::metadata::DynMetadata") [] [ Dyn ].
       
@@ -556,9 +556,23 @@ Module ptr.
           (* Trait polymorphic types *) []
           (Self Dyn)
           (* Instance *) [ ("clone", InstanceField.Method (clone Dyn)) ].
-    End Impl_core_clone_Clone_where_core_marker_Sized_Dyn_for_core_ptr_metadata_DynMetadata_Dyn.
+    End Impl_core_clone_Clone_where_core_marker_PointeeSized_Dyn_for_core_ptr_metadata_DynMetadata_Dyn.
     
-    Module Impl_core_cmp_Eq_where_core_marker_Sized_Dyn_for_core_ptr_metadata_DynMetadata_Dyn.
+    Module Impl_core_clone_TrivialClone_where_core_marker_Sized_Dyn_for_core_ptr_metadata_DynMetadata_Dyn.
+      Definition Self (Dyn : Ty.t) : Ty.t :=
+        Ty.apply (Ty.path "core::ptr::metadata::DynMetadata") [] [ Dyn ].
+      
+      Axiom Implements :
+        forall (Dyn : Ty.t),
+        M.IsTraitInstance
+          "core::clone::TrivialClone"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          (Self Dyn)
+          (* Instance *) [].
+    End Impl_core_clone_TrivialClone_where_core_marker_Sized_Dyn_for_core_ptr_metadata_DynMetadata_Dyn.
+    
+    Module Impl_core_cmp_Eq_where_core_marker_PointeeSized_Dyn_for_core_ptr_metadata_DynMetadata_Dyn.
       Definition Self (Dyn : Ty.t) : Ty.t :=
         Ty.apply (Ty.path "core::ptr::metadata::DynMetadata") [] [ Dyn ].
       
@@ -570,9 +584,9 @@ Module ptr.
           (* Trait polymorphic types *) []
           (Self Dyn)
           (* Instance *) [].
-    End Impl_core_cmp_Eq_where_core_marker_Sized_Dyn_for_core_ptr_metadata_DynMetadata_Dyn.
+    End Impl_core_cmp_Eq_where_core_marker_PointeeSized_Dyn_for_core_ptr_metadata_DynMetadata_Dyn.
     
-    Module Impl_core_cmp_PartialEq_where_core_marker_Sized_Dyn_core_ptr_metadata_DynMetadata_Dyn_for_core_ptr_metadata_DynMetadata_Dyn.
+    Module Impl_core_cmp_PartialEq_where_core_marker_PointeeSized_Dyn_core_ptr_metadata_DynMetadata_Dyn_for_core_ptr_metadata_DynMetadata_Dyn.
       Definition Self (Dyn : Ty.t) : Ty.t :=
         Ty.apply (Ty.path "core::ptr::metadata::DynMetadata") [] [ Dyn ].
       
@@ -640,9 +654,9 @@ Module ptr.
           [ Ty.apply (Ty.path "core::ptr::metadata::DynMetadata") [] [ Dyn ] ]
           (Self Dyn)
           (* Instance *) [ ("eq", InstanceField.Method (eq Dyn)) ].
-    End Impl_core_cmp_PartialEq_where_core_marker_Sized_Dyn_core_ptr_metadata_DynMetadata_Dyn_for_core_ptr_metadata_DynMetadata_Dyn.
+    End Impl_core_cmp_PartialEq_where_core_marker_PointeeSized_Dyn_core_ptr_metadata_DynMetadata_Dyn_for_core_ptr_metadata_DynMetadata_Dyn.
     
-    Module Impl_core_cmp_Ord_where_core_marker_Sized_Dyn_for_core_ptr_metadata_DynMetadata_Dyn.
+    Module Impl_core_cmp_Ord_where_core_marker_PointeeSized_Dyn_for_core_ptr_metadata_DynMetadata_Dyn.
       Definition Self (Dyn : Ty.t) : Ty.t :=
         Ty.apply (Ty.path "core::ptr::metadata::DynMetadata") [] [ Dyn ].
       
@@ -739,9 +753,9 @@ Module ptr.
           (* Trait polymorphic types *) []
           (Self Dyn)
           (* Instance *) [ ("cmp", InstanceField.Method (cmp Dyn)) ].
-    End Impl_core_cmp_Ord_where_core_marker_Sized_Dyn_for_core_ptr_metadata_DynMetadata_Dyn.
+    End Impl_core_cmp_Ord_where_core_marker_PointeeSized_Dyn_for_core_ptr_metadata_DynMetadata_Dyn.
     
-    Module Impl_core_cmp_PartialOrd_where_core_marker_Sized_Dyn_core_ptr_metadata_DynMetadata_Dyn_for_core_ptr_metadata_DynMetadata_Dyn.
+    Module Impl_core_cmp_PartialOrd_where_core_marker_PointeeSized_Dyn_core_ptr_metadata_DynMetadata_Dyn_for_core_ptr_metadata_DynMetadata_Dyn.
       Definition Self (Dyn : Ty.t) : Ty.t :=
         Ty.apply (Ty.path "core::ptr::metadata::DynMetadata") [] [ Dyn ].
       
@@ -810,9 +824,9 @@ Module ptr.
           [ Ty.apply (Ty.path "core::ptr::metadata::DynMetadata") [] [ Dyn ] ]
           (Self Dyn)
           (* Instance *) [ ("partial_cmp", InstanceField.Method (partial_cmp Dyn)) ].
-    End Impl_core_cmp_PartialOrd_where_core_marker_Sized_Dyn_core_ptr_metadata_DynMetadata_Dyn_for_core_ptr_metadata_DynMetadata_Dyn.
+    End Impl_core_cmp_PartialOrd_where_core_marker_PointeeSized_Dyn_core_ptr_metadata_DynMetadata_Dyn_for_core_ptr_metadata_DynMetadata_Dyn.
     
-    Module Impl_core_hash_Hash_where_core_marker_Sized_Dyn_for_core_ptr_metadata_DynMetadata_Dyn.
+    Module Impl_core_hash_Hash_where_core_marker_PointeeSized_Dyn_for_core_ptr_metadata_DynMetadata_Dyn.
       Definition Self (Dyn : Ty.t) : Ty.t :=
         Ty.apply (Ty.path "core::ptr::metadata::DynMetadata") [] [ Dyn ].
       
@@ -867,6 +881,6 @@ Module ptr.
           (* Trait polymorphic types *) []
           (Self Dyn)
           (* Instance *) [ ("hash", InstanceField.Method (hash Dyn)) ].
-    End Impl_core_hash_Hash_where_core_marker_Sized_Dyn_for_core_ptr_metadata_DynMetadata_Dyn.
+    End Impl_core_hash_Hash_where_core_marker_PointeeSized_Dyn_for_core_ptr_metadata_DynMetadata_Dyn.
   End metadata.
 End ptr.

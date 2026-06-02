@@ -5795,426 +5795,6 @@ Module ops.
           [ ("Output", InstanceField.Ty _Output); ("shl", InstanceField.Method shl) ].
     End Impl_core_ops_bit_Shl_isize_for_i64.
     
-    Module Impl_core_ops_bit_Shl_u8_for_isize.
-      Definition Self : Ty.t := Ty.path "isize".
-      
-      (*             type Output = $t; *)
-      Definition _Output : Ty.t := Ty.path "isize".
-      
-      (*
-                  fn shl(self, other: $f) -> $t {
-                      self << other
-                  }
-      *)
-      Definition shl (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [ self; other ] =>
-          ltac:(M.monadic
-            (let self := M.alloc (| Ty.path "isize", self |) in
-            let other := M.alloc (| Ty.path "u8", other |) in
-            M.call_closure (|
-              Ty.path "isize",
-              BinOp.Wrap.shl,
-              [ M.read (| self |); M.read (| other |) ]
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Axiom Implements :
-        M.IsTraitInstance
-          "core::ops::bit::Shl"
-          (* Trait polymorphic consts *) []
-          (* Trait polymorphic types *) [ Ty.path "u8" ]
-          Self
-          (* Instance *)
-          [ ("Output", InstanceField.Ty _Output); ("shl", InstanceField.Method shl) ].
-    End Impl_core_ops_bit_Shl_u8_for_isize.
-    
-    Module Impl_core_ops_bit_Shl_u16_for_isize.
-      Definition Self : Ty.t := Ty.path "isize".
-      
-      (*             type Output = $t; *)
-      Definition _Output : Ty.t := Ty.path "isize".
-      
-      (*
-                  fn shl(self, other: $f) -> $t {
-                      self << other
-                  }
-      *)
-      Definition shl (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [ self; other ] =>
-          ltac:(M.monadic
-            (let self := M.alloc (| Ty.path "isize", self |) in
-            let other := M.alloc (| Ty.path "u16", other |) in
-            M.call_closure (|
-              Ty.path "isize",
-              BinOp.Wrap.shl,
-              [ M.read (| self |); M.read (| other |) ]
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Axiom Implements :
-        M.IsTraitInstance
-          "core::ops::bit::Shl"
-          (* Trait polymorphic consts *) []
-          (* Trait polymorphic types *) [ Ty.path "u16" ]
-          Self
-          (* Instance *)
-          [ ("Output", InstanceField.Ty _Output); ("shl", InstanceField.Method shl) ].
-    End Impl_core_ops_bit_Shl_u16_for_isize.
-    
-    Module Impl_core_ops_bit_Shl_u32_for_isize.
-      Definition Self : Ty.t := Ty.path "isize".
-      
-      (*             type Output = $t; *)
-      Definition _Output : Ty.t := Ty.path "isize".
-      
-      (*
-                  fn shl(self, other: $f) -> $t {
-                      self << other
-                  }
-      *)
-      Definition shl (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [ self; other ] =>
-          ltac:(M.monadic
-            (let self := M.alloc (| Ty.path "isize", self |) in
-            let other := M.alloc (| Ty.path "u32", other |) in
-            M.call_closure (|
-              Ty.path "isize",
-              BinOp.Wrap.shl,
-              [ M.read (| self |); M.read (| other |) ]
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Axiom Implements :
-        M.IsTraitInstance
-          "core::ops::bit::Shl"
-          (* Trait polymorphic consts *) []
-          (* Trait polymorphic types *) [ Ty.path "u32" ]
-          Self
-          (* Instance *)
-          [ ("Output", InstanceField.Ty _Output); ("shl", InstanceField.Method shl) ].
-    End Impl_core_ops_bit_Shl_u32_for_isize.
-    
-    Module Impl_core_ops_bit_Shl_u64_for_isize.
-      Definition Self : Ty.t := Ty.path "isize".
-      
-      (*             type Output = $t; *)
-      Definition _Output : Ty.t := Ty.path "isize".
-      
-      (*
-                  fn shl(self, other: $f) -> $t {
-                      self << other
-                  }
-      *)
-      Definition shl (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [ self; other ] =>
-          ltac:(M.monadic
-            (let self := M.alloc (| Ty.path "isize", self |) in
-            let other := M.alloc (| Ty.path "u64", other |) in
-            M.call_closure (|
-              Ty.path "isize",
-              BinOp.Wrap.shl,
-              [ M.read (| self |); M.read (| other |) ]
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Axiom Implements :
-        M.IsTraitInstance
-          "core::ops::bit::Shl"
-          (* Trait polymorphic consts *) []
-          (* Trait polymorphic types *) [ Ty.path "u64" ]
-          Self
-          (* Instance *)
-          [ ("Output", InstanceField.Ty _Output); ("shl", InstanceField.Method shl) ].
-    End Impl_core_ops_bit_Shl_u64_for_isize.
-    
-    Module Impl_core_ops_bit_Shl_u128_for_isize.
-      Definition Self : Ty.t := Ty.path "isize".
-      
-      (*             type Output = $t; *)
-      Definition _Output : Ty.t := Ty.path "isize".
-      
-      (*
-                  fn shl(self, other: $f) -> $t {
-                      self << other
-                  }
-      *)
-      Definition shl (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [ self; other ] =>
-          ltac:(M.monadic
-            (let self := M.alloc (| Ty.path "isize", self |) in
-            let other := M.alloc (| Ty.path "u128", other |) in
-            M.call_closure (|
-              Ty.path "isize",
-              BinOp.Wrap.shl,
-              [ M.read (| self |); M.read (| other |) ]
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Axiom Implements :
-        M.IsTraitInstance
-          "core::ops::bit::Shl"
-          (* Trait polymorphic consts *) []
-          (* Trait polymorphic types *) [ Ty.path "u128" ]
-          Self
-          (* Instance *)
-          [ ("Output", InstanceField.Ty _Output); ("shl", InstanceField.Method shl) ].
-    End Impl_core_ops_bit_Shl_u128_for_isize.
-    
-    Module Impl_core_ops_bit_Shl_usize_for_isize.
-      Definition Self : Ty.t := Ty.path "isize".
-      
-      (*             type Output = $t; *)
-      Definition _Output : Ty.t := Ty.path "isize".
-      
-      (*
-                  fn shl(self, other: $f) -> $t {
-                      self << other
-                  }
-      *)
-      Definition shl (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [ self; other ] =>
-          ltac:(M.monadic
-            (let self := M.alloc (| Ty.path "isize", self |) in
-            let other := M.alloc (| Ty.path "usize", other |) in
-            M.call_closure (|
-              Ty.path "isize",
-              BinOp.Wrap.shl,
-              [ M.read (| self |); M.read (| other |) ]
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Axiom Implements :
-        M.IsTraitInstance
-          "core::ops::bit::Shl"
-          (* Trait polymorphic consts *) []
-          (* Trait polymorphic types *) [ Ty.path "usize" ]
-          Self
-          (* Instance *)
-          [ ("Output", InstanceField.Ty _Output); ("shl", InstanceField.Method shl) ].
-    End Impl_core_ops_bit_Shl_usize_for_isize.
-    
-    Module Impl_core_ops_bit_Shl_i8_for_isize.
-      Definition Self : Ty.t := Ty.path "isize".
-      
-      (*             type Output = $t; *)
-      Definition _Output : Ty.t := Ty.path "isize".
-      
-      (*
-                  fn shl(self, other: $f) -> $t {
-                      self << other
-                  }
-      *)
-      Definition shl (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [ self; other ] =>
-          ltac:(M.monadic
-            (let self := M.alloc (| Ty.path "isize", self |) in
-            let other := M.alloc (| Ty.path "i8", other |) in
-            M.call_closure (|
-              Ty.path "isize",
-              BinOp.Wrap.shl,
-              [ M.read (| self |); M.read (| other |) ]
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Axiom Implements :
-        M.IsTraitInstance
-          "core::ops::bit::Shl"
-          (* Trait polymorphic consts *) []
-          (* Trait polymorphic types *) [ Ty.path "i8" ]
-          Self
-          (* Instance *)
-          [ ("Output", InstanceField.Ty _Output); ("shl", InstanceField.Method shl) ].
-    End Impl_core_ops_bit_Shl_i8_for_isize.
-    
-    Module Impl_core_ops_bit_Shl_i16_for_isize.
-      Definition Self : Ty.t := Ty.path "isize".
-      
-      (*             type Output = $t; *)
-      Definition _Output : Ty.t := Ty.path "isize".
-      
-      (*
-                  fn shl(self, other: $f) -> $t {
-                      self << other
-                  }
-      *)
-      Definition shl (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [ self; other ] =>
-          ltac:(M.monadic
-            (let self := M.alloc (| Ty.path "isize", self |) in
-            let other := M.alloc (| Ty.path "i16", other |) in
-            M.call_closure (|
-              Ty.path "isize",
-              BinOp.Wrap.shl,
-              [ M.read (| self |); M.read (| other |) ]
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Axiom Implements :
-        M.IsTraitInstance
-          "core::ops::bit::Shl"
-          (* Trait polymorphic consts *) []
-          (* Trait polymorphic types *) [ Ty.path "i16" ]
-          Self
-          (* Instance *)
-          [ ("Output", InstanceField.Ty _Output); ("shl", InstanceField.Method shl) ].
-    End Impl_core_ops_bit_Shl_i16_for_isize.
-    
-    Module Impl_core_ops_bit_Shl_i32_for_isize.
-      Definition Self : Ty.t := Ty.path "isize".
-      
-      (*             type Output = $t; *)
-      Definition _Output : Ty.t := Ty.path "isize".
-      
-      (*
-                  fn shl(self, other: $f) -> $t {
-                      self << other
-                  }
-      *)
-      Definition shl (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [ self; other ] =>
-          ltac:(M.monadic
-            (let self := M.alloc (| Ty.path "isize", self |) in
-            let other := M.alloc (| Ty.path "i32", other |) in
-            M.call_closure (|
-              Ty.path "isize",
-              BinOp.Wrap.shl,
-              [ M.read (| self |); M.read (| other |) ]
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Axiom Implements :
-        M.IsTraitInstance
-          "core::ops::bit::Shl"
-          (* Trait polymorphic consts *) []
-          (* Trait polymorphic types *) [ Ty.path "i32" ]
-          Self
-          (* Instance *)
-          [ ("Output", InstanceField.Ty _Output); ("shl", InstanceField.Method shl) ].
-    End Impl_core_ops_bit_Shl_i32_for_isize.
-    
-    Module Impl_core_ops_bit_Shl_i64_for_isize.
-      Definition Self : Ty.t := Ty.path "isize".
-      
-      (*             type Output = $t; *)
-      Definition _Output : Ty.t := Ty.path "isize".
-      
-      (*
-                  fn shl(self, other: $f) -> $t {
-                      self << other
-                  }
-      *)
-      Definition shl (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [ self; other ] =>
-          ltac:(M.monadic
-            (let self := M.alloc (| Ty.path "isize", self |) in
-            let other := M.alloc (| Ty.path "i64", other |) in
-            M.call_closure (|
-              Ty.path "isize",
-              BinOp.Wrap.shl,
-              [ M.read (| self |); M.read (| other |) ]
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Axiom Implements :
-        M.IsTraitInstance
-          "core::ops::bit::Shl"
-          (* Trait polymorphic consts *) []
-          (* Trait polymorphic types *) [ Ty.path "i64" ]
-          Self
-          (* Instance *)
-          [ ("Output", InstanceField.Ty _Output); ("shl", InstanceField.Method shl) ].
-    End Impl_core_ops_bit_Shl_i64_for_isize.
-    
-    Module Impl_core_ops_bit_Shl_i128_for_isize.
-      Definition Self : Ty.t := Ty.path "isize".
-      
-      (*             type Output = $t; *)
-      Definition _Output : Ty.t := Ty.path "isize".
-      
-      (*
-                  fn shl(self, other: $f) -> $t {
-                      self << other
-                  }
-      *)
-      Definition shl (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [ self; other ] =>
-          ltac:(M.monadic
-            (let self := M.alloc (| Ty.path "isize", self |) in
-            let other := M.alloc (| Ty.path "i128", other |) in
-            M.call_closure (|
-              Ty.path "isize",
-              BinOp.Wrap.shl,
-              [ M.read (| self |); M.read (| other |) ]
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Axiom Implements :
-        M.IsTraitInstance
-          "core::ops::bit::Shl"
-          (* Trait polymorphic consts *) []
-          (* Trait polymorphic types *) [ Ty.path "i128" ]
-          Self
-          (* Instance *)
-          [ ("Output", InstanceField.Ty _Output); ("shl", InstanceField.Method shl) ].
-    End Impl_core_ops_bit_Shl_i128_for_isize.
-    
-    Module Impl_core_ops_bit_Shl_isize_for_isize.
-      Definition Self : Ty.t := Ty.path "isize".
-      
-      (*             type Output = $t; *)
-      Definition _Output : Ty.t := Ty.path "isize".
-      
-      (*
-                  fn shl(self, other: $f) -> $t {
-                      self << other
-                  }
-      *)
-      Definition shl (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [ self; other ] =>
-          ltac:(M.monadic
-            (let self := M.alloc (| Ty.path "isize", self |) in
-            let other := M.alloc (| Ty.path "isize", other |) in
-            M.call_closure (|
-              Ty.path "isize",
-              BinOp.Wrap.shl,
-              [ M.read (| self |); M.read (| other |) ]
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Axiom Implements :
-        M.IsTraitInstance
-          "core::ops::bit::Shl"
-          (* Trait polymorphic consts *) []
-          (* Trait polymorphic types *) [ Ty.path "isize" ]
-          Self
-          (* Instance *)
-          [ ("Output", InstanceField.Ty _Output); ("shl", InstanceField.Method shl) ].
-    End Impl_core_ops_bit_Shl_isize_for_isize.
-    
     Module Impl_core_ops_bit_Shl_u8_for_i128.
       Definition Self : Ty.t := Ty.path "i128".
       
@@ -6634,6 +6214,426 @@ Module ops.
           (* Instance *)
           [ ("Output", InstanceField.Ty _Output); ("shl", InstanceField.Method shl) ].
     End Impl_core_ops_bit_Shl_isize_for_i128.
+    
+    Module Impl_core_ops_bit_Shl_u8_for_isize.
+      Definition Self : Ty.t := Ty.path "isize".
+      
+      (*             type Output = $t; *)
+      Definition _Output : Ty.t := Ty.path "isize".
+      
+      (*
+                  fn shl(self, other: $f) -> $t {
+                      self << other
+                  }
+      *)
+      Definition shl (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.path "isize", self |) in
+            let other := M.alloc (| Ty.path "u8", other |) in
+            M.call_closure (|
+              Ty.path "isize",
+              BinOp.Wrap.shl,
+              [ M.read (| self |); M.read (| other |) ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::ops::bit::Shl"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) [ Ty.path "u8" ]
+          Self
+          (* Instance *)
+          [ ("Output", InstanceField.Ty _Output); ("shl", InstanceField.Method shl) ].
+    End Impl_core_ops_bit_Shl_u8_for_isize.
+    
+    Module Impl_core_ops_bit_Shl_u16_for_isize.
+      Definition Self : Ty.t := Ty.path "isize".
+      
+      (*             type Output = $t; *)
+      Definition _Output : Ty.t := Ty.path "isize".
+      
+      (*
+                  fn shl(self, other: $f) -> $t {
+                      self << other
+                  }
+      *)
+      Definition shl (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.path "isize", self |) in
+            let other := M.alloc (| Ty.path "u16", other |) in
+            M.call_closure (|
+              Ty.path "isize",
+              BinOp.Wrap.shl,
+              [ M.read (| self |); M.read (| other |) ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::ops::bit::Shl"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) [ Ty.path "u16" ]
+          Self
+          (* Instance *)
+          [ ("Output", InstanceField.Ty _Output); ("shl", InstanceField.Method shl) ].
+    End Impl_core_ops_bit_Shl_u16_for_isize.
+    
+    Module Impl_core_ops_bit_Shl_u32_for_isize.
+      Definition Self : Ty.t := Ty.path "isize".
+      
+      (*             type Output = $t; *)
+      Definition _Output : Ty.t := Ty.path "isize".
+      
+      (*
+                  fn shl(self, other: $f) -> $t {
+                      self << other
+                  }
+      *)
+      Definition shl (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.path "isize", self |) in
+            let other := M.alloc (| Ty.path "u32", other |) in
+            M.call_closure (|
+              Ty.path "isize",
+              BinOp.Wrap.shl,
+              [ M.read (| self |); M.read (| other |) ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::ops::bit::Shl"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) [ Ty.path "u32" ]
+          Self
+          (* Instance *)
+          [ ("Output", InstanceField.Ty _Output); ("shl", InstanceField.Method shl) ].
+    End Impl_core_ops_bit_Shl_u32_for_isize.
+    
+    Module Impl_core_ops_bit_Shl_u64_for_isize.
+      Definition Self : Ty.t := Ty.path "isize".
+      
+      (*             type Output = $t; *)
+      Definition _Output : Ty.t := Ty.path "isize".
+      
+      (*
+                  fn shl(self, other: $f) -> $t {
+                      self << other
+                  }
+      *)
+      Definition shl (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.path "isize", self |) in
+            let other := M.alloc (| Ty.path "u64", other |) in
+            M.call_closure (|
+              Ty.path "isize",
+              BinOp.Wrap.shl,
+              [ M.read (| self |); M.read (| other |) ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::ops::bit::Shl"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) [ Ty.path "u64" ]
+          Self
+          (* Instance *)
+          [ ("Output", InstanceField.Ty _Output); ("shl", InstanceField.Method shl) ].
+    End Impl_core_ops_bit_Shl_u64_for_isize.
+    
+    Module Impl_core_ops_bit_Shl_u128_for_isize.
+      Definition Self : Ty.t := Ty.path "isize".
+      
+      (*             type Output = $t; *)
+      Definition _Output : Ty.t := Ty.path "isize".
+      
+      (*
+                  fn shl(self, other: $f) -> $t {
+                      self << other
+                  }
+      *)
+      Definition shl (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.path "isize", self |) in
+            let other := M.alloc (| Ty.path "u128", other |) in
+            M.call_closure (|
+              Ty.path "isize",
+              BinOp.Wrap.shl,
+              [ M.read (| self |); M.read (| other |) ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::ops::bit::Shl"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) [ Ty.path "u128" ]
+          Self
+          (* Instance *)
+          [ ("Output", InstanceField.Ty _Output); ("shl", InstanceField.Method shl) ].
+    End Impl_core_ops_bit_Shl_u128_for_isize.
+    
+    Module Impl_core_ops_bit_Shl_usize_for_isize.
+      Definition Self : Ty.t := Ty.path "isize".
+      
+      (*             type Output = $t; *)
+      Definition _Output : Ty.t := Ty.path "isize".
+      
+      (*
+                  fn shl(self, other: $f) -> $t {
+                      self << other
+                  }
+      *)
+      Definition shl (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.path "isize", self |) in
+            let other := M.alloc (| Ty.path "usize", other |) in
+            M.call_closure (|
+              Ty.path "isize",
+              BinOp.Wrap.shl,
+              [ M.read (| self |); M.read (| other |) ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::ops::bit::Shl"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) [ Ty.path "usize" ]
+          Self
+          (* Instance *)
+          [ ("Output", InstanceField.Ty _Output); ("shl", InstanceField.Method shl) ].
+    End Impl_core_ops_bit_Shl_usize_for_isize.
+    
+    Module Impl_core_ops_bit_Shl_i8_for_isize.
+      Definition Self : Ty.t := Ty.path "isize".
+      
+      (*             type Output = $t; *)
+      Definition _Output : Ty.t := Ty.path "isize".
+      
+      (*
+                  fn shl(self, other: $f) -> $t {
+                      self << other
+                  }
+      *)
+      Definition shl (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.path "isize", self |) in
+            let other := M.alloc (| Ty.path "i8", other |) in
+            M.call_closure (|
+              Ty.path "isize",
+              BinOp.Wrap.shl,
+              [ M.read (| self |); M.read (| other |) ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::ops::bit::Shl"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) [ Ty.path "i8" ]
+          Self
+          (* Instance *)
+          [ ("Output", InstanceField.Ty _Output); ("shl", InstanceField.Method shl) ].
+    End Impl_core_ops_bit_Shl_i8_for_isize.
+    
+    Module Impl_core_ops_bit_Shl_i16_for_isize.
+      Definition Self : Ty.t := Ty.path "isize".
+      
+      (*             type Output = $t; *)
+      Definition _Output : Ty.t := Ty.path "isize".
+      
+      (*
+                  fn shl(self, other: $f) -> $t {
+                      self << other
+                  }
+      *)
+      Definition shl (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.path "isize", self |) in
+            let other := M.alloc (| Ty.path "i16", other |) in
+            M.call_closure (|
+              Ty.path "isize",
+              BinOp.Wrap.shl,
+              [ M.read (| self |); M.read (| other |) ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::ops::bit::Shl"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) [ Ty.path "i16" ]
+          Self
+          (* Instance *)
+          [ ("Output", InstanceField.Ty _Output); ("shl", InstanceField.Method shl) ].
+    End Impl_core_ops_bit_Shl_i16_for_isize.
+    
+    Module Impl_core_ops_bit_Shl_i32_for_isize.
+      Definition Self : Ty.t := Ty.path "isize".
+      
+      (*             type Output = $t; *)
+      Definition _Output : Ty.t := Ty.path "isize".
+      
+      (*
+                  fn shl(self, other: $f) -> $t {
+                      self << other
+                  }
+      *)
+      Definition shl (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.path "isize", self |) in
+            let other := M.alloc (| Ty.path "i32", other |) in
+            M.call_closure (|
+              Ty.path "isize",
+              BinOp.Wrap.shl,
+              [ M.read (| self |); M.read (| other |) ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::ops::bit::Shl"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) [ Ty.path "i32" ]
+          Self
+          (* Instance *)
+          [ ("Output", InstanceField.Ty _Output); ("shl", InstanceField.Method shl) ].
+    End Impl_core_ops_bit_Shl_i32_for_isize.
+    
+    Module Impl_core_ops_bit_Shl_i64_for_isize.
+      Definition Self : Ty.t := Ty.path "isize".
+      
+      (*             type Output = $t; *)
+      Definition _Output : Ty.t := Ty.path "isize".
+      
+      (*
+                  fn shl(self, other: $f) -> $t {
+                      self << other
+                  }
+      *)
+      Definition shl (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.path "isize", self |) in
+            let other := M.alloc (| Ty.path "i64", other |) in
+            M.call_closure (|
+              Ty.path "isize",
+              BinOp.Wrap.shl,
+              [ M.read (| self |); M.read (| other |) ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::ops::bit::Shl"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) [ Ty.path "i64" ]
+          Self
+          (* Instance *)
+          [ ("Output", InstanceField.Ty _Output); ("shl", InstanceField.Method shl) ].
+    End Impl_core_ops_bit_Shl_i64_for_isize.
+    
+    Module Impl_core_ops_bit_Shl_i128_for_isize.
+      Definition Self : Ty.t := Ty.path "isize".
+      
+      (*             type Output = $t; *)
+      Definition _Output : Ty.t := Ty.path "isize".
+      
+      (*
+                  fn shl(self, other: $f) -> $t {
+                      self << other
+                  }
+      *)
+      Definition shl (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.path "isize", self |) in
+            let other := M.alloc (| Ty.path "i128", other |) in
+            M.call_closure (|
+              Ty.path "isize",
+              BinOp.Wrap.shl,
+              [ M.read (| self |); M.read (| other |) ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::ops::bit::Shl"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) [ Ty.path "i128" ]
+          Self
+          (* Instance *)
+          [ ("Output", InstanceField.Ty _Output); ("shl", InstanceField.Method shl) ].
+    End Impl_core_ops_bit_Shl_i128_for_isize.
+    
+    Module Impl_core_ops_bit_Shl_isize_for_isize.
+      Definition Self : Ty.t := Ty.path "isize".
+      
+      (*             type Output = $t; *)
+      Definition _Output : Ty.t := Ty.path "isize".
+      
+      (*
+                  fn shl(self, other: $f) -> $t {
+                      self << other
+                  }
+      *)
+      Definition shl (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.path "isize", self |) in
+            let other := M.alloc (| Ty.path "isize", other |) in
+            M.call_closure (|
+              Ty.path "isize",
+              BinOp.Wrap.shl,
+              [ M.read (| self |); M.read (| other |) ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::ops::bit::Shl"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) [ Ty.path "isize" ]
+          Self
+          (* Instance *)
+          [ ("Output", InstanceField.Ty _Output); ("shl", InstanceField.Method shl) ].
+    End Impl_core_ops_bit_Shl_isize_for_isize.
     
     (* Trait *)
     (* Empty module 'Shr' *)

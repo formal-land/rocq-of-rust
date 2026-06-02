@@ -129,21 +129,19 @@ Module buf.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
                                   Ty.path "bool",
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    M.get_associated_function (|
-                                      Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                                      "is_empty",
-                                      [],
-                                      []
-                                    |),
-                                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s1 |) |) |)
-                                    ]
-                                  |)
-                                |)) in
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                                    "is_empty",
+                                    [],
+                                    []
+                                  |),
+                                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s1 |) |) |) ]
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s2 |) |) |)));

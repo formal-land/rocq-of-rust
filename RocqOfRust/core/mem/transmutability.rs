@@ -1,4 +1,4 @@
-use crate::marker::{ConstParamTy_, UnsizedConstParamTy};
+use crate::marker::ConstParamTy_;
 
 /// Marks that `Src` is transmutable into `Self`.
 ///
@@ -32,7 +32,7 @@ use crate::marker::{ConstParamTy_, UnsizedConstParamTy};
 ///         src: ManuallyDrop::new(src),
 ///     };
 ///
-///     let dst = transmute.dst;
+///     let dst = unsafe { transmute.dst };
 ///
 ///     ManuallyDrop::into_inner(dst)
 /// }
@@ -83,8 +83,10 @@ use crate::marker::{ConstParamTy_, UnsizedConstParamTy};
 /// Furthermore, stability does not imply portability. For example, the size of
 /// `usize` is stable, but not portable.
 #[unstable(feature = "transmutability", issue = "99571")]
+#[unstable_feature_bound(transmutability)]
 #[lang = "transmute_trait"]
-#[rustc_deny_explicit_impl(implement_via_object = false)]
+#[rustc_deny_explicit_impl]
+#[rustc_do_not_implement_via_object]
 #[rustc_coinductive]
 pub unsafe trait TransmuteFrom<Src, const ASSUME: Assume = { Assume::NOTHING }>
 where
@@ -152,7 +154,7 @@ pub struct Assume {
     ///
     /// ```compile_fail,E0277
     /// #![feature(transmutability)]
-    /// use core::mem::{align_of, TransmuteFrom};
+    /// use core::mem::TransmuteFrom;
     ///
     /// assert_eq!(align_of::<[u8; 2]>(), 1);
     /// assert_eq!(align_of::<u16>(), 2);
@@ -171,7 +173,7 @@ pub struct Assume {
     ///
     /// ```rust
     /// #![feature(pointer_is_aligned_to, transmutability)]
-    /// use core::mem::{align_of, Assume, TransmuteFrom};
+    /// use core::mem::{Assume, TransmuteFrom};
     ///
     /// let src: &[u8; 2] = &[0xFF, 0xFF];
     ///
@@ -287,9 +289,8 @@ pub struct Assume {
 }
 
 #[unstable(feature = "transmutability", issue = "99571")]
+#[unstable_feature_bound(transmutability)]
 impl ConstParamTy_ for Assume {}
-#[unstable(feature = "transmutability", issue = "99571")]
-impl UnsizedConstParamTy for Assume {}
 
 impl Assume {
     /// With this, [`TransmuteFrom`] does not assume you have ensured any safety
@@ -336,7 +337,7 @@ impl Assume {
     ///     transmutability,
     /// )]
     /// #![allow(incomplete_features)]
-    /// use core::mem::{align_of, Assume, TransmuteFrom};
+    /// use core::mem::{Assume, TransmuteFrom};
     ///
     /// /// Attempts to transmute `src` to `&Dst`.
     /// ///

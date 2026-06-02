@@ -6,6 +6,65 @@ Module vec.
     (* Trait *)
     (* Empty module 'IsZero' *)
     
+    Module Impl_alloc_vec_is_zero_IsZero_for_Tuple_.
+      Definition Self : Ty.t := Ty.tuple [].
+      
+      (*
+                  fn is_zero(&self) -> bool {
+                      $is_zero( *self)
+                  }
+      *)
+      Definition is_zero (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.tuple [] ], self |) in
+            M.call_closure (|
+              Ty.path "bool",
+              M.get_trait_method (|
+                "core::ops::function::Fn",
+                Ty.function [ Ty.tuple [] ] (Ty.path "bool"),
+                [],
+                [ Ty.tuple [ Ty.tuple [] ] ],
+                "call",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.alloc (|
+                    Ty.function [ Ty.tuple [] ] (Ty.path "bool"),
+                    M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
+                                Ty.path "bool",
+                                M.alloc (| Ty.tuple [], α0 |),
+                                [ fun γ => ltac:(M.monadic (Value.Bool true)) ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end))
+                  |)
+                |);
+                Value.Tuple [ M.read (| M.deref (| M.read (| self |) |) |) ]
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "alloc::vec::is_zero::IsZero"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [ ("is_zero", InstanceField.Method is_zero) ].
+    End Impl_alloc_vec_is_zero_IsZero_for_Tuple_.
+    
     Module Impl_alloc_vec_is_zero_IsZero_for_i8.
       Definition Self : Ty.t := Ty.path "i8".
       
@@ -1118,96 +1177,16 @@ Module vec.
           (* Instance *) [ ("is_zero", InstanceField.Method is_zero) ].
     End Impl_alloc_vec_is_zero_IsZero_for_f64.
     
-    Module Impl_alloc_vec_is_zero_IsZero_for_pointer_const_T.
-      Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "*const") [] [ T ].
-      
-      (*
-          fn is_zero(&self) -> bool {
-              ( *self).is_null()
-          }
-      *)
-      Definition is_zero (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        let Self : Ty.t := Self T in
-        match ε, τ, α with
-        | [], [], [ self ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (|
-                Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "*const") [] [ T ] ],
-                self
-              |) in
-            M.call_closure (|
-              Ty.path "bool",
-              M.get_associated_function (|
-                Ty.apply (Ty.path "*const") [] [ T ],
-                "is_null",
-                [],
-                []
-              |),
-              [ M.read (| M.deref (| M.read (| self |) |) |) ]
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Axiom Implements :
-        forall (T : Ty.t),
-        M.IsTraitInstance
-          "alloc::vec::is_zero::IsZero"
-          (* Trait polymorphic consts *) []
-          (* Trait polymorphic types *) []
-          (Self T)
-          (* Instance *) [ ("is_zero", InstanceField.Method (is_zero T)) ].
-    End Impl_alloc_vec_is_zero_IsZero_for_pointer_const_T.
-    
-    Module Impl_alloc_vec_is_zero_IsZero_for_pointer_mut_T.
-      Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "*mut") [] [ T ].
-      
-      (*
-          fn is_zero(&self) -> bool {
-              ( *self).is_null()
-          }
-      *)
-      Definition is_zero (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        let Self : Ty.t := Self T in
-        match ε, τ, α with
-        | [], [], [ self ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (|
-                Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "*mut") [] [ T ] ],
-                self
-              |) in
-            M.call_closure (|
-              Ty.path "bool",
-              M.get_associated_function (| Ty.apply (Ty.path "*mut") [] [ T ], "is_null", [], [] |),
-              [ M.read (| M.deref (| M.read (| self |) |) |) ]
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Axiom Implements :
-        forall (T : Ty.t),
-        M.IsTraitInstance
-          "alloc::vec::is_zero::IsZero"
-          (* Trait polymorphic consts *) []
-          (* Trait polymorphic types *) []
-          (Self T)
-          (* Instance *) [ ("is_zero", InstanceField.Method (is_zero T)) ].
-    End Impl_alloc_vec_is_zero_IsZero_for_pointer_mut_T.
-    
-    Module Impl_alloc_vec_is_zero_IsZero_where_alloc_vec_is_zero_IsZero_T_for_array_N_T.
+    Module Impl_alloc_vec_is_zero_IsZero_for_array_N_T.
       Definition Self (N : Value.t) (T : Ty.t) : Ty.t := Ty.apply (Ty.path "array") [ N ] [ T ].
       
       (*
-          fn is_zero(&self) -> bool {
-              // Because this is generated as a runtime check, it's not obvious that
-              // it's worth doing if the array is really long. The threshold here
-              // is largely arbitrary, but was picked because as of 2022-07-01 LLVM
-              // fails to const-fold the check in `vec![[1; 32]; n]`
-              // See https://github.com/rust-lang/rust/pull/97581#issuecomment-1166628022
-              // Feel free to tweak if you have better evidence.
-      
-              N <= 16 && self.iter().all(IsZero::is_zero)
+          default fn is_zero(&self) -> bool {
+              // If the array is of length zero,
+              // then it doesn't actually contain any `T`s,
+              // so `T::clone` doesn't need to be called,
+              // and we can "zero-initialize" all zero bytes of the array.
+              N == 0
           }
       *)
       Definition is_zero
@@ -1226,36 +1205,96 @@ Module vec.
                 Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "array") [ N ] [ T ] ],
                 self
               |) in
-            LogicalOp.and (|
-              M.call_closure (|
-                Ty.path "bool",
-                BinOp.le,
-                [ N; Value.Integer IntegerKind.Usize 16 ]
-              |),
-              ltac:(M.monadic
-                (M.call_closure (|
-                  Ty.path "bool",
-                  M.get_trait_method (|
-                    "core::iter::traits::iterator::Iterator",
-                    Ty.apply (Ty.path "core::slice::iter::Iter") [] [ T ],
-                    [],
-                    [],
-                    "all",
-                    [],
-                    [ Ty.function [ Ty.apply (Ty.path "&") [] [ T ] ] (Ty.path "bool") ]
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.MutRef,
-                      M.alloc (|
-                        Ty.apply (Ty.path "core::slice::iter::Iter") [] [ T ],
+            M.call_closure (|
+              Ty.path "bool",
+              BinOp.eq,
+              [ N; Value.Integer IntegerKind.Usize 0 ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Axiom Implements :
+        forall (N : Value.t) (T : Ty.t),
+        M.IsTraitInstance
+          "alloc::vec::is_zero::IsZero"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          (Self N T)
+          (* Instance *) [ ("is_zero", InstanceField.Method (is_zero N T)) ].
+    End Impl_alloc_vec_is_zero_IsZero_for_array_N_T.
+    
+    Module Impl_alloc_vec_is_zero_IsZero_where_alloc_vec_is_zero_IsZero_T_for_array_N_T.
+      Definition Self (N : Value.t) (T : Ty.t) : Ty.t := Ty.apply (Ty.path "array") [ N ] [ T ].
+      
+      (*
+          fn is_zero(&self) -> bool {
+              if T::IS_ZST {
+                  // If T is a ZST, then there is at most one possible value of `T`,
+                  // so we only need to check one element for zeroness.
+                  // We can't unconditionally return `true` here, since, e.g.
+                  // `T = [NonTrivialCloneZst; 5]` is a ZST that implements `IsZero`
+                  // due to the generic array impl, but `T::is_zero` returns `false`
+                  // since the length is not 0.
+                  self.get(0).is_none_or(IsZero::is_zero)
+              } else {
+                  // Because this is generated as a runtime check, it's not obvious that
+                  // it's worth doing if the array is really long. The threshold here
+                  // is largely arbitrary, but was picked because as of 2022-07-01 LLVM
+                  // fails to const-fold the check in `vec![[1; 32]; n]`
+                  // See https://github.com/rust-lang/rust/pull/97581#issuecomment-1166628022
+                  // Feel free to tweak if you have better evidence.
+      
+                  N <= 16 && self.iter().all(IsZero::is_zero)
+              }
+          }
+      *)
+      Definition is_zero
+          (N : Value.t)
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self N T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "array") [ N ] [ T ] ],
+                self
+              |) in
+            M.match_operator (|
+              Ty.path "bool",
+              M.alloc (| Ty.tuple [], Value.Tuple [] |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ :=
+                      get_constant (| "core::mem::SizedTypeProperties::IS_ZST", Ty.path "bool" |) in
+                    let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                    M.call_closure (|
+                      Ty.path "bool",
+                      M.get_associated_function (|
+                        Ty.apply
+                          (Ty.path "core::option::Option")
+                          []
+                          [ Ty.apply (Ty.path "&") [] [ T ] ],
+                        "is_none_or",
+                        [],
+                        [ Ty.function [ Ty.apply (Ty.path "&") [] [ T ] ] (Ty.path "bool") ]
+                      |),
+                      [
                         M.call_closure (|
-                          Ty.apply (Ty.path "core::slice::iter::Iter") [] [ T ],
+                          Ty.apply
+                            (Ty.path "core::option::Option")
+                            []
+                            [ Ty.apply (Ty.path "&") [] [ T ] ],
                           M.get_associated_function (|
                             Ty.apply (Ty.path "slice") [] [ T ],
-                            "iter",
+                            "get",
                             [],
-                            []
+                            [ Ty.path "usize" ]
                           |),
                           [
                             M.call_closure (|
@@ -1268,22 +1307,94 @@ Module vec.
                                   [ Ty.apply (Ty.path "array") [ N ] [ T ] ])
                                 (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]),
                               [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                            |);
+                            Value.Integer IntegerKind.Usize 0
+                          ]
+                        |);
+                        M.get_trait_method (|
+                          "alloc::vec::is_zero::IsZero",
+                          T,
+                          [],
+                          [],
+                          "is_zero",
+                          [],
+                          []
+                        |)
+                      ]
+                    |)));
+                fun γ =>
+                  ltac:(M.monadic
+                    (LogicalOp.and (|
+                      M.call_closure (|
+                        Ty.path "bool",
+                        BinOp.le,
+                        [ N; Value.Integer IntegerKind.Usize 16 ]
+                      |),
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "bool",
+                          M.get_trait_method (|
+                            "core::iter::traits::iterator::Iterator",
+                            Ty.apply (Ty.path "core::slice::iter::Iter") [] [ T ],
+                            [],
+                            [],
+                            "all",
+                            [],
+                            [ Ty.function [ Ty.apply (Ty.path "&") [] [ T ] ] (Ty.path "bool") ]
+                          |),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.MutRef,
+                              M.alloc (|
+                                Ty.apply (Ty.path "core::slice::iter::Iter") [] [ T ],
+                                M.call_closure (|
+                                  Ty.apply (Ty.path "core::slice::iter::Iter") [] [ T ],
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "slice") [] [ T ],
+                                    "iter",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.call_closure (|
+                                      Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                                      M.pointer_coercion
+                                        M.PointerCoercion.Unsize
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.apply (Ty.path "array") [ N ] [ T ] ])
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.apply (Ty.path "slice") [] [ T ] ]),
+                                      [
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| self |) |)
+                                        |)
+                                      ]
+                                    |)
+                                  ]
+                                |)
+                              |)
+                            |);
+                            M.get_trait_method (|
+                              "alloc::vec::is_zero::IsZero",
+                              T,
+                              [],
+                              [],
+                              "is_zero",
+                              [],
+                              []
                             |)
                           ]
-                        |)
-                      |)
-                    |);
-                    M.get_trait_method (|
-                      "alloc::vec::is_zero::IsZero",
-                      T,
-                      [],
-                      [],
-                      "is_zero",
-                      [],
-                      []
-                    |)
-                  ]
-                |)))
+                        |)))
+                    |)))
+              ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.

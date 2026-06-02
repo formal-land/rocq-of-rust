@@ -171,6 +171,9 @@ Module transaction.
               ("access_list", InstanceField.Method (access_list T))
             ].
       End Impl_revm_context_interface_transaction_eip2930_Eip2930Tx_where_revm_context_interface_transaction_eip2930_Eip2930Tx_T_where_core_marker_Sized_T_where_revm_context_interface_transaction_common_CommonTxFields_ref__T_for_ref__T.
+    End underscore.
+    
+    Module underscore_1.
       Module Impl_revm_context_interface_transaction_eip2930_Eip2930Tx_where_revm_context_interface_transaction_eip2930_Eip2930Tx_T_where_core_marker_Sized_T_where_revm_context_interface_transaction_common_CommonTxFields_alloc_boxed_Box_T_alloc_alloc_Global_for_alloc_boxed_Box_T_alloc_alloc_Global.
         Definition Self (T : Ty.t) : Ty.t :=
           Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; Ty.path "alloc::alloc::Global" ].
@@ -380,6 +383,9 @@ Module transaction.
               ("access_list", InstanceField.Method (access_list T))
             ].
       End Impl_revm_context_interface_transaction_eip2930_Eip2930Tx_where_revm_context_interface_transaction_eip2930_Eip2930Tx_T_where_core_marker_Sized_T_where_revm_context_interface_transaction_common_CommonTxFields_alloc_boxed_Box_T_alloc_alloc_Global_for_alloc_boxed_Box_T_alloc_alloc_Global.
+    End underscore_1.
+    
+    Module underscore_2.
       Module Impl_revm_context_interface_transaction_eip2930_Eip2930Tx_where_revm_context_interface_transaction_eip2930_Eip2930Tx_T_where_core_marker_Sized_T_where_revm_context_interface_transaction_common_CommonTxFields_alloc_sync_Arc_T_alloc_alloc_Global_for_alloc_sync_Arc_T_alloc_alloc_Global.
         Definition Self (T : Ty.t) : Ty.t :=
           Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; Ty.path "alloc::alloc::Global" ].
@@ -641,6 +647,9 @@ Module transaction.
               ("access_list", InstanceField.Method (access_list T))
             ].
       End Impl_revm_context_interface_transaction_eip2930_Eip2930Tx_where_revm_context_interface_transaction_eip2930_Eip2930Tx_T_where_core_marker_Sized_T_where_revm_context_interface_transaction_common_CommonTxFields_alloc_sync_Arc_T_alloc_alloc_Global_for_alloc_sync_Arc_T_alloc_alloc_Global.
+    End underscore_2.
+    
+    Module underscore_3.
       Module Impl_revm_context_interface_transaction_eip2930_Eip2930Tx_where_revm_context_interface_transaction_eip2930_Eip2930Tx_T_where_core_marker_Sized_T_where_revm_context_interface_transaction_common_CommonTxFields_alloc_rc_Rc_T_alloc_alloc_Global_for_alloc_rc_Rc_T_alloc_alloc_Global.
         Definition Self (T : Ty.t) : Ty.t :=
           Ty.apply (Ty.path "alloc::rc::Rc") [] [ T; Ty.path "alloc::alloc::Global" ].
@@ -898,9 +907,6 @@ Module transaction.
               ("access_list", InstanceField.Method (access_list T))
             ].
       End Impl_revm_context_interface_transaction_eip2930_Eip2930Tx_where_revm_context_interface_transaction_eip2930_Eip2930Tx_T_where_core_marker_Sized_T_where_revm_context_interface_transaction_common_CommonTxFields_alloc_rc_Rc_T_alloc_alloc_Global_for_alloc_rc_Rc_T_alloc_alloc_Global.
-    End underscore.
-    
-    
-    
+    End underscore_3.
   End eip2930.
 End transaction.

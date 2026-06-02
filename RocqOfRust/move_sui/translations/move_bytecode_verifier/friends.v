@@ -184,59 +184,58 @@ Module friends.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                M.get_associated_function (|
-                                  Ty.apply
-                                    (Ty.path "slice")
-                                    []
-                                    [ Ty.path "move_binary_format::file_format::ModuleHandle" ],
-                                  "contains",
-                                  [],
+                              M.get_associated_function (|
+                                Ty.apply
+                                  (Ty.path "slice")
                                   []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "&")
-                                          []
-                                          [
-                                            Ty.apply
-                                              (Ty.path "slice")
-                                              []
-                                              [
-                                                Ty.path
-                                                  "move_binary_format::file_format::ModuleHandle"
-                                              ]
-                                          ],
-                                        M.get_associated_function (|
-                                          Ty.path "move_binary_format::file_format::CompiledModule",
-                                          "friend_decls",
-                                          [],
-                                          []
-                                        |),
+                                  [ Ty.path "move_binary_format::file_format::ModuleHandle" ],
+                                "contains",
+                                [],
+                                []
+                              |),
+                              [
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (|
+                                    M.call_closure (|
+                                      Ty.apply
+                                        (Ty.path "&")
+                                        []
                                         [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| module |) |)
-                                          |)
-                                        ]
-                                      |)
+                                          Ty.apply
+                                            (Ty.path "slice")
+                                            []
+                                            [
+                                              Ty.path
+                                                "move_binary_format::file_format::ModuleHandle"
+                                            ]
+                                        ],
+                                      M.get_associated_function (|
+                                        Ty.path "move_binary_format::file_format::CompiledModule",
+                                        "friend_decls",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| module |) |)
+                                        |)
+                                      ]
                                     |)
-                                  |);
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (| M.read (| self_handle |) |)
                                   |)
-                                ]
-                              |)
-                            |)) in
+                                |);
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (| M.read (| self_handle |) |)
+                                |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.never_to_any (|
                           M.read (|
@@ -515,7 +514,7 @@ Module friends.
                   [
                     fun γ =>
                       ltac:(M.monadic
-                        (let γ := M.use has_external_friend in
+                        (let γ := has_external_friend in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.never_to_any (|
                           M.read (|

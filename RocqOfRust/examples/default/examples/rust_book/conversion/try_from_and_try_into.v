@@ -168,22 +168,21 @@ Module Impl_core_convert_TryFrom_i32_for_try_from_and_try_into_EvenNumber.
             fun γ =>
               ltac:(M.monadic
                 (let γ :=
-                  M.use
-                    (M.alloc (|
+                  M.alloc (|
+                    Ty.path "bool",
+                    M.call_closure (|
                       Ty.path "bool",
-                      M.call_closure (|
-                        Ty.path "bool",
-                        BinOp.eq,
-                        [
-                          M.call_closure (|
-                            Ty.path "i32",
-                            BinOp.Wrap.rem,
-                            [ M.read (| value |); Value.Integer IntegerKind.I32 2 ]
-                          |);
-                          Value.Integer IntegerKind.I32 0
-                        ]
-                      |)
-                    |)) in
+                      BinOp.eq,
+                      [
+                        M.call_closure (|
+                          Ty.path "i32",
+                          BinOp.Wrap.rem,
+                          [ M.read (| value |); Value.Integer IntegerKind.I32 2 ]
+                        |);
+                        Value.Integer IntegerKind.I32 0
+                      ]
+                    |)
+                  |) in
                 let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                 Value.StructTuple
                   "core::result::Result::Ok"
@@ -350,50 +349,47 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  UnOp.not,
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      M.get_trait_method (|
-                                        "core::cmp::PartialEq",
+                                UnOp.not,
+                                [
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    M.get_trait_method (|
+                                      "core::cmp::PartialEq",
+                                      Ty.apply
+                                        (Ty.path "core::result::Result")
+                                        []
+                                        [ Ty.path "try_from_and_try_into::EvenNumber"; Ty.tuple []
+                                        ],
+                                      [],
+                                      [
                                         Ty.apply
                                           (Ty.path "core::result::Result")
                                           []
                                           [ Ty.path "try_from_and_try_into::EvenNumber"; Ty.tuple []
-                                          ],
-                                        [],
-                                        [
-                                          Ty.apply
-                                            (Ty.path "core::result::Result")
-                                            []
-                                            [
-                                              Ty.path "try_from_and_try_into::EvenNumber";
-                                              Ty.tuple []
-                                            ]
-                                        ],
-                                        "eq",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| left_val |) |)
-                                        |);
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| right_val |) |)
-                                        |)
-                                      ]
-                                    |)
-                                  ]
-                                |)
-                              |)) in
+                                          ]
+                                      ],
+                                      "eq",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| left_val |) |)
+                                      |);
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| right_val |) |)
+                                      |)
+                                    ]
+                                  |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -560,50 +556,47 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  UnOp.not,
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      M.get_trait_method (|
-                                        "core::cmp::PartialEq",
+                                UnOp.not,
+                                [
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    M.get_trait_method (|
+                                      "core::cmp::PartialEq",
+                                      Ty.apply
+                                        (Ty.path "core::result::Result")
+                                        []
+                                        [ Ty.path "try_from_and_try_into::EvenNumber"; Ty.tuple []
+                                        ],
+                                      [],
+                                      [
                                         Ty.apply
                                           (Ty.path "core::result::Result")
                                           []
                                           [ Ty.path "try_from_and_try_into::EvenNumber"; Ty.tuple []
-                                          ],
-                                        [],
-                                        [
-                                          Ty.apply
-                                            (Ty.path "core::result::Result")
-                                            []
-                                            [
-                                              Ty.path "try_from_and_try_into::EvenNumber";
-                                              Ty.tuple []
-                                            ]
-                                        ],
-                                        "eq",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| left_val |) |)
-                                        |);
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| right_val |) |)
-                                        |)
-                                      ]
-                                    |)
-                                  ]
-                                |)
-                              |)) in
+                                          ]
+                                      ],
+                                      "eq",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| left_val |) |)
+                                      |);
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| right_val |) |)
+                                      |)
+                                    ]
+                                  |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -773,50 +766,47 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  UnOp.not,
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      M.get_trait_method (|
-                                        "core::cmp::PartialEq",
+                                UnOp.not,
+                                [
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    M.get_trait_method (|
+                                      "core::cmp::PartialEq",
+                                      Ty.apply
+                                        (Ty.path "core::result::Result")
+                                        []
+                                        [ Ty.path "try_from_and_try_into::EvenNumber"; Ty.tuple []
+                                        ],
+                                      [],
+                                      [
                                         Ty.apply
                                           (Ty.path "core::result::Result")
                                           []
                                           [ Ty.path "try_from_and_try_into::EvenNumber"; Ty.tuple []
-                                          ],
-                                        [],
-                                        [
-                                          Ty.apply
-                                            (Ty.path "core::result::Result")
-                                            []
-                                            [
-                                              Ty.path "try_from_and_try_into::EvenNumber";
-                                              Ty.tuple []
-                                            ]
-                                        ],
-                                        "eq",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| left_val |) |)
-                                        |);
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| right_val |) |)
-                                        |)
-                                      ]
-                                    |)
-                                  ]
-                                |)
-                              |)) in
+                                          ]
+                                      ],
+                                      "eq",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| left_val |) |)
+                                      |);
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| right_val |) |)
+                                      |)
+                                    ]
+                                  |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -980,50 +970,47 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  UnOp.not,
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      M.get_trait_method (|
-                                        "core::cmp::PartialEq",
+                                UnOp.not,
+                                [
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    M.get_trait_method (|
+                                      "core::cmp::PartialEq",
+                                      Ty.apply
+                                        (Ty.path "core::result::Result")
+                                        []
+                                        [ Ty.path "try_from_and_try_into::EvenNumber"; Ty.tuple []
+                                        ],
+                                      [],
+                                      [
                                         Ty.apply
                                           (Ty.path "core::result::Result")
                                           []
                                           [ Ty.path "try_from_and_try_into::EvenNumber"; Ty.tuple []
-                                          ],
-                                        [],
-                                        [
-                                          Ty.apply
-                                            (Ty.path "core::result::Result")
-                                            []
-                                            [
-                                              Ty.path "try_from_and_try_into::EvenNumber";
-                                              Ty.tuple []
-                                            ]
-                                        ],
-                                        "eq",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| left_val |) |)
-                                        |);
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| right_val |) |)
-                                        |)
-                                      ]
-                                    |)
-                                  ]
-                                |)
-                              |)) in
+                                          ]
+                                      ],
+                                      "eq",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| left_val |) |)
+                                      |);
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| right_val |) |)
+                                      |)
+                                    ]
+                                  |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|

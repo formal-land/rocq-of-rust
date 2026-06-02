@@ -71,7 +71,7 @@ Proof.
   destruct run_CfgGetter_for_Self.
   destruct run_Cfg_for_Cfg.
   destruct (Impl_AsRef_for_Slice.run u8).
-  destruct run_Deref_for_Synthetic1.
+  destruct run_Deref_for_Synthetic.
   run_symbolic.
 Defined.
 Global Opaque run_create.

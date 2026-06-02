@@ -1,13 +1,16 @@
 //! Indexing implementations for `[T]`.
 
+use crate::intrinsics::slice_get_unchecked;
+use crate::marker::Destruct;
 use crate::panic::const_panic;
 use crate::ub_checks::assert_unsafe_precondition;
 use crate::{ops, range};
 
 #[stable(feature = "rust1", since = "1.0.0")]
-impl<T, I> ops::Index<I> for [T]
+#[rustc_const_unstable(feature = "const_index", issue = "143775")]
+impl<T, I> const ops::Index<I> for [T]
 where
-    I: SliceIndex<[T]>,
+    I: [const] SliceIndex<[T]>,
 {
     type Output = I::Output;
 
@@ -18,9 +21,10 @@ where
 }
 
 #[stable(feature = "rust1", since = "1.0.0")]
-impl<T, I> ops::IndexMut<I> for [T]
+#[rustc_const_unstable(feature = "const_index", issue = "143775")]
+impl<T, I> const ops::IndexMut<I> for [T]
 where
-    I: SliceIndex<[T]>,
+    I: [const] SliceIndex<[T]>,
 {
     #[inline(always)]
     fn index_mut(&mut self, index: I) -> &mut I::Output {
@@ -28,54 +32,45 @@ where
     }
 }
 
-#[cfg_attr(not(feature = "panic_immediate_abort"), inline(never), cold)]
-#[cfg_attr(feature = "panic_immediate_abort", inline)]
+#[cfg_attr(not(panic = "immediate-abort"), inline(never), cold)]
+#[cfg_attr(panic = "immediate-abort", inline)]
 #[track_caller]
-const fn slice_start_index_len_fail(index: usize, len: usize) -> ! {
-    const_panic!(
-        "slice start index is out of range for slice",
-        "range start index {index} out of range for slice of length {len}",
-        index: usize,
-        len: usize,
-    )
-}
+const fn slice_index_fail(start: usize, end: usize, len: usize) -> ! {
+    if start > len {
+        const_panic!(
+            "slice start index is out of range for slice",
+            "range start index {start} out of range for slice of length {len}",
+            start: usize,
+            len: usize,
+        )
+    }
 
-#[cfg_attr(not(feature = "panic_immediate_abort"), inline(never), cold)]
-#[cfg_attr(feature = "panic_immediate_abort", inline)]
-#[track_caller]
-const fn slice_end_index_len_fail(index: usize, len: usize) -> ! {
+    if end > len {
+        const_panic!(
+            "slice end index is out of range for slice",
+            "range end index {end} out of range for slice of length {len}",
+            end: usize,
+            len: usize,
+        )
+    }
+
+    if start > end {
+        const_panic!(
+            "slice index start is larger than end",
+            "slice index starts at {start} but ends at {end}",
+            start: usize,
+            end: usize,
+        )
+    }
+
+    // Only reachable if the range was a `RangeInclusive` or a
+    // `RangeToInclusive`, with `end == len`.
     const_panic!(
         "slice end index is out of range for slice",
-        "range end index {index} out of range for slice of length {len}",
-        index: usize,
+        "range end index {end} out of range for slice of length {len}",
+        end: usize,
         len: usize,
     )
-}
-
-#[cfg_attr(not(feature = "panic_immediate_abort"), inline(never), cold)]
-#[cfg_attr(feature = "panic_immediate_abort", inline)]
-#[track_caller]
-const fn slice_index_order_fail(index: usize, end: usize) -> ! {
-    const_panic!(
-        "slice index start is larger than end",
-        "slice index starts at {index} but ends at {end}",
-        index: usize,
-        end: usize,
-    )
-}
-
-#[cfg_attr(not(feature = "panic_immediate_abort"), inline(never), cold)]
-#[cfg_attr(feature = "panic_immediate_abort", inline)]
-#[track_caller]
-const fn slice_start_index_overflow_fail() -> ! {
-    panic!("attempted to index slice from after maximum usize");
-}
-
-#[cfg_attr(not(feature = "panic_immediate_abort"), inline(never), cold)]
-#[cfg_attr(feature = "panic_immediate_abort", inline)]
-#[track_caller]
-const fn slice_end_index_overflow_fail() -> ! {
-    panic!("attempted to index slice up to maximum usize");
 }
 
 // The UbChecks are great for catching bugs in the unsafe methods, but including
@@ -84,27 +79,14 @@ const fn slice_end_index_overflow_fail() -> ! {
 // which use intrinsics directly to get *no* extra checks.
 
 #[inline(always)]
-const unsafe fn get_noubcheck<T>(ptr: *const [T], index: usize) -> *const T {
-    let ptr = ptr as *const T;
-    // SAFETY: The caller already checked these preconditions
-    unsafe { crate::intrinsics::offset(ptr, index) }
-}
-
-#[inline(always)]
-const unsafe fn get_mut_noubcheck<T>(ptr: *mut [T], index: usize) -> *mut T {
-    let ptr = ptr as *mut T;
-    // SAFETY: The caller already checked these preconditions
-    unsafe { crate::intrinsics::offset(ptr, index) }
-}
-
-#[inline(always)]
 const unsafe fn get_offset_len_noubcheck<T>(
     ptr: *const [T],
     offset: usize,
     len: usize,
 ) -> *const [T] {
+    let ptr = ptr as *const T;
     // SAFETY: The caller already checked these preconditions
-    let ptr = unsafe { get_noubcheck(ptr, offset) };
+    let ptr = unsafe { crate::intrinsics::offset(ptr, offset) };
     crate::intrinsics::aggregate_raw_ptr(ptr, len)
 }
 
@@ -114,8 +96,9 @@ const unsafe fn get_offset_len_mut_noubcheck<T>(
     offset: usize,
     len: usize,
 ) -> *mut [T] {
+    let ptr = ptr as *mut T;
     // SAFETY: The caller already checked these preconditions
-    let ptr = unsafe { get_mut_noubcheck(ptr, offset) };
+    let ptr = unsafe { crate::intrinsics::offset(ptr, offset) };
     crate::intrinsics::aggregate_raw_ptr(ptr, len)
 }
 
@@ -147,9 +130,16 @@ mod private_slice_index {
     #[unstable(feature = "new_range_api", issue = "125687")]
     impl Sealed for range::RangeInclusive<usize> {}
     #[unstable(feature = "new_range_api", issue = "125687")]
+    impl Sealed for range::RangeToInclusive<usize> {}
+    #[unstable(feature = "new_range_api", issue = "125687")]
     impl Sealed for range::RangeFrom<usize> {}
 
     impl Sealed for ops::IndexRange {}
+
+    #[unstable(feature = "sliceindex_wrappers", issue = "146179")]
+    impl Sealed for crate::index::Last {}
+    #[unstable(feature = "sliceindex_wrappers", issue = "146179")]
+    impl<T> Sealed for crate::index::Clamp<T> where T: Sealed {}
 }
 
 /// A helper trait used for indexing operations.
@@ -161,7 +151,7 @@ mod private_slice_index {
 #[rustc_on_unimplemented(
     on(T = "str", label = "string indices are ranges of `usize`",),
     on(
-        all(any(T = "str", T = "&str", T = "alloc::string::String"), _Self = "{integer}"),
+        all(any(T = "str", T = "&str", T = "alloc::string::String"), Self = "{integer}"),
         note = "you can use `.chars().nth()` or `.bytes().nth()`\n\
                 for more information, see chapter 8 in The Book: \
                 <https://doc.rust-lang.org/book/ch08-02-strings.html#indexing-into-strings>"
@@ -169,7 +159,8 @@ mod private_slice_index {
     message = "the type `{T}` cannot be indexed by `{Self}`",
     label = "slice indices are of type `usize` or ranges of `usize`"
 )]
-pub unsafe trait SliceIndex<T: ?Sized>: private_slice_index::Sealed {
+#[rustc_const_unstable(feature = "const_index", issue = "143775")]
+pub const unsafe trait SliceIndex<T: ?Sized>: private_slice_index::Sealed {
     /// The output type returned by methods.
     #[stable(feature = "slice_get_slice", since = "1.28.0")]
     type Output: ?Sized;
@@ -219,29 +210,35 @@ pub unsafe trait SliceIndex<T: ?Sized>: private_slice_index::Sealed {
 
 /// The methods `index` and `index_mut` panic if the index is out of bounds.
 #[stable(feature = "slice_get_slice_impls", since = "1.15.0")]
-unsafe impl<T> SliceIndex<[T]> for usize {
+#[rustc_const_unstable(feature = "const_index", issue = "143775")]
+unsafe impl<T> const SliceIndex<[T]> for usize {
     type Output = T;
 
     #[inline]
     fn get(self, slice: &[T]) -> Option<&T> {
-        // SAFETY: `self` is checked to be in bounds.
-        if self < slice.len() { unsafe { Some(&*get_noubcheck(slice, self)) } } else { None }
-    }
-
-    #[inline]
-    fn get_mut(self, slice: &mut [T]) -> Option<&mut T> {
         if self < slice.len() {
             // SAFETY: `self` is checked to be in bounds.
-            unsafe { Some(&mut *get_mut_noubcheck(slice, self)) }
+            unsafe { Some(slice_get_unchecked(slice, self)) }
         } else {
             None
         }
     }
 
     #[inline]
+    fn get_mut(self, slice: &mut [T]) -> Option<&mut T> {
+        if self < slice.len() {
+            // SAFETY: `self` is checked to be in bounds.
+            unsafe { Some(slice_get_unchecked(slice, self)) }
+        } else {
+            None
+        }
+    }
+
+    #[inline]
+    #[track_caller]
     unsafe fn get_unchecked(self, slice: *const [T]) -> *const T {
         assert_unsafe_precondition!(
-            check_language_ub,
+            check_language_ub, // okay because of the `assume` below
             "slice::get_unchecked requires that the index is within the slice",
             (this: usize = self, len: usize = slice.len()) => this < len
         );
@@ -253,11 +250,12 @@ unsafe impl<T> SliceIndex<[T]> for usize {
             // Use intrinsics::assume instead of hint::assert_unchecked so that we don't check the
             // precondition of this function twice.
             crate::intrinsics::assume(self < slice.len());
-            get_noubcheck(slice, self)
+            slice_get_unchecked(slice, self)
         }
     }
 
     #[inline]
+    #[track_caller]
     unsafe fn get_unchecked_mut(self, slice: *mut [T]) -> *mut T {
         assert_unsafe_precondition!(
             check_library_ub,
@@ -265,7 +263,7 @@ unsafe impl<T> SliceIndex<[T]> for usize {
             (this: usize = self, len: usize = slice.len()) => this < len
         );
         // SAFETY: see comments for `get_unchecked` above.
-        unsafe { get_mut_noubcheck(slice, self) }
+        unsafe { slice_get_unchecked(slice, self) }
     }
 
     #[inline]
@@ -283,7 +281,8 @@ unsafe impl<T> SliceIndex<[T]> for usize {
 
 /// Because `IndexRange` guarantees `start <= end`, fewer checks are needed here
 /// than there are for a general `Range<usize>` (which might be `100..3`).
-unsafe impl<T> SliceIndex<[T]> for ops::IndexRange {
+#[rustc_const_unstable(feature = "const_index", issue = "143775")]
+unsafe impl<T> const SliceIndex<[T]> for ops::IndexRange {
     type Output = [T];
 
     #[inline]
@@ -307,6 +306,7 @@ unsafe impl<T> SliceIndex<[T]> for ops::IndexRange {
     }
 
     #[inline]
+    #[track_caller]
     unsafe fn get_unchecked(self, slice: *const [T]) -> *const [T] {
         assert_unsafe_precondition!(
             check_library_ub,
@@ -321,6 +321,7 @@ unsafe impl<T> SliceIndex<[T]> for ops::IndexRange {
     }
 
     #[inline]
+    #[track_caller]
     unsafe fn get_unchecked_mut(self, slice: *mut [T]) -> *mut [T] {
         assert_unsafe_precondition!(
             check_library_ub,
@@ -338,7 +339,7 @@ unsafe impl<T> SliceIndex<[T]> for ops::IndexRange {
             // SAFETY: `self` is checked to be valid and in bounds above.
             unsafe { &*get_offset_len_noubcheck(slice, self.start(), self.len()) }
         } else {
-            slice_end_index_len_fail(self.end(), slice.len())
+            slice_index_fail(self.start(), self.end(), slice.len())
         }
     }
 
@@ -348,7 +349,7 @@ unsafe impl<T> SliceIndex<[T]> for ops::IndexRange {
             // SAFETY: `self` is checked to be valid and in bounds above.
             unsafe { &mut *get_offset_len_mut_noubcheck(slice, self.start(), self.len()) }
         } else {
-            slice_end_index_len_fail(self.end(), slice.len())
+            slice_index_fail(self.start(), self.end(), slice.len())
         }
     }
 }
@@ -357,7 +358,8 @@ unsafe impl<T> SliceIndex<[T]> for ops::IndexRange {
 /// - the start of the range is greater than the end of the range or
 /// - the end of the range is out of bounds.
 #[stable(feature = "slice_get_slice_impls", since = "1.15.0")]
-unsafe impl<T> SliceIndex<[T]> for ops::Range<usize> {
+#[rustc_const_unstable(feature = "const_index", issue = "143775")]
+unsafe impl<T> const SliceIndex<[T]> for ops::Range<usize> {
     type Output = [T];
 
     #[inline]
@@ -386,6 +388,7 @@ unsafe impl<T> SliceIndex<[T]> for ops::Range<usize> {
     }
 
     #[inline]
+    #[track_caller]
     unsafe fn get_unchecked(self, slice: *const [T]) -> *const [T] {
         assert_unsafe_precondition!(
             check_library_ub,
@@ -410,6 +413,7 @@ unsafe impl<T> SliceIndex<[T]> for ops::Range<usize> {
     }
 
     #[inline]
+    #[track_caller]
     unsafe fn get_unchecked_mut(self, slice: *mut [T]) -> *mut [T] {
         assert_unsafe_precondition!(
             check_library_ub,
@@ -430,31 +434,33 @@ unsafe impl<T> SliceIndex<[T]> for ops::Range<usize> {
     #[inline(always)]
     fn index(self, slice: &[T]) -> &[T] {
         // Using checked_sub is a safe way to get `SubUnchecked` in MIR
-        let Some(new_len) = usize::checked_sub(self.end, self.start) else {
-            slice_index_order_fail(self.start, self.end)
-        };
-        if self.end > slice.len() {
-            slice_end_index_len_fail(self.end, slice.len());
+        if let Some(new_len) = usize::checked_sub(self.end, self.start)
+            && self.end <= slice.len()
+        {
+            // SAFETY: `self` is checked to be valid and in bounds above.
+            unsafe { &*get_offset_len_noubcheck(slice, self.start, new_len) }
+        } else {
+            slice_index_fail(self.start, self.end, slice.len())
         }
-        // SAFETY: `self` is checked to be valid and in bounds above.
-        unsafe { &*get_offset_len_noubcheck(slice, self.start, new_len) }
     }
 
     #[inline]
     fn index_mut(self, slice: &mut [T]) -> &mut [T] {
-        let Some(new_len) = usize::checked_sub(self.end, self.start) else {
-            slice_index_order_fail(self.start, self.end)
-        };
-        if self.end > slice.len() {
-            slice_end_index_len_fail(self.end, slice.len());
+        // Using checked_sub is a safe way to get `SubUnchecked` in MIR
+        if let Some(new_len) = usize::checked_sub(self.end, self.start)
+            && self.end <= slice.len()
+        {
+            // SAFETY: `self` is checked to be valid and in bounds above.
+            unsafe { &mut *get_offset_len_mut_noubcheck(slice, self.start, new_len) }
+        } else {
+            slice_index_fail(self.start, self.end, slice.len())
         }
-        // SAFETY: `self` is checked to be valid and in bounds above.
-        unsafe { &mut *get_offset_len_mut_noubcheck(slice, self.start, new_len) }
     }
 }
 
 #[unstable(feature = "new_range_api", issue = "125687")]
-unsafe impl<T> SliceIndex<[T]> for range::Range<usize> {
+#[rustc_const_unstable(feature = "const_index", issue = "143775")]
+unsafe impl<T> const SliceIndex<[T]> for range::Range<usize> {
     type Output = [T];
 
     #[inline]
@@ -492,7 +498,8 @@ unsafe impl<T> SliceIndex<[T]> for range::Range<usize> {
 
 /// The methods `index` and `index_mut` panic if the end of the range is out of bounds.
 #[stable(feature = "slice_get_slice_impls", since = "1.15.0")]
-unsafe impl<T> SliceIndex<[T]> for ops::RangeTo<usize> {
+#[rustc_const_unstable(feature = "const_index", issue = "143775")]
+unsafe impl<T> const SliceIndex<[T]> for ops::RangeTo<usize> {
     type Output = [T];
 
     #[inline]
@@ -530,7 +537,8 @@ unsafe impl<T> SliceIndex<[T]> for ops::RangeTo<usize> {
 
 /// The methods `index` and `index_mut` panic if the start of the range is out of bounds.
 #[stable(feature = "slice_get_slice_impls", since = "1.15.0")]
-unsafe impl<T> SliceIndex<[T]> for ops::RangeFrom<usize> {
+#[rustc_const_unstable(feature = "const_index", issue = "143775")]
+unsafe impl<T> const SliceIndex<[T]> for ops::RangeFrom<usize> {
     type Output = [T];
 
     #[inline]
@@ -558,24 +566,31 @@ unsafe impl<T> SliceIndex<[T]> for ops::RangeFrom<usize> {
     #[inline]
     fn index(self, slice: &[T]) -> &[T] {
         if self.start > slice.len() {
-            slice_start_index_len_fail(self.start, slice.len());
+            slice_index_fail(self.start, slice.len(), slice.len())
         }
         // SAFETY: `self` is checked to be valid and in bounds above.
-        unsafe { &*self.get_unchecked(slice) }
+        unsafe {
+            let new_len = crate::intrinsics::unchecked_sub(slice.len(), self.start);
+            &*get_offset_len_noubcheck(slice, self.start, new_len)
+        }
     }
 
     #[inline]
     fn index_mut(self, slice: &mut [T]) -> &mut [T] {
         if self.start > slice.len() {
-            slice_start_index_len_fail(self.start, slice.len());
+            slice_index_fail(self.start, slice.len(), slice.len())
         }
         // SAFETY: `self` is checked to be valid and in bounds above.
-        unsafe { &mut *self.get_unchecked_mut(slice) }
+        unsafe {
+            let new_len = crate::intrinsics::unchecked_sub(slice.len(), self.start);
+            &mut *get_offset_len_mut_noubcheck(slice, self.start, new_len)
+        }
     }
 }
 
 #[unstable(feature = "new_range_api", issue = "125687")]
-unsafe impl<T> SliceIndex<[T]> for range::RangeFrom<usize> {
+#[rustc_const_unstable(feature = "const_index", issue = "143775")]
+unsafe impl<T> const SliceIndex<[T]> for range::RangeFrom<usize> {
     type Output = [T];
 
     #[inline]
@@ -612,7 +627,8 @@ unsafe impl<T> SliceIndex<[T]> for range::RangeFrom<usize> {
 }
 
 #[stable(feature = "slice_get_slice_impls", since = "1.15.0")]
-unsafe impl<T> SliceIndex<[T]> for ops::RangeFull {
+#[rustc_const_unstable(feature = "const_index", issue = "143775")]
+unsafe impl<T> const SliceIndex<[T]> for ops::RangeFull {
     type Output = [T];
 
     #[inline]
@@ -651,7 +667,8 @@ unsafe impl<T> SliceIndex<[T]> for ops::RangeFull {
 /// - the start of the range is greater than the end of the range or
 /// - the end of the range is out of bounds.
 #[stable(feature = "inclusive_range", since = "1.26.0")]
-unsafe impl<T> SliceIndex<[T]> for ops::RangeInclusive<usize> {
+#[rustc_const_unstable(feature = "const_index", issue = "143775")]
+unsafe impl<T> const SliceIndex<[T]> for ops::RangeInclusive<usize> {
     type Output = [T];
 
     #[inline]
@@ -678,23 +695,38 @@ unsafe impl<T> SliceIndex<[T]> for ops::RangeInclusive<usize> {
 
     #[inline]
     fn index(self, slice: &[T]) -> &[T] {
-        if *self.end() == usize::MAX {
-            slice_end_index_overflow_fail();
+        let Self { mut start, mut end, exhausted } = self;
+        let len = slice.len();
+        if end < len {
+            end = end + 1;
+            start = if exhausted { end } else { start };
+            if let Some(new_len) = usize::checked_sub(end, start) {
+                // SAFETY: `self` is checked to be valid and in bounds above.
+                unsafe { return &*get_offset_len_noubcheck(slice, start, new_len) }
+            }
         }
-        self.into_slice_range().index(slice)
+        slice_index_fail(start, end, slice.len())
     }
 
     #[inline]
     fn index_mut(self, slice: &mut [T]) -> &mut [T] {
-        if *self.end() == usize::MAX {
-            slice_end_index_overflow_fail();
+        let Self { mut start, mut end, exhausted } = self;
+        let len = slice.len();
+        if end < len {
+            end = end + 1;
+            start = if exhausted { end } else { start };
+            if let Some(new_len) = usize::checked_sub(end, start) {
+                // SAFETY: `self` is checked to be valid and in bounds above.
+                unsafe { return &mut *get_offset_len_mut_noubcheck(slice, start, new_len) }
+            }
         }
-        self.into_slice_range().index_mut(slice)
+        slice_index_fail(start, end, slice.len())
     }
 }
 
 #[unstable(feature = "new_range_api", issue = "125687")]
-unsafe impl<T> SliceIndex<[T]> for range::RangeInclusive<usize> {
+#[rustc_const_unstable(feature = "const_index", issue = "143775")]
+unsafe impl<T> const SliceIndex<[T]> for range::RangeInclusive<usize> {
     type Output = [T];
 
     #[inline]
@@ -732,7 +764,8 @@ unsafe impl<T> SliceIndex<[T]> for range::RangeInclusive<usize> {
 
 /// The methods `index` and `index_mut` panic if the end of the range is out of bounds.
 #[stable(feature = "inclusive_range", since = "1.26.0")]
-unsafe impl<T> SliceIndex<[T]> for ops::RangeToInclusive<usize> {
+#[rustc_const_unstable(feature = "const_index", issue = "143775")]
+unsafe impl<T> const SliceIndex<[T]> for ops::RangeToInclusive<usize> {
     type Output = [T];
 
     #[inline]
@@ -765,6 +798,45 @@ unsafe impl<T> SliceIndex<[T]> for ops::RangeToInclusive<usize> {
     #[inline]
     fn index_mut(self, slice: &mut [T]) -> &mut [T] {
         (0..=self.end).index_mut(slice)
+    }
+}
+
+/// The methods `index` and `index_mut` panic if the end of the range is out of bounds.
+#[stable(feature = "inclusive_range", since = "1.26.0")]
+#[rustc_const_unstable(feature = "const_index", issue = "143775")]
+unsafe impl<T> const SliceIndex<[T]> for range::RangeToInclusive<usize> {
+    type Output = [T];
+
+    #[inline]
+    fn get(self, slice: &[T]) -> Option<&[T]> {
+        (0..=self.last).get(slice)
+    }
+
+    #[inline]
+    fn get_mut(self, slice: &mut [T]) -> Option<&mut [T]> {
+        (0..=self.last).get_mut(slice)
+    }
+
+    #[inline]
+    unsafe fn get_unchecked(self, slice: *const [T]) -> *const [T] {
+        // SAFETY: the caller has to uphold the safety contract for `get_unchecked`.
+        unsafe { (0..=self.last).get_unchecked(slice) }
+    }
+
+    #[inline]
+    unsafe fn get_unchecked_mut(self, slice: *mut [T]) -> *mut [T] {
+        // SAFETY: the caller has to uphold the safety contract for `get_unchecked_mut`.
+        unsafe { (0..=self.last).get_unchecked_mut(slice) }
+    }
+
+    #[inline]
+    fn index(self, slice: &[T]) -> &[T] {
+        (0..=self.last).index(slice)
+    }
+
+    #[inline]
+    fn index_mut(self, slice: &mut [T]) -> &mut [T] {
+        (0..=self.last).index_mut(slice)
     }
 }
 
@@ -832,34 +904,33 @@ unsafe impl<T> SliceIndex<[T]> for ops::RangeToInclusive<usize> {
 #[track_caller]
 #[unstable(feature = "slice_range", issue = "76393")]
 #[must_use]
-pub fn range<R>(range: R, bounds: ops::RangeTo<usize>) -> ops::Range<usize>
+#[rustc_const_unstable(feature = "const_range", issue = "none")]
+pub const fn range<R>(range: R, bounds: ops::RangeTo<usize>) -> ops::Range<usize>
 where
-    R: ops::RangeBounds<usize>,
+    R: [const] ops::RangeBounds<usize> + [const] Destruct,
 {
     let len = bounds.end;
 
-    let start = match range.start_bound() {
-        ops::Bound::Included(&start) => start,
-        ops::Bound::Excluded(start) => {
-            start.checked_add(1).unwrap_or_else(|| slice_start_index_overflow_fail())
-        }
-        ops::Bound::Unbounded => 0,
-    };
-
     let end = match range.end_bound() {
-        ops::Bound::Included(end) => {
-            end.checked_add(1).unwrap_or_else(|| slice_end_index_overflow_fail())
-        }
+        ops::Bound::Included(&end) if end >= len => slice_index_fail(0, end, len),
+        // Cannot overflow because `end < len` implies `end < usize::MAX`.
+        ops::Bound::Included(&end) => end + 1,
+
+        ops::Bound::Excluded(&end) if end > len => slice_index_fail(0, end, len),
         ops::Bound::Excluded(&end) => end,
         ops::Bound::Unbounded => len,
     };
 
-    if start > end {
-        slice_index_order_fail(start, end);
-    }
-    if end > len {
-        slice_end_index_len_fail(end, len);
-    }
+    let start = match range.start_bound() {
+        ops::Bound::Excluded(&start) if start >= end => slice_index_fail(start, end, len),
+        // Cannot overflow because `start < end` implies `start < usize::MAX`.
+        ops::Bound::Excluded(&start) => start + 1,
+
+        ops::Bound::Included(&start) if start > end => slice_index_fail(start, end, len),
+        ops::Bound::Included(&start) => start,
+
+        ops::Bound::Unbounded => 0,
+    };
 
     ops::Range { start, end }
 }
@@ -919,7 +990,7 @@ where
 
 /// Converts a pair of `ops::Bound`s into `ops::Range` without performing any
 /// bounds checking or (in debug) overflow checking.
-pub(crate) fn into_range_unchecked(
+pub(crate) const fn into_range_unchecked(
     len: usize,
     (start, end): (ops::Bound<usize>, ops::Bound<usize>),
 ) -> ops::Range<usize> {
@@ -939,7 +1010,8 @@ pub(crate) fn into_range_unchecked(
 
 /// Converts pair of `ops::Bound`s into `ops::Range`.
 /// Returns `None` on overflowing indices.
-pub(crate) fn into_range(
+#[rustc_const_unstable(feature = "const_range", issue = "none")]
+pub(crate) const fn into_range(
     len: usize,
     (start, end): (ops::Bound<usize>, ops::Bound<usize>),
 ) -> Option<ops::Range<usize>> {
@@ -968,25 +1040,27 @@ pub(crate) fn into_slice_range(
     len: usize,
     (start, end): (ops::Bound<usize>, ops::Bound<usize>),
 ) -> ops::Range<usize> {
-    use ops::Bound;
-    let start = match start {
-        Bound::Included(start) => start,
-        Bound::Excluded(start) => {
-            start.checked_add(1).unwrap_or_else(|| slice_start_index_overflow_fail())
-        }
-        Bound::Unbounded => 0,
-    };
-
     let end = match end {
-        Bound::Included(end) => {
-            end.checked_add(1).unwrap_or_else(|| slice_end_index_overflow_fail())
-        }
-        Bound::Excluded(end) => end,
-        Bound::Unbounded => len,
+        ops::Bound::Included(end) if end >= len => slice_index_fail(0, end, len),
+        // Cannot overflow because `end < len` implies `end < usize::MAX`.
+        ops::Bound::Included(end) => end + 1,
+
+        ops::Bound::Excluded(end) if end > len => slice_index_fail(0, end, len),
+        ops::Bound::Excluded(end) => end,
+
+        ops::Bound::Unbounded => len,
     };
 
-    // Don't bother with checking `start < end` and `end <= len`
-    // since these checks are handled by `Range` impls
+    let start = match start {
+        ops::Bound::Excluded(start) if start >= end => slice_index_fail(start, end, len),
+        // Cannot overflow because `start < end` implies `start < usize::MAX`.
+        ops::Bound::Excluded(start) => start + 1,
+
+        ops::Bound::Included(start) if start > end => slice_index_fail(start, end, len),
+        ops::Bound::Included(start) => start,
+
+        ops::Bound::Unbounded => 0,
+    };
 
     start..end
 }

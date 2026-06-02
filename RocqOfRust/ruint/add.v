@@ -34,26 +34,25 @@ Module add.
               fun γ =>
                 ltac:(M.monadic
                   (let γ :=
-                    M.use
-                      (M.alloc (|
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
                         Ty.path "bool",
-                        M.call_closure (|
-                          Ty.path "bool",
-                          M.get_trait_method (|
-                            "core::cmp::PartialOrd",
-                            Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                            [],
-                            [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
-                            "lt",
-                            [],
-                            []
-                          |),
-                          [
-                            M.borrow (| Pointer.Kind.Ref, self |);
-                            M.borrow (| Pointer.Kind.Ref, other |)
-                          ]
-                        |)
-                      |)) in
+                        M.get_trait_method (|
+                          "core::cmp::PartialOrd",
+                          Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                          [],
+                          [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
+                          "lt",
+                          [],
+                          []
+                        |),
+                        [
+                          M.borrow (| Pointer.Kind.Ref, self |);
+                          M.borrow (| Pointer.Kind.Ref, other |)
+                        ]
+                      |)
+                    |) in
                   let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                   M.call_closure (|
                     Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
@@ -342,15 +341,14 @@ Module add.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  BinOp.eq,
-                                  [ BITS; Value.Integer IntegerKind.Usize 0 ]
-                                |)
-                              |)) in
+                                BinOp.eq,
+                                [ BITS; Value.Integer IntegerKind.Usize 0 ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -389,15 +387,14 @@ Module add.
                               fun γ =>
                                 ltac:(M.monadic
                                   (let γ :=
-                                    M.use
-                                      (M.alloc (|
+                                    M.alloc (|
+                                      Ty.path "bool",
+                                      M.call_closure (|
                                         Ty.path "bool",
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          BinOp.lt,
-                                          [ M.read (| i |); LIMBS ]
-                                        |)
-                                      |)) in
+                                        BinOp.lt,
+                                        [ M.read (| i |); LIMBS ]
+                                      |)
+                                    |) in
                                   let _ :=
                                     is_constant_or_break_match (|
                                       M.read (| γ |),
@@ -661,15 +658,14 @@ Module add.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  BinOp.eq,
-                                  [ BITS; Value.Integer IntegerKind.Usize 0 ]
-                                |)
-                              |)) in
+                                BinOp.eq,
+                                [ BITS; Value.Integer IntegerKind.Usize 0 ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -708,15 +704,14 @@ Module add.
                               fun γ =>
                                 ltac:(M.monadic
                                   (let γ :=
-                                    M.use
-                                      (M.alloc (|
+                                    M.alloc (|
+                                      Ty.path "bool",
+                                      M.call_closure (|
                                         Ty.path "bool",
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          BinOp.lt,
-                                          [ M.read (| i |); LIMBS ]
-                                        |)
-                                      |)) in
+                                        BinOp.lt,
+                                        [ M.read (| i |); LIMBS ]
+                                      |)
+                                    |) in
                                   let _ :=
                                     is_constant_or_break_match (|
                                       M.read (| γ |),

@@ -72,7 +72,7 @@ Module borrow.
     
     (*
         fn borrow(&self) -> &T {
-            &**self
+            self
         }
     *)
     Definition borrow (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -84,12 +84,7 @@ Module borrow.
             M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ T ] ], self |) in
           M.borrow (|
             Pointer.Kind.Ref,
-            M.deref (|
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-              |)
-            |)
+            M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -109,7 +104,7 @@ Module borrow.
     
     (*
         fn borrow(&self) -> &T {
-            &**self
+            self
         }
     *)
     Definition borrow (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -121,12 +116,7 @@ Module borrow.
             M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&mut") [] [ T ] ], self |) in
           M.borrow (|
             Pointer.Kind.Ref,
-            M.deref (|
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-              |)
-            |)
+            M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -146,7 +136,7 @@ Module borrow.
     
     (*
         fn borrow_mut(&mut self) -> &mut T {
-            &mut **self
+            self
         }
     *)
     Definition borrow_mut (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -164,12 +154,7 @@ Module borrow.
             M.deref (|
               M.borrow (|
                 Pointer.Kind.MutRef,
-                M.deref (|
-                  M.borrow (|
-                    Pointer.Kind.MutRef,
-                    M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                  |)
-                |)
+                M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
               |)
             |)
           |)))

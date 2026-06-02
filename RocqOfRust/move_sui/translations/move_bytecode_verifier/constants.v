@@ -786,20 +786,19 @@ Module constants.
             fun γ =>
               ltac:(M.monadic
                 (let γ :=
-                  M.use
-                    (M.alloc (|
+                  M.alloc (|
+                    Ty.path "bool",
+                    M.call_closure (|
                       Ty.path "bool",
-                      M.call_closure (|
-                        Ty.path "bool",
-                        M.get_associated_function (|
-                          Ty.path "move_binary_format::file_format::SignatureToken",
-                          "is_valid_for_constant",
-                          [],
-                          []
-                        |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| type_ |) |) |) ]
-                      |)
-                    |)) in
+                      M.get_associated_function (|
+                        Ty.path "move_binary_format::file_format::SignatureToken",
+                        "is_valid_for_constant",
+                        [],
+                        []
+                      |),
+                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| type_ |) |) |) ]
+                    |)
+                  |) in
                 let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                 Value.StructTuple
                   "core::result::Result::Ok"

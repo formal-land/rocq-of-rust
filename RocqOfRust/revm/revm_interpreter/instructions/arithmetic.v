@@ -37,68 +37,67 @@ Module instructions.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  UnOp.not,
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      M.get_associated_function (|
-                                        Ty.path "revm_interpreter::gas::Gas",
-                                        "record_cost",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.MutRef,
-                                          M.deref (|
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "&mut")
+                                UnOp.not,
+                                [
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    M.get_associated_function (|
+                                      Ty.path "revm_interpreter::gas::Gas",
+                                      "record_cost",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.MutRef,
+                                        M.deref (|
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "&mut")
+                                              []
+                                              [ Ty.path "revm_interpreter::gas::Gas" ],
+                                            M.get_trait_method (|
+                                              "revm_interpreter::interpreter_types::LoopControl",
+                                              Ty.associated_in_trait
+                                                "revm_interpreter::interpreter_types::InterpreterTypes"
                                                 []
-                                                [ Ty.path "revm_interpreter::gas::Gas" ],
-                                              M.get_trait_method (|
-                                                "revm_interpreter::interpreter_types::LoopControl",
-                                                Ty.associated_in_trait
-                                                  "revm_interpreter::interpreter_types::InterpreterTypes"
-                                                  []
-                                                  []
-                                                  WIRE
-                                                  "Control",
-                                                [],
-                                                [],
-                                                "gas",
-                                                [],
                                                 []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.MutRef,
-                                                  M.SubPointer.get_struct_record_field (|
-                                                    M.deref (| M.read (| interpreter |) |),
-                                                    "revm_interpreter::interpreter::Interpreter",
-                                                    "control"
-                                                  |)
+                                                WIRE
+                                                "Control",
+                                              [],
+                                              [],
+                                              "gas",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.borrow (|
+                                                Pointer.Kind.MutRef,
+                                                M.SubPointer.get_struct_record_field (|
+                                                  M.deref (| M.read (| interpreter |) |),
+                                                  "revm_interpreter::interpreter::Interpreter",
+                                                  "control"
                                                 |)
-                                              ]
-                                            |)
-                                          |)
-                                        |);
-                                        M.read (|
-                                          get_constant (|
-                                            "revm_interpreter::gas::constants::VERYLOW",
-                                            Ty.path "u64"
+                                              |)
+                                            ]
                                           |)
                                         |)
-                                      ]
-                                    |)
-                                  ]
-                                |)
-                              |)) in
+                                      |);
+                                      M.read (|
+                                        get_constant (|
+                                          "revm_interpreter::gas::constants::VERYLOW",
+                                          Ty.path "u64"
+                                        |)
+                                      |)
+                                    ]
+                                  |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -391,68 +390,67 @@ Module instructions.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  UnOp.not,
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      M.get_associated_function (|
-                                        Ty.path "revm_interpreter::gas::Gas",
-                                        "record_cost",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.MutRef,
-                                          M.deref (|
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "&mut")
+                                UnOp.not,
+                                [
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    M.get_associated_function (|
+                                      Ty.path "revm_interpreter::gas::Gas",
+                                      "record_cost",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.MutRef,
+                                        M.deref (|
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "&mut")
+                                              []
+                                              [ Ty.path "revm_interpreter::gas::Gas" ],
+                                            M.get_trait_method (|
+                                              "revm_interpreter::interpreter_types::LoopControl",
+                                              Ty.associated_in_trait
+                                                "revm_interpreter::interpreter_types::InterpreterTypes"
                                                 []
-                                                [ Ty.path "revm_interpreter::gas::Gas" ],
-                                              M.get_trait_method (|
-                                                "revm_interpreter::interpreter_types::LoopControl",
-                                                Ty.associated_in_trait
-                                                  "revm_interpreter::interpreter_types::InterpreterTypes"
-                                                  []
-                                                  []
-                                                  WIRE
-                                                  "Control",
-                                                [],
-                                                [],
-                                                "gas",
-                                                [],
                                                 []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.MutRef,
-                                                  M.SubPointer.get_struct_record_field (|
-                                                    M.deref (| M.read (| interpreter |) |),
-                                                    "revm_interpreter::interpreter::Interpreter",
-                                                    "control"
-                                                  |)
+                                                WIRE
+                                                "Control",
+                                              [],
+                                              [],
+                                              "gas",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.borrow (|
+                                                Pointer.Kind.MutRef,
+                                                M.SubPointer.get_struct_record_field (|
+                                                  M.deref (| M.read (| interpreter |) |),
+                                                  "revm_interpreter::interpreter::Interpreter",
+                                                  "control"
                                                 |)
-                                              ]
-                                            |)
-                                          |)
-                                        |);
-                                        M.read (|
-                                          get_constant (|
-                                            "revm_interpreter::gas::constants::LOW",
-                                            Ty.path "u64"
+                                              |)
+                                            ]
                                           |)
                                         |)
-                                      ]
-                                    |)
-                                  ]
-                                |)
-                              |)) in
+                                      |);
+                                      M.read (|
+                                        get_constant (|
+                                          "revm_interpreter::gas::constants::LOW",
+                                          Ty.path "u64"
+                                        |)
+                                      |)
+                                    ]
+                                  |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -745,68 +743,67 @@ Module instructions.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  UnOp.not,
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      M.get_associated_function (|
-                                        Ty.path "revm_interpreter::gas::Gas",
-                                        "record_cost",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.MutRef,
-                                          M.deref (|
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "&mut")
+                                UnOp.not,
+                                [
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    M.get_associated_function (|
+                                      Ty.path "revm_interpreter::gas::Gas",
+                                      "record_cost",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.MutRef,
+                                        M.deref (|
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "&mut")
+                                              []
+                                              [ Ty.path "revm_interpreter::gas::Gas" ],
+                                            M.get_trait_method (|
+                                              "revm_interpreter::interpreter_types::LoopControl",
+                                              Ty.associated_in_trait
+                                                "revm_interpreter::interpreter_types::InterpreterTypes"
                                                 []
-                                                [ Ty.path "revm_interpreter::gas::Gas" ],
-                                              M.get_trait_method (|
-                                                "revm_interpreter::interpreter_types::LoopControl",
-                                                Ty.associated_in_trait
-                                                  "revm_interpreter::interpreter_types::InterpreterTypes"
-                                                  []
-                                                  []
-                                                  WIRE
-                                                  "Control",
-                                                [],
-                                                [],
-                                                "gas",
-                                                [],
                                                 []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.MutRef,
-                                                  M.SubPointer.get_struct_record_field (|
-                                                    M.deref (| M.read (| interpreter |) |),
-                                                    "revm_interpreter::interpreter::Interpreter",
-                                                    "control"
-                                                  |)
+                                                WIRE
+                                                "Control",
+                                              [],
+                                              [],
+                                              "gas",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.borrow (|
+                                                Pointer.Kind.MutRef,
+                                                M.SubPointer.get_struct_record_field (|
+                                                  M.deref (| M.read (| interpreter |) |),
+                                                  "revm_interpreter::interpreter::Interpreter",
+                                                  "control"
                                                 |)
-                                              ]
-                                            |)
-                                          |)
-                                        |);
-                                        M.read (|
-                                          get_constant (|
-                                            "revm_interpreter::gas::constants::VERYLOW",
-                                            Ty.path "u64"
+                                              |)
+                                            ]
                                           |)
                                         |)
-                                      ]
-                                    |)
-                                  ]
-                                |)
-                              |)) in
+                                      |);
+                                      M.read (|
+                                        get_constant (|
+                                          "revm_interpreter::gas::constants::VERYLOW",
+                                          Ty.path "u64"
+                                        |)
+                                      |)
+                                    ]
+                                  |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -1101,68 +1098,67 @@ Module instructions.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  UnOp.not,
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      M.get_associated_function (|
-                                        Ty.path "revm_interpreter::gas::Gas",
-                                        "record_cost",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.MutRef,
-                                          M.deref (|
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "&mut")
+                                UnOp.not,
+                                [
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    M.get_associated_function (|
+                                      Ty.path "revm_interpreter::gas::Gas",
+                                      "record_cost",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.MutRef,
+                                        M.deref (|
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "&mut")
+                                              []
+                                              [ Ty.path "revm_interpreter::gas::Gas" ],
+                                            M.get_trait_method (|
+                                              "revm_interpreter::interpreter_types::LoopControl",
+                                              Ty.associated_in_trait
+                                                "revm_interpreter::interpreter_types::InterpreterTypes"
                                                 []
-                                                [ Ty.path "revm_interpreter::gas::Gas" ],
-                                              M.get_trait_method (|
-                                                "revm_interpreter::interpreter_types::LoopControl",
-                                                Ty.associated_in_trait
-                                                  "revm_interpreter::interpreter_types::InterpreterTypes"
-                                                  []
-                                                  []
-                                                  WIRE
-                                                  "Control",
-                                                [],
-                                                [],
-                                                "gas",
-                                                [],
                                                 []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.MutRef,
-                                                  M.SubPointer.get_struct_record_field (|
-                                                    M.deref (| M.read (| interpreter |) |),
-                                                    "revm_interpreter::interpreter::Interpreter",
-                                                    "control"
-                                                  |)
+                                                WIRE
+                                                "Control",
+                                              [],
+                                              [],
+                                              "gas",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.borrow (|
+                                                Pointer.Kind.MutRef,
+                                                M.SubPointer.get_struct_record_field (|
+                                                  M.deref (| M.read (| interpreter |) |),
+                                                  "revm_interpreter::interpreter::Interpreter",
+                                                  "control"
                                                 |)
-                                              ]
-                                            |)
-                                          |)
-                                        |);
-                                        M.read (|
-                                          get_constant (|
-                                            "revm_interpreter::gas::constants::LOW",
-                                            Ty.path "u64"
+                                              |)
+                                            ]
                                           |)
                                         |)
-                                      ]
-                                    |)
-                                  ]
-                                |)
-                              |)) in
+                                      |);
+                                      M.read (|
+                                        get_constant (|
+                                          "revm_interpreter::gas::constants::LOW",
+                                          Ty.path "u64"
+                                        |)
+                                      |)
+                                    ]
+                                  |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -1348,37 +1344,36 @@ Module instructions.
                               fun γ =>
                                 ltac:(M.monadic
                                   (let γ :=
-                                    M.use
-                                      (M.alloc (|
+                                    M.alloc (|
+                                      Ty.path "bool",
+                                      M.call_closure (|
                                         Ty.path "bool",
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          UnOp.not,
-                                          [
-                                            M.call_closure (|
-                                              Ty.path "bool",
-                                              M.get_associated_function (|
-                                                Ty.apply
-                                                  (Ty.path "ruint::Uint")
-                                                  [
-                                                    Value.Integer IntegerKind.Usize 256;
-                                                    Value.Integer IntegerKind.Usize 4
-                                                  ]
-                                                  [],
-                                                "is_zero",
+                                        UnOp.not,
+                                        [
+                                          M.call_closure (|
+                                            Ty.path "bool",
+                                            M.get_associated_function (|
+                                              Ty.apply
+                                                (Ty.path "ruint::Uint")
+                                                [
+                                                  Value.Integer IntegerKind.Usize 256;
+                                                  Value.Integer IntegerKind.Usize 4
+                                                ]
                                                 [],
-                                                []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (| M.read (| op2 |) |)
-                                                |)
-                                              ]
-                                            |)
-                                          ]
-                                        |)
-                                      |)) in
+                                              "is_zero",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| op2 |) |)
+                                              |)
+                                            ]
+                                          |)
+                                        ]
+                                      |)
+                                    |) in
                                   let _ :=
                                     is_constant_or_break_match (|
                                       M.read (| γ |),
@@ -1504,68 +1499,67 @@ Module instructions.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  UnOp.not,
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      M.get_associated_function (|
-                                        Ty.path "revm_interpreter::gas::Gas",
-                                        "record_cost",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.MutRef,
-                                          M.deref (|
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "&mut")
+                                UnOp.not,
+                                [
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    M.get_associated_function (|
+                                      Ty.path "revm_interpreter::gas::Gas",
+                                      "record_cost",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.MutRef,
+                                        M.deref (|
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "&mut")
+                                              []
+                                              [ Ty.path "revm_interpreter::gas::Gas" ],
+                                            M.get_trait_method (|
+                                              "revm_interpreter::interpreter_types::LoopControl",
+                                              Ty.associated_in_trait
+                                                "revm_interpreter::interpreter_types::InterpreterTypes"
                                                 []
-                                                [ Ty.path "revm_interpreter::gas::Gas" ],
-                                              M.get_trait_method (|
-                                                "revm_interpreter::interpreter_types::LoopControl",
-                                                Ty.associated_in_trait
-                                                  "revm_interpreter::interpreter_types::InterpreterTypes"
-                                                  []
-                                                  []
-                                                  WIRE
-                                                  "Control",
-                                                [],
-                                                [],
-                                                "gas",
-                                                [],
                                                 []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.MutRef,
-                                                  M.SubPointer.get_struct_record_field (|
-                                                    M.deref (| M.read (| interpreter |) |),
-                                                    "revm_interpreter::interpreter::Interpreter",
-                                                    "control"
-                                                  |)
+                                                WIRE
+                                                "Control",
+                                              [],
+                                              [],
+                                              "gas",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.borrow (|
+                                                Pointer.Kind.MutRef,
+                                                M.SubPointer.get_struct_record_field (|
+                                                  M.deref (| M.read (| interpreter |) |),
+                                                  "revm_interpreter::interpreter::Interpreter",
+                                                  "control"
                                                 |)
-                                              ]
-                                            |)
-                                          |)
-                                        |);
-                                        M.read (|
-                                          get_constant (|
-                                            "revm_interpreter::gas::constants::LOW",
-                                            Ty.path "u64"
+                                              |)
+                                            ]
                                           |)
                                         |)
-                                      ]
-                                    |)
-                                  ]
-                                |)
-                              |)) in
+                                      |);
+                                      M.read (|
+                                        get_constant (|
+                                          "revm_interpreter::gas::constants::LOW",
+                                          Ty.path "u64"
+                                        |)
+                                      |)
+                                    ]
+                                  |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -1853,68 +1847,67 @@ Module instructions.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  UnOp.not,
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      M.get_associated_function (|
-                                        Ty.path "revm_interpreter::gas::Gas",
-                                        "record_cost",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.MutRef,
-                                          M.deref (|
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "&mut")
+                                UnOp.not,
+                                [
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    M.get_associated_function (|
+                                      Ty.path "revm_interpreter::gas::Gas",
+                                      "record_cost",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.MutRef,
+                                        M.deref (|
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "&mut")
+                                              []
+                                              [ Ty.path "revm_interpreter::gas::Gas" ],
+                                            M.get_trait_method (|
+                                              "revm_interpreter::interpreter_types::LoopControl",
+                                              Ty.associated_in_trait
+                                                "revm_interpreter::interpreter_types::InterpreterTypes"
                                                 []
-                                                [ Ty.path "revm_interpreter::gas::Gas" ],
-                                              M.get_trait_method (|
-                                                "revm_interpreter::interpreter_types::LoopControl",
-                                                Ty.associated_in_trait
-                                                  "revm_interpreter::interpreter_types::InterpreterTypes"
-                                                  []
-                                                  []
-                                                  WIRE
-                                                  "Control",
-                                                [],
-                                                [],
-                                                "gas",
-                                                [],
                                                 []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.MutRef,
-                                                  M.SubPointer.get_struct_record_field (|
-                                                    M.deref (| M.read (| interpreter |) |),
-                                                    "revm_interpreter::interpreter::Interpreter",
-                                                    "control"
-                                                  |)
+                                                WIRE
+                                                "Control",
+                                              [],
+                                              [],
+                                              "gas",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.borrow (|
+                                                Pointer.Kind.MutRef,
+                                                M.SubPointer.get_struct_record_field (|
+                                                  M.deref (| M.read (| interpreter |) |),
+                                                  "revm_interpreter::interpreter::Interpreter",
+                                                  "control"
                                                 |)
-                                              ]
-                                            |)
-                                          |)
-                                        |);
-                                        M.read (|
-                                          get_constant (|
-                                            "revm_interpreter::gas::constants::LOW",
-                                            Ty.path "u64"
+                                              |)
+                                            ]
                                           |)
                                         |)
-                                      ]
-                                    |)
-                                  ]
-                                |)
-                              |)) in
+                                      |);
+                                      M.read (|
+                                        get_constant (|
+                                          "revm_interpreter::gas::constants::LOW",
+                                          Ty.path "u64"
+                                        |)
+                                      |)
+                                    ]
+                                  |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -2100,37 +2093,36 @@ Module instructions.
                               fun γ =>
                                 ltac:(M.monadic
                                   (let γ :=
-                                    M.use
-                                      (M.alloc (|
+                                    M.alloc (|
+                                      Ty.path "bool",
+                                      M.call_closure (|
                                         Ty.path "bool",
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          UnOp.not,
-                                          [
-                                            M.call_closure (|
-                                              Ty.path "bool",
-                                              M.get_associated_function (|
-                                                Ty.apply
-                                                  (Ty.path "ruint::Uint")
-                                                  [
-                                                    Value.Integer IntegerKind.Usize 256;
-                                                    Value.Integer IntegerKind.Usize 4
-                                                  ]
-                                                  [],
-                                                "is_zero",
+                                        UnOp.not,
+                                        [
+                                          M.call_closure (|
+                                            Ty.path "bool",
+                                            M.get_associated_function (|
+                                              Ty.apply
+                                                (Ty.path "ruint::Uint")
+                                                [
+                                                  Value.Integer IntegerKind.Usize 256;
+                                                  Value.Integer IntegerKind.Usize 4
+                                                ]
                                                 [],
-                                                []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (| M.read (| op2 |) |)
-                                                |)
-                                              ]
-                                            |)
-                                          ]
-                                        |)
-                                      |)) in
+                                              "is_zero",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| op2 |) |)
+                                              |)
+                                            ]
+                                          |)
+                                        ]
+                                      |)
+                                    |) in
                                   let _ :=
                                     is_constant_or_break_match (|
                                       M.read (| γ |),
@@ -2256,68 +2248,67 @@ Module instructions.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  UnOp.not,
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      M.get_associated_function (|
-                                        Ty.path "revm_interpreter::gas::Gas",
-                                        "record_cost",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.MutRef,
-                                          M.deref (|
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "&mut")
+                                UnOp.not,
+                                [
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    M.get_associated_function (|
+                                      Ty.path "revm_interpreter::gas::Gas",
+                                      "record_cost",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.MutRef,
+                                        M.deref (|
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "&mut")
+                                              []
+                                              [ Ty.path "revm_interpreter::gas::Gas" ],
+                                            M.get_trait_method (|
+                                              "revm_interpreter::interpreter_types::LoopControl",
+                                              Ty.associated_in_trait
+                                                "revm_interpreter::interpreter_types::InterpreterTypes"
                                                 []
-                                                [ Ty.path "revm_interpreter::gas::Gas" ],
-                                              M.get_trait_method (|
-                                                "revm_interpreter::interpreter_types::LoopControl",
-                                                Ty.associated_in_trait
-                                                  "revm_interpreter::interpreter_types::InterpreterTypes"
-                                                  []
-                                                  []
-                                                  WIRE
-                                                  "Control",
-                                                [],
-                                                [],
-                                                "gas",
-                                                [],
                                                 []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.MutRef,
-                                                  M.SubPointer.get_struct_record_field (|
-                                                    M.deref (| M.read (| interpreter |) |),
-                                                    "revm_interpreter::interpreter::Interpreter",
-                                                    "control"
-                                                  |)
+                                                WIRE
+                                                "Control",
+                                              [],
+                                              [],
+                                              "gas",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.borrow (|
+                                                Pointer.Kind.MutRef,
+                                                M.SubPointer.get_struct_record_field (|
+                                                  M.deref (| M.read (| interpreter |) |),
+                                                  "revm_interpreter::interpreter::Interpreter",
+                                                  "control"
                                                 |)
-                                              ]
-                                            |)
-                                          |)
-                                        |);
-                                        M.read (|
-                                          get_constant (|
-                                            "revm_interpreter::gas::constants::LOW",
-                                            Ty.path "u64"
+                                              |)
+                                            ]
                                           |)
                                         |)
-                                      ]
-                                    |)
-                                  ]
-                                |)
-                              |)) in
+                                      |);
+                                      M.read (|
+                                        get_constant (|
+                                          "revm_interpreter::gas::constants::LOW",
+                                          Ty.path "u64"
+                                        |)
+                                      |)
+                                    ]
+                                  |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -2599,68 +2590,67 @@ Module instructions.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  UnOp.not,
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      M.get_associated_function (|
-                                        Ty.path "revm_interpreter::gas::Gas",
-                                        "record_cost",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.MutRef,
-                                          M.deref (|
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "&mut")
+                                UnOp.not,
+                                [
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    M.get_associated_function (|
+                                      Ty.path "revm_interpreter::gas::Gas",
+                                      "record_cost",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.MutRef,
+                                        M.deref (|
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "&mut")
+                                              []
+                                              [ Ty.path "revm_interpreter::gas::Gas" ],
+                                            M.get_trait_method (|
+                                              "revm_interpreter::interpreter_types::LoopControl",
+                                              Ty.associated_in_trait
+                                                "revm_interpreter::interpreter_types::InterpreterTypes"
                                                 []
-                                                [ Ty.path "revm_interpreter::gas::Gas" ],
-                                              M.get_trait_method (|
-                                                "revm_interpreter::interpreter_types::LoopControl",
-                                                Ty.associated_in_trait
-                                                  "revm_interpreter::interpreter_types::InterpreterTypes"
-                                                  []
-                                                  []
-                                                  WIRE
-                                                  "Control",
-                                                [],
-                                                [],
-                                                "gas",
-                                                [],
                                                 []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.MutRef,
-                                                  M.SubPointer.get_struct_record_field (|
-                                                    M.deref (| M.read (| interpreter |) |),
-                                                    "revm_interpreter::interpreter::Interpreter",
-                                                    "control"
-                                                  |)
+                                                WIRE
+                                                "Control",
+                                              [],
+                                              [],
+                                              "gas",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.borrow (|
+                                                Pointer.Kind.MutRef,
+                                                M.SubPointer.get_struct_record_field (|
+                                                  M.deref (| M.read (| interpreter |) |),
+                                                  "revm_interpreter::interpreter::Interpreter",
+                                                  "control"
                                                 |)
-                                              ]
-                                            |)
-                                          |)
-                                        |);
-                                        M.read (|
-                                          get_constant (|
-                                            "revm_interpreter::gas::constants::MID",
-                                            Ty.path "u64"
+                                              |)
+                                            ]
                                           |)
                                         |)
-                                      ]
-                                    |)
-                                  ]
-                                |)
-                              |)) in
+                                      |);
+                                      M.read (|
+                                        get_constant (|
+                                          "revm_interpreter::gas::constants::MID",
+                                          Ty.path "u64"
+                                        |)
+                                      |)
+                                    ]
+                                  |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -2965,68 +2955,67 @@ Module instructions.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  UnOp.not,
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      M.get_associated_function (|
-                                        Ty.path "revm_interpreter::gas::Gas",
-                                        "record_cost",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.MutRef,
-                                          M.deref (|
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "&mut")
+                                UnOp.not,
+                                [
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    M.get_associated_function (|
+                                      Ty.path "revm_interpreter::gas::Gas",
+                                      "record_cost",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.MutRef,
+                                        M.deref (|
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "&mut")
+                                              []
+                                              [ Ty.path "revm_interpreter::gas::Gas" ],
+                                            M.get_trait_method (|
+                                              "revm_interpreter::interpreter_types::LoopControl",
+                                              Ty.associated_in_trait
+                                                "revm_interpreter::interpreter_types::InterpreterTypes"
                                                 []
-                                                [ Ty.path "revm_interpreter::gas::Gas" ],
-                                              M.get_trait_method (|
-                                                "revm_interpreter::interpreter_types::LoopControl",
-                                                Ty.associated_in_trait
-                                                  "revm_interpreter::interpreter_types::InterpreterTypes"
-                                                  []
-                                                  []
-                                                  WIRE
-                                                  "Control",
-                                                [],
-                                                [],
-                                                "gas",
-                                                [],
                                                 []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.MutRef,
-                                                  M.SubPointer.get_struct_record_field (|
-                                                    M.deref (| M.read (| interpreter |) |),
-                                                    "revm_interpreter::interpreter::Interpreter",
-                                                    "control"
-                                                  |)
+                                                WIRE
+                                                "Control",
+                                              [],
+                                              [],
+                                              "gas",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.borrow (|
+                                                Pointer.Kind.MutRef,
+                                                M.SubPointer.get_struct_record_field (|
+                                                  M.deref (| M.read (| interpreter |) |),
+                                                  "revm_interpreter::interpreter::Interpreter",
+                                                  "control"
                                                 |)
-                                              ]
-                                            |)
-                                          |)
-                                        |);
-                                        M.read (|
-                                          get_constant (|
-                                            "revm_interpreter::gas::constants::MID",
-                                            Ty.path "u64"
+                                              |)
+                                            ]
                                           |)
                                         |)
-                                      ]
-                                    |)
-                                  ]
-                                |)
-                              |)) in
+                                      |);
+                                      M.read (|
+                                        get_constant (|
+                                          "revm_interpreter::gas::constants::MID",
+                                          Ty.path "u64"
+                                        |)
+                                      |)
+                                    ]
+                                  |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -3523,68 +3512,67 @@ Module instructions.
                                           fun γ =>
                                             ltac:(M.monadic
                                               (let γ :=
-                                                M.use
-                                                  (M.alloc (|
+                                                M.alloc (|
+                                                  Ty.path "bool",
+                                                  M.call_closure (|
                                                     Ty.path "bool",
-                                                    M.call_closure (|
-                                                      Ty.path "bool",
-                                                      UnOp.not,
-                                                      [
-                                                        M.call_closure (|
-                                                          Ty.path "bool",
-                                                          M.get_associated_function (|
-                                                            Ty.path "revm_interpreter::gas::Gas",
-                                                            "record_cost",
-                                                            [],
-                                                            []
-                                                          |),
-                                                          [
-                                                            M.borrow (|
-                                                              Pointer.Kind.MutRef,
-                                                              M.deref (|
-                                                                M.call_closure (|
-                                                                  Ty.apply
-                                                                    (Ty.path "&mut")
-                                                                    []
-                                                                    [
-                                                                      Ty.path
-                                                                        "revm_interpreter::gas::Gas"
-                                                                    ],
-                                                                  M.get_trait_method (|
-                                                                    "revm_interpreter::interpreter_types::LoopControl",
-                                                                    Ty.associated_in_trait
-                                                                      "revm_interpreter::interpreter_types::InterpreterTypes"
-                                                                      []
-                                                                      []
-                                                                      WIRE
-                                                                      "Control",
-                                                                    [],
-                                                                    [],
-                                                                    "gas",
-                                                                    [],
-                                                                    []
-                                                                  |),
+                                                    UnOp.not,
+                                                    [
+                                                      M.call_closure (|
+                                                        Ty.path "bool",
+                                                        M.get_associated_function (|
+                                                          Ty.path "revm_interpreter::gas::Gas",
+                                                          "record_cost",
+                                                          [],
+                                                          []
+                                                        |),
+                                                        [
+                                                          M.borrow (|
+                                                            Pointer.Kind.MutRef,
+                                                            M.deref (|
+                                                              M.call_closure (|
+                                                                Ty.apply
+                                                                  (Ty.path "&mut")
+                                                                  []
                                                                   [
-                                                                    M.borrow (|
-                                                                      Pointer.Kind.MutRef,
-                                                                      M.SubPointer.get_struct_record_field (|
-                                                                        M.deref (|
-                                                                          M.read (| interpreter |)
-                                                                        |),
-                                                                        "revm_interpreter::interpreter::Interpreter",
-                                                                        "control"
-                                                                      |)
+                                                                    Ty.path
+                                                                      "revm_interpreter::gas::Gas"
+                                                                  ],
+                                                                M.get_trait_method (|
+                                                                  "revm_interpreter::interpreter_types::LoopControl",
+                                                                  Ty.associated_in_trait
+                                                                    "revm_interpreter::interpreter_types::InterpreterTypes"
+                                                                    []
+                                                                    []
+                                                                    WIRE
+                                                                    "Control",
+                                                                  [],
+                                                                  [],
+                                                                  "gas",
+                                                                  [],
+                                                                  []
+                                                                |),
+                                                                [
+                                                                  M.borrow (|
+                                                                    Pointer.Kind.MutRef,
+                                                                    M.SubPointer.get_struct_record_field (|
+                                                                      M.deref (|
+                                                                        M.read (| interpreter |)
+                                                                      |),
+                                                                      "revm_interpreter::interpreter::Interpreter",
+                                                                      "control"
                                                                     |)
-                                                                  ]
-                                                                |)
+                                                                  |)
+                                                                ]
                                                               |)
-                                                            |);
-                                                            M.read (| gas_used |)
-                                                          ]
-                                                        |)
-                                                      ]
-                                                    |)
-                                                  |)) in
+                                                            |)
+                                                          |);
+                                                          M.read (| gas_used |)
+                                                        ]
+                                                      |)
+                                                    ]
+                                                  |)
+                                                |) in
                                               let _ :=
                                                 is_constant_or_break_match (|
                                                   M.read (| γ |),
@@ -3795,68 +3783,67 @@ Module instructions.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  UnOp.not,
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      M.get_associated_function (|
-                                        Ty.path "revm_interpreter::gas::Gas",
-                                        "record_cost",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.MutRef,
-                                          M.deref (|
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "&mut")
+                                UnOp.not,
+                                [
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    M.get_associated_function (|
+                                      Ty.path "revm_interpreter::gas::Gas",
+                                      "record_cost",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.MutRef,
+                                        M.deref (|
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "&mut")
+                                              []
+                                              [ Ty.path "revm_interpreter::gas::Gas" ],
+                                            M.get_trait_method (|
+                                              "revm_interpreter::interpreter_types::LoopControl",
+                                              Ty.associated_in_trait
+                                                "revm_interpreter::interpreter_types::InterpreterTypes"
                                                 []
-                                                [ Ty.path "revm_interpreter::gas::Gas" ],
-                                              M.get_trait_method (|
-                                                "revm_interpreter::interpreter_types::LoopControl",
-                                                Ty.associated_in_trait
-                                                  "revm_interpreter::interpreter_types::InterpreterTypes"
-                                                  []
-                                                  []
-                                                  WIRE
-                                                  "Control",
-                                                [],
-                                                [],
-                                                "gas",
-                                                [],
                                                 []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.MutRef,
-                                                  M.SubPointer.get_struct_record_field (|
-                                                    M.deref (| M.read (| interpreter |) |),
-                                                    "revm_interpreter::interpreter::Interpreter",
-                                                    "control"
-                                                  |)
+                                                WIRE
+                                                "Control",
+                                              [],
+                                              [],
+                                              "gas",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.borrow (|
+                                                Pointer.Kind.MutRef,
+                                                M.SubPointer.get_struct_record_field (|
+                                                  M.deref (| M.read (| interpreter |) |),
+                                                  "revm_interpreter::interpreter::Interpreter",
+                                                  "control"
                                                 |)
-                                              ]
-                                            |)
-                                          |)
-                                        |);
-                                        M.read (|
-                                          get_constant (|
-                                            "revm_interpreter::gas::constants::LOW",
-                                            Ty.path "u64"
+                                              |)
+                                            ]
                                           |)
                                         |)
-                                      ]
-                                    |)
-                                  ]
-                                |)
-                              |)) in
+                                      |);
+                                      M.read (|
+                                        get_constant (|
+                                          "revm_interpreter::gas::constants::LOW",
+                                          Ty.path "u64"
+                                        |)
+                                      |)
+                                    ]
+                                  |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -4042,39 +4029,46 @@ Module instructions.
                               fun γ =>
                                 ltac:(M.monadic
                                   (let γ :=
-                                    M.use
-                                      (M.alloc (|
+                                    M.alloc (|
+                                      Ty.path "bool",
+                                      M.call_closure (|
                                         Ty.path "bool",
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          M.get_trait_method (|
-                                            "core::cmp::PartialOrd",
+                                        M.get_trait_method (|
+                                          "core::cmp::PartialOrd",
+                                          Ty.apply
+                                            (Ty.path "ruint::Uint")
+                                            [
+                                              Value.Integer IntegerKind.Usize 256;
+                                              Value.Integer IntegerKind.Usize 4
+                                            ]
+                                            [],
+                                          [],
+                                          [
                                             Ty.apply
                                               (Ty.path "ruint::Uint")
                                               [
                                                 Value.Integer IntegerKind.Usize 256;
                                                 Value.Integer IntegerKind.Usize 4
                                               ]
-                                              [],
-                                            [],
-                                            [
+                                              []
+                                          ],
+                                          "lt",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.borrow (| Pointer.Kind.Ref, ext |);
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.alloc (|
                                               Ty.apply
                                                 (Ty.path "ruint::Uint")
                                                 [
                                                   Value.Integer IntegerKind.Usize 256;
                                                   Value.Integer IntegerKind.Usize 4
                                                 ]
-                                                []
-                                            ],
-                                            "lt",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            M.borrow (| Pointer.Kind.Ref, ext |);
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.alloc (|
+                                                [],
+                                              M.call_closure (|
                                                 Ty.apply
                                                   (Ty.path "ruint::Uint")
                                                   [
@@ -4082,7 +4076,7 @@ Module instructions.
                                                     Value.Integer IntegerKind.Usize 4
                                                   ]
                                                   [],
-                                                M.call_closure (|
+                                                M.get_associated_function (|
                                                   Ty.apply
                                                     (Ty.path "ruint::Uint")
                                                     [
@@ -4090,25 +4084,17 @@ Module instructions.
                                                       Value.Integer IntegerKind.Usize 4
                                                     ]
                                                     [],
-                                                  M.get_associated_function (|
-                                                    Ty.apply
-                                                      (Ty.path "ruint::Uint")
-                                                      [
-                                                        Value.Integer IntegerKind.Usize 256;
-                                                        Value.Integer IntegerKind.Usize 4
-                                                      ]
-                                                      [],
-                                                    "from",
-                                                    [],
-                                                    [ Ty.path "i32" ]
-                                                  |),
-                                                  [ Value.Integer IntegerKind.I32 31 ]
-                                                |)
+                                                  "from",
+                                                  [],
+                                                  [ Ty.path "i32" ]
+                                                |),
+                                                [ Value.Integer IntegerKind.I32 31 ]
                                               |)
                                             |)
-                                          ]
-                                        |)
-                                      |)) in
+                                          |)
+                                        ]
+                                      |)
+                                    |) in
                                   let _ :=
                                     is_constant_or_break_match (|
                                       M.read (| γ |),
@@ -4313,7 +4299,7 @@ Module instructions.
                                           [
                                             fun γ =>
                                               ltac:(M.monadic
-                                                (let γ := M.use bit in
+                                                (let γ := bit in
                                                 let _ :=
                                                   is_constant_or_break_match (|
                                                     M.read (| γ |),

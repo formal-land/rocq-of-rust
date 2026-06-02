@@ -30,10 +30,6 @@ Module slice.
                 limit -= 1;
         
                 let pivot_pos = choose_pivot(v, is_less);
-                // SAFETY: choose_pivot promises to return a valid pivot index.
-                unsafe {
-                    intrinsics::assume(pivot_pos < v.len());
-                }
         
                 // SAFETY: We only access the temporary copy for Freeze types, otherwise
                 // self-modifications via `is_less` would not be observed and this would
@@ -129,30 +125,29 @@ Module slice.
                                 fun γ =>
                                   ltac:(M.monadic
                                     (let γ :=
-                                      M.use
-                                        (M.alloc (|
+                                      M.alloc (|
+                                        Ty.path "bool",
+                                        M.call_closure (|
                                           Ty.path "bool",
-                                          M.call_closure (|
-                                            Ty.path "bool",
-                                            BinOp.le,
-                                            [
-                                              M.read (| len |);
-                                              M.call_closure (|
-                                                Ty.path "usize",
-                                                M.get_trait_method (|
-                                                  "core::slice::sort::shared::smallsort::StableSmallSortTypeImpl",
-                                                  T,
-                                                  [],
-                                                  [],
-                                                  "small_sort_threshold",
-                                                  [],
-                                                  []
-                                                |),
+                                          BinOp.le,
+                                          [
+                                            M.read (| len |);
+                                            M.call_closure (|
+                                              Ty.path "usize",
+                                              M.get_trait_method (|
+                                                "core::slice::sort::shared::smallsort::StableSmallSortTypeImpl",
+                                                T,
+                                                [],
+                                                [],
+                                                "small_sort_threshold",
+                                                [],
                                                 []
-                                              |)
-                                            ]
-                                          |)
-                                        |)) in
+                                              |),
+                                              []
+                                            |)
+                                          ]
+                                        |)
+                                      |) in
                                     let _ :=
                                       is_constant_or_break_match (|
                                         M.read (| γ |),
@@ -201,15 +196,14 @@ Module slice.
                                 fun γ =>
                                   ltac:(M.monadic
                                     (let γ :=
-                                      M.use
-                                        (M.alloc (|
+                                      M.alloc (|
+                                        Ty.path "bool",
+                                        M.call_closure (|
                                           Ty.path "bool",
-                                          M.call_closure (|
-                                            Ty.path "bool",
-                                            BinOp.eq,
-                                            [ M.read (| limit |); Value.Integer IntegerKind.U32 0 ]
-                                          |)
-                                        |)) in
+                                          BinOp.eq,
+                                          [ M.read (| limit |); Value.Integer IntegerKind.U32 0 ]
+                                        |)
+                                      |) in
                                     let _ :=
                                       is_constant_or_break_match (|
                                         M.read (| γ |),
@@ -272,39 +266,6 @@ Module slice.
                                   M.deref (| M.read (| is_less |) |)
                                 |)
                               ]
-                            |) in
-                          let~ _ : Ty.tuple [] :=
-                            M.read (|
-                              let~ _ : Ty.tuple [] :=
-                                M.call_closure (|
-                                  Ty.tuple [],
-                                  M.get_function (| "core::intrinsics::assume", [], [] |),
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      BinOp.lt,
-                                      [
-                                        M.read (| pivot_pos |);
-                                        M.call_closure (|
-                                          Ty.path "usize",
-                                          M.get_associated_function (|
-                                            Ty.apply (Ty.path "slice") [] [ T ],
-                                            "len",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| v |) |)
-                                            |)
-                                          ]
-                                        |)
-                                      ]
-                                    |)
-                                  ]
-                                |) in
-                              M.alloc (| Ty.tuple [], Value.Tuple [] |)
                             |) in
                           let~ pivot_copy :
                               Ty.apply
@@ -484,15 +445,14 @@ Module slice.
                                 fun γ =>
                                   ltac:(M.monadic
                                     (let γ :=
-                                      M.use
-                                        (M.alloc (|
+                                      M.alloc (|
+                                        Ty.path "bool",
+                                        M.call_closure (|
                                           Ty.path "bool",
-                                          M.call_closure (|
-                                            Ty.path "bool",
-                                            UnOp.not,
-                                            [ M.read (| perform_equal_partition |) ]
-                                          |)
-                                        |)) in
+                                          UnOp.not,
+                                          [ M.read (| perform_equal_partition |) ]
+                                        |)
+                                      |) in
                                     let _ :=
                                       is_constant_or_break_match (|
                                         M.read (| γ |),
@@ -551,7 +511,7 @@ Module slice.
                               [
                                 fun γ =>
                                   ltac:(M.monadic
-                                    (let γ := M.use perform_equal_partition in
+                                    (let γ := perform_equal_partition in
                                     let _ :=
                                       is_constant_or_break_match (|
                                         M.read (| γ |),
@@ -909,7 +869,7 @@ Module slice.
             }
         
             let v_base = v.as_ptr();
-            let scratch_base = MaybeUninit::slice_as_mut_ptr(scratch);
+            let scratch_base = scratch.as_mut_ptr().cast_init();
         
             // The core idea is to write the values that compare as less-than to the left
             // side of `scratch`, while the values that compared as greater or equal than
@@ -934,7 +894,7 @@ Module slice.
                     // this gave significant performance boosts in benchmarks. Unrolling
                     // through for _ in 0..UNROLL_LEN { .. } instead of manually improves
                     // compile times but has a ~10-20% performance penalty on opt-level=s.
-                    if const { mem::size_of::<T>() <= 16 } {
+                    if const { size_of::<T>() <= 16 } {
                         const UNROLL_LEN: usize = 4;
                         let unroll_end = v_base.add(loop_end_pos.saturating_sub(UNROLL_LEN - 1));
                         while state.scan < unroll_end {
@@ -1035,54 +995,53 @@ Module slice.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  M.get_function (| "core::intrinsics::unlikely", [], [] |),
-                                  [
-                                    LogicalOp.or (|
-                                      M.call_closure (|
-                                        Ty.path "bool",
-                                        BinOp.lt,
-                                        [
-                                          M.call_closure (|
-                                            Ty.path "usize",
-                                            M.get_associated_function (|
-                                              Ty.apply
-                                                (Ty.path "slice")
-                                                []
-                                                [
-                                                  Ty.apply
-                                                    (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                                    []
-                                                    [ T ]
-                                                ],
-                                              "len",
-                                              [],
+                                M.get_function (| "core::intrinsics::unlikely", [], [] |),
+                                [
+                                  LogicalOp.or (|
+                                    M.call_closure (|
+                                      Ty.path "bool",
+                                      BinOp.lt,
+                                      [
+                                        M.call_closure (|
+                                          Ty.path "usize",
+                                          M.get_associated_function (|
+                                            Ty.apply
+                                              (Ty.path "slice")
                                               []
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (| M.read (| scratch |) |)
-                                              |)
-                                            ]
-                                          |);
-                                          M.read (| len |)
-                                        ]
-                                      |),
-                                      ltac:(M.monadic
-                                        (M.call_closure (|
-                                          Ty.path "bool",
-                                          BinOp.ge,
-                                          [ M.read (| pivot_pos |); M.read (| len |) ]
-                                        |)))
-                                    |)
-                                  ]
-                                |)
-                              |)) in
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                                  []
+                                                  [ T ]
+                                              ],
+                                            "len",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| scratch |) |)
+                                            |)
+                                          ]
+                                        |);
+                                        M.read (| len |)
+                                      ]
+                                    |),
+                                    ltac:(M.monadic
+                                      (M.call_closure (|
+                                        Ty.path "bool",
+                                        BinOp.ge,
+                                        [ M.read (| pivot_pos |); M.read (| len |) ]
+                                      |)))
+                                  |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -1110,12 +1069,32 @@ Module slice.
                   M.call_closure (|
                     Ty.apply (Ty.path "*mut") [] [ T ],
                     M.get_associated_function (|
-                      Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ],
-                      "slice_as_mut_ptr",
+                      Ty.apply
+                        (Ty.path "*mut")
+                        []
+                        [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ],
+                      "cast_init",
                       [],
                       []
                     |),
-                    [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| scratch |) |) |) ]
+                    [
+                      M.call_closure (|
+                        Ty.apply
+                          (Ty.path "*mut")
+                          []
+                          [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ],
+                        M.get_associated_function (|
+                          Ty.apply
+                            (Ty.path "slice")
+                            []
+                            [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ],
+                          "as_mut_ptr",
+                          [],
+                          []
+                        |),
+                        [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| scratch |) |) |) ]
+                      |)
+                    ]
                   |) in
                 let~ pivot : Ty.apply (Ty.path "*const") [] [ T ] :=
                   M.call_closure (|
@@ -1169,11 +1148,10 @@ Module slice.
                               fun γ =>
                                 ltac:(M.monadic
                                   (let γ :=
-                                    M.use
-                                      (get_constant (|
-                                        "core::slice::sort::stable::quicksort::stable_partition_discriminant",
-                                        Ty.path "bool"
-                                      |)) in
+                                    get_constant (|
+                                      "core::slice::sort::stable::quicksort::stable_partition_discriminant",
+                                      Ty.path "bool"
+                                    |) in
                                   let _ :=
                                     is_constant_or_break_match (|
                                       M.read (| γ |),
@@ -1230,24 +1208,23 @@ Module slice.
                                               fun γ =>
                                                 ltac:(M.monadic
                                                   (let γ :=
-                                                    M.use
-                                                      (M.alloc (|
+                                                    M.alloc (|
+                                                      Ty.path "bool",
+                                                      M.call_closure (|
                                                         Ty.path "bool",
-                                                        M.call_closure (|
-                                                          Ty.path "bool",
-                                                          BinOp.lt,
-                                                          [
-                                                            M.read (|
-                                                              M.SubPointer.get_struct_record_field (|
-                                                                state,
-                                                                "core::slice::sort::stable::quicksort::PartitionState",
-                                                                "scan"
-                                                              |)
-                                                            |);
-                                                            M.read (| unroll_end |)
-                                                          ]
-                                                        |)
-                                                      |)) in
+                                                        BinOp.lt,
+                                                        [
+                                                          M.read (|
+                                                            M.SubPointer.get_struct_record_field (|
+                                                              state,
+                                                              "core::slice::sort::stable::quicksort::PartitionState",
+                                                              "scan"
+                                                            |)
+                                                          |);
+                                                          M.read (| unroll_end |)
+                                                        ]
+                                                      |)
+                                                    |) in
                                                   let _ :=
                                                     is_constant_or_break_match (|
                                                       M.read (| γ |),
@@ -1588,24 +1565,23 @@ Module slice.
                                       fun γ =>
                                         ltac:(M.monadic
                                           (let γ :=
-                                            M.use
-                                              (M.alloc (|
+                                            M.alloc (|
+                                              Ty.path "bool",
+                                              M.call_closure (|
                                                 Ty.path "bool",
-                                                M.call_closure (|
-                                                  Ty.path "bool",
-                                                  BinOp.lt,
-                                                  [
-                                                    M.read (|
-                                                      M.SubPointer.get_struct_record_field (|
-                                                        state,
-                                                        "core::slice::sort::stable::quicksort::PartitionState",
-                                                        "scan"
-                                                      |)
-                                                    |);
-                                                    M.read (| loop_end |)
-                                                  ]
-                                                |)
-                                              |)) in
+                                                BinOp.lt,
+                                                [
+                                                  M.read (|
+                                                    M.SubPointer.get_struct_record_field (|
+                                                      state,
+                                                      "core::slice::sort::stable::quicksort::PartitionState",
+                                                      "scan"
+                                                    |)
+                                                  |);
+                                                  M.read (| loop_end |)
+                                                ]
+                                              |)
+                                            |) in
                                           let _ :=
                                             is_constant_or_break_match (|
                                               M.read (| γ |),
@@ -1706,15 +1682,14 @@ Module slice.
                               fun γ =>
                                 ltac:(M.monadic
                                   (let γ :=
-                                    M.use
-                                      (M.alloc (|
+                                    M.alloc (|
+                                      Ty.path "bool",
+                                      M.call_closure (|
                                         Ty.path "bool",
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          BinOp.eq,
-                                          [ M.read (| loop_end_pos |); M.read (| len |) ]
-                                        |)
-                                      |)) in
+                                        BinOp.eq,
+                                        [ M.read (| loop_end_pos |); M.read (| len |) ]
+                                      |)
+                                    |) in
                                   let _ :=
                                     is_constant_or_break_match (|
                                       M.read (| γ |),
@@ -1756,30 +1731,25 @@ Module slice.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  M.get_function (|
-                                    "core::slice::sort::stable::quicksort::has_direct_interior_mutability",
-                                    [],
-                                    [ T ]
-                                  |),
-                                  []
-                                |)
-                              |)) in
+                                M.get_function (|
+                                  "core::slice::sort::stable::quicksort::has_direct_interior_mutability",
+                                  [],
+                                  [ T ]
+                                |),
+                                []
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.read (|
                             let~ _ : Ty.tuple [] :=
                               M.call_closure (|
                                 Ty.tuple [],
-                                M.get_function (|
-                                  "core::intrinsics::copy_nonoverlapping",
-                                  [],
-                                  [ T ]
-                                |),
+                                M.get_function (| "core::ptr::copy_nonoverlapping", [], [ T ] |),
                                 [
                                   M.read (| pivot |);
                                   M.read (| pivot_in_scratch |);
@@ -1805,7 +1775,7 @@ Module slice.
                 let~ _ : Ty.tuple [] :=
                   M.call_closure (|
                     Ty.tuple [],
-                    M.get_function (| "core::intrinsics::copy_nonoverlapping", [], [ T ] |),
+                    M.get_function (| "core::ptr::copy_nonoverlapping", [], [ T ] |),
                     [
                       M.call_closure (|
                         Ty.apply (Ty.path "*const") [] [ T ],
@@ -1942,7 +1912,7 @@ Module slice.
                                                     M.call_closure (|
                                                       Ty.tuple [],
                                                       M.get_function (|
-                                                        "core::intrinsics::copy_nonoverlapping",
+                                                        "core::ptr::copy_nonoverlapping",
                                                         [],
                                                         [ T ]
                                                       |),
@@ -2193,7 +2163,7 @@ Module slice.
                       [
                         fun γ =>
                           ltac:(M.monadic
-                            (let γ := M.use towards_left in
+                            (let γ := towards_left in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.read (|
@@ -2237,7 +2207,7 @@ Module slice.
                   let~ _ : Ty.tuple [] :=
                     M.call_closure (|
                       Ty.tuple [],
-                      M.get_function (| "core::intrinsics::copy_nonoverlapping", [], [ T ] |),
+                      M.get_function (| "core::ptr::copy_nonoverlapping", [], [ T ] |),
                       [
                         M.read (|
                           M.SubPointer.get_struct_record_field (|

@@ -552,9 +552,7 @@ Module iter.
                         if const { crate::mem::needs_drop::<T>() } {
                             // SAFETY: self.initialized is always <= N, which also is the length of the array.
                             unsafe {
-                                core::ptr::drop_in_place(MaybeUninit::slice_assume_init_mut(
-                                    self.array.get_unchecked_mut(..self.initialized),
-                                ));
+                                self.array.get_unchecked_mut(..self.initialized).assume_init_drop();
                             }
                         }
                     }
@@ -918,8 +916,10 @@ Module iter.
                                                           val
                                                         |);
                                                         M.read (|
-                                                          (* `OffsetOf` expression are not handled yet *)
-                                                          M.alloc (| Ty.tuple [], Value.Tuple [] |)
+                                                          get_constant (|
+                                                            "core::iter::adapters::filter_map::next_chunk::{{closure}}_discriminant",
+                                                            Ty.path "usize"
+                                                          |)
                                                         |)
                                                       ]
                                                     |)
@@ -1011,7 +1011,7 @@ Module iter.
                                                 M.call_closure (|
                                                   Ty.tuple [],
                                                   M.get_function (|
-                                                    "core::intrinsics::copy_nonoverlapping",
+                                                    "core::ptr::copy_nonoverlapping",
                                                     [],
                                                     [
                                                       Ty.apply
@@ -1059,24 +1059,23 @@ Module iter.
                                                 fun γ =>
                                                   ltac:(M.monadic
                                                     (let γ :=
-                                                      M.use
-                                                        (M.alloc (|
+                                                      M.alloc (|
+                                                        Ty.path "bool",
+                                                        M.call_closure (|
                                                           Ty.path "bool",
-                                                          M.call_closure (|
-                                                            Ty.path "bool",
-                                                            BinOp.lt,
-                                                            [
-                                                              M.read (|
-                                                                M.SubPointer.get_struct_record_field (|
-                                                                  guard,
-                                                                  "core::iter::adapters::filter_map::next_chunk::Guard",
-                                                                  "initialized"
-                                                                |)
-                                                              |);
-                                                              N
-                                                            ]
-                                                          |)
-                                                        |)) in
+                                                          BinOp.lt,
+                                                          [
+                                                            M.read (|
+                                                              M.SubPointer.get_struct_record_field (|
+                                                                guard,
+                                                                "core::iter::adapters::filter_map::next_chunk::Guard",
+                                                                "initialized"
+                                                              |)
+                                                            |);
+                                                            N
+                                                          ]
+                                                        |)
+                                                      |) in
                                                     let _ :=
                                                       is_constant_or_break_match (|
                                                         M.read (| γ |),

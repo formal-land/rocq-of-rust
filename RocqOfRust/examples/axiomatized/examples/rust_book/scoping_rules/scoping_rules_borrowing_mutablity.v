@@ -14,6 +14,18 @@ Require Import RocqOfRust.RocqOfRust.
       ];
   } *)
 
+Module Impl_core_clone_TrivialClone_for_scoping_rules_borrowing_mutablity_Book.
+  Definition Self : Ty.t := Ty.path "scoping_rules_borrowing_mutablity::Book".
+  
+  Axiom Implements :
+    M.IsTraitInstance
+      "core::clone::TrivialClone"
+      (* Trait polymorphic consts *) []
+      (* Trait polymorphic types *) []
+      Self
+      (* Instance *) [].
+End Impl_core_clone_TrivialClone_for_scoping_rules_borrowing_mutablity_Book.
+
 Module Impl_core_clone_Clone_for_scoping_rules_borrowing_mutablity_Book.
   Definition Self : Ty.t := Ty.path "scoping_rules_borrowing_mutablity::Book".
   

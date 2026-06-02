@@ -19,15 +19,10 @@ Definition max2 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
           fun γ =>
             ltac:(M.monadic
               (let γ :=
-                M.use
-                  (M.alloc (|
-                    Ty.path "bool",
-                    M.call_closure (|
-                      Ty.path "bool",
-                      BinOp.lt,
-                      [ M.read (| a |); M.read (| b |) ]
-                    |)
-                  |)) in
+                M.alloc (|
+                  Ty.path "bool",
+                  M.call_closure (| Ty.path "bool", BinOp.lt, [ M.read (| a |); M.read (| b |) ] |)
+                |) in
               let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
               M.read (| b |)));
           fun γ => ltac:(M.monadic (M.read (| a |)))
@@ -57,15 +52,14 @@ Definition abs_i32 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M 
           fun γ =>
             ltac:(M.monadic
               (let γ :=
-                M.use
-                  (M.alloc (|
+                M.alloc (|
+                  Ty.path "bool",
+                  M.call_closure (|
                     Ty.path "bool",
-                    M.call_closure (|
-                      Ty.path "bool",
-                      BinOp.lt,
-                      [ M.read (| x |); Value.Integer IntegerKind.I32 0 ]
-                    |)
-                  |)) in
+                    BinOp.lt,
+                    [ M.read (| x |); Value.Integer IntegerKind.I32 0 ]
+                  |)
+                |) in
               let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
               M.call_closure (| Ty.path "i32", UnOp.neg, [ M.read (| x |) ] |)));
           fun γ => ltac:(M.monadic (M.read (| x |)))
@@ -99,7 +93,7 @@ Definition bool_and (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M
         [
           fun γ =>
             ltac:(M.monadic
-              (let γ := M.use a in
+              (let γ := a in
               let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
               M.match_operator (|
                 Ty.path "bool",
@@ -107,7 +101,7 @@ Definition bool_and (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M
                 [
                   fun γ =>
                     ltac:(M.monadic
-                      (let γ := M.use b in
+                      (let γ := b in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       Value.Bool true));
                   fun γ => ltac:(M.monadic (Value.Bool false))
@@ -148,15 +142,14 @@ Definition get_or_zero (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) 
           fun γ =>
             ltac:(M.monadic
               (let γ :=
-                M.use
-                  (M.alloc (|
+                M.alloc (|
+                  Ty.path "bool",
+                  M.call_closure (|
                     Ty.path "bool",
-                    M.call_closure (|
-                      Ty.path "bool",
-                      BinOp.lt,
-                      [ M.read (| i |); Value.Integer IntegerKind.Usize 4 ]
-                    |)
-                  |)) in
+                    BinOp.lt,
+                    [ M.read (| i |); Value.Integer IntegerKind.Usize 4 ]
+                  |)
+                |) in
               let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
               M.read (|
                 M.SubPointer.get_array_field (| M.deref (| M.read (| xs |) |), M.read (| i |) |)
@@ -208,49 +201,50 @@ Definition eq2 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
           fun γ =>
             ltac:(M.monadic
               (let γ :=
-                M.use
-                  (M.alloc (|
+                M.alloc (|
+                  Ty.path "bool",
+                  M.call_closure (|
                     Ty.path "bool",
-                    LogicalOp.and (|
-                      M.call_closure (|
-                        Ty.path "bool",
-                        BinOp.eq,
-                        [
-                          M.read (|
-                            M.SubPointer.get_array_field (|
-                              M.deref (| M.read (| a |) |),
-                              Value.Integer IntegerKind.Usize 0
-                            |)
-                          |);
-                          M.read (|
-                            M.SubPointer.get_array_field (|
-                              M.deref (| M.read (| b |) |),
-                              Value.Integer IntegerKind.Usize 0
-                            |)
-                          |)
-                        ]
-                      |),
-                      ltac:(M.monadic
-                        (M.call_closure (|
-                          Ty.path "bool",
-                          BinOp.eq,
-                          [
-                            M.read (|
-                              M.SubPointer.get_array_field (|
-                                M.deref (| M.read (| a |) |),
-                                Value.Integer IntegerKind.Usize 1
-                              |)
-                            |);
-                            M.read (|
-                              M.SubPointer.get_array_field (|
-                                M.deref (| M.read (| b |) |),
-                                Value.Integer IntegerKind.Usize 1
-                              |)
-                            |)
-                          ]
-                        |)))
-                    |)
-                  |)) in
+                    BinOp.eq,
+                    [
+                      M.read (|
+                        M.SubPointer.get_array_field (|
+                          M.deref (| M.read (| a |) |),
+                          Value.Integer IntegerKind.Usize 0
+                        |)
+                      |);
+                      M.read (|
+                        M.SubPointer.get_array_field (|
+                          M.deref (| M.read (| b |) |),
+                          Value.Integer IntegerKind.Usize 0
+                        |)
+                      |)
+                    ]
+                  |)
+                |) in
+              let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+              let γ :=
+                M.alloc (|
+                  Ty.path "bool",
+                  M.call_closure (|
+                    Ty.path "bool",
+                    BinOp.eq,
+                    [
+                      M.read (|
+                        M.SubPointer.get_array_field (|
+                          M.deref (| M.read (| a |) |),
+                          Value.Integer IntegerKind.Usize 1
+                        |)
+                      |);
+                      M.read (|
+                        M.SubPointer.get_array_field (|
+                          M.deref (| M.read (| b |) |),
+                          Value.Integer IntegerKind.Usize 1
+                        |)
+                      |)
+                    ]
+                  |)
+                |) in
               let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
               Value.Bool true));
           fun γ => ltac:(M.monadic (Value.Bool false))
@@ -281,29 +275,30 @@ Definition eq_pair (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M 
           fun γ =>
             ltac:(M.monadic
               (let γ :=
-                M.use
-                  (M.alloc (|
+                M.alloc (|
+                  Ty.path "bool",
+                  M.call_closure (|
                     Ty.path "bool",
-                    LogicalOp.and (|
-                      M.call_closure (|
-                        Ty.path "bool",
-                        BinOp.eq,
-                        [
-                          M.read (| M.SubPointer.get_tuple_field (| x, 0 |) |);
-                          M.read (| M.SubPointer.get_tuple_field (| y, 0 |) |)
-                        ]
-                      |),
-                      ltac:(M.monadic
-                        (M.call_closure (|
-                          Ty.path "bool",
-                          BinOp.eq,
-                          [
-                            M.read (| M.SubPointer.get_tuple_field (| x, 1 |) |);
-                            M.read (| M.SubPointer.get_tuple_field (| y, 1 |) |)
-                          ]
-                        |)))
-                    |)
-                  |)) in
+                    BinOp.eq,
+                    [
+                      M.read (| M.SubPointer.get_tuple_field (| x, 0 |) |);
+                      M.read (| M.SubPointer.get_tuple_field (| y, 0 |) |)
+                    ]
+                  |)
+                |) in
+              let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+              let γ :=
+                M.alloc (|
+                  Ty.path "bool",
+                  M.call_closure (|
+                    Ty.path "bool",
+                    BinOp.eq,
+                    [
+                      M.read (| M.SubPointer.get_tuple_field (| x, 1 |) |);
+                      M.read (| M.SubPointer.get_tuple_field (| y, 1 |) |)
+                    ]
+                  |)
+                |) in
               let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
               Value.Bool true));
           fun γ => ltac:(M.monadic (Value.Bool false))
@@ -338,15 +333,14 @@ Definition min3 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
               fun γ =>
                 ltac:(M.monadic
                   (let γ :=
-                    M.use
-                      (M.alloc (|
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
                         Ty.path "bool",
-                        M.call_closure (|
-                          Ty.path "bool",
-                          BinOp.lt,
-                          [ M.read (| a |); M.read (| b |) ]
-                        |)
-                      |)) in
+                        BinOp.lt,
+                        [ M.read (| a |); M.read (| b |) ]
+                      |)
+                    |) in
                   let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                   M.read (| a |)));
               fun γ => ltac:(M.monadic (M.read (| b |)))
@@ -361,15 +355,14 @@ Definition min3 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
               fun γ =>
                 ltac:(M.monadic
                   (let γ :=
-                    M.use
-                      (M.alloc (|
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
                         Ty.path "bool",
-                        M.call_closure (|
-                          Ty.path "bool",
-                          BinOp.lt,
-                          [ M.read (| m |); M.read (| c |) ]
-                        |)
-                      |)) in
+                        BinOp.lt,
+                        [ M.read (| m |); M.read (| c |) ]
+                      |)
+                    |) in
                   let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                   M.read (| m |)));
               fun γ => ltac:(M.monadic (M.read (| c |)))
@@ -402,7 +395,7 @@ Definition choose_ref (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) :
         [
           fun γ =>
             ltac:(M.monadic
-              (let γ := M.use choice in
+              (let γ := choice in
               let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
               M.read (| M.deref (| M.read (| a |) |) |)));
           fun γ => ltac:(M.monadic (M.read (| M.deref (| M.read (| b |) |) |)))

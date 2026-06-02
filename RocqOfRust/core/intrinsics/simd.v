@@ -3,414 +3,1938 @@ Require Import RocqOfRust.RocqOfRust.
 
 Module intrinsics.
   Module simd.
-    Parameter simd_insert : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
+    (* pub const unsafe fn simd_insert<T, U>(x: T, idx: u32, val: U) -> T; *)
+    Definition simd_insert (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [ T; U ], [ x; idx; val ] =>
+        ltac:(M.monadic
+          (let x := M.alloc (| T, x |) in
+          let idx := M.alloc (| Ty.path "u32", idx |) in
+          let val := M.alloc (| U, val |) in
+          M.never_to_any (|
+            M.read (|
+              M.loop (|
+                Ty.path "never",
+                ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
     
     Global Instance Instance_IsFunction_simd_insert :
       M.IsFunction.C "core::intrinsics::simd::simd_insert" simd_insert.
     Admitted.
+    Global Typeclasses Opaque simd_insert.
     
-    Parameter simd_extract : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
+    (* pub const unsafe fn simd_extract<T, U>(x: T, idx: u32) -> U; *)
+    Definition simd_extract (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [ T; U ], [ x; idx ] =>
+        ltac:(M.monadic
+          (let x := M.alloc (| T, x |) in
+          let idx := M.alloc (| Ty.path "u32", idx |) in
+          M.never_to_any (|
+            M.read (|
+              M.loop (|
+                Ty.path "never",
+                ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
     
     Global Instance Instance_IsFunction_simd_extract :
       M.IsFunction.C "core::intrinsics::simd::simd_extract" simd_extract.
     Admitted.
+    Global Typeclasses Opaque simd_extract.
     
-    Parameter simd_add : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
+    (*
+    pub unsafe fn simd_insert_dyn<T, U>(mut x: T, idx: u32, val: U) -> T {
+        // SAFETY: `idx` must be in-bounds
+        unsafe { (&raw mut x).cast::<U>().add(idx as usize).write(val) }
+        x
+    }
+    *)
+    Definition simd_insert_dyn (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [ T; U ], [ x; idx; val ] =>
+        ltac:(M.monadic
+          (let x := M.alloc (| T, x |) in
+          let idx := M.alloc (| Ty.path "u32", idx |) in
+          let val := M.alloc (| U, val |) in
+          M.read (|
+            let~ _ : Ty.tuple [] :=
+              M.call_closure (|
+                Ty.tuple [],
+                M.get_associated_function (| Ty.apply (Ty.path "*mut") [] [ U ], "write", [], [] |),
+                [
+                  M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ U ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "*mut") [] [ U ],
+                      "add",
+                      [],
+                      []
+                    |),
+                    [
+                      M.call_closure (|
+                        Ty.apply (Ty.path "*mut") [] [ U ],
+                        M.get_associated_function (|
+                          Ty.apply (Ty.path "*mut") [] [ T ],
+                          "cast",
+                          [],
+                          [ U ]
+                        |),
+                        [ M.borrow (| Pointer.Kind.MutPointer, x |) ]
+                      |);
+                      M.cast (Ty.path "usize") (M.read (| idx |))
+                    ]
+                  |);
+                  M.read (| val |)
+                ]
+              |) in
+            x
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance Instance_IsFunction_simd_insert_dyn :
+      M.IsFunction.C "core::intrinsics::simd::simd_insert_dyn" simd_insert_dyn.
+    Admitted.
+    Global Typeclasses Opaque simd_insert_dyn.
+    
+    (*
+    pub unsafe fn simd_extract_dyn<T, U>(x: T, idx: u32) -> U {
+        // SAFETY: `idx` must be in-bounds
+        unsafe { (&raw const x).cast::<U>().add(idx as usize).read() }
+    }
+    *)
+    Definition simd_extract_dyn (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [ T; U ], [ x; idx ] =>
+        ltac:(M.monadic
+          (let x := M.alloc (| T, x |) in
+          let idx := M.alloc (| Ty.path "u32", idx |) in
+          M.call_closure (|
+            U,
+            M.get_associated_function (| Ty.apply (Ty.path "*const") [] [ U ], "read", [], [] |),
+            [
+              M.call_closure (|
+                Ty.apply (Ty.path "*const") [] [ U ],
+                M.get_associated_function (| Ty.apply (Ty.path "*const") [] [ U ], "add", [], [] |),
+                [
+                  M.call_closure (|
+                    Ty.apply (Ty.path "*const") [] [ U ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "*const") [] [ T ],
+                      "cast",
+                      [],
+                      [ U ]
+                    |),
+                    [ M.borrow (| Pointer.Kind.ConstPointer, x |) ]
+                  |);
+                  M.cast (Ty.path "usize") (M.read (| idx |))
+                ]
+              |)
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance Instance_IsFunction_simd_extract_dyn :
+      M.IsFunction.C "core::intrinsics::simd::simd_extract_dyn" simd_extract_dyn.
+    Admitted.
+    Global Typeclasses Opaque simd_extract_dyn.
+    
+    (* pub const unsafe fn simd_add<T>(x: T, y: T) -> T; *)
+    Definition simd_add (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [ T ], [ x; y ] =>
+        ltac:(M.monadic
+          (let x := M.alloc (| T, x |) in
+          let y := M.alloc (| T, y |) in
+          M.never_to_any (|
+            M.read (|
+              M.loop (|
+                Ty.path "never",
+                ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
     
     Global Instance Instance_IsFunction_simd_add :
       M.IsFunction.C "core::intrinsics::simd::simd_add" simd_add.
     Admitted.
+    Global Typeclasses Opaque simd_add.
     
-    Parameter simd_sub : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
+    (* pub const unsafe fn simd_sub<T>(lhs: T, rhs: T) -> T; *)
+    Definition simd_sub (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [ T ], [ lhs; rhs ] =>
+        ltac:(M.monadic
+          (let lhs := M.alloc (| T, lhs |) in
+          let rhs := M.alloc (| T, rhs |) in
+          M.never_to_any (|
+            M.read (|
+              M.loop (|
+                Ty.path "never",
+                ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
     
     Global Instance Instance_IsFunction_simd_sub :
       M.IsFunction.C "core::intrinsics::simd::simd_sub" simd_sub.
     Admitted.
+    Global Typeclasses Opaque simd_sub.
     
-    Parameter simd_mul : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
+    (* pub const unsafe fn simd_mul<T>(x: T, y: T) -> T; *)
+    Definition simd_mul (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [ T ], [ x; y ] =>
+        ltac:(M.monadic
+          (let x := M.alloc (| T, x |) in
+          let y := M.alloc (| T, y |) in
+          M.never_to_any (|
+            M.read (|
+              M.loop (|
+                Ty.path "never",
+                ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
     
     Global Instance Instance_IsFunction_simd_mul :
       M.IsFunction.C "core::intrinsics::simd::simd_mul" simd_mul.
     Admitted.
+    Global Typeclasses Opaque simd_mul.
     
-    Parameter simd_div : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
+    (* pub const unsafe fn simd_div<T>(lhs: T, rhs: T) -> T; *)
+    Definition simd_div (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [ T ], [ lhs; rhs ] =>
+        ltac:(M.monadic
+          (let lhs := M.alloc (| T, lhs |) in
+          let rhs := M.alloc (| T, rhs |) in
+          M.never_to_any (|
+            M.read (|
+              M.loop (|
+                Ty.path "never",
+                ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
     
     Global Instance Instance_IsFunction_simd_div :
       M.IsFunction.C "core::intrinsics::simd::simd_div" simd_div.
     Admitted.
+    Global Typeclasses Opaque simd_div.
     
-    Parameter simd_rem : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
+    (* pub const unsafe fn simd_rem<T>(lhs: T, rhs: T) -> T; *)
+    Definition simd_rem (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [ T ], [ lhs; rhs ] =>
+        ltac:(M.monadic
+          (let lhs := M.alloc (| T, lhs |) in
+          let rhs := M.alloc (| T, rhs |) in
+          M.never_to_any (|
+            M.read (|
+              M.loop (|
+                Ty.path "never",
+                ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
     
     Global Instance Instance_IsFunction_simd_rem :
       M.IsFunction.C "core::intrinsics::simd::simd_rem" simd_rem.
     Admitted.
+    Global Typeclasses Opaque simd_rem.
     
-    Parameter simd_shl : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
+    (* pub const unsafe fn simd_shl<T>(lhs: T, rhs: T) -> T; *)
+    Definition simd_shl (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [ T ], [ lhs; rhs ] =>
+        ltac:(M.monadic
+          (let lhs := M.alloc (| T, lhs |) in
+          let rhs := M.alloc (| T, rhs |) in
+          M.never_to_any (|
+            M.read (|
+              M.loop (|
+                Ty.path "never",
+                ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
     
     Global Instance Instance_IsFunction_simd_shl :
       M.IsFunction.C "core::intrinsics::simd::simd_shl" simd_shl.
     Admitted.
+    Global Typeclasses Opaque simd_shl.
     
-    Parameter simd_shr : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
+    (* pub const unsafe fn simd_shr<T>(lhs: T, rhs: T) -> T; *)
+    Definition simd_shr (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [ T ], [ lhs; rhs ] =>
+        ltac:(M.monadic
+          (let lhs := M.alloc (| T, lhs |) in
+          let rhs := M.alloc (| T, rhs |) in
+          M.never_to_any (|
+            M.read (|
+              M.loop (|
+                Ty.path "never",
+                ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
     
     Global Instance Instance_IsFunction_simd_shr :
       M.IsFunction.C "core::intrinsics::simd::simd_shr" simd_shr.
     Admitted.
+    Global Typeclasses Opaque simd_shr.
     
-    Parameter simd_and : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
+    (* pub const unsafe fn simd_funnel_shl<T>(a: T, b: T, shift: T) -> T; *)
+    Definition simd_funnel_shl (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [ T ], [ a; b; shift ] =>
+        ltac:(M.monadic
+          (let a := M.alloc (| T, a |) in
+          let b := M.alloc (| T, b |) in
+          let shift := M.alloc (| T, shift |) in
+          M.never_to_any (|
+            M.read (|
+              M.loop (|
+                Ty.path "never",
+                ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance Instance_IsFunction_simd_funnel_shl :
+      M.IsFunction.C "core::intrinsics::simd::simd_funnel_shl" simd_funnel_shl.
+    Admitted.
+    Global Typeclasses Opaque simd_funnel_shl.
+    
+    (* pub const unsafe fn simd_funnel_shr<T>(a: T, b: T, shift: T) -> T; *)
+    Definition simd_funnel_shr (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [ T ], [ a; b; shift ] =>
+        ltac:(M.monadic
+          (let a := M.alloc (| T, a |) in
+          let b := M.alloc (| T, b |) in
+          let shift := M.alloc (| T, shift |) in
+          M.never_to_any (|
+            M.read (|
+              M.loop (|
+                Ty.path "never",
+                ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance Instance_IsFunction_simd_funnel_shr :
+      M.IsFunction.C "core::intrinsics::simd::simd_funnel_shr" simd_funnel_shr.
+    Admitted.
+    Global Typeclasses Opaque simd_funnel_shr.
+    
+    (* pub const unsafe fn simd_and<T>(x: T, y: T) -> T; *)
+    Definition simd_and (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [ T ], [ x; y ] =>
+        ltac:(M.monadic
+          (let x := M.alloc (| T, x |) in
+          let y := M.alloc (| T, y |) in
+          M.never_to_any (|
+            M.read (|
+              M.loop (|
+                Ty.path "never",
+                ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
     
     Global Instance Instance_IsFunction_simd_and :
       M.IsFunction.C "core::intrinsics::simd::simd_and" simd_and.
     Admitted.
+    Global Typeclasses Opaque simd_and.
     
-    Parameter simd_or : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
+    (* pub const unsafe fn simd_or<T>(x: T, y: T) -> T; *)
+    Definition simd_or (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [ T ], [ x; y ] =>
+        ltac:(M.monadic
+          (let x := M.alloc (| T, x |) in
+          let y := M.alloc (| T, y |) in
+          M.never_to_any (|
+            M.read (|
+              M.loop (|
+                Ty.path "never",
+                ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
     
     Global Instance Instance_IsFunction_simd_or :
       M.IsFunction.C "core::intrinsics::simd::simd_or" simd_or.
     Admitted.
+    Global Typeclasses Opaque simd_or.
     
-    Parameter simd_xor : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
+    (* pub const unsafe fn simd_xor<T>(x: T, y: T) -> T; *)
+    Definition simd_xor (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [ T ], [ x; y ] =>
+        ltac:(M.monadic
+          (let x := M.alloc (| T, x |) in
+          let y := M.alloc (| T, y |) in
+          M.never_to_any (|
+            M.read (|
+              M.loop (|
+                Ty.path "never",
+                ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
     
     Global Instance Instance_IsFunction_simd_xor :
       M.IsFunction.C "core::intrinsics::simd::simd_xor" simd_xor.
     Admitted.
+    Global Typeclasses Opaque simd_xor.
     
-    Parameter simd_cast : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
+    (* pub const unsafe fn simd_cast<T, U>(x: T) -> U; *)
+    Definition simd_cast (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [ T; U ], [ x ] =>
+        ltac:(M.monadic
+          (let x := M.alloc (| T, x |) in
+          M.never_to_any (|
+            M.read (|
+              M.loop (|
+                Ty.path "never",
+                ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
     
     Global Instance Instance_IsFunction_simd_cast :
       M.IsFunction.C "core::intrinsics::simd::simd_cast" simd_cast.
     Admitted.
+    Global Typeclasses Opaque simd_cast.
     
-    Parameter simd_as : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
+    (* pub const unsafe fn simd_as<T, U>(x: T) -> U; *)
+    Definition simd_as (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [ T; U ], [ x ] =>
+        ltac:(M.monadic
+          (let x := M.alloc (| T, x |) in
+          M.never_to_any (|
+            M.read (|
+              M.loop (|
+                Ty.path "never",
+                ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
     
     Global Instance Instance_IsFunction_simd_as :
       M.IsFunction.C "core::intrinsics::simd::simd_as" simd_as.
     Admitted.
+    Global Typeclasses Opaque simd_as.
     
-    Parameter simd_neg : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
+    (* pub const unsafe fn simd_neg<T>(x: T) -> T; *)
+    Definition simd_neg (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [ T ], [ x ] =>
+        ltac:(M.monadic
+          (let x := M.alloc (| T, x |) in
+          M.never_to_any (|
+            M.read (|
+              M.loop (|
+                Ty.path "never",
+                ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
     
     Global Instance Instance_IsFunction_simd_neg :
       M.IsFunction.C "core::intrinsics::simd::simd_neg" simd_neg.
     Admitted.
+    Global Typeclasses Opaque simd_neg.
     
-    Parameter simd_fabs : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
+    (* pub const unsafe fn simd_fabs<T>(x: T) -> T; *)
+    Definition simd_fabs (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [ T ], [ x ] =>
+        ltac:(M.monadic
+          (let x := M.alloc (| T, x |) in
+          M.never_to_any (|
+            M.read (|
+              M.loop (|
+                Ty.path "never",
+                ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
     
     Global Instance Instance_IsFunction_simd_fabs :
       M.IsFunction.C "core::intrinsics::simd::simd_fabs" simd_fabs.
     Admitted.
+    Global Typeclasses Opaque simd_fabs.
     
-    Parameter simd_fmin : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
+    (* pub const unsafe fn simd_fmin<T>(x: T, y: T) -> T; *)
+    Definition simd_fmin (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [ T ], [ x; y ] =>
+        ltac:(M.monadic
+          (let x := M.alloc (| T, x |) in
+          let y := M.alloc (| T, y |) in
+          M.never_to_any (|
+            M.read (|
+              M.loop (|
+                Ty.path "never",
+                ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
     
     Global Instance Instance_IsFunction_simd_fmin :
       M.IsFunction.C "core::intrinsics::simd::simd_fmin" simd_fmin.
     Admitted.
+    Global Typeclasses Opaque simd_fmin.
     
-    Parameter simd_fmax : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
+    (* pub const unsafe fn simd_fmax<T>(x: T, y: T) -> T; *)
+    Definition simd_fmax (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [ T ], [ x; y ] =>
+        ltac:(M.monadic
+          (let x := M.alloc (| T, x |) in
+          let y := M.alloc (| T, y |) in
+          M.never_to_any (|
+            M.read (|
+              M.loop (|
+                Ty.path "never",
+                ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
     
     Global Instance Instance_IsFunction_simd_fmax :
       M.IsFunction.C "core::intrinsics::simd::simd_fmax" simd_fmax.
     Admitted.
+    Global Typeclasses Opaque simd_fmax.
     
-    Parameter simd_eq : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
+    (* pub const unsafe fn simd_eq<T, U>(x: T, y: T) -> U; *)
+    Definition simd_eq (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [ T; U ], [ x; y ] =>
+        ltac:(M.monadic
+          (let x := M.alloc (| T, x |) in
+          let y := M.alloc (| T, y |) in
+          M.never_to_any (|
+            M.read (|
+              M.loop (|
+                Ty.path "never",
+                ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
     
     Global Instance Instance_IsFunction_simd_eq :
       M.IsFunction.C "core::intrinsics::simd::simd_eq" simd_eq.
     Admitted.
+    Global Typeclasses Opaque simd_eq.
     
-    Parameter simd_ne : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
+    (* pub const unsafe fn simd_ne<T, U>(x: T, y: T) -> U; *)
+    Definition simd_ne (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [ T; U ], [ x; y ] =>
+        ltac:(M.monadic
+          (let x := M.alloc (| T, x |) in
+          let y := M.alloc (| T, y |) in
+          M.never_to_any (|
+            M.read (|
+              M.loop (|
+                Ty.path "never",
+                ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
     
     Global Instance Instance_IsFunction_simd_ne :
       M.IsFunction.C "core::intrinsics::simd::simd_ne" simd_ne.
     Admitted.
+    Global Typeclasses Opaque simd_ne.
     
-    Parameter simd_lt : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
+    (* pub const unsafe fn simd_lt<T, U>(x: T, y: T) -> U; *)
+    Definition simd_lt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [ T; U ], [ x; y ] =>
+        ltac:(M.monadic
+          (let x := M.alloc (| T, x |) in
+          let y := M.alloc (| T, y |) in
+          M.never_to_any (|
+            M.read (|
+              M.loop (|
+                Ty.path "never",
+                ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
     
     Global Instance Instance_IsFunction_simd_lt :
       M.IsFunction.C "core::intrinsics::simd::simd_lt" simd_lt.
     Admitted.
+    Global Typeclasses Opaque simd_lt.
     
-    Parameter simd_le : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
+    (* pub const unsafe fn simd_le<T, U>(x: T, y: T) -> U; *)
+    Definition simd_le (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [ T; U ], [ x; y ] =>
+        ltac:(M.monadic
+          (let x := M.alloc (| T, x |) in
+          let y := M.alloc (| T, y |) in
+          M.never_to_any (|
+            M.read (|
+              M.loop (|
+                Ty.path "never",
+                ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
     
     Global Instance Instance_IsFunction_simd_le :
       M.IsFunction.C "core::intrinsics::simd::simd_le" simd_le.
     Admitted.
+    Global Typeclasses Opaque simd_le.
     
-    Parameter simd_gt : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
+    (* pub const unsafe fn simd_gt<T, U>(x: T, y: T) -> U; *)
+    Definition simd_gt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [ T; U ], [ x; y ] =>
+        ltac:(M.monadic
+          (let x := M.alloc (| T, x |) in
+          let y := M.alloc (| T, y |) in
+          M.never_to_any (|
+            M.read (|
+              M.loop (|
+                Ty.path "never",
+                ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
     
     Global Instance Instance_IsFunction_simd_gt :
       M.IsFunction.C "core::intrinsics::simd::simd_gt" simd_gt.
     Admitted.
+    Global Typeclasses Opaque simd_gt.
     
-    Parameter simd_ge : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
+    (* pub const unsafe fn simd_ge<T, U>(x: T, y: T) -> U; *)
+    Definition simd_ge (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [ T; U ], [ x; y ] =>
+        ltac:(M.monadic
+          (let x := M.alloc (| T, x |) in
+          let y := M.alloc (| T, y |) in
+          M.never_to_any (|
+            M.read (|
+              M.loop (|
+                Ty.path "never",
+                ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
     
     Global Instance Instance_IsFunction_simd_ge :
       M.IsFunction.C "core::intrinsics::simd::simd_ge" simd_ge.
     Admitted.
+    Global Typeclasses Opaque simd_ge.
     
-    Parameter simd_shuffle : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
+    (* pub const unsafe fn simd_shuffle<T, U, V>(x: T, y: T, idx: U) -> V; *)
+    Definition simd_shuffle (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [ T; U; V ], [ x; y; idx ] =>
+        ltac:(M.monadic
+          (let x := M.alloc (| T, x |) in
+          let y := M.alloc (| T, y |) in
+          let idx := M.alloc (| U, idx |) in
+          M.never_to_any (|
+            M.read (|
+              M.loop (|
+                Ty.path "never",
+                ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
     
     Global Instance Instance_IsFunction_simd_shuffle :
       M.IsFunction.C "core::intrinsics::simd::simd_shuffle" simd_shuffle.
     Admitted.
+    Global Typeclasses Opaque simd_shuffle.
     
-    Parameter simd_gather : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
+    (* pub const unsafe fn simd_gather<T, U, V>(val: T, ptr: U, mask: V) -> T; *)
+    Definition simd_gather (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [ T; U; V ], [ val; ptr; mask ] =>
+        ltac:(M.monadic
+          (let val := M.alloc (| T, val |) in
+          let ptr := M.alloc (| U, ptr |) in
+          let mask := M.alloc (| V, mask |) in
+          M.never_to_any (|
+            M.read (|
+              M.loop (|
+                Ty.path "never",
+                ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
     
     Global Instance Instance_IsFunction_simd_gather :
       M.IsFunction.C "core::intrinsics::simd::simd_gather" simd_gather.
     Admitted.
+    Global Typeclasses Opaque simd_gather.
     
-    Parameter simd_scatter : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
+    (* pub const unsafe fn simd_scatter<T, U, V>(val: T, ptr: U, mask: V); *)
+    Definition simd_scatter (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [ T; U; V ], [ val; ptr; mask ] =>
+        ltac:(M.monadic
+          (let val := M.alloc (| T, val |) in
+          let ptr := M.alloc (| U, ptr |) in
+          let mask := M.alloc (| V, mask |) in
+          M.never_to_any (|
+            M.read (|
+              M.loop (|
+                Ty.path "never",
+                ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
     
     Global Instance Instance_IsFunction_simd_scatter :
       M.IsFunction.C "core::intrinsics::simd::simd_scatter" simd_scatter.
     Admitted.
+    Global Typeclasses Opaque simd_scatter.
     
-    Parameter simd_masked_load : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
+    (*
+    Enum SimdAlign
+    {
+      const_params := [];
+      ty_params := [];
+      variants :=
+        [
+          {
+            name := "Unaligned";
+            item := StructTuple [];
+          };
+          {
+            name := "Element";
+            item := StructTuple [];
+          };
+          {
+            name := "Vector";
+            item := StructTuple [];
+          }
+        ];
+    }
+    *)
+    
+    Axiom IsDiscriminant_SimdAlign_Unaligned :
+      M.IsDiscriminant "core::intrinsics::simd::SimdAlign::Unaligned" 0.
+    Axiom IsDiscriminant_SimdAlign_Element :
+      M.IsDiscriminant "core::intrinsics::simd::SimdAlign::Element" 1.
+    Axiom IsDiscriminant_SimdAlign_Vector :
+      M.IsDiscriminant "core::intrinsics::simd::SimdAlign::Vector" 2.
+    
+    Module Impl_core_fmt_Debug_for_core_intrinsics_simd_SimdAlign.
+      Definition Self : Ty.t := Ty.path "core::intrinsics::simd::SimdAlign".
+      
+      (* Debug *)
+      Definition fmt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; f ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "&") [] [ Ty.path "core::intrinsics::simd::SimdAlign" ],
+                self
+              |) in
+            let f :=
+              M.alloc (| Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ], f |) in
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "core::result::Result")
+                []
+                [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+              M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_str", [], [] |),
+              [
+                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
+                M.match_operator (|
+                  Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                  self,
+                  [
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "core::intrinsics::simd::SimdAlign::Unaligned"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Unaligned" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (| γ, "core::intrinsics::simd::SimdAlign::Element" |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Element" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (| γ, "core::intrinsics::simd::SimdAlign::Vector" |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Vector" |) |) |)))
+                  ]
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::fmt::Debug"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [ ("fmt", InstanceField.Method fmt) ].
+    End Impl_core_fmt_Debug_for_core_intrinsics_simd_SimdAlign.
+    
+    Module Impl_core_marker_ConstParamTy__for_core_intrinsics_simd_SimdAlign.
+      Definition Self : Ty.t := Ty.path "core::intrinsics::simd::SimdAlign".
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::marker::ConstParamTy_"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [].
+    End Impl_core_marker_ConstParamTy__for_core_intrinsics_simd_SimdAlign.
+    
+    Module Impl_core_marker_StructuralPartialEq_for_core_intrinsics_simd_SimdAlign.
+      Definition Self : Ty.t := Ty.path "core::intrinsics::simd::SimdAlign".
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::marker::StructuralPartialEq"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [].
+    End Impl_core_marker_StructuralPartialEq_for_core_intrinsics_simd_SimdAlign.
+    
+    Module Impl_core_cmp_PartialEq_core_intrinsics_simd_SimdAlign_for_core_intrinsics_simd_SimdAlign.
+      Definition Self : Ty.t := Ty.path "core::intrinsics::simd::SimdAlign".
+      
+      (* PartialEq *)
+      Definition eq (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "&") [] [ Ty.path "core::intrinsics::simd::SimdAlign" ],
+                self
+              |) in
+            let other :=
+              M.alloc (|
+                Ty.apply (Ty.path "&") [] [ Ty.path "core::intrinsics::simd::SimdAlign" ],
+                other
+              |) in
+            M.read (|
+              let~ __self_discr : Ty.path "isize" :=
+                M.call_closure (|
+                  Ty.path "isize",
+                  M.get_function (|
+                    "core::intrinsics::discriminant_value",
+                    [],
+                    [ Ty.path "core::intrinsics::simd::SimdAlign" ]
+                  |),
+                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                |) in
+              let~ __arg1_discr : Ty.path "isize" :=
+                M.call_closure (|
+                  Ty.path "isize",
+                  M.get_function (|
+                    "core::intrinsics::discriminant_value",
+                    [],
+                    [ Ty.path "core::intrinsics::simd::SimdAlign" ]
+                  |),
+                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                |) in
+              M.alloc (|
+                Ty.path "bool",
+                M.call_closure (|
+                  Ty.path "bool",
+                  BinOp.eq,
+                  [ M.read (| __self_discr |); M.read (| __arg1_discr |) ]
+                |)
+              |)
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::cmp::PartialEq"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) [ Ty.path "core::intrinsics::simd::SimdAlign" ]
+          Self
+          (* Instance *) [ ("eq", InstanceField.Method eq) ].
+    End Impl_core_cmp_PartialEq_core_intrinsics_simd_SimdAlign_for_core_intrinsics_simd_SimdAlign.
+    
+    Module Impl_core_cmp_Eq_for_core_intrinsics_simd_SimdAlign.
+      Definition Self : Ty.t := Ty.path "core::intrinsics::simd::SimdAlign".
+      
+      (* Eq *)
+      Definition assert_receiver_is_total_eq
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "&") [] [ Ty.path "core::intrinsics::simd::SimdAlign" ],
+                self
+              |) in
+            Value.Tuple []))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::cmp::Eq"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *)
+          [ ("assert_receiver_is_total_eq", InstanceField.Method assert_receiver_is_total_eq) ].
+    End Impl_core_cmp_Eq_for_core_intrinsics_simd_SimdAlign.
+    
+    (*
+    pub const unsafe fn simd_masked_load<V, U, T, const ALIGN: SimdAlign>(mask: V, ptr: U, val: T)
+    -> T;
+    *)
+    Definition simd_masked_load (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [ ALIGN ], [ V; U; T ], [ mask; ptr; val ] =>
+        ltac:(M.monadic
+          (let mask := M.alloc (| V, mask |) in
+          let ptr := M.alloc (| U, ptr |) in
+          let val := M.alloc (| T, val |) in
+          M.never_to_any (|
+            M.read (|
+              M.loop (|
+                Ty.path "never",
+                ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
     
     Global Instance Instance_IsFunction_simd_masked_load :
       M.IsFunction.C "core::intrinsics::simd::simd_masked_load" simd_masked_load.
     Admitted.
+    Global Typeclasses Opaque simd_masked_load.
     
-    Parameter simd_masked_store : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
+    (* pub const unsafe fn simd_masked_store<V, U, T, const ALIGN: SimdAlign>(mask: V, ptr: U, val: T); *)
+    Definition simd_masked_store (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [ ALIGN ], [ V; U; T ], [ mask; ptr; val ] =>
+        ltac:(M.monadic
+          (let mask := M.alloc (| V, mask |) in
+          let ptr := M.alloc (| U, ptr |) in
+          let val := M.alloc (| T, val |) in
+          M.never_to_any (|
+            M.read (|
+              M.loop (|
+                Ty.path "never",
+                ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
     
     Global Instance Instance_IsFunction_simd_masked_store :
       M.IsFunction.C "core::intrinsics::simd::simd_masked_store" simd_masked_store.
     Admitted.
+    Global Typeclasses Opaque simd_masked_store.
     
-    Parameter simd_saturating_add : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
+    (* pub const unsafe fn simd_saturating_add<T>(x: T, y: T) -> T; *)
+    Definition simd_saturating_add (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [ T ], [ x; y ] =>
+        ltac:(M.monadic
+          (let x := M.alloc (| T, x |) in
+          let y := M.alloc (| T, y |) in
+          M.never_to_any (|
+            M.read (|
+              M.loop (|
+                Ty.path "never",
+                ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
     
     Global Instance Instance_IsFunction_simd_saturating_add :
       M.IsFunction.C "core::intrinsics::simd::simd_saturating_add" simd_saturating_add.
     Admitted.
+    Global Typeclasses Opaque simd_saturating_add.
     
-    Parameter simd_saturating_sub : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
+    (* pub const unsafe fn simd_saturating_sub<T>(lhs: T, rhs: T) -> T; *)
+    Definition simd_saturating_sub (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [ T ], [ lhs; rhs ] =>
+        ltac:(M.monadic
+          (let lhs := M.alloc (| T, lhs |) in
+          let rhs := M.alloc (| T, rhs |) in
+          M.never_to_any (|
+            M.read (|
+              M.loop (|
+                Ty.path "never",
+                ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
     
     Global Instance Instance_IsFunction_simd_saturating_sub :
       M.IsFunction.C "core::intrinsics::simd::simd_saturating_sub" simd_saturating_sub.
     Admitted.
+    Global Typeclasses Opaque simd_saturating_sub.
     
-    Parameter simd_reduce_add_ordered : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
+    (* pub const unsafe fn simd_reduce_add_ordered<T, U>(x: T, y: U) -> U; *)
+    Definition simd_reduce_add_ordered (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [ T; U ], [ x; y ] =>
+        ltac:(M.monadic
+          (let x := M.alloc (| T, x |) in
+          let y := M.alloc (| U, y |) in
+          M.never_to_any (|
+            M.read (|
+              M.loop (|
+                Ty.path "never",
+                ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
     
     Global Instance Instance_IsFunction_simd_reduce_add_ordered :
       M.IsFunction.C "core::intrinsics::simd::simd_reduce_add_ordered" simd_reduce_add_ordered.
     Admitted.
+    Global Typeclasses Opaque simd_reduce_add_ordered.
     
-    Parameter simd_reduce_add_unordered : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
+    (* pub unsafe fn simd_reduce_add_unordered<T, U>(x: T) -> U; *)
+    Definition simd_reduce_add_unordered
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      match ε, τ, α with
+      | [], [ T; U ], [ x ] =>
+        ltac:(M.monadic
+          (let x := M.alloc (| T, x |) in
+          M.never_to_any (|
+            M.read (|
+              M.loop (|
+                Ty.path "never",
+                ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
     
     Global Instance Instance_IsFunction_simd_reduce_add_unordered :
       M.IsFunction.C "core::intrinsics::simd::simd_reduce_add_unordered" simd_reduce_add_unordered.
     Admitted.
+    Global Typeclasses Opaque simd_reduce_add_unordered.
     
-    Parameter simd_reduce_mul_ordered : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
+    (* pub const unsafe fn simd_reduce_mul_ordered<T, U>(x: T, y: U) -> U; *)
+    Definition simd_reduce_mul_ordered (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [ T; U ], [ x; y ] =>
+        ltac:(M.monadic
+          (let x := M.alloc (| T, x |) in
+          let y := M.alloc (| U, y |) in
+          M.never_to_any (|
+            M.read (|
+              M.loop (|
+                Ty.path "never",
+                ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
     
     Global Instance Instance_IsFunction_simd_reduce_mul_ordered :
       M.IsFunction.C "core::intrinsics::simd::simd_reduce_mul_ordered" simd_reduce_mul_ordered.
     Admitted.
+    Global Typeclasses Opaque simd_reduce_mul_ordered.
     
-    Parameter simd_reduce_mul_unordered : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
+    (* pub unsafe fn simd_reduce_mul_unordered<T, U>(x: T) -> U; *)
+    Definition simd_reduce_mul_unordered
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      match ε, τ, α with
+      | [], [ T; U ], [ x ] =>
+        ltac:(M.monadic
+          (let x := M.alloc (| T, x |) in
+          M.never_to_any (|
+            M.read (|
+              M.loop (|
+                Ty.path "never",
+                ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
     
     Global Instance Instance_IsFunction_simd_reduce_mul_unordered :
       M.IsFunction.C "core::intrinsics::simd::simd_reduce_mul_unordered" simd_reduce_mul_unordered.
     Admitted.
+    Global Typeclasses Opaque simd_reduce_mul_unordered.
     
-    Parameter simd_reduce_all : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
+    (* pub const unsafe fn simd_reduce_all<T>(x: T) -> bool; *)
+    Definition simd_reduce_all (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [ T ], [ x ] =>
+        ltac:(M.monadic
+          (let x := M.alloc (| T, x |) in
+          M.never_to_any (|
+            M.read (|
+              M.loop (|
+                Ty.path "never",
+                ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
     
     Global Instance Instance_IsFunction_simd_reduce_all :
       M.IsFunction.C "core::intrinsics::simd::simd_reduce_all" simd_reduce_all.
     Admitted.
+    Global Typeclasses Opaque simd_reduce_all.
     
-    Parameter simd_reduce_any : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
+    (* pub const unsafe fn simd_reduce_any<T>(x: T) -> bool; *)
+    Definition simd_reduce_any (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [ T ], [ x ] =>
+        ltac:(M.monadic
+          (let x := M.alloc (| T, x |) in
+          M.never_to_any (|
+            M.read (|
+              M.loop (|
+                Ty.path "never",
+                ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
     
     Global Instance Instance_IsFunction_simd_reduce_any :
       M.IsFunction.C "core::intrinsics::simd::simd_reduce_any" simd_reduce_any.
     Admitted.
+    Global Typeclasses Opaque simd_reduce_any.
     
-    Parameter simd_reduce_max : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
+    (* pub const unsafe fn simd_reduce_max<T, U>(x: T) -> U; *)
+    Definition simd_reduce_max (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [ T; U ], [ x ] =>
+        ltac:(M.monadic
+          (let x := M.alloc (| T, x |) in
+          M.never_to_any (|
+            M.read (|
+              M.loop (|
+                Ty.path "never",
+                ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
     
     Global Instance Instance_IsFunction_simd_reduce_max :
       M.IsFunction.C "core::intrinsics::simd::simd_reduce_max" simd_reduce_max.
     Admitted.
+    Global Typeclasses Opaque simd_reduce_max.
     
-    Parameter simd_reduce_min : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
+    (* pub const unsafe fn simd_reduce_min<T, U>(x: T) -> U; *)
+    Definition simd_reduce_min (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [ T; U ], [ x ] =>
+        ltac:(M.monadic
+          (let x := M.alloc (| T, x |) in
+          M.never_to_any (|
+            M.read (|
+              M.loop (|
+                Ty.path "never",
+                ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
     
     Global Instance Instance_IsFunction_simd_reduce_min :
       M.IsFunction.C "core::intrinsics::simd::simd_reduce_min" simd_reduce_min.
     Admitted.
+    Global Typeclasses Opaque simd_reduce_min.
     
-    Parameter simd_reduce_and : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
+    (* pub const unsafe fn simd_reduce_and<T, U>(x: T) -> U; *)
+    Definition simd_reduce_and (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [ T; U ], [ x ] =>
+        ltac:(M.monadic
+          (let x := M.alloc (| T, x |) in
+          M.never_to_any (|
+            M.read (|
+              M.loop (|
+                Ty.path "never",
+                ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
     
     Global Instance Instance_IsFunction_simd_reduce_and :
       M.IsFunction.C "core::intrinsics::simd::simd_reduce_and" simd_reduce_and.
     Admitted.
+    Global Typeclasses Opaque simd_reduce_and.
     
-    Parameter simd_reduce_or : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
+    (* pub const unsafe fn simd_reduce_or<T, U>(x: T) -> U; *)
+    Definition simd_reduce_or (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [ T; U ], [ x ] =>
+        ltac:(M.monadic
+          (let x := M.alloc (| T, x |) in
+          M.never_to_any (|
+            M.read (|
+              M.loop (|
+                Ty.path "never",
+                ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
     
     Global Instance Instance_IsFunction_simd_reduce_or :
       M.IsFunction.C "core::intrinsics::simd::simd_reduce_or" simd_reduce_or.
     Admitted.
+    Global Typeclasses Opaque simd_reduce_or.
     
-    Parameter simd_reduce_xor : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
+    (* pub const unsafe fn simd_reduce_xor<T, U>(x: T) -> U; *)
+    Definition simd_reduce_xor (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [ T; U ], [ x ] =>
+        ltac:(M.monadic
+          (let x := M.alloc (| T, x |) in
+          M.never_to_any (|
+            M.read (|
+              M.loop (|
+                Ty.path "never",
+                ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
     
     Global Instance Instance_IsFunction_simd_reduce_xor :
       M.IsFunction.C "core::intrinsics::simd::simd_reduce_xor" simd_reduce_xor.
     Admitted.
+    Global Typeclasses Opaque simd_reduce_xor.
     
-    Parameter simd_bitmask : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
+    (* pub const unsafe fn simd_bitmask<T, U>(x: T) -> U; *)
+    Definition simd_bitmask (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [ T; U ], [ x ] =>
+        ltac:(M.monadic
+          (let x := M.alloc (| T, x |) in
+          M.never_to_any (|
+            M.read (|
+              M.loop (|
+                Ty.path "never",
+                ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
     
     Global Instance Instance_IsFunction_simd_bitmask :
       M.IsFunction.C "core::intrinsics::simd::simd_bitmask" simd_bitmask.
     Admitted.
+    Global Typeclasses Opaque simd_bitmask.
     
-    Parameter simd_select : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
+    (* pub const unsafe fn simd_select<M, T>(mask: M, if_true: T, if_false: T) -> T; *)
+    Definition simd_select (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [ M_; T ], [ mask; if_true; if_false ] =>
+        ltac:(M.monadic
+          (let mask := M.alloc (| M_, mask |) in
+          let if_true := M.alloc (| T, if_true |) in
+          let if_false := M.alloc (| T, if_false |) in
+          M.never_to_any (|
+            M.read (|
+              M.loop (|
+                Ty.path "never",
+                ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
     
     Global Instance Instance_IsFunction_simd_select :
       M.IsFunction.C "core::intrinsics::simd::simd_select" simd_select.
     Admitted.
+    Global Typeclasses Opaque simd_select.
     
-    Parameter simd_select_bitmask : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
+    (* pub const unsafe fn simd_select_bitmask<M, T>(m: M, yes: T, no: T) -> T; *)
+    Definition simd_select_bitmask (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [ M_; T ], [ m; yes; no ] =>
+        ltac:(M.monadic
+          (let m := M.alloc (| M_, m |) in
+          let yes := M.alloc (| T, yes |) in
+          let no := M.alloc (| T, no |) in
+          M.never_to_any (|
+            M.read (|
+              M.loop (|
+                Ty.path "never",
+                ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
     
     Global Instance Instance_IsFunction_simd_select_bitmask :
       M.IsFunction.C "core::intrinsics::simd::simd_select_bitmask" simd_select_bitmask.
     Admitted.
+    Global Typeclasses Opaque simd_select_bitmask.
     
-    Parameter simd_arith_offset : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
+    (* pub const unsafe fn simd_arith_offset<T, U>(ptr: T, offset: U) -> T; *)
+    Definition simd_arith_offset (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [ T; U ], [ ptr; offset ] =>
+        ltac:(M.monadic
+          (let ptr := M.alloc (| T, ptr |) in
+          let offset := M.alloc (| U, offset |) in
+          M.never_to_any (|
+            M.read (|
+              M.loop (|
+                Ty.path "never",
+                ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
     
     Global Instance Instance_IsFunction_simd_arith_offset :
       M.IsFunction.C "core::intrinsics::simd::simd_arith_offset" simd_arith_offset.
     Admitted.
+    Global Typeclasses Opaque simd_arith_offset.
     
-    Parameter simd_cast_ptr : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
+    (* pub const unsafe fn simd_cast_ptr<T, U>(ptr: T) -> U; *)
+    Definition simd_cast_ptr (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [ T; U ], [ ptr ] =>
+        ltac:(M.monadic
+          (let ptr := M.alloc (| T, ptr |) in
+          M.never_to_any (|
+            M.read (|
+              M.loop (|
+                Ty.path "never",
+                ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
     
     Global Instance Instance_IsFunction_simd_cast_ptr :
       M.IsFunction.C "core::intrinsics::simd::simd_cast_ptr" simd_cast_ptr.
     Admitted.
+    Global Typeclasses Opaque simd_cast_ptr.
     
-    Parameter simd_expose_provenance : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
+    (* pub unsafe fn simd_expose_provenance<T, U>(ptr: T) -> U; *)
+    Definition simd_expose_provenance (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [ T; U ], [ ptr ] =>
+        ltac:(M.monadic
+          (let ptr := M.alloc (| T, ptr |) in
+          M.never_to_any (|
+            M.read (|
+              M.loop (|
+                Ty.path "never",
+                ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
     
     Global Instance Instance_IsFunction_simd_expose_provenance :
       M.IsFunction.C "core::intrinsics::simd::simd_expose_provenance" simd_expose_provenance.
     Admitted.
+    Global Typeclasses Opaque simd_expose_provenance.
     
-    Parameter simd_with_exposed_provenance : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
+    (* pub const unsafe fn simd_with_exposed_provenance<T, U>(addr: T) -> U; *)
+    Definition simd_with_exposed_provenance
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      match ε, τ, α with
+      | [], [ T; U ], [ addr ] =>
+        ltac:(M.monadic
+          (let addr := M.alloc (| T, addr |) in
+          M.never_to_any (|
+            M.read (|
+              M.loop (|
+                Ty.path "never",
+                ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
     
     Global Instance Instance_IsFunction_simd_with_exposed_provenance :
       M.IsFunction.C
         "core::intrinsics::simd::simd_with_exposed_provenance"
         simd_with_exposed_provenance.
     Admitted.
+    Global Typeclasses Opaque simd_with_exposed_provenance.
     
-    Parameter simd_bswap : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
+    (* pub const unsafe fn simd_bswap<T>(x: T) -> T; *)
+    Definition simd_bswap (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [ T ], [ x ] =>
+        ltac:(M.monadic
+          (let x := M.alloc (| T, x |) in
+          M.never_to_any (|
+            M.read (|
+              M.loop (|
+                Ty.path "never",
+                ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
     
     Global Instance Instance_IsFunction_simd_bswap :
       M.IsFunction.C "core::intrinsics::simd::simd_bswap" simd_bswap.
     Admitted.
+    Global Typeclasses Opaque simd_bswap.
     
-    Parameter simd_bitreverse : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
+    (* pub const unsafe fn simd_bitreverse<T>(x: T) -> T; *)
+    Definition simd_bitreverse (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [ T ], [ x ] =>
+        ltac:(M.monadic
+          (let x := M.alloc (| T, x |) in
+          M.never_to_any (|
+            M.read (|
+              M.loop (|
+                Ty.path "never",
+                ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
     
     Global Instance Instance_IsFunction_simd_bitreverse :
       M.IsFunction.C "core::intrinsics::simd::simd_bitreverse" simd_bitreverse.
     Admitted.
+    Global Typeclasses Opaque simd_bitreverse.
     
-    Parameter simd_ctlz : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
+    (* pub const unsafe fn simd_ctlz<T>(x: T) -> T; *)
+    Definition simd_ctlz (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [ T ], [ x ] =>
+        ltac:(M.monadic
+          (let x := M.alloc (| T, x |) in
+          M.never_to_any (|
+            M.read (|
+              M.loop (|
+                Ty.path "never",
+                ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
     
     Global Instance Instance_IsFunction_simd_ctlz :
       M.IsFunction.C "core::intrinsics::simd::simd_ctlz" simd_ctlz.
     Admitted.
+    Global Typeclasses Opaque simd_ctlz.
     
-    Parameter simd_ctpop : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
+    (* pub const unsafe fn simd_ctpop<T>(x: T) -> T; *)
+    Definition simd_ctpop (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [ T ], [ x ] =>
+        ltac:(M.monadic
+          (let x := M.alloc (| T, x |) in
+          M.never_to_any (|
+            M.read (|
+              M.loop (|
+                Ty.path "never",
+                ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
     
     Global Instance Instance_IsFunction_simd_ctpop :
       M.IsFunction.C "core::intrinsics::simd::simd_ctpop" simd_ctpop.
     Admitted.
+    Global Typeclasses Opaque simd_ctpop.
     
-    Parameter simd_cttz : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
+    (* pub const unsafe fn simd_cttz<T>(x: T) -> T; *)
+    Definition simd_cttz (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [ T ], [ x ] =>
+        ltac:(M.monadic
+          (let x := M.alloc (| T, x |) in
+          M.never_to_any (|
+            M.read (|
+              M.loop (|
+                Ty.path "never",
+                ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
     
     Global Instance Instance_IsFunction_simd_cttz :
       M.IsFunction.C "core::intrinsics::simd::simd_cttz" simd_cttz.
     Admitted.
+    Global Typeclasses Opaque simd_cttz.
     
-    Parameter simd_ceil : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
+    (* pub const unsafe fn simd_ceil<T>(x: T) -> T; *)
+    Definition simd_ceil (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [ T ], [ x ] =>
+        ltac:(M.monadic
+          (let x := M.alloc (| T, x |) in
+          M.never_to_any (|
+            M.read (|
+              M.loop (|
+                Ty.path "never",
+                ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
     
     Global Instance Instance_IsFunction_simd_ceil :
       M.IsFunction.C "core::intrinsics::simd::simd_ceil" simd_ceil.
     Admitted.
+    Global Typeclasses Opaque simd_ceil.
     
-    Parameter simd_floor : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
+    (* pub const unsafe fn simd_floor<T>(x: T) -> T; *)
+    Definition simd_floor (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [ T ], [ x ] =>
+        ltac:(M.monadic
+          (let x := M.alloc (| T, x |) in
+          M.never_to_any (|
+            M.read (|
+              M.loop (|
+                Ty.path "never",
+                ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
     
     Global Instance Instance_IsFunction_simd_floor :
       M.IsFunction.C "core::intrinsics::simd::simd_floor" simd_floor.
     Admitted.
+    Global Typeclasses Opaque simd_floor.
     
-    Parameter simd_round : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
+    (* pub const unsafe fn simd_round<T>(x: T) -> T; *)
+    Definition simd_round (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [ T ], [ x ] =>
+        ltac:(M.monadic
+          (let x := M.alloc (| T, x |) in
+          M.never_to_any (|
+            M.read (|
+              M.loop (|
+                Ty.path "never",
+                ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
     
     Global Instance Instance_IsFunction_simd_round :
       M.IsFunction.C "core::intrinsics::simd::simd_round" simd_round.
     Admitted.
+    Global Typeclasses Opaque simd_round.
     
-    Parameter simd_trunc : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
+    (* pub const unsafe fn simd_round_ties_even<T>(x: T) -> T; *)
+    Definition simd_round_ties_even (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [ T ], [ x ] =>
+        ltac:(M.monadic
+          (let x := M.alloc (| T, x |) in
+          M.never_to_any (|
+            M.read (|
+              M.loop (|
+                Ty.path "never",
+                ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance Instance_IsFunction_simd_round_ties_even :
+      M.IsFunction.C "core::intrinsics::simd::simd_round_ties_even" simd_round_ties_even.
+    Admitted.
+    Global Typeclasses Opaque simd_round_ties_even.
+    
+    (* pub const unsafe fn simd_trunc<T>(x: T) -> T; *)
+    Definition simd_trunc (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [ T ], [ x ] =>
+        ltac:(M.monadic
+          (let x := M.alloc (| T, x |) in
+          M.never_to_any (|
+            M.read (|
+              M.loop (|
+                Ty.path "never",
+                ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
     
     Global Instance Instance_IsFunction_simd_trunc :
       M.IsFunction.C "core::intrinsics::simd::simd_trunc" simd_trunc.
     Admitted.
+    Global Typeclasses Opaque simd_trunc.
     
-    Parameter simd_fsqrt : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
+    (* pub unsafe fn simd_fsqrt<T>(x: T) -> T; *)
+    Definition simd_fsqrt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [ T ], [ x ] =>
+        ltac:(M.monadic
+          (let x := M.alloc (| T, x |) in
+          M.never_to_any (|
+            M.read (|
+              M.loop (|
+                Ty.path "never",
+                ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
     
     Global Instance Instance_IsFunction_simd_fsqrt :
       M.IsFunction.C "core::intrinsics::simd::simd_fsqrt" simd_fsqrt.
     Admitted.
+    Global Typeclasses Opaque simd_fsqrt.
     
-    Parameter simd_fma : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
+    (* pub const unsafe fn simd_fma<T>(x: T, y: T, z: T) -> T; *)
+    Definition simd_fma (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [ T ], [ x; y; z ] =>
+        ltac:(M.monadic
+          (let x := M.alloc (| T, x |) in
+          let y := M.alloc (| T, y |) in
+          let z := M.alloc (| T, z |) in
+          M.never_to_any (|
+            M.read (|
+              M.loop (|
+                Ty.path "never",
+                ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
     
     Global Instance Instance_IsFunction_simd_fma :
       M.IsFunction.C "core::intrinsics::simd::simd_fma" simd_fma.
     Admitted.
+    Global Typeclasses Opaque simd_fma.
     
-    Parameter simd_relaxed_fma : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
+    (* pub const unsafe fn simd_relaxed_fma<T>(x: T, y: T, z: T) -> T; *)
+    Definition simd_relaxed_fma (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [ T ], [ x; y; z ] =>
+        ltac:(M.monadic
+          (let x := M.alloc (| T, x |) in
+          let y := M.alloc (| T, y |) in
+          let z := M.alloc (| T, z |) in
+          M.never_to_any (|
+            M.read (|
+              M.loop (|
+                Ty.path "never",
+                ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
     
     Global Instance Instance_IsFunction_simd_relaxed_fma :
       M.IsFunction.C "core::intrinsics::simd::simd_relaxed_fma" simd_relaxed_fma.
     Admitted.
+    Global Typeclasses Opaque simd_relaxed_fma.
     
-    Parameter simd_fsin : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
+    (* pub unsafe fn simd_fsin<T>(a: T) -> T; *)
+    Definition simd_fsin (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [ T ], [ a ] =>
+        ltac:(M.monadic
+          (let a := M.alloc (| T, a |) in
+          M.never_to_any (|
+            M.read (|
+              M.loop (|
+                Ty.path "never",
+                ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
     
     Global Instance Instance_IsFunction_simd_fsin :
       M.IsFunction.C "core::intrinsics::simd::simd_fsin" simd_fsin.
     Admitted.
+    Global Typeclasses Opaque simd_fsin.
     
-    Parameter simd_fcos : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
+    (* pub unsafe fn simd_fcos<T>(a: T) -> T; *)
+    Definition simd_fcos (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [ T ], [ a ] =>
+        ltac:(M.monadic
+          (let a := M.alloc (| T, a |) in
+          M.never_to_any (|
+            M.read (|
+              M.loop (|
+                Ty.path "never",
+                ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
     
     Global Instance Instance_IsFunction_simd_fcos :
       M.IsFunction.C "core::intrinsics::simd::simd_fcos" simd_fcos.
     Admitted.
+    Global Typeclasses Opaque simd_fcos.
     
-    Parameter simd_fexp : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
+    (* pub unsafe fn simd_fexp<T>(a: T) -> T; *)
+    Definition simd_fexp (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [ T ], [ a ] =>
+        ltac:(M.monadic
+          (let a := M.alloc (| T, a |) in
+          M.never_to_any (|
+            M.read (|
+              M.loop (|
+                Ty.path "never",
+                ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
     
     Global Instance Instance_IsFunction_simd_fexp :
       M.IsFunction.C "core::intrinsics::simd::simd_fexp" simd_fexp.
     Admitted.
+    Global Typeclasses Opaque simd_fexp.
     
-    Parameter simd_fexp2 : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
+    (* pub unsafe fn simd_fexp2<T>(a: T) -> T; *)
+    Definition simd_fexp2 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [ T ], [ a ] =>
+        ltac:(M.monadic
+          (let a := M.alloc (| T, a |) in
+          M.never_to_any (|
+            M.read (|
+              M.loop (|
+                Ty.path "never",
+                ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
     
     Global Instance Instance_IsFunction_simd_fexp2 :
       M.IsFunction.C "core::intrinsics::simd::simd_fexp2" simd_fexp2.
     Admitted.
+    Global Typeclasses Opaque simd_fexp2.
     
-    Parameter simd_flog10 : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
+    (* pub unsafe fn simd_flog10<T>(a: T) -> T; *)
+    Definition simd_flog10 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [ T ], [ a ] =>
+        ltac:(M.monadic
+          (let a := M.alloc (| T, a |) in
+          M.never_to_any (|
+            M.read (|
+              M.loop (|
+                Ty.path "never",
+                ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
     
     Global Instance Instance_IsFunction_simd_flog10 :
       M.IsFunction.C "core::intrinsics::simd::simd_flog10" simd_flog10.
     Admitted.
+    Global Typeclasses Opaque simd_flog10.
     
-    Parameter simd_flog2 : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
+    (* pub unsafe fn simd_flog2<T>(a: T) -> T; *)
+    Definition simd_flog2 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [ T ], [ a ] =>
+        ltac:(M.monadic
+          (let a := M.alloc (| T, a |) in
+          M.never_to_any (|
+            M.read (|
+              M.loop (|
+                Ty.path "never",
+                ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
     
     Global Instance Instance_IsFunction_simd_flog2 :
       M.IsFunction.C "core::intrinsics::simd::simd_flog2" simd_flog2.
     Admitted.
+    Global Typeclasses Opaque simd_flog2.
     
-    Parameter simd_flog : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
+    (* pub unsafe fn simd_flog<T>(a: T) -> T; *)
+    Definition simd_flog (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [ T ], [ a ] =>
+        ltac:(M.monadic
+          (let a := M.alloc (| T, a |) in
+          M.never_to_any (|
+            M.read (|
+              M.loop (|
+                Ty.path "never",
+                ltac:(M.monadic (M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
     
     Global Instance Instance_IsFunction_simd_flog :
       M.IsFunction.C "core::intrinsics::simd::simd_flog" simd_flog.
     Admitted.
+    Global Typeclasses Opaque simd_flog.
   End simd.
 End intrinsics.

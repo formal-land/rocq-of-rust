@@ -17,7 +17,7 @@ Module ptr.
                   if const #[rustc_allow_const_fn_unstable(const_raw_ptr_comparison)] {
                       match (ptr).guaranteed_eq(null_mut()) {
                           Some(res) => res,
-                          // To remain maximally convervative, we stop execution when we don't
+                          // To remain maximally conservative, we stop execution when we don't
                           // know whether the pointer is null or not.
                           // We can *not* return `false` here, that would be unsound in `NonNull::new`!
                           None => panic!("null-ness of this pointer cannot be determined in const context"),
@@ -94,9 +94,87 @@ Module ptr.
       Global Typeclasses Opaque cast.
       
       (*
+          pub fn try_cast_aligned<U>(self) -> Option<*const U> {
+              if self.is_aligned_to(align_of::<U>()) { Some(self.cast()) } else { None }
+          }
+      *)
+      Definition try_cast_aligned
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [ U ], [ self ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "*const") [] [ T ], self |) in
+            M.match_operator (|
+              Ty.apply (Ty.path "core::option::Option") [] [ Ty.apply (Ty.path "*const") [] [ U ] ],
+              M.alloc (| Ty.tuple [], Value.Tuple [] |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ :=
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
+                          Ty.path "bool",
+                          M.get_associated_function (|
+                            Ty.apply (Ty.path "*const") [] [ T ],
+                            "is_aligned_to",
+                            [],
+                            []
+                          |),
+                          [
+                            M.read (| self |);
+                            M.call_closure (|
+                              Ty.path "usize",
+                              M.get_function (| "core::mem::align_of", [], [ U ] |),
+                              []
+                            |)
+                          ]
+                        |)
+                      |) in
+                    let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                    Value.StructTuple
+                      "core::option::Option::Some"
+                      []
+                      [ Ty.apply (Ty.path "*const") [] [ U ] ]
+                      [
+                        M.call_closure (|
+                          Ty.apply (Ty.path "*const") [] [ U ],
+                          M.get_associated_function (|
+                            Ty.apply (Ty.path "*const") [] [ T ],
+                            "cast",
+                            [],
+                            [ U ]
+                          |),
+                          [ M.read (| self |) ]
+                        |)
+                      ]));
+                fun γ =>
+                  ltac:(M.monadic
+                    (Value.StructTuple
+                      "core::option::Option::None"
+                      []
+                      [ Ty.apply (Ty.path "*const") [] [ U ] ]
+                      []))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_try_cast_aligned :
+        forall (T : Ty.t),
+        M.IsAssociatedFunction.C (Self T) "try_cast_aligned" (try_cast_aligned T).
+      Admitted.
+      Global Typeclasses Opaque try_cast_aligned.
+      
+      (*
           pub const fn with_metadata_of<U>(self, meta: *const U) -> *const U
           where
-              U: ?Sized,
+              U: PointeeSized,
           {
               from_raw_parts::<U>(self as *const (), metadata(meta))
           }
@@ -423,20 +501,19 @@ Module ptr.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            M.get_associated_function (|
-                              Ty.apply (Ty.path "*const") [] [ T ],
-                              "is_null",
-                              [],
-                              []
-                            |),
-                            [ M.read (| self |) ]
-                          |)
-                        |)) in
+                          M.get_associated_function (|
+                            Ty.apply (Ty.path "*const") [] [ T ],
+                            "is_null",
+                            [],
+                            []
+                          |),
+                          [ M.read (| self |) ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     Value.StructTuple
                       "core::option::Option::None"
@@ -534,20 +611,19 @@ Module ptr.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            M.get_associated_function (|
-                              Ty.apply (Ty.path "*const") [] [ T ],
-                              "is_null",
-                              [],
-                              []
-                            |),
-                            [ M.read (| self |) ]
-                          |)
-                        |)) in
+                          M.get_associated_function (|
+                            Ty.apply (Ty.path "*const") [] [ T ],
+                            "is_null",
+                            [],
+                            []
+                          |),
+                          [ M.read (| self |) ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     Value.StructTuple
                       "core::option::Option::None"
@@ -659,15 +735,14 @@ Module ptr.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                M.get_function (| "core::ub_checks::check_language_ub", [], [] |),
-                                []
-                              |)
-                            |)) in
+                              M.get_function (| "core::ub_checks::check_language_ub", [], [] |),
+                              []
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
@@ -924,7 +999,7 @@ Module ptr.
           where
               T: Sized,
           {
-              let pointee_size = mem::size_of::<T>();
+              let pointee_size = size_of::<T>();
               assert!(0 < pointee_size && pointee_size <= isize::MAX as usize);
               // SAFETY: the caller must uphold the safety contract for `ptr_offset_from`.
               unsafe { intrinsics::ptr_offset_from(self, origin) }
@@ -952,41 +1027,39 @@ Module ptr.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                UnOp.not,
-                                [
-                                  LogicalOp.and (|
-                                    M.call_closure (|
+                              UnOp.not,
+                              [
+                                LogicalOp.and (|
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    BinOp.lt,
+                                    [ Value.Integer IntegerKind.Usize 0; M.read (| pointee_size |) ]
+                                  |),
+                                  ltac:(M.monadic
+                                    (M.call_closure (|
                                       Ty.path "bool",
-                                      BinOp.lt,
-                                      [ Value.Integer IntegerKind.Usize 0; M.read (| pointee_size |)
+                                      BinOp.le,
+                                      [
+                                        M.read (| pointee_size |);
+                                        M.cast
+                                          (Ty.path "usize")
+                                          (M.read (|
+                                            get_associated_constant (|
+                                              Ty.path "isize",
+                                              "MAX",
+                                              Ty.path "isize"
+                                            |)
+                                          |))
                                       ]
-                                    |),
-                                    ltac:(M.monadic
-                                      (M.call_closure (|
-                                        Ty.path "bool",
-                                        BinOp.le,
-                                        [
-                                          M.read (| pointee_size |);
-                                          M.cast
-                                            (Ty.path "usize")
-                                            (M.read (|
-                                              get_associated_constant (|
-                                                Ty.path "isize",
-                                                "MAX",
-                                                Ty.path "isize"
-                                              |)
-                                            |))
-                                        ]
-                                      |)))
-                                  |)
-                                ]
-                              |)
-                            |)) in
+                                    |)))
+                                |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.never_to_any (|
                           M.call_closure (|
@@ -1079,7 +1152,7 @@ Module ptr.
       Global Typeclasses Opaque byte_offset_from.
       
       (*
-          pub const unsafe fn sub_ptr(self, origin: *const T) -> usize
+          pub const unsafe fn offset_from_unsigned(self, origin: *const T) -> usize
           where
               T: Sized,
           {
@@ -1097,20 +1170,25 @@ Module ptr.
       
               ub_checks::assert_unsafe_precondition!(
                   check_language_ub,
-                  "ptr::sub_ptr requires `self >= origin`",
+                  "ptr::offset_from_unsigned requires `self >= origin`",
                   (
                       this: *const () = self as *const (),
                       origin: *const () = origin as *const (),
                   ) => runtime_ptr_ge(this, origin)
               );
       
-              let pointee_size = mem::size_of::<T>();
+              let pointee_size = size_of::<T>();
               assert!(0 < pointee_size && pointee_size <= isize::MAX as usize);
               // SAFETY: the caller must uphold the safety contract for `ptr_offset_from_unsigned`.
               unsafe { intrinsics::ptr_offset_from_unsigned(self, origin) }
           }
       *)
-      Definition sub_ptr (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      Definition offset_from_unsigned
+          (T : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
         let Self : Ty.t := Self T in
         match ε, τ, α with
         | [], [], [ self; origin ] =>
@@ -1126,15 +1204,14 @@ Module ptr.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                M.get_function (| "core::ub_checks::check_language_ub", [], [] |),
-                                []
-                              |)
-                            |)) in
+                              M.get_function (| "core::ub_checks::check_language_ub", [], [] |),
+                              []
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
@@ -1142,7 +1219,7 @@ Module ptr.
                               Ty.tuple [],
                               M.get_associated_function (|
                                 Self,
-                                "precondition_check.sub_ptr",
+                                "precondition_check.offset_from_unsigned",
                                 [],
                                 []
                               |),
@@ -1174,41 +1251,39 @@ Module ptr.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                UnOp.not,
-                                [
-                                  LogicalOp.and (|
-                                    M.call_closure (|
+                              UnOp.not,
+                              [
+                                LogicalOp.and (|
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    BinOp.lt,
+                                    [ Value.Integer IntegerKind.Usize 0; M.read (| pointee_size |) ]
+                                  |),
+                                  ltac:(M.monadic
+                                    (M.call_closure (|
                                       Ty.path "bool",
-                                      BinOp.lt,
-                                      [ Value.Integer IntegerKind.Usize 0; M.read (| pointee_size |)
+                                      BinOp.le,
+                                      [
+                                        M.read (| pointee_size |);
+                                        M.cast
+                                          (Ty.path "usize")
+                                          (M.read (|
+                                            get_associated_constant (|
+                                              Ty.path "isize",
+                                              "MAX",
+                                              Ty.path "isize"
+                                            |)
+                                          |))
                                       ]
-                                    |),
-                                    ltac:(M.monadic
-                                      (M.call_closure (|
-                                        Ty.path "bool",
-                                        BinOp.le,
-                                        [
-                                          M.read (| pointee_size |);
-                                          M.cast
-                                            (Ty.path "usize")
-                                            (M.read (|
-                                              get_associated_constant (|
-                                                Ty.path "isize",
-                                                "MAX",
-                                                Ty.path "isize"
-                                              |)
-                                            |))
-                                        ]
-                                      |)))
-                                  |)
-                                ]
-                              |)
-                            |)) in
+                                    |)))
+                                |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.never_to_any (|
                           M.call_closure (|
@@ -1236,19 +1311,19 @@ Module ptr.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      Global Instance AssociatedFunction_sub_ptr :
+      Global Instance AssociatedFunction_offset_from_unsigned :
         forall (T : Ty.t),
-        M.IsAssociatedFunction.C (Self T) "sub_ptr" (sub_ptr T).
+        M.IsAssociatedFunction.C (Self T) "offset_from_unsigned" (offset_from_unsigned T).
       Admitted.
-      Global Typeclasses Opaque sub_ptr.
+      Global Typeclasses Opaque offset_from_unsigned.
       
       (*
-          pub const unsafe fn byte_sub_ptr<U: ?Sized>(self, origin: *const U) -> usize {
-              // SAFETY: the caller must uphold the safety contract for `sub_ptr`.
-              unsafe { self.cast::<u8>().sub_ptr(origin.cast::<u8>()) }
+          pub const unsafe fn byte_offset_from_unsigned<U: ?Sized>(self, origin: *const U) -> usize {
+              // SAFETY: the caller must uphold the safety contract for `offset_from_unsigned`.
+              unsafe { self.cast::<u8>().offset_from_unsigned(origin.cast::<u8>()) }
           }
       *)
-      Definition byte_sub_ptr
+      Definition byte_offset_from_unsigned
           (T : Ty.t)
           (ε : list Value.t)
           (τ : list Ty.t)
@@ -1264,7 +1339,7 @@ Module ptr.
               Ty.path "usize",
               M.get_associated_function (|
                 Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                "sub_ptr",
+                "offset_from_unsigned",
                 [],
                 []
               |),
@@ -1294,11 +1369,11 @@ Module ptr.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      Global Instance AssociatedFunction_byte_sub_ptr :
+      Global Instance AssociatedFunction_byte_offset_from_unsigned :
         forall (T : Ty.t),
-        M.IsAssociatedFunction.C (Self T) "byte_sub_ptr" (byte_sub_ptr T).
+        M.IsAssociatedFunction.C (Self T) "byte_offset_from_unsigned" (byte_offset_from_unsigned T).
       Admitted.
-      Global Typeclasses Opaque byte_sub_ptr.
+      Global Typeclasses Opaque byte_offset_from_unsigned.
       
       (*
           pub const fn guaranteed_eq(self, other: *const T) -> Option<bool>
@@ -1489,15 +1564,14 @@ Module ptr.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                M.get_function (| "core::ub_checks::check_language_ub", [], [] |),
-                                []
-                              |)
-                            |)) in
+                              M.get_function (| "core::ub_checks::check_language_ub", [], [] |),
+                              []
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
@@ -1664,15 +1738,14 @@ Module ptr.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                M.get_function (| "core::ub_checks::check_language_ub", [], [] |),
-                                []
-                              |)
-                            |)) in
+                              M.get_function (| "core::ub_checks::check_language_ub", [], [] |),
+                              []
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
@@ -1710,11 +1783,10 @@ Module ptr.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (get_constant (|
-                              "core::mem::SizedTypeProperties::IS_ZST",
-                              Ty.path "bool"
-                            |)) in
+                          get_constant (|
+                            "core::mem::SizedTypeProperties::IS_ZST",
+                            Ty.path "bool"
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.read (| self |)));
                     fun γ =>
@@ -2132,7 +2204,7 @@ Module ptr.
             let count := M.alloc (| Ty.path "usize", count |) in
             M.call_closure (|
               Ty.tuple [],
-              M.get_function (| "core::intrinsics::copy", [], [ T ] |),
+              M.get_function (| "core::ptr::copy", [], [ T ] |),
               [ M.read (| self |); M.read (| dest |); M.read (| count |) ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -2168,7 +2240,7 @@ Module ptr.
             let count := M.alloc (| Ty.path "usize", count |) in
             M.call_closure (|
               Ty.tuple [],
-              M.get_function (| "core::intrinsics::copy_nonoverlapping", [], [ T ] |),
+              M.get_function (| "core::ptr::copy_nonoverlapping", [], [ T ] |),
               [ M.read (| self |); M.read (| dest |); M.read (| count |) ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -2222,26 +2294,25 @@ Module ptr.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                UnOp.not,
-                                [
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    M.get_associated_function (|
-                                      Ty.path "usize",
-                                      "is_power_of_two",
-                                      [],
-                                      []
-                                    |),
-                                    [ M.read (| align |) ]
-                                  |)
-                                ]
-                              |)
-                            |)) in
+                              UnOp.not,
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  M.get_associated_function (|
+                                    Ty.path "usize",
+                                    "is_power_of_two",
+                                    [],
+                                    []
+                                  |),
+                                  [ M.read (| align |) ]
+                                |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.never_to_any (|
                           M.call_closure (|
@@ -2252,32 +2323,11 @@ Module ptr.
                                 Ty.path "core::fmt::Arguments",
                                 M.get_associated_function (|
                                   Ty.path "core::fmt::Arguments",
-                                  "new_const",
-                                  [ Value.Integer IntegerKind.Usize 1 ],
+                                  "from_str",
+                                  [],
                                   []
                                 |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.alloc (|
-                                          Ty.apply
-                                            (Ty.path "array")
-                                            [ Value.Integer IntegerKind.Usize 1 ]
-                                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                          Value.Array
-                                            [
-                                              mk_str (|
-                                                "align_offset: align is not a power-of-two"
-                                              |)
-                                            ]
-                                        |)
-                                      |)
-                                    |)
-                                  |)
-                                ]
+                                [ mk_str (| "align_offset: align is not a power-of-two" |) ]
                               |)
                             ]
                           |)
@@ -2307,7 +2357,7 @@ Module ptr.
           where
               T: Sized,
           {
-              self.is_aligned_to(mem::align_of::<T>())
+              self.is_aligned_to(align_of::<T>())
           }
       *)
       Definition is_aligned (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -2372,26 +2422,25 @@ Module ptr.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                UnOp.not,
-                                [
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    M.get_associated_function (|
-                                      Ty.path "usize",
-                                      "is_power_of_two",
-                                      [],
-                                      []
-                                    |),
-                                    [ M.read (| align |) ]
-                                  |)
-                                ]
-                              |)
-                            |)) in
+                              UnOp.not,
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  M.get_associated_function (|
+                                    Ty.path "usize",
+                                    "is_power_of_two",
+                                    [],
+                                    []
+                                  |),
+                                  [ M.read (| align |) ]
+                                |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.never_to_any (|
                           M.call_closure (|
@@ -2402,32 +2451,11 @@ Module ptr.
                                 Ty.path "core::fmt::Arguments",
                                 M.get_associated_function (|
                                   Ty.path "core::fmt::Arguments",
-                                  "new_const",
-                                  [ Value.Integer IntegerKind.Usize 1 ],
+                                  "from_str",
+                                  [],
                                   []
                                 |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.alloc (|
-                                          Ty.apply
-                                            (Ty.path "array")
-                                            [ Value.Integer IntegerKind.Usize 1 ]
-                                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                          Value.Array
-                                            [
-                                              mk_str (|
-                                                "is_aligned_to: align is not a power-of-two"
-                                              |)
-                                            ]
-                                        |)
-                                      |)
-                                    |)
-                                  |)
-                                ]
+                                [ mk_str (| "is_aligned_to: align is not a power-of-two" |) ]
                               |)
                             ]
                           |)
@@ -2475,7 +2503,98 @@ Module ptr.
         M.IsAssociatedFunction.C (Self T) "is_aligned_to" (is_aligned_to T).
       Admitted.
       Global Typeclasses Opaque is_aligned_to.
+      (*
+          pub const fn cast_uninit(self) -> *const MaybeUninit<T> {
+              self as _
+          }
+      *)
+      Definition cast_uninit (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "*const") [] [ T ], self |) in
+            M.cast
+              (Ty.apply
+                (Ty.path "*const")
+                []
+                [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ])
+              (M.read (| self |))))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_cast_uninit :
+        forall (T : Ty.t),
+        M.IsAssociatedFunction.C (Self T) "cast_uninit" (cast_uninit T).
+      Admitted.
+      Global Typeclasses Opaque cast_uninit.
+      (*
+          pub const fn cast_array<const N: usize>(self) -> *const [T; N] {
+              self.cast()
+          }
+      *)
+      Definition cast_array (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [ N ], [], [ self ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "*const") [] [ T ], self |) in
+            M.call_closure (|
+              Ty.apply (Ty.path "*const") [] [ Ty.apply (Ty.path "array") [ N ] [ T ] ],
+              M.get_associated_function (|
+                Ty.apply (Ty.path "*const") [] [ T ],
+                "cast",
+                [],
+                [ Ty.apply (Ty.path "array") [ N ] [ T ] ]
+              |),
+              [ M.read (| self |) ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_cast_array :
+        forall (T : Ty.t),
+        M.IsAssociatedFunction.C (Self T) "cast_array" (cast_array T).
+      Admitted.
+      Global Typeclasses Opaque cast_array.
     End Impl_pointer_const_T.
+    
+    
+    Module Impl_pointer_const_core_mem_maybe_uninit_MaybeUninit_T.
+      Definition Self (T : Ty.t) : Ty.t :=
+        Ty.apply
+          (Ty.path "*const")
+          []
+          [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ].
+      
+      (*
+          pub const fn cast_init(self) -> *const T {
+              self as _
+          }
+      *)
+      Definition cast_init (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "*const")
+                  []
+                  [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ],
+                self
+              |) in
+            M.cast (Ty.apply (Ty.path "*const") [] [ T ]) (M.read (| self |))))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_cast_init :
+        forall (T : Ty.t),
+        M.IsAssociatedFunction.C (Self T) "cast_init" (cast_init T).
+      Admitted.
+      Global Typeclasses Opaque cast_init.
+    End Impl_pointer_const_core_mem_maybe_uninit_MaybeUninit_T.
     
     Module Impl_pointer_const_slice_T.
       Definition Self (T : Ty.t) : Ty.t :=
@@ -2610,30 +2729,29 @@ Module ptr.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            BinOp.eq,
-                            [
-                              M.call_closure (|
-                                Ty.path "usize",
-                                M.get_associated_function (|
-                                  Ty.apply
-                                    (Ty.path "*const")
-                                    []
-                                    [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                                  "len",
-                                  [],
+                          BinOp.eq,
+                          [
+                            M.call_closure (|
+                              Ty.path "usize",
+                              M.get_associated_function (|
+                                Ty.apply
+                                  (Ty.path "*const")
                                   []
-                                |),
-                                [ M.read (| self |) ]
-                              |);
-                              N
-                            ]
-                          |)
-                        |)) in
+                                  [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                                "len",
+                                [],
+                                []
+                              |),
+                              [ M.read (| self |) ]
+                            |);
+                            N
+                          ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     M.read (|
                       let~ me :
@@ -2700,9 +2818,9 @@ Module ptr.
       Global Typeclasses Opaque as_array.
       
       (*
-          pub unsafe fn get_unchecked<I>(self, index: I) -> *const I::Output
+          pub const unsafe fn get_unchecked<I>(self, index: I) -> *const I::Output
           where
-              I: SliceIndex<[T]>,
+              I: [const] SliceIndex<[T]>,
           {
               // SAFETY: the caller ensures that `self` is dereferenceable and `index` in-bounds.
               unsafe { index.get_unchecked(self) }
@@ -2801,23 +2919,19 @@ Module ptr.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            M.get_associated_function (|
-                              Ty.apply
-                                (Ty.path "*const")
-                                []
-                                [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                              "is_null",
-                              [],
-                              []
-                            |),
-                            [ M.read (| self |) ]
-                          |)
-                        |)) in
+                          M.get_associated_function (|
+                            Ty.apply (Ty.path "*const") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                            "is_null",
+                            [],
+                            []
+                          |),
+                          [ M.read (| self |) ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     Value.StructTuple
                       "core::option::Option::None"
@@ -2917,6 +3031,7 @@ Module ptr.
       Global Typeclasses Opaque as_uninit_slice.
     End Impl_pointer_const_slice_T.
     
+    
     Module Impl_pointer_const_array_N_T.
       Definition Self (N : Value.t) (T : Ty.t) : Ty.t :=
         Ty.apply (Ty.path "*const") [] [ Ty.apply (Ty.path "array") [ N ] [ T ] ].
@@ -2991,7 +3106,7 @@ Module ptr.
       Global Typeclasses Opaque as_slice.
     End Impl_pointer_const_array_N_T.
     
-    Module Impl_core_cmp_PartialEq_where_core_marker_Sized_T_pointer_const_T_for_pointer_const_T.
+    Module Impl_core_cmp_PartialEq_where_core_marker_PointeeSized_T_pointer_const_T_for_pointer_const_T.
       Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "*const") [] [ T ].
       
       (*
@@ -3033,9 +3148,9 @@ Module ptr.
           (* Trait polymorphic types *) [ Ty.apply (Ty.path "*const") [] [ T ] ]
           (Self T)
           (* Instance *) [ ("eq", InstanceField.Method (eq T)) ].
-    End Impl_core_cmp_PartialEq_where_core_marker_Sized_T_pointer_const_T_for_pointer_const_T.
+    End Impl_core_cmp_PartialEq_where_core_marker_PointeeSized_T_pointer_const_T_for_pointer_const_T.
     
-    Module Impl_core_cmp_Eq_where_core_marker_Sized_T_for_pointer_const_T.
+    Module Impl_core_cmp_Eq_where_core_marker_PointeeSized_T_for_pointer_const_T.
       Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "*const") [] [ T ].
       
       Axiom Implements :
@@ -3046,9 +3161,9 @@ Module ptr.
           (* Trait polymorphic types *) []
           (Self T)
           (* Instance *) [].
-    End Impl_core_cmp_Eq_where_core_marker_Sized_T_for_pointer_const_T.
+    End Impl_core_cmp_Eq_where_core_marker_PointeeSized_T_for_pointer_const_T.
     
-    Module Impl_core_cmp_Ord_where_core_marker_Sized_T_for_pointer_const_T.
+    Module Impl_core_cmp_Ord_where_core_marker_PointeeSized_T_for_pointer_const_T.
       Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "*const") [] [ T ].
       
       (*
@@ -3084,36 +3199,31 @@ Module ptr.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            M.get_trait_method (|
-                              "core::cmp::PartialOrd",
-                              Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "*const") [] [ T ] ],
-                              [],
-                              [ Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "*const") [] [ T ] ]
-                              ],
-                              "lt",
-                              [],
-                              []
-                            |),
-                            [
-                              M.borrow (| Pointer.Kind.Ref, self |);
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.alloc (|
-                                  Ty.apply
-                                    (Ty.path "&")
-                                    []
-                                    [ Ty.apply (Ty.path "*const") [] [ T ] ],
-                                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |)
-                                |)
+                          M.get_trait_method (|
+                            "core::cmp::PartialOrd",
+                            Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "*const") [] [ T ] ],
+                            [],
+                            [ Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "*const") [] [ T ] ] ],
+                            "lt",
+                            [],
+                            []
+                          |),
+                          [
+                            M.borrow (| Pointer.Kind.Ref, self |);
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.alloc (|
+                                Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "*const") [] [ T ] ],
+                                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |)
                               |)
-                            ]
-                          |)
-                        |)) in
+                            |)
+                          ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     Value.StructTuple "core::cmp::Ordering::Less" [] [] []));
                 fun γ =>
@@ -3125,34 +3235,33 @@ Module ptr.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
                                   Ty.path "bool",
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    M.get_trait_method (|
-                                      "core::cmp::PartialEq",
+                                  M.get_trait_method (|
+                                    "core::cmp::PartialEq",
+                                    Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.apply (Ty.path "*const") [] [ T ] ],
+                                    [],
+                                    [
                                       Ty.apply
                                         (Ty.path "&")
                                         []
-                                        [ Ty.apply (Ty.path "*const") [] [ T ] ],
-                                      [],
-                                      [
-                                        Ty.apply
-                                          (Ty.path "&")
-                                          []
-                                          [ Ty.apply (Ty.path "*const") [] [ T ] ]
-                                      ],
-                                      "eq",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (| Pointer.Kind.Ref, self |);
-                                      M.borrow (| Pointer.Kind.Ref, other |)
-                                    ]
-                                  |)
-                                |)) in
+                                        [ Ty.apply (Ty.path "*const") [] [ T ] ]
+                                    ],
+                                    "eq",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.borrow (| Pointer.Kind.Ref, self |);
+                                    M.borrow (| Pointer.Kind.Ref, other |)
+                                  ]
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             Value.StructTuple "core::cmp::Ordering::Equal" [] [] []));
@@ -3174,9 +3283,9 @@ Module ptr.
           (* Trait polymorphic types *) []
           (Self T)
           (* Instance *) [ ("cmp", InstanceField.Method (cmp T)) ].
-    End Impl_core_cmp_Ord_where_core_marker_Sized_T_for_pointer_const_T.
+    End Impl_core_cmp_Ord_where_core_marker_PointeeSized_T_for_pointer_const_T.
     
-    Module Impl_core_cmp_PartialOrd_where_core_marker_Sized_T_pointer_const_T_for_pointer_const_T.
+    Module Impl_core_cmp_PartialOrd_where_core_marker_PointeeSized_T_pointer_const_T_for_pointer_const_T.
       Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "*const") [] [ T ].
       
       (*
@@ -3363,6 +3472,37 @@ Module ptr.
             ("gt", InstanceField.Method (gt T));
             ("ge", InstanceField.Method (ge T))
           ].
-    End Impl_core_cmp_PartialOrd_where_core_marker_Sized_T_pointer_const_T_for_pointer_const_T.
+    End Impl_core_cmp_PartialOrd_where_core_marker_PointeeSized_T_pointer_const_T_for_pointer_const_T.
+    
+    Module Impl_core_default_Default_where_core_marker_Sized_T_where_core_ptr_metadata_Thin_T_for_pointer_const_T.
+      Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "*const") [] [ T ].
+      
+      (*
+          fn default() -> Self {
+              crate::ptr::null()
+          }
+      *)
+      Definition default (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [] =>
+          ltac:(M.monadic
+            (M.call_closure (|
+              Ty.apply (Ty.path "*const") [] [ T ],
+              M.get_function (| "core::ptr::null", [], [ T ] |),
+              []
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Axiom Implements :
+        forall (T : Ty.t),
+        M.IsTraitInstance
+          "core::default::Default"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          (Self T)
+          (* Instance *) [ ("default", InstanceField.Method (default T)) ].
+    End Impl_core_default_Default_where_core_marker_Sized_T_where_core_ptr_metadata_Thin_T_for_pointer_const_T.
   End const_ptr.
 End ptr.

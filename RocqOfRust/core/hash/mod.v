@@ -1557,7 +1557,7 @@ Module hash.
       
       (*
                       fn hash_slice<H: Hasher>(data: &[$ty], state: &mut H) {
-                          let newlen = mem::size_of_val(data);
+                          let newlen = size_of_val(data);
                           let ptr = data.as_ptr() as *const u8;
                           // SAFETY: `ptr` is valid and aligned, as this macro is only used
                           // for numeric primitives which have no padding. The new slice only
@@ -1668,7 +1668,7 @@ Module hash.
       
       (*
                       fn hash_slice<H: Hasher>(data: &[$ty], state: &mut H) {
-                          let newlen = mem::size_of_val(data);
+                          let newlen = size_of_val(data);
                           let ptr = data.as_ptr() as *const u8;
                           // SAFETY: `ptr` is valid and aligned, as this macro is only used
                           // for numeric primitives which have no padding. The new slice only
@@ -1779,7 +1779,7 @@ Module hash.
       
       (*
                       fn hash_slice<H: Hasher>(data: &[$ty], state: &mut H) {
-                          let newlen = mem::size_of_val(data);
+                          let newlen = size_of_val(data);
                           let ptr = data.as_ptr() as *const u8;
                           // SAFETY: `ptr` is valid and aligned, as this macro is only used
                           // for numeric primitives which have no padding. The new slice only
@@ -1890,7 +1890,7 @@ Module hash.
       
       (*
                       fn hash_slice<H: Hasher>(data: &[$ty], state: &mut H) {
-                          let newlen = mem::size_of_val(data);
+                          let newlen = size_of_val(data);
                           let ptr = data.as_ptr() as *const u8;
                           // SAFETY: `ptr` is valid and aligned, as this macro is only used
                           // for numeric primitives which have no padding. The new slice only
@@ -2001,7 +2001,7 @@ Module hash.
       
       (*
                       fn hash_slice<H: Hasher>(data: &[$ty], state: &mut H) {
-                          let newlen = mem::size_of_val(data);
+                          let newlen = size_of_val(data);
                           let ptr = data.as_ptr() as *const u8;
                           // SAFETY: `ptr` is valid and aligned, as this macro is only used
                           // for numeric primitives which have no padding. The new slice only
@@ -2112,7 +2112,7 @@ Module hash.
       
       (*
                       fn hash_slice<H: Hasher>(data: &[$ty], state: &mut H) {
-                          let newlen = mem::size_of_val(data);
+                          let newlen = size_of_val(data);
                           let ptr = data.as_ptr() as *const u8;
                           // SAFETY: `ptr` is valid and aligned, as this macro is only used
                           // for numeric primitives which have no padding. The new slice only
@@ -2223,7 +2223,7 @@ Module hash.
       
       (*
                       fn hash_slice<H: Hasher>(data: &[$ty], state: &mut H) {
-                          let newlen = mem::size_of_val(data);
+                          let newlen = size_of_val(data);
                           let ptr = data.as_ptr() as *const u8;
                           // SAFETY: `ptr` is valid and aligned, as this macro is only used
                           // for numeric primitives which have no padding. The new slice only
@@ -2334,7 +2334,7 @@ Module hash.
       
       (*
                       fn hash_slice<H: Hasher>(data: &[$ty], state: &mut H) {
-                          let newlen = mem::size_of_val(data);
+                          let newlen = size_of_val(data);
                           let ptr = data.as_ptr() as *const u8;
                           // SAFETY: `ptr` is valid and aligned, as this macro is only used
                           // for numeric primitives which have no padding. The new slice only
@@ -2445,7 +2445,7 @@ Module hash.
       
       (*
                       fn hash_slice<H: Hasher>(data: &[$ty], state: &mut H) {
-                          let newlen = mem::size_of_val(data);
+                          let newlen = size_of_val(data);
                           let ptr = data.as_ptr() as *const u8;
                           // SAFETY: `ptr` is valid and aligned, as this macro is only used
                           // for numeric primitives which have no padding. The new slice only
@@ -2556,7 +2556,7 @@ Module hash.
       
       (*
                       fn hash_slice<H: Hasher>(data: &[$ty], state: &mut H) {
-                          let newlen = mem::size_of_val(data);
+                          let newlen = size_of_val(data);
                           let ptr = data.as_ptr() as *const u8;
                           // SAFETY: `ptr` is valid and aligned, as this macro is only used
                           // for numeric primitives which have no padding. The new slice only
@@ -2667,7 +2667,7 @@ Module hash.
       
       (*
                       fn hash_slice<H: Hasher>(data: &[$ty], state: &mut H) {
-                          let newlen = mem::size_of_val(data);
+                          let newlen = size_of_val(data);
                           let ptr = data.as_ptr() as *const u8;
                           // SAFETY: `ptr` is valid and aligned, as this macro is only used
                           // for numeric primitives which have no padding. The new slice only
@@ -2778,7 +2778,7 @@ Module hash.
       
       (*
                       fn hash_slice<H: Hasher>(data: &[$ty], state: &mut H) {
-                          let newlen = mem::size_of_val(data);
+                          let newlen = size_of_val(data);
                           let ptr = data.as_ptr() as *const u8;
                           // SAFETY: `ptr` is valid and aligned, as this macro is only used
                           // for numeric primitives which have no padding. The new slice only
@@ -3026,7 +3026,7 @@ Module hash.
           (* Instance *) [ ("hash", InstanceField.Method hash) ].
     End Impl_core_hash_Hash_for_Tuple_.
     
-    Module Impl_core_hash_Hash_where_core_hash_Hash_T_where_core_marker_Sized_T_for_Tuple_T_.
+    Module Impl_core_hash_Hash_where_core_hash_Hash_T_for_Tuple_T_.
       Definition Self (T : Ty.t) : Ty.t := Ty.tuple [ T ].
       
       (*
@@ -3075,9 +3075,9 @@ Module hash.
           (* Trait polymorphic types *) []
           (Self T)
           (* Instance *) [ ("hash", InstanceField.Method (hash T)) ].
-    End Impl_core_hash_Hash_where_core_hash_Hash_T_where_core_marker_Sized_T_for_Tuple_T_.
+    End Impl_core_hash_Hash_where_core_hash_Hash_T_for_Tuple_T_.
     
-    Module Impl_core_hash_Hash_where_core_hash_Hash_T_where_core_hash_Hash_B_where_core_marker_Sized_B_for_Tuple_T_B_.
+    Module Impl_core_hash_Hash_where_core_hash_Hash_T_where_core_hash_Hash_B_for_Tuple_T_B_.
       Definition Self (T B : Ty.t) : Ty.t := Ty.tuple [ T; B ].
       
       (*
@@ -3137,9 +3137,9 @@ Module hash.
           (* Trait polymorphic types *) []
           (Self T B)
           (* Instance *) [ ("hash", InstanceField.Method (hash T B)) ].
-    End Impl_core_hash_Hash_where_core_hash_Hash_T_where_core_hash_Hash_B_where_core_marker_Sized_B_for_Tuple_T_B_.
+    End Impl_core_hash_Hash_where_core_hash_Hash_T_where_core_hash_Hash_B_for_Tuple_T_B_.
     
-    Module Impl_core_hash_Hash_where_core_hash_Hash_T_where_core_hash_Hash_B_where_core_hash_Hash_C_where_core_marker_Sized_C_for_Tuple_T_B_C_.
+    Module Impl_core_hash_Hash_where_core_hash_Hash_T_where_core_hash_Hash_B_where_core_hash_Hash_C_for_Tuple_T_B_C_.
       Definition Self (T B C : Ty.t) : Ty.t := Ty.tuple [ T; B; C ].
       
       (*
@@ -3210,9 +3210,9 @@ Module hash.
           (* Trait polymorphic types *) []
           (Self T B C)
           (* Instance *) [ ("hash", InstanceField.Method (hash T B C)) ].
-    End Impl_core_hash_Hash_where_core_hash_Hash_T_where_core_hash_Hash_B_where_core_hash_Hash_C_where_core_marker_Sized_C_for_Tuple_T_B_C_.
+    End Impl_core_hash_Hash_where_core_hash_Hash_T_where_core_hash_Hash_B_where_core_hash_Hash_C_for_Tuple_T_B_C_.
     
-    Module Impl_core_hash_Hash_where_core_hash_Hash_T_where_core_hash_Hash_B_where_core_hash_Hash_C_where_core_hash_Hash_D_where_core_marker_Sized_D_for_Tuple_T_B_C_D_.
+    Module Impl_core_hash_Hash_where_core_hash_Hash_T_where_core_hash_Hash_B_where_core_hash_Hash_C_where_core_hash_Hash_D_for_Tuple_T_B_C_D_.
       Definition Self (T B C D : Ty.t) : Ty.t := Ty.tuple [ T; B; C; D ].
       
       (*
@@ -3295,9 +3295,9 @@ Module hash.
           (* Trait polymorphic types *) []
           (Self T B C D)
           (* Instance *) [ ("hash", InstanceField.Method (hash T B C D)) ].
-    End Impl_core_hash_Hash_where_core_hash_Hash_T_where_core_hash_Hash_B_where_core_hash_Hash_C_where_core_hash_Hash_D_where_core_marker_Sized_D_for_Tuple_T_B_C_D_.
+    End Impl_core_hash_Hash_where_core_hash_Hash_T_where_core_hash_Hash_B_where_core_hash_Hash_C_where_core_hash_Hash_D_for_Tuple_T_B_C_D_.
     
-    Module Impl_core_hash_Hash_where_core_hash_Hash_T_where_core_hash_Hash_B_where_core_hash_Hash_C_where_core_hash_Hash_D_where_core_hash_Hash_E_where_core_marker_Sized_E_for_Tuple_T_B_C_D_E_.
+    Module Impl_core_hash_Hash_where_core_hash_Hash_T_where_core_hash_Hash_B_where_core_hash_Hash_C_where_core_hash_Hash_D_where_core_hash_Hash_E_for_Tuple_T_B_C_D_E_.
       Definition Self (T B C D E : Ty.t) : Ty.t := Ty.tuple [ T; B; C; D; E ].
       
       (*
@@ -3396,9 +3396,9 @@ Module hash.
           (* Trait polymorphic types *) []
           (Self T B C D E)
           (* Instance *) [ ("hash", InstanceField.Method (hash T B C D E)) ].
-    End Impl_core_hash_Hash_where_core_hash_Hash_T_where_core_hash_Hash_B_where_core_hash_Hash_C_where_core_hash_Hash_D_where_core_hash_Hash_E_where_core_marker_Sized_E_for_Tuple_T_B_C_D_E_.
+    End Impl_core_hash_Hash_where_core_hash_Hash_T_where_core_hash_Hash_B_where_core_hash_Hash_C_where_core_hash_Hash_D_where_core_hash_Hash_E_for_Tuple_T_B_C_D_E_.
     
-    Module Impl_core_hash_Hash_where_core_hash_Hash_T_where_core_hash_Hash_B_where_core_hash_Hash_C_where_core_hash_Hash_D_where_core_hash_Hash_E_where_core_hash_Hash_F_where_core_marker_Sized_F_for_Tuple_T_B_C_D_E_F_.
+    Module Impl_core_hash_Hash_where_core_hash_Hash_T_where_core_hash_Hash_B_where_core_hash_Hash_C_where_core_hash_Hash_D_where_core_hash_Hash_E_where_core_hash_Hash_F_for_Tuple_T_B_C_D_E_F_.
       Definition Self (T B C D E F : Ty.t) : Ty.t := Ty.tuple [ T; B; C; D; E; F ].
       
       (*
@@ -3508,9 +3508,9 @@ Module hash.
           (* Trait polymorphic types *) []
           (Self T B C D E F)
           (* Instance *) [ ("hash", InstanceField.Method (hash T B C D E F)) ].
-    End Impl_core_hash_Hash_where_core_hash_Hash_T_where_core_hash_Hash_B_where_core_hash_Hash_C_where_core_hash_Hash_D_where_core_hash_Hash_E_where_core_hash_Hash_F_where_core_marker_Sized_F_for_Tuple_T_B_C_D_E_F_.
+    End Impl_core_hash_Hash_where_core_hash_Hash_T_where_core_hash_Hash_B_where_core_hash_Hash_C_where_core_hash_Hash_D_where_core_hash_Hash_E_where_core_hash_Hash_F_for_Tuple_T_B_C_D_E_F_.
     
-    Module Impl_core_hash_Hash_where_core_hash_Hash_T_where_core_hash_Hash_B_where_core_hash_Hash_C_where_core_hash_Hash_D_where_core_hash_Hash_E_where_core_hash_Hash_F_where_core_hash_Hash_G_where_core_marker_Sized_G_for_Tuple_T_B_C_D_E_F_G_.
+    Module Impl_core_hash_Hash_where_core_hash_Hash_T_where_core_hash_Hash_B_where_core_hash_Hash_C_where_core_hash_Hash_D_where_core_hash_Hash_E_where_core_hash_Hash_F_where_core_hash_Hash_G_for_Tuple_T_B_C_D_E_F_G_.
       Definition Self (T B C D E F G : Ty.t) : Ty.t := Ty.tuple [ T; B; C; D; E; F; G ].
       
       (*
@@ -3631,9 +3631,9 @@ Module hash.
           (* Trait polymorphic types *) []
           (Self T B C D E F G)
           (* Instance *) [ ("hash", InstanceField.Method (hash T B C D E F G)) ].
-    End Impl_core_hash_Hash_where_core_hash_Hash_T_where_core_hash_Hash_B_where_core_hash_Hash_C_where_core_hash_Hash_D_where_core_hash_Hash_E_where_core_hash_Hash_F_where_core_hash_Hash_G_where_core_marker_Sized_G_for_Tuple_T_B_C_D_E_F_G_.
+    End Impl_core_hash_Hash_where_core_hash_Hash_T_where_core_hash_Hash_B_where_core_hash_Hash_C_where_core_hash_Hash_D_where_core_hash_Hash_E_where_core_hash_Hash_F_where_core_hash_Hash_G_for_Tuple_T_B_C_D_E_F_G_.
     
-    Module Impl_core_hash_Hash_where_core_hash_Hash_T_where_core_hash_Hash_B_where_core_hash_Hash_C_where_core_hash_Hash_D_where_core_hash_Hash_E_where_core_hash_Hash_F_where_core_hash_Hash_G_where_core_hash_Hash_H_where_core_marker_Sized_H_for_Tuple_T_B_C_D_E_F_G_H_.
+    Module Impl_core_hash_Hash_where_core_hash_Hash_T_where_core_hash_Hash_B_where_core_hash_Hash_C_where_core_hash_Hash_D_where_core_hash_Hash_E_where_core_hash_Hash_F_where_core_hash_Hash_G_where_core_hash_Hash_H_for_Tuple_T_B_C_D_E_F_G_H_.
       Definition Self (T B C D E F G H : Ty.t) : Ty.t := Ty.tuple [ T; B; C; D; E; F; G; H ].
       
       (*
@@ -3768,9 +3768,9 @@ Module hash.
           (* Trait polymorphic types *) []
           (Self T B C D E F G H)
           (* Instance *) [ ("hash", InstanceField.Method (hash T B C D E F G H)) ].
-    End Impl_core_hash_Hash_where_core_hash_Hash_T_where_core_hash_Hash_B_where_core_hash_Hash_C_where_core_hash_Hash_D_where_core_hash_Hash_E_where_core_hash_Hash_F_where_core_hash_Hash_G_where_core_hash_Hash_H_where_core_marker_Sized_H_for_Tuple_T_B_C_D_E_F_G_H_.
+    End Impl_core_hash_Hash_where_core_hash_Hash_T_where_core_hash_Hash_B_where_core_hash_Hash_C_where_core_hash_Hash_D_where_core_hash_Hash_E_where_core_hash_Hash_F_where_core_hash_Hash_G_where_core_hash_Hash_H_for_Tuple_T_B_C_D_E_F_G_H_.
     
-    Module Impl_core_hash_Hash_where_core_hash_Hash_T_where_core_hash_Hash_B_where_core_hash_Hash_C_where_core_hash_Hash_D_where_core_hash_Hash_E_where_core_hash_Hash_F_where_core_hash_Hash_G_where_core_hash_Hash_H_where_core_hash_Hash_I_where_core_marker_Sized_I_for_Tuple_T_B_C_D_E_F_G_H_I_.
+    Module Impl_core_hash_Hash_where_core_hash_Hash_T_where_core_hash_Hash_B_where_core_hash_Hash_C_where_core_hash_Hash_D_where_core_hash_Hash_E_where_core_hash_Hash_F_where_core_hash_Hash_G_where_core_hash_Hash_H_where_core_hash_Hash_I_for_Tuple_T_B_C_D_E_F_G_H_I_.
       Definition Self (T B C D E F G H I : Ty.t) : Ty.t := Ty.tuple [ T; B; C; D; E; F; G; H; I ].
       
       (*
@@ -3916,9 +3916,9 @@ Module hash.
           (* Trait polymorphic types *) []
           (Self T B C D E F G H I)
           (* Instance *) [ ("hash", InstanceField.Method (hash T B C D E F G H I)) ].
-    End Impl_core_hash_Hash_where_core_hash_Hash_T_where_core_hash_Hash_B_where_core_hash_Hash_C_where_core_hash_Hash_D_where_core_hash_Hash_E_where_core_hash_Hash_F_where_core_hash_Hash_G_where_core_hash_Hash_H_where_core_hash_Hash_I_where_core_marker_Sized_I_for_Tuple_T_B_C_D_E_F_G_H_I_.
+    End Impl_core_hash_Hash_where_core_hash_Hash_T_where_core_hash_Hash_B_where_core_hash_Hash_C_where_core_hash_Hash_D_where_core_hash_Hash_E_where_core_hash_Hash_F_where_core_hash_Hash_G_where_core_hash_Hash_H_where_core_hash_Hash_I_for_Tuple_T_B_C_D_E_F_G_H_I_.
     
-    Module Impl_core_hash_Hash_where_core_hash_Hash_T_where_core_hash_Hash_B_where_core_hash_Hash_C_where_core_hash_Hash_D_where_core_hash_Hash_E_where_core_hash_Hash_F_where_core_hash_Hash_G_where_core_hash_Hash_H_where_core_hash_Hash_I_where_core_hash_Hash_J_where_core_marker_Sized_J_for_Tuple_T_B_C_D_E_F_G_H_I_J_.
+    Module Impl_core_hash_Hash_where_core_hash_Hash_T_where_core_hash_Hash_B_where_core_hash_Hash_C_where_core_hash_Hash_D_where_core_hash_Hash_E_where_core_hash_Hash_F_where_core_hash_Hash_G_where_core_hash_Hash_H_where_core_hash_Hash_I_where_core_hash_Hash_J_for_Tuple_T_B_C_D_E_F_G_H_I_J_.
       Definition Self (T B C D E F G H I J : Ty.t) : Ty.t :=
         Ty.tuple [ T; B; C; D; E; F; G; H; I; J ].
       
@@ -4076,9 +4076,9 @@ Module hash.
           (* Trait polymorphic types *) []
           (Self T B C D E F G H I J)
           (* Instance *) [ ("hash", InstanceField.Method (hash T B C D E F G H I J)) ].
-    End Impl_core_hash_Hash_where_core_hash_Hash_T_where_core_hash_Hash_B_where_core_hash_Hash_C_where_core_hash_Hash_D_where_core_hash_Hash_E_where_core_hash_Hash_F_where_core_hash_Hash_G_where_core_hash_Hash_H_where_core_hash_Hash_I_where_core_hash_Hash_J_where_core_marker_Sized_J_for_Tuple_T_B_C_D_E_F_G_H_I_J_.
+    End Impl_core_hash_Hash_where_core_hash_Hash_T_where_core_hash_Hash_B_where_core_hash_Hash_C_where_core_hash_Hash_D_where_core_hash_Hash_E_where_core_hash_Hash_F_where_core_hash_Hash_G_where_core_hash_Hash_H_where_core_hash_Hash_I_where_core_hash_Hash_J_for_Tuple_T_B_C_D_E_F_G_H_I_J_.
     
-    Module Impl_core_hash_Hash_where_core_hash_Hash_T_where_core_hash_Hash_B_where_core_hash_Hash_C_where_core_hash_Hash_D_where_core_hash_Hash_E_where_core_hash_Hash_F_where_core_hash_Hash_G_where_core_hash_Hash_H_where_core_hash_Hash_I_where_core_hash_Hash_J_where_core_hash_Hash_K_where_core_marker_Sized_K_for_Tuple_T_B_C_D_E_F_G_H_I_J_K_.
+    Module Impl_core_hash_Hash_where_core_hash_Hash_T_where_core_hash_Hash_B_where_core_hash_Hash_C_where_core_hash_Hash_D_where_core_hash_Hash_E_where_core_hash_Hash_F_where_core_hash_Hash_G_where_core_hash_Hash_H_where_core_hash_Hash_I_where_core_hash_Hash_J_where_core_hash_Hash_K_for_Tuple_T_B_C_D_E_F_G_H_I_J_K_.
       Definition Self (T B C D E F G H I J K : Ty.t) : Ty.t :=
         Ty.tuple [ T; B; C; D; E; F; G; H; I; J; K ].
       
@@ -4247,9 +4247,9 @@ Module hash.
           (* Trait polymorphic types *) []
           (Self T B C D E F G H I J K)
           (* Instance *) [ ("hash", InstanceField.Method (hash T B C D E F G H I J K)) ].
-    End Impl_core_hash_Hash_where_core_hash_Hash_T_where_core_hash_Hash_B_where_core_hash_Hash_C_where_core_hash_Hash_D_where_core_hash_Hash_E_where_core_hash_Hash_F_where_core_hash_Hash_G_where_core_hash_Hash_H_where_core_hash_Hash_I_where_core_hash_Hash_J_where_core_hash_Hash_K_where_core_marker_Sized_K_for_Tuple_T_B_C_D_E_F_G_H_I_J_K_.
+    End Impl_core_hash_Hash_where_core_hash_Hash_T_where_core_hash_Hash_B_where_core_hash_Hash_C_where_core_hash_Hash_D_where_core_hash_Hash_E_where_core_hash_Hash_F_where_core_hash_Hash_G_where_core_hash_Hash_H_where_core_hash_Hash_I_where_core_hash_Hash_J_where_core_hash_Hash_K_for_Tuple_T_B_C_D_E_F_G_H_I_J_K_.
     
-    Module Impl_core_hash_Hash_where_core_hash_Hash_T_where_core_hash_Hash_B_where_core_hash_Hash_C_where_core_hash_Hash_D_where_core_hash_Hash_E_where_core_hash_Hash_F_where_core_hash_Hash_G_where_core_hash_Hash_H_where_core_hash_Hash_I_where_core_hash_Hash_J_where_core_hash_Hash_K_where_core_hash_Hash_L_where_core_marker_Sized_L_for_Tuple_T_B_C_D_E_F_G_H_I_J_K_L_.
+    Module Impl_core_hash_Hash_where_core_hash_Hash_T_where_core_hash_Hash_B_where_core_hash_Hash_C_where_core_hash_Hash_D_where_core_hash_Hash_E_where_core_hash_Hash_F_where_core_hash_Hash_G_where_core_hash_Hash_H_where_core_hash_Hash_I_where_core_hash_Hash_J_where_core_hash_Hash_K_where_core_hash_Hash_L_for_Tuple_T_B_C_D_E_F_G_H_I_J_K_L_.
       Definition Self (T B C D E F G H I J K L : Ty.t) : Ty.t :=
         Ty.tuple [ T; B; C; D; E; F; G; H; I; J; K; L ].
       
@@ -4429,7 +4429,7 @@ Module hash.
           (* Trait polymorphic types *) []
           (Self T B C D E F G H I J K L)
           (* Instance *) [ ("hash", InstanceField.Method (hash T B C D E F G H I J K L)) ].
-    End Impl_core_hash_Hash_where_core_hash_Hash_T_where_core_hash_Hash_B_where_core_hash_Hash_C_where_core_hash_Hash_D_where_core_hash_Hash_E_where_core_hash_Hash_F_where_core_hash_Hash_G_where_core_hash_Hash_H_where_core_hash_Hash_I_where_core_hash_Hash_J_where_core_hash_Hash_K_where_core_hash_Hash_L_where_core_marker_Sized_L_for_Tuple_T_B_C_D_E_F_G_H_I_J_K_L_.
+    End Impl_core_hash_Hash_where_core_hash_Hash_T_where_core_hash_Hash_B_where_core_hash_Hash_C_where_core_hash_Hash_D_where_core_hash_Hash_E_where_core_hash_Hash_F_where_core_hash_Hash_G_where_core_hash_Hash_H_where_core_hash_Hash_I_where_core_hash_Hash_J_where_core_hash_Hash_K_where_core_hash_Hash_L_for_Tuple_T_B_C_D_E_F_G_H_I_J_K_L_.
     
     Module Impl_core_hash_Hash_where_core_hash_Hash_T_for_slice_T.
       Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "slice") [] [ T ].
@@ -4503,7 +4503,7 @@ Module hash.
           (* Instance *) [ ("hash", InstanceField.Method (hash T)) ].
     End Impl_core_hash_Hash_where_core_hash_Hash_T_for_slice_T.
     
-    Module Impl_core_hash_Hash_where_core_marker_Sized_T_where_core_hash_Hash_T_for_ref__T.
+    Module Impl_core_hash_Hash_where_core_marker_Sized_T_where_core_marker_PointeeSized_T_where_core_hash_Hash_T_for_ref__T.
       Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "&") [] [ T ].
       
       (*
@@ -4545,9 +4545,9 @@ Module hash.
           (* Trait polymorphic types *) []
           (Self T)
           (* Instance *) [ ("hash", InstanceField.Method (hash T)) ].
-    End Impl_core_hash_Hash_where_core_marker_Sized_T_where_core_hash_Hash_T_for_ref__T.
+    End Impl_core_hash_Hash_where_core_marker_Sized_T_where_core_marker_PointeeSized_T_where_core_hash_Hash_T_for_ref__T.
     
-    Module Impl_core_hash_Hash_where_core_marker_Sized_T_where_core_hash_Hash_T_for_ref_mut_T.
+    Module Impl_core_hash_Hash_where_core_marker_Sized_T_where_core_marker_PointeeSized_T_where_core_hash_Hash_T_for_ref_mut_T.
       Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "&mut") [] [ T ].
       
       (*
@@ -4592,9 +4592,9 @@ Module hash.
           (* Trait polymorphic types *) []
           (Self T)
           (* Instance *) [ ("hash", InstanceField.Method (hash T)) ].
-    End Impl_core_hash_Hash_where_core_marker_Sized_T_where_core_hash_Hash_T_for_ref_mut_T.
+    End Impl_core_hash_Hash_where_core_marker_Sized_T_where_core_marker_PointeeSized_T_where_core_hash_Hash_T_for_ref_mut_T.
     
-    Module Impl_core_hash_Hash_where_core_marker_Sized_T_for_pointer_const_T.
+    Module Impl_core_hash_Hash_where_core_marker_Sized_T_where_core_marker_PointeeSized_T_for_pointer_const_T.
       Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "*const") [] [ T ].
       
       (*
@@ -4714,9 +4714,9 @@ Module hash.
           (* Trait polymorphic types *) []
           (Self T)
           (* Instance *) [ ("hash", InstanceField.Method (hash T)) ].
-    End Impl_core_hash_Hash_where_core_marker_Sized_T_for_pointer_const_T.
+    End Impl_core_hash_Hash_where_core_marker_Sized_T_where_core_marker_PointeeSized_T_for_pointer_const_T.
     
-    Module Impl_core_hash_Hash_where_core_marker_Sized_T_for_pointer_mut_T.
+    Module Impl_core_hash_Hash_where_core_marker_Sized_T_where_core_marker_PointeeSized_T_for_pointer_mut_T.
       Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "*mut") [] [ T ].
       
       (*
@@ -4836,6 +4836,6 @@ Module hash.
           (* Trait polymorphic types *) []
           (Self T)
           (* Instance *) [ ("hash", InstanceField.Method (hash T)) ].
-    End Impl_core_hash_Hash_where_core_marker_Sized_T_for_pointer_mut_T.
+    End Impl_core_hash_Hash_where_core_marker_Sized_T_where_core_marker_PointeeSized_T_for_pointer_mut_T.
   End impls.
 End hash.

@@ -21,7 +21,7 @@ Module collections.
             [ K; V; I ].
         
         (*
-            pub fn new(iter: I) -> Self {
+            pub(super) fn new(iter: I) -> Self {
                 Self { iter: iter.peekable() }
             }
         *)
@@ -252,35 +252,34 @@ Module collections.
                                 fun γ =>
                                   ltac:(M.monadic
                                     (let γ :=
-                                      M.use
-                                        (M.alloc (|
+                                      M.alloc (|
+                                        Ty.path "bool",
+                                        M.call_closure (|
                                           Ty.path "bool",
-                                          M.call_closure (|
-                                            Ty.path "bool",
-                                            M.get_trait_method (|
-                                              "core::cmp::PartialEq",
-                                              K,
-                                              [],
-                                              [ K ],
-                                              "ne",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.SubPointer.get_tuple_field (| next, 0 |)
-                                              |);
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.SubPointer.get_tuple_field (|
-                                                  M.deref (| M.read (| peeked |) |),
-                                                  0
-                                                |)
+                                          M.get_trait_method (|
+                                            "core::cmp::PartialEq",
+                                            K,
+                                            [],
+                                            [ K ],
+                                            "ne",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.SubPointer.get_tuple_field (| next, 0 |)
+                                            |);
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.SubPointer.get_tuple_field (|
+                                                M.deref (| M.read (| peeked |) |),
+                                                0
                                               |)
-                                            ]
-                                          |)
-                                        |)) in
+                                            |)
+                                          ]
+                                        |)
+                                      |) in
                                     let _ :=
                                       is_constant_or_break_match (|
                                         M.read (| γ |),

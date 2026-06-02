@@ -366,6 +366,18 @@ Module u256.
         [ ("assert_receiver_is_total_eq", InstanceField.Method assert_receiver_is_total_eq) ].
   End Impl_core_cmp_Eq_for_move_core_types_u256_U256CastErrorKind.
   
+  Module Impl_core_clone_TrivialClone_for_move_core_types_u256_U256CastErrorKind.
+    Definition Self : Ty.t := Ty.path "move_core_types::u256::U256CastErrorKind".
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "core::clone::TrivialClone"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        Self
+        (* Instance *) [].
+  End Impl_core_clone_TrivialClone_for_move_core_types_u256_U256CastErrorKind.
+  
   Module Impl_core_clone_Clone_for_move_core_types_u256_U256CastErrorKind.
     Definition Self : Ty.t := Ty.path "move_core_types::u256::U256CastErrorKind".
     
@@ -720,18 +732,84 @@ Module u256.
                   [ Ty.path "alloc::string::String" ]
                 |),
                 [
-                  M.read (|
-                    let~ res : Ty.path "alloc::string::String" :=
-                      M.call_closure (|
-                        Ty.path "alloc::string::String",
-                        M.get_function (| "alloc::fmt::format", [], [] |),
-                        [
+                  M.call_closure (|
+                    Ty.path "alloc::string::String",
+                    M.get_function (| "alloc::fmt::format", [], [] |),
+                    [
+                      M.read (|
+                        let~ args :
+                            Ty.tuple
+                              [
+                                Ty.apply (Ty.path "&") [] [ Ty.path "move_core_types::u256::U256" ];
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                              ] :=
+                          Value.Tuple
+                            [
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "move_core_types::u256::U256CastError",
+                                  "val"
+                                |)
+                              |);
+                              M.borrow (| Pointer.Kind.Ref, type_str |)
+                            ] in
+                        let~ args :
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 2 ]
+                              [ Ty.path "core::fmt::rt::Argument" ] :=
+                          Value.Array
+                            [
+                              M.call_closure (|
+                                Ty.path "core::fmt::rt::Argument",
+                                M.get_associated_function (|
+                                  Ty.path "core::fmt::rt::Argument",
+                                  "new_display",
+                                  [],
+                                  [ Ty.path "move_core_types::u256::U256" ]
+                                |),
+                                [
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (|
+                                      M.read (| M.SubPointer.get_tuple_field (| args, 0 |) |)
+                                    |)
+                                  |)
+                                ]
+                              |);
+                              M.call_closure (|
+                                Ty.path "core::fmt::rt::Argument",
+                                M.get_associated_function (|
+                                  Ty.path "core::fmt::rt::Argument",
+                                  "new_display",
+                                  [],
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                |),
+                                [
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (|
+                                      M.read (| M.SubPointer.get_tuple_field (| args, 1 |) |)
+                                    |)
+                                  |)
+                                ]
+                              |)
+                            ] in
+                        M.alloc (|
+                          Ty.path "core::fmt::Arguments",
                           M.call_closure (|
                             Ty.path "core::fmt::Arguments",
                             M.get_associated_function (|
                               Ty.path "core::fmt::Arguments",
-                              "new_v1",
-                              [ Value.Integer IntegerKind.Usize 3; Value.Integer IntegerKind.Usize 2
+                              "new",
+                              [
+                                Value.Integer IntegerKind.Usize 35;
+                                Value.Integer IntegerKind.Usize 2
                               ],
                               []
                             |),
@@ -739,86 +817,56 @@ Module u256.
                               M.borrow (|
                                 Pointer.Kind.Ref,
                                 M.deref (|
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.alloc (|
-                                      Ty.apply
-                                        (Ty.path "array")
-                                        [ Value.Integer IntegerKind.Usize 3 ]
-                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                      Value.Array
-                                        [
-                                          mk_str (| "Cast failed. " |);
-                                          mk_str (| " too large for " |);
-                                          mk_str (| "." |)
-                                        ]
-                                    |)
-                                  |)
+                                  M.mk_byte_str_ref
+                                    35
+                                    [
+                                      13;
+                                      67;
+                                      97;
+                                      115;
+                                      116;
+                                      32;
+                                      102;
+                                      97;
+                                      105;
+                                      108;
+                                      101;
+                                      100;
+                                      46;
+                                      32;
+                                      192;
+                                      15;
+                                      32;
+                                      116;
+                                      111;
+                                      111;
+                                      32;
+                                      108;
+                                      97;
+                                      114;
+                                      103;
+                                      101;
+                                      32;
+                                      102;
+                                      111;
+                                      114;
+                                      32;
+                                      192;
+                                      1;
+                                      46;
+                                      0
+                                    ]
                                 |)
                               |);
                               M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.alloc (|
-                                      Ty.apply
-                                        (Ty.path "array")
-                                        [ Value.Integer IntegerKind.Usize 2 ]
-                                        [ Ty.path "core::fmt::rt::Argument" ],
-                                      Value.Array
-                                        [
-                                          M.call_closure (|
-                                            Ty.path "core::fmt::rt::Argument",
-                                            M.get_associated_function (|
-                                              Ty.path "core::fmt::rt::Argument",
-                                              "new_display",
-                                              [],
-                                              [ Ty.path "move_core_types::u256::U256" ]
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (|
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.SubPointer.get_struct_record_field (|
-                                                      M.deref (| M.read (| self |) |),
-                                                      "move_core_types::u256::U256CastError",
-                                                      "val"
-                                                    |)
-                                                  |)
-                                                |)
-                                              |)
-                                            ]
-                                          |);
-                                          M.call_closure (|
-                                            Ty.path "core::fmt::rt::Argument",
-                                            M.get_associated_function (|
-                                              Ty.path "core::fmt::rt::Argument",
-                                              "new_display",
-                                              [],
-                                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (|
-                                                  M.borrow (| Pointer.Kind.Ref, type_str |)
-                                                |)
-                                              |)
-                                            ]
-                                          |)
-                                        ]
-                                    |)
-                                  |)
-                                |)
+                                M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
                               |)
                             ]
                           |)
-                        ]
-                      |) in
-                    res
+                        |)
+                      |)
+                    ]
                   |)
                 ]
               |) in
@@ -835,63 +883,58 @@ Module u256.
                 M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_fmt", [], [] |),
                 [
                   M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                  M.call_closure (|
-                    Ty.path "core::fmt::Arguments",
-                    M.get_associated_function (|
+                  M.read (|
+                    let~ args :
+                        Ty.tuple
+                          [ Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ] ] :=
+                      Value.Tuple [ M.borrow (| Pointer.Kind.Ref, err_str |) ] in
+                    let~ args :
+                        Ty.apply
+                          (Ty.path "array")
+                          [ Value.Integer IntegerKind.Usize 1 ]
+                          [ Ty.path "core::fmt::rt::Argument" ] :=
+                      Value.Array
+                        [
+                          M.call_closure (|
+                            Ty.path "core::fmt::rt::Argument",
+                            M.get_associated_function (|
+                              Ty.path "core::fmt::rt::Argument",
+                              "new_display",
+                              [],
+                              [ Ty.path "alloc::string::String" ]
+                            |),
+                            [
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (|
+                                  M.read (| M.SubPointer.get_tuple_field (| args, 0 |) |)
+                                |)
+                              |)
+                            ]
+                          |)
+                        ] in
+                    M.alloc (|
                       Ty.path "core::fmt::Arguments",
-                      "new_v1",
-                      [ Value.Integer IntegerKind.Usize 1; Value.Integer IntegerKind.Usize 1 ],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
+                      M.call_closure (|
+                        Ty.path "core::fmt::Arguments",
+                        M.get_associated_function (|
+                          Ty.path "core::fmt::Arguments",
+                          "new",
+                          [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 1 ],
+                          []
+                        |),
+                        [
                           M.borrow (|
                             Pointer.Kind.Ref,
-                            M.alloc (|
-                              Ty.apply
-                                (Ty.path "array")
-                                [ Value.Integer IntegerKind.Usize 1 ]
-                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                              Value.Array [ mk_str (| "" |) ]
-                            |)
-                          |)
-                        |)
-                      |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
+                            M.deref (| M.mk_byte_str_ref 2 [ 192; 0 ] |)
+                          |);
                           M.borrow (|
                             Pointer.Kind.Ref,
-                            M.alloc (|
-                              Ty.apply
-                                (Ty.path "array")
-                                [ Value.Integer IntegerKind.Usize 1 ]
-                                [ Ty.path "core::fmt::rt::Argument" ],
-                              Value.Array
-                                [
-                                  M.call_closure (|
-                                    Ty.path "core::fmt::rt::Argument",
-                                    M.get_associated_function (|
-                                      Ty.path "core::fmt::rt::Argument",
-                                      "new_display",
-                                      [],
-                                      [ Ty.path "alloc::string::String" ]
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.borrow (| Pointer.Kind.Ref, err_str |) |)
-                                      |)
-                                    ]
-                                  |)
-                                ]
-                            |)
+                            M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
                           |)
-                        |)
+                        ]
                       |)
-                    ]
+                    |)
                   |)
                 ]
               |)
@@ -990,72 +1033,63 @@ Module u256.
             M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_fmt", [], [] |),
             [
               M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-              M.call_closure (|
-                Ty.path "core::fmt::Arguments",
-                M.get_associated_function (|
+              M.read (|
+                let~ args :
+                    Ty.tuple
+                      [ Ty.apply (Ty.path "&") [] [ Ty.path "uint::uint::FromStrRadixErr" ] ] :=
+                  Value.Tuple
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.SubPointer.get_struct_tuple_field (|
+                          M.deref (| M.read (| self |) |),
+                          "move_core_types::u256::U256FromStrError",
+                          0
+                        |)
+                      |)
+                    ] in
+                let~ args :
+                    Ty.apply
+                      (Ty.path "array")
+                      [ Value.Integer IntegerKind.Usize 1 ]
+                      [ Ty.path "core::fmt::rt::Argument" ] :=
+                  Value.Array
+                    [
+                      M.call_closure (|
+                        Ty.path "core::fmt::rt::Argument",
+                        M.get_associated_function (|
+                          Ty.path "core::fmt::rt::Argument",
+                          "new_display",
+                          [],
+                          [ Ty.path "uint::uint::FromStrRadixErr" ]
+                        |),
+                        [
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (| M.read (| M.SubPointer.get_tuple_field (| args, 0 |) |) |)
+                          |)
+                        ]
+                      |)
+                    ] in
+                M.alloc (|
                   Ty.path "core::fmt::Arguments",
-                  "new_v1",
-                  [ Value.Integer IntegerKind.Usize 1; Value.Integer IntegerKind.Usize 1 ],
-                  []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
+                  M.call_closure (|
+                    Ty.path "core::fmt::Arguments",
+                    M.get_associated_function (|
+                      Ty.path "core::fmt::Arguments",
+                      "new",
+                      [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 1 ],
+                      []
+                    |),
+                    [
+                      M.borrow (| Pointer.Kind.Ref, M.deref (| M.mk_byte_str_ref 2 [ 192; 0 ] |) |);
                       M.borrow (|
                         Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply
-                            (Ty.path "array")
-                            [ Value.Integer IntegerKind.Usize 1 ]
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                          Value.Array [ mk_str (| "" |) ]
-                        |)
+                        M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
                       |)
-                    |)
-                  |);
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply
-                            (Ty.path "array")
-                            [ Value.Integer IntegerKind.Usize 1 ]
-                            [ Ty.path "core::fmt::rt::Argument" ],
-                          Value.Array
-                            [
-                              M.call_closure (|
-                                Ty.path "core::fmt::rt::Argument",
-                                M.get_associated_function (|
-                                  Ty.path "core::fmt::rt::Argument",
-                                  "new_display",
-                                  [],
-                                  [ Ty.path "uint::uint::FromStrRadixErr" ]
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.SubPointer.get_struct_tuple_field (|
-                                          M.deref (| M.read (| self |) |),
-                                          "move_core_types::u256::U256FromStrError",
-                                          0
-                                        |)
-                                      |)
-                                    |)
-                                  |)
-                                ]
-                              |)
-                            ]
-                        |)
-                      |)
-                    |)
+                    ]
                   |)
-                ]
+                |)
               |)
             ]
           |)))
@@ -1078,6 +1112,18 @@ Module u256.
       ty_params := [];
       fields := [ Ty.path "primitive_types::U256" ];
     } *)
+  
+  Module Impl_core_clone_TrivialClone_for_move_core_types_u256_U256.
+    Definition Self : Ty.t := Ty.path "move_core_types::u256::U256".
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "core::clone::TrivialClone"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        Self
+        (* Instance *) [].
+  End Impl_core_clone_TrivialClone_for_move_core_types_u256_U256.
   
   Module Impl_core_clone_Clone_for_move_core_types_u256_U256.
     Definition Self : Ty.t := Ty.path "move_core_types::u256::U256".
@@ -3931,25 +3977,24 @@ Module u256.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  BinOp.ge,
-                                  [
-                                    M.read (| rhs |);
-                                    M.cast
-                                      (Ty.path "u32")
-                                      (M.read (|
-                                        get_constant (|
-                                          "move_core_types::u256::U256_NUM_BITS",
-                                          Ty.path "usize"
-                                        |)
-                                      |))
-                                  ]
-                                |)
-                              |)) in
+                                BinOp.ge,
+                                [
+                                  M.read (| rhs |);
+                                  M.cast
+                                    (Ty.path "u32")
+                                    (M.read (|
+                                      get_constant (|
+                                        "move_core_types::u256::U256_NUM_BITS",
+                                        Ty.path "usize"
+                                      |)
+                                    |))
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -4045,25 +4090,24 @@ Module u256.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  BinOp.ge,
-                                  [
-                                    M.read (| rhs |);
-                                    M.cast
-                                      (Ty.path "u32")
-                                      (M.read (|
-                                        get_constant (|
-                                          "move_core_types::u256::U256_NUM_BITS",
-                                          Ty.path "usize"
-                                        |)
-                                      |))
-                                  ]
-                                |)
-                              |)) in
+                                BinOp.ge,
+                                [
+                                  M.read (| rhs |);
+                                  M.cast
+                                    (Ty.path "u32")
+                                    (M.read (|
+                                      get_constant (|
+                                        "move_core_types::u256::U256_NUM_BITS",
+                                        Ty.path "usize"
+                                      |)
+                                    |))
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -4167,15 +4211,14 @@ Module u256.
                   fun γ =>
                     ltac:(M.monadic
                       (let γ :=
-                        M.use
-                          (M.alloc (|
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
                             Ty.path "bool",
-                            M.call_closure (|
-                              Ty.path "bool",
-                              BinOp.lt,
-                              [ M.read (| type_size |); Value.Integer IntegerKind.Usize 16 ]
-                            |)
-                          |)) in
+                            BinOp.lt,
+                            [ M.read (| type_size |); Value.Integer IntegerKind.Usize 16 ]
+                          |)
+                        |) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       M.call_closure (|
                         Ty.path "u128",
@@ -4308,27 +4351,11 @@ Module u256.
                               Ty.path "core::fmt::Arguments",
                               M.get_associated_function (|
                                 Ty.path "core::fmt::Arguments",
-                                "new_const",
-                                [ Value.Integer IntegerKind.Usize 1 ],
+                                "from_str",
+                                [],
                                 []
                               |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.alloc (|
-                                        Ty.apply
-                                          (Ty.path "array")
-                                          [ Value.Integer IntegerKind.Usize 1 ]
-                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                        Value.Array [ mk_str (| "Fatal! Downcast failed" |) ]
-                                      |)
-                                    |)
-                                  |)
-                                |)
-                              ]
+                              [ mk_str (| "Fatal! Downcast failed" |) ]
                             |)
                           ]
                         |)
@@ -5307,83 +5334,75 @@ Module u256.
                   [ Ty.path "alloc::string::String" ]
                 |),
                 [
-                  M.read (|
-                    let~ res : Ty.path "alloc::string::String" :=
-                      M.call_closure (|
-                        Ty.path "alloc::string::String",
-                        M.get_function (| "alloc::fmt::format", [], [] |),
-                        [
+                  M.call_closure (|
+                    Ty.path "alloc::string::String",
+                    M.get_function (| "alloc::fmt::format", [], [] |),
+                    [
+                      M.read (|
+                        let~ args :
+                            Ty.tuple
+                              [ Ty.apply (Ty.path "&") [] [ Ty.path "primitive_types::U256" ] ] :=
+                          Value.Tuple
+                            [
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_tuple_field (|
+                                  M.deref (| M.read (| n |) |),
+                                  "move_core_types::u256::U256",
+                                  0
+                                |)
+                              |)
+                            ] in
+                        let~ args :
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 1 ]
+                              [ Ty.path "core::fmt::rt::Argument" ] :=
+                          Value.Array
+                            [
+                              M.call_closure (|
+                                Ty.path "core::fmt::rt::Argument",
+                                M.get_associated_function (|
+                                  Ty.path "core::fmt::rt::Argument",
+                                  "new_upper_hex",
+                                  [],
+                                  [ Ty.path "primitive_types::U256" ]
+                                |),
+                                [
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (|
+                                      M.read (| M.SubPointer.get_tuple_field (| args, 0 |) |)
+                                    |)
+                                  |)
+                                ]
+                              |)
+                            ] in
+                        M.alloc (|
+                          Ty.path "core::fmt::Arguments",
                           M.call_closure (|
                             Ty.path "core::fmt::Arguments",
                             M.get_associated_function (|
                               Ty.path "core::fmt::Arguments",
-                              "new_v1",
-                              [ Value.Integer IntegerKind.Usize 1; Value.Integer IntegerKind.Usize 1
+                              "new",
+                              [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 1
                               ],
                               []
                             |),
                             [
                               M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.alloc (|
-                                      Ty.apply
-                                        (Ty.path "array")
-                                        [ Value.Integer IntegerKind.Usize 1 ]
-                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                      Value.Array [ mk_str (| "" |) ]
-                                    |)
-                                  |)
-                                |)
+                                M.deref (| M.mk_byte_str_ref 2 [ 192; 0 ] |)
                               |);
                               M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.alloc (|
-                                      Ty.apply
-                                        (Ty.path "array")
-                                        [ Value.Integer IntegerKind.Usize 1 ]
-                                        [ Ty.path "core::fmt::rt::Argument" ],
-                                      Value.Array
-                                        [
-                                          M.call_closure (|
-                                            Ty.path "core::fmt::rt::Argument",
-                                            M.get_associated_function (|
-                                              Ty.path "core::fmt::rt::Argument",
-                                              "new_upper_hex",
-                                              [],
-                                              [ Ty.path "primitive_types::U256" ]
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (|
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.SubPointer.get_struct_tuple_field (|
-                                                      M.deref (| M.read (| n |) |),
-                                                      "move_core_types::u256::U256",
-                                                      0
-                                                    |)
-                                                  |)
-                                                |)
-                                              |)
-                                            ]
-                                          |)
-                                        ]
-                                    |)
-                                  |)
-                                |)
+                                M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
                               |)
                             ]
                           |)
-                        ]
-                      |) in
-                    res
+                        |)
+                      |)
+                    ]
                   |)
                 ]
               |) in
@@ -5508,22 +5527,21 @@ Module u256.
                   fun γ =>
                     ltac:(M.monadic
                       (let γ :=
-                        M.use
-                          (M.alloc (|
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
                             Ty.path "bool",
-                            M.call_closure (|
-                              Ty.path "bool",
-                              BinOp.gt,
-                              [
-                                M.read (| n |);
-                                M.cast
-                                  (Ty.path "u64")
-                                  (M.read (|
-                                    get_associated_constant (| Ty.path "u8", "MAX", Ty.path "u8" |)
-                                  |))
-                              ]
-                            |)
-                          |)) in
+                            BinOp.gt,
+                            [
+                              M.read (| n |);
+                              M.cast
+                                (Ty.path "u64")
+                                (M.read (|
+                                  get_associated_constant (| Ty.path "u8", "MAX", Ty.path "u8" |)
+                                |))
+                            ]
+                          |)
+                        |) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       Value.StructTuple
                         "core::result::Result::Err"
@@ -5620,26 +5638,21 @@ Module u256.
                   fun γ =>
                     ltac:(M.monadic
                       (let γ :=
-                        M.use
-                          (M.alloc (|
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
                             Ty.path "bool",
-                            M.call_closure (|
-                              Ty.path "bool",
-                              BinOp.gt,
-                              [
-                                M.read (| n |);
-                                M.cast
-                                  (Ty.path "u64")
-                                  (M.read (|
-                                    get_associated_constant (|
-                                      Ty.path "u16",
-                                      "MAX",
-                                      Ty.path "u16"
-                                    |)
-                                  |))
-                              ]
-                            |)
-                          |)) in
+                            BinOp.gt,
+                            [
+                              M.read (| n |);
+                              M.cast
+                                (Ty.path "u64")
+                                (M.read (|
+                                  get_associated_constant (| Ty.path "u16", "MAX", Ty.path "u16" |)
+                                |))
+                            ]
+                          |)
+                        |) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       Value.StructTuple
                         "core::result::Result::Err"
@@ -5736,26 +5749,21 @@ Module u256.
                   fun γ =>
                     ltac:(M.monadic
                       (let γ :=
-                        M.use
-                          (M.alloc (|
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
                             Ty.path "bool",
-                            M.call_closure (|
-                              Ty.path "bool",
-                              BinOp.gt,
-                              [
-                                M.read (| n |);
-                                M.cast
-                                  (Ty.path "u64")
-                                  (M.read (|
-                                    get_associated_constant (|
-                                      Ty.path "u32",
-                                      "MAX",
-                                      Ty.path "u32"
-                                    |)
-                                  |))
-                              ]
-                            |)
-                          |)) in
+                            BinOp.gt,
+                            [
+                              M.read (| n |);
+                              M.cast
+                                (Ty.path "u64")
+                                (M.read (|
+                                  get_associated_constant (| Ty.path "u32", "MAX", Ty.path "u32" |)
+                                |))
+                            ]
+                          |)
+                        |) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       Value.StructTuple
                         "core::result::Result::Err"
@@ -5852,26 +5860,21 @@ Module u256.
                   fun γ =>
                     ltac:(M.monadic
                       (let γ :=
-                        M.use
-                          (M.alloc (|
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
                             Ty.path "bool",
-                            M.call_closure (|
-                              Ty.path "bool",
-                              BinOp.gt,
-                              [
-                                M.read (| n |);
-                                M.cast
-                                  (Ty.path "u128")
-                                  (M.read (|
-                                    get_associated_constant (|
-                                      Ty.path "u64",
-                                      "MAX",
-                                      Ty.path "u64"
-                                    |)
-                                  |))
-                              ]
-                            |)
-                          |)) in
+                            BinOp.gt,
+                            [
+                              M.read (| n |);
+                              M.cast
+                                (Ty.path "u128")
+                                (M.read (|
+                                  get_associated_constant (| Ty.path "u64", "MAX", Ty.path "u64" |)
+                                |))
+                            ]
+                          |)
+                        |) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       Value.StructTuple
                         "core::result::Result::Err"
@@ -5950,52 +5953,51 @@ Module u256.
               fun γ =>
                 ltac:(M.monadic
                   (let γ :=
-                    M.use
-                      (M.alloc (|
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
                         Ty.path "bool",
-                        M.call_closure (|
-                          Ty.path "bool",
-                          M.get_trait_method (|
-                            "core::cmp::PartialOrd",
-                            Ty.path "move_core_types::u256::U256",
-                            [],
-                            [ Ty.path "move_core_types::u256::U256" ],
-                            "gt",
-                            [],
-                            []
-                          |),
-                          [
-                            M.borrow (| Pointer.Kind.Ref, n |);
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.alloc (|
+                        M.get_trait_method (|
+                          "core::cmp::PartialOrd",
+                          Ty.path "move_core_types::u256::U256",
+                          [],
+                          [ Ty.path "move_core_types::u256::U256" ],
+                          "gt",
+                          [],
+                          []
+                        |),
+                        [
+                          M.borrow (| Pointer.Kind.Ref, n |);
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.alloc (|
+                              Ty.path "move_core_types::u256::U256",
+                              M.call_closure (|
                                 Ty.path "move_core_types::u256::U256",
-                                M.call_closure (|
+                                M.get_trait_method (|
+                                  "core::convert::From",
                                   Ty.path "move_core_types::u256::U256",
-                                  M.get_trait_method (|
-                                    "core::convert::From",
-                                    Ty.path "move_core_types::u256::U256",
-                                    [],
-                                    [ Ty.path "u128" ],
-                                    "from",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.read (|
-                                      get_associated_constant (|
-                                        Ty.path "u128",
-                                        "MAX",
-                                        Ty.path "u128"
-                                      |)
+                                  [],
+                                  [ Ty.path "u128" ],
+                                  "from",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.read (|
+                                    get_associated_constant (|
+                                      Ty.path "u128",
+                                      "MAX",
+                                      Ty.path "u128"
                                     |)
-                                  ]
-                                |)
+                                  |)
+                                ]
                               |)
                             |)
-                          ]
-                        |)
-                      |)) in
+                          |)
+                        ]
+                      |)
+                    |) in
                   let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                   Value.StructTuple
                     "core::result::Result::Err"
@@ -6164,6 +6166,18 @@ Module u256.
           ("z", Ty.path "move_core_types::u256::U256")
         ];
     } *)
+  
+  Module Impl_core_clone_TrivialClone_for_move_core_types_u256_UniformU256.
+    Definition Self : Ty.t := Ty.path "move_core_types::u256::UniformU256".
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "core::clone::TrivialClone"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        Self
+        (* Instance *) [].
+  End Impl_core_clone_TrivialClone_for_move_core_types_u256_UniformU256.
   
   Module Impl_core_clone_Clone_for_move_core_types_u256_UniformU256.
     Definition Self : Ty.t := Ty.path "move_core_types::u256::UniformU256".
@@ -6585,32 +6599,31 @@ Module u256.
                   fun γ =>
                     ltac:(M.monadic
                       (let γ :=
-                        M.use
-                          (M.alloc (|
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
                             Ty.path "bool",
-                            M.call_closure (|
-                              Ty.path "bool",
-                              UnOp.not,
-                              [
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  M.get_trait_method (|
-                                    "core::cmp::PartialOrd",
-                                    Ty.path "move_core_types::u256::U256",
-                                    [],
-                                    [ Ty.path "move_core_types::u256::U256" ],
-                                    "lt",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.borrow (| Pointer.Kind.Ref, low |);
-                                    M.borrow (| Pointer.Kind.Ref, high |)
-                                  ]
-                                |)
-                              ]
-                            |)
-                          |)) in
+                            UnOp.not,
+                            [
+                              M.call_closure (|
+                                Ty.path "bool",
+                                M.get_trait_method (|
+                                  "core::cmp::PartialOrd",
+                                  Ty.path "move_core_types::u256::U256",
+                                  [],
+                                  [ Ty.path "move_core_types::u256::U256" ],
+                                  "lt",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.borrow (| Pointer.Kind.Ref, low |);
+                                  M.borrow (| Pointer.Kind.Ref, high |)
+                                ]
+                              |)
+                            ]
+                          |)
+                        |) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       M.never_to_any (|
                         M.call_closure (|
@@ -6621,28 +6634,11 @@ Module u256.
                               Ty.path "core::fmt::Arguments",
                               M.get_associated_function (|
                                 Ty.path "core::fmt::Arguments",
-                                "new_const",
-                                [ Value.Integer IntegerKind.Usize 1 ],
+                                "from_str",
+                                [],
                                 []
                               |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.alloc (|
-                                        Ty.apply
-                                          (Ty.path "array")
-                                          [ Value.Integer IntegerKind.Usize 1 ]
-                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                        Value.Array
-                                          [ mk_str (| "Uniform::new called with `low >= high`" |) ]
-                                      |)
-                                    |)
-                                  |)
-                                |)
-                              ]
+                              [ mk_str (| "Uniform::new called with `low >= high`" |) ]
                             |)
                           ]
                         |)
@@ -6777,32 +6773,31 @@ Module u256.
                   fun γ =>
                     ltac:(M.monadic
                       (let γ :=
-                        M.use
-                          (M.alloc (|
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
                             Ty.path "bool",
-                            M.call_closure (|
-                              Ty.path "bool",
-                              UnOp.not,
-                              [
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  M.get_trait_method (|
-                                    "core::cmp::PartialOrd",
-                                    Ty.path "move_core_types::u256::U256",
-                                    [],
-                                    [ Ty.path "move_core_types::u256::U256" ],
-                                    "le",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.borrow (| Pointer.Kind.Ref, low |);
-                                    M.borrow (| Pointer.Kind.Ref, high |)
-                                  ]
-                                |)
-                              ]
-                            |)
-                          |)) in
+                            UnOp.not,
+                            [
+                              M.call_closure (|
+                                Ty.path "bool",
+                                M.get_trait_method (|
+                                  "core::cmp::PartialOrd",
+                                  Ty.path "move_core_types::u256::U256",
+                                  [],
+                                  [ Ty.path "move_core_types::u256::U256" ],
+                                  "le",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.borrow (| Pointer.Kind.Ref, low |);
+                                  M.borrow (| Pointer.Kind.Ref, high |)
+                                ]
+                              |)
+                            ]
+                          |)
+                        |) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       M.never_to_any (|
                         M.call_closure (|
@@ -6813,32 +6808,11 @@ Module u256.
                               Ty.path "core::fmt::Arguments",
                               M.get_associated_function (|
                                 Ty.path "core::fmt::Arguments",
-                                "new_const",
-                                [ Value.Integer IntegerKind.Usize 1 ],
+                                "from_str",
+                                [],
                                 []
                               |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.alloc (|
-                                        Ty.apply
-                                          (Ty.path "array")
-                                          [ Value.Integer IntegerKind.Usize 1 ]
-                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                        Value.Array
-                                          [
-                                            mk_str (|
-                                              "Uniform::new_inclusive called with `low > high`"
-                                            |)
-                                          ]
-                                      |)
-                                    |)
-                                  |)
-                                |)
-                              ]
+                              [ mk_str (| "Uniform::new_inclusive called with `low > high`" |) ]
                             |)
                           ]
                         |)
@@ -6897,41 +6871,40 @@ Module u256.
                   fun γ =>
                     ltac:(M.monadic
                       (let γ :=
-                        M.use
-                          (M.alloc (|
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
                             Ty.path "bool",
-                            M.call_closure (|
-                              Ty.path "bool",
-                              M.get_trait_method (|
-                                "core::cmp::PartialOrd",
-                                Ty.path "move_core_types::u256::U256",
-                                [],
-                                [ Ty.path "move_core_types::u256::U256" ],
-                                "gt",
-                                [],
-                                []
-                              |),
-                              [
-                                M.borrow (| Pointer.Kind.Ref, range |);
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.alloc (|
+                            M.get_trait_method (|
+                              "core::cmp::PartialOrd",
+                              Ty.path "move_core_types::u256::U256",
+                              [],
+                              [ Ty.path "move_core_types::u256::U256" ],
+                              "gt",
+                              [],
+                              []
+                            |),
+                            [
+                              M.borrow (| Pointer.Kind.Ref, range |);
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.alloc (|
+                                  Ty.path "move_core_types::u256::U256",
+                                  M.call_closure (|
                                     Ty.path "move_core_types::u256::U256",
-                                    M.call_closure (|
+                                    M.get_associated_function (|
                                       Ty.path "move_core_types::u256::U256",
-                                      M.get_associated_function (|
-                                        Ty.path "move_core_types::u256::U256",
-                                        "zero",
-                                        [],
-                                        []
-                                      |),
+                                      "zero",
+                                      [],
                                       []
-                                    |)
+                                    |),
+                                    []
                                   |)
                                 |)
-                              ]
-                            |)
-                          |)) in
+                              |)
+                            ]
+                          |)
+                        |) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       M.call_closure (|
                         Ty.path "move_core_types::u256::U256",
@@ -7070,41 +7043,40 @@ Module u256.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  M.get_trait_method (|
-                                    "core::cmp::PartialOrd",
-                                    Ty.path "move_core_types::u256::U256",
-                                    [],
-                                    [ Ty.path "move_core_types::u256::U256" ],
-                                    "gt",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.borrow (| Pointer.Kind.Ref, range |);
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.alloc (|
+                                M.get_trait_method (|
+                                  "core::cmp::PartialOrd",
+                                  Ty.path "move_core_types::u256::U256",
+                                  [],
+                                  [ Ty.path "move_core_types::u256::U256" ],
+                                  "gt",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.borrow (| Pointer.Kind.Ref, range |);
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.path "move_core_types::u256::U256",
+                                      M.call_closure (|
                                         Ty.path "move_core_types::u256::U256",
-                                        M.call_closure (|
+                                        M.get_associated_function (|
                                           Ty.path "move_core_types::u256::U256",
-                                          M.get_associated_function (|
-                                            Ty.path "move_core_types::u256::U256",
-                                            "zero",
-                                            [],
-                                            []
-                                          |),
+                                          "zero",
+                                          [],
                                           []
-                                        |)
+                                        |),
+                                        []
                                       |)
                                     |)
-                                  ]
-                                |)
-                              |)) in
+                                  |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.read (|
@@ -7217,36 +7189,32 @@ Module u256.
                                                     fun γ =>
                                                       ltac:(M.monadic
                                                         (let γ :=
-                                                          M.use
-                                                            (M.alloc (|
+                                                          M.alloc (|
+                                                            Ty.path "bool",
+                                                            M.call_closure (|
                                                               Ty.path "bool",
-                                                              M.call_closure (|
-                                                                Ty.path "bool",
-                                                                M.get_trait_method (|
-                                                                  "core::cmp::PartialOrd",
-                                                                  Ty.path
-                                                                    "move_core_types::u256::U256",
-                                                                  [],
-                                                                  [
-                                                                    Ty.path
-                                                                      "move_core_types::u256::U256"
-                                                                  ],
-                                                                  "le",
-                                                                  [],
-                                                                  []
-                                                                |),
+                                                              M.get_trait_method (|
+                                                                "core::cmp::PartialOrd",
+                                                                Ty.path
+                                                                  "move_core_types::u256::U256",
+                                                                [],
                                                                 [
-                                                                  M.borrow (|
-                                                                    Pointer.Kind.Ref,
-                                                                    lo
-                                                                  |);
-                                                                  M.borrow (|
-                                                                    Pointer.Kind.Ref,
-                                                                    zone
-                                                                  |)
-                                                                ]
-                                                              |)
-                                                            |)) in
+                                                                  Ty.path
+                                                                    "move_core_types::u256::U256"
+                                                                ],
+                                                                "le",
+                                                                [],
+                                                                []
+                                                              |),
+                                                              [
+                                                                M.borrow (| Pointer.Kind.Ref, lo |);
+                                                                M.borrow (|
+                                                                  Pointer.Kind.Ref,
+                                                                  zone
+                                                                |)
+                                                              ]
+                                                            |)
+                                                          |) in
                                                         let _ :=
                                                           is_constant_or_break_match (|
                                                             M.read (| γ |),
@@ -7379,32 +7347,31 @@ Module u256.
                   fun γ =>
                     ltac:(M.monadic
                       (let γ :=
-                        M.use
-                          (M.alloc (|
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
                             Ty.path "bool",
-                            M.call_closure (|
-                              Ty.path "bool",
-                              UnOp.not,
-                              [
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  M.get_trait_method (|
-                                    "core::cmp::PartialOrd",
-                                    Ty.path "move_core_types::u256::U256",
-                                    [],
-                                    [ Ty.path "move_core_types::u256::U256" ],
-                                    "lt",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.borrow (| Pointer.Kind.Ref, low |);
-                                    M.borrow (| Pointer.Kind.Ref, high |)
-                                  ]
-                                |)
-                              ]
-                            |)
-                          |)) in
+                            UnOp.not,
+                            [
+                              M.call_closure (|
+                                Ty.path "bool",
+                                M.get_trait_method (|
+                                  "core::cmp::PartialOrd",
+                                  Ty.path "move_core_types::u256::U256",
+                                  [],
+                                  [ Ty.path "move_core_types::u256::U256" ],
+                                  "lt",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.borrow (| Pointer.Kind.Ref, low |);
+                                  M.borrow (| Pointer.Kind.Ref, high |)
+                                ]
+                              |)
+                            ]
+                          |)
+                        |) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       M.never_to_any (|
                         M.call_closure (|
@@ -7415,32 +7382,11 @@ Module u256.
                               Ty.path "core::fmt::Arguments",
                               M.get_associated_function (|
                                 Ty.path "core::fmt::Arguments",
-                                "new_const",
-                                [ Value.Integer IntegerKind.Usize 1 ],
+                                "from_str",
+                                [],
                                 []
                               |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.alloc (|
-                                        Ty.apply
-                                          (Ty.path "array")
-                                          [ Value.Integer IntegerKind.Usize 1 ]
-                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                        Value.Array
-                                          [
-                                            mk_str (|
-                                              "UniformSampler::sample_single: low >= high"
-                                            |)
-                                          ]
-                                      |)
-                                    |)
-                                  |)
-                                |)
-                              ]
+                              [ mk_str (| "UniformSampler::sample_single: low >= high" |) ]
                             |)
                           ]
                         |)
@@ -7592,32 +7538,31 @@ Module u256.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  UnOp.not,
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      M.get_trait_method (|
-                                        "core::cmp::PartialOrd",
-                                        Ty.path "move_core_types::u256::U256",
-                                        [],
-                                        [ Ty.path "move_core_types::u256::U256" ],
-                                        "le",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (| Pointer.Kind.Ref, low |);
-                                        M.borrow (| Pointer.Kind.Ref, high |)
-                                      ]
-                                    |)
-                                  ]
-                                |)
-                              |)) in
+                                UnOp.not,
+                                [
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    M.get_trait_method (|
+                                      "core::cmp::PartialOrd",
+                                      Ty.path "move_core_types::u256::U256",
+                                      [],
+                                      [ Ty.path "move_core_types::u256::U256" ],
+                                      "le",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (| Pointer.Kind.Ref, low |);
+                                      M.borrow (| Pointer.Kind.Ref, high |)
+                                    ]
+                                  |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -7629,30 +7574,13 @@ Module u256.
                                   Ty.path "core::fmt::Arguments",
                                   M.get_associated_function (|
                                     Ty.path "core::fmt::Arguments",
-                                    "new_const",
-                                    [ Value.Integer IntegerKind.Usize 1 ],
+                                    "from_str",
+                                    [],
                                     []
                                   |),
                                   [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (|
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.alloc (|
-                                            Ty.apply
-                                              (Ty.path "array")
-                                              [ Value.Integer IntegerKind.Usize 1 ]
-                                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                            Value.Array
-                                              [
-                                                mk_str (|
-                                                  "UniformSampler::sample_single_inclusive: low > high"
-                                                |)
-                                              ]
-                                          |)
-                                        |)
-                                      |)
+                                    mk_str (|
+                                      "UniformSampler::sample_single_inclusive: low > high"
                                     |)
                                   ]
                                 |)
@@ -7702,41 +7630,40 @@ Module u256.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  M.get_trait_method (|
-                                    "core::cmp::PartialEq",
-                                    Ty.path "move_core_types::u256::U256",
-                                    [],
-                                    [ Ty.path "move_core_types::u256::U256" ],
-                                    "eq",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.borrow (| Pointer.Kind.Ref, range |);
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.alloc (|
+                                M.get_trait_method (|
+                                  "core::cmp::PartialEq",
+                                  Ty.path "move_core_types::u256::U256",
+                                  [],
+                                  [ Ty.path "move_core_types::u256::U256" ],
+                                  "eq",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.borrow (| Pointer.Kind.Ref, range |);
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.path "move_core_types::u256::U256",
+                                      M.call_closure (|
                                         Ty.path "move_core_types::u256::U256",
-                                        M.call_closure (|
+                                        M.get_associated_function (|
                                           Ty.path "move_core_types::u256::U256",
-                                          M.get_associated_function (|
-                                            Ty.path "move_core_types::u256::U256",
-                                            "zero",
-                                            [],
-                                            []
-                                          |),
+                                          "zero",
+                                          [],
                                           []
-                                        |)
+                                        |),
+                                        []
                                       |)
                                     |)
-                                  ]
-                                |)
-                              |)) in
+                                  |)
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.never_to_any (|
@@ -7875,26 +7802,25 @@ Module u256.
                                         fun γ =>
                                           ltac:(M.monadic
                                             (let γ :=
-                                              M.use
-                                                (M.alloc (|
+                                              M.alloc (|
+                                                Ty.path "bool",
+                                                M.call_closure (|
                                                   Ty.path "bool",
-                                                  M.call_closure (|
-                                                    Ty.path "bool",
-                                                    M.get_trait_method (|
-                                                      "core::cmp::PartialOrd",
-                                                      Ty.path "move_core_types::u256::U256",
-                                                      [],
-                                                      [ Ty.path "move_core_types::u256::U256" ],
-                                                      "le",
-                                                      [],
-                                                      []
-                                                    |),
-                                                    [
-                                                      M.borrow (| Pointer.Kind.Ref, lo |);
-                                                      M.borrow (| Pointer.Kind.Ref, zone |)
-                                                    ]
-                                                  |)
-                                                |)) in
+                                                  M.get_trait_method (|
+                                                    "core::cmp::PartialOrd",
+                                                    Ty.path "move_core_types::u256::U256",
+                                                    [],
+                                                    [ Ty.path "move_core_types::u256::U256" ],
+                                                    "le",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [
+                                                    M.borrow (| Pointer.Kind.Ref, lo |);
+                                                    M.borrow (| Pointer.Kind.Ref, zone |)
+                                                  ]
+                                                |)
+                                              |) in
                                             let _ :=
                                               is_constant_or_break_match (|
                                                 M.read (| γ |),

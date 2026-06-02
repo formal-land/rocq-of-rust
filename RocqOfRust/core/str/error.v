@@ -165,6 +165,18 @@ Module str.
           (* Instance *) [ ("eq", InstanceField.Method eq) ].
     End Impl_core_cmp_PartialEq_core_str_error_Utf8Error_for_core_str_error_Utf8Error.
     
+    Module Impl_core_clone_TrivialClone_for_core_str_error_Utf8Error.
+      Definition Self : Ty.t := Ty.path "core::str::error::Utf8Error".
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::clone::TrivialClone"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [].
+    End Impl_core_clone_TrivialClone_for_core_str_error_Utf8Error.
+    
     Module Impl_core_clone_Clone_for_core_str_error_Utf8Error.
       Definition Self : Ty.t := Ty.path "core::str::error::Utf8Error".
       
@@ -458,94 +470,146 @@ Module str.
                       |),
                       [
                         M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                        M.call_closure (|
-                          Ty.path "core::fmt::Arguments",
-                          M.get_associated_function (|
+                        M.read (|
+                          let~ args :
+                              Ty.tuple
+                                [
+                                  Ty.apply (Ty.path "&") [] [ Ty.path "u8" ];
+                                  Ty.apply (Ty.path "&") [] [ Ty.path "usize" ]
+                                ] :=
+                            Value.Tuple
+                              [
+                                M.borrow (| Pointer.Kind.Ref, error_len |);
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (| M.read (| self |) |),
+                                    "core::str::error::Utf8Error",
+                                    "valid_up_to"
+                                  |)
+                                |)
+                              ] in
+                          let~ args :
+                              Ty.apply
+                                (Ty.path "array")
+                                [ Value.Integer IntegerKind.Usize 2 ]
+                                [ Ty.path "core::fmt::rt::Argument" ] :=
+                            Value.Array
+                              [
+                                M.call_closure (|
+                                  Ty.path "core::fmt::rt::Argument",
+                                  M.get_associated_function (|
+                                    Ty.path "core::fmt::rt::Argument",
+                                    "new_display",
+                                    [],
+                                    [ Ty.path "u8" ]
+                                  |),
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (|
+                                        M.read (| M.SubPointer.get_tuple_field (| args, 0 |) |)
+                                      |)
+                                    |)
+                                  ]
+                                |);
+                                M.call_closure (|
+                                  Ty.path "core::fmt::rt::Argument",
+                                  M.get_associated_function (|
+                                    Ty.path "core::fmt::rt::Argument",
+                                    "new_display",
+                                    [],
+                                    [ Ty.path "usize" ]
+                                  |),
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (|
+                                        M.read (| M.SubPointer.get_tuple_field (| args, 1 |) |)
+                                      |)
+                                    |)
+                                  ]
+                                |)
+                              ] in
+                          M.alloc (|
                             Ty.path "core::fmt::Arguments",
-                            "new_v1",
-                            [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 2
-                            ],
-                            []
-                          |),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
+                            M.call_closure (|
+                              Ty.path "core::fmt::Arguments",
+                              M.get_associated_function (|
+                                Ty.path "core::fmt::Arguments",
+                                "new",
+                                [
+                                  Value.Integer IntegerKind.Usize 49;
+                                  Value.Integer IntegerKind.Usize 2
+                                ],
+                                []
+                              |),
+                              [
                                 M.borrow (|
                                   Pointer.Kind.Ref,
-                                  M.alloc (|
-                                    Ty.apply
-                                      (Ty.path "array")
-                                      [ Value.Integer IntegerKind.Usize 2 ]
-                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                    Value.Array
+                                  M.deref (|
+                                    M.mk_byte_str_ref
+                                      49
                                       [
-                                        mk_str (| "invalid utf-8 sequence of " |);
-                                        mk_str (| " bytes from index " |)
+                                        26;
+                                        105;
+                                        110;
+                                        118;
+                                        97;
+                                        108;
+                                        105;
+                                        100;
+                                        32;
+                                        117;
+                                        116;
+                                        102;
+                                        45;
+                                        56;
+                                        32;
+                                        115;
+                                        101;
+                                        113;
+                                        117;
+                                        101;
+                                        110;
+                                        99;
+                                        101;
+                                        32;
+                                        111;
+                                        102;
+                                        32;
+                                        192;
+                                        18;
+                                        32;
+                                        98;
+                                        121;
+                                        116;
+                                        101;
+                                        115;
+                                        32;
+                                        102;
+                                        114;
+                                        111;
+                                        109;
+                                        32;
+                                        105;
+                                        110;
+                                        100;
+                                        101;
+                                        120;
+                                        32;
+                                        192;
+                                        0
                                       ]
                                   |)
-                                |)
-                              |)
-                            |);
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
+                                |);
                                 M.borrow (|
                                   Pointer.Kind.Ref,
-                                  M.alloc (|
-                                    Ty.apply
-                                      (Ty.path "array")
-                                      [ Value.Integer IntegerKind.Usize 2 ]
-                                      [ Ty.path "core::fmt::rt::Argument" ],
-                                    Value.Array
-                                      [
-                                        M.call_closure (|
-                                          Ty.path "core::fmt::rt::Argument",
-                                          M.get_associated_function (|
-                                            Ty.path "core::fmt::rt::Argument",
-                                            "new_display",
-                                            [],
-                                            [ Ty.path "u8" ]
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (|
-                                                M.borrow (| Pointer.Kind.Ref, error_len |)
-                                              |)
-                                            |)
-                                          ]
-                                        |);
-                                        M.call_closure (|
-                                          Ty.path "core::fmt::rt::Argument",
-                                          M.get_associated_function (|
-                                            Ty.path "core::fmt::rt::Argument",
-                                            "new_display",
-                                            [],
-                                            [ Ty.path "usize" ]
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (|
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.SubPointer.get_struct_record_field (|
-                                                    M.deref (| M.read (| self |) |),
-                                                    "core::str::error::Utf8Error",
-                                                    "valid_up_to"
-                                                  |)
-                                                |)
-                                              |)
-                                            |)
-                                          ]
-                                        |)
-                                      ]
-                                  |)
+                                  M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
                                 |)
-                              |)
+                              ]
                             |)
-                          ]
+                          |)
                         |)
                       ]
                     |)));
@@ -564,74 +628,119 @@ Module str.
                       |),
                       [
                         M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                        M.call_closure (|
-                          Ty.path "core::fmt::Arguments",
-                          M.get_associated_function (|
-                            Ty.path "core::fmt::Arguments",
-                            "new_v1",
-                            [ Value.Integer IntegerKind.Usize 1; Value.Integer IntegerKind.Usize 1
-                            ],
-                            []
-                          |),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
+                        M.read (|
+                          let~ args : Ty.tuple [ Ty.apply (Ty.path "&") [] [ Ty.path "usize" ] ] :=
+                            Value.Tuple
+                              [
                                 M.borrow (|
                                   Pointer.Kind.Ref,
-                                  M.alloc (|
-                                    Ty.apply
-                                      (Ty.path "array")
-                                      [ Value.Integer IntegerKind.Usize 1 ]
-                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                    Value.Array
-                                      [ mk_str (| "incomplete utf-8 byte sequence from index " |) ]
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (| M.read (| self |) |),
+                                    "core::str::error::Utf8Error",
+                                    "valid_up_to"
                                   |)
                                 |)
-                              |)
-                            |);
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
+                              ] in
+                          let~ args :
+                              Ty.apply
+                                (Ty.path "array")
+                                [ Value.Integer IntegerKind.Usize 1 ]
+                                [ Ty.path "core::fmt::rt::Argument" ] :=
+                            Value.Array
+                              [
+                                M.call_closure (|
+                                  Ty.path "core::fmt::rt::Argument",
+                                  M.get_associated_function (|
+                                    Ty.path "core::fmt::rt::Argument",
+                                    "new_display",
+                                    [],
+                                    [ Ty.path "usize" ]
+                                  |),
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (|
+                                        M.read (| M.SubPointer.get_tuple_field (| args, 0 |) |)
+                                      |)
+                                    |)
+                                  ]
+                                |)
+                              ] in
+                          M.alloc (|
+                            Ty.path "core::fmt::Arguments",
+                            M.call_closure (|
+                              Ty.path "core::fmt::Arguments",
+                              M.get_associated_function (|
+                                Ty.path "core::fmt::Arguments",
+                                "new",
+                                [
+                                  Value.Integer IntegerKind.Usize 45;
+                                  Value.Integer IntegerKind.Usize 1
+                                ],
+                                []
+                              |),
+                              [
                                 M.borrow (|
                                   Pointer.Kind.Ref,
-                                  M.alloc (|
-                                    Ty.apply
-                                      (Ty.path "array")
-                                      [ Value.Integer IntegerKind.Usize 1 ]
-                                      [ Ty.path "core::fmt::rt::Argument" ],
-                                    Value.Array
+                                  M.deref (|
+                                    M.mk_byte_str_ref
+                                      45
                                       [
-                                        M.call_closure (|
-                                          Ty.path "core::fmt::rt::Argument",
-                                          M.get_associated_function (|
-                                            Ty.path "core::fmt::rt::Argument",
-                                            "new_display",
-                                            [],
-                                            [ Ty.path "usize" ]
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (|
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.SubPointer.get_struct_record_field (|
-                                                    M.deref (| M.read (| self |) |),
-                                                    "core::str::error::Utf8Error",
-                                                    "valid_up_to"
-                                                  |)
-                                                |)
-                                              |)
-                                            |)
-                                          ]
-                                        |)
+                                        42;
+                                        105;
+                                        110;
+                                        99;
+                                        111;
+                                        109;
+                                        112;
+                                        108;
+                                        101;
+                                        116;
+                                        101;
+                                        32;
+                                        117;
+                                        116;
+                                        102;
+                                        45;
+                                        56;
+                                        32;
+                                        98;
+                                        121;
+                                        116;
+                                        101;
+                                        32;
+                                        115;
+                                        101;
+                                        113;
+                                        117;
+                                        101;
+                                        110;
+                                        99;
+                                        101;
+                                        32;
+                                        102;
+                                        114;
+                                        111;
+                                        109;
+                                        32;
+                                        105;
+                                        110;
+                                        100;
+                                        101;
+                                        120;
+                                        32;
+                                        192;
+                                        0
                                       ]
                                   |)
+                                |);
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
                                 |)
-                              |)
+                              ]
                             |)
-                          ]
+                          |)
                         |)
                       ]
                     |)))
@@ -652,34 +761,13 @@ Module str.
     Module Impl_core_error_Error_for_core_str_error_Utf8Error.
       Definition Self : Ty.t := Ty.path "core::str::error::Utf8Error".
       
-      (*
-          fn description(&self) -> &str {
-              "invalid utf-8: corrupt contents"
-          }
-      *)
-      Definition description (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [ self ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (|
-                Ty.apply (Ty.path "&") [] [ Ty.path "core::str::error::Utf8Error" ],
-                self
-              |) in
-            M.borrow (|
-              Pointer.Kind.Ref,
-              M.deref (| mk_str (| "invalid utf-8: corrupt contents" |) |)
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
       Axiom Implements :
         M.IsTraitInstance
           "core::error::Error"
           (* Trait polymorphic consts *) []
           (* Trait polymorphic types *) []
           Self
-          (* Instance *) [ ("description", InstanceField.Method description) ].
+          (* Instance *) [].
     End Impl_core_error_Error_for_core_str_error_Utf8Error.
     
     (* StructTuple
@@ -876,31 +964,13 @@ Module str.
     Module Impl_core_error_Error_for_core_str_error_ParseBoolError.
       Definition Self : Ty.t := Ty.path "core::str::error::ParseBoolError".
       
-      (*
-          fn description(&self) -> &str {
-              "failed to parse bool"
-          }
-      *)
-      Definition description (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [ self ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (|
-                Ty.apply (Ty.path "&") [] [ Ty.path "core::str::error::ParseBoolError" ],
-                self
-              |) in
-            M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "failed to parse bool" |) |) |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
       Axiom Implements :
         M.IsTraitInstance
           "core::error::Error"
           (* Trait polymorphic consts *) []
           (* Trait polymorphic types *) []
           Self
-          (* Instance *) [ ("description", InstanceField.Method description) ].
+          (* Instance *) [].
     End Impl_core_error_Error_for_core_str_error_ParseBoolError.
   End error.
 End str.

@@ -87,6 +87,18 @@ Module cmp.
   Axiom IsDiscriminant_Ordering_Equal : M.IsDiscriminant "core::cmp::Ordering::Equal" 0.
   Axiom IsDiscriminant_Ordering_Greater : M.IsDiscriminant "core::cmp::Ordering::Greater" 1.
   
+  Module Impl_core_clone_TrivialClone_for_core_cmp_Ordering.
+    Definition Self : Ty.t := Ty.path "core::cmp::Ordering".
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "core::clone::TrivialClone"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        Self
+        (* Instance *) [].
+  End Impl_core_clone_TrivialClone_for_core_cmp_Ordering.
+  
   Module Impl_core_clone_Clone_for_core_cmp_Ordering.
     Definition Self : Ty.t := Ty.path "core::cmp::Ordering".
     
@@ -109,84 +121,6 @@ Module cmp.
         Self
         (* Instance *) [ ("clone", InstanceField.Method clone) ].
   End Impl_core_clone_Clone_for_core_cmp_Ordering.
-  
-  Module Impl_core_marker_Copy_for_core_cmp_Ordering.
-    Definition Self : Ty.t := Ty.path "core::cmp::Ordering".
-    
-    Axiom Implements :
-      M.IsTraitInstance
-        "core::marker::Copy"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        Self
-        (* Instance *) [].
-  End Impl_core_marker_Copy_for_core_cmp_Ordering.
-  
-  Module Impl_core_marker_StructuralPartialEq_for_core_cmp_Ordering.
-    Definition Self : Ty.t := Ty.path "core::cmp::Ordering".
-    
-    Axiom Implements :
-      M.IsTraitInstance
-        "core::marker::StructuralPartialEq"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        Self
-        (* Instance *) [].
-  End Impl_core_marker_StructuralPartialEq_for_core_cmp_Ordering.
-  
-  Module Impl_core_cmp_PartialEq_core_cmp_Ordering_for_core_cmp_Ordering.
-    Definition Self : Ty.t := Ty.path "core::cmp::Ordering".
-    
-    (* PartialEq *)
-    Definition eq (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      match ε, τ, α with
-      | [], [], [ self; other ] =>
-        ltac:(M.monadic
-          (let self :=
-            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "core::cmp::Ordering" ], self |) in
-          let other :=
-            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "core::cmp::Ordering" ], other |) in
-          M.read (|
-            let~ __self_discr : Ty.path "i8" :=
-              M.call_closure (|
-                Ty.path "i8",
-                M.get_function (|
-                  "core::intrinsics::discriminant_value",
-                  [],
-                  [ Ty.path "core::cmp::Ordering" ]
-                |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-              |) in
-            let~ __arg1_discr : Ty.path "i8" :=
-              M.call_closure (|
-                Ty.path "i8",
-                M.get_function (|
-                  "core::intrinsics::discriminant_value",
-                  [],
-                  [ Ty.path "core::cmp::Ordering" ]
-                |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
-              |) in
-            M.alloc (|
-              Ty.path "bool",
-              M.call_closure (|
-                Ty.path "bool",
-                BinOp.eq,
-                [ M.read (| __self_discr |); M.read (| __arg1_discr |) ]
-              |)
-            |)
-          |)))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Axiom Implements :
-      M.IsTraitInstance
-        "core::cmp::PartialEq"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) [ Ty.path "core::cmp::Ordering" ]
-        Self
-        (* Instance *) [ ("eq", InstanceField.Method eq) ].
-  End Impl_core_cmp_PartialEq_core_cmp_Ordering_for_core_cmp_Ordering.
   
   Module Impl_core_cmp_Eq_for_core_cmp_Ordering.
     Definition Self : Ty.t := Ty.path "core::cmp::Ordering".
@@ -350,6 +284,84 @@ Module cmp.
         (* Instance *) [ ("cmp", InstanceField.Method cmp) ].
   End Impl_core_cmp_Ord_for_core_cmp_Ordering.
   
+  Module Impl_core_marker_StructuralPartialEq_for_core_cmp_Ordering.
+    Definition Self : Ty.t := Ty.path "core::cmp::Ordering".
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "core::marker::StructuralPartialEq"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        Self
+        (* Instance *) [].
+  End Impl_core_marker_StructuralPartialEq_for_core_cmp_Ordering.
+  
+  Module Impl_core_cmp_PartialEq_core_cmp_Ordering_for_core_cmp_Ordering.
+    Definition Self : Ty.t := Ty.path "core::cmp::Ordering".
+    
+    (* PartialEq *)
+    Definition eq (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [], [ self; other ] =>
+        ltac:(M.monadic
+          (let self :=
+            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "core::cmp::Ordering" ], self |) in
+          let other :=
+            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "core::cmp::Ordering" ], other |) in
+          M.read (|
+            let~ __self_discr : Ty.path "i8" :=
+              M.call_closure (|
+                Ty.path "i8",
+                M.get_function (|
+                  "core::intrinsics::discriminant_value",
+                  [],
+                  [ Ty.path "core::cmp::Ordering" ]
+                |),
+                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+              |) in
+            let~ __arg1_discr : Ty.path "i8" :=
+              M.call_closure (|
+                Ty.path "i8",
+                M.get_function (|
+                  "core::intrinsics::discriminant_value",
+                  [],
+                  [ Ty.path "core::cmp::Ordering" ]
+                |),
+                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+              |) in
+            M.alloc (|
+              Ty.path "bool",
+              M.call_closure (|
+                Ty.path "bool",
+                BinOp.eq,
+                [ M.read (| __self_discr |); M.read (| __arg1_discr |) ]
+              |)
+            |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "core::cmp::PartialEq"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) [ Ty.path "core::cmp::Ordering" ]
+        Self
+        (* Instance *) [ ("eq", InstanceField.Method eq) ].
+  End Impl_core_cmp_PartialEq_core_cmp_Ordering_for_core_cmp_Ordering.
+  
+  Module Impl_core_marker_Copy_for_core_cmp_Ordering.
+    Definition Self : Ty.t := Ty.path "core::cmp::Ordering".
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "core::marker::Copy"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        Self
+        (* Instance *) [].
+  End Impl_core_marker_Copy_for_core_cmp_Ordering.
+  
   Module Impl_core_fmt_Debug_for_core_cmp_Ordering.
     Definition Self : Ty.t := Ty.path "core::cmp::Ordering".
     
@@ -466,8 +478,39 @@ Module cmp.
     Definition Self : Ty.t := Ty.path "core::cmp::Ordering".
     
     (*
+        const fn as_raw(self) -> i8 {
+            // FIXME(const-hack): just use `PartialOrd` against `Equal` once that's const
+            crate::intrinsics::discriminant_value(&self)
+        }
+    *)
+    Definition as_raw (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [], [ self ] =>
+        ltac:(M.monadic
+          (let self := M.alloc (| Ty.path "core::cmp::Ordering", self |) in
+          M.call_closure (|
+            Ty.path "i8",
+            M.get_function (|
+              "core::intrinsics::discriminant_value",
+              [],
+              [ Ty.path "core::cmp::Ordering" ]
+            |),
+            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.borrow (| Pointer.Kind.Ref, self |) |) |) ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_as_raw : M.IsAssociatedFunction.C Self "as_raw" as_raw.
+    Admitted.
+    Global Typeclasses Opaque as_raw.
+    
+    (*
         pub const fn is_eq(self) -> bool {
-            matches!(self, Equal)
+            // All the `is_*` methods are implemented as comparisons against zero
+            // to follow how clang's libcxx implements their equivalents in
+            // <https://github.com/llvm/llvm-project/blob/60486292b79885b7800b082754153202bef5b1f0/libcxx/include/__compare/is_eq.h#L23-L28>
+    
+            self.as_raw() == 0
         }
     *)
     Definition is_eq (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -475,15 +518,16 @@ Module cmp.
       | [], [], [ self ] =>
         ltac:(M.monadic
           (let self := M.alloc (| Ty.path "core::cmp::Ordering", self |) in
-          M.match_operator (|
+          M.call_closure (|
             Ty.path "bool",
-            self,
+            BinOp.eq,
             [
-              fun γ =>
-                ltac:(M.monadic
-                  (let _ := M.is_struct_tuple (| γ, "core::cmp::Ordering::Equal" |) in
-                  Value.Bool true));
-              fun γ => ltac:(M.monadic (Value.Bool false))
+              M.call_closure (|
+                Ty.path "i8",
+                M.get_associated_function (| Ty.path "core::cmp::Ordering", "as_raw", [], [] |),
+                [ M.read (| self |) ]
+              |);
+              Value.Integer IntegerKind.I8 0
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -495,7 +539,7 @@ Module cmp.
     
     (*
         pub const fn is_ne(self) -> bool {
-            !matches!(self, Equal)
+            self.as_raw() != 0
         }
     *)
     Definition is_ne (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -505,19 +549,14 @@ Module cmp.
           (let self := M.alloc (| Ty.path "core::cmp::Ordering", self |) in
           M.call_closure (|
             Ty.path "bool",
-            UnOp.not,
+            BinOp.ne,
             [
-              M.match_operator (|
-                Ty.path "bool",
-                self,
-                [
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let _ := M.is_struct_tuple (| γ, "core::cmp::Ordering::Equal" |) in
-                      Value.Bool true));
-                  fun γ => ltac:(M.monadic (Value.Bool false))
-                ]
-              |)
+              M.call_closure (|
+                Ty.path "i8",
+                M.get_associated_function (| Ty.path "core::cmp::Ordering", "as_raw", [], [] |),
+                [ M.read (| self |) ]
+              |);
+              Value.Integer IntegerKind.I8 0
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -529,7 +568,7 @@ Module cmp.
     
     (*
         pub const fn is_lt(self) -> bool {
-            matches!(self, Less)
+            self.as_raw() < 0
         }
     *)
     Definition is_lt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -537,15 +576,16 @@ Module cmp.
       | [], [], [ self ] =>
         ltac:(M.monadic
           (let self := M.alloc (| Ty.path "core::cmp::Ordering", self |) in
-          M.match_operator (|
+          M.call_closure (|
             Ty.path "bool",
-            self,
+            BinOp.lt,
             [
-              fun γ =>
-                ltac:(M.monadic
-                  (let _ := M.is_struct_tuple (| γ, "core::cmp::Ordering::Less" |) in
-                  Value.Bool true));
-              fun γ => ltac:(M.monadic (Value.Bool false))
+              M.call_closure (|
+                Ty.path "i8",
+                M.get_associated_function (| Ty.path "core::cmp::Ordering", "as_raw", [], [] |),
+                [ M.read (| self |) ]
+              |);
+              Value.Integer IntegerKind.I8 0
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -557,7 +597,7 @@ Module cmp.
     
     (*
         pub const fn is_gt(self) -> bool {
-            matches!(self, Greater)
+            self.as_raw() > 0
         }
     *)
     Definition is_gt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -565,15 +605,16 @@ Module cmp.
       | [], [], [ self ] =>
         ltac:(M.monadic
           (let self := M.alloc (| Ty.path "core::cmp::Ordering", self |) in
-          M.match_operator (|
+          M.call_closure (|
             Ty.path "bool",
-            self,
+            BinOp.gt,
             [
-              fun γ =>
-                ltac:(M.monadic
-                  (let _ := M.is_struct_tuple (| γ, "core::cmp::Ordering::Greater" |) in
-                  Value.Bool true));
-              fun γ => ltac:(M.monadic (Value.Bool false))
+              M.call_closure (|
+                Ty.path "i8",
+                M.get_associated_function (| Ty.path "core::cmp::Ordering", "as_raw", [], [] |),
+                [ M.read (| self |) ]
+              |);
+              Value.Integer IntegerKind.I8 0
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -585,7 +626,7 @@ Module cmp.
     
     (*
         pub const fn is_le(self) -> bool {
-            !matches!(self, Greater)
+            self.as_raw() <= 0
         }
     *)
     Definition is_le (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -595,19 +636,14 @@ Module cmp.
           (let self := M.alloc (| Ty.path "core::cmp::Ordering", self |) in
           M.call_closure (|
             Ty.path "bool",
-            UnOp.not,
+            BinOp.le,
             [
-              M.match_operator (|
-                Ty.path "bool",
-                self,
-                [
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let _ := M.is_struct_tuple (| γ, "core::cmp::Ordering::Greater" |) in
-                      Value.Bool true));
-                  fun γ => ltac:(M.monadic (Value.Bool false))
-                ]
-              |)
+              M.call_closure (|
+                Ty.path "i8",
+                M.get_associated_function (| Ty.path "core::cmp::Ordering", "as_raw", [], [] |),
+                [ M.read (| self |) ]
+              |);
+              Value.Integer IntegerKind.I8 0
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -619,7 +655,7 @@ Module cmp.
     
     (*
         pub const fn is_ge(self) -> bool {
-            !matches!(self, Less)
+            self.as_raw() >= 0
         }
     *)
     Definition is_ge (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -629,19 +665,14 @@ Module cmp.
           (let self := M.alloc (| Ty.path "core::cmp::Ordering", self |) in
           M.call_closure (|
             Ty.path "bool",
-            UnOp.not,
+            BinOp.ge,
             [
-              M.match_operator (|
-                Ty.path "bool",
-                self,
-                [
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let _ := M.is_struct_tuple (| γ, "core::cmp::Ordering::Less" |) in
-                      Value.Bool true));
-                  fun γ => ltac:(M.monadic (Value.Bool false))
-                ]
-              |)
+              M.call_closure (|
+                Ty.path "i8",
+                M.get_associated_function (| Ty.path "core::cmp::Ordering", "as_raw", [], [] |),
+                [ M.read (| self |) ]
+              |);
+              Value.Integer IntegerKind.I8 0
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -723,7 +754,10 @@ Module cmp.
     Global Typeclasses Opaque then_.
     
     (*
-        pub fn then_with<F: FnOnce() -> Ordering>(self, f: F) -> Ordering {
+        pub const fn then_with<F>(self, f: F) -> Ordering
+        where
+            F: [const] FnOnce() -> Ordering + [const] Destruct,
+        {
             match self {
                 Equal => f(),
                 _ => self,
@@ -881,6 +915,52 @@ Module cmp.
         [ ("assert_receiver_is_total_eq", InstanceField.Method (assert_receiver_is_total_eq T)) ].
   End Impl_core_cmp_Eq_where_core_cmp_Eq_T_for_core_cmp_Reverse_T.
   
+  Module Impl_core_default_Default_where_core_default_Default_T_for_core_cmp_Reverse_T.
+    Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "core::cmp::Reverse") [] [ T ].
+    
+    (* Default *)
+    Definition default (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      let Self : Ty.t := Self T in
+      match ε, τ, α with
+      | [], [], [] =>
+        ltac:(M.monadic
+          (Value.StructTuple
+            "core::cmp::Reverse"
+            []
+            [ T ]
+            [
+              M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |)
+            ]))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom Implements :
+      forall (T : Ty.t),
+      M.IsTraitInstance
+        "core::default::Default"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self T)
+        (* Instance *) [ ("default", InstanceField.Method (default T)) ].
+  End Impl_core_default_Default_where_core_default_Default_T_for_core_cmp_Reverse_T.
+  
+  Module Impl_core_marker_Copy_where_core_marker_Copy_T_for_core_cmp_Reverse_T.
+    Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "core::cmp::Reverse") [] [ T ].
+    
+    Axiom Implements :
+      forall (T : Ty.t),
+      M.IsTraitInstance
+        "core::marker::Copy"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        (Self T)
+        (* Instance *) [].
+  End Impl_core_marker_Copy_where_core_marker_Copy_T_for_core_cmp_Reverse_T.
+  
   Module Impl_core_fmt_Debug_where_core_fmt_Debug_T_for_core_cmp_Reverse_T.
     Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "core::cmp::Reverse") [] [ T ].
     
@@ -953,52 +1033,6 @@ Module cmp.
         (Self T)
         (* Instance *) [ ("fmt", InstanceField.Method (fmt T)) ].
   End Impl_core_fmt_Debug_where_core_fmt_Debug_T_for_core_cmp_Reverse_T.
-  
-  Module Impl_core_marker_Copy_where_core_marker_Copy_T_for_core_cmp_Reverse_T.
-    Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "core::cmp::Reverse") [] [ T ].
-    
-    Axiom Implements :
-      forall (T : Ty.t),
-      M.IsTraitInstance
-        "core::marker::Copy"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        (Self T)
-        (* Instance *) [].
-  End Impl_core_marker_Copy_where_core_marker_Copy_T_for_core_cmp_Reverse_T.
-  
-  Module Impl_core_default_Default_where_core_default_Default_T_for_core_cmp_Reverse_T.
-    Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "core::cmp::Reverse") [] [ T ].
-    
-    (* Default *)
-    Definition default (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      let Self : Ty.t := Self T in
-      match ε, τ, α with
-      | [], [], [] =>
-        ltac:(M.monadic
-          (Value.StructTuple
-            "core::cmp::Reverse"
-            []
-            [ T ]
-            [
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |)
-            ]))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Axiom Implements :
-      forall (T : Ty.t),
-      M.IsTraitInstance
-        "core::default::Default"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        (Self T)
-        (* Instance *) [ ("default", InstanceField.Method (default T)) ].
-  End Impl_core_default_Default_where_core_default_Default_T_for_core_cmp_Reverse_T.
   
   Module Impl_core_hash_Hash_where_core_hash_Hash_T_for_core_cmp_Reverse_T.
     Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "core::cmp::Reverse") [] [ T ].
@@ -1474,22 +1508,35 @@ Module cmp.
         ltac:(M.monadic
           (let self := M.alloc (| Self, self |) in
           let other := M.alloc (| Self, other |) in
-          M.call_closure (|
+          M.match_operator (|
             Self,
-            M.get_function (|
-              "core::cmp::max_by",
-              [],
-              [
-                Self;
-                Ty.function
-                  [ Ty.apply (Ty.path "&") [] [ Self ]; Ty.apply (Ty.path "&") [] [ Self ] ]
-                  (Ty.path "core::cmp::Ordering")
-              ]
-            |),
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
             [
-              M.read (| self |);
-              M.read (| other |);
-              M.get_trait_method (| "core::cmp::Ord", Self, [], [], "cmp", [], [] |)
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        M.get_trait_method (|
+                          "core::cmp::PartialOrd",
+                          Self,
+                          [],
+                          [ Self ],
+                          "lt",
+                          [],
+                          []
+                        |),
+                        [
+                          M.borrow (| Pointer.Kind.Ref, other |);
+                          M.borrow (| Pointer.Kind.Ref, self |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.read (| self |)));
+              fun γ => ltac:(M.monadic (M.read (| other |)))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1502,22 +1549,35 @@ Module cmp.
         ltac:(M.monadic
           (let self := M.alloc (| Self, self |) in
           let other := M.alloc (| Self, other |) in
-          M.call_closure (|
+          M.match_operator (|
             Self,
-            M.get_function (|
-              "core::cmp::min_by",
-              [],
-              [
-                Self;
-                Ty.function
-                  [ Ty.apply (Ty.path "&") [] [ Self ]; Ty.apply (Ty.path "&") [] [ Self ] ]
-                  (Ty.path "core::cmp::Ordering")
-              ]
-            |),
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
             [
-              M.read (| self |);
-              M.read (| other |);
-              M.get_trait_method (| "core::cmp::Ord", Self, [], [], "cmp", [], [] |)
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        M.get_trait_method (|
+                          "core::cmp::PartialOrd",
+                          Self,
+                          [],
+                          [ Self ],
+                          "lt",
+                          [],
+                          []
+                        |),
+                        [
+                          M.borrow (| Pointer.Kind.Ref, other |);
+                          M.borrow (| Pointer.Kind.Ref, self |)
+                        ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  M.read (| other |)));
+              fun γ => ltac:(M.monadic (M.read (| self |)))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1540,32 +1600,31 @@ Module cmp.
                   fun γ =>
                     ltac:(M.monadic
                       (let γ :=
-                        M.use
-                          (M.alloc (|
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
                             Ty.path "bool",
-                            M.call_closure (|
-                              Ty.path "bool",
-                              UnOp.not,
-                              [
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  M.get_trait_method (|
-                                    "core::cmp::PartialOrd",
-                                    Self,
-                                    [],
-                                    [ Self ],
-                                    "le",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.borrow (| Pointer.Kind.Ref, min |);
-                                    M.borrow (| Pointer.Kind.Ref, max |)
-                                  ]
-                                |)
-                              ]
-                            |)
-                          |)) in
+                            UnOp.not,
+                            [
+                              M.call_closure (|
+                                Ty.path "bool",
+                                M.get_trait_method (|
+                                  "core::cmp::PartialOrd",
+                                  Self,
+                                  [],
+                                  [ Self ],
+                                  "le",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.borrow (| Pointer.Kind.Ref, min |);
+                                  M.borrow (| Pointer.Kind.Ref, max |)
+                                ]
+                              |)
+                            ]
+                          |)
+                        |) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       M.never_to_any (|
                         M.call_closure (|
@@ -1586,26 +1645,25 @@ Module cmp.
                   fun γ =>
                     ltac:(M.monadic
                       (let γ :=
-                        M.use
-                          (M.alloc (|
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
                             Ty.path "bool",
-                            M.call_closure (|
-                              Ty.path "bool",
-                              M.get_trait_method (|
-                                "core::cmp::PartialOrd",
-                                Self,
-                                [],
-                                [ Self ],
-                                "lt",
-                                [],
-                                []
-                              |),
-                              [
-                                M.borrow (| Pointer.Kind.Ref, self |);
-                                M.borrow (| Pointer.Kind.Ref, min |)
-                              ]
-                            |)
-                          |)) in
+                            M.get_trait_method (|
+                              "core::cmp::PartialOrd",
+                              Self,
+                              [],
+                              [ Self ],
+                              "lt",
+                              [],
+                              []
+                            |),
+                            [
+                              M.borrow (| Pointer.Kind.Ref, self |);
+                              M.borrow (| Pointer.Kind.Ref, min |)
+                            ]
+                          |)
+                        |) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       M.read (| min |)));
                   fun γ =>
@@ -1617,26 +1675,25 @@ Module cmp.
                           fun γ =>
                             ltac:(M.monadic
                               (let γ :=
-                                M.use
-                                  (M.alloc (|
+                                M.alloc (|
+                                  Ty.path "bool",
+                                  M.call_closure (|
                                     Ty.path "bool",
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      M.get_trait_method (|
-                                        "core::cmp::PartialOrd",
-                                        Self,
-                                        [],
-                                        [ Self ],
-                                        "gt",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (| Pointer.Kind.Ref, self |);
-                                        M.borrow (| Pointer.Kind.Ref, max |)
-                                      ]
-                                    |)
-                                  |)) in
+                                    M.get_trait_method (|
+                                      "core::cmp::PartialOrd",
+                                      Self,
+                                      [],
+                                      [ Self ],
+                                      "gt",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (| Pointer.Kind.Ref, self |);
+                                      M.borrow (| Pointer.Kind.Ref, max |)
+                                    ]
+                                  |)
+                                |) in
                               let _ :=
                                 is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                               M.read (| max |)));
@@ -1661,10 +1718,15 @@ Module cmp.
         ltac:(M.monadic
           (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Self ], self |) in
           let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Rhs ], other |) in
-          M.match_operator (|
+          M.call_closure (|
             Ty.path "bool",
-            M.alloc (|
+            M.get_associated_function (|
               Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "core::cmp::Ordering" ],
+              "is_some_and",
+              [],
+              [ Ty.function [ Ty.path "core::cmp::Ordering" ] (Ty.path "bool") ]
+            |),
+            [
               M.call_closure (|
                 Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "core::cmp::Ordering" ],
                 M.get_trait_method (|
@@ -1680,16 +1742,8 @@ Module cmp.
                   M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
                   M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |)
                 ]
-              |)
-            |),
-            [
-              fun γ =>
-                ltac:(M.monadic
-                  (let γ0_0 :=
-                    M.SubPointer.get_struct_tuple_field (| γ, "core::option::Option::Some", 0 |) in
-                  let _ := M.is_struct_tuple (| γ0_0, "core::cmp::Ordering::Less" |) in
-                  Value.Bool true));
-              fun γ => ltac:(M.monadic (Value.Bool false))
+              |);
+              M.get_associated_function (| Ty.path "core::cmp::Ordering", "is_lt", [], [] |)
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1704,10 +1758,15 @@ Module cmp.
         ltac:(M.monadic
           (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Self ], self |) in
           let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Rhs ], other |) in
-          M.match_operator (|
+          M.call_closure (|
             Ty.path "bool",
-            M.alloc (|
+            M.get_associated_function (|
               Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "core::cmp::Ordering" ],
+              "is_some_and",
+              [],
+              [ Ty.function [ Ty.path "core::cmp::Ordering" ] (Ty.path "bool") ]
+            |),
+            [
               M.call_closure (|
                 Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "core::cmp::Ordering" ],
                 M.get_trait_method (|
@@ -1723,33 +1782,8 @@ Module cmp.
                   M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
                   M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |)
                 ]
-              |)
-            |),
-            [
-              fun γ =>
-                ltac:(M.monadic
-                  (let γ0_0 :=
-                    M.SubPointer.get_struct_tuple_field (| γ, "core::option::Option::Some", 0 |) in
-                  M.find_or_pattern (Ty.tuple []) (|
-                    γ0_0,
-                    [
-                      fun γ =>
-                        ltac:(M.monadic
-                          (let _ := M.is_struct_tuple (| γ, "core::cmp::Ordering::Less" |) in
-                          Value.Tuple []));
-                      fun γ =>
-                        ltac:(M.monadic
-                          (let _ := M.is_struct_tuple (| γ, "core::cmp::Ordering::Equal" |) in
-                          Value.Tuple []))
-                    ],
-                    fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [] => ltac:(M.monadic (Value.Bool true))
-                        | _ => M.impossible "wrong number of arguments"
-                        end)
-                  |)));
-              fun γ => ltac:(M.monadic (Value.Bool false))
+              |);
+              M.get_associated_function (| Ty.path "core::cmp::Ordering", "is_le", [], [] |)
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1764,10 +1798,15 @@ Module cmp.
         ltac:(M.monadic
           (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Self ], self |) in
           let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Rhs ], other |) in
-          M.match_operator (|
+          M.call_closure (|
             Ty.path "bool",
-            M.alloc (|
+            M.get_associated_function (|
               Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "core::cmp::Ordering" ],
+              "is_some_and",
+              [],
+              [ Ty.function [ Ty.path "core::cmp::Ordering" ] (Ty.path "bool") ]
+            |),
+            [
               M.call_closure (|
                 Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "core::cmp::Ordering" ],
                 M.get_trait_method (|
@@ -1783,16 +1822,8 @@ Module cmp.
                   M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
                   M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |)
                 ]
-              |)
-            |),
-            [
-              fun γ =>
-                ltac:(M.monadic
-                  (let γ0_0 :=
-                    M.SubPointer.get_struct_tuple_field (| γ, "core::option::Option::Some", 0 |) in
-                  let _ := M.is_struct_tuple (| γ0_0, "core::cmp::Ordering::Greater" |) in
-                  Value.Bool true));
-              fun γ => ltac:(M.monadic (Value.Bool false))
+              |);
+              M.get_associated_function (| Ty.path "core::cmp::Ordering", "is_gt", [], [] |)
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1807,10 +1838,15 @@ Module cmp.
         ltac:(M.monadic
           (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Self ], self |) in
           let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Rhs ], other |) in
-          M.match_operator (|
+          M.call_closure (|
             Ty.path "bool",
-            M.alloc (|
+            M.get_associated_function (|
               Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "core::cmp::Ordering" ],
+              "is_some_and",
+              [],
+              [ Ty.function [ Ty.path "core::cmp::Ordering" ] (Ty.path "bool") ]
+            |),
+            [
               M.call_closure (|
                 Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "core::cmp::Ordering" ],
                 M.get_trait_method (|
@@ -1826,33 +1862,8 @@ Module cmp.
                   M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
                   M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |)
                 ]
-              |)
-            |),
-            [
-              fun γ =>
-                ltac:(M.monadic
-                  (let γ0_0 :=
-                    M.SubPointer.get_struct_tuple_field (| γ, "core::option::Option::Some", 0 |) in
-                  M.find_or_pattern (Ty.tuple []) (|
-                    γ0_0,
-                    [
-                      fun γ =>
-                        ltac:(M.monadic
-                          (let _ := M.is_struct_tuple (| γ, "core::cmp::Ordering::Greater" |) in
-                          Value.Tuple []));
-                      fun γ =>
-                        ltac:(M.monadic
-                          (let _ := M.is_struct_tuple (| γ, "core::cmp::Ordering::Equal" |) in
-                          Value.Tuple []))
-                    ],
-                    fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [] => ltac:(M.monadic (Value.Bool true))
-                        | _ => M.impossible "wrong number of arguments"
-                        end)
-                  |)));
-              fun γ => ltac:(M.monadic (Value.Bool false))
+              |);
+              M.get_associated_function (| Ty.path "core::cmp::Ordering", "is_ge", [], [] |)
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1861,10 +1872,241 @@ Module cmp.
     Axiom ProvidedMethod_ge :
       forall (Rhs : Ty.t),
       M.IsProvidedMethod "core::cmp::PartialOrd" "ge" (ge Rhs).
+    Definition __chaining_lt
+        (Rhs Self : Ty.t)
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      match ε, τ, α with
+      | [], [], [ self; other ] =>
+        ltac:(M.monadic
+          (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Self ], self |) in
+          let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Rhs ], other |) in
+          M.call_closure (|
+            Ty.apply
+              (Ty.path "core::ops::control_flow::ControlFlow")
+              []
+              [ Ty.path "bool"; Ty.tuple [] ],
+            M.get_function (|
+              "core::cmp::default_chaining_impl",
+              [],
+              [ Self; Rhs; Ty.function [ Ty.path "core::cmp::Ordering" ] (Ty.path "bool") ]
+            |),
+            [
+              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
+              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |);
+              M.get_associated_function (| Ty.path "core::cmp::Ordering", "is_lt", [], [] |)
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom ProvidedMethod___chaining_lt :
+      forall (Rhs : Ty.t),
+      M.IsProvidedMethod "core::cmp::PartialOrd" "__chaining_lt" (__chaining_lt Rhs).
+    Definition __chaining_le
+        (Rhs Self : Ty.t)
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      match ε, τ, α with
+      | [], [], [ self; other ] =>
+        ltac:(M.monadic
+          (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Self ], self |) in
+          let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Rhs ], other |) in
+          M.call_closure (|
+            Ty.apply
+              (Ty.path "core::ops::control_flow::ControlFlow")
+              []
+              [ Ty.path "bool"; Ty.tuple [] ],
+            M.get_function (|
+              "core::cmp::default_chaining_impl",
+              [],
+              [ Self; Rhs; Ty.function [ Ty.path "core::cmp::Ordering" ] (Ty.path "bool") ]
+            |),
+            [
+              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
+              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |);
+              M.get_associated_function (| Ty.path "core::cmp::Ordering", "is_le", [], [] |)
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom ProvidedMethod___chaining_le :
+      forall (Rhs : Ty.t),
+      M.IsProvidedMethod "core::cmp::PartialOrd" "__chaining_le" (__chaining_le Rhs).
+    Definition __chaining_gt
+        (Rhs Self : Ty.t)
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      match ε, τ, α with
+      | [], [], [ self; other ] =>
+        ltac:(M.monadic
+          (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Self ], self |) in
+          let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Rhs ], other |) in
+          M.call_closure (|
+            Ty.apply
+              (Ty.path "core::ops::control_flow::ControlFlow")
+              []
+              [ Ty.path "bool"; Ty.tuple [] ],
+            M.get_function (|
+              "core::cmp::default_chaining_impl",
+              [],
+              [ Self; Rhs; Ty.function [ Ty.path "core::cmp::Ordering" ] (Ty.path "bool") ]
+            |),
+            [
+              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
+              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |);
+              M.get_associated_function (| Ty.path "core::cmp::Ordering", "is_gt", [], [] |)
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom ProvidedMethod___chaining_gt :
+      forall (Rhs : Ty.t),
+      M.IsProvidedMethod "core::cmp::PartialOrd" "__chaining_gt" (__chaining_gt Rhs).
+    Definition __chaining_ge
+        (Rhs Self : Ty.t)
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      match ε, τ, α with
+      | [], [], [ self; other ] =>
+        ltac:(M.monadic
+          (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Self ], self |) in
+          let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Rhs ], other |) in
+          M.call_closure (|
+            Ty.apply
+              (Ty.path "core::ops::control_flow::ControlFlow")
+              []
+              [ Ty.path "bool"; Ty.tuple [] ],
+            M.get_function (|
+              "core::cmp::default_chaining_impl",
+              [],
+              [ Self; Rhs; Ty.function [ Ty.path "core::cmp::Ordering" ] (Ty.path "bool") ]
+            |),
+            [
+              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
+              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |);
+              M.get_associated_function (| Ty.path "core::cmp::Ordering", "is_ge", [], [] |)
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Axiom ProvidedMethod___chaining_ge :
+      forall (Rhs : Ty.t),
+      M.IsProvidedMethod "core::cmp::PartialOrd" "__chaining_ge" (__chaining_ge Rhs).
   End PartialOrd.
   
   (*
-  pub fn min<T: Ord>(v1: T, v2: T) -> T {
+  const fn default_chaining_impl<T, U>(
+      lhs: &T,
+      rhs: &U,
+      p: impl [const] FnOnce(Ordering) -> bool + [const] Destruct,
+  ) -> ControlFlow<bool>
+  where
+      T: [const] PartialOrd<U> + PointeeSized,
+      U: PointeeSized,
+  {
+      // It's important that this only call `partial_cmp` once, not call `eq` then
+      // one of the relational operators.  We don't want to `bcmp`-then-`memcp` a
+      // `String`, for example, or similarly for other data structures (#108157).
+      match <T as PartialOrd<U>>::partial_cmp(lhs, rhs) {
+          Some(Equal) => ControlFlow::Continue(()),
+          Some(c) => ControlFlow::Break(p(c)),
+          None => ControlFlow::Break(false),
+      }
+  }
+  *)
+  Definition default_chaining_impl (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    match ε, τ, α with
+    | [],
+        [ T; U; impl__const__FnOnce_Ordering__arrow_bool__plus___const__Destruct ],
+        [ lhs; rhs; p ] =>
+      ltac:(M.monadic
+        (let lhs := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], lhs |) in
+        let rhs := M.alloc (| Ty.apply (Ty.path "&") [] [ U ], rhs |) in
+        let p :=
+          M.alloc (| impl__const__FnOnce_Ordering__arrow_bool__plus___const__Destruct, p |) in
+        M.match_operator (|
+          Ty.apply
+            (Ty.path "core::ops::control_flow::ControlFlow")
+            []
+            [ Ty.path "bool"; Ty.tuple [] ],
+          M.alloc (|
+            Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "core::cmp::Ordering" ],
+            M.call_closure (|
+              Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "core::cmp::Ordering" ],
+              M.get_trait_method (| "core::cmp::PartialOrd", T, [], [ U ], "partial_cmp", [], [] |),
+              [
+                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| lhs |) |) |);
+                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| rhs |) |) |)
+              ]
+            |)
+          |),
+          [
+            fun γ =>
+              ltac:(M.monadic
+                (let γ0_0 :=
+                  M.SubPointer.get_struct_tuple_field (| γ, "core::option::Option::Some", 0 |) in
+                let _ := M.is_struct_tuple (| γ0_0, "core::cmp::Ordering::Equal" |) in
+                Value.StructTuple
+                  "core::ops::control_flow::ControlFlow::Continue"
+                  []
+                  [ Ty.path "bool"; Ty.tuple [] ]
+                  [ Value.Tuple [] ]));
+            fun γ =>
+              ltac:(M.monadic
+                (let γ0_0 :=
+                  M.SubPointer.get_struct_tuple_field (| γ, "core::option::Option::Some", 0 |) in
+                let c := M.copy (| Ty.path "core::cmp::Ordering", γ0_0 |) in
+                Value.StructTuple
+                  "core::ops::control_flow::ControlFlow::Break"
+                  []
+                  [ Ty.path "bool"; Ty.tuple [] ]
+                  [
+                    M.call_closure (|
+                      Ty.path "bool",
+                      M.get_trait_method (|
+                        "core::ops::function::FnOnce",
+                        impl__const__FnOnce_Ordering__arrow_bool__plus___const__Destruct,
+                        [],
+                        [ Ty.tuple [ Ty.path "core::cmp::Ordering" ] ],
+                        "call_once",
+                        [],
+                        []
+                      |),
+                      [ M.read (| p |); Value.Tuple [ M.read (| c |) ] ]
+                    |)
+                  ]));
+            fun γ =>
+              ltac:(M.monadic
+                (let _ := M.is_struct_tuple (| γ, "core::option::Option::None" |) in
+                Value.StructTuple
+                  "core::ops::control_flow::ControlFlow::Break"
+                  []
+                  [ Ty.path "bool"; Ty.tuple [] ]
+                  [ Value.Bool false ]))
+          ]
+        |)))
+    | _, _, _ => M.impossible "wrong number of arguments"
+    end.
+  
+  Global Instance Instance_IsFunction_default_chaining_impl :
+    M.IsFunction.C "core::cmp::default_chaining_impl" default_chaining_impl.
+  Admitted.
+  Global Typeclasses Opaque default_chaining_impl.
+  
+  (*
+  pub const fn min<T: [const] Ord + [const] Destruct>(v1: T, v2: T) -> T {
       v1.min(v2)
   }
   *)
@@ -1887,11 +2129,12 @@ Module cmp.
   Global Typeclasses Opaque min.
   
   (*
-  pub fn min_by<T, F: FnOnce(&T, &T) -> Ordering>(v1: T, v2: T, compare: F) -> T {
-      match compare(&v1, &v2) {
-          Ordering::Less | Ordering::Equal => v1,
-          Ordering::Greater => v2,
-      }
+  pub const fn min_by<T: [const] Destruct, F: [const] FnOnce(&T, &T) -> Ordering>(
+      v1: T,
+      v2: T,
+      compare: F,
+  ) -> T {
+      if compare(&v1, &v2).is_le() { v1 } else { v2 }
   }
   *)
   Definition min_by (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -1903,61 +2146,57 @@ Module cmp.
         let compare := M.alloc (| F, compare |) in
         M.match_operator (|
           T,
-          M.alloc (|
-            Ty.path "core::cmp::Ordering",
-            M.call_closure (|
-              Ty.path "core::cmp::Ordering",
-              M.get_trait_method (|
-                "core::ops::function::FnOnce",
-                F,
-                [],
-                [ Ty.tuple [ Ty.apply (Ty.path "&") [] [ T ]; Ty.apply (Ty.path "&") [] [ T ] ] ],
-                "call_once",
-                [],
-                []
-              |),
-              [
-                M.read (| compare |);
-                Value.Tuple
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| M.borrow (| Pointer.Kind.Ref, v1 |) |)
-                    |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| M.borrow (| Pointer.Kind.Ref, v2 |) |)
-                    |)
-                  ]
-              ]
-            |)
-          |),
+          M.alloc (| Ty.tuple [], Value.Tuple [] |),
           [
             fun γ =>
               ltac:(M.monadic
-                (M.find_or_pattern (Ty.tuple []) (|
-                  γ,
-                  [
-                    fun γ =>
-                      ltac:(M.monadic
-                        (let _ := M.is_struct_tuple (| γ, "core::cmp::Ordering::Less" |) in
-                        Value.Tuple []));
-                    fun γ =>
-                      ltac:(M.monadic
-                        (let _ := M.is_struct_tuple (| γ, "core::cmp::Ordering::Equal" |) in
-                        Value.Tuple []))
-                  ],
-                  fun γ =>
-                    ltac:(M.monadic
-                      match γ with
-                      | [] => ltac:(M.monadic (M.read (| v1 |)))
-                      | _ => M.impossible "wrong number of arguments"
-                      end)
-                |)));
-            fun γ =>
-              ltac:(M.monadic
-                (let _ := M.is_struct_tuple (| γ, "core::cmp::Ordering::Greater" |) in
-                M.read (| v2 |)))
+                (let γ :=
+                  M.alloc (|
+                    Ty.path "bool",
+                    M.call_closure (|
+                      Ty.path "bool",
+                      M.get_associated_function (|
+                        Ty.path "core::cmp::Ordering",
+                        "is_le",
+                        [],
+                        []
+                      |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::cmp::Ordering",
+                          M.get_trait_method (|
+                            "core::ops::function::FnOnce",
+                            F,
+                            [],
+                            [
+                              Ty.tuple
+                                [ Ty.apply (Ty.path "&") [] [ T ]; Ty.apply (Ty.path "&") [] [ T ] ]
+                            ],
+                            "call_once",
+                            [],
+                            []
+                          |),
+                          [
+                            M.read (| compare |);
+                            Value.Tuple
+                              [
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (| M.borrow (| Pointer.Kind.Ref, v1 |) |)
+                                |);
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (| M.borrow (| Pointer.Kind.Ref, v2 |) |)
+                                |)
+                              ]
+                          ]
+                        |)
+                      ]
+                    |)
+                  |) in
+                let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                M.read (| v1 |)));
+            fun γ => ltac:(M.monadic (M.read (| v2 |)))
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -1968,8 +2207,13 @@ Module cmp.
   Global Typeclasses Opaque min_by.
   
   (*
-  pub fn min_by_key<T, F: FnMut(&T) -> K, K: Ord>(v1: T, v2: T, mut f: F) -> T {
-      min_by(v1, v2, |v1, v2| f(v1).cmp(&f(v2)))
+  pub const fn min_by_key<T, F, K>(v1: T, v2: T, mut f: F) -> T
+  where
+      T: [const] Destruct,
+      F: [const] FnMut(&T) -> K + [const] Destruct,
+      K: [const] Ord + [const] Destruct,
+  {
+      if f(&v2) < f(&v1) { v2 } else { v1 }
   }
   *)
   Definition min_by_key (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -1979,123 +2223,81 @@ Module cmp.
         (let v1 := M.alloc (| T, v1 |) in
         let v2 := M.alloc (| T, v2 |) in
         let f := M.alloc (| F, f |) in
-        M.call_closure (|
+        M.match_operator (|
           T,
-          M.get_function (|
-            "core::cmp::min_by",
-            [],
-            [
-              T;
-              Ty.function
-                [ Ty.apply (Ty.path "&") [] [ T ]; Ty.apply (Ty.path "&") [] [ T ] ]
-                (Ty.path "core::cmp::Ordering")
-            ]
-          |),
+          M.alloc (| Ty.tuple [], Value.Tuple [] |),
           [
-            M.read (| v1 |);
-            M.read (| v2 |);
-            M.closure
-              (fun γ =>
-                ltac:(M.monadic
-                  match γ with
-                  | [ α0; α1 ] =>
-                    ltac:(M.monadic
-                      (M.match_operator (|
-                        Ty.path "core::cmp::Ordering",
-                        M.alloc (| Ty.apply (Ty.path "&") [] [ T ], α0 |),
-                        [
-                          fun γ =>
-                            ltac:(M.monadic
-                              (let v1 := M.copy (| Ty.apply (Ty.path "&") [] [ T ], γ |) in
-                              M.match_operator (|
-                                Ty.path "core::cmp::Ordering",
-                                M.alloc (| Ty.apply (Ty.path "&") [] [ T ], α1 |),
-                                [
-                                  fun γ =>
-                                    ltac:(M.monadic
-                                      (let v2 := M.copy (| Ty.apply (Ty.path "&") [] [ T ], γ |) in
-                                      M.call_closure (|
-                                        Ty.path "core::cmp::Ordering",
-                                        M.get_trait_method (|
-                                          "core::cmp::Ord",
-                                          K,
-                                          [],
-                                          [],
-                                          "cmp",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.alloc (|
-                                              K,
-                                              M.call_closure (|
-                                                K,
-                                                M.get_trait_method (|
-                                                  "core::ops::function::FnMut",
-                                                  F,
-                                                  [],
-                                                  [ Ty.tuple [ Ty.apply (Ty.path "&") [] [ T ] ] ],
-                                                  "call_mut",
-                                                  [],
-                                                  []
-                                                |),
-                                                [
-                                                  M.borrow (| Pointer.Kind.MutRef, f |);
-                                                  Value.Tuple
-                                                    [
-                                                      M.borrow (|
-                                                        Pointer.Kind.Ref,
-                                                        M.deref (| M.read (| v1 |) |)
-                                                      |)
-                                                    ]
-                                                ]
-                                              |)
-                                            |)
-                                          |);
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (|
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.alloc (|
-                                                  K,
-                                                  M.call_closure (|
-                                                    K,
-                                                    M.get_trait_method (|
-                                                      "core::ops::function::FnMut",
-                                                      F,
-                                                      [],
-                                                      [ Ty.tuple [ Ty.apply (Ty.path "&") [] [ T ] ]
-                                                      ],
-                                                      "call_mut",
-                                                      [],
-                                                      []
-                                                    |),
-                                                    [
-                                                      M.borrow (| Pointer.Kind.MutRef, f |);
-                                                      Value.Tuple
-                                                        [
-                                                          M.borrow (|
-                                                            Pointer.Kind.Ref,
-                                                            M.deref (| M.read (| v2 |) |)
-                                                          |)
-                                                        ]
-                                                    ]
-                                                  |)
-                                                |)
-                                              |)
-                                            |)
-                                          |)
-                                        ]
-                                      |)))
-                                ]
-                              |)))
-                        ]
-                      |)))
-                  | _ => M.impossible "wrong number of arguments"
-                  end))
+            fun γ =>
+              ltac:(M.monadic
+                (let γ :=
+                  M.alloc (|
+                    Ty.path "bool",
+                    M.call_closure (|
+                      Ty.path "bool",
+                      M.get_trait_method (| "core::cmp::PartialOrd", K, [], [ K ], "lt", [], [] |),
+                      [
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.alloc (|
+                            K,
+                            M.call_closure (|
+                              K,
+                              M.get_trait_method (|
+                                "core::ops::function::FnMut",
+                                F,
+                                [],
+                                [ Ty.tuple [ Ty.apply (Ty.path "&") [] [ T ] ] ],
+                                "call_mut",
+                                [],
+                                []
+                              |),
+                              [
+                                M.borrow (| Pointer.Kind.MutRef, f |);
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.borrow (| Pointer.Kind.Ref, v2 |) |)
+                                    |)
+                                  ]
+                              ]
+                            |)
+                          |)
+                        |);
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.alloc (|
+                            K,
+                            M.call_closure (|
+                              K,
+                              M.get_trait_method (|
+                                "core::ops::function::FnMut",
+                                F,
+                                [],
+                                [ Ty.tuple [ Ty.apply (Ty.path "&") [] [ T ] ] ],
+                                "call_mut",
+                                [],
+                                []
+                              |),
+                              [
+                                M.borrow (| Pointer.Kind.MutRef, f |);
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.borrow (| Pointer.Kind.Ref, v1 |) |)
+                                    |)
+                                  ]
+                              ]
+                            |)
+                          |)
+                        |)
+                      ]
+                    |)
+                  |) in
+                let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                M.read (| v2 |)));
+            fun γ => ltac:(M.monadic (M.read (| v1 |)))
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -2107,7 +2309,7 @@ Module cmp.
   Global Typeclasses Opaque min_by_key.
   
   (*
-  pub fn max<T: Ord>(v1: T, v2: T) -> T {
+  pub const fn max<T: [const] Ord + [const] Destruct>(v1: T, v2: T) -> T {
       v1.max(v2)
   }
   *)
@@ -2130,11 +2332,12 @@ Module cmp.
   Global Typeclasses Opaque max.
   
   (*
-  pub fn max_by<T, F: FnOnce(&T, &T) -> Ordering>(v1: T, v2: T, compare: F) -> T {
-      match compare(&v1, &v2) {
-          Ordering::Less | Ordering::Equal => v2,
-          Ordering::Greater => v1,
-      }
+  pub const fn max_by<T: [const] Destruct, F: [const] FnOnce(&T, &T) -> Ordering>(
+      v1: T,
+      v2: T,
+      compare: F,
+  ) -> T {
+      if compare(&v1, &v2).is_gt() { v1 } else { v2 }
   }
   *)
   Definition max_by (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -2146,61 +2349,57 @@ Module cmp.
         let compare := M.alloc (| F, compare |) in
         M.match_operator (|
           T,
-          M.alloc (|
-            Ty.path "core::cmp::Ordering",
-            M.call_closure (|
-              Ty.path "core::cmp::Ordering",
-              M.get_trait_method (|
-                "core::ops::function::FnOnce",
-                F,
-                [],
-                [ Ty.tuple [ Ty.apply (Ty.path "&") [] [ T ]; Ty.apply (Ty.path "&") [] [ T ] ] ],
-                "call_once",
-                [],
-                []
-              |),
-              [
-                M.read (| compare |);
-                Value.Tuple
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| M.borrow (| Pointer.Kind.Ref, v1 |) |)
-                    |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| M.borrow (| Pointer.Kind.Ref, v2 |) |)
-                    |)
-                  ]
-              ]
-            |)
-          |),
+          M.alloc (| Ty.tuple [], Value.Tuple [] |),
           [
             fun γ =>
               ltac:(M.monadic
-                (M.find_or_pattern (Ty.tuple []) (|
-                  γ,
-                  [
-                    fun γ =>
-                      ltac:(M.monadic
-                        (let _ := M.is_struct_tuple (| γ, "core::cmp::Ordering::Less" |) in
-                        Value.Tuple []));
-                    fun γ =>
-                      ltac:(M.monadic
-                        (let _ := M.is_struct_tuple (| γ, "core::cmp::Ordering::Equal" |) in
-                        Value.Tuple []))
-                  ],
-                  fun γ =>
-                    ltac:(M.monadic
-                      match γ with
-                      | [] => ltac:(M.monadic (M.read (| v2 |)))
-                      | _ => M.impossible "wrong number of arguments"
-                      end)
-                |)));
-            fun γ =>
-              ltac:(M.monadic
-                (let _ := M.is_struct_tuple (| γ, "core::cmp::Ordering::Greater" |) in
-                M.read (| v1 |)))
+                (let γ :=
+                  M.alloc (|
+                    Ty.path "bool",
+                    M.call_closure (|
+                      Ty.path "bool",
+                      M.get_associated_function (|
+                        Ty.path "core::cmp::Ordering",
+                        "is_gt",
+                        [],
+                        []
+                      |),
+                      [
+                        M.call_closure (|
+                          Ty.path "core::cmp::Ordering",
+                          M.get_trait_method (|
+                            "core::ops::function::FnOnce",
+                            F,
+                            [],
+                            [
+                              Ty.tuple
+                                [ Ty.apply (Ty.path "&") [] [ T ]; Ty.apply (Ty.path "&") [] [ T ] ]
+                            ],
+                            "call_once",
+                            [],
+                            []
+                          |),
+                          [
+                            M.read (| compare |);
+                            Value.Tuple
+                              [
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (| M.borrow (| Pointer.Kind.Ref, v1 |) |)
+                                |);
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (| M.borrow (| Pointer.Kind.Ref, v2 |) |)
+                                |)
+                              ]
+                          ]
+                        |)
+                      ]
+                    |)
+                  |) in
+                let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                M.read (| v1 |)));
+            fun γ => ltac:(M.monadic (M.read (| v2 |)))
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -2211,8 +2410,13 @@ Module cmp.
   Global Typeclasses Opaque max_by.
   
   (*
-  pub fn max_by_key<T, F: FnMut(&T) -> K, K: Ord>(v1: T, v2: T, mut f: F) -> T {
-      max_by(v1, v2, |v1, v2| f(v1).cmp(&f(v2)))
+  pub const fn max_by_key<T, F, K>(v1: T, v2: T, mut f: F) -> T
+  where
+      T: [const] Destruct,
+      F: [const] FnMut(&T) -> K + [const] Destruct,
+      K: [const] Ord + [const] Destruct,
+  {
+      if f(&v2) < f(&v1) { v1 } else { v2 }
   }
   *)
   Definition max_by_key (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -2222,123 +2426,81 @@ Module cmp.
         (let v1 := M.alloc (| T, v1 |) in
         let v2 := M.alloc (| T, v2 |) in
         let f := M.alloc (| F, f |) in
-        M.call_closure (|
+        M.match_operator (|
           T,
-          M.get_function (|
-            "core::cmp::max_by",
-            [],
-            [
-              T;
-              Ty.function
-                [ Ty.apply (Ty.path "&") [] [ T ]; Ty.apply (Ty.path "&") [] [ T ] ]
-                (Ty.path "core::cmp::Ordering")
-            ]
-          |),
+          M.alloc (| Ty.tuple [], Value.Tuple [] |),
           [
-            M.read (| v1 |);
-            M.read (| v2 |);
-            M.closure
-              (fun γ =>
-                ltac:(M.monadic
-                  match γ with
-                  | [ α0; α1 ] =>
-                    ltac:(M.monadic
-                      (M.match_operator (|
-                        Ty.path "core::cmp::Ordering",
-                        M.alloc (| Ty.apply (Ty.path "&") [] [ T ], α0 |),
-                        [
-                          fun γ =>
-                            ltac:(M.monadic
-                              (let v1 := M.copy (| Ty.apply (Ty.path "&") [] [ T ], γ |) in
-                              M.match_operator (|
-                                Ty.path "core::cmp::Ordering",
-                                M.alloc (| Ty.apply (Ty.path "&") [] [ T ], α1 |),
-                                [
-                                  fun γ =>
-                                    ltac:(M.monadic
-                                      (let v2 := M.copy (| Ty.apply (Ty.path "&") [] [ T ], γ |) in
-                                      M.call_closure (|
-                                        Ty.path "core::cmp::Ordering",
-                                        M.get_trait_method (|
-                                          "core::cmp::Ord",
-                                          K,
-                                          [],
-                                          [],
-                                          "cmp",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.alloc (|
-                                              K,
-                                              M.call_closure (|
-                                                K,
-                                                M.get_trait_method (|
-                                                  "core::ops::function::FnMut",
-                                                  F,
-                                                  [],
-                                                  [ Ty.tuple [ Ty.apply (Ty.path "&") [] [ T ] ] ],
-                                                  "call_mut",
-                                                  [],
-                                                  []
-                                                |),
-                                                [
-                                                  M.borrow (| Pointer.Kind.MutRef, f |);
-                                                  Value.Tuple
-                                                    [
-                                                      M.borrow (|
-                                                        Pointer.Kind.Ref,
-                                                        M.deref (| M.read (| v1 |) |)
-                                                      |)
-                                                    ]
-                                                ]
-                                              |)
-                                            |)
-                                          |);
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (|
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.alloc (|
-                                                  K,
-                                                  M.call_closure (|
-                                                    K,
-                                                    M.get_trait_method (|
-                                                      "core::ops::function::FnMut",
-                                                      F,
-                                                      [],
-                                                      [ Ty.tuple [ Ty.apply (Ty.path "&") [] [ T ] ]
-                                                      ],
-                                                      "call_mut",
-                                                      [],
-                                                      []
-                                                    |),
-                                                    [
-                                                      M.borrow (| Pointer.Kind.MutRef, f |);
-                                                      Value.Tuple
-                                                        [
-                                                          M.borrow (|
-                                                            Pointer.Kind.Ref,
-                                                            M.deref (| M.read (| v2 |) |)
-                                                          |)
-                                                        ]
-                                                    ]
-                                                  |)
-                                                |)
-                                              |)
-                                            |)
-                                          |)
-                                        ]
-                                      |)))
-                                ]
-                              |)))
-                        ]
-                      |)))
-                  | _ => M.impossible "wrong number of arguments"
-                  end))
+            fun γ =>
+              ltac:(M.monadic
+                (let γ :=
+                  M.alloc (|
+                    Ty.path "bool",
+                    M.call_closure (|
+                      Ty.path "bool",
+                      M.get_trait_method (| "core::cmp::PartialOrd", K, [], [ K ], "lt", [], [] |),
+                      [
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.alloc (|
+                            K,
+                            M.call_closure (|
+                              K,
+                              M.get_trait_method (|
+                                "core::ops::function::FnMut",
+                                F,
+                                [],
+                                [ Ty.tuple [ Ty.apply (Ty.path "&") [] [ T ] ] ],
+                                "call_mut",
+                                [],
+                                []
+                              |),
+                              [
+                                M.borrow (| Pointer.Kind.MutRef, f |);
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.borrow (| Pointer.Kind.Ref, v2 |) |)
+                                    |)
+                                  ]
+                              ]
+                            |)
+                          |)
+                        |);
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.alloc (|
+                            K,
+                            M.call_closure (|
+                              K,
+                              M.get_trait_method (|
+                                "core::ops::function::FnMut",
+                                F,
+                                [],
+                                [ Ty.tuple [ Ty.apply (Ty.path "&") [] [ T ] ] ],
+                                "call_mut",
+                                [],
+                                []
+                              |),
+                              [
+                                M.borrow (| Pointer.Kind.MutRef, f |);
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.borrow (| Pointer.Kind.Ref, v1 |) |)
+                                    |)
+                                  ]
+                              ]
+                            |)
+                          |)
+                        |)
+                      ]
+                    |)
+                  |) in
+                let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                M.read (| v1 |)));
+            fun γ => ltac:(M.monadic (M.read (| v2 |)))
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -2350,11 +2512,11 @@ Module cmp.
   Global Typeclasses Opaque max_by_key.
   
   (*
-  pub fn minmax<T>(v1: T, v2: T) -> [T; 2]
+  pub const fn minmax<T>(v1: T, v2: T) -> [T; 2]
   where
-      T: Ord,
+      T: [const] Ord,
   {
-      if v1 <= v2 { [v1, v2] } else { [v2, v1] }
+      if v2 < v1 { [v2, v1] } else { [v1, v2] }
   }
   *)
   Definition minmax (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -2370,26 +2532,17 @@ Module cmp.
             fun γ =>
               ltac:(M.monadic
                 (let γ :=
-                  M.use
-                    (M.alloc (|
+                  M.alloc (|
+                    Ty.path "bool",
+                    M.call_closure (|
                       Ty.path "bool",
-                      M.call_closure (|
-                        Ty.path "bool",
-                        M.get_trait_method (|
-                          "core::cmp::PartialOrd",
-                          T,
-                          [],
-                          [ T ],
-                          "le",
-                          [],
-                          []
-                        |),
-                        [ M.borrow (| Pointer.Kind.Ref, v1 |); M.borrow (| Pointer.Kind.Ref, v2 |) ]
-                      |)
-                    |)) in
+                      M.get_trait_method (| "core::cmp::PartialOrd", T, [], [ T ], "lt", [], [] |),
+                      [ M.borrow (| Pointer.Kind.Ref, v2 |); M.borrow (| Pointer.Kind.Ref, v1 |) ]
+                    |)
+                  |) in
                 let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                Value.Array [ M.read (| v1 |); M.read (| v2 |) ]));
-            fun γ => ltac:(M.monadic (Value.Array [ M.read (| v2 |); M.read (| v1 |) ]))
+                Value.Array [ M.read (| v2 |); M.read (| v1 |) ]));
+            fun γ => ltac:(M.monadic (Value.Array [ M.read (| v1 |); M.read (| v2 |) ]))
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -2400,9 +2553,9 @@ Module cmp.
   Global Typeclasses Opaque minmax.
   
   (*
-  pub fn minmax_by<T, F>(v1: T, v2: T, compare: F) -> [T; 2]
+  pub const fn minmax_by<T, F>(v1: T, v2: T, compare: F) -> [T; 2]
   where
-      F: FnOnce(&T, &T) -> Ordering,
+      F: [const] FnOnce(&T, &T) -> Ordering,
   {
       if compare(&v1, &v2).is_le() { [v1, v2] } else { [v2, v1] }
   }
@@ -2421,51 +2574,49 @@ Module cmp.
             fun γ =>
               ltac:(M.monadic
                 (let γ :=
-                  M.use
-                    (M.alloc (|
+                  M.alloc (|
+                    Ty.path "bool",
+                    M.call_closure (|
                       Ty.path "bool",
-                      M.call_closure (|
-                        Ty.path "bool",
-                        M.get_associated_function (|
+                      M.get_associated_function (|
+                        Ty.path "core::cmp::Ordering",
+                        "is_le",
+                        [],
+                        []
+                      |),
+                      [
+                        M.call_closure (|
                           Ty.path "core::cmp::Ordering",
-                          "is_le",
-                          [],
-                          []
-                        |),
-                        [
-                          M.call_closure (|
-                            Ty.path "core::cmp::Ordering",
-                            M.get_trait_method (|
-                              "core::ops::function::FnOnce",
-                              F,
-                              [],
-                              [
-                                Ty.tuple
-                                  [ Ty.apply (Ty.path "&") [] [ T ]; Ty.apply (Ty.path "&") [] [ T ]
-                                  ]
-                              ],
-                              "call_once",
-                              [],
-                              []
-                            |),
+                          M.get_trait_method (|
+                            "core::ops::function::FnOnce",
+                            F,
+                            [],
                             [
-                              M.read (| compare |);
-                              Value.Tuple
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (| M.borrow (| Pointer.Kind.Ref, v1 |) |)
-                                  |);
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (| M.borrow (| Pointer.Kind.Ref, v2 |) |)
-                                  |)
-                                ]
-                            ]
-                          |)
-                        ]
-                      |)
-                    |)) in
+                              Ty.tuple
+                                [ Ty.apply (Ty.path "&") [] [ T ]; Ty.apply (Ty.path "&") [] [ T ] ]
+                            ],
+                            "call_once",
+                            [],
+                            []
+                          |),
+                          [
+                            M.read (| compare |);
+                            Value.Tuple
+                              [
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (| M.borrow (| Pointer.Kind.Ref, v1 |) |)
+                                |);
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (| M.borrow (| Pointer.Kind.Ref, v2 |) |)
+                                |)
+                              ]
+                          ]
+                        |)
+                      ]
+                    |)
+                  |) in
                 let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                 Value.Array [ M.read (| v1 |); M.read (| v2 |) ]));
             fun γ => ltac:(M.monadic (Value.Array [ M.read (| v2 |); M.read (| v1 |) ]))
@@ -2479,12 +2630,12 @@ Module cmp.
   Global Typeclasses Opaque minmax_by.
   
   (*
-  pub fn minmax_by_key<T, F, K>(v1: T, v2: T, mut f: F) -> [T; 2]
+  pub const fn minmax_by_key<T, F, K>(v1: T, v2: T, mut f: F) -> [T; 2]
   where
-      F: FnMut(&T) -> K,
-      K: Ord,
+      F: [const] FnMut(&T) -> K + [const] Destruct,
+      K: [const] Ord + [const] Destruct,
   {
-      minmax_by(v1, v2, |v1, v2| f(v1).cmp(&f(v2)))
+      if f(&v2) < f(&v1) { [v2, v1] } else { [v1, v2] }
   }
   *)
   Definition minmax_by_key (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -2494,123 +2645,81 @@ Module cmp.
         (let v1 := M.alloc (| T, v1 |) in
         let v2 := M.alloc (| T, v2 |) in
         let f := M.alloc (| F, f |) in
-        M.call_closure (|
+        M.match_operator (|
           Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 2 ] [ T ],
-          M.get_function (|
-            "core::cmp::minmax_by",
-            [],
-            [
-              T;
-              Ty.function
-                [ Ty.apply (Ty.path "&") [] [ T ]; Ty.apply (Ty.path "&") [] [ T ] ]
-                (Ty.path "core::cmp::Ordering")
-            ]
-          |),
+          M.alloc (| Ty.tuple [], Value.Tuple [] |),
           [
-            M.read (| v1 |);
-            M.read (| v2 |);
-            M.closure
-              (fun γ =>
-                ltac:(M.monadic
-                  match γ with
-                  | [ α0; α1 ] =>
-                    ltac:(M.monadic
-                      (M.match_operator (|
-                        Ty.path "core::cmp::Ordering",
-                        M.alloc (| Ty.apply (Ty.path "&") [] [ T ], α0 |),
-                        [
-                          fun γ =>
-                            ltac:(M.monadic
-                              (let v1 := M.copy (| Ty.apply (Ty.path "&") [] [ T ], γ |) in
-                              M.match_operator (|
-                                Ty.path "core::cmp::Ordering",
-                                M.alloc (| Ty.apply (Ty.path "&") [] [ T ], α1 |),
-                                [
-                                  fun γ =>
-                                    ltac:(M.monadic
-                                      (let v2 := M.copy (| Ty.apply (Ty.path "&") [] [ T ], γ |) in
-                                      M.call_closure (|
-                                        Ty.path "core::cmp::Ordering",
-                                        M.get_trait_method (|
-                                          "core::cmp::Ord",
-                                          K,
-                                          [],
-                                          [],
-                                          "cmp",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.alloc (|
-                                              K,
-                                              M.call_closure (|
-                                                K,
-                                                M.get_trait_method (|
-                                                  "core::ops::function::FnMut",
-                                                  F,
-                                                  [],
-                                                  [ Ty.tuple [ Ty.apply (Ty.path "&") [] [ T ] ] ],
-                                                  "call_mut",
-                                                  [],
-                                                  []
-                                                |),
-                                                [
-                                                  M.borrow (| Pointer.Kind.MutRef, f |);
-                                                  Value.Tuple
-                                                    [
-                                                      M.borrow (|
-                                                        Pointer.Kind.Ref,
-                                                        M.deref (| M.read (| v1 |) |)
-                                                      |)
-                                                    ]
-                                                ]
-                                              |)
-                                            |)
-                                          |);
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (|
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.alloc (|
-                                                  K,
-                                                  M.call_closure (|
-                                                    K,
-                                                    M.get_trait_method (|
-                                                      "core::ops::function::FnMut",
-                                                      F,
-                                                      [],
-                                                      [ Ty.tuple [ Ty.apply (Ty.path "&") [] [ T ] ]
-                                                      ],
-                                                      "call_mut",
-                                                      [],
-                                                      []
-                                                    |),
-                                                    [
-                                                      M.borrow (| Pointer.Kind.MutRef, f |);
-                                                      Value.Tuple
-                                                        [
-                                                          M.borrow (|
-                                                            Pointer.Kind.Ref,
-                                                            M.deref (| M.read (| v2 |) |)
-                                                          |)
-                                                        ]
-                                                    ]
-                                                  |)
-                                                |)
-                                              |)
-                                            |)
-                                          |)
-                                        ]
-                                      |)))
-                                ]
-                              |)))
-                        ]
-                      |)))
-                  | _ => M.impossible "wrong number of arguments"
-                  end))
+            fun γ =>
+              ltac:(M.monadic
+                (let γ :=
+                  M.alloc (|
+                    Ty.path "bool",
+                    M.call_closure (|
+                      Ty.path "bool",
+                      M.get_trait_method (| "core::cmp::PartialOrd", K, [], [ K ], "lt", [], [] |),
+                      [
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.alloc (|
+                            K,
+                            M.call_closure (|
+                              K,
+                              M.get_trait_method (|
+                                "core::ops::function::FnMut",
+                                F,
+                                [],
+                                [ Ty.tuple [ Ty.apply (Ty.path "&") [] [ T ] ] ],
+                                "call_mut",
+                                [],
+                                []
+                              |),
+                              [
+                                M.borrow (| Pointer.Kind.MutRef, f |);
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.borrow (| Pointer.Kind.Ref, v2 |) |)
+                                    |)
+                                  ]
+                              ]
+                            |)
+                          |)
+                        |);
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.alloc (|
+                            K,
+                            M.call_closure (|
+                              K,
+                              M.get_trait_method (|
+                                "core::ops::function::FnMut",
+                                F,
+                                [],
+                                [ Ty.tuple [ Ty.apply (Ty.path "&") [] [ T ] ] ],
+                                "call_mut",
+                                [],
+                                []
+                              |),
+                              [
+                                M.borrow (| Pointer.Kind.MutRef, f |);
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.borrow (| Pointer.Kind.Ref, v1 |) |)
+                                    |)
+                                  ]
+                              ]
+                            |)
+                          |)
+                        |)
+                      ]
+                    |)
+                  |) in
+                let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                Value.Array [ M.read (| v2 |); M.read (| v1 |) ]));
+            fun γ => ltac:(M.monadic (Value.Array [ M.read (| v1 |); M.read (| v2 |) ]))
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -2667,7 +2776,7 @@ Module cmp.
     Module Impl_core_cmp_PartialEq_bool_for_bool.
       Definition Self : Ty.t := Ty.path "bool".
       
-      (*                 fn eq(&self, other: &$t) -> bool { ( *self) == ( *other) } *)
+      (*                 fn eq(&self, other: &Self) -> bool { *self == *other } *)
       Definition eq (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -2685,7 +2794,7 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      (*                 fn ne(&self, other: &$t) -> bool { ( *self) != ( *other) } *)
+      (*                 fn ne(&self, other: &Self) -> bool { *self != *other } *)
       Definition ne (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -2715,7 +2824,7 @@ Module cmp.
     Module Impl_core_cmp_PartialEq_char_for_char.
       Definition Self : Ty.t := Ty.path "char".
       
-      (*                 fn eq(&self, other: &$t) -> bool { ( *self) == ( *other) } *)
+      (*                 fn eq(&self, other: &Self) -> bool { *self == *other } *)
       Definition eq (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -2733,7 +2842,7 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      (*                 fn ne(&self, other: &$t) -> bool { ( *self) != ( *other) } *)
+      (*                 fn ne(&self, other: &Self) -> bool { *self != *other } *)
       Definition ne (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -2763,7 +2872,7 @@ Module cmp.
     Module Impl_core_cmp_PartialEq_usize_for_usize.
       Definition Self : Ty.t := Ty.path "usize".
       
-      (*                 fn eq(&self, other: &$t) -> bool { ( *self) == ( *other) } *)
+      (*                 fn eq(&self, other: &Self) -> bool { *self == *other } *)
       Definition eq (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -2781,7 +2890,7 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      (*                 fn ne(&self, other: &$t) -> bool { ( *self) != ( *other) } *)
+      (*                 fn ne(&self, other: &Self) -> bool { *self != *other } *)
       Definition ne (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -2811,7 +2920,7 @@ Module cmp.
     Module Impl_core_cmp_PartialEq_u8_for_u8.
       Definition Self : Ty.t := Ty.path "u8".
       
-      (*                 fn eq(&self, other: &$t) -> bool { ( *self) == ( *other) } *)
+      (*                 fn eq(&self, other: &Self) -> bool { *self == *other } *)
       Definition eq (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -2829,7 +2938,7 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      (*                 fn ne(&self, other: &$t) -> bool { ( *self) != ( *other) } *)
+      (*                 fn ne(&self, other: &Self) -> bool { *self != *other } *)
       Definition ne (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -2859,7 +2968,7 @@ Module cmp.
     Module Impl_core_cmp_PartialEq_u16_for_u16.
       Definition Self : Ty.t := Ty.path "u16".
       
-      (*                 fn eq(&self, other: &$t) -> bool { ( *self) == ( *other) } *)
+      (*                 fn eq(&self, other: &Self) -> bool { *self == *other } *)
       Definition eq (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -2877,7 +2986,7 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      (*                 fn ne(&self, other: &$t) -> bool { ( *self) != ( *other) } *)
+      (*                 fn ne(&self, other: &Self) -> bool { *self != *other } *)
       Definition ne (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -2907,7 +3016,7 @@ Module cmp.
     Module Impl_core_cmp_PartialEq_u32_for_u32.
       Definition Self : Ty.t := Ty.path "u32".
       
-      (*                 fn eq(&self, other: &$t) -> bool { ( *self) == ( *other) } *)
+      (*                 fn eq(&self, other: &Self) -> bool { *self == *other } *)
       Definition eq (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -2925,7 +3034,7 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      (*                 fn ne(&self, other: &$t) -> bool { ( *self) != ( *other) } *)
+      (*                 fn ne(&self, other: &Self) -> bool { *self != *other } *)
       Definition ne (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -2955,7 +3064,7 @@ Module cmp.
     Module Impl_core_cmp_PartialEq_u64_for_u64.
       Definition Self : Ty.t := Ty.path "u64".
       
-      (*                 fn eq(&self, other: &$t) -> bool { ( *self) == ( *other) } *)
+      (*                 fn eq(&self, other: &Self) -> bool { *self == *other } *)
       Definition eq (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -2973,7 +3082,7 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      (*                 fn ne(&self, other: &$t) -> bool { ( *self) != ( *other) } *)
+      (*                 fn ne(&self, other: &Self) -> bool { *self != *other } *)
       Definition ne (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -3003,7 +3112,7 @@ Module cmp.
     Module Impl_core_cmp_PartialEq_u128_for_u128.
       Definition Self : Ty.t := Ty.path "u128".
       
-      (*                 fn eq(&self, other: &$t) -> bool { ( *self) == ( *other) } *)
+      (*                 fn eq(&self, other: &Self) -> bool { *self == *other } *)
       Definition eq (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -3021,7 +3130,7 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      (*                 fn ne(&self, other: &$t) -> bool { ( *self) != ( *other) } *)
+      (*                 fn ne(&self, other: &Self) -> bool { *self != *other } *)
       Definition ne (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -3051,7 +3160,7 @@ Module cmp.
     Module Impl_core_cmp_PartialEq_isize_for_isize.
       Definition Self : Ty.t := Ty.path "isize".
       
-      (*                 fn eq(&self, other: &$t) -> bool { ( *self) == ( *other) } *)
+      (*                 fn eq(&self, other: &Self) -> bool { *self == *other } *)
       Definition eq (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -3069,7 +3178,7 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      (*                 fn ne(&self, other: &$t) -> bool { ( *self) != ( *other) } *)
+      (*                 fn ne(&self, other: &Self) -> bool { *self != *other } *)
       Definition ne (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -3099,7 +3208,7 @@ Module cmp.
     Module Impl_core_cmp_PartialEq_i8_for_i8.
       Definition Self : Ty.t := Ty.path "i8".
       
-      (*                 fn eq(&self, other: &$t) -> bool { ( *self) == ( *other) } *)
+      (*                 fn eq(&self, other: &Self) -> bool { *self == *other } *)
       Definition eq (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -3117,7 +3226,7 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      (*                 fn ne(&self, other: &$t) -> bool { ( *self) != ( *other) } *)
+      (*                 fn ne(&self, other: &Self) -> bool { *self != *other } *)
       Definition ne (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -3147,7 +3256,7 @@ Module cmp.
     Module Impl_core_cmp_PartialEq_i16_for_i16.
       Definition Self : Ty.t := Ty.path "i16".
       
-      (*                 fn eq(&self, other: &$t) -> bool { ( *self) == ( *other) } *)
+      (*                 fn eq(&self, other: &Self) -> bool { *self == *other } *)
       Definition eq (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -3165,7 +3274,7 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      (*                 fn ne(&self, other: &$t) -> bool { ( *self) != ( *other) } *)
+      (*                 fn ne(&self, other: &Self) -> bool { *self != *other } *)
       Definition ne (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -3195,7 +3304,7 @@ Module cmp.
     Module Impl_core_cmp_PartialEq_i32_for_i32.
       Definition Self : Ty.t := Ty.path "i32".
       
-      (*                 fn eq(&self, other: &$t) -> bool { ( *self) == ( *other) } *)
+      (*                 fn eq(&self, other: &Self) -> bool { *self == *other } *)
       Definition eq (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -3213,7 +3322,7 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      (*                 fn ne(&self, other: &$t) -> bool { ( *self) != ( *other) } *)
+      (*                 fn ne(&self, other: &Self) -> bool { *self != *other } *)
       Definition ne (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -3243,7 +3352,7 @@ Module cmp.
     Module Impl_core_cmp_PartialEq_i64_for_i64.
       Definition Self : Ty.t := Ty.path "i64".
       
-      (*                 fn eq(&self, other: &$t) -> bool { ( *self) == ( *other) } *)
+      (*                 fn eq(&self, other: &Self) -> bool { *self == *other } *)
       Definition eq (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -3261,7 +3370,7 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      (*                 fn ne(&self, other: &$t) -> bool { ( *self) != ( *other) } *)
+      (*                 fn ne(&self, other: &Self) -> bool { *self != *other } *)
       Definition ne (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -3291,7 +3400,7 @@ Module cmp.
     Module Impl_core_cmp_PartialEq_i128_for_i128.
       Definition Self : Ty.t := Ty.path "i128".
       
-      (*                 fn eq(&self, other: &$t) -> bool { ( *self) == ( *other) } *)
+      (*                 fn eq(&self, other: &Self) -> bool { *self == *other } *)
       Definition eq (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -3309,7 +3418,7 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      (*                 fn ne(&self, other: &$t) -> bool { ( *self) != ( *other) } *)
+      (*                 fn ne(&self, other: &Self) -> bool { *self != *other } *)
       Definition ne (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -3339,7 +3448,7 @@ Module cmp.
     Module Impl_core_cmp_PartialEq_f16_for_f16.
       Definition Self : Ty.t := Ty.path "f16".
       
-      (*                 fn eq(&self, other: &$t) -> bool { ( *self) == ( *other) } *)
+      (*                 fn eq(&self, other: &Self) -> bool { *self == *other } *)
       Definition eq (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -3357,7 +3466,7 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      (*                 fn ne(&self, other: &$t) -> bool { ( *self) != ( *other) } *)
+      (*                 fn ne(&self, other: &Self) -> bool { *self != *other } *)
       Definition ne (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -3387,7 +3496,7 @@ Module cmp.
     Module Impl_core_cmp_PartialEq_f32_for_f32.
       Definition Self : Ty.t := Ty.path "f32".
       
-      (*                 fn eq(&self, other: &$t) -> bool { ( *self) == ( *other) } *)
+      (*                 fn eq(&self, other: &Self) -> bool { *self == *other } *)
       Definition eq (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -3405,7 +3514,7 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      (*                 fn ne(&self, other: &$t) -> bool { ( *self) != ( *other) } *)
+      (*                 fn ne(&self, other: &Self) -> bool { *self != *other } *)
       Definition ne (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -3435,7 +3544,7 @@ Module cmp.
     Module Impl_core_cmp_PartialEq_f64_for_f64.
       Definition Self : Ty.t := Ty.path "f64".
       
-      (*                 fn eq(&self, other: &$t) -> bool { ( *self) == ( *other) } *)
+      (*                 fn eq(&self, other: &Self) -> bool { *self == *other } *)
       Definition eq (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -3453,7 +3562,7 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      (*                 fn ne(&self, other: &$t) -> bool { ( *self) != ( *other) } *)
+      (*                 fn ne(&self, other: &Self) -> bool { *self != *other } *)
       Definition ne (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -3483,7 +3592,7 @@ Module cmp.
     Module Impl_core_cmp_PartialEq_f128_for_f128.
       Definition Self : Ty.t := Ty.path "f128".
       
-      (*                 fn eq(&self, other: &$t) -> bool { ( *self) == ( *other) } *)
+      (*                 fn eq(&self, other: &Self) -> bool { *self == *other } *)
       Definition eq (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -3501,7 +3610,7 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      (*                 fn ne(&self, other: &$t) -> bool { ( *self) != ( *other) } *)
+      (*                 fn ne(&self, other: &Self) -> bool { *self != *other } *)
       Definition ne (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -3778,20 +3887,411 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
+      (*             fn lt(&self, other: &Self) -> bool { *self <  *other } *)
+      Definition lt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "bool" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "bool" ], other |) in
+            M.call_closure (|
+              Ty.path "bool",
+              BinOp.lt,
+              [
+                M.read (| M.deref (| M.read (| self |) |) |);
+                M.read (| M.deref (| M.read (| other |) |) |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*             fn le(&self, other: &Self) -> bool { *self <= *other } *)
+      Definition le (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "bool" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "bool" ], other |) in
+            M.call_closure (|
+              Ty.path "bool",
+              BinOp.le,
+              [
+                M.read (| M.deref (| M.read (| self |) |) |);
+                M.read (| M.deref (| M.read (| other |) |) |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*             fn gt(&self, other: &Self) -> bool { *self >  *other } *)
+      Definition gt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "bool" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "bool" ], other |) in
+            M.call_closure (|
+              Ty.path "bool",
+              BinOp.gt,
+              [
+                M.read (| M.deref (| M.read (| self |) |) |);
+                M.read (| M.deref (| M.read (| other |) |) |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*             fn ge(&self, other: &Self) -> bool { *self >= *other } *)
+      Definition ge (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "bool" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "bool" ], other |) in
+            M.call_closure (|
+              Ty.path "bool",
+              BinOp.ge,
+              [
+                M.read (| M.deref (| M.read (| self |) |) |);
+                M.read (| M.deref (| M.read (| other |) |) |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*
+                  fn __chaining_lt(&self, other: &Self) -> ControlFlow<bool> {
+                      let (lhs, rhs) = ( *self, *other);
+                      if lhs == rhs { Continue(()) } else { Break(lhs < rhs) }
+                  }
+      *)
+      Definition __chaining_lt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "bool" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "bool" ], other |) in
+            M.match_operator (|
+              Ty.apply
+                (Ty.path "core::ops::control_flow::ControlFlow")
+                []
+                [ Ty.path "bool"; Ty.tuple [] ],
+              M.alloc (|
+                Ty.tuple [ Ty.path "bool"; Ty.path "bool" ],
+                Value.Tuple
+                  [
+                    M.read (| M.deref (| M.read (| self |) |) |);
+                    M.read (| M.deref (| M.read (| other |) |) |)
+                  ]
+              |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                    let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                    let lhs := M.copy (| Ty.path "bool", γ0_0 |) in
+                    let rhs := M.copy (| Ty.path "bool", γ0_1 |) in
+                    M.match_operator (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [ Ty.path "bool"; Ty.tuple [] ],
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ :=
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Continue"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [ Value.Tuple [] ]));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Break"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.lt,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              ]))
+                      ]
+                    |)))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*
+                  fn __chaining_le(&self, other: &Self) -> ControlFlow<bool> {
+                      let (lhs, rhs) = ( *self, *other);
+                      if lhs == rhs { Continue(()) } else { Break(lhs <= rhs) }
+                  }
+      *)
+      Definition __chaining_le (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "bool" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "bool" ], other |) in
+            M.match_operator (|
+              Ty.apply
+                (Ty.path "core::ops::control_flow::ControlFlow")
+                []
+                [ Ty.path "bool"; Ty.tuple [] ],
+              M.alloc (|
+                Ty.tuple [ Ty.path "bool"; Ty.path "bool" ],
+                Value.Tuple
+                  [
+                    M.read (| M.deref (| M.read (| self |) |) |);
+                    M.read (| M.deref (| M.read (| other |) |) |)
+                  ]
+              |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                    let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                    let lhs := M.copy (| Ty.path "bool", γ0_0 |) in
+                    let rhs := M.copy (| Ty.path "bool", γ0_1 |) in
+                    M.match_operator (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [ Ty.path "bool"; Ty.tuple [] ],
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ :=
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Continue"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [ Value.Tuple [] ]));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Break"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.le,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              ]))
+                      ]
+                    |)))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*
+                  fn __chaining_gt(&self, other: &Self) -> ControlFlow<bool> {
+                      let (lhs, rhs) = ( *self, *other);
+                      if lhs == rhs { Continue(()) } else { Break(lhs > rhs) }
+                  }
+      *)
+      Definition __chaining_gt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "bool" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "bool" ], other |) in
+            M.match_operator (|
+              Ty.apply
+                (Ty.path "core::ops::control_flow::ControlFlow")
+                []
+                [ Ty.path "bool"; Ty.tuple [] ],
+              M.alloc (|
+                Ty.tuple [ Ty.path "bool"; Ty.path "bool" ],
+                Value.Tuple
+                  [
+                    M.read (| M.deref (| M.read (| self |) |) |);
+                    M.read (| M.deref (| M.read (| other |) |) |)
+                  ]
+              |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                    let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                    let lhs := M.copy (| Ty.path "bool", γ0_0 |) in
+                    let rhs := M.copy (| Ty.path "bool", γ0_1 |) in
+                    M.match_operator (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [ Ty.path "bool"; Ty.tuple [] ],
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ :=
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Continue"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [ Value.Tuple [] ]));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Break"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.gt,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              ]))
+                      ]
+                    |)))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*
+                  fn __chaining_ge(&self, other: &Self) -> ControlFlow<bool> {
+                      let (lhs, rhs) = ( *self, *other);
+                      if lhs == rhs { Continue(()) } else { Break(lhs >= rhs) }
+                  }
+      *)
+      Definition __chaining_ge (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "bool" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "bool" ], other |) in
+            M.match_operator (|
+              Ty.apply
+                (Ty.path "core::ops::control_flow::ControlFlow")
+                []
+                [ Ty.path "bool"; Ty.tuple [] ],
+              M.alloc (|
+                Ty.tuple [ Ty.path "bool"; Ty.path "bool" ],
+                Value.Tuple
+                  [
+                    M.read (| M.deref (| M.read (| self |) |) |);
+                    M.read (| M.deref (| M.read (| other |) |) |)
+                  ]
+              |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                    let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                    let lhs := M.copy (| Ty.path "bool", γ0_0 |) in
+                    let rhs := M.copy (| Ty.path "bool", γ0_1 |) in
+                    M.match_operator (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [ Ty.path "bool"; Ty.tuple [] ],
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ :=
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Continue"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [ Value.Tuple [] ]));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Break"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.ge,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              ]))
+                      ]
+                    |)))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
       Axiom Implements :
         M.IsTraitInstance
           "core::cmp::PartialOrd"
           (* Trait polymorphic consts *) []
           (* Trait polymorphic types *) [ Ty.path "bool" ]
           Self
-          (* Instance *) [ ("partial_cmp", InstanceField.Method partial_cmp) ].
+          (* Instance *)
+          [
+            ("partial_cmp", InstanceField.Method partial_cmp);
+            ("lt", InstanceField.Method lt);
+            ("le", InstanceField.Method le);
+            ("gt", InstanceField.Method gt);
+            ("ge", InstanceField.Method ge);
+            ("__chaining_lt", InstanceField.Method __chaining_lt);
+            ("__chaining_le", InstanceField.Method __chaining_le);
+            ("__chaining_gt", InstanceField.Method __chaining_gt);
+            ("__chaining_ge", InstanceField.Method __chaining_ge)
+          ].
     End Impl_core_cmp_PartialOrd_bool_for_bool.
     
     Module Impl_core_cmp_PartialOrd_f16_for_f16.
       Definition Self : Ty.t := Ty.path "f16".
       
       (*
-                      fn partial_cmp(&self, other: &$t) -> Option<Ordering> {
+                      fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
                           match ( *self <= *other, *self >= *other) {
                               (false, false) => None,
                               (false, true) => Some(Greater),
@@ -3880,7 +4380,7 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      (*                 fn lt(&self, other: &$t) -> bool { ( *self) < ( *other) } *)
+      (*             fn lt(&self, other: &Self) -> bool { *self <  *other } *)
       Definition lt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -3898,7 +4398,7 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      (*                 fn le(&self, other: &$t) -> bool { ( *self) <= ( *other) } *)
+      (*             fn le(&self, other: &Self) -> bool { *self <= *other } *)
       Definition le (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -3916,7 +4416,25 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      (*                 fn ge(&self, other: &$t) -> bool { ( *self) >= ( *other) } *)
+      (*             fn gt(&self, other: &Self) -> bool { *self >  *other } *)
+      Definition gt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "f16" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "f16" ], other |) in
+            M.call_closure (|
+              Ty.path "bool",
+              BinOp.gt,
+              [
+                M.read (| M.deref (| M.read (| self |) |) |);
+                M.read (| M.deref (| M.read (| other |) |) |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*             fn ge(&self, other: &Self) -> bool { *self >= *other } *)
       Definition ge (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -3934,19 +4452,309 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      (*                 fn gt(&self, other: &$t) -> bool { ( *self) > ( *other) } *)
-      Definition gt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      (*
+                  fn __chaining_lt(&self, other: &Self) -> ControlFlow<bool> {
+                      let (lhs, rhs) = ( *self, *other);
+                      if lhs == rhs { Continue(()) } else { Break(lhs < rhs) }
+                  }
+      *)
+      Definition __chaining_lt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
           ltac:(M.monadic
             (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "f16" ], self |) in
             let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "f16" ], other |) in
-            M.call_closure (|
-              Ty.path "bool",
-              BinOp.gt,
+            M.match_operator (|
+              Ty.apply
+                (Ty.path "core::ops::control_flow::ControlFlow")
+                []
+                [ Ty.path "bool"; Ty.tuple [] ],
+              M.alloc (|
+                Ty.tuple [ Ty.path "f16"; Ty.path "f16" ],
+                Value.Tuple
+                  [
+                    M.read (| M.deref (| M.read (| self |) |) |);
+                    M.read (| M.deref (| M.read (| other |) |) |)
+                  ]
+              |),
               [
-                M.read (| M.deref (| M.read (| self |) |) |);
-                M.read (| M.deref (| M.read (| other |) |) |)
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                    let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                    let lhs := M.copy (| Ty.path "f16", γ0_0 |) in
+                    let rhs := M.copy (| Ty.path "f16", γ0_1 |) in
+                    M.match_operator (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [ Ty.path "bool"; Ty.tuple [] ],
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ :=
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Continue"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [ Value.Tuple [] ]));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Break"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.lt,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              ]))
+                      ]
+                    |)))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*
+                  fn __chaining_le(&self, other: &Self) -> ControlFlow<bool> {
+                      let (lhs, rhs) = ( *self, *other);
+                      if lhs == rhs { Continue(()) } else { Break(lhs <= rhs) }
+                  }
+      *)
+      Definition __chaining_le (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "f16" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "f16" ], other |) in
+            M.match_operator (|
+              Ty.apply
+                (Ty.path "core::ops::control_flow::ControlFlow")
+                []
+                [ Ty.path "bool"; Ty.tuple [] ],
+              M.alloc (|
+                Ty.tuple [ Ty.path "f16"; Ty.path "f16" ],
+                Value.Tuple
+                  [
+                    M.read (| M.deref (| M.read (| self |) |) |);
+                    M.read (| M.deref (| M.read (| other |) |) |)
+                  ]
+              |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                    let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                    let lhs := M.copy (| Ty.path "f16", γ0_0 |) in
+                    let rhs := M.copy (| Ty.path "f16", γ0_1 |) in
+                    M.match_operator (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [ Ty.path "bool"; Ty.tuple [] ],
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ :=
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Continue"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [ Value.Tuple [] ]));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Break"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.le,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              ]))
+                      ]
+                    |)))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*
+                  fn __chaining_gt(&self, other: &Self) -> ControlFlow<bool> {
+                      let (lhs, rhs) = ( *self, *other);
+                      if lhs == rhs { Continue(()) } else { Break(lhs > rhs) }
+                  }
+      *)
+      Definition __chaining_gt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "f16" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "f16" ], other |) in
+            M.match_operator (|
+              Ty.apply
+                (Ty.path "core::ops::control_flow::ControlFlow")
+                []
+                [ Ty.path "bool"; Ty.tuple [] ],
+              M.alloc (|
+                Ty.tuple [ Ty.path "f16"; Ty.path "f16" ],
+                Value.Tuple
+                  [
+                    M.read (| M.deref (| M.read (| self |) |) |);
+                    M.read (| M.deref (| M.read (| other |) |) |)
+                  ]
+              |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                    let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                    let lhs := M.copy (| Ty.path "f16", γ0_0 |) in
+                    let rhs := M.copy (| Ty.path "f16", γ0_1 |) in
+                    M.match_operator (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [ Ty.path "bool"; Ty.tuple [] ],
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ :=
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Continue"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [ Value.Tuple [] ]));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Break"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.gt,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              ]))
+                      ]
+                    |)))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*
+                  fn __chaining_ge(&self, other: &Self) -> ControlFlow<bool> {
+                      let (lhs, rhs) = ( *self, *other);
+                      if lhs == rhs { Continue(()) } else { Break(lhs >= rhs) }
+                  }
+      *)
+      Definition __chaining_ge (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "f16" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "f16" ], other |) in
+            M.match_operator (|
+              Ty.apply
+                (Ty.path "core::ops::control_flow::ControlFlow")
+                []
+                [ Ty.path "bool"; Ty.tuple [] ],
+              M.alloc (|
+                Ty.tuple [ Ty.path "f16"; Ty.path "f16" ],
+                Value.Tuple
+                  [
+                    M.read (| M.deref (| M.read (| self |) |) |);
+                    M.read (| M.deref (| M.read (| other |) |) |)
+                  ]
+              |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                    let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                    let lhs := M.copy (| Ty.path "f16", γ0_0 |) in
+                    let rhs := M.copy (| Ty.path "f16", γ0_1 |) in
+                    M.match_operator (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [ Ty.path "bool"; Ty.tuple [] ],
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ :=
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Continue"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [ Value.Tuple [] ]));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Break"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.ge,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              ]))
+                      ]
+                    |)))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -3963,8 +4771,12 @@ Module cmp.
             ("partial_cmp", InstanceField.Method partial_cmp);
             ("lt", InstanceField.Method lt);
             ("le", InstanceField.Method le);
+            ("gt", InstanceField.Method gt);
             ("ge", InstanceField.Method ge);
-            ("gt", InstanceField.Method gt)
+            ("__chaining_lt", InstanceField.Method __chaining_lt);
+            ("__chaining_le", InstanceField.Method __chaining_le);
+            ("__chaining_gt", InstanceField.Method __chaining_gt);
+            ("__chaining_ge", InstanceField.Method __chaining_ge)
           ].
     End Impl_core_cmp_PartialOrd_f16_for_f16.
     
@@ -3972,7 +4784,7 @@ Module cmp.
       Definition Self : Ty.t := Ty.path "f32".
       
       (*
-                      fn partial_cmp(&self, other: &$t) -> Option<Ordering> {
+                      fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
                           match ( *self <= *other, *self >= *other) {
                               (false, false) => None,
                               (false, true) => Some(Greater),
@@ -4061,7 +4873,7 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      (*                 fn lt(&self, other: &$t) -> bool { ( *self) < ( *other) } *)
+      (*             fn lt(&self, other: &Self) -> bool { *self <  *other } *)
       Definition lt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -4079,7 +4891,7 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      (*                 fn le(&self, other: &$t) -> bool { ( *self) <= ( *other) } *)
+      (*             fn le(&self, other: &Self) -> bool { *self <= *other } *)
       Definition le (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -4097,7 +4909,25 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      (*                 fn ge(&self, other: &$t) -> bool { ( *self) >= ( *other) } *)
+      (*             fn gt(&self, other: &Self) -> bool { *self >  *other } *)
+      Definition gt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "f32" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "f32" ], other |) in
+            M.call_closure (|
+              Ty.path "bool",
+              BinOp.gt,
+              [
+                M.read (| M.deref (| M.read (| self |) |) |);
+                M.read (| M.deref (| M.read (| other |) |) |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*             fn ge(&self, other: &Self) -> bool { *self >= *other } *)
       Definition ge (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -4115,19 +4945,309 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      (*                 fn gt(&self, other: &$t) -> bool { ( *self) > ( *other) } *)
-      Definition gt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      (*
+                  fn __chaining_lt(&self, other: &Self) -> ControlFlow<bool> {
+                      let (lhs, rhs) = ( *self, *other);
+                      if lhs == rhs { Continue(()) } else { Break(lhs < rhs) }
+                  }
+      *)
+      Definition __chaining_lt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
           ltac:(M.monadic
             (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "f32" ], self |) in
             let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "f32" ], other |) in
-            M.call_closure (|
-              Ty.path "bool",
-              BinOp.gt,
+            M.match_operator (|
+              Ty.apply
+                (Ty.path "core::ops::control_flow::ControlFlow")
+                []
+                [ Ty.path "bool"; Ty.tuple [] ],
+              M.alloc (|
+                Ty.tuple [ Ty.path "f32"; Ty.path "f32" ],
+                Value.Tuple
+                  [
+                    M.read (| M.deref (| M.read (| self |) |) |);
+                    M.read (| M.deref (| M.read (| other |) |) |)
+                  ]
+              |),
               [
-                M.read (| M.deref (| M.read (| self |) |) |);
-                M.read (| M.deref (| M.read (| other |) |) |)
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                    let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                    let lhs := M.copy (| Ty.path "f32", γ0_0 |) in
+                    let rhs := M.copy (| Ty.path "f32", γ0_1 |) in
+                    M.match_operator (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [ Ty.path "bool"; Ty.tuple [] ],
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ :=
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Continue"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [ Value.Tuple [] ]));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Break"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.lt,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              ]))
+                      ]
+                    |)))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*
+                  fn __chaining_le(&self, other: &Self) -> ControlFlow<bool> {
+                      let (lhs, rhs) = ( *self, *other);
+                      if lhs == rhs { Continue(()) } else { Break(lhs <= rhs) }
+                  }
+      *)
+      Definition __chaining_le (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "f32" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "f32" ], other |) in
+            M.match_operator (|
+              Ty.apply
+                (Ty.path "core::ops::control_flow::ControlFlow")
+                []
+                [ Ty.path "bool"; Ty.tuple [] ],
+              M.alloc (|
+                Ty.tuple [ Ty.path "f32"; Ty.path "f32" ],
+                Value.Tuple
+                  [
+                    M.read (| M.deref (| M.read (| self |) |) |);
+                    M.read (| M.deref (| M.read (| other |) |) |)
+                  ]
+              |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                    let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                    let lhs := M.copy (| Ty.path "f32", γ0_0 |) in
+                    let rhs := M.copy (| Ty.path "f32", γ0_1 |) in
+                    M.match_operator (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [ Ty.path "bool"; Ty.tuple [] ],
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ :=
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Continue"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [ Value.Tuple [] ]));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Break"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.le,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              ]))
+                      ]
+                    |)))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*
+                  fn __chaining_gt(&self, other: &Self) -> ControlFlow<bool> {
+                      let (lhs, rhs) = ( *self, *other);
+                      if lhs == rhs { Continue(()) } else { Break(lhs > rhs) }
+                  }
+      *)
+      Definition __chaining_gt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "f32" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "f32" ], other |) in
+            M.match_operator (|
+              Ty.apply
+                (Ty.path "core::ops::control_flow::ControlFlow")
+                []
+                [ Ty.path "bool"; Ty.tuple [] ],
+              M.alloc (|
+                Ty.tuple [ Ty.path "f32"; Ty.path "f32" ],
+                Value.Tuple
+                  [
+                    M.read (| M.deref (| M.read (| self |) |) |);
+                    M.read (| M.deref (| M.read (| other |) |) |)
+                  ]
+              |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                    let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                    let lhs := M.copy (| Ty.path "f32", γ0_0 |) in
+                    let rhs := M.copy (| Ty.path "f32", γ0_1 |) in
+                    M.match_operator (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [ Ty.path "bool"; Ty.tuple [] ],
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ :=
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Continue"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [ Value.Tuple [] ]));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Break"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.gt,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              ]))
+                      ]
+                    |)))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*
+                  fn __chaining_ge(&self, other: &Self) -> ControlFlow<bool> {
+                      let (lhs, rhs) = ( *self, *other);
+                      if lhs == rhs { Continue(()) } else { Break(lhs >= rhs) }
+                  }
+      *)
+      Definition __chaining_ge (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "f32" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "f32" ], other |) in
+            M.match_operator (|
+              Ty.apply
+                (Ty.path "core::ops::control_flow::ControlFlow")
+                []
+                [ Ty.path "bool"; Ty.tuple [] ],
+              M.alloc (|
+                Ty.tuple [ Ty.path "f32"; Ty.path "f32" ],
+                Value.Tuple
+                  [
+                    M.read (| M.deref (| M.read (| self |) |) |);
+                    M.read (| M.deref (| M.read (| other |) |) |)
+                  ]
+              |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                    let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                    let lhs := M.copy (| Ty.path "f32", γ0_0 |) in
+                    let rhs := M.copy (| Ty.path "f32", γ0_1 |) in
+                    M.match_operator (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [ Ty.path "bool"; Ty.tuple [] ],
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ :=
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Continue"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [ Value.Tuple [] ]));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Break"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.ge,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              ]))
+                      ]
+                    |)))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -4144,8 +5264,12 @@ Module cmp.
             ("partial_cmp", InstanceField.Method partial_cmp);
             ("lt", InstanceField.Method lt);
             ("le", InstanceField.Method le);
+            ("gt", InstanceField.Method gt);
             ("ge", InstanceField.Method ge);
-            ("gt", InstanceField.Method gt)
+            ("__chaining_lt", InstanceField.Method __chaining_lt);
+            ("__chaining_le", InstanceField.Method __chaining_le);
+            ("__chaining_gt", InstanceField.Method __chaining_gt);
+            ("__chaining_ge", InstanceField.Method __chaining_ge)
           ].
     End Impl_core_cmp_PartialOrd_f32_for_f32.
     
@@ -4153,7 +5277,7 @@ Module cmp.
       Definition Self : Ty.t := Ty.path "f64".
       
       (*
-                      fn partial_cmp(&self, other: &$t) -> Option<Ordering> {
+                      fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
                           match ( *self <= *other, *self >= *other) {
                               (false, false) => None,
                               (false, true) => Some(Greater),
@@ -4242,7 +5366,7 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      (*                 fn lt(&self, other: &$t) -> bool { ( *self) < ( *other) } *)
+      (*             fn lt(&self, other: &Self) -> bool { *self <  *other } *)
       Definition lt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -4260,7 +5384,7 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      (*                 fn le(&self, other: &$t) -> bool { ( *self) <= ( *other) } *)
+      (*             fn le(&self, other: &Self) -> bool { *self <= *other } *)
       Definition le (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -4278,7 +5402,25 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      (*                 fn ge(&self, other: &$t) -> bool { ( *self) >= ( *other) } *)
+      (*             fn gt(&self, other: &Self) -> bool { *self >  *other } *)
+      Definition gt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "f64" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "f64" ], other |) in
+            M.call_closure (|
+              Ty.path "bool",
+              BinOp.gt,
+              [
+                M.read (| M.deref (| M.read (| self |) |) |);
+                M.read (| M.deref (| M.read (| other |) |) |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*             fn ge(&self, other: &Self) -> bool { *self >= *other } *)
       Definition ge (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -4296,19 +5438,309 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      (*                 fn gt(&self, other: &$t) -> bool { ( *self) > ( *other) } *)
-      Definition gt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      (*
+                  fn __chaining_lt(&self, other: &Self) -> ControlFlow<bool> {
+                      let (lhs, rhs) = ( *self, *other);
+                      if lhs == rhs { Continue(()) } else { Break(lhs < rhs) }
+                  }
+      *)
+      Definition __chaining_lt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
           ltac:(M.monadic
             (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "f64" ], self |) in
             let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "f64" ], other |) in
-            M.call_closure (|
-              Ty.path "bool",
-              BinOp.gt,
+            M.match_operator (|
+              Ty.apply
+                (Ty.path "core::ops::control_flow::ControlFlow")
+                []
+                [ Ty.path "bool"; Ty.tuple [] ],
+              M.alloc (|
+                Ty.tuple [ Ty.path "f64"; Ty.path "f64" ],
+                Value.Tuple
+                  [
+                    M.read (| M.deref (| M.read (| self |) |) |);
+                    M.read (| M.deref (| M.read (| other |) |) |)
+                  ]
+              |),
               [
-                M.read (| M.deref (| M.read (| self |) |) |);
-                M.read (| M.deref (| M.read (| other |) |) |)
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                    let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                    let lhs := M.copy (| Ty.path "f64", γ0_0 |) in
+                    let rhs := M.copy (| Ty.path "f64", γ0_1 |) in
+                    M.match_operator (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [ Ty.path "bool"; Ty.tuple [] ],
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ :=
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Continue"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [ Value.Tuple [] ]));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Break"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.lt,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              ]))
+                      ]
+                    |)))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*
+                  fn __chaining_le(&self, other: &Self) -> ControlFlow<bool> {
+                      let (lhs, rhs) = ( *self, *other);
+                      if lhs == rhs { Continue(()) } else { Break(lhs <= rhs) }
+                  }
+      *)
+      Definition __chaining_le (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "f64" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "f64" ], other |) in
+            M.match_operator (|
+              Ty.apply
+                (Ty.path "core::ops::control_flow::ControlFlow")
+                []
+                [ Ty.path "bool"; Ty.tuple [] ],
+              M.alloc (|
+                Ty.tuple [ Ty.path "f64"; Ty.path "f64" ],
+                Value.Tuple
+                  [
+                    M.read (| M.deref (| M.read (| self |) |) |);
+                    M.read (| M.deref (| M.read (| other |) |) |)
+                  ]
+              |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                    let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                    let lhs := M.copy (| Ty.path "f64", γ0_0 |) in
+                    let rhs := M.copy (| Ty.path "f64", γ0_1 |) in
+                    M.match_operator (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [ Ty.path "bool"; Ty.tuple [] ],
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ :=
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Continue"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [ Value.Tuple [] ]));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Break"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.le,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              ]))
+                      ]
+                    |)))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*
+                  fn __chaining_gt(&self, other: &Self) -> ControlFlow<bool> {
+                      let (lhs, rhs) = ( *self, *other);
+                      if lhs == rhs { Continue(()) } else { Break(lhs > rhs) }
+                  }
+      *)
+      Definition __chaining_gt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "f64" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "f64" ], other |) in
+            M.match_operator (|
+              Ty.apply
+                (Ty.path "core::ops::control_flow::ControlFlow")
+                []
+                [ Ty.path "bool"; Ty.tuple [] ],
+              M.alloc (|
+                Ty.tuple [ Ty.path "f64"; Ty.path "f64" ],
+                Value.Tuple
+                  [
+                    M.read (| M.deref (| M.read (| self |) |) |);
+                    M.read (| M.deref (| M.read (| other |) |) |)
+                  ]
+              |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                    let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                    let lhs := M.copy (| Ty.path "f64", γ0_0 |) in
+                    let rhs := M.copy (| Ty.path "f64", γ0_1 |) in
+                    M.match_operator (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [ Ty.path "bool"; Ty.tuple [] ],
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ :=
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Continue"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [ Value.Tuple [] ]));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Break"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.gt,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              ]))
+                      ]
+                    |)))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*
+                  fn __chaining_ge(&self, other: &Self) -> ControlFlow<bool> {
+                      let (lhs, rhs) = ( *self, *other);
+                      if lhs == rhs { Continue(()) } else { Break(lhs >= rhs) }
+                  }
+      *)
+      Definition __chaining_ge (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "f64" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "f64" ], other |) in
+            M.match_operator (|
+              Ty.apply
+                (Ty.path "core::ops::control_flow::ControlFlow")
+                []
+                [ Ty.path "bool"; Ty.tuple [] ],
+              M.alloc (|
+                Ty.tuple [ Ty.path "f64"; Ty.path "f64" ],
+                Value.Tuple
+                  [
+                    M.read (| M.deref (| M.read (| self |) |) |);
+                    M.read (| M.deref (| M.read (| other |) |) |)
+                  ]
+              |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                    let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                    let lhs := M.copy (| Ty.path "f64", γ0_0 |) in
+                    let rhs := M.copy (| Ty.path "f64", γ0_1 |) in
+                    M.match_operator (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [ Ty.path "bool"; Ty.tuple [] ],
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ :=
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Continue"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [ Value.Tuple [] ]));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Break"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.ge,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              ]))
+                      ]
+                    |)))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -4325,8 +5757,12 @@ Module cmp.
             ("partial_cmp", InstanceField.Method partial_cmp);
             ("lt", InstanceField.Method lt);
             ("le", InstanceField.Method le);
+            ("gt", InstanceField.Method gt);
             ("ge", InstanceField.Method ge);
-            ("gt", InstanceField.Method gt)
+            ("__chaining_lt", InstanceField.Method __chaining_lt);
+            ("__chaining_le", InstanceField.Method __chaining_le);
+            ("__chaining_gt", InstanceField.Method __chaining_gt);
+            ("__chaining_ge", InstanceField.Method __chaining_ge)
           ].
     End Impl_core_cmp_PartialOrd_f64_for_f64.
     
@@ -4334,7 +5770,7 @@ Module cmp.
       Definition Self : Ty.t := Ty.path "f128".
       
       (*
-                      fn partial_cmp(&self, other: &$t) -> Option<Ordering> {
+                      fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
                           match ( *self <= *other, *self >= *other) {
                               (false, false) => None,
                               (false, true) => Some(Greater),
@@ -4423,7 +5859,7 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      (*                 fn lt(&self, other: &$t) -> bool { ( *self) < ( *other) } *)
+      (*             fn lt(&self, other: &Self) -> bool { *self <  *other } *)
       Definition lt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -4441,7 +5877,7 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      (*                 fn le(&self, other: &$t) -> bool { ( *self) <= ( *other) } *)
+      (*             fn le(&self, other: &Self) -> bool { *self <= *other } *)
       Definition le (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -4459,25 +5895,7 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      (*                 fn ge(&self, other: &$t) -> bool { ( *self) >= ( *other) } *)
-      Definition ge (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [ self; other ] =>
-          ltac:(M.monadic
-            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "f128" ], self |) in
-            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "f128" ], other |) in
-            M.call_closure (|
-              Ty.path "bool",
-              BinOp.ge,
-              [
-                M.read (| M.deref (| M.read (| self |) |) |);
-                M.read (| M.deref (| M.read (| other |) |) |)
-              ]
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      (*                 fn gt(&self, other: &$t) -> bool { ( *self) > ( *other) } *)
+      (*             fn gt(&self, other: &Self) -> bool { *self >  *other } *)
       Definition gt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -4495,6 +5913,332 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
+      (*             fn ge(&self, other: &Self) -> bool { *self >= *other } *)
+      Definition ge (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "f128" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "f128" ], other |) in
+            M.call_closure (|
+              Ty.path "bool",
+              BinOp.ge,
+              [
+                M.read (| M.deref (| M.read (| self |) |) |);
+                M.read (| M.deref (| M.read (| other |) |) |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*
+                  fn __chaining_lt(&self, other: &Self) -> ControlFlow<bool> {
+                      let (lhs, rhs) = ( *self, *other);
+                      if lhs == rhs { Continue(()) } else { Break(lhs < rhs) }
+                  }
+      *)
+      Definition __chaining_lt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "f128" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "f128" ], other |) in
+            M.match_operator (|
+              Ty.apply
+                (Ty.path "core::ops::control_flow::ControlFlow")
+                []
+                [ Ty.path "bool"; Ty.tuple [] ],
+              M.alloc (|
+                Ty.tuple [ Ty.path "f128"; Ty.path "f128" ],
+                Value.Tuple
+                  [
+                    M.read (| M.deref (| M.read (| self |) |) |);
+                    M.read (| M.deref (| M.read (| other |) |) |)
+                  ]
+              |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                    let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                    let lhs := M.copy (| Ty.path "f128", γ0_0 |) in
+                    let rhs := M.copy (| Ty.path "f128", γ0_1 |) in
+                    M.match_operator (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [ Ty.path "bool"; Ty.tuple [] ],
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ :=
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Continue"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [ Value.Tuple [] ]));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Break"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.lt,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              ]))
+                      ]
+                    |)))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*
+                  fn __chaining_le(&self, other: &Self) -> ControlFlow<bool> {
+                      let (lhs, rhs) = ( *self, *other);
+                      if lhs == rhs { Continue(()) } else { Break(lhs <= rhs) }
+                  }
+      *)
+      Definition __chaining_le (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "f128" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "f128" ], other |) in
+            M.match_operator (|
+              Ty.apply
+                (Ty.path "core::ops::control_flow::ControlFlow")
+                []
+                [ Ty.path "bool"; Ty.tuple [] ],
+              M.alloc (|
+                Ty.tuple [ Ty.path "f128"; Ty.path "f128" ],
+                Value.Tuple
+                  [
+                    M.read (| M.deref (| M.read (| self |) |) |);
+                    M.read (| M.deref (| M.read (| other |) |) |)
+                  ]
+              |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                    let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                    let lhs := M.copy (| Ty.path "f128", γ0_0 |) in
+                    let rhs := M.copy (| Ty.path "f128", γ0_1 |) in
+                    M.match_operator (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [ Ty.path "bool"; Ty.tuple [] ],
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ :=
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Continue"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [ Value.Tuple [] ]));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Break"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.le,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              ]))
+                      ]
+                    |)))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*
+                  fn __chaining_gt(&self, other: &Self) -> ControlFlow<bool> {
+                      let (lhs, rhs) = ( *self, *other);
+                      if lhs == rhs { Continue(()) } else { Break(lhs > rhs) }
+                  }
+      *)
+      Definition __chaining_gt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "f128" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "f128" ], other |) in
+            M.match_operator (|
+              Ty.apply
+                (Ty.path "core::ops::control_flow::ControlFlow")
+                []
+                [ Ty.path "bool"; Ty.tuple [] ],
+              M.alloc (|
+                Ty.tuple [ Ty.path "f128"; Ty.path "f128" ],
+                Value.Tuple
+                  [
+                    M.read (| M.deref (| M.read (| self |) |) |);
+                    M.read (| M.deref (| M.read (| other |) |) |)
+                  ]
+              |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                    let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                    let lhs := M.copy (| Ty.path "f128", γ0_0 |) in
+                    let rhs := M.copy (| Ty.path "f128", γ0_1 |) in
+                    M.match_operator (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [ Ty.path "bool"; Ty.tuple [] ],
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ :=
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Continue"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [ Value.Tuple [] ]));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Break"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.gt,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              ]))
+                      ]
+                    |)))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*
+                  fn __chaining_ge(&self, other: &Self) -> ControlFlow<bool> {
+                      let (lhs, rhs) = ( *self, *other);
+                      if lhs == rhs { Continue(()) } else { Break(lhs >= rhs) }
+                  }
+      *)
+      Definition __chaining_ge (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "f128" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "f128" ], other |) in
+            M.match_operator (|
+              Ty.apply
+                (Ty.path "core::ops::control_flow::ControlFlow")
+                []
+                [ Ty.path "bool"; Ty.tuple [] ],
+              M.alloc (|
+                Ty.tuple [ Ty.path "f128"; Ty.path "f128" ],
+                Value.Tuple
+                  [
+                    M.read (| M.deref (| M.read (| self |) |) |);
+                    M.read (| M.deref (| M.read (| other |) |) |)
+                  ]
+              |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                    let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                    let lhs := M.copy (| Ty.path "f128", γ0_0 |) in
+                    let rhs := M.copy (| Ty.path "f128", γ0_1 |) in
+                    M.match_operator (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [ Ty.path "bool"; Ty.tuple [] ],
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ :=
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Continue"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [ Value.Tuple [] ]));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Break"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.ge,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              ]))
+                      ]
+                    |)))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
       Axiom Implements :
         M.IsTraitInstance
           "core::cmp::PartialOrd"
@@ -4506,8 +6250,12 @@ Module cmp.
             ("partial_cmp", InstanceField.Method partial_cmp);
             ("lt", InstanceField.Method lt);
             ("le", InstanceField.Method le);
+            ("gt", InstanceField.Method gt);
             ("ge", InstanceField.Method ge);
-            ("gt", InstanceField.Method gt)
+            ("__chaining_lt", InstanceField.Method __chaining_lt);
+            ("__chaining_le", InstanceField.Method __chaining_le);
+            ("__chaining_gt", InstanceField.Method __chaining_gt);
+            ("__chaining_ge", InstanceField.Method __chaining_ge)
           ].
     End Impl_core_cmp_PartialOrd_f128_for_f128.
     
@@ -4673,21 +6421,20 @@ Module cmp.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                UnOp.not,
-                                [
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    BinOp.le,
-                                    [ M.read (| min |); M.read (| max |) ]
-                                  |)
-                                ]
-                              |)
-                            |)) in
+                              UnOp.not,
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.le,
+                                  [ M.read (| min |); M.read (| max |) ]
+                                |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.never_to_any (|
                           M.call_closure (|
@@ -4745,7 +6492,7 @@ Module cmp.
       Definition Self : Ty.t := Ty.path "char".
       
       (*
-                      fn partial_cmp(&self, other: &$t) -> Option<Ordering> {
+                      fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
                           Some(crate::intrinsics::three_way_compare( *self, *other))
                       }
       *)
@@ -4776,7 +6523,7 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      (*                 fn lt(&self, other: &$t) -> bool { ( *self) < ( *other) } *)
+      (*             fn lt(&self, other: &Self) -> bool { *self <  *other } *)
       Definition lt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -4794,7 +6541,7 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      (*                 fn le(&self, other: &$t) -> bool { ( *self) <= ( *other) } *)
+      (*             fn le(&self, other: &Self) -> bool { *self <= *other } *)
       Definition le (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -4812,25 +6559,7 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      (*                 fn ge(&self, other: &$t) -> bool { ( *self) >= ( *other) } *)
-      Definition ge (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [ self; other ] =>
-          ltac:(M.monadic
-            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "char" ], self |) in
-            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "char" ], other |) in
-            M.call_closure (|
-              Ty.path "bool",
-              BinOp.ge,
-              [
-                M.read (| M.deref (| M.read (| self |) |) |);
-                M.read (| M.deref (| M.read (| other |) |) |)
-              ]
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      (*                 fn gt(&self, other: &$t) -> bool { ( *self) > ( *other) } *)
+      (*             fn gt(&self, other: &Self) -> bool { *self >  *other } *)
       Definition gt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -4848,6 +6577,332 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
+      (*             fn ge(&self, other: &Self) -> bool { *self >= *other } *)
+      Definition ge (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "char" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "char" ], other |) in
+            M.call_closure (|
+              Ty.path "bool",
+              BinOp.ge,
+              [
+                M.read (| M.deref (| M.read (| self |) |) |);
+                M.read (| M.deref (| M.read (| other |) |) |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*
+                  fn __chaining_lt(&self, other: &Self) -> ControlFlow<bool> {
+                      let (lhs, rhs) = ( *self, *other);
+                      if lhs == rhs { Continue(()) } else { Break(lhs < rhs) }
+                  }
+      *)
+      Definition __chaining_lt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "char" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "char" ], other |) in
+            M.match_operator (|
+              Ty.apply
+                (Ty.path "core::ops::control_flow::ControlFlow")
+                []
+                [ Ty.path "bool"; Ty.tuple [] ],
+              M.alloc (|
+                Ty.tuple [ Ty.path "char"; Ty.path "char" ],
+                Value.Tuple
+                  [
+                    M.read (| M.deref (| M.read (| self |) |) |);
+                    M.read (| M.deref (| M.read (| other |) |) |)
+                  ]
+              |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                    let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                    let lhs := M.copy (| Ty.path "char", γ0_0 |) in
+                    let rhs := M.copy (| Ty.path "char", γ0_1 |) in
+                    M.match_operator (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [ Ty.path "bool"; Ty.tuple [] ],
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ :=
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Continue"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [ Value.Tuple [] ]));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Break"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.lt,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              ]))
+                      ]
+                    |)))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*
+                  fn __chaining_le(&self, other: &Self) -> ControlFlow<bool> {
+                      let (lhs, rhs) = ( *self, *other);
+                      if lhs == rhs { Continue(()) } else { Break(lhs <= rhs) }
+                  }
+      *)
+      Definition __chaining_le (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "char" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "char" ], other |) in
+            M.match_operator (|
+              Ty.apply
+                (Ty.path "core::ops::control_flow::ControlFlow")
+                []
+                [ Ty.path "bool"; Ty.tuple [] ],
+              M.alloc (|
+                Ty.tuple [ Ty.path "char"; Ty.path "char" ],
+                Value.Tuple
+                  [
+                    M.read (| M.deref (| M.read (| self |) |) |);
+                    M.read (| M.deref (| M.read (| other |) |) |)
+                  ]
+              |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                    let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                    let lhs := M.copy (| Ty.path "char", γ0_0 |) in
+                    let rhs := M.copy (| Ty.path "char", γ0_1 |) in
+                    M.match_operator (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [ Ty.path "bool"; Ty.tuple [] ],
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ :=
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Continue"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [ Value.Tuple [] ]));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Break"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.le,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              ]))
+                      ]
+                    |)))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*
+                  fn __chaining_gt(&self, other: &Self) -> ControlFlow<bool> {
+                      let (lhs, rhs) = ( *self, *other);
+                      if lhs == rhs { Continue(()) } else { Break(lhs > rhs) }
+                  }
+      *)
+      Definition __chaining_gt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "char" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "char" ], other |) in
+            M.match_operator (|
+              Ty.apply
+                (Ty.path "core::ops::control_flow::ControlFlow")
+                []
+                [ Ty.path "bool"; Ty.tuple [] ],
+              M.alloc (|
+                Ty.tuple [ Ty.path "char"; Ty.path "char" ],
+                Value.Tuple
+                  [
+                    M.read (| M.deref (| M.read (| self |) |) |);
+                    M.read (| M.deref (| M.read (| other |) |) |)
+                  ]
+              |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                    let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                    let lhs := M.copy (| Ty.path "char", γ0_0 |) in
+                    let rhs := M.copy (| Ty.path "char", γ0_1 |) in
+                    M.match_operator (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [ Ty.path "bool"; Ty.tuple [] ],
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ :=
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Continue"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [ Value.Tuple [] ]));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Break"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.gt,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              ]))
+                      ]
+                    |)))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*
+                  fn __chaining_ge(&self, other: &Self) -> ControlFlow<bool> {
+                      let (lhs, rhs) = ( *self, *other);
+                      if lhs == rhs { Continue(()) } else { Break(lhs >= rhs) }
+                  }
+      *)
+      Definition __chaining_ge (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "char" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "char" ], other |) in
+            M.match_operator (|
+              Ty.apply
+                (Ty.path "core::ops::control_flow::ControlFlow")
+                []
+                [ Ty.path "bool"; Ty.tuple [] ],
+              M.alloc (|
+                Ty.tuple [ Ty.path "char"; Ty.path "char" ],
+                Value.Tuple
+                  [
+                    M.read (| M.deref (| M.read (| self |) |) |);
+                    M.read (| M.deref (| M.read (| other |) |) |)
+                  ]
+              |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                    let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                    let lhs := M.copy (| Ty.path "char", γ0_0 |) in
+                    let rhs := M.copy (| Ty.path "char", γ0_1 |) in
+                    M.match_operator (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [ Ty.path "bool"; Ty.tuple [] ],
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ :=
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Continue"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [ Value.Tuple [] ]));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Break"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.ge,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              ]))
+                      ]
+                    |)))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
       Axiom Implements :
         M.IsTraitInstance
           "core::cmp::PartialOrd"
@@ -4859,8 +6914,12 @@ Module cmp.
             ("partial_cmp", InstanceField.Method partial_cmp);
             ("lt", InstanceField.Method lt);
             ("le", InstanceField.Method le);
+            ("gt", InstanceField.Method gt);
             ("ge", InstanceField.Method ge);
-            ("gt", InstanceField.Method gt)
+            ("__chaining_lt", InstanceField.Method __chaining_lt);
+            ("__chaining_le", InstanceField.Method __chaining_le);
+            ("__chaining_gt", InstanceField.Method __chaining_gt);
+            ("__chaining_ge", InstanceField.Method __chaining_ge)
           ].
     End Impl_core_cmp_PartialOrd_char_for_char.
     
@@ -4868,7 +6927,7 @@ Module cmp.
       Definition Self : Ty.t := Ty.path "char".
       
       (*
-                      fn cmp(&self, other: &$t) -> Ordering {
+                      fn cmp(&self, other: &Self) -> Ordering {
                           crate::intrinsics::three_way_compare( *self, *other)
                       }
       *)
@@ -4902,7 +6961,7 @@ Module cmp.
       Definition Self : Ty.t := Ty.path "usize".
       
       (*
-                      fn partial_cmp(&self, other: &$t) -> Option<Ordering> {
+                      fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
                           Some(crate::intrinsics::three_way_compare( *self, *other))
                       }
       *)
@@ -4933,7 +6992,7 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      (*                 fn lt(&self, other: &$t) -> bool { ( *self) < ( *other) } *)
+      (*             fn lt(&self, other: &Self) -> bool { *self <  *other } *)
       Definition lt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -4951,7 +7010,7 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      (*                 fn le(&self, other: &$t) -> bool { ( *self) <= ( *other) } *)
+      (*             fn le(&self, other: &Self) -> bool { *self <= *other } *)
       Definition le (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -4969,25 +7028,7 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      (*                 fn ge(&self, other: &$t) -> bool { ( *self) >= ( *other) } *)
-      Definition ge (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [ self; other ] =>
-          ltac:(M.monadic
-            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], self |) in
-            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], other |) in
-            M.call_closure (|
-              Ty.path "bool",
-              BinOp.ge,
-              [
-                M.read (| M.deref (| M.read (| self |) |) |);
-                M.read (| M.deref (| M.read (| other |) |) |)
-              ]
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      (*                 fn gt(&self, other: &$t) -> bool { ( *self) > ( *other) } *)
+      (*             fn gt(&self, other: &Self) -> bool { *self >  *other } *)
       Definition gt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -5005,6 +7046,332 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
+      (*             fn ge(&self, other: &Self) -> bool { *self >= *other } *)
+      Definition ge (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], other |) in
+            M.call_closure (|
+              Ty.path "bool",
+              BinOp.ge,
+              [
+                M.read (| M.deref (| M.read (| self |) |) |);
+                M.read (| M.deref (| M.read (| other |) |) |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*
+                  fn __chaining_lt(&self, other: &Self) -> ControlFlow<bool> {
+                      let (lhs, rhs) = ( *self, *other);
+                      if lhs == rhs { Continue(()) } else { Break(lhs < rhs) }
+                  }
+      *)
+      Definition __chaining_lt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], other |) in
+            M.match_operator (|
+              Ty.apply
+                (Ty.path "core::ops::control_flow::ControlFlow")
+                []
+                [ Ty.path "bool"; Ty.tuple [] ],
+              M.alloc (|
+                Ty.tuple [ Ty.path "usize"; Ty.path "usize" ],
+                Value.Tuple
+                  [
+                    M.read (| M.deref (| M.read (| self |) |) |);
+                    M.read (| M.deref (| M.read (| other |) |) |)
+                  ]
+              |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                    let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                    let lhs := M.copy (| Ty.path "usize", γ0_0 |) in
+                    let rhs := M.copy (| Ty.path "usize", γ0_1 |) in
+                    M.match_operator (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [ Ty.path "bool"; Ty.tuple [] ],
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ :=
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Continue"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [ Value.Tuple [] ]));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Break"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.lt,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              ]))
+                      ]
+                    |)))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*
+                  fn __chaining_le(&self, other: &Self) -> ControlFlow<bool> {
+                      let (lhs, rhs) = ( *self, *other);
+                      if lhs == rhs { Continue(()) } else { Break(lhs <= rhs) }
+                  }
+      *)
+      Definition __chaining_le (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], other |) in
+            M.match_operator (|
+              Ty.apply
+                (Ty.path "core::ops::control_flow::ControlFlow")
+                []
+                [ Ty.path "bool"; Ty.tuple [] ],
+              M.alloc (|
+                Ty.tuple [ Ty.path "usize"; Ty.path "usize" ],
+                Value.Tuple
+                  [
+                    M.read (| M.deref (| M.read (| self |) |) |);
+                    M.read (| M.deref (| M.read (| other |) |) |)
+                  ]
+              |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                    let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                    let lhs := M.copy (| Ty.path "usize", γ0_0 |) in
+                    let rhs := M.copy (| Ty.path "usize", γ0_1 |) in
+                    M.match_operator (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [ Ty.path "bool"; Ty.tuple [] ],
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ :=
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Continue"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [ Value.Tuple [] ]));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Break"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.le,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              ]))
+                      ]
+                    |)))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*
+                  fn __chaining_gt(&self, other: &Self) -> ControlFlow<bool> {
+                      let (lhs, rhs) = ( *self, *other);
+                      if lhs == rhs { Continue(()) } else { Break(lhs > rhs) }
+                  }
+      *)
+      Definition __chaining_gt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], other |) in
+            M.match_operator (|
+              Ty.apply
+                (Ty.path "core::ops::control_flow::ControlFlow")
+                []
+                [ Ty.path "bool"; Ty.tuple [] ],
+              M.alloc (|
+                Ty.tuple [ Ty.path "usize"; Ty.path "usize" ],
+                Value.Tuple
+                  [
+                    M.read (| M.deref (| M.read (| self |) |) |);
+                    M.read (| M.deref (| M.read (| other |) |) |)
+                  ]
+              |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                    let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                    let lhs := M.copy (| Ty.path "usize", γ0_0 |) in
+                    let rhs := M.copy (| Ty.path "usize", γ0_1 |) in
+                    M.match_operator (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [ Ty.path "bool"; Ty.tuple [] ],
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ :=
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Continue"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [ Value.Tuple [] ]));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Break"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.gt,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              ]))
+                      ]
+                    |)))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*
+                  fn __chaining_ge(&self, other: &Self) -> ControlFlow<bool> {
+                      let (lhs, rhs) = ( *self, *other);
+                      if lhs == rhs { Continue(()) } else { Break(lhs >= rhs) }
+                  }
+      *)
+      Definition __chaining_ge (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], other |) in
+            M.match_operator (|
+              Ty.apply
+                (Ty.path "core::ops::control_flow::ControlFlow")
+                []
+                [ Ty.path "bool"; Ty.tuple [] ],
+              M.alloc (|
+                Ty.tuple [ Ty.path "usize"; Ty.path "usize" ],
+                Value.Tuple
+                  [
+                    M.read (| M.deref (| M.read (| self |) |) |);
+                    M.read (| M.deref (| M.read (| other |) |) |)
+                  ]
+              |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                    let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                    let lhs := M.copy (| Ty.path "usize", γ0_0 |) in
+                    let rhs := M.copy (| Ty.path "usize", γ0_1 |) in
+                    M.match_operator (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [ Ty.path "bool"; Ty.tuple [] ],
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ :=
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Continue"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [ Value.Tuple [] ]));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Break"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.ge,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              ]))
+                      ]
+                    |)))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
       Axiom Implements :
         M.IsTraitInstance
           "core::cmp::PartialOrd"
@@ -5016,8 +7383,12 @@ Module cmp.
             ("partial_cmp", InstanceField.Method partial_cmp);
             ("lt", InstanceField.Method lt);
             ("le", InstanceField.Method le);
+            ("gt", InstanceField.Method gt);
             ("ge", InstanceField.Method ge);
-            ("gt", InstanceField.Method gt)
+            ("__chaining_lt", InstanceField.Method __chaining_lt);
+            ("__chaining_le", InstanceField.Method __chaining_le);
+            ("__chaining_gt", InstanceField.Method __chaining_gt);
+            ("__chaining_ge", InstanceField.Method __chaining_ge)
           ].
     End Impl_core_cmp_PartialOrd_usize_for_usize.
     
@@ -5025,7 +7396,7 @@ Module cmp.
       Definition Self : Ty.t := Ty.path "usize".
       
       (*
-                      fn cmp(&self, other: &$t) -> Ordering {
+                      fn cmp(&self, other: &Self) -> Ordering {
                           crate::intrinsics::three_way_compare( *self, *other)
                       }
       *)
@@ -5059,7 +7430,7 @@ Module cmp.
       Definition Self : Ty.t := Ty.path "u8".
       
       (*
-                      fn partial_cmp(&self, other: &$t) -> Option<Ordering> {
+                      fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
                           Some(crate::intrinsics::three_way_compare( *self, *other))
                       }
       *)
@@ -5086,7 +7457,7 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      (*                 fn lt(&self, other: &$t) -> bool { ( *self) < ( *other) } *)
+      (*             fn lt(&self, other: &Self) -> bool { *self <  *other } *)
       Definition lt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -5104,7 +7475,7 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      (*                 fn le(&self, other: &$t) -> bool { ( *self) <= ( *other) } *)
+      (*             fn le(&self, other: &Self) -> bool { *self <= *other } *)
       Definition le (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -5122,25 +7493,7 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      (*                 fn ge(&self, other: &$t) -> bool { ( *self) >= ( *other) } *)
-      Definition ge (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [ self; other ] =>
-          ltac:(M.monadic
-            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], self |) in
-            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], other |) in
-            M.call_closure (|
-              Ty.path "bool",
-              BinOp.ge,
-              [
-                M.read (| M.deref (| M.read (| self |) |) |);
-                M.read (| M.deref (| M.read (| other |) |) |)
-              ]
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      (*                 fn gt(&self, other: &$t) -> bool { ( *self) > ( *other) } *)
+      (*             fn gt(&self, other: &Self) -> bool { *self >  *other } *)
       Definition gt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -5158,6 +7511,332 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
+      (*             fn ge(&self, other: &Self) -> bool { *self >= *other } *)
+      Definition ge (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], other |) in
+            M.call_closure (|
+              Ty.path "bool",
+              BinOp.ge,
+              [
+                M.read (| M.deref (| M.read (| self |) |) |);
+                M.read (| M.deref (| M.read (| other |) |) |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*
+                  fn __chaining_lt(&self, other: &Self) -> ControlFlow<bool> {
+                      let (lhs, rhs) = ( *self, *other);
+                      if lhs == rhs { Continue(()) } else { Break(lhs < rhs) }
+                  }
+      *)
+      Definition __chaining_lt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], other |) in
+            M.match_operator (|
+              Ty.apply
+                (Ty.path "core::ops::control_flow::ControlFlow")
+                []
+                [ Ty.path "bool"; Ty.tuple [] ],
+              M.alloc (|
+                Ty.tuple [ Ty.path "u8"; Ty.path "u8" ],
+                Value.Tuple
+                  [
+                    M.read (| M.deref (| M.read (| self |) |) |);
+                    M.read (| M.deref (| M.read (| other |) |) |)
+                  ]
+              |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                    let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                    let lhs := M.copy (| Ty.path "u8", γ0_0 |) in
+                    let rhs := M.copy (| Ty.path "u8", γ0_1 |) in
+                    M.match_operator (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [ Ty.path "bool"; Ty.tuple [] ],
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ :=
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Continue"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [ Value.Tuple [] ]));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Break"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.lt,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              ]))
+                      ]
+                    |)))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*
+                  fn __chaining_le(&self, other: &Self) -> ControlFlow<bool> {
+                      let (lhs, rhs) = ( *self, *other);
+                      if lhs == rhs { Continue(()) } else { Break(lhs <= rhs) }
+                  }
+      *)
+      Definition __chaining_le (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], other |) in
+            M.match_operator (|
+              Ty.apply
+                (Ty.path "core::ops::control_flow::ControlFlow")
+                []
+                [ Ty.path "bool"; Ty.tuple [] ],
+              M.alloc (|
+                Ty.tuple [ Ty.path "u8"; Ty.path "u8" ],
+                Value.Tuple
+                  [
+                    M.read (| M.deref (| M.read (| self |) |) |);
+                    M.read (| M.deref (| M.read (| other |) |) |)
+                  ]
+              |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                    let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                    let lhs := M.copy (| Ty.path "u8", γ0_0 |) in
+                    let rhs := M.copy (| Ty.path "u8", γ0_1 |) in
+                    M.match_operator (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [ Ty.path "bool"; Ty.tuple [] ],
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ :=
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Continue"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [ Value.Tuple [] ]));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Break"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.le,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              ]))
+                      ]
+                    |)))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*
+                  fn __chaining_gt(&self, other: &Self) -> ControlFlow<bool> {
+                      let (lhs, rhs) = ( *self, *other);
+                      if lhs == rhs { Continue(()) } else { Break(lhs > rhs) }
+                  }
+      *)
+      Definition __chaining_gt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], other |) in
+            M.match_operator (|
+              Ty.apply
+                (Ty.path "core::ops::control_flow::ControlFlow")
+                []
+                [ Ty.path "bool"; Ty.tuple [] ],
+              M.alloc (|
+                Ty.tuple [ Ty.path "u8"; Ty.path "u8" ],
+                Value.Tuple
+                  [
+                    M.read (| M.deref (| M.read (| self |) |) |);
+                    M.read (| M.deref (| M.read (| other |) |) |)
+                  ]
+              |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                    let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                    let lhs := M.copy (| Ty.path "u8", γ0_0 |) in
+                    let rhs := M.copy (| Ty.path "u8", γ0_1 |) in
+                    M.match_operator (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [ Ty.path "bool"; Ty.tuple [] ],
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ :=
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Continue"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [ Value.Tuple [] ]));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Break"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.gt,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              ]))
+                      ]
+                    |)))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*
+                  fn __chaining_ge(&self, other: &Self) -> ControlFlow<bool> {
+                      let (lhs, rhs) = ( *self, *other);
+                      if lhs == rhs { Continue(()) } else { Break(lhs >= rhs) }
+                  }
+      *)
+      Definition __chaining_ge (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], other |) in
+            M.match_operator (|
+              Ty.apply
+                (Ty.path "core::ops::control_flow::ControlFlow")
+                []
+                [ Ty.path "bool"; Ty.tuple [] ],
+              M.alloc (|
+                Ty.tuple [ Ty.path "u8"; Ty.path "u8" ],
+                Value.Tuple
+                  [
+                    M.read (| M.deref (| M.read (| self |) |) |);
+                    M.read (| M.deref (| M.read (| other |) |) |)
+                  ]
+              |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                    let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                    let lhs := M.copy (| Ty.path "u8", γ0_0 |) in
+                    let rhs := M.copy (| Ty.path "u8", γ0_1 |) in
+                    M.match_operator (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [ Ty.path "bool"; Ty.tuple [] ],
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ :=
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Continue"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [ Value.Tuple [] ]));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Break"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.ge,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              ]))
+                      ]
+                    |)))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
       Axiom Implements :
         M.IsTraitInstance
           "core::cmp::PartialOrd"
@@ -5169,8 +7848,12 @@ Module cmp.
             ("partial_cmp", InstanceField.Method partial_cmp);
             ("lt", InstanceField.Method lt);
             ("le", InstanceField.Method le);
+            ("gt", InstanceField.Method gt);
             ("ge", InstanceField.Method ge);
-            ("gt", InstanceField.Method gt)
+            ("__chaining_lt", InstanceField.Method __chaining_lt);
+            ("__chaining_le", InstanceField.Method __chaining_le);
+            ("__chaining_gt", InstanceField.Method __chaining_gt);
+            ("__chaining_ge", InstanceField.Method __chaining_ge)
           ].
     End Impl_core_cmp_PartialOrd_u8_for_u8.
     
@@ -5178,7 +7861,7 @@ Module cmp.
       Definition Self : Ty.t := Ty.path "u8".
       
       (*
-                      fn cmp(&self, other: &$t) -> Ordering {
+                      fn cmp(&self, other: &Self) -> Ordering {
                           crate::intrinsics::three_way_compare( *self, *other)
                       }
       *)
@@ -5212,7 +7895,7 @@ Module cmp.
       Definition Self : Ty.t := Ty.path "u16".
       
       (*
-                      fn partial_cmp(&self, other: &$t) -> Option<Ordering> {
+                      fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
                           Some(crate::intrinsics::three_way_compare( *self, *other))
                       }
       *)
@@ -5239,7 +7922,7 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      (*                 fn lt(&self, other: &$t) -> bool { ( *self) < ( *other) } *)
+      (*             fn lt(&self, other: &Self) -> bool { *self <  *other } *)
       Definition lt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -5257,7 +7940,7 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      (*                 fn le(&self, other: &$t) -> bool { ( *self) <= ( *other) } *)
+      (*             fn le(&self, other: &Self) -> bool { *self <= *other } *)
       Definition le (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -5275,25 +7958,7 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      (*                 fn ge(&self, other: &$t) -> bool { ( *self) >= ( *other) } *)
-      Definition ge (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [ self; other ] =>
-          ltac:(M.monadic
-            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u16" ], self |) in
-            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u16" ], other |) in
-            M.call_closure (|
-              Ty.path "bool",
-              BinOp.ge,
-              [
-                M.read (| M.deref (| M.read (| self |) |) |);
-                M.read (| M.deref (| M.read (| other |) |) |)
-              ]
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      (*                 fn gt(&self, other: &$t) -> bool { ( *self) > ( *other) } *)
+      (*             fn gt(&self, other: &Self) -> bool { *self >  *other } *)
       Definition gt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -5311,6 +7976,332 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
+      (*             fn ge(&self, other: &Self) -> bool { *self >= *other } *)
+      Definition ge (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u16" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u16" ], other |) in
+            M.call_closure (|
+              Ty.path "bool",
+              BinOp.ge,
+              [
+                M.read (| M.deref (| M.read (| self |) |) |);
+                M.read (| M.deref (| M.read (| other |) |) |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*
+                  fn __chaining_lt(&self, other: &Self) -> ControlFlow<bool> {
+                      let (lhs, rhs) = ( *self, *other);
+                      if lhs == rhs { Continue(()) } else { Break(lhs < rhs) }
+                  }
+      *)
+      Definition __chaining_lt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u16" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u16" ], other |) in
+            M.match_operator (|
+              Ty.apply
+                (Ty.path "core::ops::control_flow::ControlFlow")
+                []
+                [ Ty.path "bool"; Ty.tuple [] ],
+              M.alloc (|
+                Ty.tuple [ Ty.path "u16"; Ty.path "u16" ],
+                Value.Tuple
+                  [
+                    M.read (| M.deref (| M.read (| self |) |) |);
+                    M.read (| M.deref (| M.read (| other |) |) |)
+                  ]
+              |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                    let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                    let lhs := M.copy (| Ty.path "u16", γ0_0 |) in
+                    let rhs := M.copy (| Ty.path "u16", γ0_1 |) in
+                    M.match_operator (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [ Ty.path "bool"; Ty.tuple [] ],
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ :=
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Continue"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [ Value.Tuple [] ]));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Break"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.lt,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              ]))
+                      ]
+                    |)))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*
+                  fn __chaining_le(&self, other: &Self) -> ControlFlow<bool> {
+                      let (lhs, rhs) = ( *self, *other);
+                      if lhs == rhs { Continue(()) } else { Break(lhs <= rhs) }
+                  }
+      *)
+      Definition __chaining_le (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u16" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u16" ], other |) in
+            M.match_operator (|
+              Ty.apply
+                (Ty.path "core::ops::control_flow::ControlFlow")
+                []
+                [ Ty.path "bool"; Ty.tuple [] ],
+              M.alloc (|
+                Ty.tuple [ Ty.path "u16"; Ty.path "u16" ],
+                Value.Tuple
+                  [
+                    M.read (| M.deref (| M.read (| self |) |) |);
+                    M.read (| M.deref (| M.read (| other |) |) |)
+                  ]
+              |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                    let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                    let lhs := M.copy (| Ty.path "u16", γ0_0 |) in
+                    let rhs := M.copy (| Ty.path "u16", γ0_1 |) in
+                    M.match_operator (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [ Ty.path "bool"; Ty.tuple [] ],
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ :=
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Continue"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [ Value.Tuple [] ]));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Break"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.le,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              ]))
+                      ]
+                    |)))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*
+                  fn __chaining_gt(&self, other: &Self) -> ControlFlow<bool> {
+                      let (lhs, rhs) = ( *self, *other);
+                      if lhs == rhs { Continue(()) } else { Break(lhs > rhs) }
+                  }
+      *)
+      Definition __chaining_gt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u16" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u16" ], other |) in
+            M.match_operator (|
+              Ty.apply
+                (Ty.path "core::ops::control_flow::ControlFlow")
+                []
+                [ Ty.path "bool"; Ty.tuple [] ],
+              M.alloc (|
+                Ty.tuple [ Ty.path "u16"; Ty.path "u16" ],
+                Value.Tuple
+                  [
+                    M.read (| M.deref (| M.read (| self |) |) |);
+                    M.read (| M.deref (| M.read (| other |) |) |)
+                  ]
+              |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                    let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                    let lhs := M.copy (| Ty.path "u16", γ0_0 |) in
+                    let rhs := M.copy (| Ty.path "u16", γ0_1 |) in
+                    M.match_operator (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [ Ty.path "bool"; Ty.tuple [] ],
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ :=
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Continue"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [ Value.Tuple [] ]));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Break"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.gt,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              ]))
+                      ]
+                    |)))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*
+                  fn __chaining_ge(&self, other: &Self) -> ControlFlow<bool> {
+                      let (lhs, rhs) = ( *self, *other);
+                      if lhs == rhs { Continue(()) } else { Break(lhs >= rhs) }
+                  }
+      *)
+      Definition __chaining_ge (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u16" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u16" ], other |) in
+            M.match_operator (|
+              Ty.apply
+                (Ty.path "core::ops::control_flow::ControlFlow")
+                []
+                [ Ty.path "bool"; Ty.tuple [] ],
+              M.alloc (|
+                Ty.tuple [ Ty.path "u16"; Ty.path "u16" ],
+                Value.Tuple
+                  [
+                    M.read (| M.deref (| M.read (| self |) |) |);
+                    M.read (| M.deref (| M.read (| other |) |) |)
+                  ]
+              |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                    let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                    let lhs := M.copy (| Ty.path "u16", γ0_0 |) in
+                    let rhs := M.copy (| Ty.path "u16", γ0_1 |) in
+                    M.match_operator (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [ Ty.path "bool"; Ty.tuple [] ],
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ :=
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Continue"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [ Value.Tuple [] ]));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Break"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.ge,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              ]))
+                      ]
+                    |)))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
       Axiom Implements :
         M.IsTraitInstance
           "core::cmp::PartialOrd"
@@ -5322,8 +8313,12 @@ Module cmp.
             ("partial_cmp", InstanceField.Method partial_cmp);
             ("lt", InstanceField.Method lt);
             ("le", InstanceField.Method le);
+            ("gt", InstanceField.Method gt);
             ("ge", InstanceField.Method ge);
-            ("gt", InstanceField.Method gt)
+            ("__chaining_lt", InstanceField.Method __chaining_lt);
+            ("__chaining_le", InstanceField.Method __chaining_le);
+            ("__chaining_gt", InstanceField.Method __chaining_gt);
+            ("__chaining_ge", InstanceField.Method __chaining_ge)
           ].
     End Impl_core_cmp_PartialOrd_u16_for_u16.
     
@@ -5331,7 +8326,7 @@ Module cmp.
       Definition Self : Ty.t := Ty.path "u16".
       
       (*
-                      fn cmp(&self, other: &$t) -> Ordering {
+                      fn cmp(&self, other: &Self) -> Ordering {
                           crate::intrinsics::three_way_compare( *self, *other)
                       }
       *)
@@ -5365,7 +8360,7 @@ Module cmp.
       Definition Self : Ty.t := Ty.path "u32".
       
       (*
-                      fn partial_cmp(&self, other: &$t) -> Option<Ordering> {
+                      fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
                           Some(crate::intrinsics::three_way_compare( *self, *other))
                       }
       *)
@@ -5392,7 +8387,7 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      (*                 fn lt(&self, other: &$t) -> bool { ( *self) < ( *other) } *)
+      (*             fn lt(&self, other: &Self) -> bool { *self <  *other } *)
       Definition lt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -5410,7 +8405,7 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      (*                 fn le(&self, other: &$t) -> bool { ( *self) <= ( *other) } *)
+      (*             fn le(&self, other: &Self) -> bool { *self <= *other } *)
       Definition le (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -5428,25 +8423,7 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      (*                 fn ge(&self, other: &$t) -> bool { ( *self) >= ( *other) } *)
-      Definition ge (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [ self; other ] =>
-          ltac:(M.monadic
-            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u32" ], self |) in
-            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u32" ], other |) in
-            M.call_closure (|
-              Ty.path "bool",
-              BinOp.ge,
-              [
-                M.read (| M.deref (| M.read (| self |) |) |);
-                M.read (| M.deref (| M.read (| other |) |) |)
-              ]
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      (*                 fn gt(&self, other: &$t) -> bool { ( *self) > ( *other) } *)
+      (*             fn gt(&self, other: &Self) -> bool { *self >  *other } *)
       Definition gt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -5464,6 +8441,332 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
+      (*             fn ge(&self, other: &Self) -> bool { *self >= *other } *)
+      Definition ge (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u32" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u32" ], other |) in
+            M.call_closure (|
+              Ty.path "bool",
+              BinOp.ge,
+              [
+                M.read (| M.deref (| M.read (| self |) |) |);
+                M.read (| M.deref (| M.read (| other |) |) |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*
+                  fn __chaining_lt(&self, other: &Self) -> ControlFlow<bool> {
+                      let (lhs, rhs) = ( *self, *other);
+                      if lhs == rhs { Continue(()) } else { Break(lhs < rhs) }
+                  }
+      *)
+      Definition __chaining_lt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u32" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u32" ], other |) in
+            M.match_operator (|
+              Ty.apply
+                (Ty.path "core::ops::control_flow::ControlFlow")
+                []
+                [ Ty.path "bool"; Ty.tuple [] ],
+              M.alloc (|
+                Ty.tuple [ Ty.path "u32"; Ty.path "u32" ],
+                Value.Tuple
+                  [
+                    M.read (| M.deref (| M.read (| self |) |) |);
+                    M.read (| M.deref (| M.read (| other |) |) |)
+                  ]
+              |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                    let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                    let lhs := M.copy (| Ty.path "u32", γ0_0 |) in
+                    let rhs := M.copy (| Ty.path "u32", γ0_1 |) in
+                    M.match_operator (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [ Ty.path "bool"; Ty.tuple [] ],
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ :=
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Continue"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [ Value.Tuple [] ]));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Break"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.lt,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              ]))
+                      ]
+                    |)))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*
+                  fn __chaining_le(&self, other: &Self) -> ControlFlow<bool> {
+                      let (lhs, rhs) = ( *self, *other);
+                      if lhs == rhs { Continue(()) } else { Break(lhs <= rhs) }
+                  }
+      *)
+      Definition __chaining_le (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u32" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u32" ], other |) in
+            M.match_operator (|
+              Ty.apply
+                (Ty.path "core::ops::control_flow::ControlFlow")
+                []
+                [ Ty.path "bool"; Ty.tuple [] ],
+              M.alloc (|
+                Ty.tuple [ Ty.path "u32"; Ty.path "u32" ],
+                Value.Tuple
+                  [
+                    M.read (| M.deref (| M.read (| self |) |) |);
+                    M.read (| M.deref (| M.read (| other |) |) |)
+                  ]
+              |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                    let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                    let lhs := M.copy (| Ty.path "u32", γ0_0 |) in
+                    let rhs := M.copy (| Ty.path "u32", γ0_1 |) in
+                    M.match_operator (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [ Ty.path "bool"; Ty.tuple [] ],
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ :=
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Continue"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [ Value.Tuple [] ]));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Break"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.le,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              ]))
+                      ]
+                    |)))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*
+                  fn __chaining_gt(&self, other: &Self) -> ControlFlow<bool> {
+                      let (lhs, rhs) = ( *self, *other);
+                      if lhs == rhs { Continue(()) } else { Break(lhs > rhs) }
+                  }
+      *)
+      Definition __chaining_gt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u32" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u32" ], other |) in
+            M.match_operator (|
+              Ty.apply
+                (Ty.path "core::ops::control_flow::ControlFlow")
+                []
+                [ Ty.path "bool"; Ty.tuple [] ],
+              M.alloc (|
+                Ty.tuple [ Ty.path "u32"; Ty.path "u32" ],
+                Value.Tuple
+                  [
+                    M.read (| M.deref (| M.read (| self |) |) |);
+                    M.read (| M.deref (| M.read (| other |) |) |)
+                  ]
+              |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                    let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                    let lhs := M.copy (| Ty.path "u32", γ0_0 |) in
+                    let rhs := M.copy (| Ty.path "u32", γ0_1 |) in
+                    M.match_operator (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [ Ty.path "bool"; Ty.tuple [] ],
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ :=
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Continue"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [ Value.Tuple [] ]));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Break"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.gt,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              ]))
+                      ]
+                    |)))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*
+                  fn __chaining_ge(&self, other: &Self) -> ControlFlow<bool> {
+                      let (lhs, rhs) = ( *self, *other);
+                      if lhs == rhs { Continue(()) } else { Break(lhs >= rhs) }
+                  }
+      *)
+      Definition __chaining_ge (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u32" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u32" ], other |) in
+            M.match_operator (|
+              Ty.apply
+                (Ty.path "core::ops::control_flow::ControlFlow")
+                []
+                [ Ty.path "bool"; Ty.tuple [] ],
+              M.alloc (|
+                Ty.tuple [ Ty.path "u32"; Ty.path "u32" ],
+                Value.Tuple
+                  [
+                    M.read (| M.deref (| M.read (| self |) |) |);
+                    M.read (| M.deref (| M.read (| other |) |) |)
+                  ]
+              |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                    let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                    let lhs := M.copy (| Ty.path "u32", γ0_0 |) in
+                    let rhs := M.copy (| Ty.path "u32", γ0_1 |) in
+                    M.match_operator (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [ Ty.path "bool"; Ty.tuple [] ],
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ :=
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Continue"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [ Value.Tuple [] ]));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Break"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.ge,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              ]))
+                      ]
+                    |)))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
       Axiom Implements :
         M.IsTraitInstance
           "core::cmp::PartialOrd"
@@ -5475,8 +8778,12 @@ Module cmp.
             ("partial_cmp", InstanceField.Method partial_cmp);
             ("lt", InstanceField.Method lt);
             ("le", InstanceField.Method le);
+            ("gt", InstanceField.Method gt);
             ("ge", InstanceField.Method ge);
-            ("gt", InstanceField.Method gt)
+            ("__chaining_lt", InstanceField.Method __chaining_lt);
+            ("__chaining_le", InstanceField.Method __chaining_le);
+            ("__chaining_gt", InstanceField.Method __chaining_gt);
+            ("__chaining_ge", InstanceField.Method __chaining_ge)
           ].
     End Impl_core_cmp_PartialOrd_u32_for_u32.
     
@@ -5484,7 +8791,7 @@ Module cmp.
       Definition Self : Ty.t := Ty.path "u32".
       
       (*
-                      fn cmp(&self, other: &$t) -> Ordering {
+                      fn cmp(&self, other: &Self) -> Ordering {
                           crate::intrinsics::three_way_compare( *self, *other)
                       }
       *)
@@ -5518,7 +8825,7 @@ Module cmp.
       Definition Self : Ty.t := Ty.path "u64".
       
       (*
-                      fn partial_cmp(&self, other: &$t) -> Option<Ordering> {
+                      fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
                           Some(crate::intrinsics::three_way_compare( *self, *other))
                       }
       *)
@@ -5545,7 +8852,7 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      (*                 fn lt(&self, other: &$t) -> bool { ( *self) < ( *other) } *)
+      (*             fn lt(&self, other: &Self) -> bool { *self <  *other } *)
       Definition lt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -5563,7 +8870,7 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      (*                 fn le(&self, other: &$t) -> bool { ( *self) <= ( *other) } *)
+      (*             fn le(&self, other: &Self) -> bool { *self <= *other } *)
       Definition le (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -5581,25 +8888,7 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      (*                 fn ge(&self, other: &$t) -> bool { ( *self) >= ( *other) } *)
-      Definition ge (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [ self; other ] =>
-          ltac:(M.monadic
-            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], self |) in
-            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], other |) in
-            M.call_closure (|
-              Ty.path "bool",
-              BinOp.ge,
-              [
-                M.read (| M.deref (| M.read (| self |) |) |);
-                M.read (| M.deref (| M.read (| other |) |) |)
-              ]
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      (*                 fn gt(&self, other: &$t) -> bool { ( *self) > ( *other) } *)
+      (*             fn gt(&self, other: &Self) -> bool { *self >  *other } *)
       Definition gt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -5617,6 +8906,332 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
+      (*             fn ge(&self, other: &Self) -> bool { *self >= *other } *)
+      Definition ge (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], other |) in
+            M.call_closure (|
+              Ty.path "bool",
+              BinOp.ge,
+              [
+                M.read (| M.deref (| M.read (| self |) |) |);
+                M.read (| M.deref (| M.read (| other |) |) |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*
+                  fn __chaining_lt(&self, other: &Self) -> ControlFlow<bool> {
+                      let (lhs, rhs) = ( *self, *other);
+                      if lhs == rhs { Continue(()) } else { Break(lhs < rhs) }
+                  }
+      *)
+      Definition __chaining_lt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], other |) in
+            M.match_operator (|
+              Ty.apply
+                (Ty.path "core::ops::control_flow::ControlFlow")
+                []
+                [ Ty.path "bool"; Ty.tuple [] ],
+              M.alloc (|
+                Ty.tuple [ Ty.path "u64"; Ty.path "u64" ],
+                Value.Tuple
+                  [
+                    M.read (| M.deref (| M.read (| self |) |) |);
+                    M.read (| M.deref (| M.read (| other |) |) |)
+                  ]
+              |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                    let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                    let lhs := M.copy (| Ty.path "u64", γ0_0 |) in
+                    let rhs := M.copy (| Ty.path "u64", γ0_1 |) in
+                    M.match_operator (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [ Ty.path "bool"; Ty.tuple [] ],
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ :=
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Continue"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [ Value.Tuple [] ]));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Break"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.lt,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              ]))
+                      ]
+                    |)))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*
+                  fn __chaining_le(&self, other: &Self) -> ControlFlow<bool> {
+                      let (lhs, rhs) = ( *self, *other);
+                      if lhs == rhs { Continue(()) } else { Break(lhs <= rhs) }
+                  }
+      *)
+      Definition __chaining_le (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], other |) in
+            M.match_operator (|
+              Ty.apply
+                (Ty.path "core::ops::control_flow::ControlFlow")
+                []
+                [ Ty.path "bool"; Ty.tuple [] ],
+              M.alloc (|
+                Ty.tuple [ Ty.path "u64"; Ty.path "u64" ],
+                Value.Tuple
+                  [
+                    M.read (| M.deref (| M.read (| self |) |) |);
+                    M.read (| M.deref (| M.read (| other |) |) |)
+                  ]
+              |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                    let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                    let lhs := M.copy (| Ty.path "u64", γ0_0 |) in
+                    let rhs := M.copy (| Ty.path "u64", γ0_1 |) in
+                    M.match_operator (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [ Ty.path "bool"; Ty.tuple [] ],
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ :=
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Continue"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [ Value.Tuple [] ]));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Break"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.le,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              ]))
+                      ]
+                    |)))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*
+                  fn __chaining_gt(&self, other: &Self) -> ControlFlow<bool> {
+                      let (lhs, rhs) = ( *self, *other);
+                      if lhs == rhs { Continue(()) } else { Break(lhs > rhs) }
+                  }
+      *)
+      Definition __chaining_gt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], other |) in
+            M.match_operator (|
+              Ty.apply
+                (Ty.path "core::ops::control_flow::ControlFlow")
+                []
+                [ Ty.path "bool"; Ty.tuple [] ],
+              M.alloc (|
+                Ty.tuple [ Ty.path "u64"; Ty.path "u64" ],
+                Value.Tuple
+                  [
+                    M.read (| M.deref (| M.read (| self |) |) |);
+                    M.read (| M.deref (| M.read (| other |) |) |)
+                  ]
+              |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                    let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                    let lhs := M.copy (| Ty.path "u64", γ0_0 |) in
+                    let rhs := M.copy (| Ty.path "u64", γ0_1 |) in
+                    M.match_operator (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [ Ty.path "bool"; Ty.tuple [] ],
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ :=
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Continue"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [ Value.Tuple [] ]));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Break"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.gt,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              ]))
+                      ]
+                    |)))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*
+                  fn __chaining_ge(&self, other: &Self) -> ControlFlow<bool> {
+                      let (lhs, rhs) = ( *self, *other);
+                      if lhs == rhs { Continue(()) } else { Break(lhs >= rhs) }
+                  }
+      *)
+      Definition __chaining_ge (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], other |) in
+            M.match_operator (|
+              Ty.apply
+                (Ty.path "core::ops::control_flow::ControlFlow")
+                []
+                [ Ty.path "bool"; Ty.tuple [] ],
+              M.alloc (|
+                Ty.tuple [ Ty.path "u64"; Ty.path "u64" ],
+                Value.Tuple
+                  [
+                    M.read (| M.deref (| M.read (| self |) |) |);
+                    M.read (| M.deref (| M.read (| other |) |) |)
+                  ]
+              |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                    let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                    let lhs := M.copy (| Ty.path "u64", γ0_0 |) in
+                    let rhs := M.copy (| Ty.path "u64", γ0_1 |) in
+                    M.match_operator (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [ Ty.path "bool"; Ty.tuple [] ],
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ :=
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Continue"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [ Value.Tuple [] ]));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Break"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.ge,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              ]))
+                      ]
+                    |)))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
       Axiom Implements :
         M.IsTraitInstance
           "core::cmp::PartialOrd"
@@ -5628,8 +9243,12 @@ Module cmp.
             ("partial_cmp", InstanceField.Method partial_cmp);
             ("lt", InstanceField.Method lt);
             ("le", InstanceField.Method le);
+            ("gt", InstanceField.Method gt);
             ("ge", InstanceField.Method ge);
-            ("gt", InstanceField.Method gt)
+            ("__chaining_lt", InstanceField.Method __chaining_lt);
+            ("__chaining_le", InstanceField.Method __chaining_le);
+            ("__chaining_gt", InstanceField.Method __chaining_gt);
+            ("__chaining_ge", InstanceField.Method __chaining_ge)
           ].
     End Impl_core_cmp_PartialOrd_u64_for_u64.
     
@@ -5637,7 +9256,7 @@ Module cmp.
       Definition Self : Ty.t := Ty.path "u64".
       
       (*
-                      fn cmp(&self, other: &$t) -> Ordering {
+                      fn cmp(&self, other: &Self) -> Ordering {
                           crate::intrinsics::three_way_compare( *self, *other)
                       }
       *)
@@ -5671,7 +9290,7 @@ Module cmp.
       Definition Self : Ty.t := Ty.path "u128".
       
       (*
-                      fn partial_cmp(&self, other: &$t) -> Option<Ordering> {
+                      fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
                           Some(crate::intrinsics::three_way_compare( *self, *other))
                       }
       *)
@@ -5702,7 +9321,7 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      (*                 fn lt(&self, other: &$t) -> bool { ( *self) < ( *other) } *)
+      (*             fn lt(&self, other: &Self) -> bool { *self <  *other } *)
       Definition lt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -5720,7 +9339,7 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      (*                 fn le(&self, other: &$t) -> bool { ( *self) <= ( *other) } *)
+      (*             fn le(&self, other: &Self) -> bool { *self <= *other } *)
       Definition le (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -5738,25 +9357,7 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      (*                 fn ge(&self, other: &$t) -> bool { ( *self) >= ( *other) } *)
-      Definition ge (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [ self; other ] =>
-          ltac:(M.monadic
-            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u128" ], self |) in
-            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u128" ], other |) in
-            M.call_closure (|
-              Ty.path "bool",
-              BinOp.ge,
-              [
-                M.read (| M.deref (| M.read (| self |) |) |);
-                M.read (| M.deref (| M.read (| other |) |) |)
-              ]
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      (*                 fn gt(&self, other: &$t) -> bool { ( *self) > ( *other) } *)
+      (*             fn gt(&self, other: &Self) -> bool { *self >  *other } *)
       Definition gt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -5774,6 +9375,332 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
+      (*             fn ge(&self, other: &Self) -> bool { *self >= *other } *)
+      Definition ge (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u128" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u128" ], other |) in
+            M.call_closure (|
+              Ty.path "bool",
+              BinOp.ge,
+              [
+                M.read (| M.deref (| M.read (| self |) |) |);
+                M.read (| M.deref (| M.read (| other |) |) |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*
+                  fn __chaining_lt(&self, other: &Self) -> ControlFlow<bool> {
+                      let (lhs, rhs) = ( *self, *other);
+                      if lhs == rhs { Continue(()) } else { Break(lhs < rhs) }
+                  }
+      *)
+      Definition __chaining_lt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u128" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u128" ], other |) in
+            M.match_operator (|
+              Ty.apply
+                (Ty.path "core::ops::control_flow::ControlFlow")
+                []
+                [ Ty.path "bool"; Ty.tuple [] ],
+              M.alloc (|
+                Ty.tuple [ Ty.path "u128"; Ty.path "u128" ],
+                Value.Tuple
+                  [
+                    M.read (| M.deref (| M.read (| self |) |) |);
+                    M.read (| M.deref (| M.read (| other |) |) |)
+                  ]
+              |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                    let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                    let lhs := M.copy (| Ty.path "u128", γ0_0 |) in
+                    let rhs := M.copy (| Ty.path "u128", γ0_1 |) in
+                    M.match_operator (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [ Ty.path "bool"; Ty.tuple [] ],
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ :=
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Continue"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [ Value.Tuple [] ]));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Break"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.lt,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              ]))
+                      ]
+                    |)))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*
+                  fn __chaining_le(&self, other: &Self) -> ControlFlow<bool> {
+                      let (lhs, rhs) = ( *self, *other);
+                      if lhs == rhs { Continue(()) } else { Break(lhs <= rhs) }
+                  }
+      *)
+      Definition __chaining_le (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u128" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u128" ], other |) in
+            M.match_operator (|
+              Ty.apply
+                (Ty.path "core::ops::control_flow::ControlFlow")
+                []
+                [ Ty.path "bool"; Ty.tuple [] ],
+              M.alloc (|
+                Ty.tuple [ Ty.path "u128"; Ty.path "u128" ],
+                Value.Tuple
+                  [
+                    M.read (| M.deref (| M.read (| self |) |) |);
+                    M.read (| M.deref (| M.read (| other |) |) |)
+                  ]
+              |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                    let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                    let lhs := M.copy (| Ty.path "u128", γ0_0 |) in
+                    let rhs := M.copy (| Ty.path "u128", γ0_1 |) in
+                    M.match_operator (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [ Ty.path "bool"; Ty.tuple [] ],
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ :=
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Continue"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [ Value.Tuple [] ]));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Break"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.le,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              ]))
+                      ]
+                    |)))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*
+                  fn __chaining_gt(&self, other: &Self) -> ControlFlow<bool> {
+                      let (lhs, rhs) = ( *self, *other);
+                      if lhs == rhs { Continue(()) } else { Break(lhs > rhs) }
+                  }
+      *)
+      Definition __chaining_gt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u128" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u128" ], other |) in
+            M.match_operator (|
+              Ty.apply
+                (Ty.path "core::ops::control_flow::ControlFlow")
+                []
+                [ Ty.path "bool"; Ty.tuple [] ],
+              M.alloc (|
+                Ty.tuple [ Ty.path "u128"; Ty.path "u128" ],
+                Value.Tuple
+                  [
+                    M.read (| M.deref (| M.read (| self |) |) |);
+                    M.read (| M.deref (| M.read (| other |) |) |)
+                  ]
+              |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                    let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                    let lhs := M.copy (| Ty.path "u128", γ0_0 |) in
+                    let rhs := M.copy (| Ty.path "u128", γ0_1 |) in
+                    M.match_operator (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [ Ty.path "bool"; Ty.tuple [] ],
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ :=
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Continue"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [ Value.Tuple [] ]));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Break"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.gt,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              ]))
+                      ]
+                    |)))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*
+                  fn __chaining_ge(&self, other: &Self) -> ControlFlow<bool> {
+                      let (lhs, rhs) = ( *self, *other);
+                      if lhs == rhs { Continue(()) } else { Break(lhs >= rhs) }
+                  }
+      *)
+      Definition __chaining_ge (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u128" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u128" ], other |) in
+            M.match_operator (|
+              Ty.apply
+                (Ty.path "core::ops::control_flow::ControlFlow")
+                []
+                [ Ty.path "bool"; Ty.tuple [] ],
+              M.alloc (|
+                Ty.tuple [ Ty.path "u128"; Ty.path "u128" ],
+                Value.Tuple
+                  [
+                    M.read (| M.deref (| M.read (| self |) |) |);
+                    M.read (| M.deref (| M.read (| other |) |) |)
+                  ]
+              |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                    let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                    let lhs := M.copy (| Ty.path "u128", γ0_0 |) in
+                    let rhs := M.copy (| Ty.path "u128", γ0_1 |) in
+                    M.match_operator (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [ Ty.path "bool"; Ty.tuple [] ],
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ :=
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Continue"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [ Value.Tuple [] ]));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Break"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.ge,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              ]))
+                      ]
+                    |)))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
       Axiom Implements :
         M.IsTraitInstance
           "core::cmp::PartialOrd"
@@ -5785,8 +9712,12 @@ Module cmp.
             ("partial_cmp", InstanceField.Method partial_cmp);
             ("lt", InstanceField.Method lt);
             ("le", InstanceField.Method le);
+            ("gt", InstanceField.Method gt);
             ("ge", InstanceField.Method ge);
-            ("gt", InstanceField.Method gt)
+            ("__chaining_lt", InstanceField.Method __chaining_lt);
+            ("__chaining_le", InstanceField.Method __chaining_le);
+            ("__chaining_gt", InstanceField.Method __chaining_gt);
+            ("__chaining_ge", InstanceField.Method __chaining_ge)
           ].
     End Impl_core_cmp_PartialOrd_u128_for_u128.
     
@@ -5794,7 +9725,7 @@ Module cmp.
       Definition Self : Ty.t := Ty.path "u128".
       
       (*
-                      fn cmp(&self, other: &$t) -> Ordering {
+                      fn cmp(&self, other: &Self) -> Ordering {
                           crate::intrinsics::three_way_compare( *self, *other)
                       }
       *)
@@ -5828,7 +9759,7 @@ Module cmp.
       Definition Self : Ty.t := Ty.path "isize".
       
       (*
-                      fn partial_cmp(&self, other: &$t) -> Option<Ordering> {
+                      fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
                           Some(crate::intrinsics::three_way_compare( *self, *other))
                       }
       *)
@@ -5859,7 +9790,7 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      (*                 fn lt(&self, other: &$t) -> bool { ( *self) < ( *other) } *)
+      (*             fn lt(&self, other: &Self) -> bool { *self <  *other } *)
       Definition lt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -5877,7 +9808,7 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      (*                 fn le(&self, other: &$t) -> bool { ( *self) <= ( *other) } *)
+      (*             fn le(&self, other: &Self) -> bool { *self <= *other } *)
       Definition le (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -5895,25 +9826,7 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      (*                 fn ge(&self, other: &$t) -> bool { ( *self) >= ( *other) } *)
-      Definition ge (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [ self; other ] =>
-          ltac:(M.monadic
-            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "isize" ], self |) in
-            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "isize" ], other |) in
-            M.call_closure (|
-              Ty.path "bool",
-              BinOp.ge,
-              [
-                M.read (| M.deref (| M.read (| self |) |) |);
-                M.read (| M.deref (| M.read (| other |) |) |)
-              ]
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      (*                 fn gt(&self, other: &$t) -> bool { ( *self) > ( *other) } *)
+      (*             fn gt(&self, other: &Self) -> bool { *self >  *other } *)
       Definition gt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -5931,6 +9844,332 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
+      (*             fn ge(&self, other: &Self) -> bool { *self >= *other } *)
+      Definition ge (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "isize" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "isize" ], other |) in
+            M.call_closure (|
+              Ty.path "bool",
+              BinOp.ge,
+              [
+                M.read (| M.deref (| M.read (| self |) |) |);
+                M.read (| M.deref (| M.read (| other |) |) |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*
+                  fn __chaining_lt(&self, other: &Self) -> ControlFlow<bool> {
+                      let (lhs, rhs) = ( *self, *other);
+                      if lhs == rhs { Continue(()) } else { Break(lhs < rhs) }
+                  }
+      *)
+      Definition __chaining_lt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "isize" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "isize" ], other |) in
+            M.match_operator (|
+              Ty.apply
+                (Ty.path "core::ops::control_flow::ControlFlow")
+                []
+                [ Ty.path "bool"; Ty.tuple [] ],
+              M.alloc (|
+                Ty.tuple [ Ty.path "isize"; Ty.path "isize" ],
+                Value.Tuple
+                  [
+                    M.read (| M.deref (| M.read (| self |) |) |);
+                    M.read (| M.deref (| M.read (| other |) |) |)
+                  ]
+              |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                    let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                    let lhs := M.copy (| Ty.path "isize", γ0_0 |) in
+                    let rhs := M.copy (| Ty.path "isize", γ0_1 |) in
+                    M.match_operator (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [ Ty.path "bool"; Ty.tuple [] ],
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ :=
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Continue"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [ Value.Tuple [] ]));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Break"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.lt,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              ]))
+                      ]
+                    |)))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*
+                  fn __chaining_le(&self, other: &Self) -> ControlFlow<bool> {
+                      let (lhs, rhs) = ( *self, *other);
+                      if lhs == rhs { Continue(()) } else { Break(lhs <= rhs) }
+                  }
+      *)
+      Definition __chaining_le (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "isize" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "isize" ], other |) in
+            M.match_operator (|
+              Ty.apply
+                (Ty.path "core::ops::control_flow::ControlFlow")
+                []
+                [ Ty.path "bool"; Ty.tuple [] ],
+              M.alloc (|
+                Ty.tuple [ Ty.path "isize"; Ty.path "isize" ],
+                Value.Tuple
+                  [
+                    M.read (| M.deref (| M.read (| self |) |) |);
+                    M.read (| M.deref (| M.read (| other |) |) |)
+                  ]
+              |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                    let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                    let lhs := M.copy (| Ty.path "isize", γ0_0 |) in
+                    let rhs := M.copy (| Ty.path "isize", γ0_1 |) in
+                    M.match_operator (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [ Ty.path "bool"; Ty.tuple [] ],
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ :=
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Continue"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [ Value.Tuple [] ]));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Break"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.le,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              ]))
+                      ]
+                    |)))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*
+                  fn __chaining_gt(&self, other: &Self) -> ControlFlow<bool> {
+                      let (lhs, rhs) = ( *self, *other);
+                      if lhs == rhs { Continue(()) } else { Break(lhs > rhs) }
+                  }
+      *)
+      Definition __chaining_gt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "isize" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "isize" ], other |) in
+            M.match_operator (|
+              Ty.apply
+                (Ty.path "core::ops::control_flow::ControlFlow")
+                []
+                [ Ty.path "bool"; Ty.tuple [] ],
+              M.alloc (|
+                Ty.tuple [ Ty.path "isize"; Ty.path "isize" ],
+                Value.Tuple
+                  [
+                    M.read (| M.deref (| M.read (| self |) |) |);
+                    M.read (| M.deref (| M.read (| other |) |) |)
+                  ]
+              |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                    let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                    let lhs := M.copy (| Ty.path "isize", γ0_0 |) in
+                    let rhs := M.copy (| Ty.path "isize", γ0_1 |) in
+                    M.match_operator (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [ Ty.path "bool"; Ty.tuple [] ],
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ :=
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Continue"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [ Value.Tuple [] ]));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Break"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.gt,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              ]))
+                      ]
+                    |)))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*
+                  fn __chaining_ge(&self, other: &Self) -> ControlFlow<bool> {
+                      let (lhs, rhs) = ( *self, *other);
+                      if lhs == rhs { Continue(()) } else { Break(lhs >= rhs) }
+                  }
+      *)
+      Definition __chaining_ge (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "isize" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "isize" ], other |) in
+            M.match_operator (|
+              Ty.apply
+                (Ty.path "core::ops::control_flow::ControlFlow")
+                []
+                [ Ty.path "bool"; Ty.tuple [] ],
+              M.alloc (|
+                Ty.tuple [ Ty.path "isize"; Ty.path "isize" ],
+                Value.Tuple
+                  [
+                    M.read (| M.deref (| M.read (| self |) |) |);
+                    M.read (| M.deref (| M.read (| other |) |) |)
+                  ]
+              |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                    let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                    let lhs := M.copy (| Ty.path "isize", γ0_0 |) in
+                    let rhs := M.copy (| Ty.path "isize", γ0_1 |) in
+                    M.match_operator (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [ Ty.path "bool"; Ty.tuple [] ],
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ :=
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Continue"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [ Value.Tuple [] ]));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Break"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.ge,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              ]))
+                      ]
+                    |)))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
       Axiom Implements :
         M.IsTraitInstance
           "core::cmp::PartialOrd"
@@ -5942,8 +10181,12 @@ Module cmp.
             ("partial_cmp", InstanceField.Method partial_cmp);
             ("lt", InstanceField.Method lt);
             ("le", InstanceField.Method le);
+            ("gt", InstanceField.Method gt);
             ("ge", InstanceField.Method ge);
-            ("gt", InstanceField.Method gt)
+            ("__chaining_lt", InstanceField.Method __chaining_lt);
+            ("__chaining_le", InstanceField.Method __chaining_le);
+            ("__chaining_gt", InstanceField.Method __chaining_gt);
+            ("__chaining_ge", InstanceField.Method __chaining_ge)
           ].
     End Impl_core_cmp_PartialOrd_isize_for_isize.
     
@@ -5951,7 +10194,7 @@ Module cmp.
       Definition Self : Ty.t := Ty.path "isize".
       
       (*
-                      fn cmp(&self, other: &$t) -> Ordering {
+                      fn cmp(&self, other: &Self) -> Ordering {
                           crate::intrinsics::three_way_compare( *self, *other)
                       }
       *)
@@ -5985,7 +10228,7 @@ Module cmp.
       Definition Self : Ty.t := Ty.path "i8".
       
       (*
-                      fn partial_cmp(&self, other: &$t) -> Option<Ordering> {
+                      fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
                           Some(crate::intrinsics::three_way_compare( *self, *other))
                       }
       *)
@@ -6012,7 +10255,7 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      (*                 fn lt(&self, other: &$t) -> bool { ( *self) < ( *other) } *)
+      (*             fn lt(&self, other: &Self) -> bool { *self <  *other } *)
       Definition lt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -6030,7 +10273,7 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      (*                 fn le(&self, other: &$t) -> bool { ( *self) <= ( *other) } *)
+      (*             fn le(&self, other: &Self) -> bool { *self <= *other } *)
       Definition le (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -6048,25 +10291,7 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      (*                 fn ge(&self, other: &$t) -> bool { ( *self) >= ( *other) } *)
-      Definition ge (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [ self; other ] =>
-          ltac:(M.monadic
-            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i8" ], self |) in
-            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i8" ], other |) in
-            M.call_closure (|
-              Ty.path "bool",
-              BinOp.ge,
-              [
-                M.read (| M.deref (| M.read (| self |) |) |);
-                M.read (| M.deref (| M.read (| other |) |) |)
-              ]
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      (*                 fn gt(&self, other: &$t) -> bool { ( *self) > ( *other) } *)
+      (*             fn gt(&self, other: &Self) -> bool { *self >  *other } *)
       Definition gt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -6084,6 +10309,332 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
+      (*             fn ge(&self, other: &Self) -> bool { *self >= *other } *)
+      Definition ge (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i8" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i8" ], other |) in
+            M.call_closure (|
+              Ty.path "bool",
+              BinOp.ge,
+              [
+                M.read (| M.deref (| M.read (| self |) |) |);
+                M.read (| M.deref (| M.read (| other |) |) |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*
+                  fn __chaining_lt(&self, other: &Self) -> ControlFlow<bool> {
+                      let (lhs, rhs) = ( *self, *other);
+                      if lhs == rhs { Continue(()) } else { Break(lhs < rhs) }
+                  }
+      *)
+      Definition __chaining_lt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i8" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i8" ], other |) in
+            M.match_operator (|
+              Ty.apply
+                (Ty.path "core::ops::control_flow::ControlFlow")
+                []
+                [ Ty.path "bool"; Ty.tuple [] ],
+              M.alloc (|
+                Ty.tuple [ Ty.path "i8"; Ty.path "i8" ],
+                Value.Tuple
+                  [
+                    M.read (| M.deref (| M.read (| self |) |) |);
+                    M.read (| M.deref (| M.read (| other |) |) |)
+                  ]
+              |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                    let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                    let lhs := M.copy (| Ty.path "i8", γ0_0 |) in
+                    let rhs := M.copy (| Ty.path "i8", γ0_1 |) in
+                    M.match_operator (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [ Ty.path "bool"; Ty.tuple [] ],
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ :=
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Continue"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [ Value.Tuple [] ]));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Break"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.lt,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              ]))
+                      ]
+                    |)))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*
+                  fn __chaining_le(&self, other: &Self) -> ControlFlow<bool> {
+                      let (lhs, rhs) = ( *self, *other);
+                      if lhs == rhs { Continue(()) } else { Break(lhs <= rhs) }
+                  }
+      *)
+      Definition __chaining_le (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i8" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i8" ], other |) in
+            M.match_operator (|
+              Ty.apply
+                (Ty.path "core::ops::control_flow::ControlFlow")
+                []
+                [ Ty.path "bool"; Ty.tuple [] ],
+              M.alloc (|
+                Ty.tuple [ Ty.path "i8"; Ty.path "i8" ],
+                Value.Tuple
+                  [
+                    M.read (| M.deref (| M.read (| self |) |) |);
+                    M.read (| M.deref (| M.read (| other |) |) |)
+                  ]
+              |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                    let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                    let lhs := M.copy (| Ty.path "i8", γ0_0 |) in
+                    let rhs := M.copy (| Ty.path "i8", γ0_1 |) in
+                    M.match_operator (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [ Ty.path "bool"; Ty.tuple [] ],
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ :=
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Continue"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [ Value.Tuple [] ]));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Break"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.le,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              ]))
+                      ]
+                    |)))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*
+                  fn __chaining_gt(&self, other: &Self) -> ControlFlow<bool> {
+                      let (lhs, rhs) = ( *self, *other);
+                      if lhs == rhs { Continue(()) } else { Break(lhs > rhs) }
+                  }
+      *)
+      Definition __chaining_gt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i8" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i8" ], other |) in
+            M.match_operator (|
+              Ty.apply
+                (Ty.path "core::ops::control_flow::ControlFlow")
+                []
+                [ Ty.path "bool"; Ty.tuple [] ],
+              M.alloc (|
+                Ty.tuple [ Ty.path "i8"; Ty.path "i8" ],
+                Value.Tuple
+                  [
+                    M.read (| M.deref (| M.read (| self |) |) |);
+                    M.read (| M.deref (| M.read (| other |) |) |)
+                  ]
+              |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                    let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                    let lhs := M.copy (| Ty.path "i8", γ0_0 |) in
+                    let rhs := M.copy (| Ty.path "i8", γ0_1 |) in
+                    M.match_operator (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [ Ty.path "bool"; Ty.tuple [] ],
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ :=
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Continue"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [ Value.Tuple [] ]));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Break"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.gt,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              ]))
+                      ]
+                    |)))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*
+                  fn __chaining_ge(&self, other: &Self) -> ControlFlow<bool> {
+                      let (lhs, rhs) = ( *self, *other);
+                      if lhs == rhs { Continue(()) } else { Break(lhs >= rhs) }
+                  }
+      *)
+      Definition __chaining_ge (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i8" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i8" ], other |) in
+            M.match_operator (|
+              Ty.apply
+                (Ty.path "core::ops::control_flow::ControlFlow")
+                []
+                [ Ty.path "bool"; Ty.tuple [] ],
+              M.alloc (|
+                Ty.tuple [ Ty.path "i8"; Ty.path "i8" ],
+                Value.Tuple
+                  [
+                    M.read (| M.deref (| M.read (| self |) |) |);
+                    M.read (| M.deref (| M.read (| other |) |) |)
+                  ]
+              |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                    let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                    let lhs := M.copy (| Ty.path "i8", γ0_0 |) in
+                    let rhs := M.copy (| Ty.path "i8", γ0_1 |) in
+                    M.match_operator (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [ Ty.path "bool"; Ty.tuple [] ],
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ :=
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Continue"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [ Value.Tuple [] ]));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Break"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.ge,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              ]))
+                      ]
+                    |)))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
       Axiom Implements :
         M.IsTraitInstance
           "core::cmp::PartialOrd"
@@ -6095,8 +10646,12 @@ Module cmp.
             ("partial_cmp", InstanceField.Method partial_cmp);
             ("lt", InstanceField.Method lt);
             ("le", InstanceField.Method le);
+            ("gt", InstanceField.Method gt);
             ("ge", InstanceField.Method ge);
-            ("gt", InstanceField.Method gt)
+            ("__chaining_lt", InstanceField.Method __chaining_lt);
+            ("__chaining_le", InstanceField.Method __chaining_le);
+            ("__chaining_gt", InstanceField.Method __chaining_gt);
+            ("__chaining_ge", InstanceField.Method __chaining_ge)
           ].
     End Impl_core_cmp_PartialOrd_i8_for_i8.
     
@@ -6104,7 +10659,7 @@ Module cmp.
       Definition Self : Ty.t := Ty.path "i8".
       
       (*
-                      fn cmp(&self, other: &$t) -> Ordering {
+                      fn cmp(&self, other: &Self) -> Ordering {
                           crate::intrinsics::three_way_compare( *self, *other)
                       }
       *)
@@ -6138,7 +10693,7 @@ Module cmp.
       Definition Self : Ty.t := Ty.path "i16".
       
       (*
-                      fn partial_cmp(&self, other: &$t) -> Option<Ordering> {
+                      fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
                           Some(crate::intrinsics::three_way_compare( *self, *other))
                       }
       *)
@@ -6165,7 +10720,7 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      (*                 fn lt(&self, other: &$t) -> bool { ( *self) < ( *other) } *)
+      (*             fn lt(&self, other: &Self) -> bool { *self <  *other } *)
       Definition lt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -6183,7 +10738,7 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      (*                 fn le(&self, other: &$t) -> bool { ( *self) <= ( *other) } *)
+      (*             fn le(&self, other: &Self) -> bool { *self <= *other } *)
       Definition le (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -6201,25 +10756,7 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      (*                 fn ge(&self, other: &$t) -> bool { ( *self) >= ( *other) } *)
-      Definition ge (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [ self; other ] =>
-          ltac:(M.monadic
-            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i16" ], self |) in
-            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i16" ], other |) in
-            M.call_closure (|
-              Ty.path "bool",
-              BinOp.ge,
-              [
-                M.read (| M.deref (| M.read (| self |) |) |);
-                M.read (| M.deref (| M.read (| other |) |) |)
-              ]
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      (*                 fn gt(&self, other: &$t) -> bool { ( *self) > ( *other) } *)
+      (*             fn gt(&self, other: &Self) -> bool { *self >  *other } *)
       Definition gt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -6237,6 +10774,332 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
+      (*             fn ge(&self, other: &Self) -> bool { *self >= *other } *)
+      Definition ge (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i16" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i16" ], other |) in
+            M.call_closure (|
+              Ty.path "bool",
+              BinOp.ge,
+              [
+                M.read (| M.deref (| M.read (| self |) |) |);
+                M.read (| M.deref (| M.read (| other |) |) |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*
+                  fn __chaining_lt(&self, other: &Self) -> ControlFlow<bool> {
+                      let (lhs, rhs) = ( *self, *other);
+                      if lhs == rhs { Continue(()) } else { Break(lhs < rhs) }
+                  }
+      *)
+      Definition __chaining_lt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i16" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i16" ], other |) in
+            M.match_operator (|
+              Ty.apply
+                (Ty.path "core::ops::control_flow::ControlFlow")
+                []
+                [ Ty.path "bool"; Ty.tuple [] ],
+              M.alloc (|
+                Ty.tuple [ Ty.path "i16"; Ty.path "i16" ],
+                Value.Tuple
+                  [
+                    M.read (| M.deref (| M.read (| self |) |) |);
+                    M.read (| M.deref (| M.read (| other |) |) |)
+                  ]
+              |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                    let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                    let lhs := M.copy (| Ty.path "i16", γ0_0 |) in
+                    let rhs := M.copy (| Ty.path "i16", γ0_1 |) in
+                    M.match_operator (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [ Ty.path "bool"; Ty.tuple [] ],
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ :=
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Continue"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [ Value.Tuple [] ]));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Break"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.lt,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              ]))
+                      ]
+                    |)))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*
+                  fn __chaining_le(&self, other: &Self) -> ControlFlow<bool> {
+                      let (lhs, rhs) = ( *self, *other);
+                      if lhs == rhs { Continue(()) } else { Break(lhs <= rhs) }
+                  }
+      *)
+      Definition __chaining_le (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i16" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i16" ], other |) in
+            M.match_operator (|
+              Ty.apply
+                (Ty.path "core::ops::control_flow::ControlFlow")
+                []
+                [ Ty.path "bool"; Ty.tuple [] ],
+              M.alloc (|
+                Ty.tuple [ Ty.path "i16"; Ty.path "i16" ],
+                Value.Tuple
+                  [
+                    M.read (| M.deref (| M.read (| self |) |) |);
+                    M.read (| M.deref (| M.read (| other |) |) |)
+                  ]
+              |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                    let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                    let lhs := M.copy (| Ty.path "i16", γ0_0 |) in
+                    let rhs := M.copy (| Ty.path "i16", γ0_1 |) in
+                    M.match_operator (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [ Ty.path "bool"; Ty.tuple [] ],
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ :=
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Continue"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [ Value.Tuple [] ]));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Break"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.le,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              ]))
+                      ]
+                    |)))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*
+                  fn __chaining_gt(&self, other: &Self) -> ControlFlow<bool> {
+                      let (lhs, rhs) = ( *self, *other);
+                      if lhs == rhs { Continue(()) } else { Break(lhs > rhs) }
+                  }
+      *)
+      Definition __chaining_gt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i16" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i16" ], other |) in
+            M.match_operator (|
+              Ty.apply
+                (Ty.path "core::ops::control_flow::ControlFlow")
+                []
+                [ Ty.path "bool"; Ty.tuple [] ],
+              M.alloc (|
+                Ty.tuple [ Ty.path "i16"; Ty.path "i16" ],
+                Value.Tuple
+                  [
+                    M.read (| M.deref (| M.read (| self |) |) |);
+                    M.read (| M.deref (| M.read (| other |) |) |)
+                  ]
+              |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                    let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                    let lhs := M.copy (| Ty.path "i16", γ0_0 |) in
+                    let rhs := M.copy (| Ty.path "i16", γ0_1 |) in
+                    M.match_operator (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [ Ty.path "bool"; Ty.tuple [] ],
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ :=
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Continue"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [ Value.Tuple [] ]));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Break"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.gt,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              ]))
+                      ]
+                    |)))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*
+                  fn __chaining_ge(&self, other: &Self) -> ControlFlow<bool> {
+                      let (lhs, rhs) = ( *self, *other);
+                      if lhs == rhs { Continue(()) } else { Break(lhs >= rhs) }
+                  }
+      *)
+      Definition __chaining_ge (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i16" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i16" ], other |) in
+            M.match_operator (|
+              Ty.apply
+                (Ty.path "core::ops::control_flow::ControlFlow")
+                []
+                [ Ty.path "bool"; Ty.tuple [] ],
+              M.alloc (|
+                Ty.tuple [ Ty.path "i16"; Ty.path "i16" ],
+                Value.Tuple
+                  [
+                    M.read (| M.deref (| M.read (| self |) |) |);
+                    M.read (| M.deref (| M.read (| other |) |) |)
+                  ]
+              |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                    let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                    let lhs := M.copy (| Ty.path "i16", γ0_0 |) in
+                    let rhs := M.copy (| Ty.path "i16", γ0_1 |) in
+                    M.match_operator (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [ Ty.path "bool"; Ty.tuple [] ],
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ :=
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Continue"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [ Value.Tuple [] ]));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Break"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.ge,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              ]))
+                      ]
+                    |)))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
       Axiom Implements :
         M.IsTraitInstance
           "core::cmp::PartialOrd"
@@ -6248,8 +11111,12 @@ Module cmp.
             ("partial_cmp", InstanceField.Method partial_cmp);
             ("lt", InstanceField.Method lt);
             ("le", InstanceField.Method le);
+            ("gt", InstanceField.Method gt);
             ("ge", InstanceField.Method ge);
-            ("gt", InstanceField.Method gt)
+            ("__chaining_lt", InstanceField.Method __chaining_lt);
+            ("__chaining_le", InstanceField.Method __chaining_le);
+            ("__chaining_gt", InstanceField.Method __chaining_gt);
+            ("__chaining_ge", InstanceField.Method __chaining_ge)
           ].
     End Impl_core_cmp_PartialOrd_i16_for_i16.
     
@@ -6257,7 +11124,7 @@ Module cmp.
       Definition Self : Ty.t := Ty.path "i16".
       
       (*
-                      fn cmp(&self, other: &$t) -> Ordering {
+                      fn cmp(&self, other: &Self) -> Ordering {
                           crate::intrinsics::three_way_compare( *self, *other)
                       }
       *)
@@ -6291,7 +11158,7 @@ Module cmp.
       Definition Self : Ty.t := Ty.path "i32".
       
       (*
-                      fn partial_cmp(&self, other: &$t) -> Option<Ordering> {
+                      fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
                           Some(crate::intrinsics::three_way_compare( *self, *other))
                       }
       *)
@@ -6318,7 +11185,7 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      (*                 fn lt(&self, other: &$t) -> bool { ( *self) < ( *other) } *)
+      (*             fn lt(&self, other: &Self) -> bool { *self <  *other } *)
       Definition lt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -6336,7 +11203,7 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      (*                 fn le(&self, other: &$t) -> bool { ( *self) <= ( *other) } *)
+      (*             fn le(&self, other: &Self) -> bool { *self <= *other } *)
       Definition le (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -6354,25 +11221,7 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      (*                 fn ge(&self, other: &$t) -> bool { ( *self) >= ( *other) } *)
-      Definition ge (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [ self; other ] =>
-          ltac:(M.monadic
-            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i32" ], self |) in
-            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i32" ], other |) in
-            M.call_closure (|
-              Ty.path "bool",
-              BinOp.ge,
-              [
-                M.read (| M.deref (| M.read (| self |) |) |);
-                M.read (| M.deref (| M.read (| other |) |) |)
-              ]
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      (*                 fn gt(&self, other: &$t) -> bool { ( *self) > ( *other) } *)
+      (*             fn gt(&self, other: &Self) -> bool { *self >  *other } *)
       Definition gt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -6390,6 +11239,332 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
+      (*             fn ge(&self, other: &Self) -> bool { *self >= *other } *)
+      Definition ge (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i32" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i32" ], other |) in
+            M.call_closure (|
+              Ty.path "bool",
+              BinOp.ge,
+              [
+                M.read (| M.deref (| M.read (| self |) |) |);
+                M.read (| M.deref (| M.read (| other |) |) |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*
+                  fn __chaining_lt(&self, other: &Self) -> ControlFlow<bool> {
+                      let (lhs, rhs) = ( *self, *other);
+                      if lhs == rhs { Continue(()) } else { Break(lhs < rhs) }
+                  }
+      *)
+      Definition __chaining_lt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i32" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i32" ], other |) in
+            M.match_operator (|
+              Ty.apply
+                (Ty.path "core::ops::control_flow::ControlFlow")
+                []
+                [ Ty.path "bool"; Ty.tuple [] ],
+              M.alloc (|
+                Ty.tuple [ Ty.path "i32"; Ty.path "i32" ],
+                Value.Tuple
+                  [
+                    M.read (| M.deref (| M.read (| self |) |) |);
+                    M.read (| M.deref (| M.read (| other |) |) |)
+                  ]
+              |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                    let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                    let lhs := M.copy (| Ty.path "i32", γ0_0 |) in
+                    let rhs := M.copy (| Ty.path "i32", γ0_1 |) in
+                    M.match_operator (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [ Ty.path "bool"; Ty.tuple [] ],
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ :=
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Continue"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [ Value.Tuple [] ]));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Break"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.lt,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              ]))
+                      ]
+                    |)))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*
+                  fn __chaining_le(&self, other: &Self) -> ControlFlow<bool> {
+                      let (lhs, rhs) = ( *self, *other);
+                      if lhs == rhs { Continue(()) } else { Break(lhs <= rhs) }
+                  }
+      *)
+      Definition __chaining_le (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i32" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i32" ], other |) in
+            M.match_operator (|
+              Ty.apply
+                (Ty.path "core::ops::control_flow::ControlFlow")
+                []
+                [ Ty.path "bool"; Ty.tuple [] ],
+              M.alloc (|
+                Ty.tuple [ Ty.path "i32"; Ty.path "i32" ],
+                Value.Tuple
+                  [
+                    M.read (| M.deref (| M.read (| self |) |) |);
+                    M.read (| M.deref (| M.read (| other |) |) |)
+                  ]
+              |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                    let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                    let lhs := M.copy (| Ty.path "i32", γ0_0 |) in
+                    let rhs := M.copy (| Ty.path "i32", γ0_1 |) in
+                    M.match_operator (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [ Ty.path "bool"; Ty.tuple [] ],
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ :=
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Continue"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [ Value.Tuple [] ]));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Break"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.le,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              ]))
+                      ]
+                    |)))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*
+                  fn __chaining_gt(&self, other: &Self) -> ControlFlow<bool> {
+                      let (lhs, rhs) = ( *self, *other);
+                      if lhs == rhs { Continue(()) } else { Break(lhs > rhs) }
+                  }
+      *)
+      Definition __chaining_gt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i32" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i32" ], other |) in
+            M.match_operator (|
+              Ty.apply
+                (Ty.path "core::ops::control_flow::ControlFlow")
+                []
+                [ Ty.path "bool"; Ty.tuple [] ],
+              M.alloc (|
+                Ty.tuple [ Ty.path "i32"; Ty.path "i32" ],
+                Value.Tuple
+                  [
+                    M.read (| M.deref (| M.read (| self |) |) |);
+                    M.read (| M.deref (| M.read (| other |) |) |)
+                  ]
+              |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                    let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                    let lhs := M.copy (| Ty.path "i32", γ0_0 |) in
+                    let rhs := M.copy (| Ty.path "i32", γ0_1 |) in
+                    M.match_operator (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [ Ty.path "bool"; Ty.tuple [] ],
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ :=
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Continue"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [ Value.Tuple [] ]));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Break"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.gt,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              ]))
+                      ]
+                    |)))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*
+                  fn __chaining_ge(&self, other: &Self) -> ControlFlow<bool> {
+                      let (lhs, rhs) = ( *self, *other);
+                      if lhs == rhs { Continue(()) } else { Break(lhs >= rhs) }
+                  }
+      *)
+      Definition __chaining_ge (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i32" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i32" ], other |) in
+            M.match_operator (|
+              Ty.apply
+                (Ty.path "core::ops::control_flow::ControlFlow")
+                []
+                [ Ty.path "bool"; Ty.tuple [] ],
+              M.alloc (|
+                Ty.tuple [ Ty.path "i32"; Ty.path "i32" ],
+                Value.Tuple
+                  [
+                    M.read (| M.deref (| M.read (| self |) |) |);
+                    M.read (| M.deref (| M.read (| other |) |) |)
+                  ]
+              |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                    let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                    let lhs := M.copy (| Ty.path "i32", γ0_0 |) in
+                    let rhs := M.copy (| Ty.path "i32", γ0_1 |) in
+                    M.match_operator (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [ Ty.path "bool"; Ty.tuple [] ],
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ :=
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Continue"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [ Value.Tuple [] ]));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Break"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.ge,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              ]))
+                      ]
+                    |)))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
       Axiom Implements :
         M.IsTraitInstance
           "core::cmp::PartialOrd"
@@ -6401,8 +11576,12 @@ Module cmp.
             ("partial_cmp", InstanceField.Method partial_cmp);
             ("lt", InstanceField.Method lt);
             ("le", InstanceField.Method le);
+            ("gt", InstanceField.Method gt);
             ("ge", InstanceField.Method ge);
-            ("gt", InstanceField.Method gt)
+            ("__chaining_lt", InstanceField.Method __chaining_lt);
+            ("__chaining_le", InstanceField.Method __chaining_le);
+            ("__chaining_gt", InstanceField.Method __chaining_gt);
+            ("__chaining_ge", InstanceField.Method __chaining_ge)
           ].
     End Impl_core_cmp_PartialOrd_i32_for_i32.
     
@@ -6410,7 +11589,7 @@ Module cmp.
       Definition Self : Ty.t := Ty.path "i32".
       
       (*
-                      fn cmp(&self, other: &$t) -> Ordering {
+                      fn cmp(&self, other: &Self) -> Ordering {
                           crate::intrinsics::three_way_compare( *self, *other)
                       }
       *)
@@ -6444,7 +11623,7 @@ Module cmp.
       Definition Self : Ty.t := Ty.path "i64".
       
       (*
-                      fn partial_cmp(&self, other: &$t) -> Option<Ordering> {
+                      fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
                           Some(crate::intrinsics::three_way_compare( *self, *other))
                       }
       *)
@@ -6471,7 +11650,7 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      (*                 fn lt(&self, other: &$t) -> bool { ( *self) < ( *other) } *)
+      (*             fn lt(&self, other: &Self) -> bool { *self <  *other } *)
       Definition lt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -6489,7 +11668,7 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      (*                 fn le(&self, other: &$t) -> bool { ( *self) <= ( *other) } *)
+      (*             fn le(&self, other: &Self) -> bool { *self <= *other } *)
       Definition le (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -6507,25 +11686,7 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      (*                 fn ge(&self, other: &$t) -> bool { ( *self) >= ( *other) } *)
-      Definition ge (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [ self; other ] =>
-          ltac:(M.monadic
-            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i64" ], self |) in
-            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i64" ], other |) in
-            M.call_closure (|
-              Ty.path "bool",
-              BinOp.ge,
-              [
-                M.read (| M.deref (| M.read (| self |) |) |);
-                M.read (| M.deref (| M.read (| other |) |) |)
-              ]
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      (*                 fn gt(&self, other: &$t) -> bool { ( *self) > ( *other) } *)
+      (*             fn gt(&self, other: &Self) -> bool { *self >  *other } *)
       Definition gt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -6543,6 +11704,332 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
+      (*             fn ge(&self, other: &Self) -> bool { *self >= *other } *)
+      Definition ge (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i64" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i64" ], other |) in
+            M.call_closure (|
+              Ty.path "bool",
+              BinOp.ge,
+              [
+                M.read (| M.deref (| M.read (| self |) |) |);
+                M.read (| M.deref (| M.read (| other |) |) |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*
+                  fn __chaining_lt(&self, other: &Self) -> ControlFlow<bool> {
+                      let (lhs, rhs) = ( *self, *other);
+                      if lhs == rhs { Continue(()) } else { Break(lhs < rhs) }
+                  }
+      *)
+      Definition __chaining_lt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i64" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i64" ], other |) in
+            M.match_operator (|
+              Ty.apply
+                (Ty.path "core::ops::control_flow::ControlFlow")
+                []
+                [ Ty.path "bool"; Ty.tuple [] ],
+              M.alloc (|
+                Ty.tuple [ Ty.path "i64"; Ty.path "i64" ],
+                Value.Tuple
+                  [
+                    M.read (| M.deref (| M.read (| self |) |) |);
+                    M.read (| M.deref (| M.read (| other |) |) |)
+                  ]
+              |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                    let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                    let lhs := M.copy (| Ty.path "i64", γ0_0 |) in
+                    let rhs := M.copy (| Ty.path "i64", γ0_1 |) in
+                    M.match_operator (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [ Ty.path "bool"; Ty.tuple [] ],
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ :=
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Continue"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [ Value.Tuple [] ]));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Break"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.lt,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              ]))
+                      ]
+                    |)))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*
+                  fn __chaining_le(&self, other: &Self) -> ControlFlow<bool> {
+                      let (lhs, rhs) = ( *self, *other);
+                      if lhs == rhs { Continue(()) } else { Break(lhs <= rhs) }
+                  }
+      *)
+      Definition __chaining_le (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i64" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i64" ], other |) in
+            M.match_operator (|
+              Ty.apply
+                (Ty.path "core::ops::control_flow::ControlFlow")
+                []
+                [ Ty.path "bool"; Ty.tuple [] ],
+              M.alloc (|
+                Ty.tuple [ Ty.path "i64"; Ty.path "i64" ],
+                Value.Tuple
+                  [
+                    M.read (| M.deref (| M.read (| self |) |) |);
+                    M.read (| M.deref (| M.read (| other |) |) |)
+                  ]
+              |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                    let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                    let lhs := M.copy (| Ty.path "i64", γ0_0 |) in
+                    let rhs := M.copy (| Ty.path "i64", γ0_1 |) in
+                    M.match_operator (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [ Ty.path "bool"; Ty.tuple [] ],
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ :=
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Continue"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [ Value.Tuple [] ]));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Break"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.le,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              ]))
+                      ]
+                    |)))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*
+                  fn __chaining_gt(&self, other: &Self) -> ControlFlow<bool> {
+                      let (lhs, rhs) = ( *self, *other);
+                      if lhs == rhs { Continue(()) } else { Break(lhs > rhs) }
+                  }
+      *)
+      Definition __chaining_gt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i64" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i64" ], other |) in
+            M.match_operator (|
+              Ty.apply
+                (Ty.path "core::ops::control_flow::ControlFlow")
+                []
+                [ Ty.path "bool"; Ty.tuple [] ],
+              M.alloc (|
+                Ty.tuple [ Ty.path "i64"; Ty.path "i64" ],
+                Value.Tuple
+                  [
+                    M.read (| M.deref (| M.read (| self |) |) |);
+                    M.read (| M.deref (| M.read (| other |) |) |)
+                  ]
+              |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                    let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                    let lhs := M.copy (| Ty.path "i64", γ0_0 |) in
+                    let rhs := M.copy (| Ty.path "i64", γ0_1 |) in
+                    M.match_operator (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [ Ty.path "bool"; Ty.tuple [] ],
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ :=
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Continue"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [ Value.Tuple [] ]));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Break"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.gt,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              ]))
+                      ]
+                    |)))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*
+                  fn __chaining_ge(&self, other: &Self) -> ControlFlow<bool> {
+                      let (lhs, rhs) = ( *self, *other);
+                      if lhs == rhs { Continue(()) } else { Break(lhs >= rhs) }
+                  }
+      *)
+      Definition __chaining_ge (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i64" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i64" ], other |) in
+            M.match_operator (|
+              Ty.apply
+                (Ty.path "core::ops::control_flow::ControlFlow")
+                []
+                [ Ty.path "bool"; Ty.tuple [] ],
+              M.alloc (|
+                Ty.tuple [ Ty.path "i64"; Ty.path "i64" ],
+                Value.Tuple
+                  [
+                    M.read (| M.deref (| M.read (| self |) |) |);
+                    M.read (| M.deref (| M.read (| other |) |) |)
+                  ]
+              |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                    let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                    let lhs := M.copy (| Ty.path "i64", γ0_0 |) in
+                    let rhs := M.copy (| Ty.path "i64", γ0_1 |) in
+                    M.match_operator (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [ Ty.path "bool"; Ty.tuple [] ],
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ :=
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Continue"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [ Value.Tuple [] ]));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Break"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.ge,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              ]))
+                      ]
+                    |)))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
       Axiom Implements :
         M.IsTraitInstance
           "core::cmp::PartialOrd"
@@ -6554,8 +12041,12 @@ Module cmp.
             ("partial_cmp", InstanceField.Method partial_cmp);
             ("lt", InstanceField.Method lt);
             ("le", InstanceField.Method le);
+            ("gt", InstanceField.Method gt);
             ("ge", InstanceField.Method ge);
-            ("gt", InstanceField.Method gt)
+            ("__chaining_lt", InstanceField.Method __chaining_lt);
+            ("__chaining_le", InstanceField.Method __chaining_le);
+            ("__chaining_gt", InstanceField.Method __chaining_gt);
+            ("__chaining_ge", InstanceField.Method __chaining_ge)
           ].
     End Impl_core_cmp_PartialOrd_i64_for_i64.
     
@@ -6563,7 +12054,7 @@ Module cmp.
       Definition Self : Ty.t := Ty.path "i64".
       
       (*
-                      fn cmp(&self, other: &$t) -> Ordering {
+                      fn cmp(&self, other: &Self) -> Ordering {
                           crate::intrinsics::three_way_compare( *self, *other)
                       }
       *)
@@ -6597,7 +12088,7 @@ Module cmp.
       Definition Self : Ty.t := Ty.path "i128".
       
       (*
-                      fn partial_cmp(&self, other: &$t) -> Option<Ordering> {
+                      fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
                           Some(crate::intrinsics::three_way_compare( *self, *other))
                       }
       *)
@@ -6628,7 +12119,7 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      (*                 fn lt(&self, other: &$t) -> bool { ( *self) < ( *other) } *)
+      (*             fn lt(&self, other: &Self) -> bool { *self <  *other } *)
       Definition lt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -6646,7 +12137,7 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      (*                 fn le(&self, other: &$t) -> bool { ( *self) <= ( *other) } *)
+      (*             fn le(&self, other: &Self) -> bool { *self <= *other } *)
       Definition le (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -6664,25 +12155,7 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
-      (*                 fn ge(&self, other: &$t) -> bool { ( *self) >= ( *other) } *)
-      Definition ge (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        match ε, τ, α with
-        | [], [], [ self; other ] =>
-          ltac:(M.monadic
-            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i128" ], self |) in
-            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i128" ], other |) in
-            M.call_closure (|
-              Ty.path "bool",
-              BinOp.ge,
-              [
-                M.read (| M.deref (| M.read (| self |) |) |);
-                M.read (| M.deref (| M.read (| other |) |) |)
-              ]
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      (*                 fn gt(&self, other: &$t) -> bool { ( *self) > ( *other) } *)
+      (*             fn gt(&self, other: &Self) -> bool { *self >  *other } *)
       Definition gt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [], [ self; other ] =>
@@ -6700,6 +12173,332 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
+      (*             fn ge(&self, other: &Self) -> bool { *self >= *other } *)
+      Definition ge (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i128" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i128" ], other |) in
+            M.call_closure (|
+              Ty.path "bool",
+              BinOp.ge,
+              [
+                M.read (| M.deref (| M.read (| self |) |) |);
+                M.read (| M.deref (| M.read (| other |) |) |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*
+                  fn __chaining_lt(&self, other: &Self) -> ControlFlow<bool> {
+                      let (lhs, rhs) = ( *self, *other);
+                      if lhs == rhs { Continue(()) } else { Break(lhs < rhs) }
+                  }
+      *)
+      Definition __chaining_lt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i128" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i128" ], other |) in
+            M.match_operator (|
+              Ty.apply
+                (Ty.path "core::ops::control_flow::ControlFlow")
+                []
+                [ Ty.path "bool"; Ty.tuple [] ],
+              M.alloc (|
+                Ty.tuple [ Ty.path "i128"; Ty.path "i128" ],
+                Value.Tuple
+                  [
+                    M.read (| M.deref (| M.read (| self |) |) |);
+                    M.read (| M.deref (| M.read (| other |) |) |)
+                  ]
+              |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                    let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                    let lhs := M.copy (| Ty.path "i128", γ0_0 |) in
+                    let rhs := M.copy (| Ty.path "i128", γ0_1 |) in
+                    M.match_operator (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [ Ty.path "bool"; Ty.tuple [] ],
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ :=
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Continue"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [ Value.Tuple [] ]));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Break"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.lt,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              ]))
+                      ]
+                    |)))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*
+                  fn __chaining_le(&self, other: &Self) -> ControlFlow<bool> {
+                      let (lhs, rhs) = ( *self, *other);
+                      if lhs == rhs { Continue(()) } else { Break(lhs <= rhs) }
+                  }
+      *)
+      Definition __chaining_le (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i128" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i128" ], other |) in
+            M.match_operator (|
+              Ty.apply
+                (Ty.path "core::ops::control_flow::ControlFlow")
+                []
+                [ Ty.path "bool"; Ty.tuple [] ],
+              M.alloc (|
+                Ty.tuple [ Ty.path "i128"; Ty.path "i128" ],
+                Value.Tuple
+                  [
+                    M.read (| M.deref (| M.read (| self |) |) |);
+                    M.read (| M.deref (| M.read (| other |) |) |)
+                  ]
+              |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                    let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                    let lhs := M.copy (| Ty.path "i128", γ0_0 |) in
+                    let rhs := M.copy (| Ty.path "i128", γ0_1 |) in
+                    M.match_operator (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [ Ty.path "bool"; Ty.tuple [] ],
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ :=
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Continue"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [ Value.Tuple [] ]));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Break"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.le,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              ]))
+                      ]
+                    |)))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*
+                  fn __chaining_gt(&self, other: &Self) -> ControlFlow<bool> {
+                      let (lhs, rhs) = ( *self, *other);
+                      if lhs == rhs { Continue(()) } else { Break(lhs > rhs) }
+                  }
+      *)
+      Definition __chaining_gt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i128" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i128" ], other |) in
+            M.match_operator (|
+              Ty.apply
+                (Ty.path "core::ops::control_flow::ControlFlow")
+                []
+                [ Ty.path "bool"; Ty.tuple [] ],
+              M.alloc (|
+                Ty.tuple [ Ty.path "i128"; Ty.path "i128" ],
+                Value.Tuple
+                  [
+                    M.read (| M.deref (| M.read (| self |) |) |);
+                    M.read (| M.deref (| M.read (| other |) |) |)
+                  ]
+              |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                    let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                    let lhs := M.copy (| Ty.path "i128", γ0_0 |) in
+                    let rhs := M.copy (| Ty.path "i128", γ0_1 |) in
+                    M.match_operator (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [ Ty.path "bool"; Ty.tuple [] ],
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ :=
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Continue"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [ Value.Tuple [] ]));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Break"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.gt,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              ]))
+                      ]
+                    |)))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*
+                  fn __chaining_ge(&self, other: &Self) -> ControlFlow<bool> {
+                      let (lhs, rhs) = ( *self, *other);
+                      if lhs == rhs { Continue(()) } else { Break(lhs >= rhs) }
+                  }
+      *)
+      Definition __chaining_ge (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i128" ], self |) in
+            let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i128" ], other |) in
+            M.match_operator (|
+              Ty.apply
+                (Ty.path "core::ops::control_flow::ControlFlow")
+                []
+                [ Ty.path "bool"; Ty.tuple [] ],
+              M.alloc (|
+                Ty.tuple [ Ty.path "i128"; Ty.path "i128" ],
+                Value.Tuple
+                  [
+                    M.read (| M.deref (| M.read (| self |) |) |);
+                    M.read (| M.deref (| M.read (| other |) |) |)
+                  ]
+              |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                    let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                    let lhs := M.copy (| Ty.path "i128", γ0_0 |) in
+                    let rhs := M.copy (| Ty.path "i128", γ0_1 |) in
+                    M.match_operator (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [ Ty.path "bool"; Ty.tuple [] ],
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ :=
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Continue"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [ Value.Tuple [] ]));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Break"
+                              []
+                              [ Ty.path "bool"; Ty.tuple [] ]
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.ge,
+                                  [ M.read (| lhs |); M.read (| rhs |) ]
+                                |)
+                              ]))
+                      ]
+                    |)))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
       Axiom Implements :
         M.IsTraitInstance
           "core::cmp::PartialOrd"
@@ -6711,8 +12510,12 @@ Module cmp.
             ("partial_cmp", InstanceField.Method partial_cmp);
             ("lt", InstanceField.Method lt);
             ("le", InstanceField.Method le);
+            ("gt", InstanceField.Method gt);
             ("ge", InstanceField.Method ge);
-            ("gt", InstanceField.Method gt)
+            ("__chaining_lt", InstanceField.Method __chaining_lt);
+            ("__chaining_le", InstanceField.Method __chaining_le);
+            ("__chaining_gt", InstanceField.Method __chaining_gt);
+            ("__chaining_ge", InstanceField.Method __chaining_ge)
           ].
     End Impl_core_cmp_PartialOrd_i128_for_i128.
     
@@ -6720,7 +12523,7 @@ Module cmp.
       Definition Self : Ty.t := Ty.path "i128".
       
       (*
-                      fn cmp(&self, other: &$t) -> Ordering {
+                      fn cmp(&self, other: &Self) -> Ordering {
                           crate::intrinsics::three_way_compare( *self, *other)
                       }
       *)
@@ -6867,7 +12670,7 @@ Module cmp.
           (* Instance *) [ ("cmp", InstanceField.Method cmp) ].
     End Impl_core_cmp_Ord_for_never.
     
-    Module Impl_core_cmp_PartialEq_where_core_marker_Sized_A_where_core_marker_Sized_B_where_core_cmp_PartialEq_A_B_ref__B_for_ref__A.
+    Module Impl_core_cmp_PartialEq_where_core_marker_PointeeSized_A_where_core_marker_PointeeSized_B_where_core_cmp_PartialEq_A_B_ref__B_for_ref__A.
       Definition Self (A B : Ty.t) : Ty.t := Ty.apply (Ty.path "&") [] [ A ].
       
       (*
@@ -6941,9 +12744,9 @@ Module cmp.
           (Self A B)
           (* Instance *)
           [ ("eq", InstanceField.Method (eq A B)); ("ne", InstanceField.Method (ne A B)) ].
-    End Impl_core_cmp_PartialEq_where_core_marker_Sized_A_where_core_marker_Sized_B_where_core_cmp_PartialEq_A_B_ref__B_for_ref__A.
+    End Impl_core_cmp_PartialEq_where_core_marker_PointeeSized_A_where_core_marker_PointeeSized_B_where_core_cmp_PartialEq_A_B_ref__B_for_ref__A.
     
-    Module Impl_core_cmp_PartialOrd_where_core_marker_Sized_A_where_core_marker_Sized_B_where_core_cmp_PartialOrd_A_B_ref__B_for_ref__A.
+    Module Impl_core_cmp_PartialOrd_where_core_marker_PointeeSized_A_where_core_marker_PointeeSized_B_where_core_cmp_PartialOrd_A_B_ref__B_for_ref__A.
       Definition Self (A B : Ty.t) : Ty.t := Ty.apply (Ty.path "&") [] [ A ].
       
       (*
@@ -7106,6 +12909,194 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
+      (*
+              fn __chaining_lt(&self, other: &&B) -> ControlFlow<bool> {
+                  PartialOrd::__chaining_lt( *self, *other)
+              }
+      *)
+      Definition __chaining_lt
+          (A B : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self A B in
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ A ] ], self |) in
+            let other :=
+              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ B ] ], other |) in
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "core::ops::control_flow::ControlFlow")
+                []
+                [ Ty.path "bool"; Ty.tuple [] ],
+              M.get_trait_method (|
+                "core::cmp::PartialOrd",
+                A,
+                [],
+                [ B ],
+                "__chaining_lt",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |);
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| other |) |) |) |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*
+              fn __chaining_le(&self, other: &&B) -> ControlFlow<bool> {
+                  PartialOrd::__chaining_le( *self, *other)
+              }
+      *)
+      Definition __chaining_le
+          (A B : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self A B in
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ A ] ], self |) in
+            let other :=
+              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ B ] ], other |) in
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "core::ops::control_flow::ControlFlow")
+                []
+                [ Ty.path "bool"; Ty.tuple [] ],
+              M.get_trait_method (|
+                "core::cmp::PartialOrd",
+                A,
+                [],
+                [ B ],
+                "__chaining_le",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |);
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| other |) |) |) |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*
+              fn __chaining_gt(&self, other: &&B) -> ControlFlow<bool> {
+                  PartialOrd::__chaining_gt( *self, *other)
+              }
+      *)
+      Definition __chaining_gt
+          (A B : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self A B in
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ A ] ], self |) in
+            let other :=
+              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ B ] ], other |) in
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "core::ops::control_flow::ControlFlow")
+                []
+                [ Ty.path "bool"; Ty.tuple [] ],
+              M.get_trait_method (|
+                "core::cmp::PartialOrd",
+                A,
+                [],
+                [ B ],
+                "__chaining_gt",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |);
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| other |) |) |) |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*
+              fn __chaining_ge(&self, other: &&B) -> ControlFlow<bool> {
+                  PartialOrd::__chaining_ge( *self, *other)
+              }
+      *)
+      Definition __chaining_ge
+          (A B : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self A B in
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ A ] ], self |) in
+            let other :=
+              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ B ] ], other |) in
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "core::ops::control_flow::ControlFlow")
+                []
+                [ Ty.path "bool"; Ty.tuple [] ],
+              M.get_trait_method (|
+                "core::cmp::PartialOrd",
+                A,
+                [],
+                [ B ],
+                "__chaining_ge",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |);
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| other |) |) |) |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
       Axiom Implements :
         forall (A B : Ty.t),
         M.IsTraitInstance
@@ -7119,11 +13110,15 @@ Module cmp.
             ("lt", InstanceField.Method (lt A B));
             ("le", InstanceField.Method (le A B));
             ("gt", InstanceField.Method (gt A B));
-            ("ge", InstanceField.Method (ge A B))
+            ("ge", InstanceField.Method (ge A B));
+            ("__chaining_lt", InstanceField.Method (__chaining_lt A B));
+            ("__chaining_le", InstanceField.Method (__chaining_le A B));
+            ("__chaining_gt", InstanceField.Method (__chaining_gt A B));
+            ("__chaining_ge", InstanceField.Method (__chaining_ge A B))
           ].
-    End Impl_core_cmp_PartialOrd_where_core_marker_Sized_A_where_core_marker_Sized_B_where_core_cmp_PartialOrd_A_B_ref__B_for_ref__A.
+    End Impl_core_cmp_PartialOrd_where_core_marker_PointeeSized_A_where_core_marker_PointeeSized_B_where_core_cmp_PartialOrd_A_B_ref__B_for_ref__A.
     
-    Module Impl_core_cmp_Ord_where_core_marker_Sized_A_where_core_cmp_Ord_A_for_ref__A.
+    Module Impl_core_cmp_Ord_where_core_marker_PointeeSized_A_where_core_cmp_Ord_A_for_ref__A.
       Definition Self (A : Ty.t) : Ty.t := Ty.apply (Ty.path "&") [] [ A ].
       
       (*
@@ -7165,9 +13160,9 @@ Module cmp.
           (* Trait polymorphic types *) []
           (Self A)
           (* Instance *) [ ("cmp", InstanceField.Method (cmp A)) ].
-    End Impl_core_cmp_Ord_where_core_marker_Sized_A_where_core_cmp_Ord_A_for_ref__A.
+    End Impl_core_cmp_Ord_where_core_marker_PointeeSized_A_where_core_cmp_Ord_A_for_ref__A.
     
-    Module Impl_core_cmp_Eq_where_core_marker_Sized_A_where_core_cmp_Eq_A_for_ref__A.
+    Module Impl_core_cmp_Eq_where_core_marker_PointeeSized_A_where_core_cmp_Eq_A_for_ref__A.
       Definition Self (A : Ty.t) : Ty.t := Ty.apply (Ty.path "&") [] [ A ].
       
       Axiom Implements :
@@ -7178,9 +13173,9 @@ Module cmp.
           (* Trait polymorphic types *) []
           (Self A)
           (* Instance *) [].
-    End Impl_core_cmp_Eq_where_core_marker_Sized_A_where_core_cmp_Eq_A_for_ref__A.
+    End Impl_core_cmp_Eq_where_core_marker_PointeeSized_A_where_core_cmp_Eq_A_for_ref__A.
     
-    Module Impl_core_cmp_PartialEq_where_core_marker_Sized_A_where_core_marker_Sized_B_where_core_cmp_PartialEq_A_B_ref_mut_B_for_ref_mut_A.
+    Module Impl_core_cmp_PartialEq_where_core_marker_PointeeSized_A_where_core_marker_PointeeSized_B_where_core_cmp_PartialEq_A_B_ref_mut_B_for_ref_mut_A.
       Definition Self (A B : Ty.t) : Ty.t := Ty.apply (Ty.path "&mut") [] [ A ].
       
       (*
@@ -7266,9 +13261,9 @@ Module cmp.
           (Self A B)
           (* Instance *)
           [ ("eq", InstanceField.Method (eq A B)); ("ne", InstanceField.Method (ne A B)) ].
-    End Impl_core_cmp_PartialEq_where_core_marker_Sized_A_where_core_marker_Sized_B_where_core_cmp_PartialEq_A_B_ref_mut_B_for_ref_mut_A.
+    End Impl_core_cmp_PartialEq_where_core_marker_PointeeSized_A_where_core_marker_PointeeSized_B_where_core_cmp_PartialEq_A_B_ref_mut_B_for_ref_mut_A.
     
-    Module Impl_core_cmp_PartialOrd_where_core_marker_Sized_A_where_core_marker_Sized_B_where_core_cmp_PartialOrd_A_B_ref_mut_B_for_ref_mut_A.
+    Module Impl_core_cmp_PartialOrd_where_core_marker_PointeeSized_A_where_core_marker_PointeeSized_B_where_core_cmp_PartialOrd_A_B_ref_mut_B_for_ref_mut_A.
       Definition Self (A B : Ty.t) : Ty.t := Ty.apply (Ty.path "&mut") [] [ A ].
       
       (*
@@ -7461,6 +13456,218 @@ Module cmp.
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
+      (*
+              fn __chaining_lt(&self, other: &&mut B) -> ControlFlow<bool> {
+                  PartialOrd::__chaining_lt( *self, *other)
+              }
+      *)
+      Definition __chaining_lt
+          (A B : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self A B in
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&mut") [] [ A ] ],
+                self
+              |) in
+            let other :=
+              M.alloc (|
+                Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&mut") [] [ B ] ],
+                other
+              |) in
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "core::ops::control_flow::ControlFlow")
+                []
+                [ Ty.path "bool"; Ty.tuple [] ],
+              M.get_trait_method (|
+                "core::cmp::PartialOrd",
+                A,
+                [],
+                [ B ],
+                "__chaining_lt",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |);
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| other |) |) |) |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*
+              fn __chaining_le(&self, other: &&mut B) -> ControlFlow<bool> {
+                  PartialOrd::__chaining_le( *self, *other)
+              }
+      *)
+      Definition __chaining_le
+          (A B : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self A B in
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&mut") [] [ A ] ],
+                self
+              |) in
+            let other :=
+              M.alloc (|
+                Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&mut") [] [ B ] ],
+                other
+              |) in
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "core::ops::control_flow::ControlFlow")
+                []
+                [ Ty.path "bool"; Ty.tuple [] ],
+              M.get_trait_method (|
+                "core::cmp::PartialOrd",
+                A,
+                [],
+                [ B ],
+                "__chaining_le",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |);
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| other |) |) |) |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*
+              fn __chaining_gt(&self, other: &&mut B) -> ControlFlow<bool> {
+                  PartialOrd::__chaining_gt( *self, *other)
+              }
+      *)
+      Definition __chaining_gt
+          (A B : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self A B in
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&mut") [] [ A ] ],
+                self
+              |) in
+            let other :=
+              M.alloc (|
+                Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&mut") [] [ B ] ],
+                other
+              |) in
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "core::ops::control_flow::ControlFlow")
+                []
+                [ Ty.path "bool"; Ty.tuple [] ],
+              M.get_trait_method (|
+                "core::cmp::PartialOrd",
+                A,
+                [],
+                [ B ],
+                "__chaining_gt",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |);
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| other |) |) |) |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      (*
+              fn __chaining_ge(&self, other: &&mut B) -> ControlFlow<bool> {
+                  PartialOrd::__chaining_ge( *self, *other)
+              }
+      *)
+      Definition __chaining_ge
+          (A B : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self A B in
+        match ε, τ, α with
+        | [], [], [ self; other ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&mut") [] [ A ] ],
+                self
+              |) in
+            let other :=
+              M.alloc (|
+                Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&mut") [] [ B ] ],
+                other
+              |) in
+            M.call_closure (|
+              Ty.apply
+                (Ty.path "core::ops::control_flow::ControlFlow")
+                []
+                [ Ty.path "bool"; Ty.tuple [] ],
+              M.get_trait_method (|
+                "core::cmp::PartialOrd",
+                A,
+                [],
+                [ B ],
+                "__chaining_ge",
+                [],
+                []
+              |),
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |);
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| other |) |) |) |)
+                |)
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
       Axiom Implements :
         forall (A B : Ty.t),
         M.IsTraitInstance
@@ -7474,11 +13681,15 @@ Module cmp.
             ("lt", InstanceField.Method (lt A B));
             ("le", InstanceField.Method (le A B));
             ("gt", InstanceField.Method (gt A B));
-            ("ge", InstanceField.Method (ge A B))
+            ("ge", InstanceField.Method (ge A B));
+            ("__chaining_lt", InstanceField.Method (__chaining_lt A B));
+            ("__chaining_le", InstanceField.Method (__chaining_le A B));
+            ("__chaining_gt", InstanceField.Method (__chaining_gt A B));
+            ("__chaining_ge", InstanceField.Method (__chaining_ge A B))
           ].
-    End Impl_core_cmp_PartialOrd_where_core_marker_Sized_A_where_core_marker_Sized_B_where_core_cmp_PartialOrd_A_B_ref_mut_B_for_ref_mut_A.
+    End Impl_core_cmp_PartialOrd_where_core_marker_PointeeSized_A_where_core_marker_PointeeSized_B_where_core_cmp_PartialOrd_A_B_ref_mut_B_for_ref_mut_A.
     
-    Module Impl_core_cmp_Ord_where_core_marker_Sized_A_where_core_cmp_Ord_A_for_ref_mut_A.
+    Module Impl_core_cmp_Ord_where_core_marker_PointeeSized_A_where_core_cmp_Ord_A_for_ref_mut_A.
       Definition Self (A : Ty.t) : Ty.t := Ty.apply (Ty.path "&mut") [] [ A ].
       
       (*
@@ -7526,9 +13737,9 @@ Module cmp.
           (* Trait polymorphic types *) []
           (Self A)
           (* Instance *) [ ("cmp", InstanceField.Method (cmp A)) ].
-    End Impl_core_cmp_Ord_where_core_marker_Sized_A_where_core_cmp_Ord_A_for_ref_mut_A.
+    End Impl_core_cmp_Ord_where_core_marker_PointeeSized_A_where_core_cmp_Ord_A_for_ref_mut_A.
     
-    Module Impl_core_cmp_Eq_where_core_marker_Sized_A_where_core_cmp_Eq_A_for_ref_mut_A.
+    Module Impl_core_cmp_Eq_where_core_marker_PointeeSized_A_where_core_cmp_Eq_A_for_ref_mut_A.
       Definition Self (A : Ty.t) : Ty.t := Ty.apply (Ty.path "&mut") [] [ A ].
       
       Axiom Implements :
@@ -7539,9 +13750,9 @@ Module cmp.
           (* Trait polymorphic types *) []
           (Self A)
           (* Instance *) [].
-    End Impl_core_cmp_Eq_where_core_marker_Sized_A_where_core_cmp_Eq_A_for_ref_mut_A.
+    End Impl_core_cmp_Eq_where_core_marker_PointeeSized_A_where_core_cmp_Eq_A_for_ref_mut_A.
     
-    Module Impl_core_cmp_PartialEq_where_core_marker_Sized_A_where_core_marker_Sized_B_where_core_cmp_PartialEq_A_B_ref_mut_B_for_ref__A.
+    Module Impl_core_cmp_PartialEq_where_core_marker_PointeeSized_A_where_core_marker_PointeeSized_B_where_core_cmp_PartialEq_A_B_ref_mut_B_for_ref__A.
       Definition Self (A B : Ty.t) : Ty.t := Ty.apply (Ty.path "&") [] [ A ].
       
       (*
@@ -7621,9 +13832,9 @@ Module cmp.
           (Self A B)
           (* Instance *)
           [ ("eq", InstanceField.Method (eq A B)); ("ne", InstanceField.Method (ne A B)) ].
-    End Impl_core_cmp_PartialEq_where_core_marker_Sized_A_where_core_marker_Sized_B_where_core_cmp_PartialEq_A_B_ref_mut_B_for_ref__A.
+    End Impl_core_cmp_PartialEq_where_core_marker_PointeeSized_A_where_core_marker_PointeeSized_B_where_core_cmp_PartialEq_A_B_ref_mut_B_for_ref__A.
     
-    Module Impl_core_cmp_PartialEq_where_core_marker_Sized_A_where_core_marker_Sized_B_where_core_cmp_PartialEq_A_B_ref__B_for_ref_mut_A.
+    Module Impl_core_cmp_PartialEq_where_core_marker_PointeeSized_A_where_core_marker_PointeeSized_B_where_core_cmp_PartialEq_A_B_ref__B_for_ref_mut_A.
       Definition Self (A B : Ty.t) : Ty.t := Ty.apply (Ty.path "&mut") [] [ A ].
       
       (*
@@ -7703,6 +13914,6 @@ Module cmp.
           (Self A B)
           (* Instance *)
           [ ("eq", InstanceField.Method (eq A B)); ("ne", InstanceField.Method (ne A B)) ].
-    End Impl_core_cmp_PartialEq_where_core_marker_Sized_A_where_core_marker_Sized_B_where_core_cmp_PartialEq_A_B_ref__B_for_ref_mut_A.
+    End Impl_core_cmp_PartialEq_where_core_marker_PointeeSized_A_where_core_marker_PointeeSized_B_where_core_cmp_PartialEq_A_B_ref__B_for_ref_mut_A.
   End impls.
 End cmp.

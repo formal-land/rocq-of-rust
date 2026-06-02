@@ -140,6 +140,18 @@ Module hardfork.
   Axiom IsDiscriminant_SpecId_LATEST :
     M.IsDiscriminant "revm_specification::hardfork::SpecId::LATEST" 20.
   
+  Module Impl_core_clone_TrivialClone_for_revm_specification_hardfork_SpecId.
+    Definition Self : Ty.t := Ty.path "revm_specification::hardfork::SpecId".
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "core::clone::TrivialClone"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        Self
+        (* Instance *) [].
+  End Impl_core_clone_TrivialClone_for_revm_specification_hardfork_SpecId.
+  
   Module Impl_core_clone_Clone_for_revm_specification_hardfork_SpecId.
     Definition Self : Ty.t := Ty.path "revm_specification::hardfork::SpecId".
     
@@ -1797,83 +1809,75 @@ Module hardfork.
             M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_fmt", [], [] |),
             [
               M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-              M.call_closure (|
-                Ty.path "core::fmt::Arguments",
-                M.get_associated_function (|
+              M.read (|
+                let~ args :
+                    Ty.tuple
+                      [ Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                      ] :=
+                  Value.Tuple
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                          M.call_closure (|
+                            Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                            M.get_trait_method (|
+                              "core::convert::From",
+                              Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                              [],
+                              [ Ty.path "revm_specification::hardfork::SpecId" ],
+                              "from",
+                              [],
+                              []
+                            |),
+                            [ M.read (| M.deref (| M.read (| self |) |) |) ]
+                          |)
+                        |)
+                      |)
+                    ] in
+                let~ args :
+                    Ty.apply
+                      (Ty.path "array")
+                      [ Value.Integer IntegerKind.Usize 1 ]
+                      [ Ty.path "core::fmt::rt::Argument" ] :=
+                  Value.Array
+                    [
+                      M.call_closure (|
+                        Ty.path "core::fmt::rt::Argument",
+                        M.get_associated_function (|
+                          Ty.path "core::fmt::rt::Argument",
+                          "new_display",
+                          [],
+                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                        |),
+                        [
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (| M.read (| M.SubPointer.get_tuple_field (| args, 0 |) |) |)
+                          |)
+                        ]
+                      |)
+                    ] in
+                M.alloc (|
                   Ty.path "core::fmt::Arguments",
-                  "new_v1",
-                  [ Value.Integer IntegerKind.Usize 1; Value.Integer IntegerKind.Usize 1 ],
-                  []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
+                  M.call_closure (|
+                    Ty.path "core::fmt::Arguments",
+                    M.get_associated_function (|
+                      Ty.path "core::fmt::Arguments",
+                      "new",
+                      [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 1 ],
+                      []
+                    |),
+                    [
+                      M.borrow (| Pointer.Kind.Ref, M.deref (| M.mk_byte_str_ref 2 [ 192; 0 ] |) |);
                       M.borrow (|
                         Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply
-                            (Ty.path "array")
-                            [ Value.Integer IntegerKind.Usize 1 ]
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                          Value.Array [ mk_str (| "" |) ]
-                        |)
+                        M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
                       |)
-                    |)
-                  |);
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply
-                            (Ty.path "array")
-                            [ Value.Integer IntegerKind.Usize 1 ]
-                            [ Ty.path "core::fmt::rt::Argument" ],
-                          Value.Array
-                            [
-                              M.call_closure (|
-                                Ty.path "core::fmt::rt::Argument",
-                                M.get_associated_function (|
-                                  Ty.path "core::fmt::rt::Argument",
-                                  "new_display",
-                                  [],
-                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.alloc (|
-                                          Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                                          M.call_closure (|
-                                            Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                                            M.get_trait_method (|
-                                              "core::convert::From",
-                                              Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                                              [],
-                                              [ Ty.path "revm_specification::hardfork::SpecId" ],
-                                              "from",
-                                              [],
-                                              []
-                                            |),
-                                            [ M.read (| M.deref (| M.read (| self |) |) |) ]
-                                          |)
-                                        |)
-                                      |)
-                                    |)
-                                  |)
-                                ]
-                              |)
-                            ]
-                        |)
-                      |)
-                    |)
+                    ]
                   |)
-                ]
+                |)
               |)
             ]
           |)))

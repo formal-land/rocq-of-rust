@@ -449,7 +449,7 @@ fn compile_literal_integer(
         TyKind::Int(int_ty) => format!("{int_ty:?}"),
         TyKind::Uint(uint_ty) => format!("{uint_ty:?}"),
         _ => {
-            emit_warning_with_note(env, span, "Unknown integer type", Some("Please report 🙏"));
+            emit_warning_with_note(env, span, "Unknown integer type", Some("Please report"));
 
             "unknown_kind_of_integer".to_string()
         }
@@ -474,7 +474,7 @@ fn compile_pointer_coercion(
     coercion: &rustc_middle::ty::adjustment::PointerCoercion,
 ) -> PointerCoercion {
     match coercion {
-        rustc_middle::ty::adjustment::PointerCoercion::ReifyFnPointer => {
+        rustc_middle::ty::adjustment::PointerCoercion::ReifyFnPointer(_) => {
             PointerCoercion::ReifyFnPointer
         }
         rustc_middle::ty::adjustment::PointerCoercion::UnsafeFnPointer => {
@@ -490,7 +490,6 @@ fn compile_pointer_coercion(
             PointerCoercion::ArrayToPointer
         }
         rustc_middle::ty::adjustment::PointerCoercion::Unsize => PointerCoercion::Unsize,
-        rustc_middle::ty::adjustment::PointerCoercion::DynStar => PointerCoercion::DynStar,
     }
 }
 
@@ -654,6 +653,11 @@ pub(crate) fn compile_expr<'a>(
             })
             .alloc(ty)
         }
+        thir::ExprKind::ByUse { expr: source, .. } => {
+            let source = compile_expr(env, generics, thir, source);
+
+            Rc::new(Expr::Use(source))
+        }
         thir::ExprKind::PointerCoercion {
             source,
             cast,
@@ -681,16 +685,22 @@ pub(crate) fn compile_expr<'a>(
 
             Rc::new(Expr::Loop { ty, body })
         }
+        thir::ExprKind::LoopMatch { .. } => {
+            let error_message = "`LoopMatch` expressions are not handled yet";
+
+            emit_warning_with_note(env, &expr.span, error_message, Some("Please report"));
+
+            Rc::new(Expr::Comment(error_message.to_string(), Expr::tt())).alloc(ty)
+        }
         thir::ExprKind::Let { .. } => {
             let error_message = "Unexpected `if let` outside of an `if`";
 
-            emit_warning_with_note(env, &expr.span, error_message, Some("Please report!"));
+            emit_warning_with_note(env, &expr.span, error_message, Some("Please report"));
 
             Rc::new(Expr::Comment(error_message.to_string(), Expr::tt())).alloc(ty)
         }
         thir::ExprKind::Match {
             scrutinee,
-            scrutinee_hir_id: _,
             arms,
             match_source: _,
         } => {
@@ -734,7 +744,8 @@ pub(crate) fn compile_expr<'a>(
         thir::ExprKind::AssignOp { op, lhs, rhs } => {
             let lhs_expr = thir.exprs.get(*lhs).unwrap();
             let ty_lhs = compile_type(env, &lhs_expr.span, generics, &lhs_expr.ty);
-            let (path, result_ty) = path_and_ty_of_bin_op(op, ty_lhs);
+            let bin_op = BinOp::from(*op);
+            let (path, result_ty) = path_and_ty_of_bin_op(&bin_op, ty_lhs);
             let lhs = compile_expr(env, generics, thir, lhs);
             let rhs = compile_expr(env, generics, thir, rhs);
 
@@ -806,16 +817,12 @@ pub(crate) fn compile_expr<'a>(
             Rc::new(Expr::Index { base, index })
         }
         thir::ExprKind::VarRef { id } => {
-            let name =
-                to_valid_rocq_name(IsValue::Yes, env.tcx.hir().opt_name(id.0).unwrap().as_str());
+            let name = to_valid_rocq_name(IsValue::Yes, env.tcx.hir_name(id.0).as_str());
 
             Rc::new(Expr::LocalVar(name))
         }
         thir::ExprKind::UpvarRef { var_hir_id, .. } => {
-            let name = to_valid_rocq_name(
-                IsValue::Yes,
-                env.tcx.hir().opt_name(var_hir_id.0).unwrap().as_str(),
-            );
+            let name = to_valid_rocq_name(IsValue::Yes, env.tcx.hir_name(var_hir_id.0).as_str());
 
             Rc::new(Expr::LocalVar(name))
         }
@@ -851,6 +858,9 @@ pub(crate) fn compile_expr<'a>(
         .alloc(ty),
         thir::ExprKind::Break { .. } => Rc::new(Expr::ControlFlow(LoopControlFlow::Break)),
         thir::ExprKind::Continue { .. } => Rc::new(Expr::ControlFlow(LoopControlFlow::Continue)),
+        thir::ExprKind::ConstContinue { .. } => {
+            Rc::new(Expr::ControlFlow(LoopControlFlow::Continue))
+        }
         thir::ExprKind::Return { value } => {
             let value = match value {
                 Some(value) => compile_expr(env, generics, thir, value).read(),
@@ -939,9 +949,12 @@ pub(crate) fn compile_expr<'a>(
                 && fields
                     .iter()
                     .all(|(name, _)| name.starts_with(|c: char| c.is_ascii_digit()));
-            let base = base
-                .as_ref()
-                .map(|base| compile_expr(env, generics, thir, &base.base).read());
+            let base = match base {
+                thir::AdtExprBase::Base(base) => {
+                    Some(compile_expr(env, generics, thir, &base.base).read())
+                }
+                thir::AdtExprBase::None | thir::AdtExprBase::DefaultFields(_) => None,
+            };
 
             if fields.is_empty() {
                 return Rc::new(Expr::StructTuple {
@@ -974,9 +987,10 @@ pub(crate) fn compile_expr<'a>(
             }
         }
         thir::ExprKind::PlaceTypeAscription { source, .. }
-        | thir::ExprKind::ValueTypeAscription { source, .. } => {
-            compile_expr(env, generics, thir, source)
-        }
+        | thir::ExprKind::ValueTypeAscription { source, .. }
+        | thir::ExprKind::PlaceUnwrapUnsafeBinder { source }
+        | thir::ExprKind::ValueUnwrapUnsafeBinder { source }
+        | thir::ExprKind::WrapUnsafeBinder { source } => compile_expr(env, generics, thir, source),
         thir::ExprKind::Closure(closure) => {
             let rustc_middle::thir::ClosureExpr { closure_id, .. } = closure.as_ref();
             let result = apply_on_thir(env, closure_id, |thir, body_id| {
@@ -1041,6 +1055,13 @@ pub(crate) fn compile_expr<'a>(
         thir::ExprKind::Literal { lit, neg } => match lit.node {
             rustc_ast::LitKind::Str(symbol, _) => {
                 Rc::new(Expr::Literal(Rc::new(Literal::String(symbol.to_string())))).alloc(ty)
+            }
+            rustc_ast::LitKind::ByteStr(symbol, _) => Rc::new(Expr::Literal(Rc::new(
+                Literal::ByteString(symbol.as_byte_str().to_vec()),
+            )))
+            .alloc(ty),
+            rustc_ast::LitKind::Byte(byte) => {
+                Rc::new(Expr::Literal(Rc::new(Literal::Byte(byte)))).alloc(ty)
             }
             rustc_ast::LitKind::Char(c) => {
                 Rc::new(Expr::Literal(Rc::new(Literal::Char(c)))).alloc(ty)
@@ -1252,7 +1273,7 @@ pub(crate) fn compile_expr<'a>(
                             env,
                             &expr.span,
                             "We do not support this kind of expression",
-                            Some(format!("Please report 🙏\n\nparent_kind: {parent_kind:#?}\nexpression: {expr:#?}").as_str()),
+                            Some(format!("Please report\n\nparent_kind: {parent_kind:#?}\nexpression: {expr:#?}").as_str()),
                         );
 
                             Rc::new(Expr::Comment(
@@ -1265,12 +1286,7 @@ pub(crate) fn compile_expr<'a>(
                 _ => {
                     let error_message = "Expected a function name";
 
-                    emit_warning_with_note(
-                        env,
-                        &expr.span,
-                        error_message,
-                        Some("Please report 🙏"),
-                    );
+                    emit_warning_with_note(env, &expr.span, error_message, Some("Please report"));
 
                     Rc::new(Expr::Comment(error_message.to_string(), Expr::tt()))
                 }
@@ -1311,13 +1327,6 @@ pub(crate) fn compile_expr<'a>(
             })
         }
         thir::ExprKind::InlineAsm(_) => Rc::new(Expr::LocalVar("InlineAssembly".to_string())),
-        thir::ExprKind::OffsetOf { .. } => {
-            let error_message = "`OffsetOf` expression are not handled yet";
-
-            emit_warning_with_note(env, &expr.span, error_message, Some("Please report!"));
-
-            Rc::new(Expr::Comment(error_message.to_string(), Expr::tt()))
-        }
         thir::ExprKind::ThreadLocalRef(def_id) => {
             let return_ty = compile_type(env, &expr.span, generics, &expr.ty);
 
@@ -1453,7 +1462,11 @@ fn compile_block<'a>(
     compile_stmts(env, generics, thir, &block.stmts, block.expr)
 }
 
-pub(crate) fn compile_const(env: &Env, span: &rustc_span::Span, const_: &Const) -> Rc<Expr> {
+pub(crate) fn compile_const<'tcx>(
+    env: &Env<'tcx>,
+    span: &rustc_span::Span,
+    const_: &Const<'tcx>,
+) -> Rc<Expr> {
     match &const_.kind() {
         ConstKind::Param(param) => {
             let name = to_valid_rocq_name(IsValue::No, param.name.as_str());
@@ -1476,22 +1489,26 @@ pub(crate) fn compile_const(env: &Env, span: &rustc_span::Span, const_: &Const) 
                 kind: CallKind::Pure,
             })
         }
-        ConstKind::Value(ty, value) => match value {
-            rustc_middle::ty::ValTree::Leaf(leaf) => match ty.kind() {
+        ConstKind::Value(value) => match *value.valtree {
+            rustc_middle::ty::ValTreeKind::Leaf(leaf) => match value.ty.kind() {
                 TyKind::Bool => Rc::new(Expr::Literal(Rc::new(Literal::Bool(
                     leaf.try_to_bool().unwrap(),
                 )))),
-                TyKind::Int(_) | TyKind::Uint(_) => {
-                    Rc::new(Expr::Literal(Rc::new(Literal::Integer(
-                        compile_literal_integer(env, span, ty, false, leaf.to_uint(leaf.size())),
-                    ))))
-                }
+                TyKind::Int(_) | TyKind::Uint(_) => Rc::new(Expr::Literal(Rc::new(
+                    Literal::Integer(compile_literal_integer(
+                        env,
+                        span,
+                        &value.ty,
+                        false,
+                        leaf.to_uint(leaf.size()),
+                    )),
+                ))),
                 _ => {
                     emit_warning_with_note(
                         env,
                         span,
                         "We do not support this kind of constant",
-                        Some("Please report 🙏"),
+                        Some("Please report"),
                     );
 
                     Rc::new(Expr::Comment(
@@ -1500,7 +1517,43 @@ pub(crate) fn compile_const(env: &Env, span: &rustc_span::Span, const_: &Const) 
                     ))
                 }
             },
-            rustc_middle::ty::ValTree::Branch(_) => Expr::local_var("ValueBranchConst"),
+            rustc_middle::ty::ValTreeKind::Branch(_) => {
+                let const_ = Const::new_value(env.tcx, value.valtree, value.ty);
+                let destructured = env.tcx.destructure_const(const_);
+                let fields = destructured
+                    .fields
+                    .iter()
+                    .map(|field| compile_const(env, span, field))
+                    .collect();
+
+                match value.ty.kind() {
+                    TyKind::Adt(adt_def, _) => {
+                        let variant = destructured
+                            .variant
+                            .map(|variant_index| adt_def.variant(variant_index))
+                            .unwrap_or_else(|| adt_def.non_enum_variant());
+
+                        Rc::new(Expr::StructTuple {
+                            path: compile_def_id(env, variant.def_id),
+                            arg_consts: vec![],
+                            arg_tys: vec![],
+                            fields,
+                        })
+                    }
+                    TyKind::Array(..) => Rc::new(Expr::Array {
+                        elements: fields,
+                        is_internal: false,
+                    }),
+                    TyKind::Tuple(..) => Rc::new(Expr::Tuple { elements: fields }),
+                    _ => Rc::new(Expr::Call {
+                        func: Expr::local_var("M.unevaluated_const"),
+                        args: vec![Rc::new(Expr::Literal(Rc::new(Literal::String(
+                            value.ty.to_string(),
+                        ))))],
+                        kind: CallKind::Pure,
+                    }),
+                }
+            }
         },
         ConstKind::Error(_) => Expr::local_var("ErrorConst"),
         ConstKind::Expr(_) => Expr::local_var("ExprConst"),

@@ -22,7 +22,7 @@ Module bool.
             [
               fun γ =>
                 ltac:(M.monadic
-                  (let γ := M.use self in
+                  (let γ := self in
                   let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                   Value.StructTuple "core::option::Option::Some" [] [ T ] [ M.read (| t |) ]));
               fun γ => ltac:(M.monadic (Value.StructTuple "core::option::Option::None" [] [ T ] []))
@@ -53,7 +53,7 @@ Module bool.
             [
               fun γ =>
                 ltac:(M.monadic
-                  (let γ := M.use self in
+                  (let γ := self in
                   let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                   Value.StructTuple
                     "core::option::Option::Some"
@@ -83,5 +83,100 @@ Module bool.
     Global Instance AssociatedFunction_then_ : M.IsAssociatedFunction.C Self "then" then_.
     Admitted.
     Global Typeclasses Opaque then_.
+    
+    (*
+        pub fn ok_or<E>(self, err: E) -> Result<(), E> {
+            if self { Ok(()) } else { Err(err) }
+        }
+    *)
+    Definition ok_or (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [ E ], [ self; err ] =>
+        ltac:(M.monadic
+          (let self := M.alloc (| Ty.path "bool", self |) in
+          let err := M.alloc (| E, err |) in
+          M.match_operator (|
+            Ty.apply (Ty.path "core::result::Result") [] [ Ty.tuple []; E ],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := self in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  Value.StructTuple
+                    "core::result::Result::Ok"
+                    []
+                    [ Ty.tuple []; E ]
+                    [ Value.Tuple [] ]));
+              fun γ =>
+                ltac:(M.monadic
+                  (Value.StructTuple
+                    "core::result::Result::Err"
+                    []
+                    [ Ty.tuple []; E ]
+                    [ M.read (| err |) ]))
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_ok_or : M.IsAssociatedFunction.C Self "ok_or" ok_or.
+    Admitted.
+    Global Typeclasses Opaque ok_or.
+    
+    (*
+        pub fn ok_or_else<E, F: FnOnce() -> E>(self, f: F) -> Result<(), E> {
+            if self { Ok(()) } else { Err(f()) }
+        }
+    *)
+    Definition ok_or_else (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      match ε, τ, α with
+      | [], [ E; F ], [ self; f ] =>
+        ltac:(M.monadic
+          (let self := M.alloc (| Ty.path "bool", self |) in
+          let f := M.alloc (| F, f |) in
+          M.match_operator (|
+            Ty.apply (Ty.path "core::result::Result") [] [ Ty.tuple []; E ],
+            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+            [
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := self in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  Value.StructTuple
+                    "core::result::Result::Ok"
+                    []
+                    [ Ty.tuple []; E ]
+                    [ Value.Tuple [] ]));
+              fun γ =>
+                ltac:(M.monadic
+                  (Value.StructTuple
+                    "core::result::Result::Err"
+                    []
+                    [ Ty.tuple []; E ]
+                    [
+                      M.call_closure (|
+                        E,
+                        M.get_trait_method (|
+                          "core::ops::function::FnOnce",
+                          F,
+                          [],
+                          [ Ty.tuple [] ],
+                          "call_once",
+                          [],
+                          []
+                        |),
+                        [ M.read (| f |); Value.Tuple [] ]
+                      |)
+                    ]))
+            ]
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance AssociatedFunction_ok_or_else :
+      M.IsAssociatedFunction.C Self "ok_or_else" ok_or_else.
+    Admitted.
+    Global Typeclasses Opaque ok_or_else.
   End Impl_bool.
 End bool.

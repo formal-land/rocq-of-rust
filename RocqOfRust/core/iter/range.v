@@ -347,43 +347,39 @@ Module iter.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                M.get_associated_function (|
-                                  Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u8" ],
-                                  "is_none",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.alloc (|
+                              M.get_associated_function (|
+                                Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u8" ],
+                                "is_none",
+                                [],
+                                []
+                              |),
+                              [
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.alloc (|
+                                    Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u8" ],
+                                    M.call_closure (|
                                       Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u8" ],
-                                      M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "core::option::Option")
-                                          []
-                                          [ Ty.path "u8" ],
-                                        M.get_trait_method (|
-                                          "core::iter::range::Step",
-                                          Ty.path "u8",
-                                          [],
-                                          [],
-                                          "forward_checked",
-                                          [],
-                                          []
-                                        |),
-                                        [ M.read (| start |); M.read (| n |) ]
-                                      |)
+                                      M.get_trait_method (|
+                                        "core::iter::range::Step",
+                                        Ty.path "u8",
+                                        [],
+                                        [],
+                                        "forward_checked",
+                                        [],
+                                        []
+                                      |),
+                                      [ M.read (| start |); M.read (| n |) ]
                                     |)
                                   |)
-                                ]
-                              |)
-                            |)) in
+                                |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.match_operator (|
                           Ty.tuple [],
@@ -443,43 +439,39 @@ Module iter.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                M.get_associated_function (|
-                                  Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u8" ],
-                                  "is_none",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.alloc (|
+                              M.get_associated_function (|
+                                Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u8" ],
+                                "is_none",
+                                [],
+                                []
+                              |),
+                              [
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.alloc (|
+                                    Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u8" ],
+                                    M.call_closure (|
                                       Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u8" ],
-                                      M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "core::option::Option")
-                                          []
-                                          [ Ty.path "u8" ],
-                                        M.get_trait_method (|
-                                          "core::iter::range::Step",
-                                          Ty.path "u8",
-                                          [],
-                                          [],
-                                          "backward_checked",
-                                          [],
-                                          []
-                                        |),
-                                        [ M.read (| start |); M.read (| n |) ]
-                                      |)
+                                      M.get_trait_method (|
+                                        "core::iter::range::Step",
+                                        Ty.path "u8",
+                                        [],
+                                        [],
+                                        "backward_checked",
+                                        [],
+                                        []
+                                      |),
+                                      [ M.read (| start |); M.read (| n |) ]
                                     |)
                                   |)
-                                ]
-                              |)
-                            |)) in
+                                |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.match_operator (|
                           Ty.tuple [],
@@ -579,18 +571,17 @@ Module iter.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            BinOp.le,
-                            [
-                              M.read (| M.deref (| M.read (| start |) |) |);
-                              M.read (| M.deref (| M.read (| end_ |) |) |)
-                            ]
-                          |)
-                        |)) in
+                          BinOp.le,
+                          [
+                            M.read (| M.deref (| M.read (| start |) |) |);
+                            M.read (| M.deref (| M.read (| end_ |) |) |)
+                          ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     M.read (|
                       let~ steps : Ty.path "usize" :=
@@ -798,43 +789,39 @@ Module iter.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                M.get_associated_function (|
-                                  Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "i8" ],
-                                  "is_none",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.alloc (|
+                              M.get_associated_function (|
+                                Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "i8" ],
+                                "is_none",
+                                [],
+                                []
+                              |),
+                              [
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.alloc (|
+                                    Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "i8" ],
+                                    M.call_closure (|
                                       Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "i8" ],
-                                      M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "core::option::Option")
-                                          []
-                                          [ Ty.path "i8" ],
-                                        M.get_trait_method (|
-                                          "core::iter::range::Step",
-                                          Ty.path "i8",
-                                          [],
-                                          [],
-                                          "forward_checked",
-                                          [],
-                                          []
-                                        |),
-                                        [ M.read (| start |); M.read (| n |) ]
-                                      |)
+                                      M.get_trait_method (|
+                                        "core::iter::range::Step",
+                                        Ty.path "i8",
+                                        [],
+                                        [],
+                                        "forward_checked",
+                                        [],
+                                        []
+                                      |),
+                                      [ M.read (| start |); M.read (| n |) ]
                                     |)
                                   |)
-                                ]
-                              |)
-                            |)) in
+                                |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.match_operator (|
                           Ty.tuple [],
@@ -894,43 +881,39 @@ Module iter.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                M.get_associated_function (|
-                                  Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "i8" ],
-                                  "is_none",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.alloc (|
+                              M.get_associated_function (|
+                                Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "i8" ],
+                                "is_none",
+                                [],
+                                []
+                              |),
+                              [
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.alloc (|
+                                    Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "i8" ],
+                                    M.call_closure (|
                                       Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "i8" ],
-                                      M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "core::option::Option")
-                                          []
-                                          [ Ty.path "i8" ],
-                                        M.get_trait_method (|
-                                          "core::iter::range::Step",
-                                          Ty.path "i8",
-                                          [],
-                                          [],
-                                          "backward_checked",
-                                          [],
-                                          []
-                                        |),
-                                        [ M.read (| start |); M.read (| n |) ]
-                                      |)
+                                      M.get_trait_method (|
+                                        "core::iter::range::Step",
+                                        Ty.path "i8",
+                                        [],
+                                        [],
+                                        "backward_checked",
+                                        [],
+                                        []
+                                      |),
+                                      [ M.read (| start |); M.read (| n |) ]
                                     |)
                                   |)
-                                ]
-                              |)
-                            |)) in
+                                |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.match_operator (|
                           Ty.tuple [],
@@ -1056,18 +1039,17 @@ Module iter.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            BinOp.le,
-                            [
-                              M.read (| M.deref (| M.read (| start |) |) |);
-                              M.read (| M.deref (| M.read (| end_ |) |) |)
-                            ]
-                          |)
-                        |)) in
+                          BinOp.le,
+                          [
+                            M.read (| M.deref (| M.read (| start |) |) |);
+                            M.read (| M.deref (| M.read (| end_ |) |) |)
+                          ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     M.read (|
                       let~ steps : Ty.path "usize" :=
@@ -1187,15 +1169,14 @@ Module iter.
                             fun γ =>
                               ltac:(M.monadic
                                 (let γ :=
-                                  M.use
-                                    (M.alloc (|
+                                  M.alloc (|
+                                    Ty.path "bool",
+                                    M.call_closure (|
                                       Ty.path "bool",
-                                      M.call_closure (|
-                                        Ty.path "bool",
-                                        BinOp.ge,
-                                        [ M.read (| wrapped |); M.read (| start |) ]
-                                      |)
-                                    |)) in
+                                      BinOp.ge,
+                                      [ M.read (| wrapped |); M.read (| start |) ]
+                                    |)
+                                  |) in
                                 let _ :=
                                   is_constant_or_break_match (|
                                     M.read (| γ |),
@@ -1300,15 +1281,14 @@ Module iter.
                             fun γ =>
                               ltac:(M.monadic
                                 (let γ :=
-                                  M.use
-                                    (M.alloc (|
+                                  M.alloc (|
+                                    Ty.path "bool",
+                                    M.call_closure (|
                                       Ty.path "bool",
-                                      M.call_closure (|
-                                        Ty.path "bool",
-                                        BinOp.le,
-                                        [ M.read (| wrapped |); M.read (| start |) ]
-                                      |)
-                                    |)) in
+                                      BinOp.le,
+                                      [ M.read (| wrapped |); M.read (| start |) ]
+                                    |)
+                                  |) in
                                 let _ :=
                                   is_constant_or_break_match (|
                                     M.read (| γ |),
@@ -1387,46 +1367,42 @@ Module iter.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                M.get_associated_function (|
-                                  Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u16" ],
-                                  "is_none",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.alloc (|
+                              M.get_associated_function (|
+                                Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u16" ],
+                                "is_none",
+                                [],
+                                []
+                              |),
+                              [
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.alloc (|
+                                    Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u16" ],
+                                    M.call_closure (|
                                       Ty.apply
                                         (Ty.path "core::option::Option")
                                         []
                                         [ Ty.path "u16" ],
-                                      M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "core::option::Option")
-                                          []
-                                          [ Ty.path "u16" ],
-                                        M.get_trait_method (|
-                                          "core::iter::range::Step",
-                                          Ty.path "u16",
-                                          [],
-                                          [],
-                                          "forward_checked",
-                                          [],
-                                          []
-                                        |),
-                                        [ M.read (| start |); M.read (| n |) ]
-                                      |)
+                                      M.get_trait_method (|
+                                        "core::iter::range::Step",
+                                        Ty.path "u16",
+                                        [],
+                                        [],
+                                        "forward_checked",
+                                        [],
+                                        []
+                                      |),
+                                      [ M.read (| start |); M.read (| n |) ]
                                     |)
                                   |)
-                                ]
-                              |)
-                            |)) in
+                                |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.match_operator (|
                           Ty.tuple [],
@@ -1486,46 +1462,42 @@ Module iter.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                M.get_associated_function (|
-                                  Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u16" ],
-                                  "is_none",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.alloc (|
+                              M.get_associated_function (|
+                                Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u16" ],
+                                "is_none",
+                                [],
+                                []
+                              |),
+                              [
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.alloc (|
+                                    Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u16" ],
+                                    M.call_closure (|
                                       Ty.apply
                                         (Ty.path "core::option::Option")
                                         []
                                         [ Ty.path "u16" ],
-                                      M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "core::option::Option")
-                                          []
-                                          [ Ty.path "u16" ],
-                                        M.get_trait_method (|
-                                          "core::iter::range::Step",
-                                          Ty.path "u16",
-                                          [],
-                                          [],
-                                          "backward_checked",
-                                          [],
-                                          []
-                                        |),
-                                        [ M.read (| start |); M.read (| n |) ]
-                                      |)
+                                      M.get_trait_method (|
+                                        "core::iter::range::Step",
+                                        Ty.path "u16",
+                                        [],
+                                        [],
+                                        "backward_checked",
+                                        [],
+                                        []
+                                      |),
+                                      [ M.read (| start |); M.read (| n |) ]
                                     |)
                                   |)
-                                ]
-                              |)
-                            |)) in
+                                |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.match_operator (|
                           Ty.tuple [],
@@ -1625,18 +1597,17 @@ Module iter.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            BinOp.le,
-                            [
-                              M.read (| M.deref (| M.read (| start |) |) |);
-                              M.read (| M.deref (| M.read (| end_ |) |) |)
-                            ]
-                          |)
-                        |)) in
+                          BinOp.le,
+                          [
+                            M.read (| M.deref (| M.read (| start |) |) |);
+                            M.read (| M.deref (| M.read (| end_ |) |) |)
+                          ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     M.read (|
                       let~ steps : Ty.path "usize" :=
@@ -1844,46 +1815,42 @@ Module iter.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                M.get_associated_function (|
-                                  Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "i16" ],
-                                  "is_none",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.alloc (|
+                              M.get_associated_function (|
+                                Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "i16" ],
+                                "is_none",
+                                [],
+                                []
+                              |),
+                              [
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.alloc (|
+                                    Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "i16" ],
+                                    M.call_closure (|
                                       Ty.apply
                                         (Ty.path "core::option::Option")
                                         []
                                         [ Ty.path "i16" ],
-                                      M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "core::option::Option")
-                                          []
-                                          [ Ty.path "i16" ],
-                                        M.get_trait_method (|
-                                          "core::iter::range::Step",
-                                          Ty.path "i16",
-                                          [],
-                                          [],
-                                          "forward_checked",
-                                          [],
-                                          []
-                                        |),
-                                        [ M.read (| start |); M.read (| n |) ]
-                                      |)
+                                      M.get_trait_method (|
+                                        "core::iter::range::Step",
+                                        Ty.path "i16",
+                                        [],
+                                        [],
+                                        "forward_checked",
+                                        [],
+                                        []
+                                      |),
+                                      [ M.read (| start |); M.read (| n |) ]
                                     |)
                                   |)
-                                ]
-                              |)
-                            |)) in
+                                |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.match_operator (|
                           Ty.tuple [],
@@ -1943,46 +1910,42 @@ Module iter.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                M.get_associated_function (|
-                                  Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "i16" ],
-                                  "is_none",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.alloc (|
+                              M.get_associated_function (|
+                                Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "i16" ],
+                                "is_none",
+                                [],
+                                []
+                              |),
+                              [
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.alloc (|
+                                    Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "i16" ],
+                                    M.call_closure (|
                                       Ty.apply
                                         (Ty.path "core::option::Option")
                                         []
                                         [ Ty.path "i16" ],
-                                      M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "core::option::Option")
-                                          []
-                                          [ Ty.path "i16" ],
-                                        M.get_trait_method (|
-                                          "core::iter::range::Step",
-                                          Ty.path "i16",
-                                          [],
-                                          [],
-                                          "backward_checked",
-                                          [],
-                                          []
-                                        |),
-                                        [ M.read (| start |); M.read (| n |) ]
-                                      |)
+                                      M.get_trait_method (|
+                                        "core::iter::range::Step",
+                                        Ty.path "i16",
+                                        [],
+                                        [],
+                                        "backward_checked",
+                                        [],
+                                        []
+                                      |),
+                                      [ M.read (| start |); M.read (| n |) ]
                                     |)
                                   |)
-                                ]
-                              |)
-                            |)) in
+                                |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.match_operator (|
                           Ty.tuple [],
@@ -2108,18 +2071,17 @@ Module iter.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            BinOp.le,
-                            [
-                              M.read (| M.deref (| M.read (| start |) |) |);
-                              M.read (| M.deref (| M.read (| end_ |) |) |)
-                            ]
-                          |)
-                        |)) in
+                          BinOp.le,
+                          [
+                            M.read (| M.deref (| M.read (| start |) |) |);
+                            M.read (| M.deref (| M.read (| end_ |) |) |)
+                          ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     M.read (|
                       let~ steps : Ty.path "usize" :=
@@ -2239,15 +2201,14 @@ Module iter.
                             fun γ =>
                               ltac:(M.monadic
                                 (let γ :=
-                                  M.use
-                                    (M.alloc (|
+                                  M.alloc (|
+                                    Ty.path "bool",
+                                    M.call_closure (|
                                       Ty.path "bool",
-                                      M.call_closure (|
-                                        Ty.path "bool",
-                                        BinOp.ge,
-                                        [ M.read (| wrapped |); M.read (| start |) ]
-                                      |)
-                                    |)) in
+                                      BinOp.ge,
+                                      [ M.read (| wrapped |); M.read (| start |) ]
+                                    |)
+                                  |) in
                                 let _ :=
                                   is_constant_or_break_match (|
                                     M.read (| γ |),
@@ -2352,15 +2313,14 @@ Module iter.
                             fun γ =>
                               ltac:(M.monadic
                                 (let γ :=
-                                  M.use
-                                    (M.alloc (|
+                                  M.alloc (|
+                                    Ty.path "bool",
+                                    M.call_closure (|
                                       Ty.path "bool",
-                                      M.call_closure (|
-                                        Ty.path "bool",
-                                        BinOp.le,
-                                        [ M.read (| wrapped |); M.read (| start |) ]
-                                      |)
-                                    |)) in
+                                      BinOp.le,
+                                      [ M.read (| wrapped |); M.read (| start |) ]
+                                    |)
+                                  |) in
                                 let _ :=
                                   is_constant_or_break_match (|
                                     M.read (| γ |),
@@ -2439,46 +2399,42 @@ Module iter.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                M.get_associated_function (|
-                                  Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u32" ],
-                                  "is_none",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.alloc (|
+                              M.get_associated_function (|
+                                Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u32" ],
+                                "is_none",
+                                [],
+                                []
+                              |),
+                              [
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.alloc (|
+                                    Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u32" ],
+                                    M.call_closure (|
                                       Ty.apply
                                         (Ty.path "core::option::Option")
                                         []
                                         [ Ty.path "u32" ],
-                                      M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "core::option::Option")
-                                          []
-                                          [ Ty.path "u32" ],
-                                        M.get_trait_method (|
-                                          "core::iter::range::Step",
-                                          Ty.path "u32",
-                                          [],
-                                          [],
-                                          "forward_checked",
-                                          [],
-                                          []
-                                        |),
-                                        [ M.read (| start |); M.read (| n |) ]
-                                      |)
+                                      M.get_trait_method (|
+                                        "core::iter::range::Step",
+                                        Ty.path "u32",
+                                        [],
+                                        [],
+                                        "forward_checked",
+                                        [],
+                                        []
+                                      |),
+                                      [ M.read (| start |); M.read (| n |) ]
                                     |)
                                   |)
-                                ]
-                              |)
-                            |)) in
+                                |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.match_operator (|
                           Ty.tuple [],
@@ -2538,46 +2494,42 @@ Module iter.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                M.get_associated_function (|
-                                  Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u32" ],
-                                  "is_none",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.alloc (|
+                              M.get_associated_function (|
+                                Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u32" ],
+                                "is_none",
+                                [],
+                                []
+                              |),
+                              [
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.alloc (|
+                                    Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u32" ],
+                                    M.call_closure (|
                                       Ty.apply
                                         (Ty.path "core::option::Option")
                                         []
                                         [ Ty.path "u32" ],
-                                      M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "core::option::Option")
-                                          []
-                                          [ Ty.path "u32" ],
-                                        M.get_trait_method (|
-                                          "core::iter::range::Step",
-                                          Ty.path "u32",
-                                          [],
-                                          [],
-                                          "backward_checked",
-                                          [],
-                                          []
-                                        |),
-                                        [ M.read (| start |); M.read (| n |) ]
-                                      |)
+                                      M.get_trait_method (|
+                                        "core::iter::range::Step",
+                                        Ty.path "u32",
+                                        [],
+                                        [],
+                                        "backward_checked",
+                                        [],
+                                        []
+                                      |),
+                                      [ M.read (| start |); M.read (| n |) ]
                                     |)
                                   |)
-                                ]
-                              |)
-                            |)) in
+                                |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.match_operator (|
                           Ty.tuple [],
@@ -2677,18 +2629,17 @@ Module iter.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            BinOp.le,
-                            [
-                              M.read (| M.deref (| M.read (| start |) |) |);
-                              M.read (| M.deref (| M.read (| end_ |) |) |)
-                            ]
-                          |)
-                        |)) in
+                          BinOp.le,
+                          [
+                            M.read (| M.deref (| M.read (| start |) |) |);
+                            M.read (| M.deref (| M.read (| end_ |) |) |)
+                          ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     M.read (|
                       let~ steps : Ty.path "usize" :=
@@ -2896,46 +2847,42 @@ Module iter.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                M.get_associated_function (|
-                                  Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "i32" ],
-                                  "is_none",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.alloc (|
+                              M.get_associated_function (|
+                                Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "i32" ],
+                                "is_none",
+                                [],
+                                []
+                              |),
+                              [
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.alloc (|
+                                    Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "i32" ],
+                                    M.call_closure (|
                                       Ty.apply
                                         (Ty.path "core::option::Option")
                                         []
                                         [ Ty.path "i32" ],
-                                      M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "core::option::Option")
-                                          []
-                                          [ Ty.path "i32" ],
-                                        M.get_trait_method (|
-                                          "core::iter::range::Step",
-                                          Ty.path "i32",
-                                          [],
-                                          [],
-                                          "forward_checked",
-                                          [],
-                                          []
-                                        |),
-                                        [ M.read (| start |); M.read (| n |) ]
-                                      |)
+                                      M.get_trait_method (|
+                                        "core::iter::range::Step",
+                                        Ty.path "i32",
+                                        [],
+                                        [],
+                                        "forward_checked",
+                                        [],
+                                        []
+                                      |),
+                                      [ M.read (| start |); M.read (| n |) ]
                                     |)
                                   |)
-                                ]
-                              |)
-                            |)) in
+                                |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.match_operator (|
                           Ty.tuple [],
@@ -2995,46 +2942,42 @@ Module iter.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                M.get_associated_function (|
-                                  Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "i32" ],
-                                  "is_none",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.alloc (|
+                              M.get_associated_function (|
+                                Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "i32" ],
+                                "is_none",
+                                [],
+                                []
+                              |),
+                              [
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.alloc (|
+                                    Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "i32" ],
+                                    M.call_closure (|
                                       Ty.apply
                                         (Ty.path "core::option::Option")
                                         []
                                         [ Ty.path "i32" ],
-                                      M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "core::option::Option")
-                                          []
-                                          [ Ty.path "i32" ],
-                                        M.get_trait_method (|
-                                          "core::iter::range::Step",
-                                          Ty.path "i32",
-                                          [],
-                                          [],
-                                          "backward_checked",
-                                          [],
-                                          []
-                                        |),
-                                        [ M.read (| start |); M.read (| n |) ]
-                                      |)
+                                      M.get_trait_method (|
+                                        "core::iter::range::Step",
+                                        Ty.path "i32",
+                                        [],
+                                        [],
+                                        "backward_checked",
+                                        [],
+                                        []
+                                      |),
+                                      [ M.read (| start |); M.read (| n |) ]
                                     |)
                                   |)
-                                ]
-                              |)
-                            |)) in
+                                |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.match_operator (|
                           Ty.tuple [],
@@ -3160,18 +3103,17 @@ Module iter.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            BinOp.le,
-                            [
-                              M.read (| M.deref (| M.read (| start |) |) |);
-                              M.read (| M.deref (| M.read (| end_ |) |) |)
-                            ]
-                          |)
-                        |)) in
+                          BinOp.le,
+                          [
+                            M.read (| M.deref (| M.read (| start |) |) |);
+                            M.read (| M.deref (| M.read (| end_ |) |) |)
+                          ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     M.read (|
                       let~ steps : Ty.path "usize" :=
@@ -3291,15 +3233,14 @@ Module iter.
                             fun γ =>
                               ltac:(M.monadic
                                 (let γ :=
-                                  M.use
-                                    (M.alloc (|
+                                  M.alloc (|
+                                    Ty.path "bool",
+                                    M.call_closure (|
                                       Ty.path "bool",
-                                      M.call_closure (|
-                                        Ty.path "bool",
-                                        BinOp.ge,
-                                        [ M.read (| wrapped |); M.read (| start |) ]
-                                      |)
-                                    |)) in
+                                      BinOp.ge,
+                                      [ M.read (| wrapped |); M.read (| start |) ]
+                                    |)
+                                  |) in
                                 let _ :=
                                   is_constant_or_break_match (|
                                     M.read (| γ |),
@@ -3404,15 +3345,14 @@ Module iter.
                             fun γ =>
                               ltac:(M.monadic
                                 (let γ :=
-                                  M.use
-                                    (M.alloc (|
+                                  M.alloc (|
+                                    Ty.path "bool",
+                                    M.call_closure (|
                                       Ty.path "bool",
-                                      M.call_closure (|
-                                        Ty.path "bool",
-                                        BinOp.le,
-                                        [ M.read (| wrapped |); M.read (| start |) ]
-                                      |)
-                                    |)) in
+                                      BinOp.le,
+                                      [ M.read (| wrapped |); M.read (| start |) ]
+                                    |)
+                                  |) in
                                 let _ :=
                                   is_constant_or_break_match (|
                                     M.read (| γ |),
@@ -3491,46 +3431,42 @@ Module iter.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                M.get_associated_function (|
-                                  Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ],
-                                  "is_none",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.alloc (|
+                              M.get_associated_function (|
+                                Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ],
+                                "is_none",
+                                [],
+                                []
+                              |),
+                              [
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.alloc (|
+                                    Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ],
+                                    M.call_closure (|
                                       Ty.apply
                                         (Ty.path "core::option::Option")
                                         []
                                         [ Ty.path "u64" ],
-                                      M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "core::option::Option")
-                                          []
-                                          [ Ty.path "u64" ],
-                                        M.get_trait_method (|
-                                          "core::iter::range::Step",
-                                          Ty.path "u64",
-                                          [],
-                                          [],
-                                          "forward_checked",
-                                          [],
-                                          []
-                                        |),
-                                        [ M.read (| start |); M.read (| n |) ]
-                                      |)
+                                      M.get_trait_method (|
+                                        "core::iter::range::Step",
+                                        Ty.path "u64",
+                                        [],
+                                        [],
+                                        "forward_checked",
+                                        [],
+                                        []
+                                      |),
+                                      [ M.read (| start |); M.read (| n |) ]
                                     |)
                                   |)
-                                ]
-                              |)
-                            |)) in
+                                |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.match_operator (|
                           Ty.tuple [],
@@ -3590,46 +3526,42 @@ Module iter.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                M.get_associated_function (|
-                                  Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ],
-                                  "is_none",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.alloc (|
+                              M.get_associated_function (|
+                                Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ],
+                                "is_none",
+                                [],
+                                []
+                              |),
+                              [
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.alloc (|
+                                    Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ],
+                                    M.call_closure (|
                                       Ty.apply
                                         (Ty.path "core::option::Option")
                                         []
                                         [ Ty.path "u64" ],
-                                      M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "core::option::Option")
-                                          []
-                                          [ Ty.path "u64" ],
-                                        M.get_trait_method (|
-                                          "core::iter::range::Step",
-                                          Ty.path "u64",
-                                          [],
-                                          [],
-                                          "backward_checked",
-                                          [],
-                                          []
-                                        |),
-                                        [ M.read (| start |); M.read (| n |) ]
-                                      |)
+                                      M.get_trait_method (|
+                                        "core::iter::range::Step",
+                                        Ty.path "u64",
+                                        [],
+                                        [],
+                                        "backward_checked",
+                                        [],
+                                        []
+                                      |),
+                                      [ M.read (| start |); M.read (| n |) ]
                                     |)
                                   |)
-                                ]
-                              |)
-                            |)) in
+                                |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.match_operator (|
                           Ty.tuple [],
@@ -3729,18 +3661,17 @@ Module iter.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            BinOp.le,
-                            [
-                              M.read (| M.deref (| M.read (| start |) |) |);
-                              M.read (| M.deref (| M.read (| end_ |) |) |)
-                            ]
-                          |)
-                        |)) in
+                          BinOp.le,
+                          [
+                            M.read (| M.deref (| M.read (| start |) |) |);
+                            M.read (| M.deref (| M.read (| end_ |) |) |)
+                          ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     M.read (|
                       let~ steps : Ty.path "usize" :=
@@ -3948,46 +3879,42 @@ Module iter.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                M.get_associated_function (|
-                                  Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "i64" ],
-                                  "is_none",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.alloc (|
+                              M.get_associated_function (|
+                                Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "i64" ],
+                                "is_none",
+                                [],
+                                []
+                              |),
+                              [
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.alloc (|
+                                    Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "i64" ],
+                                    M.call_closure (|
                                       Ty.apply
                                         (Ty.path "core::option::Option")
                                         []
                                         [ Ty.path "i64" ],
-                                      M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "core::option::Option")
-                                          []
-                                          [ Ty.path "i64" ],
-                                        M.get_trait_method (|
-                                          "core::iter::range::Step",
-                                          Ty.path "i64",
-                                          [],
-                                          [],
-                                          "forward_checked",
-                                          [],
-                                          []
-                                        |),
-                                        [ M.read (| start |); M.read (| n |) ]
-                                      |)
+                                      M.get_trait_method (|
+                                        "core::iter::range::Step",
+                                        Ty.path "i64",
+                                        [],
+                                        [],
+                                        "forward_checked",
+                                        [],
+                                        []
+                                      |),
+                                      [ M.read (| start |); M.read (| n |) ]
                                     |)
                                   |)
-                                ]
-                              |)
-                            |)) in
+                                |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.match_operator (|
                           Ty.tuple [],
@@ -4047,46 +3974,42 @@ Module iter.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                M.get_associated_function (|
-                                  Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "i64" ],
-                                  "is_none",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.alloc (|
+                              M.get_associated_function (|
+                                Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "i64" ],
+                                "is_none",
+                                [],
+                                []
+                              |),
+                              [
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.alloc (|
+                                    Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "i64" ],
+                                    M.call_closure (|
                                       Ty.apply
                                         (Ty.path "core::option::Option")
                                         []
                                         [ Ty.path "i64" ],
-                                      M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "core::option::Option")
-                                          []
-                                          [ Ty.path "i64" ],
-                                        M.get_trait_method (|
-                                          "core::iter::range::Step",
-                                          Ty.path "i64",
-                                          [],
-                                          [],
-                                          "backward_checked",
-                                          [],
-                                          []
-                                        |),
-                                        [ M.read (| start |); M.read (| n |) ]
-                                      |)
+                                      M.get_trait_method (|
+                                        "core::iter::range::Step",
+                                        Ty.path "i64",
+                                        [],
+                                        [],
+                                        "backward_checked",
+                                        [],
+                                        []
+                                      |),
+                                      [ M.read (| start |); M.read (| n |) ]
                                     |)
                                   |)
-                                ]
-                              |)
-                            |)) in
+                                |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.match_operator (|
                           Ty.tuple [],
@@ -4212,18 +4135,17 @@ Module iter.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            BinOp.le,
-                            [
-                              M.read (| M.deref (| M.read (| start |) |) |);
-                              M.read (| M.deref (| M.read (| end_ |) |) |)
-                            ]
-                          |)
-                        |)) in
+                          BinOp.le,
+                          [
+                            M.read (| M.deref (| M.read (| start |) |) |);
+                            M.read (| M.deref (| M.read (| end_ |) |) |)
+                          ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     M.read (|
                       let~ steps : Ty.path "usize" :=
@@ -4343,15 +4265,14 @@ Module iter.
                             fun γ =>
                               ltac:(M.monadic
                                 (let γ :=
-                                  M.use
-                                    (M.alloc (|
+                                  M.alloc (|
+                                    Ty.path "bool",
+                                    M.call_closure (|
                                       Ty.path "bool",
-                                      M.call_closure (|
-                                        Ty.path "bool",
-                                        BinOp.ge,
-                                        [ M.read (| wrapped |); M.read (| start |) ]
-                                      |)
-                                    |)) in
+                                      BinOp.ge,
+                                      [ M.read (| wrapped |); M.read (| start |) ]
+                                    |)
+                                  |) in
                                 let _ :=
                                   is_constant_or_break_match (|
                                     M.read (| γ |),
@@ -4456,15 +4377,14 @@ Module iter.
                             fun γ =>
                               ltac:(M.monadic
                                 (let γ :=
-                                  M.use
-                                    (M.alloc (|
+                                  M.alloc (|
+                                    Ty.path "bool",
+                                    M.call_closure (|
                                       Ty.path "bool",
-                                      M.call_closure (|
-                                        Ty.path "bool",
-                                        BinOp.le,
-                                        [ M.read (| wrapped |); M.read (| start |) ]
-                                      |)
-                                    |)) in
+                                      BinOp.le,
+                                      [ M.read (| wrapped |); M.read (| start |) ]
+                                    |)
+                                  |) in
                                 let _ :=
                                   is_constant_or_break_match (|
                                     M.read (| γ |),
@@ -4543,46 +4463,45 @@ Module iter.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                M.get_associated_function (|
-                                  Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ],
-                                  "is_none",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.alloc (|
+                              M.get_associated_function (|
+                                Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ],
+                                "is_none",
+                                [],
+                                []
+                              |),
+                              [
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.alloc (|
+                                    Ty.apply
+                                      (Ty.path "core::option::Option")
+                                      []
+                                      [ Ty.path "usize" ],
+                                    M.call_closure (|
                                       Ty.apply
                                         (Ty.path "core::option::Option")
                                         []
                                         [ Ty.path "usize" ],
-                                      M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "core::option::Option")
-                                          []
-                                          [ Ty.path "usize" ],
-                                        M.get_trait_method (|
-                                          "core::iter::range::Step",
-                                          Ty.path "usize",
-                                          [],
-                                          [],
-                                          "forward_checked",
-                                          [],
-                                          []
-                                        |),
-                                        [ M.read (| start |); M.read (| n |) ]
-                                      |)
+                                      M.get_trait_method (|
+                                        "core::iter::range::Step",
+                                        Ty.path "usize",
+                                        [],
+                                        [],
+                                        "forward_checked",
+                                        [],
+                                        []
+                                      |),
+                                      [ M.read (| start |); M.read (| n |) ]
                                     |)
                                   |)
-                                ]
-                              |)
-                            |)) in
+                                |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.match_operator (|
                           Ty.tuple [],
@@ -4646,46 +4565,45 @@ Module iter.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                M.get_associated_function (|
-                                  Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ],
-                                  "is_none",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.alloc (|
+                              M.get_associated_function (|
+                                Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ],
+                                "is_none",
+                                [],
+                                []
+                              |),
+                              [
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.alloc (|
+                                    Ty.apply
+                                      (Ty.path "core::option::Option")
+                                      []
+                                      [ Ty.path "usize" ],
+                                    M.call_closure (|
                                       Ty.apply
                                         (Ty.path "core::option::Option")
                                         []
                                         [ Ty.path "usize" ],
-                                      M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "core::option::Option")
-                                          []
-                                          [ Ty.path "usize" ],
-                                        M.get_trait_method (|
-                                          "core::iter::range::Step",
-                                          Ty.path "usize",
-                                          [],
-                                          [],
-                                          "backward_checked",
-                                          [],
-                                          []
-                                        |),
-                                        [ M.read (| start |); M.read (| n |) ]
-                                      |)
+                                      M.get_trait_method (|
+                                        "core::iter::range::Step",
+                                        Ty.path "usize",
+                                        [],
+                                        [],
+                                        "backward_checked",
+                                        [],
+                                        []
+                                      |),
+                                      [ M.read (| start |); M.read (| n |) ]
                                     |)
                                   |)
-                                ]
-                              |)
-                            |)) in
+                                |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.match_operator (|
                           Ty.tuple [],
@@ -4789,18 +4707,17 @@ Module iter.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            BinOp.le,
-                            [
-                              M.read (| M.deref (| M.read (| start |) |) |);
-                              M.read (| M.deref (| M.read (| end_ |) |) |)
-                            ]
-                          |)
-                        |)) in
+                          BinOp.le,
+                          [
+                            M.read (| M.deref (| M.read (| start |) |) |);
+                            M.read (| M.deref (| M.read (| end_ |) |) |)
+                          ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     M.read (|
                       let~ steps : Ty.path "usize" :=
@@ -5012,46 +4929,45 @@ Module iter.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                M.get_associated_function (|
-                                  Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "isize" ],
-                                  "is_none",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.alloc (|
+                              M.get_associated_function (|
+                                Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "isize" ],
+                                "is_none",
+                                [],
+                                []
+                              |),
+                              [
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.alloc (|
+                                    Ty.apply
+                                      (Ty.path "core::option::Option")
+                                      []
+                                      [ Ty.path "isize" ],
+                                    M.call_closure (|
                                       Ty.apply
                                         (Ty.path "core::option::Option")
                                         []
                                         [ Ty.path "isize" ],
-                                      M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "core::option::Option")
-                                          []
-                                          [ Ty.path "isize" ],
-                                        M.get_trait_method (|
-                                          "core::iter::range::Step",
-                                          Ty.path "isize",
-                                          [],
-                                          [],
-                                          "forward_checked",
-                                          [],
-                                          []
-                                        |),
-                                        [ M.read (| start |); M.read (| n |) ]
-                                      |)
+                                      M.get_trait_method (|
+                                        "core::iter::range::Step",
+                                        Ty.path "isize",
+                                        [],
+                                        [],
+                                        "forward_checked",
+                                        [],
+                                        []
+                                      |),
+                                      [ M.read (| start |); M.read (| n |) ]
                                     |)
                                   |)
-                                ]
-                              |)
-                            |)) in
+                                |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.match_operator (|
                           Ty.tuple [],
@@ -5115,46 +5031,45 @@ Module iter.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                M.get_associated_function (|
-                                  Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "isize" ],
-                                  "is_none",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.alloc (|
+                              M.get_associated_function (|
+                                Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "isize" ],
+                                "is_none",
+                                [],
+                                []
+                              |),
+                              [
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.alloc (|
+                                    Ty.apply
+                                      (Ty.path "core::option::Option")
+                                      []
+                                      [ Ty.path "isize" ],
+                                    M.call_closure (|
                                       Ty.apply
                                         (Ty.path "core::option::Option")
                                         []
                                         [ Ty.path "isize" ],
-                                      M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "core::option::Option")
-                                          []
-                                          [ Ty.path "isize" ],
-                                        M.get_trait_method (|
-                                          "core::iter::range::Step",
-                                          Ty.path "isize",
-                                          [],
-                                          [],
-                                          "backward_checked",
-                                          [],
-                                          []
-                                        |),
-                                        [ M.read (| start |); M.read (| n |) ]
-                                      |)
+                                      M.get_trait_method (|
+                                        "core::iter::range::Step",
+                                        Ty.path "isize",
+                                        [],
+                                        [],
+                                        "backward_checked",
+                                        [],
+                                        []
+                                      |),
+                                      [ M.read (| start |); M.read (| n |) ]
                                     |)
                                   |)
-                                ]
-                              |)
-                            |)) in
+                                |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.match_operator (|
                           Ty.tuple [],
@@ -5284,18 +5199,17 @@ Module iter.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            BinOp.le,
-                            [
-                              M.read (| M.deref (| M.read (| start |) |) |);
-                              M.read (| M.deref (| M.read (| end_ |) |) |)
-                            ]
-                          |)
-                        |)) in
+                          BinOp.le,
+                          [
+                            M.read (| M.deref (| M.read (| start |) |) |);
+                            M.read (| M.deref (| M.read (| end_ |) |) |)
+                          ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     M.read (|
                       let~ steps : Ty.path "usize" :=
@@ -5411,15 +5325,14 @@ Module iter.
                             fun γ =>
                               ltac:(M.monadic
                                 (let γ :=
-                                  M.use
-                                    (M.alloc (|
+                                  M.alloc (|
+                                    Ty.path "bool",
+                                    M.call_closure (|
                                       Ty.path "bool",
-                                      M.call_closure (|
-                                        Ty.path "bool",
-                                        BinOp.ge,
-                                        [ M.read (| wrapped |); M.read (| start |) ]
-                                      |)
-                                    |)) in
+                                      BinOp.ge,
+                                      [ M.read (| wrapped |); M.read (| start |) ]
+                                    |)
+                                  |) in
                                 let _ :=
                                   is_constant_or_break_match (|
                                     M.read (| γ |),
@@ -5524,15 +5437,14 @@ Module iter.
                             fun γ =>
                               ltac:(M.monadic
                                 (let γ :=
-                                  M.use
-                                    (M.alloc (|
+                                  M.alloc (|
+                                    Ty.path "bool",
+                                    M.call_closure (|
                                       Ty.path "bool",
-                                      M.call_closure (|
-                                        Ty.path "bool",
-                                        BinOp.le,
-                                        [ M.read (| wrapped |); M.read (| start |) ]
-                                      |)
-                                    |)) in
+                                      BinOp.le,
+                                      [ M.read (| wrapped |); M.read (| start |) ]
+                                    |)
+                                  |) in
                                 let _ :=
                                   is_constant_or_break_match (|
                                     M.read (| γ |),
@@ -5611,46 +5523,42 @@ Module iter.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                M.get_associated_function (|
-                                  Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u128" ],
-                                  "is_none",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.alloc (|
+                              M.get_associated_function (|
+                                Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u128" ],
+                                "is_none",
+                                [],
+                                []
+                              |),
+                              [
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.alloc (|
+                                    Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u128" ],
+                                    M.call_closure (|
                                       Ty.apply
                                         (Ty.path "core::option::Option")
                                         []
                                         [ Ty.path "u128" ],
-                                      M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "core::option::Option")
-                                          []
-                                          [ Ty.path "u128" ],
-                                        M.get_trait_method (|
-                                          "core::iter::range::Step",
-                                          Ty.path "u128",
-                                          [],
-                                          [],
-                                          "forward_checked",
-                                          [],
-                                          []
-                                        |),
-                                        [ M.read (| start |); M.read (| n |) ]
-                                      |)
+                                      M.get_trait_method (|
+                                        "core::iter::range::Step",
+                                        Ty.path "u128",
+                                        [],
+                                        [],
+                                        "forward_checked",
+                                        [],
+                                        []
+                                      |),
+                                      [ M.read (| start |); M.read (| n |) ]
                                     |)
                                   |)
-                                ]
-                              |)
-                            |)) in
+                                |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.match_operator (|
                           Ty.tuple [],
@@ -5714,46 +5622,42 @@ Module iter.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                M.get_associated_function (|
-                                  Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u128" ],
-                                  "is_none",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.alloc (|
+                              M.get_associated_function (|
+                                Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u128" ],
+                                "is_none",
+                                [],
+                                []
+                              |),
+                              [
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.alloc (|
+                                    Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u128" ],
+                                    M.call_closure (|
                                       Ty.apply
                                         (Ty.path "core::option::Option")
                                         []
                                         [ Ty.path "u128" ],
-                                      M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "core::option::Option")
-                                          []
-                                          [ Ty.path "u128" ],
-                                        M.get_trait_method (|
-                                          "core::iter::range::Step",
-                                          Ty.path "u128",
-                                          [],
-                                          [],
-                                          "backward_checked",
-                                          [],
-                                          []
-                                        |),
-                                        [ M.read (| start |); M.read (| n |) ]
-                                      |)
+                                      M.get_trait_method (|
+                                        "core::iter::range::Step",
+                                        Ty.path "u128",
+                                        [],
+                                        [],
+                                        "backward_checked",
+                                        [],
+                                        []
+                                      |),
+                                      [ M.read (| start |); M.read (| n |) ]
                                     |)
                                   |)
-                                ]
-                              |)
-                            |)) in
+                                |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.match_operator (|
                           Ty.tuple [],
@@ -5859,18 +5763,17 @@ Module iter.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            BinOp.le,
-                            [
-                              M.read (| M.deref (| M.read (| start |) |) |);
-                              M.read (| M.deref (| M.read (| end_ |) |) |)
-                            ]
-                          |)
-                        |)) in
+                          BinOp.le,
+                          [
+                            M.read (| M.deref (| M.read (| start |) |) |);
+                            M.read (| M.deref (| M.read (| end_ |) |) |)
+                          ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     M.match_operator (|
                       Ty.tuple
@@ -6047,46 +5950,42 @@ Module iter.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                M.get_associated_function (|
-                                  Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "i128" ],
-                                  "is_none",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.alloc (|
+                              M.get_associated_function (|
+                                Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "i128" ],
+                                "is_none",
+                                [],
+                                []
+                              |),
+                              [
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.alloc (|
+                                    Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "i128" ],
+                                    M.call_closure (|
                                       Ty.apply
                                         (Ty.path "core::option::Option")
                                         []
                                         [ Ty.path "i128" ],
-                                      M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "core::option::Option")
-                                          []
-                                          [ Ty.path "i128" ],
-                                        M.get_trait_method (|
-                                          "core::iter::range::Step",
-                                          Ty.path "i128",
-                                          [],
-                                          [],
-                                          "forward_checked",
-                                          [],
-                                          []
-                                        |),
-                                        [ M.read (| start |); M.read (| n |) ]
-                                      |)
+                                      M.get_trait_method (|
+                                        "core::iter::range::Step",
+                                        Ty.path "i128",
+                                        [],
+                                        [],
+                                        "forward_checked",
+                                        [],
+                                        []
+                                      |),
+                                      [ M.read (| start |); M.read (| n |) ]
                                     |)
                                   |)
-                                ]
-                              |)
-                            |)) in
+                                |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.match_operator (|
                           Ty.tuple [],
@@ -6150,46 +6049,42 @@ Module iter.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                M.get_associated_function (|
-                                  Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "i128" ],
-                                  "is_none",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.alloc (|
+                              M.get_associated_function (|
+                                Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "i128" ],
+                                "is_none",
+                                [],
+                                []
+                              |),
+                              [
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.alloc (|
+                                    Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "i128" ],
+                                    M.call_closure (|
                                       Ty.apply
                                         (Ty.path "core::option::Option")
                                         []
                                         [ Ty.path "i128" ],
-                                      M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "core::option::Option")
-                                          []
-                                          [ Ty.path "i128" ],
-                                        M.get_trait_method (|
-                                          "core::iter::range::Step",
-                                          Ty.path "i128",
-                                          [],
-                                          [],
-                                          "backward_checked",
-                                          [],
-                                          []
-                                        |),
-                                        [ M.read (| start |); M.read (| n |) ]
-                                      |)
+                                      M.get_trait_method (|
+                                        "core::iter::range::Step",
+                                        Ty.path "i128",
+                                        [],
+                                        [],
+                                        "backward_checked",
+                                        [],
+                                        []
+                                      |),
+                                      [ M.read (| start |); M.read (| n |) ]
                                     |)
                                   |)
-                                ]
-                              |)
-                            |)) in
+                                |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.match_operator (|
                           Ty.tuple [],
@@ -6324,18 +6219,17 @@ Module iter.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            BinOp.le,
-                            [
-                              M.read (| M.deref (| M.read (| start |) |) |);
-                              M.read (| M.deref (| M.read (| end_ |) |) |)
-                            ]
-                          |)
-                        |)) in
+                          BinOp.le,
+                          [
+                            M.read (| M.deref (| M.read (| start |) |) |);
+                            M.read (| M.deref (| M.read (| end_ |) |) |)
+                          ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     M.match_operator (|
                       Ty.tuple
@@ -6616,15 +6510,14 @@ Module iter.
                                     fun γ =>
                                       ltac:(M.monadic
                                         (let γ :=
-                                          M.use
-                                            (M.alloc (|
+                                          M.alloc (|
+                                            Ty.path "bool",
+                                            M.call_closure (|
                                               Ty.path "bool",
-                                              M.call_closure (|
-                                                Ty.path "bool",
-                                                BinOp.le,
-                                                [ M.read (| start |); M.read (| end_ |) ]
-                                              |)
-                                            |)) in
+                                              BinOp.le,
+                                              [ M.read (| start |); M.read (| end_ |) ]
+                                            |)
+                                          |) in
                                         let _ :=
                                           is_constant_or_break_match (|
                                             M.read (| γ |),
@@ -6660,31 +6553,34 @@ Module iter.
                                                 fun γ =>
                                                   ltac:(M.monadic
                                                     (let γ :=
-                                                      M.use
-                                                        (M.alloc (|
+                                                      M.alloc (|
+                                                        Ty.path "bool",
+                                                        M.call_closure (|
                                                           Ty.path "bool",
-                                                          LogicalOp.and (|
-                                                            M.call_closure (|
-                                                              Ty.path "bool",
-                                                              BinOp.lt,
-                                                              [
-                                                                M.read (| start |);
-                                                                Value.Integer IntegerKind.U32 55296
-                                                              ]
-                                                            |),
-                                                            ltac:(M.monadic
-                                                              (M.call_closure (|
-                                                                Ty.path "bool",
-                                                                BinOp.le,
-                                                                [
-                                                                  Value.Integer
-                                                                    IntegerKind.U32
-                                                                    57344;
-                                                                  M.read (| end_ |)
-                                                                ]
-                                                              |)))
-                                                          |)
-                                                        |)) in
+                                                          BinOp.lt,
+                                                          [
+                                                            M.read (| start |);
+                                                            Value.Integer IntegerKind.U32 55296
+                                                          ]
+                                                        |)
+                                                      |) in
+                                                    let _ :=
+                                                      is_constant_or_break_match (|
+                                                        M.read (| γ |),
+                                                        Value.Bool true
+                                                      |) in
+                                                    let γ :=
+                                                      M.alloc (|
+                                                        Ty.path "bool",
+                                                        M.call_closure (|
+                                                          Ty.path "bool",
+                                                          BinOp.le,
+                                                          [
+                                                            Value.Integer IntegerKind.U32 57344;
+                                                            M.read (| end_ |)
+                                                          ]
+                                                        |)
+                                                      |) in
                                                     let _ :=
                                                       is_constant_or_break_match (|
                                                         M.read (| γ |),
@@ -7030,23 +6926,25 @@ Module iter.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
                                   Ty.path "bool",
-                                  LogicalOp.and (|
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      BinOp.lt,
-                                      [ M.read (| start |); Value.Integer IntegerKind.U32 55296 ]
-                                    |),
-                                    ltac:(M.monadic
-                                      (M.call_closure (|
-                                        Ty.path "bool",
-                                        BinOp.le,
-                                        [ Value.Integer IntegerKind.U32 55296; M.read (| res |) ]
-                                      |)))
-                                  |)
-                                |)) in
+                                  BinOp.lt,
+                                  [ M.read (| start |); Value.Integer IntegerKind.U32 55296 ]
+                                |)
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            let γ :=
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.le,
+                                  [ Value.Integer IntegerKind.U32 55296; M.read (| res |) ]
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.read (|
@@ -7184,26 +7082,25 @@ Module iter.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
                                   Ty.path "bool",
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    BinOp.le,
-                                    [
-                                      M.read (| res |);
-                                      M.cast
-                                        (Ty.path "u32")
-                                        (M.read (|
-                                          get_associated_constant (|
-                                            Ty.path "char",
-                                            "MAX",
-                                            Ty.path "char"
-                                          |)
-                                        |))
-                                    ]
-                                  |)
-                                |)) in
+                                  BinOp.le,
+                                  [
+                                    M.read (| res |);
+                                    M.cast
+                                      (Ty.path "u32")
+                                      (M.read (|
+                                        get_associated_constant (|
+                                          Ty.path "char",
+                                          "MAX",
+                                          Ty.path "char"
+                                        |)
+                                      |))
+                                  ]
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             Value.StructTuple
@@ -7374,23 +7271,25 @@ Module iter.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
                                   Ty.path "bool",
-                                  LogicalOp.and (|
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      BinOp.ge,
-                                      [ M.read (| start |); Value.Integer IntegerKind.U32 57344 ]
-                                    |),
-                                    ltac:(M.monadic
-                                      (M.call_closure (|
-                                        Ty.path "bool",
-                                        BinOp.gt,
-                                        [ Value.Integer IntegerKind.U32 57344; M.read (| res |) ]
-                                      |)))
-                                  |)
-                                |)) in
+                                  BinOp.ge,
+                                  [ M.read (| start |); Value.Integer IntegerKind.U32 57344 ]
+                                |)
+                              |) in
+                            let _ :=
+                              is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                            let γ :=
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.gt,
+                                  [ Value.Integer IntegerKind.U32 57344; M.read (| res |) ]
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.read (|
@@ -7589,23 +7488,24 @@ Module iter.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              LogicalOp.and (|
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  BinOp.lt,
-                                  [ M.read (| start |); Value.Integer IntegerKind.U32 55296 ]
-                                |),
-                                ltac:(M.monadic
-                                  (M.call_closure (|
-                                    Ty.path "bool",
-                                    BinOp.le,
-                                    [ Value.Integer IntegerKind.U32 55296; M.read (| res |) ]
-                                  |)))
-                              |)
-                            |)) in
+                              BinOp.lt,
+                              [ M.read (| start |); Value.Integer IntegerKind.U32 55296 ]
+                            |)
+                          |) in
+                        let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                        let γ :=
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.le,
+                              [ Value.Integer IntegerKind.U32 55296; M.read (| res |) ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
@@ -7688,23 +7588,24 @@ Module iter.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              LogicalOp.and (|
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  BinOp.ge,
-                                  [ M.read (| start |); Value.Integer IntegerKind.U32 57344 ]
-                                |),
-                                ltac:(M.monadic
-                                  (M.call_closure (|
-                                    Ty.path "bool",
-                                    BinOp.gt,
-                                    [ Value.Integer IntegerKind.U32 57344; M.read (| res |) ]
-                                  |)))
-                              |)
-                            |)) in
+                              BinOp.ge,
+                              [ M.read (| start |); Value.Integer IntegerKind.U32 57344 ]
+                            |)
+                          |) in
+                        let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                        let γ :=
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.gt,
+                              [ Value.Integer IntegerKind.U32 57344; M.read (| res |) ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
@@ -9119,40 +9020,39 @@ Module iter.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            M.get_trait_method (|
-                              "core::cmp::PartialOrd",
-                              A,
-                              [],
-                              [ A ],
-                              "lt",
-                              [],
-                              []
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "core::ops::range::Range",
-                                  "start"
-                                |)
-                              |);
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "core::ops::range::Range",
-                                  "end"
-                                |)
+                          M.get_trait_method (|
+                            "core::cmp::PartialOrd",
+                            A,
+                            [],
+                            [ A ],
+                            "lt",
+                            [],
+                            []
+                          |),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::ops::range::Range",
+                                "start"
                               |)
-                            ]
-                          |)
-                        |)) in
+                            |);
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::ops::range::Range",
+                                "end"
+                              |)
+                            |)
+                          ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     M.read (|
                       let~ n : A :=
@@ -9338,33 +9238,32 @@ Module iter.
                                 fun γ =>
                                   ltac:(M.monadic
                                     (let γ :=
-                                      M.use
-                                        (M.alloc (|
+                                      M.alloc (|
+                                        Ty.path "bool",
+                                        M.call_closure (|
                                           Ty.path "bool",
-                                          M.call_closure (|
-                                            Ty.path "bool",
-                                            M.get_trait_method (|
-                                              "core::cmp::PartialOrd",
-                                              A,
-                                              [],
-                                              [ A ],
-                                              "lt",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.borrow (| Pointer.Kind.Ref, plus_n |);
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| self |) |),
-                                                  "core::ops::range::Range",
-                                                  "end"
-                                                |)
+                                          M.get_trait_method (|
+                                            "core::cmp::PartialOrd",
+                                            A,
+                                            [],
+                                            [ A ],
+                                            "lt",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.borrow (| Pointer.Kind.Ref, plus_n |);
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.SubPointer.get_struct_record_field (|
+                                                M.deref (| M.read (| self |) |),
+                                                "core::ops::range::Range",
+                                                "end"
                                               |)
-                                            ]
-                                          |)
-                                        |)) in
+                                            |)
+                                          ]
+                                        |)
+                                      |) in
                                     let _ :=
                                       is_constant_or_break_match (|
                                         M.read (| γ |),
@@ -9757,40 +9656,39 @@ Module iter.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            M.get_trait_method (|
-                              "core::cmp::PartialOrd",
-                              A,
-                              [],
-                              [ A ],
-                              "lt",
-                              [],
-                              []
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "core::ops::range::Range",
-                                  "start"
-                                |)
-                              |);
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "core::ops::range::Range",
-                                  "end"
-                                |)
+                          M.get_trait_method (|
+                            "core::cmp::PartialOrd",
+                            A,
+                            [],
+                            [ A ],
+                            "lt",
+                            [],
+                            []
+                          |),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::ops::range::Range",
+                                "start"
                               |)
-                            ]
-                          |)
-                        |)) in
+                            |);
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::ops::range::Range",
+                                "end"
+                              |)
+                            |)
+                          ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     M.read (|
                       let~ _ : Ty.tuple [] :=
@@ -9990,33 +9888,32 @@ Module iter.
                                 fun γ =>
                                   ltac:(M.monadic
                                     (let γ :=
-                                      M.use
-                                        (M.alloc (|
+                                      M.alloc (|
+                                        Ty.path "bool",
+                                        M.call_closure (|
                                           Ty.path "bool",
-                                          M.call_closure (|
-                                            Ty.path "bool",
-                                            M.get_trait_method (|
-                                              "core::cmp::PartialOrd",
-                                              A,
-                                              [],
-                                              [ A ],
-                                              "gt",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.borrow (| Pointer.Kind.Ref, minus_n |);
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| self |) |),
-                                                  "core::ops::range::Range",
-                                                  "start"
-                                                |)
+                                          M.get_trait_method (|
+                                            "core::cmp::PartialOrd",
+                                            A,
+                                            [],
+                                            [ A ],
+                                            "gt",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.borrow (| Pointer.Kind.Ref, minus_n |);
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.SubPointer.get_struct_record_field (|
+                                                M.deref (| M.read (| self |) |),
+                                                "core::ops::range::Range",
+                                                "start"
                                               |)
-                                            ]
-                                          |)
-                                        |)) in
+                                            |)
+                                          ]
+                                        |)
+                                      |) in
                                     let _ :=
                                       is_constant_or_break_match (|
                                         M.read (| γ |),
@@ -10438,40 +10335,39 @@ Module iter.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            M.get_trait_method (|
-                              "core::cmp::PartialOrd",
-                              T,
-                              [],
-                              [ T ],
-                              "lt",
-                              [],
-                              []
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "core::ops::range::Range",
-                                  "start"
-                                |)
-                              |);
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "core::ops::range::Range",
-                                  "end"
-                                |)
+                          M.get_trait_method (|
+                            "core::cmp::PartialOrd",
+                            T,
+                            [],
+                            [ T ],
+                            "lt",
+                            [],
+                            []
+                          |),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::ops::range::Range",
+                                "start"
                               |)
-                            ]
-                          |)
-                        |)) in
+                            |);
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::ops::range::Range",
+                                "end"
+                              |)
+                            |)
+                          ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     M.read (|
                       let~ old : T :=
@@ -10593,33 +10489,32 @@ Module iter.
                                 fun γ =>
                                   ltac:(M.monadic
                                     (let γ :=
-                                      M.use
-                                        (M.alloc (|
+                                      M.alloc (|
+                                        Ty.path "bool",
+                                        M.call_closure (|
                                           Ty.path "bool",
-                                          M.call_closure (|
-                                            Ty.path "bool",
-                                            M.get_trait_method (|
-                                              "core::cmp::PartialOrd",
-                                              T,
-                                              [],
-                                              [ T ],
-                                              "lt",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.borrow (| Pointer.Kind.Ref, plus_n |);
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| self |) |),
-                                                  "core::ops::range::Range",
-                                                  "end"
-                                                |)
+                                          M.get_trait_method (|
+                                            "core::cmp::PartialOrd",
+                                            T,
+                                            [],
+                                            [ T ],
+                                            "lt",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.borrow (| Pointer.Kind.Ref, plus_n |);
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.SubPointer.get_struct_record_field (|
+                                                M.deref (| M.read (| self |) |),
+                                                "core::ops::range::Range",
+                                                "end"
                                               |)
-                                            ]
-                                          |)
-                                        |)) in
+                                            |)
+                                          ]
+                                        |)
+                                      |) in
                                     let _ :=
                                       is_constant_or_break_match (|
                                         M.read (| γ |),
@@ -10946,40 +10841,39 @@ Module iter.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            M.get_trait_method (|
-                              "core::cmp::PartialOrd",
-                              T,
-                              [],
-                              [ T ],
-                              "lt",
-                              [],
-                              []
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "core::ops::range::Range",
-                                  "start"
-                                |)
-                              |);
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "core::ops::range::Range",
-                                  "end"
-                                |)
+                          M.get_trait_method (|
+                            "core::cmp::PartialOrd",
+                            T,
+                            [],
+                            [ T ],
+                            "lt",
+                            [],
+                            []
+                          |),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::ops::range::Range",
+                                "start"
                               |)
-                            ]
-                          |)
-                        |)) in
+                            |);
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::ops::range::Range",
+                                "end"
+                              |)
+                            |)
+                          ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     M.read (|
                       let~ _ : Ty.tuple [] :=
@@ -11119,33 +11013,32 @@ Module iter.
                                 fun γ =>
                                   ltac:(M.monadic
                                     (let γ :=
-                                      M.use
-                                        (M.alloc (|
+                                      M.alloc (|
+                                        Ty.path "bool",
+                                        M.call_closure (|
                                           Ty.path "bool",
-                                          M.call_closure (|
-                                            Ty.path "bool",
-                                            M.get_trait_method (|
-                                              "core::cmp::PartialOrd",
-                                              T,
-                                              [],
-                                              [ T ],
-                                              "gt",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.borrow (| Pointer.Kind.Ref, minus_n |);
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| self |) |),
-                                                  "core::ops::range::Range",
-                                                  "start"
-                                                |)
+                                          M.get_trait_method (|
+                                            "core::cmp::PartialOrd",
+                                            T,
+                                            [],
+                                            [ T ],
+                                            "gt",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.borrow (| Pointer.Kind.Ref, minus_n |);
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.SubPointer.get_struct_record_field (|
+                                                M.deref (| M.read (| self |) |),
+                                                "core::ops::range::Range",
+                                                "start"
                                               |)
-                                            ]
-                                          |)
-                                        |)) in
+                                            |)
+                                          ]
+                                        |)
+                                      |) in
                                     let _ :=
                                       is_constant_or_break_match (|
                                         M.read (| γ |),
@@ -11527,40 +11420,39 @@ Module iter.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            M.get_trait_method (|
-                              "core::cmp::PartialOrd",
-                              A,
-                              [],
-                              [ A ],
-                              "lt",
-                              [],
-                              []
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "core::ops::range::Range",
-                                  "start"
-                                |)
-                              |);
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "core::ops::range::Range",
-                                  "end"
-                                |)
+                          M.get_trait_method (|
+                            "core::cmp::PartialOrd",
+                            A,
+                            [],
+                            [ A ],
+                            "lt",
+                            [],
+                            []
+                          |),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::ops::range::Range",
+                                "start"
                               |)
-                            ]
-                          |)
-                        |)) in
+                            |);
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::ops::range::Range",
+                                "end"
+                              |)
+                            |)
+                          ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     M.call_closure (|
                       Ty.tuple
@@ -11645,40 +11537,39 @@ Module iter.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            M.get_trait_method (|
-                              "core::cmp::PartialOrd",
-                              A,
-                              [],
-                              [ A ],
-                              "lt",
-                              [],
-                              []
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.SubPointer.get_struct_record_field (|
-                                  self,
-                                  "core::ops::range::Range",
-                                  "start"
-                                |)
-                              |);
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.SubPointer.get_struct_record_field (|
-                                  self,
-                                  "core::ops::range::Range",
-                                  "end"
-                                |)
+                          M.get_trait_method (|
+                            "core::cmp::PartialOrd",
+                            A,
+                            [],
+                            [ A ],
+                            "lt",
+                            [],
+                            []
+                          |),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                self,
+                                "core::ops::range::Range",
+                                "start"
                               |)
-                            ]
-                          |)
-                        |)) in
+                            |);
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                self,
+                                "core::ops::range::Range",
+                                "end"
+                              |)
+                            |)
+                          ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     M.call_closure (|
                       Ty.path "usize",
@@ -12958,28 +12849,20 @@ Module iter.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
                                   Ty.path "bool",
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    M.get_associated_function (|
-                                      Ty.apply
-                                        (Ty.path "core::ops::range::RangeInclusive")
-                                        []
-                                        [ A ],
-                                      "is_empty",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| self |) |)
-                                      |)
-                                    ]
-                                  |)
-                                |)) in
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "core::ops::range::RangeInclusive") [] [ A ],
+                                    "is_empty",
+                                    [],
+                                    []
+                                  |),
+                                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |)
+                                  ]
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.never_to_any (|
@@ -13028,7 +12911,7 @@ Module iter.
                           [
                             fun γ =>
                               ltac:(M.monadic
-                                (let γ := M.use is_iterating in
+                                (let γ := is_iterating in
                                 let _ :=
                                   is_constant_or_break_match (|
                                     M.read (| γ |),
@@ -13219,28 +13102,20 @@ Module iter.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
                                   Ty.path "bool",
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    M.get_associated_function (|
-                                      Ty.apply
-                                        (Ty.path "core::ops::range::RangeInclusive")
-                                        []
-                                        [ A ],
-                                      "is_empty",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| self |) |)
-                                      |)
-                                    ]
-                                  |)
-                                |)) in
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "core::ops::range::RangeInclusive") [] [ A ],
+                                    "is_empty",
+                                    [],
+                                    []
+                                  |),
+                                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |)
+                                  ]
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.never_to_any (|
@@ -13280,40 +13155,39 @@ Module iter.
                                 fun γ =>
                                   ltac:(M.monadic
                                     (let γ :=
-                                      M.use
-                                        (M.alloc (|
+                                      M.alloc (|
+                                        Ty.path "bool",
+                                        M.call_closure (|
                                           Ty.path "bool",
-                                          M.call_closure (|
-                                            Ty.path "bool",
-                                            M.get_trait_method (|
-                                              "core::cmp::PartialOrd",
-                                              A,
-                                              [],
-                                              [ A ],
-                                              "lt",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| self |) |),
-                                                  "core::ops::range::RangeInclusive",
-                                                  "start"
-                                                |)
-                                              |);
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| self |) |),
-                                                  "core::ops::range::RangeInclusive",
-                                                  "end"
-                                                |)
+                                          M.get_trait_method (|
+                                            "core::cmp::PartialOrd",
+                                            A,
+                                            [],
+                                            [ A ],
+                                            "lt",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.SubPointer.get_struct_record_field (|
+                                                M.deref (| M.read (| self |) |),
+                                                "core::ops::range::RangeInclusive",
+                                                "start"
                                               |)
-                                            ]
-                                          |)
-                                        |)) in
+                                            |);
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.SubPointer.get_struct_record_field (|
+                                                M.deref (| M.read (| self |) |),
+                                                "core::ops::range::RangeInclusive",
+                                                "end"
+                                              |)
+                                            |)
+                                          ]
+                                        |)
+                                      |) in
                                     let _ :=
                                       is_constant_or_break_match (|
                                         M.read (| γ |),
@@ -13548,40 +13422,39 @@ Module iter.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
                                   Ty.path "bool",
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    M.get_trait_method (|
-                                      "core::cmp::PartialEq",
-                                      A,
-                                      [],
-                                      [ A ],
-                                      "eq",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.SubPointer.get_struct_record_field (|
-                                          M.deref (| M.read (| self |) |),
-                                          "core::ops::range::RangeInclusive",
-                                          "start"
-                                        |)
-                                      |);
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.SubPointer.get_struct_record_field (|
-                                          M.deref (| M.read (| self |) |),
-                                          "core::ops::range::RangeInclusive",
-                                          "end"
-                                        |)
+                                  M.get_trait_method (|
+                                    "core::cmp::PartialEq",
+                                    A,
+                                    [],
+                                    [ A ],
+                                    "eq",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "core::ops::range::RangeInclusive",
+                                        "start"
                                       |)
-                                    ]
-                                  |)
-                                |)) in
+                                    |);
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "core::ops::range::RangeInclusive",
+                                        "end"
+                                      |)
+                                    |)
+                                  ]
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.read (|
@@ -13799,28 +13672,20 @@ Module iter.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
                                   Ty.path "bool",
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    M.get_associated_function (|
-                                      Ty.apply
-                                        (Ty.path "core::ops::range::RangeInclusive")
-                                        []
-                                        [ A ],
-                                      "is_empty",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| self |) |)
-                                      |)
-                                    ]
-                                  |)
-                                |)) in
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "core::ops::range::RangeInclusive") [] [ A ],
+                                    "is_empty",
+                                    [],
+                                    []
+                                  |),
+                                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |)
+                                  ]
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.never_to_any (|
@@ -13869,7 +13734,7 @@ Module iter.
                           [
                             fun γ =>
                               ltac:(M.monadic
-                                (let γ := M.use is_iterating in
+                                (let γ := is_iterating in
                                 let _ :=
                                   is_constant_or_break_match (|
                                     M.read (| γ |),
@@ -14060,28 +13925,20 @@ Module iter.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
                                   Ty.path "bool",
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    M.get_associated_function (|
-                                      Ty.apply
-                                        (Ty.path "core::ops::range::RangeInclusive")
-                                        []
-                                        [ A ],
-                                      "is_empty",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| self |) |)
-                                      |)
-                                    ]
-                                  |)
-                                |)) in
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "core::ops::range::RangeInclusive") [] [ A ],
+                                    "is_empty",
+                                    [],
+                                    []
+                                  |),
+                                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |)
+                                  ]
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.never_to_any (|
@@ -14121,40 +13978,39 @@ Module iter.
                                 fun γ =>
                                   ltac:(M.monadic
                                     (let γ :=
-                                      M.use
-                                        (M.alloc (|
+                                      M.alloc (|
+                                        Ty.path "bool",
+                                        M.call_closure (|
                                           Ty.path "bool",
-                                          M.call_closure (|
-                                            Ty.path "bool",
-                                            M.get_trait_method (|
-                                              "core::cmp::PartialOrd",
-                                              A,
-                                              [],
-                                              [ A ],
-                                              "lt",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| self |) |),
-                                                  "core::ops::range::RangeInclusive",
-                                                  "start"
-                                                |)
-                                              |);
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| self |) |),
-                                                  "core::ops::range::RangeInclusive",
-                                                  "end"
-                                                |)
+                                          M.get_trait_method (|
+                                            "core::cmp::PartialOrd",
+                                            A,
+                                            [],
+                                            [ A ],
+                                            "lt",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.SubPointer.get_struct_record_field (|
+                                                M.deref (| M.read (| self |) |),
+                                                "core::ops::range::RangeInclusive",
+                                                "start"
                                               |)
-                                            ]
-                                          |)
-                                        |)) in
+                                            |);
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.SubPointer.get_struct_record_field (|
+                                                M.deref (| M.read (| self |) |),
+                                                "core::ops::range::RangeInclusive",
+                                                "end"
+                                              |)
+                                            |)
+                                          ]
+                                        |)
+                                      |) in
                                     let _ :=
                                       is_constant_or_break_match (|
                                         M.read (| γ |),
@@ -14389,40 +14245,39 @@ Module iter.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
                                   Ty.path "bool",
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    M.get_trait_method (|
-                                      "core::cmp::PartialEq",
-                                      A,
-                                      [],
-                                      [ A ],
-                                      "eq",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.SubPointer.get_struct_record_field (|
-                                          M.deref (| M.read (| self |) |),
-                                          "core::ops::range::RangeInclusive",
-                                          "start"
-                                        |)
-                                      |);
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.SubPointer.get_struct_record_field (|
-                                          M.deref (| M.read (| self |) |),
-                                          "core::ops::range::RangeInclusive",
-                                          "end"
-                                        |)
+                                  M.get_trait_method (|
+                                    "core::cmp::PartialEq",
+                                    A,
+                                    [],
+                                    [ A ],
+                                    "eq",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "core::ops::range::RangeInclusive",
+                                        "start"
                                       |)
-                                    ]
-                                  |)
-                                |)) in
+                                    |);
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "core::ops::range::RangeInclusive",
+                                        "end"
+                                      |)
+                                    |)
+                                  ]
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.read (|
@@ -14656,28 +14511,20 @@ Module iter.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
                                   Ty.path "bool",
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    M.get_associated_function (|
-                                      Ty.apply
-                                        (Ty.path "core::ops::range::RangeInclusive")
-                                        []
-                                        [ T ],
-                                      "is_empty",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| self |) |)
-                                      |)
-                                    ]
-                                  |)
-                                |)) in
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "core::ops::range::RangeInclusive") [] [ T ],
+                                    "is_empty",
+                                    [],
+                                    []
+                                  |),
+                                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |)
+                                  ]
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.never_to_any (|
@@ -14726,7 +14573,7 @@ Module iter.
                           [
                             fun γ =>
                               ltac:(M.monadic
-                                (let γ := M.use is_iterating in
+                                (let γ := is_iterating in
                                 let _ :=
                                   is_constant_or_break_match (|
                                     M.read (| γ |),
@@ -14867,28 +14714,20 @@ Module iter.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
                                   Ty.path "bool",
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    M.get_associated_function (|
-                                      Ty.apply
-                                        (Ty.path "core::ops::range::RangeInclusive")
-                                        []
-                                        [ T ],
-                                      "is_empty",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| self |) |)
-                                      |)
-                                    ]
-                                  |)
-                                |)) in
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "core::ops::range::RangeInclusive") [] [ T ],
+                                    "is_empty",
+                                    [],
+                                    []
+                                  |),
+                                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |)
+                                  ]
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.never_to_any (|
@@ -14928,40 +14767,39 @@ Module iter.
                                 fun γ =>
                                   ltac:(M.monadic
                                     (let γ :=
-                                      M.use
-                                        (M.alloc (|
+                                      M.alloc (|
+                                        Ty.path "bool",
+                                        M.call_closure (|
                                           Ty.path "bool",
-                                          M.call_closure (|
-                                            Ty.path "bool",
-                                            M.get_trait_method (|
-                                              "core::cmp::PartialOrd",
-                                              T,
-                                              [],
-                                              [ T ],
-                                              "lt",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| self |) |),
-                                                  "core::ops::range::RangeInclusive",
-                                                  "start"
-                                                |)
-                                              |);
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| self |) |),
-                                                  "core::ops::range::RangeInclusive",
-                                                  "end"
-                                                |)
+                                          M.get_trait_method (|
+                                            "core::cmp::PartialOrd",
+                                            T,
+                                            [],
+                                            [ T ],
+                                            "lt",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.SubPointer.get_struct_record_field (|
+                                                M.deref (| M.read (| self |) |),
+                                                "core::ops::range::RangeInclusive",
+                                                "start"
                                               |)
-                                            ]
-                                          |)
-                                        |)) in
+                                            |);
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.SubPointer.get_struct_record_field (|
+                                                M.deref (| M.read (| self |) |),
+                                                "core::ops::range::RangeInclusive",
+                                                "end"
+                                              |)
+                                            |)
+                                          ]
+                                        |)
+                                      |) in
                                     let _ :=
                                       is_constant_or_break_match (|
                                         M.read (| γ |),
@@ -15164,40 +15002,39 @@ Module iter.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
                                   Ty.path "bool",
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    M.get_trait_method (|
-                                      "core::cmp::PartialEq",
-                                      T,
-                                      [],
-                                      [ T ],
-                                      "eq",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.SubPointer.get_struct_record_field (|
-                                          M.deref (| M.read (| self |) |),
-                                          "core::ops::range::RangeInclusive",
-                                          "start"
-                                        |)
-                                      |);
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.SubPointer.get_struct_record_field (|
-                                          M.deref (| M.read (| self |) |),
-                                          "core::ops::range::RangeInclusive",
-                                          "end"
-                                        |)
+                                  M.get_trait_method (|
+                                    "core::cmp::PartialEq",
+                                    T,
+                                    [],
+                                    [ T ],
+                                    "eq",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "core::ops::range::RangeInclusive",
+                                        "start"
                                       |)
-                                    ]
-                                  |)
-                                |)) in
+                                    |);
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "core::ops::range::RangeInclusive",
+                                        "end"
+                                      |)
+                                    |)
+                                  ]
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.read (|
@@ -15400,28 +15237,20 @@ Module iter.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
                                   Ty.path "bool",
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    M.get_associated_function (|
-                                      Ty.apply
-                                        (Ty.path "core::ops::range::RangeInclusive")
-                                        []
-                                        [ T ],
-                                      "is_empty",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| self |) |)
-                                      |)
-                                    ]
-                                  |)
-                                |)) in
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "core::ops::range::RangeInclusive") [] [ T ],
+                                    "is_empty",
+                                    [],
+                                    []
+                                  |),
+                                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |)
+                                  ]
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.never_to_any (|
@@ -15470,7 +15299,7 @@ Module iter.
                           [
                             fun γ =>
                               ltac:(M.monadic
-                                (let γ := M.use is_iterating in
+                                (let γ := is_iterating in
                                 let _ :=
                                   is_constant_or_break_match (|
                                     M.read (| γ |),
@@ -15611,28 +15440,20 @@ Module iter.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
                                   Ty.path "bool",
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    M.get_associated_function (|
-                                      Ty.apply
-                                        (Ty.path "core::ops::range::RangeInclusive")
-                                        []
-                                        [ T ],
-                                      "is_empty",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| self |) |)
-                                      |)
-                                    ]
-                                  |)
-                                |)) in
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "core::ops::range::RangeInclusive") [] [ T ],
+                                    "is_empty",
+                                    [],
+                                    []
+                                  |),
+                                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |)
+                                  ]
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.never_to_any (|
@@ -15672,40 +15493,39 @@ Module iter.
                                 fun γ =>
                                   ltac:(M.monadic
                                     (let γ :=
-                                      M.use
-                                        (M.alloc (|
+                                      M.alloc (|
+                                        Ty.path "bool",
+                                        M.call_closure (|
                                           Ty.path "bool",
-                                          M.call_closure (|
-                                            Ty.path "bool",
-                                            M.get_trait_method (|
-                                              "core::cmp::PartialOrd",
-                                              T,
-                                              [],
-                                              [ T ],
-                                              "lt",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| self |) |),
-                                                  "core::ops::range::RangeInclusive",
-                                                  "start"
-                                                |)
-                                              |);
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| self |) |),
-                                                  "core::ops::range::RangeInclusive",
-                                                  "end"
-                                                |)
+                                          M.get_trait_method (|
+                                            "core::cmp::PartialOrd",
+                                            T,
+                                            [],
+                                            [ T ],
+                                            "lt",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.SubPointer.get_struct_record_field (|
+                                                M.deref (| M.read (| self |) |),
+                                                "core::ops::range::RangeInclusive",
+                                                "start"
                                               |)
-                                            ]
-                                          |)
-                                        |)) in
+                                            |);
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.SubPointer.get_struct_record_field (|
+                                                M.deref (| M.read (| self |) |),
+                                                "core::ops::range::RangeInclusive",
+                                                "end"
+                                              |)
+                                            |)
+                                          ]
+                                        |)
+                                      |) in
                                     let _ :=
                                       is_constant_or_break_match (|
                                         M.read (| γ |),
@@ -15908,40 +15728,39 @@ Module iter.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
                                   Ty.path "bool",
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    M.get_trait_method (|
-                                      "core::cmp::PartialEq",
-                                      T,
-                                      [],
-                                      [ T ],
-                                      "eq",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.SubPointer.get_struct_record_field (|
-                                          M.deref (| M.read (| self |) |),
-                                          "core::ops::range::RangeInclusive",
-                                          "start"
-                                        |)
-                                      |);
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.SubPointer.get_struct_record_field (|
-                                          M.deref (| M.read (| self |) |),
-                                          "core::ops::range::RangeInclusive",
-                                          "end"
-                                        |)
+                                  M.get_trait_method (|
+                                    "core::cmp::PartialEq",
+                                    T,
+                                    [],
+                                    [ T ],
+                                    "eq",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "core::ops::range::RangeInclusive",
+                                        "start"
                                       |)
-                                    ]
-                                  |)
-                                |)) in
+                                    |);
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "core::ops::range::RangeInclusive",
+                                        "end"
+                                      |)
+                                    |)
+                                  ]
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.read (|
@@ -16193,28 +16012,20 @@ Module iter.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
                                   Ty.path "bool",
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    M.get_associated_function (|
-                                      Ty.apply
-                                        (Ty.path "core::ops::range::RangeInclusive")
-                                        []
-                                        [ A ],
-                                      "is_empty",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| self |) |)
-                                      |)
-                                    ]
-                                  |)
-                                |)) in
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "core::ops::range::RangeInclusive") [] [ A ],
+                                    "is_empty",
+                                    [],
+                                    []
+                                  |),
+                                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |)
+                                  ]
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.never_to_any (|
@@ -16391,23 +16202,19 @@ Module iter.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
                                   Ty.path "bool",
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    M.get_associated_function (|
-                                      Ty.apply
-                                        (Ty.path "core::ops::range::RangeInclusive")
-                                        []
-                                        [ A ],
-                                      "is_empty",
-                                      [],
-                                      []
-                                    |),
-                                    [ M.borrow (| Pointer.Kind.Ref, self |) ]
-                                  |)
-                                |)) in
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "core::ops::range::RangeInclusive") [] [ A ],
+                                    "is_empty",
+                                    [],
+                                    []
+                                  |),
+                                  [ M.borrow (| Pointer.Kind.Ref, self |) ]
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.never_to_any (|
@@ -16606,28 +16413,20 @@ Module iter.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
                                   Ty.path "bool",
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    M.get_associated_function (|
-                                      Ty.apply
-                                        (Ty.path "core::ops::range::RangeInclusive")
-                                        []
-                                        [ A ],
-                                      "is_empty",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| self |) |)
-                                      |)
-                                    ]
-                                  |)
-                                |)) in
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "core::ops::range::RangeInclusive") [] [ A ],
+                                    "is_empty",
+                                    [],
+                                    []
+                                  |),
+                                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |)
+                                  ]
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.never_to_any (|
@@ -17215,28 +17014,20 @@ Module iter.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
                                   Ty.path "bool",
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    M.get_associated_function (|
-                                      Ty.apply
-                                        (Ty.path "core::ops::range::RangeInclusive")
-                                        []
-                                        [ A ],
-                                      "is_empty",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| self |) |)
-                                      |)
-                                    ]
-                                  |)
-                                |)) in
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "core::ops::range::RangeInclusive") [] [ A ],
+                                    "is_empty",
+                                    [],
+                                    []
+                                  |),
+                                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |)
+                                  ]
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.never_to_any (|

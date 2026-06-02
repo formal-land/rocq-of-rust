@@ -27,132 +27,6 @@ Module ops.
     Axiom IsDiscriminant_ControlFlow_Break :
       M.IsDiscriminant "core::ops::control_flow::ControlFlow::Break" 1.
     
-    Module Impl_core_fmt_Debug_where_core_fmt_Debug_B_where_core_fmt_Debug_C_for_core_ops_control_flow_ControlFlow_B_C.
-      Definition Self (B C : Ty.t) : Ty.t :=
-        Ty.apply (Ty.path "core::ops::control_flow::ControlFlow") [] [ B; C ].
-      
-      (* Debug *)
-      Definition fmt (B C : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-        let Self : Ty.t := Self B C in
-        match ε, τ, α with
-        | [], [], [ self; f ] =>
-          ltac:(M.monadic
-            (let self :=
-              M.alloc (|
-                Ty.apply
-                  (Ty.path "&")
-                  []
-                  [ Ty.apply (Ty.path "core::ops::control_flow::ControlFlow") [] [ B; C ] ],
-                self
-              |) in
-            let f :=
-              M.alloc (| Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ], f |) in
-            M.match_operator (|
-              Ty.apply
-                (Ty.path "core::result::Result")
-                []
-                [ Ty.tuple []; Ty.path "core::fmt::Error" ],
-              self,
-              [
-                fun γ =>
-                  ltac:(M.monadic
-                    (let γ := M.deref (| M.read (| γ |) |) in
-                    let γ1_0 :=
-                      M.SubPointer.get_struct_tuple_field (|
-                        γ,
-                        "core::ops::control_flow::ControlFlow::Continue",
-                        0
-                      |) in
-                    let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ C ], γ1_0 |) in
-                    M.call_closure (|
-                      Ty.apply
-                        (Ty.path "core::result::Result")
-                        []
-                        [ Ty.tuple []; Ty.path "core::fmt::Error" ],
-                      M.get_associated_function (|
-                        Ty.path "core::fmt::Formatter",
-                        "debug_tuple_field1_finish",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Continue" |) |) |);
-                        M.call_closure (|
-                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                          M.pointer_coercion
-                            M.PointerCoercion.Unsize
-                            (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ C ] ])
-                            (Ty.apply
-                              (Ty.path "&")
-                              []
-                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
-                            |)
-                          ]
-                        |)
-                      ]
-                    |)));
-                fun γ =>
-                  ltac:(M.monadic
-                    (let γ := M.deref (| M.read (| γ |) |) in
-                    let γ1_0 :=
-                      M.SubPointer.get_struct_tuple_field (|
-                        γ,
-                        "core::ops::control_flow::ControlFlow::Break",
-                        0
-                      |) in
-                    let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ B ], γ1_0 |) in
-                    M.call_closure (|
-                      Ty.apply
-                        (Ty.path "core::result::Result")
-                        []
-                        [ Ty.tuple []; Ty.path "core::fmt::Error" ],
-                      M.get_associated_function (|
-                        Ty.path "core::fmt::Formatter",
-                        "debug_tuple_field1_finish",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Break" |) |) |);
-                        M.call_closure (|
-                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                          M.pointer_coercion
-                            M.PointerCoercion.Unsize
-                            (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ B ] ])
-                            (Ty.apply
-                              (Ty.path "&")
-                              []
-                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
-                            |)
-                          ]
-                        |)
-                      ]
-                    |)))
-              ]
-            |)))
-        | _, _, _ => M.impossible "wrong number of arguments"
-        end.
-      
-      Axiom Implements :
-        forall (B C : Ty.t),
-        M.IsTraitInstance
-          "core::fmt::Debug"
-          (* Trait polymorphic consts *) []
-          (* Trait polymorphic types *) []
-          (Self B C)
-          (* Instance *) [ ("fmt", InstanceField.Method (fmt B C)) ].
-    End Impl_core_fmt_Debug_where_core_fmt_Debug_B_where_core_fmt_Debug_C_for_core_ops_control_flow_ControlFlow_B_C.
-    
     Module Impl_core_clone_Clone_where_core_clone_Clone_B_where_core_clone_Clone_C_for_core_ops_control_flow_ControlFlow_B_C.
       Definition Self (B C : Ty.t) : Ty.t :=
         Ty.apply (Ty.path "core::ops::control_flow::ControlFlow") [] [ B; C ].
@@ -231,20 +105,6 @@ Module ops.
           (Self B C)
           (* Instance *) [ ("clone", InstanceField.Method (clone B C)) ].
     End Impl_core_clone_Clone_where_core_clone_Clone_B_where_core_clone_Clone_C_for_core_ops_control_flow_ControlFlow_B_C.
-    
-    Module Impl_core_marker_Copy_where_core_marker_Copy_B_where_core_marker_Copy_C_for_core_ops_control_flow_ControlFlow_B_C.
-      Definition Self (B C : Ty.t) : Ty.t :=
-        Ty.apply (Ty.path "core::ops::control_flow::ControlFlow") [] [ B; C ].
-      
-      Axiom Implements :
-        forall (B C : Ty.t),
-        M.IsTraitInstance
-          "core::marker::Copy"
-          (* Trait polymorphic consts *) []
-          (* Trait polymorphic types *) []
-          (Self B C)
-          (* Instance *) [].
-    End Impl_core_marker_Copy_where_core_marker_Copy_B_where_core_marker_Copy_C_for_core_ops_control_flow_ControlFlow_B_C.
     
     Module Impl_core_marker_StructuralPartialEq_for_core_ops_control_flow_ControlFlow_B_C.
       Definition Self (B C : Ty.t) : Ty.t :=
@@ -493,6 +353,146 @@ Module ops.
           [ ("assert_receiver_is_total_eq", InstanceField.Method (assert_receiver_is_total_eq B C))
           ].
     End Impl_core_cmp_Eq_where_core_cmp_Eq_B_where_core_cmp_Eq_C_for_core_ops_control_flow_ControlFlow_B_C.
+    
+    Module Impl_core_marker_Copy_where_core_marker_Copy_B_where_core_marker_Copy_C_for_core_ops_control_flow_ControlFlow_B_C.
+      Definition Self (B C : Ty.t) : Ty.t :=
+        Ty.apply (Ty.path "core::ops::control_flow::ControlFlow") [] [ B; C ].
+      
+      Axiom Implements :
+        forall (B C : Ty.t),
+        M.IsTraitInstance
+          "core::marker::Copy"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          (Self B C)
+          (* Instance *) [].
+    End Impl_core_marker_Copy_where_core_marker_Copy_B_where_core_marker_Copy_C_for_core_ops_control_flow_ControlFlow_B_C.
+    
+    Module Impl_core_fmt_Debug_where_core_fmt_Debug_B_where_core_fmt_Debug_C_for_core_ops_control_flow_ControlFlow_B_C.
+      Definition Self (B C : Ty.t) : Ty.t :=
+        Ty.apply (Ty.path "core::ops::control_flow::ControlFlow") [] [ B; C ].
+      
+      (* Debug *)
+      Definition fmt (B C : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        let Self : Ty.t := Self B C in
+        match ε, τ, α with
+        | [], [], [ self; f ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "core::ops::control_flow::ControlFlow") [] [ B; C ] ],
+                self
+              |) in
+            let f :=
+              M.alloc (| Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ], f |) in
+            M.match_operator (|
+              Ty.apply
+                (Ty.path "core::result::Result")
+                []
+                [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+              self,
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ := M.deref (| M.read (| γ |) |) in
+                    let γ1_0 :=
+                      M.SubPointer.get_struct_tuple_field (|
+                        γ,
+                        "core::ops::control_flow::ControlFlow::Continue",
+                        0
+                      |) in
+                    let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ C ], γ1_0 |) in
+                    M.call_closure (|
+                      Ty.apply
+                        (Ty.path "core::result::Result")
+                        []
+                        [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                      M.get_associated_function (|
+                        Ty.path "core::fmt::Formatter",
+                        "debug_tuple_field1_finish",
+                        [],
+                        []
+                      |),
+                      [
+                        M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Continue" |) |) |);
+                        M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ C ] ])
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
+                            |)
+                          ]
+                        |)
+                      ]
+                    |)));
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ := M.deref (| M.read (| γ |) |) in
+                    let γ1_0 :=
+                      M.SubPointer.get_struct_tuple_field (|
+                        γ,
+                        "core::ops::control_flow::ControlFlow::Break",
+                        0
+                      |) in
+                    let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ B ], γ1_0 |) in
+                    M.call_closure (|
+                      Ty.apply
+                        (Ty.path "core::result::Result")
+                        []
+                        [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                      M.get_associated_function (|
+                        Ty.path "core::fmt::Formatter",
+                        "debug_tuple_field1_finish",
+                        [],
+                        []
+                      |),
+                      [
+                        M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Break" |) |) |);
+                        M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ B ] ])
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
+                            |)
+                          ]
+                        |)
+                      ]
+                    |)))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Axiom Implements :
+        forall (B C : Ty.t),
+        M.IsTraitInstance
+          "core::fmt::Debug"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          (Self B C)
+          (* Instance *) [ ("fmt", InstanceField.Method (fmt B C)) ].
+    End Impl_core_fmt_Debug_where_core_fmt_Debug_B_where_core_fmt_Debug_C_for_core_ops_control_flow_ControlFlow_B_C.
     
     Module Impl_core_hash_Hash_where_core_hash_Hash_B_where_core_hash_Hash_C_for_core_ops_control_flow_ControlFlow_B_C.
       Definition Self (B C : Ty.t) : Ty.t :=
@@ -858,7 +858,7 @@ Module ops.
         Ty.apply (Ty.path "core::ops::control_flow::ControlFlow") [] [ B; C ].
       
       (*
-          pub fn is_break(&self) -> bool {
+          pub const fn is_break(&self) -> bool {
               matches!( *self, ControlFlow::Break(_))
           }
       *)
@@ -901,7 +901,7 @@ Module ops.
       Global Typeclasses Opaque is_break.
       
       (*
-          pub fn is_continue(&self) -> bool {
+          pub const fn is_continue(&self) -> bool {
               matches!( *self, ControlFlow::Continue(_))
           }
       *)
@@ -949,7 +949,10 @@ Module ops.
       Global Typeclasses Opaque is_continue.
       
       (*
-          pub fn break_value(self) -> Option<B> {
+          pub const fn break_value(self) -> Option<B>
+          where
+              Self: [const] Destruct,
+          {
               match self {
                   ControlFlow::Continue(..) => None,
                   ControlFlow::Break(x) => Some(x),
@@ -1002,7 +1005,63 @@ Module ops.
       Global Typeclasses Opaque break_value.
       
       (*
-          pub fn map_break<T>(self, f: impl FnOnce(B) -> T) -> ControlFlow<T, C> {
+          pub const fn break_ok(self) -> Result<B, C> {
+              match self {
+                  ControlFlow::Continue(c) => Err(c),
+                  ControlFlow::Break(b) => Ok(b),
+              }
+          }
+      *)
+      Definition break_ok (B C : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        let Self : Ty.t := Self B C in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "core::ops::control_flow::ControlFlow") [] [ B; C ],
+                self
+              |) in
+            M.match_operator (|
+              Ty.apply (Ty.path "core::result::Result") [] [ B; C ],
+              self,
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 :=
+                      M.SubPointer.get_struct_tuple_field (|
+                        γ,
+                        "core::ops::control_flow::ControlFlow::Continue",
+                        0
+                      |) in
+                    let c := M.copy (| C, γ0_0 |) in
+                    Value.StructTuple "core::result::Result::Err" [] [ B; C ] [ M.read (| c |) ]));
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 :=
+                      M.SubPointer.get_struct_tuple_field (|
+                        γ,
+                        "core::ops::control_flow::ControlFlow::Break",
+                        0
+                      |) in
+                    let b := M.copy (| B, γ0_0 |) in
+                    Value.StructTuple "core::result::Result::Ok" [] [ B; C ] [ M.read (| b |) ]))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_break_ok :
+        forall (B C : Ty.t),
+        M.IsAssociatedFunction.C (Self B C) "break_ok" (break_ok B C).
+      Admitted.
+      Global Typeclasses Opaque break_ok.
+      
+      (*
+          pub const fn map_break<T, F>(self, f: F) -> ControlFlow<T, C>
+          where
+              F: [const] FnOnce(B) -> T + [const] Destruct,
+          {
               match self {
                   ControlFlow::Continue(x) => ControlFlow::Continue(x),
                   ControlFlow::Break(x) => ControlFlow::Break(f(x)),
@@ -1012,14 +1071,14 @@ Module ops.
       Definition map_break (B C : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         let Self : Ty.t := Self B C in
         match ε, τ, α with
-        | [], [ T; impl_FnOnce_B__arrow_T ], [ self; f ] =>
+        | [], [ T; F ], [ self; f ] =>
           ltac:(M.monadic
             (let self :=
               M.alloc (|
                 Ty.apply (Ty.path "core::ops::control_flow::ControlFlow") [] [ B; C ],
                 self
               |) in
-            let f := M.alloc (| impl_FnOnce_B__arrow_T, f |) in
+            let f := M.alloc (| F, f |) in
             M.match_operator (|
               Ty.apply (Ty.path "core::ops::control_flow::ControlFlow") [] [ T; C ],
               self,
@@ -1056,7 +1115,7 @@ Module ops.
                           T,
                           M.get_trait_method (|
                             "core::ops::function::FnOnce",
-                            impl_FnOnce_B__arrow_T,
+                            F,
                             [],
                             [ Ty.tuple [ B ] ],
                             "call_once",
@@ -1078,7 +1137,10 @@ Module ops.
       Global Typeclasses Opaque map_break.
       
       (*
-          pub fn continue_value(self) -> Option<C> {
+          pub const fn continue_value(self) -> Option<C>
+          where
+              Self: [const] Destruct,
+          {
               match self {
                   ControlFlow::Continue(x) => Some(x),
                   ControlFlow::Break(..) => None,
@@ -1131,7 +1193,68 @@ Module ops.
       Global Typeclasses Opaque continue_value.
       
       (*
-          pub fn map_continue<T>(self, f: impl FnOnce(C) -> T) -> ControlFlow<B, T> {
+          pub const fn continue_ok(self) -> Result<C, B> {
+              match self {
+                  ControlFlow::Continue(c) => Ok(c),
+                  ControlFlow::Break(b) => Err(b),
+              }
+          }
+      *)
+      Definition continue_ok
+          (B C : Ty.t)
+          (ε : list Value.t)
+          (τ : list Ty.t)
+          (α : list Value.t)
+          : M :=
+        let Self : Ty.t := Self B C in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "core::ops::control_flow::ControlFlow") [] [ B; C ],
+                self
+              |) in
+            M.match_operator (|
+              Ty.apply (Ty.path "core::result::Result") [] [ C; B ],
+              self,
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 :=
+                      M.SubPointer.get_struct_tuple_field (|
+                        γ,
+                        "core::ops::control_flow::ControlFlow::Continue",
+                        0
+                      |) in
+                    let c := M.copy (| C, γ0_0 |) in
+                    Value.StructTuple "core::result::Result::Ok" [] [ C; B ] [ M.read (| c |) ]));
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 :=
+                      M.SubPointer.get_struct_tuple_field (|
+                        γ,
+                        "core::ops::control_flow::ControlFlow::Break",
+                        0
+                      |) in
+                    let b := M.copy (| B, γ0_0 |) in
+                    Value.StructTuple "core::result::Result::Err" [] [ C; B ] [ M.read (| b |) ]))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_continue_ok :
+        forall (B C : Ty.t),
+        M.IsAssociatedFunction.C (Self B C) "continue_ok" (continue_ok B C).
+      Admitted.
+      Global Typeclasses Opaque continue_ok.
+      
+      (*
+          pub const fn map_continue<T, F>(self, f: F) -> ControlFlow<B, T>
+          where
+              F: [const] FnOnce(C) -> T + [const] Destruct,
+          {
               match self {
                   ControlFlow::Continue(x) => ControlFlow::Continue(f(x)),
                   ControlFlow::Break(x) => ControlFlow::Break(x),
@@ -1146,14 +1269,14 @@ Module ops.
           : M :=
         let Self : Ty.t := Self B C in
         match ε, τ, α with
-        | [], [ T; impl_FnOnce_C__arrow_T ], [ self; f ] =>
+        | [], [ T; F ], [ self; f ] =>
           ltac:(M.monadic
             (let self :=
               M.alloc (|
                 Ty.apply (Ty.path "core::ops::control_flow::ControlFlow") [] [ B; C ],
                 self
               |) in
-            let f := M.alloc (| impl_FnOnce_C__arrow_T, f |) in
+            let f := M.alloc (| F, f |) in
             M.match_operator (|
               Ty.apply (Ty.path "core::ops::control_flow::ControlFlow") [] [ B; T ],
               self,
@@ -1176,7 +1299,7 @@ Module ops.
                           T,
                           M.get_trait_method (|
                             "core::ops::function::FnOnce",
-                            impl_FnOnce_C__arrow_T,
+                            F,
                             [],
                             [ Ty.tuple [ C ] ],
                             "call_once",
@@ -1211,6 +1334,76 @@ Module ops.
       Admitted.
       Global Typeclasses Opaque map_continue.
     End Impl_core_ops_control_flow_ControlFlow_B_C.
+    
+    Module Impl_core_ops_control_flow_ControlFlow_T_T.
+      Definition Self (T : Ty.t) : Ty.t :=
+        Ty.apply (Ty.path "core::ops::control_flow::ControlFlow") [] [ T; T ].
+      
+      (*
+          pub const fn into_value(self) -> T {
+              match self {
+                  ControlFlow::Continue(x) | ControlFlow::Break(x) => x,
+              }
+          }
+      *)
+      Definition into_value (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        let Self : Ty.t := Self T in
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "core::ops::control_flow::ControlFlow") [] [ T; T ],
+                self
+              |) in
+            M.match_operator (|
+              T,
+              self,
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (M.find_or_pattern (Ty.tuple [ T ]) (|
+                      γ,
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ0_0 :=
+                              M.SubPointer.get_struct_tuple_field (|
+                                γ,
+                                "core::ops::control_flow::ControlFlow::Continue",
+                                0
+                              |) in
+                            let x := M.copy (| T, γ0_0 |) in
+                            Value.Tuple [ x ]));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ0_0 :=
+                              M.SubPointer.get_struct_tuple_field (|
+                                γ,
+                                "core::ops::control_flow::ControlFlow::Break",
+                                0
+                              |) in
+                            let x := M.copy (| T, γ0_0 |) in
+                            Value.Tuple [ x ]))
+                      ],
+                      fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ x ] => ltac:(M.monadic (M.read (| x |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)
+                    |)))
+              ]
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_into_value :
+        forall (T : Ty.t),
+        M.IsAssociatedFunction.C (Self T) "into_value" (into_value T).
+      Admitted.
+      Global Typeclasses Opaque into_value.
+    End Impl_core_ops_control_flow_ControlFlow_T_T.
     
     Module Impl_core_ops_control_flow_ControlFlow_R_associated_in_trait_core_ops_try_trait_Try___R_Output.
       Definition Self (R : Ty.t) : Ty.t :=

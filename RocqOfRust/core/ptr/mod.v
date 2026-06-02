@@ -3,7 +3,304 @@ Require Import RocqOfRust.RocqOfRust.
 
 Module ptr.
   (*
-  pub unsafe fn drop_in_place<T: ?Sized>(to_drop: *mut T) {
+  pub const unsafe fn copy_nonoverlapping<T>(src: *const T, dst: *mut T, count: usize) {
+      ub_checks::assert_unsafe_precondition!(
+          check_language_ub,
+          "ptr::copy_nonoverlapping requires that both pointer arguments are aligned and non-null \
+          and the specified memory ranges do not overlap",
+          (
+              src: *const () = src as *const (),
+              dst: *mut () = dst as *mut (),
+              size: usize = size_of::<T>(),
+              align: usize = align_of::<T>(),
+              count: usize = count,
+          ) => {
+              let zero_size = count == 0 || size == 0;
+              ub_checks::maybe_is_aligned_and_not_null(src, align, zero_size)
+                  && ub_checks::maybe_is_aligned_and_not_null(dst, align, zero_size)
+                  && ub_checks::maybe_is_nonoverlapping(src, dst, size, count)
+          }
+      );
+  
+      // SAFETY: the safety contract for `copy_nonoverlapping` must be
+      // upheld by the caller.
+      unsafe { crate::intrinsics::copy_nonoverlapping(src, dst, count) }
+  }
+  *)
+  Definition copy_nonoverlapping (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    match ε, τ, α with
+    | [], [ T ], [ src; dst; count ] =>
+      ltac:(M.monadic
+        (let src := M.alloc (| Ty.apply (Ty.path "*const") [] [ T ], src |) in
+        let dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], dst |) in
+        let count := M.alloc (| Ty.path "usize", count |) in
+        M.read (|
+          let~ _ : Ty.tuple [] :=
+            M.match_operator (|
+              Ty.tuple [],
+              M.alloc (| Ty.tuple [], Value.Tuple [] |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ :=
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
+                          Ty.path "bool",
+                          M.get_function (| "core::ub_checks::check_language_ub", [], [] |),
+                          []
+                        |)
+                      |) in
+                    let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                    M.read (|
+                      let~ _ : Ty.tuple [] :=
+                        M.call_closure (|
+                          Ty.tuple [],
+                          M.get_function (|
+                            "core::ptr::copy_nonoverlapping.precondition_check",
+                            [],
+                            []
+                          |),
+                          [
+                            M.cast
+                              (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ])
+                              (M.read (| src |));
+                            M.cast
+                              (Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ])
+                              (M.read (| dst |));
+                            M.call_closure (|
+                              Ty.path "usize",
+                              M.get_function (| "core::mem::size_of", [], [ T ] |),
+                              []
+                            |);
+                            M.call_closure (|
+                              Ty.path "usize",
+                              M.get_function (| "core::mem::align_of", [], [ T ] |),
+                              []
+                            |);
+                            M.read (| count |)
+                          ]
+                        |) in
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |)
+                    |)));
+                fun γ => ltac:(M.monadic (Value.Tuple []))
+              ]
+            |) in
+          M.alloc (|
+            Ty.tuple [],
+            M.call_closure (|
+              Ty.tuple [],
+              M.get_function (| "core::intrinsics::copy_nonoverlapping", [], [ T ] |),
+              [ M.read (| src |); M.read (| dst |); M.read (| count |) ]
+            |)
+          |)
+        |)))
+    | _, _, _ => M.impossible "wrong number of arguments"
+    end.
+  
+  Global Instance Instance_IsFunction_copy_nonoverlapping :
+    M.IsFunction.C "core::ptr::copy_nonoverlapping" copy_nonoverlapping.
+  Admitted.
+  Global Typeclasses Opaque copy_nonoverlapping.
+  
+  (*
+  pub const unsafe fn copy<T>(src: *const T, dst: *mut T, count: usize) {
+      // SAFETY: the safety contract for `copy` must be upheld by the caller.
+      unsafe {
+          ub_checks::assert_unsafe_precondition!(
+              check_language_ub,
+              "ptr::copy requires that both pointer arguments are aligned and non-null",
+              (
+                  src: *const () = src as *const (),
+                  dst: *mut () = dst as *mut (),
+                  align: usize = align_of::<T>(),
+                  zero_size: bool = T::IS_ZST || count == 0,
+              ) =>
+              ub_checks::maybe_is_aligned_and_not_null(src, align, zero_size)
+                  && ub_checks::maybe_is_aligned_and_not_null(dst, align, zero_size)
+          );
+          crate::intrinsics::copy(src, dst, count)
+      }
+  }
+  *)
+  Definition copy (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    match ε, τ, α with
+    | [], [ T ], [ src; dst; count ] =>
+      ltac:(M.monadic
+        (let src := M.alloc (| Ty.apply (Ty.path "*const") [] [ T ], src |) in
+        let dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], dst |) in
+        let count := M.alloc (| Ty.path "usize", count |) in
+        M.read (|
+          let~ _ : Ty.tuple [] :=
+            M.match_operator (|
+              Ty.tuple [],
+              M.alloc (| Ty.tuple [], Value.Tuple [] |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ :=
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
+                          Ty.path "bool",
+                          M.get_function (| "core::ub_checks::check_language_ub", [], [] |),
+                          []
+                        |)
+                      |) in
+                    let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                    M.read (|
+                      let~ _ : Ty.tuple [] :=
+                        M.call_closure (|
+                          Ty.tuple [],
+                          M.get_function (| "core::ptr::copy.precondition_check", [], [] |),
+                          [
+                            M.cast
+                              (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ])
+                              (M.read (| src |));
+                            M.cast
+                              (Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ])
+                              (M.read (| dst |));
+                            M.call_closure (|
+                              Ty.path "usize",
+                              M.get_function (| "core::mem::align_of", [], [ T ] |),
+                              []
+                            |);
+                            LogicalOp.or (|
+                              M.read (|
+                                get_constant (|
+                                  "core::mem::SizedTypeProperties::IS_ZST",
+                                  Ty.path "bool"
+                                |)
+                              |),
+                              ltac:(M.monadic
+                                (M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [ M.read (| count |); Value.Integer IntegerKind.Usize 0 ]
+                                |)))
+                            |)
+                          ]
+                        |) in
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |)
+                    |)));
+                fun γ => ltac:(M.monadic (Value.Tuple []))
+              ]
+            |) in
+          M.alloc (|
+            Ty.tuple [],
+            M.call_closure (|
+              Ty.tuple [],
+              M.get_function (| "core::intrinsics::copy", [], [ T ] |),
+              [ M.read (| src |); M.read (| dst |); M.read (| count |) ]
+            |)
+          |)
+        |)))
+    | _, _, _ => M.impossible "wrong number of arguments"
+    end.
+  
+  Global Instance Instance_IsFunction_copy : M.IsFunction.C "core::ptr::copy" copy.
+  Admitted.
+  Global Typeclasses Opaque copy.
+  
+  (*
+  pub const unsafe fn write_bytes<T>(dst: *mut T, val: u8, count: usize) {
+      // SAFETY: the safety contract for `write_bytes` must be upheld by the caller.
+      unsafe {
+          ub_checks::assert_unsafe_precondition!(
+              check_language_ub,
+              "ptr::write_bytes requires that the destination pointer is aligned and non-null",
+              (
+                  addr: *const () = dst as *const (),
+                  align: usize = align_of::<T>(),
+                  zero_size: bool = T::IS_ZST || count == 0,
+              ) => ub_checks::maybe_is_aligned_and_not_null(addr, align, zero_size)
+          );
+          crate::intrinsics::write_bytes(dst, val, count)
+      }
+  }
+  *)
+  Definition write_bytes (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    match ε, τ, α with
+    | [], [ T ], [ dst; val; count ] =>
+      ltac:(M.monadic
+        (let dst := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], dst |) in
+        let val := M.alloc (| Ty.path "u8", val |) in
+        let count := M.alloc (| Ty.path "usize", count |) in
+        M.read (|
+          let~ _ : Ty.tuple [] :=
+            M.match_operator (|
+              Ty.tuple [],
+              M.alloc (| Ty.tuple [], Value.Tuple [] |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ :=
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
+                          Ty.path "bool",
+                          M.get_function (| "core::ub_checks::check_language_ub", [], [] |),
+                          []
+                        |)
+                      |) in
+                    let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                    M.read (|
+                      let~ _ : Ty.tuple [] :=
+                        M.call_closure (|
+                          Ty.tuple [],
+                          M.get_function (| "core::ptr::write_bytes.precondition_check", [], [] |),
+                          [
+                            M.cast
+                              (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ])
+                              (M.read (| dst |));
+                            M.call_closure (|
+                              Ty.path "usize",
+                              M.get_function (| "core::mem::align_of", [], [ T ] |),
+                              []
+                            |);
+                            LogicalOp.or (|
+                              M.read (|
+                                get_constant (|
+                                  "core::mem::SizedTypeProperties::IS_ZST",
+                                  Ty.path "bool"
+                                |)
+                              |),
+                              ltac:(M.monadic
+                                (M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.eq,
+                                  [ M.read (| count |); Value.Integer IntegerKind.Usize 0 ]
+                                |)))
+                            |)
+                          ]
+                        |) in
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |)
+                    |)));
+                fun γ => ltac:(M.monadic (Value.Tuple []))
+              ]
+            |) in
+          M.alloc (|
+            Ty.tuple [],
+            M.call_closure (|
+              Ty.tuple [],
+              M.get_function (| "core::intrinsics::write_bytes", [], [ T ] |),
+              [ M.read (| dst |); M.read (| val |); M.read (| count |) ]
+            |)
+          |)
+        |)))
+    | _, _, _ => M.impossible "wrong number of arguments"
+    end.
+  
+  Global Instance Instance_IsFunction_write_bytes :
+    M.IsFunction.C "core::ptr::write_bytes" write_bytes.
+  Admitted.
+  Global Typeclasses Opaque write_bytes.
+  
+  (*
+  pub const unsafe fn drop_in_place<T: PointeeSized>(to_drop: *mut T)
+  where
+      T: [const] Destruct,
+  {
       // Code here does not matter - this is replaced by the
       // real drop glue by the compiler.
   
@@ -30,7 +327,7 @@ Module ptr.
   Global Typeclasses Opaque drop_in_place.
   
   (*
-  pub const fn null<T: ?Sized + Thin>() -> *const T {
+  pub const fn null<T: PointeeSized + Thin>() -> *const T {
       from_raw_parts(without_provenance::<()>(0), ())
   }
   *)
@@ -58,7 +355,7 @@ Module ptr.
   Global Typeclasses Opaque null.
   
   (*
-  pub const fn null_mut<T: ?Sized + Thin>() -> *mut T {
+  pub const fn null_mut<T: PointeeSized + Thin>() -> *mut T {
       from_raw_parts_mut(without_provenance_mut::<()>(0), ())
   }
   *)
@@ -87,12 +384,7 @@ Module ptr.
   
   (*
   pub const fn without_provenance<T>(addr: usize) -> *const T {
-      // An int-to-pointer transmute currently has exactly the intended semantics: it creates a
-      // pointer without provenance. Note that this is *not* a stable guarantee about transmute
-      // semantics, it relies on sysroot crates having special status.
-      // SAFETY: every valid integer is also a valid pointer (as long as you don't dereference that
-      // pointer).
-      unsafe { mem::transmute(addr) }
+      without_provenance_mut(addr)
   }
   *)
   Definition without_provenance (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -102,12 +394,17 @@ Module ptr.
         (let addr := M.alloc (| Ty.path "usize", addr |) in
         M.call_closure (|
           Ty.apply (Ty.path "*const") [] [ T ],
-          M.get_function (|
-            "core::intrinsics::transmute",
-            [],
-            [ Ty.path "usize"; Ty.apply (Ty.path "*const") [] [ T ] ]
-          |),
-          [ M.read (| addr |) ]
+          M.pointer_coercion
+            M.PointerCoercion.MutToConstPointer
+            (Ty.apply (Ty.path "*mut") [] [ T ])
+            (Ty.apply (Ty.path "*const") [] [ T ]),
+          [
+            M.call_closure (|
+              Ty.apply (Ty.path "*mut") [] [ T ],
+              M.get_function (| "core::ptr::without_provenance_mut", [], [ T ] |),
+              [ M.read (| addr |) ]
+            |)
+          ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
@@ -119,7 +416,7 @@ Module ptr.
   
   (*
   pub const fn dangling<T>() -> *const T {
-      without_provenance(mem::align_of::<T>())
+      dangling_mut()
   }
   *)
   Definition dangling (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -128,11 +425,14 @@ Module ptr.
       ltac:(M.monadic
         (M.call_closure (|
           Ty.apply (Ty.path "*const") [] [ T ],
-          M.get_function (| "core::ptr::without_provenance", [], [ T ] |),
+          M.pointer_coercion
+            M.PointerCoercion.MutToConstPointer
+            (Ty.apply (Ty.path "*mut") [] [ T ])
+            (Ty.apply (Ty.path "*const") [] [ T ]),
           [
             M.call_closure (|
-              Ty.path "usize",
-              M.get_function (| "core::mem::align_of", [], [ T ] |),
+              Ty.apply (Ty.path "*mut") [] [ T ],
+              M.get_function (| "core::ptr::dangling_mut", [], [ T ] |),
               []
             |)
           ]
@@ -178,7 +478,7 @@ Module ptr.
   
   (*
   pub const fn dangling_mut<T>() -> *mut T {
-      without_provenance_mut(mem::align_of::<T>())
+      NonNull::dangling().as_ptr()
   }
   *)
   Definition dangling_mut (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -187,11 +487,21 @@ Module ptr.
       ltac:(M.monadic
         (M.call_closure (|
           Ty.apply (Ty.path "*mut") [] [ T ],
-          M.get_function (| "core::ptr::without_provenance_mut", [], [ T ] |),
+          M.get_associated_function (|
+            Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
+            "as_ptr",
+            [],
+            []
+          |),
           [
             M.call_closure (|
-              Ty.path "usize",
-              M.get_function (| "core::mem::align_of", [], [ T ] |),
+              Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
+              M.get_associated_function (|
+                Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
+                "dangling",
+                [],
+                []
+              |),
               []
             |)
           ]
@@ -205,7 +515,7 @@ Module ptr.
   Global Typeclasses Opaque dangling_mut.
   
   (*
-  pub fn with_exposed_provenance<T>(addr: usize) -> *const T {
+  pub const fn with_exposed_provenance<T>(addr: usize) -> *const T {
       addr as *const T
   }
   *)
@@ -224,7 +534,7 @@ Module ptr.
   Global Typeclasses Opaque with_exposed_provenance.
   
   (*
-  pub fn with_exposed_provenance_mut<T>(addr: usize) -> *mut T {
+  pub const fn with_exposed_provenance_mut<T>(addr: usize) -> *mut T {
       addr as *mut T
   }
   *)
@@ -247,7 +557,7 @@ Module ptr.
   Global Typeclasses Opaque with_exposed_provenance_mut.
   
   (*
-  pub const fn from_ref<T: ?Sized>(r: &T) -> *const T {
+  pub const fn from_ref<T: PointeeSized>(r: &T) -> *const T {
       r
   }
   *)
@@ -265,7 +575,7 @@ Module ptr.
   Global Typeclasses Opaque from_ref.
   
   (*
-  pub const fn from_mut<T: ?Sized>(r: &mut T) -> *mut T {
+  pub const fn from_mut<T: PointeeSized>(r: &mut T) -> *mut T {
       r
   }
   *)
@@ -348,7 +658,7 @@ Module ptr.
       // SAFETY: the caller must guarantee that `x` and `y` are
       // valid for writes and properly aligned. `tmp` cannot be
       // overlapping either `x` or `y` because `tmp` was just allocated
-      // on the stack as a separate allocated object.
+      // on the stack as a separate allocation.
       unsafe {
           copy_nonoverlapping(x, tmp.as_mut_ptr(), 1);
           copy(y, x, 1); // `x` and `y` may overlap
@@ -377,7 +687,7 @@ Module ptr.
           let~ _ : Ty.tuple [] :=
             M.call_closure (|
               Ty.tuple [],
-              M.get_function (| "core::intrinsics::copy_nonoverlapping", [], [ T ] |),
+              M.get_function (| "core::ptr::copy_nonoverlapping", [], [ T ] |),
               [
                 M.call_closure (|
                   Ty.apply (Ty.path "*const") [] [ T ],
@@ -403,7 +713,7 @@ Module ptr.
           let~ _ : Ty.tuple [] :=
             M.call_closure (|
               Ty.tuple [],
-              M.get_function (| "core::intrinsics::copy", [], [ T ] |),
+              M.get_function (| "core::ptr::copy", [], [ T ] |),
               [
                 M.call_closure (|
                   Ty.apply (Ty.path "*const") [] [ T ],
@@ -420,7 +730,7 @@ Module ptr.
           let~ _ : Ty.tuple [] :=
             M.call_closure (|
               Ty.tuple [],
-              M.get_function (| "core::intrinsics::copy_nonoverlapping", [], [ T ] |),
+              M.get_function (| "core::ptr::copy_nonoverlapping", [], [ T ] |),
               [
                 M.call_closure (|
                   Ty.apply (Ty.path "*const") [] [ T ],
@@ -447,27 +757,8 @@ Module ptr.
   
   (*
   pub const unsafe fn swap_nonoverlapping<T>(x: *mut T, y: *mut T, count: usize) {
-      #[allow(unused)]
-      macro_rules! attempt_swap_as_chunks {
-          ($ChunkTy:ty) => {
-              if mem::align_of::<T>() >= mem::align_of::<$ChunkTy>()
-                  && mem::size_of::<T>() % mem::size_of::<$ChunkTy>() == 0
-              {
-                  let x: *mut $ChunkTy = x.cast();
-                  let y: *mut $ChunkTy = y.cast();
-                  let count = count * (mem::size_of::<T>() / mem::size_of::<$ChunkTy>());
-                  // SAFETY: these are the same bytes that the caller promised were
-                  // ok, just typed as `MaybeUninit<ChunkTy>`s instead of as `T`s.
-                  // The `if` condition above ensures that we're not violating
-                  // alignment requirements, and that the division is exact so
-                  // that we don't lose any bytes off the end.
-                  return unsafe { swap_nonoverlapping_simple_untyped(x, y, count) };
-              }
-          };
-      }
-  
       ub_checks::assert_unsafe_precondition!(
-          check_language_ub,
+          check_library_ub,
           "ptr::swap_nonoverlapping requires that both pointer arguments are aligned and non-null \
           and the specified memory ranges do not overlap",
           (
@@ -484,19 +775,25 @@ Module ptr.
           }
       );
   
-      // Split up the slice into small power-of-two-sized chunks that LLVM is able
-      // to vectorize (unless it's a special type with more-than-pointer alignment,
-      // because we don't want to pessimize things like slices of SIMD vectors.)
-      if mem::align_of::<T>() <= mem::size_of::<usize>()
-          && (!mem::size_of::<T>().is_power_of_two()
-              || mem::size_of::<T>() > mem::size_of::<usize>() * 2)
-      {
-          attempt_swap_as_chunks!(usize);
-          attempt_swap_as_chunks!(u8);
-      }
-  
-      // SAFETY: Same preconditions as this function
-      unsafe { swap_nonoverlapping_simple_untyped(x, y, count) }
+      const_eval_select!(
+          @capture[T] { x: *mut T, y: *mut T, count: usize }:
+          if const {
+              // At compile-time we don't need all the special code below.
+              // SAFETY: Same preconditions as this function
+              unsafe { swap_nonoverlapping_const(x, y, count) }
+          } else {
+              // Going though a slice here helps codegen know the size fits in `isize`
+              let slice = slice_from_raw_parts_mut(x, count);
+              // SAFETY: This is all readable from the pointer, meaning it's one
+              // allocation, and thus cannot be more than isize::MAX bytes.
+              let bytes = unsafe { mem::size_of_val_raw::<[T]>(slice) };
+              if let Some(bytes) = NonZero::new(bytes) {
+                  // SAFETY: These are the same ranges, just expressed in a different
+                  // type, so they're still non-overlapping.
+                  unsafe { swap_nonoverlapping_bytes(x.cast(), y.cast(), bytes) };
+              }
+          }
+      )
   }
   *)
   Definition swap_nonoverlapping (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -506,458 +803,92 @@ Module ptr.
         (let x := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], x |) in
         let y := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], y |) in
         let count := M.alloc (| Ty.path "usize", count |) in
-        M.catch_return (Ty.tuple []) (|
-          ltac:(M.monadic
-            (M.read (|
-              let~ _ : Ty.tuple [] :=
-                M.match_operator (|
-                  Ty.tuple [],
-                  M.alloc (| Ty.tuple [], Value.Tuple [] |),
-                  [
-                    fun γ =>
-                      ltac:(M.monadic
-                        (let γ :=
-                          M.use
-                            (M.alloc (|
-                              Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                M.get_function (| "core::ub_checks::check_language_ub", [], [] |),
-                                []
-                              |)
-                            |)) in
-                        let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                        M.read (|
-                          let~ _ : Ty.tuple [] :=
+        M.read (|
+          let~ _ : Ty.tuple [] :=
+            M.match_operator (|
+              Ty.tuple [],
+              M.alloc (| Ty.tuple [], Value.Tuple [] |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ :=
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
+                          Ty.path "bool",
+                          M.get_function (| "core::intrinsics::ub_checks", [], [] |),
+                          []
+                        |)
+                      |) in
+                    let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                    M.read (|
+                      let~ _ : Ty.tuple [] :=
+                        M.call_closure (|
+                          Ty.tuple [],
+                          M.get_function (|
+                            "core::ptr::swap_nonoverlapping.precondition_check",
+                            [],
+                            []
+                          |),
+                          [
+                            M.cast (Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ]) (M.read (| x |));
+                            M.cast (Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ]) (M.read (| y |));
                             M.call_closure (|
-                              Ty.tuple [],
-                              M.get_function (|
-                                "core::ptr::swap_nonoverlapping.precondition_check",
-                                [],
-                                []
-                              |),
-                              [
-                                M.cast
-                                  (Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ])
-                                  (M.read (| x |));
-                                M.cast
-                                  (Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ])
-                                  (M.read (| y |));
-                                M.call_closure (|
-                                  Ty.path "usize",
-                                  M.get_function (| "core::mem::size_of", [], [ T ] |),
-                                  []
-                                |);
-                                M.call_closure (|
-                                  Ty.path "usize",
-                                  M.get_function (| "core::mem::align_of", [], [ T ] |),
-                                  []
-                                |);
-                                M.read (| count |)
-                              ]
-                            |) in
-                          M.alloc (| Ty.tuple [], Value.Tuple [] |)
-                        |)));
-                    fun γ => ltac:(M.monadic (Value.Tuple []))
-                  ]
-                |) in
-              let~ _ : Ty.tuple [] :=
-                M.match_operator (|
-                  Ty.tuple [],
-                  M.alloc (| Ty.tuple [], Value.Tuple [] |),
-                  [
-                    fun γ =>
-                      ltac:(M.monadic
-                        (let γ :=
-                          M.use
-                            (M.alloc (|
-                              Ty.path "bool",
-                              LogicalOp.and (|
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  BinOp.le,
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "usize",
-                                      M.get_function (| "core::mem::align_of", [], [ T ] |),
-                                      []
-                                    |);
-                                    M.call_closure (|
-                                      Ty.path "usize",
-                                      M.get_function (|
-                                        "core::mem::size_of",
-                                        [],
-                                        [ Ty.path "usize" ]
-                                      |),
-                                      []
-                                    |)
-                                  ]
-                                |),
-                                ltac:(M.monadic
-                                  (LogicalOp.or (|
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      UnOp.not,
-                                      [
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          M.get_associated_function (|
-                                            Ty.path "usize",
-                                            "is_power_of_two",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            M.call_closure (|
-                                              Ty.path "usize",
-                                              M.get_function (| "core::mem::size_of", [], [ T ] |),
-                                              []
-                                            |)
-                                          ]
-                                        |)
-                                      ]
-                                    |),
-                                    ltac:(M.monadic
-                                      (M.call_closure (|
-                                        Ty.path "bool",
-                                        BinOp.gt,
-                                        [
-                                          M.call_closure (|
-                                            Ty.path "usize",
-                                            M.get_function (| "core::mem::size_of", [], [ T ] |),
-                                            []
-                                          |);
-                                          M.call_closure (|
-                                            Ty.path "usize",
-                                            BinOp.Wrap.mul,
-                                            [
-                                              M.call_closure (|
-                                                Ty.path "usize",
-                                                M.get_function (|
-                                                  "core::mem::size_of",
-                                                  [],
-                                                  [ Ty.path "usize" ]
-                                                |),
-                                                []
-                                              |);
-                                              Value.Integer IntegerKind.Usize 2
-                                            ]
-                                          |)
-                                        ]
-                                      |)))
-                                  |)))
-                              |)
-                            |)) in
-                        let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                        M.read (|
-                          let~ _ : Ty.tuple [] :=
-                            M.match_operator (|
-                              Ty.tuple [],
-                              M.alloc (| Ty.tuple [], Value.Tuple [] |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let γ :=
-                                      M.use
-                                        (M.alloc (|
-                                          Ty.path "bool",
-                                          LogicalOp.and (|
-                                            M.call_closure (|
-                                              Ty.path "bool",
-                                              BinOp.ge,
-                                              [
-                                                M.call_closure (|
-                                                  Ty.path "usize",
-                                                  M.get_function (|
-                                                    "core::mem::align_of",
-                                                    [],
-                                                    [ T ]
-                                                  |),
-                                                  []
-                                                |);
-                                                M.call_closure (|
-                                                  Ty.path "usize",
-                                                  M.get_function (|
-                                                    "core::mem::align_of",
-                                                    [],
-                                                    [ Ty.path "usize" ]
-                                                  |),
-                                                  []
-                                                |)
-                                              ]
-                                            |),
-                                            ltac:(M.monadic
-                                              (M.call_closure (|
-                                                Ty.path "bool",
-                                                BinOp.eq,
-                                                [
-                                                  M.call_closure (|
-                                                    Ty.path "usize",
-                                                    BinOp.Wrap.rem,
-                                                    [
-                                                      M.call_closure (|
-                                                        Ty.path "usize",
-                                                        M.get_function (|
-                                                          "core::mem::size_of",
-                                                          [],
-                                                          [ T ]
-                                                        |),
-                                                        []
-                                                      |);
-                                                      M.call_closure (|
-                                                        Ty.path "usize",
-                                                        M.get_function (|
-                                                          "core::mem::size_of",
-                                                          [],
-                                                          [ Ty.path "usize" ]
-                                                        |),
-                                                        []
-                                                      |)
-                                                    ]
-                                                  |);
-                                                  Value.Integer IntegerKind.Usize 0
-                                                ]
-                                              |)))
-                                          |)
-                                        |)) in
-                                    let _ :=
-                                      is_constant_or_break_match (|
-                                        M.read (| γ |),
-                                        Value.Bool true
-                                      |) in
-                                    M.never_to_any (|
-                                      M.read (|
-                                        let~ x : Ty.apply (Ty.path "*mut") [] [ Ty.path "usize" ] :=
-                                          M.call_closure (|
-                                            Ty.apply (Ty.path "*mut") [] [ Ty.path "usize" ],
-                                            M.get_associated_function (|
-                                              Ty.apply (Ty.path "*mut") [] [ T ],
-                                              "cast",
-                                              [],
-                                              [ Ty.path "usize" ]
-                                            |),
-                                            [ M.read (| x |) ]
-                                          |) in
-                                        let~ y : Ty.apply (Ty.path "*mut") [] [ Ty.path "usize" ] :=
-                                          M.call_closure (|
-                                            Ty.apply (Ty.path "*mut") [] [ Ty.path "usize" ],
-                                            M.get_associated_function (|
-                                              Ty.apply (Ty.path "*mut") [] [ T ],
-                                              "cast",
-                                              [],
-                                              [ Ty.path "usize" ]
-                                            |),
-                                            [ M.read (| y |) ]
-                                          |) in
-                                        let~ count : Ty.path "usize" :=
-                                          M.call_closure (|
-                                            Ty.path "usize",
-                                            BinOp.Wrap.mul,
-                                            [
-                                              M.read (| count |);
-                                              M.call_closure (|
-                                                Ty.path "usize",
-                                                BinOp.Wrap.div,
-                                                [
-                                                  M.call_closure (|
-                                                    Ty.path "usize",
-                                                    M.get_function (|
-                                                      "core::mem::size_of",
-                                                      [],
-                                                      [ T ]
-                                                    |),
-                                                    []
-                                                  |);
-                                                  M.call_closure (|
-                                                    Ty.path "usize",
-                                                    M.get_function (|
-                                                      "core::mem::size_of",
-                                                      [],
-                                                      [ Ty.path "usize" ]
-                                                    |),
-                                                    []
-                                                  |)
-                                                ]
-                                              |)
-                                            ]
-                                          |) in
-                                        M.return_ (|
-                                          M.call_closure (|
-                                            Ty.tuple [],
-                                            M.get_function (|
-                                              "core::ptr::swap_nonoverlapping_simple_untyped",
-                                              [],
-                                              [ Ty.path "usize" ]
-                                            |),
-                                            [ M.read (| x |); M.read (| y |); M.read (| count |) ]
-                                          |)
-                                        |)
-                                      |)
-                                    |)));
-                                fun γ => ltac:(M.monadic (Value.Tuple []))
-                              ]
-                            |) in
-                          let~ _ : Ty.tuple [] :=
-                            M.match_operator (|
-                              Ty.tuple [],
-                              M.alloc (| Ty.tuple [], Value.Tuple [] |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let γ :=
-                                      M.use
-                                        (M.alloc (|
-                                          Ty.path "bool",
-                                          LogicalOp.and (|
-                                            M.call_closure (|
-                                              Ty.path "bool",
-                                              BinOp.ge,
-                                              [
-                                                M.call_closure (|
-                                                  Ty.path "usize",
-                                                  M.get_function (|
-                                                    "core::mem::align_of",
-                                                    [],
-                                                    [ T ]
-                                                  |),
-                                                  []
-                                                |);
-                                                M.call_closure (|
-                                                  Ty.path "usize",
-                                                  M.get_function (|
-                                                    "core::mem::align_of",
-                                                    [],
-                                                    [ Ty.path "u8" ]
-                                                  |),
-                                                  []
-                                                |)
-                                              ]
-                                            |),
-                                            ltac:(M.monadic
-                                              (M.call_closure (|
-                                                Ty.path "bool",
-                                                BinOp.eq,
-                                                [
-                                                  M.call_closure (|
-                                                    Ty.path "usize",
-                                                    BinOp.Wrap.rem,
-                                                    [
-                                                      M.call_closure (|
-                                                        Ty.path "usize",
-                                                        M.get_function (|
-                                                          "core::mem::size_of",
-                                                          [],
-                                                          [ T ]
-                                                        |),
-                                                        []
-                                                      |);
-                                                      M.call_closure (|
-                                                        Ty.path "usize",
-                                                        M.get_function (|
-                                                          "core::mem::size_of",
-                                                          [],
-                                                          [ Ty.path "u8" ]
-                                                        |),
-                                                        []
-                                                      |)
-                                                    ]
-                                                  |);
-                                                  Value.Integer IntegerKind.Usize 0
-                                                ]
-                                              |)))
-                                          |)
-                                        |)) in
-                                    let _ :=
-                                      is_constant_or_break_match (|
-                                        M.read (| γ |),
-                                        Value.Bool true
-                                      |) in
-                                    M.never_to_any (|
-                                      M.read (|
-                                        let~ x : Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ] :=
-                                          M.call_closure (|
-                                            Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                            M.get_associated_function (|
-                                              Ty.apply (Ty.path "*mut") [] [ T ],
-                                              "cast",
-                                              [],
-                                              [ Ty.path "u8" ]
-                                            |),
-                                            [ M.read (| x |) ]
-                                          |) in
-                                        let~ y : Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ] :=
-                                          M.call_closure (|
-                                            Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                            M.get_associated_function (|
-                                              Ty.apply (Ty.path "*mut") [] [ T ],
-                                              "cast",
-                                              [],
-                                              [ Ty.path "u8" ]
-                                            |),
-                                            [ M.read (| y |) ]
-                                          |) in
-                                        let~ count : Ty.path "usize" :=
-                                          M.call_closure (|
-                                            Ty.path "usize",
-                                            BinOp.Wrap.mul,
-                                            [
-                                              M.read (| count |);
-                                              M.call_closure (|
-                                                Ty.path "usize",
-                                                BinOp.Wrap.div,
-                                                [
-                                                  M.call_closure (|
-                                                    Ty.path "usize",
-                                                    M.get_function (|
-                                                      "core::mem::size_of",
-                                                      [],
-                                                      [ T ]
-                                                    |),
-                                                    []
-                                                  |);
-                                                  M.call_closure (|
-                                                    Ty.path "usize",
-                                                    M.get_function (|
-                                                      "core::mem::size_of",
-                                                      [],
-                                                      [ Ty.path "u8" ]
-                                                    |),
-                                                    []
-                                                  |)
-                                                ]
-                                              |)
-                                            ]
-                                          |) in
-                                        M.return_ (|
-                                          M.call_closure (|
-                                            Ty.tuple [],
-                                            M.get_function (|
-                                              "core::ptr::swap_nonoverlapping_simple_untyped",
-                                              [],
-                                              [ Ty.path "u8" ]
-                                            |),
-                                            [ M.read (| x |); M.read (| y |); M.read (| count |) ]
-                                          |)
-                                        |)
-                                      |)
-                                    |)));
-                                fun γ => ltac:(M.monadic (Value.Tuple []))
-                              ]
-                            |) in
-                          M.alloc (| Ty.tuple [], Value.Tuple [] |)
-                        |)));
-                    fun γ => ltac:(M.monadic (Value.Tuple []))
-                  ]
-                |) in
-              M.alloc (|
-                Ty.tuple [],
-                M.call_closure (|
-                  Ty.tuple [],
-                  M.get_function (| "core::ptr::swap_nonoverlapping_simple_untyped", [], [ T ] |),
-                  [ M.read (| x |); M.read (| y |); M.read (| count |) ]
-                |)
-              |)
-            |)))
+                              Ty.path "usize",
+                              M.get_function (| "core::mem::size_of", [], [ T ] |),
+                              []
+                            |);
+                            M.call_closure (|
+                              Ty.path "usize",
+                              M.get_function (| "core::mem::align_of", [], [ T ] |),
+                              []
+                            |);
+                            M.read (| count |)
+                          ]
+                        |) in
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |)
+                    |)));
+                fun γ => ltac:(M.monadic (Value.Tuple []))
+              ]
+            |) in
+          M.alloc (|
+            Ty.tuple [],
+            M.call_closure (|
+              Ty.tuple [],
+              M.get_function (|
+                "core::intrinsics::const_eval_select",
+                [],
+                [
+                  Ty.tuple
+                    [
+                      Ty.apply (Ty.path "*mut") [] [ T ];
+                      Ty.apply (Ty.path "*mut") [] [ T ];
+                      Ty.path "usize"
+                    ];
+                  Ty.function
+                    [
+                      Ty.apply (Ty.path "*mut") [] [ T ];
+                      Ty.apply (Ty.path "*mut") [] [ T ];
+                      Ty.path "usize"
+                    ]
+                    (Ty.tuple []);
+                  Ty.function
+                    [
+                      Ty.apply (Ty.path "*mut") [] [ T ];
+                      Ty.apply (Ty.path "*mut") [] [ T ];
+                      Ty.path "usize"
+                    ]
+                    (Ty.tuple []);
+                  Ty.tuple []
+                ]
+              |),
+              [
+                Value.Tuple [ M.read (| x |); M.read (| y |); M.read (| count |) ];
+                M.get_function (| "core::ptr::swap_nonoverlapping.compiletime", [], [] |);
+                M.get_function (| "core::ptr::swap_nonoverlapping.runtime", [], [] |)
+              ]
+            |)
+          |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
@@ -968,9 +899,7 @@ Module ptr.
   Global Typeclasses Opaque swap_nonoverlapping.
   
   (*
-  const unsafe fn swap_nonoverlapping_simple_untyped<T>(x: *mut T, y: *mut T, count: usize) {
-      let x = x.cast::<MaybeUninit<T>>();
-      let y = y.cast::<MaybeUninit<T>>();
+  const unsafe fn swap_nonoverlapping_const<T>(x: *mut T, y: *mut T, count: usize) {
       let mut i = 0;
       while i < count {
           // SAFETY: By precondition, `i` is in-bounds because it's below `n`
@@ -979,31 +908,22 @@ Module ptr.
           // and it's distinct from `x` since the ranges are non-overlapping
           let y = unsafe { y.add(i) };
   
-          // If we end up here, it's because we're using a simple type -- like
-          // a small power-of-two-sized thing -- or a special type with particularly
-          // large alignment, particularly SIMD types.
-          // Thus, we're fine just reading-and-writing it, as either it's small
-          // and that works well anyway or it's special and the type's author
-          // presumably wanted things to be done in the larger chunk.
-  
           // SAFETY: we're only ever given pointers that are valid to read/write,
           // including being aligned, and nothing here panics so it's drop-safe.
           unsafe {
-              let a: MaybeUninit<T> = read(x);
-              let b: MaybeUninit<T> = read(y);
-              write(x, b);
-              write(y, a);
+              // Note that it's critical that these use `copy_nonoverlapping`,
+              // rather than `read`/`write`, to avoid #134713 if T has padding.
+              let mut temp = MaybeUninit::<T>::uninit();
+              copy_nonoverlapping(x, temp.as_mut_ptr(), 1);
+              copy_nonoverlapping(y, x, 1);
+              copy_nonoverlapping(temp.as_ptr(), y, 1);
           }
   
           i += 1;
       }
   }
   *)
-  Definition swap_nonoverlapping_simple_untyped
-      (ε : list Value.t)
-      (τ : list Ty.t)
-      (α : list Value.t)
-      : M :=
+  Definition swap_nonoverlapping_const (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
     | [], [ T ], [ x; y; count ] =>
       ltac:(M.monadic
@@ -1011,42 +931,6 @@ Module ptr.
         let y := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], y |) in
         let count := M.alloc (| Ty.path "usize", count |) in
         M.read (|
-          let~ x :
-              Ty.apply
-                (Ty.path "*mut")
-                []
-                [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ] :=
-            M.call_closure (|
-              Ty.apply
-                (Ty.path "*mut")
-                []
-                [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ],
-              M.get_associated_function (|
-                Ty.apply (Ty.path "*mut") [] [ T ],
-                "cast",
-                [],
-                [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]
-              |),
-              [ M.read (| x |) ]
-            |) in
-          let~ y :
-              Ty.apply
-                (Ty.path "*mut")
-                []
-                [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ] :=
-            M.call_closure (|
-              Ty.apply
-                (Ty.path "*mut")
-                []
-                [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ],
-              M.get_associated_function (|
-                Ty.apply (Ty.path "*mut") [] [ T ],
-                "cast",
-                [],
-                [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]
-              |),
-              [ M.read (| y |) ]
-            |) in
           let~ i : Ty.path "usize" := Value.Integer IntegerKind.Usize 0 in
           M.loop (|
             Ty.tuple [],
@@ -1060,67 +944,32 @@ Module ptr.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                BinOp.lt,
-                                [ M.read (| i |); M.read (| count |) ]
-                              |)
-                            |)) in
+                              BinOp.lt,
+                              [ M.read (| i |); M.read (| count |) ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.read (|
-                          let~ x :
-                              Ty.apply
-                                (Ty.path "*mut")
-                                []
-                                [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ]
-                                ] :=
+                          let~ x : Ty.apply (Ty.path "*mut") [] [ T ] :=
                             M.call_closure (|
-                              Ty.apply
-                                (Ty.path "*mut")
-                                []
-                                [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ]
-                                ],
+                              Ty.apply (Ty.path "*mut") [] [ T ],
                               M.get_associated_function (|
-                                Ty.apply
-                                  (Ty.path "*mut")
-                                  []
-                                  [
-                                    Ty.apply
-                                      (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                      []
-                                      [ T ]
-                                  ],
+                                Ty.apply (Ty.path "*mut") [] [ T ],
                                 "add",
                                 [],
                                 []
                               |),
                               [ M.read (| x |); M.read (| i |) ]
                             |) in
-                          let~ y :
-                              Ty.apply
-                                (Ty.path "*mut")
-                                []
-                                [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ]
-                                ] :=
+                          let~ y : Ty.apply (Ty.path "*mut") [] [ T ] :=
                             M.call_closure (|
-                              Ty.apply
-                                (Ty.path "*mut")
-                                []
-                                [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ]
-                                ],
+                              Ty.apply (Ty.path "*mut") [] [ T ],
                               M.get_associated_function (|
-                                Ty.apply
-                                  (Ty.path "*mut")
-                                  []
-                                  [
-                                    Ty.apply
-                                      (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                      []
-                                      [ T ]
-                                  ],
+                                Ty.apply (Ty.path "*mut") [] [ T ],
                                 "add",
                                 [],
                                 []
@@ -1129,7 +978,7 @@ Module ptr.
                             |) in
                           let~ _ : Ty.tuple [] :=
                             M.read (|
-                              let~ a :
+                              let~ temp :
                                   Ty.apply
                                     (Ty.path "core::mem::maybe_uninit::MaybeUninit")
                                     []
@@ -1139,135 +988,84 @@ Module ptr.
                                     (Ty.path "core::mem::maybe_uninit::MaybeUninit")
                                     []
                                     [ T ],
-                                  M.get_function (|
-                                    "core::ptr::read",
+                                  M.get_associated_function (|
+                                    Ty.apply
+                                      (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                      []
+                                      [ T ],
+                                    "uninit",
                                     [],
-                                    [
-                                      Ty.apply
-                                        (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                        []
-                                        [ T ]
-                                    ]
+                                    []
                                   |),
+                                  []
+                                |) in
+                              let~ _ : Ty.tuple [] :=
+                                M.call_closure (|
+                                  Ty.tuple [],
+                                  M.get_function (| "core::ptr::copy_nonoverlapping", [], [ T ] |),
                                   [
                                     M.call_closure (|
-                                      Ty.apply
-                                        (Ty.path "*const")
-                                        []
-                                        [
-                                          Ty.apply
-                                            (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                            []
-                                            [ T ]
-                                        ],
+                                      Ty.apply (Ty.path "*const") [] [ T ],
                                       M.pointer_coercion
                                         M.PointerCoercion.MutToConstPointer
-                                        (Ty.apply
-                                          (Ty.path "*mut")
-                                          []
-                                          [
-                                            Ty.apply
-                                              (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                              []
-                                              [ T ]
-                                          ])
-                                        (Ty.apply
-                                          (Ty.path "*const")
-                                          []
-                                          [
-                                            Ty.apply
-                                              (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                              []
-                                              [ T ]
-                                          ]),
+                                        (Ty.apply (Ty.path "*mut") [] [ T ])
+                                        (Ty.apply (Ty.path "*const") [] [ T ]),
                                       [ M.read (| x |) ]
-                                    |)
+                                    |);
+                                    M.call_closure (|
+                                      Ty.apply (Ty.path "*mut") [] [ T ],
+                                      M.get_associated_function (|
+                                        Ty.apply
+                                          (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                          []
+                                          [ T ],
+                                        "as_mut_ptr",
+                                        [],
+                                        []
+                                      |),
+                                      [ M.borrow (| Pointer.Kind.MutRef, temp |) ]
+                                    |);
+                                    Value.Integer IntegerKind.Usize 1
                                   ]
                                 |) in
-                              let~ b :
-                                  Ty.apply
-                                    (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                    []
-                                    [ T ] :=
+                              let~ _ : Ty.tuple [] :=
                                 M.call_closure (|
-                                  Ty.apply
-                                    (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                    []
-                                    [ T ],
-                                  M.get_function (|
-                                    "core::ptr::read",
-                                    [],
-                                    [
-                                      Ty.apply
-                                        (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                        []
-                                        [ T ]
-                                    ]
-                                  |),
+                                  Ty.tuple [],
+                                  M.get_function (| "core::ptr::copy_nonoverlapping", [], [ T ] |),
                                   [
                                     M.call_closure (|
-                                      Ty.apply
-                                        (Ty.path "*const")
-                                        []
-                                        [
-                                          Ty.apply
-                                            (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                            []
-                                            [ T ]
-                                        ],
+                                      Ty.apply (Ty.path "*const") [] [ T ],
                                       M.pointer_coercion
                                         M.PointerCoercion.MutToConstPointer
-                                        (Ty.apply
-                                          (Ty.path "*mut")
-                                          []
-                                          [
-                                            Ty.apply
-                                              (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                              []
-                                              [ T ]
-                                          ])
-                                        (Ty.apply
-                                          (Ty.path "*const")
-                                          []
-                                          [
-                                            Ty.apply
-                                              (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                              []
-                                              [ T ]
-                                          ]),
+                                        (Ty.apply (Ty.path "*mut") [] [ T ])
+                                        (Ty.apply (Ty.path "*const") [] [ T ]),
                                       [ M.read (| y |) ]
-                                    |)
+                                    |);
+                                    M.read (| x |);
+                                    Value.Integer IntegerKind.Usize 1
                                   ]
                                 |) in
                               let~ _ : Ty.tuple [] :=
                                 M.call_closure (|
                                   Ty.tuple [],
-                                  M.get_function (|
-                                    "core::ptr::write",
-                                    [],
-                                    [
-                                      Ty.apply
-                                        (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                  M.get_function (| "core::ptr::copy_nonoverlapping", [], [ T ] |),
+                                  [
+                                    M.call_closure (|
+                                      Ty.apply (Ty.path "*const") [] [ T ],
+                                      M.get_associated_function (|
+                                        Ty.apply
+                                          (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                          []
+                                          [ T ],
+                                        "as_ptr",
+                                        [],
                                         []
-                                        [ T ]
-                                    ]
-                                  |),
-                                  [ M.read (| x |); M.read (| b |) ]
-                                |) in
-                              let~ _ : Ty.tuple [] :=
-                                M.call_closure (|
-                                  Ty.tuple [],
-                                  M.get_function (|
-                                    "core::ptr::write",
-                                    [],
-                                    [
-                                      Ty.apply
-                                        (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                        []
-                                        [ T ]
-                                    ]
-                                  |),
-                                  [ M.read (| y |); M.read (| a |) ]
+                                      |),
+                                      [ M.borrow (| Pointer.Kind.Ref, temp |) ]
+                                    |);
+                                    M.read (| y |);
+                                    Value.Integer IntegerKind.Usize 1
+                                  ]
                                 |) in
                               M.alloc (| Ty.tuple [], Value.Tuple [] |)
                             |) in
@@ -1300,19 +1098,1408 @@ Module ptr.
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
-  Global Instance Instance_IsFunction_swap_nonoverlapping_simple_untyped :
-    M.IsFunction.C
-      "core::ptr::swap_nonoverlapping_simple_untyped"
-      swap_nonoverlapping_simple_untyped.
+  Global Instance Instance_IsFunction_swap_nonoverlapping_const :
+    M.IsFunction.C "core::ptr::swap_nonoverlapping_const" swap_nonoverlapping_const.
   Admitted.
-  Global Typeclasses Opaque swap_nonoverlapping_simple_untyped.
+  Global Typeclasses Opaque swap_nonoverlapping_const.
+  
+  (*
+  fn swap_chunk<const N: usize>(x: &mut MaybeUninit<[u8; N]>, y: &mut MaybeUninit<[u8; N]>) {
+      let a = *x;
+      let b = *y;
+      *x = b;
+      *y = a;
+  }
+  *)
+  Definition swap_chunk (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    match ε, τ, α with
+    | [ N ], [], [ x; y ] =>
+      ltac:(M.monadic
+        (let x :=
+          M.alloc (|
+            Ty.apply
+              (Ty.path "&mut")
+              []
+              [
+                Ty.apply
+                  (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                  []
+                  [ Ty.apply (Ty.path "array") [ N ] [ Ty.path "u8" ] ]
+              ],
+            x
+          |) in
+        let y :=
+          M.alloc (|
+            Ty.apply
+              (Ty.path "&mut")
+              []
+              [
+                Ty.apply
+                  (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                  []
+                  [ Ty.apply (Ty.path "array") [ N ] [ Ty.path "u8" ] ]
+              ],
+            y
+          |) in
+        M.read (|
+          let~ a :
+              Ty.apply
+                (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                []
+                [ Ty.apply (Ty.path "array") [ N ] [ Ty.path "u8" ] ] :=
+            M.read (| M.deref (| M.read (| x |) |) |) in
+          let~ b :
+              Ty.apply
+                (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                []
+                [ Ty.apply (Ty.path "array") [ N ] [ Ty.path "u8" ] ] :=
+            M.read (| M.deref (| M.read (| y |) |) |) in
+          let~ _ : Ty.tuple [] := M.write (| M.deref (| M.read (| x |) |), M.read (| b |) |) in
+          let~ _ : Ty.tuple [] := M.write (| M.deref (| M.read (| y |) |), M.read (| a |) |) in
+          M.alloc (| Ty.tuple [], Value.Tuple [] |)
+        |)))
+    | _, _, _ => M.impossible "wrong number of arguments"
+    end.
+  
+  Global Instance Instance_IsFunction_swap_chunk :
+    M.IsFunction.C "core::ptr::swap_chunk" swap_chunk.
+  Admitted.
+  Global Typeclasses Opaque swap_chunk.
+  
+  (*
+  unsafe fn swap_nonoverlapping_bytes(x: *mut u8, y: *mut u8, bytes: NonZero<usize>) {
+      // Same as `swap_nonoverlapping::<[u8; N]>`.
+      unsafe fn swap_nonoverlapping_chunks<const N: usize>(
+          x: *mut MaybeUninit<[u8; N]>,
+          y: *mut MaybeUninit<[u8; N]>,
+          chunks: NonZero<usize>,
+      ) {
+          let chunks = chunks.get();
+          for i in 0..chunks {
+              // SAFETY: i is in [0, chunks) so the adds and dereferences are in-bounds.
+              unsafe { swap_chunk(&mut *x.add(i), &mut *y.add(i)) };
+          }
+      }
+  
+      // Same as `swap_nonoverlapping_bytes`, but accepts at most 1+2+4=7 bytes
+      #[inline]
+      unsafe fn swap_nonoverlapping_short(x: *mut u8, y: *mut u8, bytes: NonZero<usize>) {
+          // Tail handling for auto-vectorized code sometimes has element-at-a-time behaviour,
+          // see <https://github.com/rust-lang/rust/issues/134946>.
+          // By swapping as different sizes, rather than as a loop over bytes,
+          // we make sure not to end up with, say, seven byte-at-a-time copies.
+  
+          let bytes = bytes.get();
+          let mut i = 0;
+          macro_rules! swap_prefix {
+              ($($n:literal)+) => {$(
+                  if (bytes & $n) != 0 {
+                      // SAFETY: `i` can only have the same bits set as those in bytes,
+                      // so these `add`s are in-bounds of `bytes`.  But the bit for
+                      // `$n` hasn't been set yet, so the `$n` bytes that `swap_chunk`
+                      // will read and write are within the usable range.
+                      unsafe { swap_chunk::<$n>(&mut*x.add(i).cast(), &mut*y.add(i).cast()) };
+                      i |= $n;
+                  }
+              )+};
+          }
+          swap_prefix!(4 2 1);
+          debug_assert_eq!(i, bytes);
+      }
+  
+      const CHUNK_SIZE: usize = size_of::<*const ()>();
+      let bytes = bytes.get();
+  
+      let chunks = bytes / CHUNK_SIZE;
+      let tail = bytes % CHUNK_SIZE;
+      if let Some(chunks) = NonZero::new(chunks) {
+          // SAFETY: this is bytes/CHUNK_SIZE*CHUNK_SIZE bytes, which is <= bytes,
+          // so it's within the range of our non-overlapping bytes.
+          unsafe { swap_nonoverlapping_chunks::<CHUNK_SIZE>(x.cast(), y.cast(), chunks) };
+      }
+      if let Some(tail) = NonZero::new(tail) {
+          const { assert!(CHUNK_SIZE <= 8) };
+          let delta = chunks * CHUNK_SIZE;
+          // SAFETY: the tail length is below CHUNK SIZE because of the remainder,
+          // and CHUNK_SIZE is at most 8 by the const assert, so tail <= 7
+          unsafe { swap_nonoverlapping_short(x.add(delta), y.add(delta), tail) };
+      }
+  }
+  *)
+  Definition swap_nonoverlapping_bytes (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    match ε, τ, α with
+    | [], [], [ x; y; bytes ] =>
+      ltac:(M.monadic
+        (let x := M.alloc (| Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ], x |) in
+        let y := M.alloc (| Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ], y |) in
+        let bytes :=
+          M.alloc (|
+            Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ],
+            bytes
+          |) in
+        M.read (|
+          let~ bytes : Ty.path "usize" :=
+            M.call_closure (|
+              Ty.path "usize",
+              M.get_associated_function (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ],
+                "get",
+                [],
+                []
+              |),
+              [ M.read (| bytes |) ]
+            |) in
+          let~ chunks : Ty.path "usize" :=
+            M.call_closure (|
+              Ty.path "usize",
+              BinOp.Wrap.div,
+              [
+                M.read (| bytes |);
+                M.read (|
+                  get_constant (|
+                    "core::ptr::swap_nonoverlapping_bytes::CHUNK_SIZE",
+                    Ty.path "usize"
+                  |)
+                |)
+              ]
+            |) in
+          let~ tail : Ty.path "usize" :=
+            M.call_closure (|
+              Ty.path "usize",
+              BinOp.Wrap.rem,
+              [
+                M.read (| bytes |);
+                M.read (|
+                  get_constant (|
+                    "core::ptr::swap_nonoverlapping_bytes::CHUNK_SIZE",
+                    Ty.path "usize"
+                  |)
+                |)
+              ]
+            |) in
+          let~ _ : Ty.tuple [] :=
+            M.match_operator (|
+              Ty.tuple [],
+              M.alloc (| Ty.tuple [], Value.Tuple [] |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ :=
+                      M.alloc (|
+                        Ty.apply
+                          (Ty.path "core::option::Option")
+                          []
+                          [ Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ]
+                          ],
+                        M.call_closure (|
+                          Ty.apply
+                            (Ty.path "core::option::Option")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "core::num::nonzero::NonZero")
+                                []
+                                [ Ty.path "usize" ]
+                            ],
+                          M.get_associated_function (|
+                            Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ],
+                            "new",
+                            [],
+                            []
+                          |),
+                          [ M.read (| chunks |) ]
+                        |)
+                      |) in
+                    let γ0_0 :=
+                      M.SubPointer.get_struct_tuple_field (|
+                        γ,
+                        "core::option::Option::Some",
+                        0
+                      |) in
+                    let chunks :=
+                      M.copy (|
+                        Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ],
+                        γ0_0
+                      |) in
+                    M.read (|
+                      let~ _ : Ty.tuple [] :=
+                        M.call_closure (|
+                          Ty.tuple [],
+                          M.get_function (|
+                            "core::ptr::swap_nonoverlapping_bytes.swap_nonoverlapping_chunks",
+                            [],
+                            []
+                          |),
+                          [
+                            M.call_closure (|
+                              Ty.apply
+                                (Ty.path "*mut")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 8 ]
+                                        [ Ty.path "u8" ]
+                                    ]
+                                ],
+                              M.get_associated_function (|
+                                Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                "cast",
+                                [],
+                                [
+                                  Ty.apply
+                                    (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 8 ]
+                                        [ Ty.path "u8" ]
+                                    ]
+                                ]
+                              |),
+                              [ M.read (| x |) ]
+                            |);
+                            M.call_closure (|
+                              Ty.apply
+                                (Ty.path "*mut")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 8 ]
+                                        [ Ty.path "u8" ]
+                                    ]
+                                ],
+                              M.get_associated_function (|
+                                Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                "cast",
+                                [],
+                                [
+                                  Ty.apply
+                                    (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 8 ]
+                                        [ Ty.path "u8" ]
+                                    ]
+                                ]
+                              |),
+                              [ M.read (| y |) ]
+                            |);
+                            M.read (| chunks |)
+                          ]
+                        |) in
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |)
+                    |)));
+                fun γ => ltac:(M.monadic (Value.Tuple []))
+              ]
+            |) in
+          M.alloc (|
+            Ty.tuple [],
+            M.match_operator (|
+              Ty.tuple [],
+              M.alloc (| Ty.tuple [], Value.Tuple [] |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ :=
+                      M.alloc (|
+                        Ty.apply
+                          (Ty.path "core::option::Option")
+                          []
+                          [ Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ]
+                          ],
+                        M.call_closure (|
+                          Ty.apply
+                            (Ty.path "core::option::Option")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "core::num::nonzero::NonZero")
+                                []
+                                [ Ty.path "usize" ]
+                            ],
+                          M.get_associated_function (|
+                            Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ],
+                            "new",
+                            [],
+                            []
+                          |),
+                          [ M.read (| tail |) ]
+                        |)
+                      |) in
+                    let γ0_0 :=
+                      M.SubPointer.get_struct_tuple_field (|
+                        γ,
+                        "core::option::Option::Some",
+                        0
+                      |) in
+                    let tail :=
+                      M.copy (|
+                        Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ],
+                        γ0_0
+                      |) in
+                    M.read (|
+                      let~ _ : Ty.tuple [] :=
+                        M.read (|
+                          get_constant (|
+                            "core::ptr::swap_nonoverlapping_bytes_discriminant",
+                            Ty.tuple []
+                          |)
+                        |) in
+                      let~ delta : Ty.path "usize" :=
+                        M.call_closure (|
+                          Ty.path "usize",
+                          BinOp.Wrap.mul,
+                          [
+                            M.read (| chunks |);
+                            M.read (|
+                              get_constant (|
+                                "core::ptr::swap_nonoverlapping_bytes::CHUNK_SIZE",
+                                Ty.path "usize"
+                              |)
+                            |)
+                          ]
+                        |) in
+                      let~ _ : Ty.tuple [] :=
+                        M.call_closure (|
+                          Ty.tuple [],
+                          M.get_function (|
+                            "core::ptr::swap_nonoverlapping_bytes.swap_nonoverlapping_short",
+                            [],
+                            []
+                          |),
+                          [
+                            M.call_closure (|
+                              Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                              M.get_associated_function (|
+                                Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                "add",
+                                [],
+                                []
+                              |),
+                              [ M.read (| x |); M.read (| delta |) ]
+                            |);
+                            M.call_closure (|
+                              Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                              M.get_associated_function (|
+                                Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                "add",
+                                [],
+                                []
+                              |),
+                              [ M.read (| y |); M.read (| delta |) ]
+                            |);
+                            M.read (| tail |)
+                          ]
+                        |) in
+                      M.alloc (| Ty.tuple [], Value.Tuple [] |)
+                    |)));
+                fun γ => ltac:(M.monadic (Value.Tuple []))
+              ]
+            |)
+          |)
+        |)))
+    | _, _, _ => M.impossible "wrong number of arguments"
+    end.
+  
+  Global Instance Instance_IsFunction_swap_nonoverlapping_bytes :
+    M.IsFunction.C "core::ptr::swap_nonoverlapping_bytes" swap_nonoverlapping_bytes.
+  Admitted.
+  Global Typeclasses Opaque swap_nonoverlapping_bytes.
+  
+  Module swap_nonoverlapping_bytes.
+    (*
+        unsafe fn swap_nonoverlapping_chunks<const N: usize>(
+            x: *mut MaybeUninit<[u8; N]>,
+            y: *mut MaybeUninit<[u8; N]>,
+            chunks: NonZero<usize>,
+        ) {
+            let chunks = chunks.get();
+            for i in 0..chunks {
+                // SAFETY: i is in [0, chunks) so the adds and dereferences are in-bounds.
+                unsafe { swap_chunk(&mut *x.add(i), &mut *y.add(i)) };
+            }
+        }
+    *)
+    Definition swap_nonoverlapping_chunks
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      match ε, τ, α with
+      | [ N ], [], [ x; y; chunks ] =>
+        ltac:(M.monadic
+          (let x :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "*mut")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                    []
+                    [ Ty.apply (Ty.path "array") [ N ] [ Ty.path "u8" ] ]
+                ],
+              x
+            |) in
+          let y :=
+            M.alloc (|
+              Ty.apply
+                (Ty.path "*mut")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                    []
+                    [ Ty.apply (Ty.path "array") [ N ] [ Ty.path "u8" ] ]
+                ],
+              y
+            |) in
+          let chunks :=
+            M.alloc (|
+              Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ],
+              chunks
+            |) in
+          M.read (|
+            let~ chunks : Ty.path "usize" :=
+              M.call_closure (|
+                Ty.path "usize",
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ],
+                  "get",
+                  [],
+                  []
+                |),
+                [ M.read (| chunks |) ]
+              |) in
+            M.use
+              (M.alloc (|
+                Ty.tuple [],
+                M.match_operator (|
+                  Ty.tuple [],
+                  M.alloc (|
+                    Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ],
+                    M.call_closure (|
+                      Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ],
+                      M.get_trait_method (|
+                        "core::iter::traits::collect::IntoIterator",
+                        Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ],
+                        [],
+                        [],
+                        "into_iter",
+                        [],
+                        []
+                      |),
+                      [
+                        Value.mkStructRecord
+                          "core::ops::range::Range"
+                          []
+                          [ Ty.path "usize" ]
+                          [
+                            ("start", Value.Integer IntegerKind.Usize 0);
+                            ("end_", M.read (| chunks |))
+                          ]
+                      ]
+                    |)
+                  |),
+                  [
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let~ iter :
+                            Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ] :=
+                          M.read (| γ |) in
+                        M.read (|
+                          M.loop (|
+                            Ty.tuple [],
+                            ltac:(M.monadic
+                              (let~ _ : Ty.tuple [] :=
+                                M.match_operator (|
+                                  Ty.tuple [],
+                                  M.alloc (|
+                                    Ty.apply
+                                      (Ty.path "core::option::Option")
+                                      []
+                                      [ Ty.path "usize" ],
+                                    M.call_closure (|
+                                      Ty.apply
+                                        (Ty.path "core::option::Option")
+                                        []
+                                        [ Ty.path "usize" ],
+                                      M.get_trait_method (|
+                                        "core::iter::traits::iterator::Iterator",
+                                        Ty.apply
+                                          (Ty.path "core::ops::range::Range")
+                                          []
+                                          [ Ty.path "usize" ],
+                                        [],
+                                        [],
+                                        "next",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.borrow (|
+                                          Pointer.Kind.MutRef,
+                                          M.deref (| M.borrow (| Pointer.Kind.MutRef, iter |) |)
+                                        |)
+                                      ]
+                                    |)
+                                  |),
+                                  [
+                                    fun γ =>
+                                      ltac:(M.monadic
+                                        (let _ :=
+                                          M.is_struct_tuple (| γ, "core::option::Option::None" |) in
+                                        M.never_to_any (| M.read (| M.break (||) |) |)));
+                                    fun γ =>
+                                      ltac:(M.monadic
+                                        (let γ0_0 :=
+                                          M.SubPointer.get_struct_tuple_field (|
+                                            γ,
+                                            "core::option::Option::Some",
+                                            0
+                                          |) in
+                                        let i := M.copy (| Ty.path "usize", γ0_0 |) in
+                                        M.read (|
+                                          let~ _ : Ty.tuple [] :=
+                                            M.call_closure (|
+                                              Ty.tuple [],
+                                              M.get_function (|
+                                                "core::ptr::swap_chunk",
+                                                [ N ],
+                                                []
+                                              |),
+                                              [
+                                                M.borrow (|
+                                                  Pointer.Kind.MutRef,
+                                                  M.deref (|
+                                                    M.borrow (|
+                                                      Pointer.Kind.MutRef,
+                                                      M.deref (|
+                                                        M.call_closure (|
+                                                          Ty.apply
+                                                            (Ty.path "*mut")
+                                                            []
+                                                            [
+                                                              Ty.apply
+                                                                (Ty.path
+                                                                  "core::mem::maybe_uninit::MaybeUninit")
+                                                                []
+                                                                [
+                                                                  Ty.apply
+                                                                    (Ty.path "array")
+                                                                    [ N ]
+                                                                    [ Ty.path "u8" ]
+                                                                ]
+                                                            ],
+                                                          M.get_associated_function (|
+                                                            Ty.apply
+                                                              (Ty.path "*mut")
+                                                              []
+                                                              [
+                                                                Ty.apply
+                                                                  (Ty.path
+                                                                    "core::mem::maybe_uninit::MaybeUninit")
+                                                                  []
+                                                                  [
+                                                                    Ty.apply
+                                                                      (Ty.path "array")
+                                                                      [ N ]
+                                                                      [ Ty.path "u8" ]
+                                                                  ]
+                                                              ],
+                                                            "add",
+                                                            [],
+                                                            []
+                                                          |),
+                                                          [ M.read (| x |); M.read (| i |) ]
+                                                        |)
+                                                      |)
+                                                    |)
+                                                  |)
+                                                |);
+                                                M.borrow (|
+                                                  Pointer.Kind.MutRef,
+                                                  M.deref (|
+                                                    M.borrow (|
+                                                      Pointer.Kind.MutRef,
+                                                      M.deref (|
+                                                        M.call_closure (|
+                                                          Ty.apply
+                                                            (Ty.path "*mut")
+                                                            []
+                                                            [
+                                                              Ty.apply
+                                                                (Ty.path
+                                                                  "core::mem::maybe_uninit::MaybeUninit")
+                                                                []
+                                                                [
+                                                                  Ty.apply
+                                                                    (Ty.path "array")
+                                                                    [ N ]
+                                                                    [ Ty.path "u8" ]
+                                                                ]
+                                                            ],
+                                                          M.get_associated_function (|
+                                                            Ty.apply
+                                                              (Ty.path "*mut")
+                                                              []
+                                                              [
+                                                                Ty.apply
+                                                                  (Ty.path
+                                                                    "core::mem::maybe_uninit::MaybeUninit")
+                                                                  []
+                                                                  [
+                                                                    Ty.apply
+                                                                      (Ty.path "array")
+                                                                      [ N ]
+                                                                      [ Ty.path "u8" ]
+                                                                  ]
+                                                              ],
+                                                            "add",
+                                                            [],
+                                                            []
+                                                          |),
+                                                          [ M.read (| y |); M.read (| i |) ]
+                                                        |)
+                                                      |)
+                                                    |)
+                                                  |)
+                                                |)
+                                              ]
+                                            |) in
+                                          M.alloc (| Ty.tuple [], Value.Tuple [] |)
+                                        |)))
+                                  ]
+                                |) in
+                              M.alloc (| Ty.tuple [], Value.Tuple [] |)))
+                          |)
+                        |)))
+                  ]
+                |)
+              |))
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance Instance_IsFunction_swap_nonoverlapping_chunks :
+      M.IsFunction.C
+        "core::ptr::swap_nonoverlapping_bytes::swap_nonoverlapping_chunks"
+        swap_nonoverlapping_chunks.
+    Admitted.
+    Global Typeclasses Opaque swap_nonoverlapping_chunks.
+    
+    (*
+        unsafe fn swap_nonoverlapping_short(x: *mut u8, y: *mut u8, bytes: NonZero<usize>) {
+            // Tail handling for auto-vectorized code sometimes has element-at-a-time behaviour,
+            // see <https://github.com/rust-lang/rust/issues/134946>.
+            // By swapping as different sizes, rather than as a loop over bytes,
+            // we make sure not to end up with, say, seven byte-at-a-time copies.
+    
+            let bytes = bytes.get();
+            let mut i = 0;
+            macro_rules! swap_prefix {
+                ($($n:literal)+) => {$(
+                    if (bytes & $n) != 0 {
+                        // SAFETY: `i` can only have the same bits set as those in bytes,
+                        // so these `add`s are in-bounds of `bytes`.  But the bit for
+                        // `$n` hasn't been set yet, so the `$n` bytes that `swap_chunk`
+                        // will read and write are within the usable range.
+                        unsafe { swap_chunk::<$n>(&mut*x.add(i).cast(), &mut*y.add(i).cast()) };
+                        i |= $n;
+                    }
+                )+};
+            }
+            swap_prefix!(4 2 1);
+            debug_assert_eq!(i, bytes);
+        }
+    *)
+    Definition swap_nonoverlapping_short
+        (ε : list Value.t)
+        (τ : list Ty.t)
+        (α : list Value.t)
+        : M :=
+      match ε, τ, α with
+      | [], [], [ x; y; bytes ] =>
+        ltac:(M.monadic
+          (let x := M.alloc (| Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ], x |) in
+          let y := M.alloc (| Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ], y |) in
+          let bytes :=
+            M.alloc (|
+              Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ],
+              bytes
+            |) in
+          M.read (|
+            let~ bytes : Ty.path "usize" :=
+              M.call_closure (|
+                Ty.path "usize",
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ],
+                  "get",
+                  [],
+                  []
+                |),
+                [ M.read (| bytes |) ]
+              |) in
+            let~ i : Ty.path "usize" := Value.Integer IntegerKind.Usize 0 in
+            let~ _ : Ty.tuple [] :=
+              M.match_operator (|
+                Ty.tuple [],
+                M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                [
+                  fun γ =>
+                    ltac:(M.monadic
+                      (let γ :=
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
+                            Ty.path "bool",
+                            BinOp.ne,
+                            [
+                              M.call_closure (|
+                                Ty.path "usize",
+                                BinOp.Wrap.bit_and,
+                                [ M.read (| bytes |); Value.Integer IntegerKind.Usize 4 ]
+                              |);
+                              Value.Integer IntegerKind.Usize 0
+                            ]
+                          |)
+                        |) in
+                      let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                      M.read (|
+                        let~ _ : Ty.tuple [] :=
+                          M.call_closure (|
+                            Ty.tuple [],
+                            M.get_function (|
+                              "core::ptr::swap_chunk",
+                              [ Value.Integer IntegerKind.Usize 4 ],
+                              []
+                            |),
+                            [
+                              M.borrow (|
+                                Pointer.Kind.MutRef,
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.deref (|
+                                      M.call_closure (|
+                                        Ty.apply
+                                          (Ty.path "*mut")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "array")
+                                                  [ Value.Integer IntegerKind.Usize 4 ]
+                                                  [ Ty.path "u8" ]
+                                              ]
+                                          ],
+                                        M.get_associated_function (|
+                                          Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                          "cast",
+                                          [],
+                                          [
+                                            Ty.apply
+                                              (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "array")
+                                                  [ Value.Integer IntegerKind.Usize 4 ]
+                                                  [ Ty.path "u8" ]
+                                              ]
+                                          ]
+                                        |),
+                                        [
+                                          M.call_closure (|
+                                            Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                            M.get_associated_function (|
+                                              Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                              "add",
+                                              [],
+                                              []
+                                            |),
+                                            [ M.read (| x |); M.read (| i |) ]
+                                          |)
+                                        ]
+                                      |)
+                                    |)
+                                  |)
+                                |)
+                              |);
+                              M.borrow (|
+                                Pointer.Kind.MutRef,
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.deref (|
+                                      M.call_closure (|
+                                        Ty.apply
+                                          (Ty.path "*mut")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "array")
+                                                  [ Value.Integer IntegerKind.Usize 4 ]
+                                                  [ Ty.path "u8" ]
+                                              ]
+                                          ],
+                                        M.get_associated_function (|
+                                          Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                          "cast",
+                                          [],
+                                          [
+                                            Ty.apply
+                                              (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "array")
+                                                  [ Value.Integer IntegerKind.Usize 4 ]
+                                                  [ Ty.path "u8" ]
+                                              ]
+                                          ]
+                                        |),
+                                        [
+                                          M.call_closure (|
+                                            Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                            M.get_associated_function (|
+                                              Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                              "add",
+                                              [],
+                                              []
+                                            |),
+                                            [ M.read (| y |); M.read (| i |) ]
+                                          |)
+                                        ]
+                                      |)
+                                    |)
+                                  |)
+                                |)
+                              |)
+                            ]
+                          |) in
+                        let~ _ : Ty.tuple [] :=
+                          let β := i in
+                          M.write (|
+                            β,
+                            M.call_closure (|
+                              Ty.path "usize",
+                              BinOp.Wrap.bit_or,
+                              [ M.read (| β |); Value.Integer IntegerKind.Usize 4 ]
+                            |)
+                          |) in
+                        M.alloc (| Ty.tuple [], Value.Tuple [] |)
+                      |)));
+                  fun γ => ltac:(M.monadic (Value.Tuple []))
+                ]
+              |) in
+            let~ _ : Ty.tuple [] :=
+              M.match_operator (|
+                Ty.tuple [],
+                M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                [
+                  fun γ =>
+                    ltac:(M.monadic
+                      (let γ :=
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
+                            Ty.path "bool",
+                            BinOp.ne,
+                            [
+                              M.call_closure (|
+                                Ty.path "usize",
+                                BinOp.Wrap.bit_and,
+                                [ M.read (| bytes |); Value.Integer IntegerKind.Usize 2 ]
+                              |);
+                              Value.Integer IntegerKind.Usize 0
+                            ]
+                          |)
+                        |) in
+                      let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                      M.read (|
+                        let~ _ : Ty.tuple [] :=
+                          M.call_closure (|
+                            Ty.tuple [],
+                            M.get_function (|
+                              "core::ptr::swap_chunk",
+                              [ Value.Integer IntegerKind.Usize 2 ],
+                              []
+                            |),
+                            [
+                              M.borrow (|
+                                Pointer.Kind.MutRef,
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.deref (|
+                                      M.call_closure (|
+                                        Ty.apply
+                                          (Ty.path "*mut")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "array")
+                                                  [ Value.Integer IntegerKind.Usize 2 ]
+                                                  [ Ty.path "u8" ]
+                                              ]
+                                          ],
+                                        M.get_associated_function (|
+                                          Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                          "cast",
+                                          [],
+                                          [
+                                            Ty.apply
+                                              (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "array")
+                                                  [ Value.Integer IntegerKind.Usize 2 ]
+                                                  [ Ty.path "u8" ]
+                                              ]
+                                          ]
+                                        |),
+                                        [
+                                          M.call_closure (|
+                                            Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                            M.get_associated_function (|
+                                              Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                              "add",
+                                              [],
+                                              []
+                                            |),
+                                            [ M.read (| x |); M.read (| i |) ]
+                                          |)
+                                        ]
+                                      |)
+                                    |)
+                                  |)
+                                |)
+                              |);
+                              M.borrow (|
+                                Pointer.Kind.MutRef,
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.deref (|
+                                      M.call_closure (|
+                                        Ty.apply
+                                          (Ty.path "*mut")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "array")
+                                                  [ Value.Integer IntegerKind.Usize 2 ]
+                                                  [ Ty.path "u8" ]
+                                              ]
+                                          ],
+                                        M.get_associated_function (|
+                                          Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                          "cast",
+                                          [],
+                                          [
+                                            Ty.apply
+                                              (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "array")
+                                                  [ Value.Integer IntegerKind.Usize 2 ]
+                                                  [ Ty.path "u8" ]
+                                              ]
+                                          ]
+                                        |),
+                                        [
+                                          M.call_closure (|
+                                            Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                            M.get_associated_function (|
+                                              Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                              "add",
+                                              [],
+                                              []
+                                            |),
+                                            [ M.read (| y |); M.read (| i |) ]
+                                          |)
+                                        ]
+                                      |)
+                                    |)
+                                  |)
+                                |)
+                              |)
+                            ]
+                          |) in
+                        let~ _ : Ty.tuple [] :=
+                          let β := i in
+                          M.write (|
+                            β,
+                            M.call_closure (|
+                              Ty.path "usize",
+                              BinOp.Wrap.bit_or,
+                              [ M.read (| β |); Value.Integer IntegerKind.Usize 2 ]
+                            |)
+                          |) in
+                        M.alloc (| Ty.tuple [], Value.Tuple [] |)
+                      |)));
+                  fun γ => ltac:(M.monadic (Value.Tuple []))
+                ]
+              |) in
+            let~ _ : Ty.tuple [] :=
+              M.match_operator (|
+                Ty.tuple [],
+                M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                [
+                  fun γ =>
+                    ltac:(M.monadic
+                      (let γ :=
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
+                            Ty.path "bool",
+                            BinOp.ne,
+                            [
+                              M.call_closure (|
+                                Ty.path "usize",
+                                BinOp.Wrap.bit_and,
+                                [ M.read (| bytes |); Value.Integer IntegerKind.Usize 1 ]
+                              |);
+                              Value.Integer IntegerKind.Usize 0
+                            ]
+                          |)
+                        |) in
+                      let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                      M.read (|
+                        let~ _ : Ty.tuple [] :=
+                          M.call_closure (|
+                            Ty.tuple [],
+                            M.get_function (|
+                              "core::ptr::swap_chunk",
+                              [ Value.Integer IntegerKind.Usize 1 ],
+                              []
+                            |),
+                            [
+                              M.borrow (|
+                                Pointer.Kind.MutRef,
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.deref (|
+                                      M.call_closure (|
+                                        Ty.apply
+                                          (Ty.path "*mut")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "array")
+                                                  [ Value.Integer IntegerKind.Usize 1 ]
+                                                  [ Ty.path "u8" ]
+                                              ]
+                                          ],
+                                        M.get_associated_function (|
+                                          Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                          "cast",
+                                          [],
+                                          [
+                                            Ty.apply
+                                              (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "array")
+                                                  [ Value.Integer IntegerKind.Usize 1 ]
+                                                  [ Ty.path "u8" ]
+                                              ]
+                                          ]
+                                        |),
+                                        [
+                                          M.call_closure (|
+                                            Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                            M.get_associated_function (|
+                                              Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                              "add",
+                                              [],
+                                              []
+                                            |),
+                                            [ M.read (| x |); M.read (| i |) ]
+                                          |)
+                                        ]
+                                      |)
+                                    |)
+                                  |)
+                                |)
+                              |);
+                              M.borrow (|
+                                Pointer.Kind.MutRef,
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.deref (|
+                                      M.call_closure (|
+                                        Ty.apply
+                                          (Ty.path "*mut")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "array")
+                                                  [ Value.Integer IntegerKind.Usize 1 ]
+                                                  [ Ty.path "u8" ]
+                                              ]
+                                          ],
+                                        M.get_associated_function (|
+                                          Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                          "cast",
+                                          [],
+                                          [
+                                            Ty.apply
+                                              (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "array")
+                                                  [ Value.Integer IntegerKind.Usize 1 ]
+                                                  [ Ty.path "u8" ]
+                                              ]
+                                          ]
+                                        |),
+                                        [
+                                          M.call_closure (|
+                                            Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                            M.get_associated_function (|
+                                              Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                              "add",
+                                              [],
+                                              []
+                                            |),
+                                            [ M.read (| y |); M.read (| i |) ]
+                                          |)
+                                        ]
+                                      |)
+                                    |)
+                                  |)
+                                |)
+                              |)
+                            ]
+                          |) in
+                        let~ _ : Ty.tuple [] :=
+                          let β := i in
+                          M.write (|
+                            β,
+                            M.call_closure (|
+                              Ty.path "usize",
+                              BinOp.Wrap.bit_or,
+                              [ M.read (| β |); Value.Integer IntegerKind.Usize 1 ]
+                            |)
+                          |) in
+                        M.alloc (| Ty.tuple [], Value.Tuple [] |)
+                      |)));
+                  fun γ => ltac:(M.monadic (Value.Tuple []))
+                ]
+              |) in
+            let~ _ : Ty.tuple [] :=
+              M.match_operator (|
+                Ty.tuple [],
+                M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                [
+                  fun γ =>
+                    ltac:(M.monadic
+                      (let γ := M.alloc (| Ty.path "bool", Value.Bool true |) in
+                      let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                      M.read (|
+                        let~ _ : Ty.tuple [] :=
+                          M.match_operator (|
+                            Ty.tuple [],
+                            M.alloc (|
+                              Ty.tuple
+                                [
+                                  Ty.apply (Ty.path "&") [] [ Ty.path "usize" ];
+                                  Ty.apply (Ty.path "&") [] [ Ty.path "usize" ]
+                                ],
+                              Value.Tuple
+                                [
+                                  M.borrow (| Pointer.Kind.Ref, i |);
+                                  M.borrow (| Pointer.Kind.Ref, bytes |)
+                                ]
+                            |),
+                            [
+                              fun γ =>
+                                ltac:(M.monadic
+                                  (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                                  let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                                  let left_val :=
+                                    M.copy (|
+                                      Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
+                                      γ0_0
+                                    |) in
+                                  let right_val :=
+                                    M.copy (|
+                                      Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
+                                      γ0_1
+                                    |) in
+                                  M.match_operator (|
+                                    Ty.tuple [],
+                                    M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                                    [
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let γ :=
+                                            M.alloc (|
+                                              Ty.path "bool",
+                                              M.call_closure (|
+                                                Ty.path "bool",
+                                                UnOp.not,
+                                                [
+                                                  M.call_closure (|
+                                                    Ty.path "bool",
+                                                    BinOp.eq,
+                                                    [
+                                                      M.read (|
+                                                        M.deref (| M.read (| left_val |) |)
+                                                      |);
+                                                      M.read (|
+                                                        M.deref (| M.read (| right_val |) |)
+                                                      |)
+                                                    ]
+                                                  |)
+                                                ]
+                                              |)
+                                            |) in
+                                          let _ :=
+                                            is_constant_or_break_match (|
+                                              M.read (| γ |),
+                                              Value.Bool true
+                                            |) in
+                                          M.never_to_any (|
+                                            M.read (|
+                                              let~ kind : Ty.path "core::panicking::AssertKind" :=
+                                                Value.StructTuple
+                                                  "core::panicking::AssertKind::Eq"
+                                                  []
+                                                  []
+                                                  [] in
+                                              M.alloc (|
+                                                Ty.path "never",
+                                                M.call_closure (|
+                                                  Ty.path "never",
+                                                  M.get_function (|
+                                                    "core::panicking::assert_failed",
+                                                    [],
+                                                    [ Ty.path "usize"; Ty.path "usize" ]
+                                                  |),
+                                                  [
+                                                    M.read (| kind |);
+                                                    M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (|
+                                                        M.borrow (|
+                                                          Pointer.Kind.Ref,
+                                                          M.deref (| M.read (| left_val |) |)
+                                                        |)
+                                                      |)
+                                                    |);
+                                                    M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (|
+                                                        M.borrow (|
+                                                          Pointer.Kind.Ref,
+                                                          M.deref (| M.read (| right_val |) |)
+                                                        |)
+                                                      |)
+                                                    |);
+                                                    Value.StructTuple
+                                                      "core::option::Option::None"
+                                                      []
+                                                      [ Ty.path "core::fmt::Arguments" ]
+                                                      []
+                                                  ]
+                                                |)
+                                              |)
+                                            |)
+                                          |)));
+                                      fun γ => ltac:(M.monadic (Value.Tuple []))
+                                    ]
+                                  |)))
+                            ]
+                          |) in
+                        M.alloc (| Ty.tuple [], Value.Tuple [] |)
+                      |)));
+                  fun γ => ltac:(M.monadic (Value.Tuple []))
+                ]
+              |) in
+            M.alloc (| Ty.tuple [], Value.Tuple [] |)
+          |)))
+      | _, _, _ => M.impossible "wrong number of arguments"
+      end.
+    
+    Global Instance Instance_IsFunction_swap_nonoverlapping_short :
+      M.IsFunction.C
+        "core::ptr::swap_nonoverlapping_bytes::swap_nonoverlapping_short"
+        swap_nonoverlapping_short.
+    Admitted.
+    Global Typeclasses Opaque swap_nonoverlapping_short.
+    
+    Definition value_CHUNK_SIZE (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+      ltac:(M.monadic
+        (M.alloc (|
+          Ty.path "usize",
+          M.call_closure (|
+            Ty.path "usize",
+            M.get_function (|
+              "core::mem::size_of",
+              [],
+              [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
+            |),
+            []
+          |)
+        |))).
+    
+    Global Instance Instance_IsConstant_value_CHUNK_SIZE :
+      M.IsFunction.C "core::ptr::swap_nonoverlapping_bytes::CHUNK_SIZE" value_CHUNK_SIZE.
+    Admitted.
+    Global Typeclasses Opaque value_CHUNK_SIZE.
+  End swap_nonoverlapping_bytes.
   
   (*
   pub const unsafe fn replace<T>(dst: *mut T, src: T) -> T {
       // SAFETY: the caller must guarantee that `dst` is valid to be
       // cast to a mutable reference (valid for writes, aligned, initialized),
       // and cannot overlap `src` since `dst` must point to a distinct
-      // allocated object.
+      // allocation.
       unsafe {
           ub_checks::assert_unsafe_precondition!(
               check_language_ub,
@@ -1342,15 +2529,14 @@ Module ptr.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            M.get_function (| "core::ub_checks::check_language_ub", [], [] |),
-                            []
-                          |)
-                        |)) in
+                          M.get_function (| "core::ub_checks::check_language_ub", [], [] |),
+                          []
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     M.read (|
                       let~ _ : Ty.tuple [] :=
@@ -1459,15 +2645,14 @@ Module ptr.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            M.get_function (| "core::ub_checks::check_language_ub", [], [] |),
-                            []
-                          |)
-                        |)) in
+                          M.get_function (| "core::ub_checks::check_language_ub", [], [] |),
+                          []
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     M.read (|
                       let~ _ : Ty.tuple [] :=
@@ -1517,12 +2702,12 @@ Module ptr.
       let mut tmp = MaybeUninit::<T>::uninit();
       // SAFETY: the caller must guarantee that `src` is valid for reads.
       // `src` cannot overlap `tmp` because `tmp` was just allocated on
-      // the stack as a separate allocated object.
+      // the stack as a separate allocation.
       //
       // Also, since we just wrote a valid value into `tmp`, it is guaranteed
       // to be properly initialized.
       unsafe {
-          copy_nonoverlapping(src as *const u8, tmp.as_mut_ptr() as *mut u8, mem::size_of::<T>());
+          copy_nonoverlapping(src as *const u8, tmp.as_mut_ptr() as *mut u8, size_of::<T>());
           tmp.assume_init()
       }
   }
@@ -1547,7 +2732,7 @@ Module ptr.
           let~ _ : Ty.tuple [] :=
             M.call_closure (|
               Ty.tuple [],
-              M.get_function (| "core::intrinsics::copy_nonoverlapping", [], [ Ty.path "u8" ] |),
+              M.get_function (| "core::ptr::copy_nonoverlapping", [], [ Ty.path "u8" ] |),
               [
                 M.cast (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]) (M.read (| src |));
                 M.cast
@@ -1634,15 +2819,14 @@ Module ptr.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            M.get_function (| "core::ub_checks::check_language_ub", [], [] |),
-                            []
-                          |)
-                        |)) in
+                          M.get_function (| "core::ub_checks::check_language_ub", [], [] |),
+                          []
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     M.read (|
                       let~ _ : Ty.tuple [] :=
@@ -1693,7 +2877,7 @@ Module ptr.
       // `dst` cannot overlap `src` because the caller has mutable access
       // to `dst` while `src` is owned by this function.
       unsafe {
-          copy_nonoverlapping((&raw const src) as *const u8, dst as *mut u8, mem::size_of::<T>());
+          copy_nonoverlapping((&raw const src) as *const u8, dst as *mut u8, size_of::<T>());
           // We are calling the intrinsic directly to avoid function calls in the generated code.
           intrinsics::forget(src);
       }
@@ -1709,7 +2893,7 @@ Module ptr.
           let~ _ : Ty.tuple [] :=
             M.call_closure (|
               Ty.tuple [],
-              M.get_function (| "core::intrinsics::copy_nonoverlapping", [], [ Ty.path "u8" ] |),
+              M.get_function (| "core::ptr::copy_nonoverlapping", [], [ Ty.path "u8" ] |),
               [
                 M.cast
                   (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ])
@@ -1744,12 +2928,11 @@ Module ptr.
       unsafe {
           ub_checks::assert_unsafe_precondition!(
               check_language_ub,
-              "ptr::read_volatile requires that the pointer argument is aligned and non-null",
+              "ptr::read_volatile requires that the pointer argument is aligned",
               (
                   addr: *const () = src as *const (),
                   align: usize = align_of::<T>(),
-                  is_zst: bool = T::IS_ZST,
-              ) => ub_checks::maybe_is_aligned_and_not_null(addr, align, is_zst)
+              ) => ub_checks::maybe_is_aligned(addr, align)
           );
           intrinsics::volatile_load(src)
       }
@@ -1769,15 +2952,14 @@ Module ptr.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            M.get_function (| "core::ub_checks::check_language_ub", [], [] |),
-                            []
-                          |)
-                        |)) in
+                          M.get_function (| "core::ub_checks::check_language_ub", [], [] |),
+                          []
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     M.read (|
                       let~ _ : Ty.tuple [] :=
@@ -1796,12 +2978,6 @@ Module ptr.
                               Ty.path "usize",
                               M.get_function (| "core::mem::align_of", [], [ T ] |),
                               []
-                            |);
-                            M.read (|
-                              get_constant (|
-                                "core::mem::SizedTypeProperties::IS_ZST",
-                                Ty.path "bool"
-                              |)
                             |)
                           ]
                         |) in
@@ -1833,12 +3009,11 @@ Module ptr.
       unsafe {
           ub_checks::assert_unsafe_precondition!(
               check_language_ub,
-              "ptr::write_volatile requires that the pointer argument is aligned and non-null",
+              "ptr::write_volatile requires that the pointer argument is aligned",
               (
                   addr: *mut () = dst as *mut (),
                   align: usize = align_of::<T>(),
-                  is_zst: bool = T::IS_ZST,
-              ) => ub_checks::maybe_is_aligned_and_not_null(addr, align, is_zst)
+              ) => ub_checks::maybe_is_aligned(addr, align)
           );
           intrinsics::volatile_store(dst, src);
       }
@@ -1859,15 +3034,14 @@ Module ptr.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            M.get_function (| "core::ub_checks::check_language_ub", [], [] |),
-                            []
-                          |)
-                        |)) in
+                          M.get_function (| "core::ub_checks::check_language_ub", [], [] |),
+                          []
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     M.read (|
                       let~ _ : Ty.tuple [] :=
@@ -1886,12 +3060,6 @@ Module ptr.
                               Ty.path "usize",
                               M.get_function (| "core::mem::align_of", [], [ T ] |),
                               []
-                            |);
-                            M.read (|
-                              get_constant (|
-                                "core::mem::SizedTypeProperties::IS_ZST",
-                                Ty.path "bool"
-                              |)
                             |)
                           ]
                         |) in
@@ -1976,7 +3144,7 @@ Module ptr.
           inverse & m_minus_one
       }
   
-      let stride = mem::size_of::<T>();
+      let stride = size_of::<T>();
   
       let addr: usize = p.addr();
   
@@ -2129,15 +3297,14 @@ Module ptr.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                BinOp.eq,
-                                [ M.read (| stride |); Value.Integer IntegerKind.Usize 0 ]
-                              |)
-                            |)) in
+                              BinOp.eq,
+                              [ M.read (| stride |); Value.Integer IntegerKind.Usize 0 ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.never_to_any (|
                           M.read (|
@@ -2155,18 +3322,17 @@ Module ptr.
                                   fun γ =>
                                     ltac:(M.monadic
                                       (let γ :=
-                                        M.use
-                                          (M.alloc (|
+                                        M.alloc (|
+                                          Ty.path "bool",
+                                          M.call_closure (|
                                             Ty.path "bool",
-                                            M.call_closure (|
-                                              Ty.path "bool",
-                                              BinOp.eq,
-                                              [
-                                                M.read (| p_mod_a |);
-                                                Value.Integer IntegerKind.Usize 0
-                                              ]
-                                            |)
-                                          |)) in
+                                            BinOp.eq,
+                                            [
+                                              M.read (| p_mod_a |);
+                                              Value.Integer IntegerKind.Usize 0
+                                            ]
+                                          |)
+                                        |) in
                                       let _ :=
                                         is_constant_or_break_match (|
                                           M.read (| γ |),
@@ -2204,15 +3370,14 @@ Module ptr.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                BinOp.eq,
-                                [ M.read (| a_mod_stride |); Value.Integer IntegerKind.Usize 0 ]
-                              |)
-                            |)) in
+                              BinOp.eq,
+                              [ M.read (| a_mod_stride |); Value.Integer IntegerKind.Usize 0 ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.never_to_any (|
                           M.read (|
@@ -2281,18 +3446,17 @@ Module ptr.
                                   fun γ =>
                                     ltac:(M.monadic
                                       (let γ :=
-                                        M.use
-                                          (M.alloc (|
+                                        M.alloc (|
+                                          Ty.path "bool",
+                                          M.call_closure (|
                                             Ty.path "bool",
-                                            M.call_closure (|
-                                              Ty.path "bool",
-                                              BinOp.eq,
-                                              [
-                                                M.read (| addr_mod_stride |);
-                                                Value.Integer IntegerKind.Usize 0
-                                              ]
-                                            |)
-                                          |)) in
+                                            BinOp.eq,
+                                            [
+                                              M.read (| addr_mod_stride |);
+                                              Value.Integer IntegerKind.Usize 0
+                                            ]
+                                          |)
+                                        |) in
                                       let _ :=
                                         is_constant_or_break_match (|
                                           M.read (| γ |),
@@ -2355,15 +3519,14 @@ Module ptr.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
                                   Ty.path "bool",
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    BinOp.lt,
-                                    [ M.read (| x |); M.read (| y |) ]
-                                  |)
-                                |)) in
+                                  BinOp.lt,
+                                  [ M.read (| x |); M.read (| y |) ]
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.read (| x |)));
@@ -2390,33 +3553,32 @@ Module ptr.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                BinOp.eq,
-                                [
-                                  M.call_closure (|
-                                    Ty.path "usize",
-                                    BinOp.Wrap.bit_and,
-                                    [
-                                      M.read (| addr |);
-                                      M.call_closure (|
-                                        Ty.path "usize",
-                                        M.get_function (|
-                                          "core::intrinsics::unchecked_sub",
-                                          [],
-                                          [ Ty.path "usize" ]
-                                        |),
-                                        [ M.read (| gcd |); Value.Integer IntegerKind.Usize 1 ]
-                                      |)
-                                    ]
-                                  |);
-                                  Value.Integer IntegerKind.Usize 0
-                                ]
-                              |)
-                            |)) in
+                              BinOp.eq,
+                              [
+                                M.call_closure (|
+                                  Ty.path "usize",
+                                  BinOp.Wrap.bit_and,
+                                  [
+                                    M.read (| addr |);
+                                    M.call_closure (|
+                                      Ty.path "usize",
+                                      M.get_function (|
+                                        "core::intrinsics::unchecked_sub",
+                                        [],
+                                        [ Ty.path "usize" ]
+                                      |),
+                                      [ M.read (| gcd |); Value.Integer IntegerKind.Usize 1 ]
+                                    |)
+                                  ]
+                                |);
+                                Value.Integer IntegerKind.Usize 0
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.never_to_any (|
                           M.read (|
@@ -2648,15 +3810,14 @@ Module ptr.
                           fun γ =>
                             ltac:(M.monadic
                               (let γ :=
-                                M.use
-                                  (M.alloc (|
+                                M.alloc (|
+                                  Ty.path "bool",
+                                  M.call_closure (|
                                     Ty.path "bool",
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      BinOp.ge,
-                                      [ M.read (| mod_gate |); M.read (| m |) ]
-                                    |)
-                                  |)) in
+                                    BinOp.ge,
+                                    [ M.read (| mod_gate |); M.read (| m |) ]
+                                  |)
+                                |) in
                               let _ :=
                                 is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                               M.never_to_any (| M.read (| M.break (||) |) |)));
@@ -2729,7 +3890,7 @@ Module ptr.
                                     [
                                       fun γ =>
                                         ltac:(M.monadic
-                                          (let γ := M.use overflow in
+                                          (let γ := overflow in
                                           let _ :=
                                             is_constant_or_break_match (|
                                               M.read (| γ |),
@@ -2799,7 +3960,7 @@ Module ptr.
   End align_offset.
   
   (*
-  pub fn eq<T: ?Sized>(a: *const T, b: *const T) -> bool {
+  pub fn eq<T: PointeeSized>(a: *const T, b: *const T) -> bool {
       a == b
   }
   *)
@@ -2818,7 +3979,7 @@ Module ptr.
   Global Typeclasses Opaque eq.
   
   (*
-  pub fn addr_eq<T: ?Sized, U: ?Sized>(p: *const T, q: *const U) -> bool {
+  pub fn addr_eq<T: PointeeSized, U: PointeeSized>(p: *const T, q: *const U) -> bool {
       (p as *const ()) == (q as *const ())
   }
   *)
@@ -2879,7 +4040,7 @@ Module ptr.
   Global Typeclasses Opaque fn_addr_eq.
   
   (*
-  pub fn hash<T: ?Sized, S: hash::Hasher>(hashee: *const T, into: &mut S) {
+  pub fn hash<T: PointeeSized, S: hash::Hasher>(hashee: *const T, into: &mut S) {
       use crate::hash::Hash;
       hashee.hash(into);
   }

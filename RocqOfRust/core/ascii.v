@@ -12,7 +12,7 @@ Module ascii.
           Ty.apply
             (Ty.path "core::escape::EscapeIterInner")
             [ Value.Integer IntegerKind.Usize 4 ]
-            []
+            [ Ty.path "core::escape::AlwaysEscaped" ]
         ];
     } *)
   
@@ -38,13 +38,13 @@ Module ascii.
                 Ty.apply
                   (Ty.path "core::escape::EscapeIterInner")
                   [ Value.Integer IntegerKind.Usize 4 ]
-                  [],
+                  [ Ty.path "core::escape::AlwaysEscaped" ],
                 M.get_trait_method (|
                   "core::clone::Clone",
                   Ty.apply
                     (Ty.path "core::escape::EscapeIterInner")
                     [ Value.Integer IntegerKind.Usize 4 ]
-                    [],
+                    [ Ty.path "core::escape::AlwaysEscaped" ],
                   [],
                   [],
                   "clone",
@@ -108,7 +108,7 @@ Module ascii.
     
     (*
         pub(crate) const fn new(c: u8) -> Self {
-            Self(escape::EscapeIterInner::ascii(c))
+            Self(EscapeIterInner::ascii(c))
         }
     *)
     Definition new (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -125,12 +125,12 @@ Module ascii.
                 Ty.apply
                   (Ty.path "core::escape::EscapeIterInner")
                   [ Value.Integer IntegerKind.Usize 4 ]
-                  [],
+                  [ Ty.path "core::escape::AlwaysEscaped" ],
                 M.get_associated_function (|
                   Ty.apply
                     (Ty.path "core::escape::EscapeIterInner")
                     [ Value.Integer IntegerKind.Usize 4 ]
-                    [],
+                    [ Ty.path "core::escape::AlwaysEscaped" ],
                   "ascii",
                   [],
                   []
@@ -147,7 +147,7 @@ Module ascii.
     
     (*
         pub(crate) fn empty() -> Self {
-            Self(escape::EscapeIterInner::empty())
+            Self(EscapeIterInner::empty())
         }
     *)
     Definition empty (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -163,12 +163,12 @@ Module ascii.
                 Ty.apply
                   (Ty.path "core::escape::EscapeIterInner")
                   [ Value.Integer IntegerKind.Usize 4 ]
-                  [],
+                  [ Ty.path "core::escape::AlwaysEscaped" ],
                 M.get_associated_function (|
                   Ty.apply
                     (Ty.path "core::escape::EscapeIterInner")
                     [ Value.Integer IntegerKind.Usize 4 ]
-                    [],
+                    [ Ty.path "core::escape::AlwaysEscaped" ],
                   "empty",
                   [],
                   []
@@ -182,54 +182,6 @@ Module ascii.
     Global Instance AssociatedFunction_empty : M.IsAssociatedFunction.C Self "empty" empty.
     Admitted.
     Global Typeclasses Opaque empty.
-    
-    (*
-        pub(crate) fn as_str(&self) -> &str {
-            self.0.as_str()
-        }
-    *)
-    Definition as_str (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      match ε, τ, α with
-      | [], [], [ self ] =>
-        ltac:(M.monadic
-          (let self :=
-            M.alloc (|
-              Ty.apply (Ty.path "&") [] [ Ty.path "core::ascii::EscapeDefault" ],
-              self
-            |) in
-          M.borrow (|
-            Pointer.Kind.Ref,
-            M.deref (|
-              M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                M.get_associated_function (|
-                  Ty.apply
-                    (Ty.path "core::escape::EscapeIterInner")
-                    [ Value.Integer IntegerKind.Usize 4 ]
-                    [],
-                  "as_str",
-                  [],
-                  []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_tuple_field (|
-                      M.deref (| M.read (| self |) |),
-                      "core::ascii::EscapeDefault",
-                      0
-                    |)
-                  |)
-                ]
-              |)
-            |)
-          |)))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Global Instance AssociatedFunction_as_str : M.IsAssociatedFunction.C Self "as_str" as_str.
-    Admitted.
-    Global Typeclasses Opaque as_str.
   End Impl_core_ascii_EscapeDefault.
   
   Module Impl_core_iter_traits_iterator_Iterator_for_core_ascii_EscapeDefault.
@@ -258,7 +210,7 @@ Module ascii.
               Ty.apply
                 (Ty.path "core::escape::EscapeIterInner")
                 [ Value.Integer IntegerKind.Usize 4 ]
-                [],
+                [ Ty.path "core::escape::AlwaysEscaped" ],
               "next",
               [],
               []
@@ -300,7 +252,7 @@ Module ascii.
                   Ty.apply
                     (Ty.path "core::escape::EscapeIterInner")
                     [ Value.Integer IntegerKind.Usize 4 ]
-                    [],
+                    [ Ty.path "core::escape::AlwaysEscaped" ],
                   "len",
                   [],
                   []
@@ -350,7 +302,7 @@ Module ascii.
               Ty.apply
                 (Ty.path "core::escape::EscapeIterInner")
                 [ Value.Integer IntegerKind.Usize 4 ]
-                [],
+                [ Ty.path "core::escape::AlwaysEscaped" ],
               "len",
               [],
               []
@@ -381,7 +333,7 @@ Module ascii.
               Ty.apply
                 (Ty.path "core::escape::EscapeIterInner")
                 [ Value.Integer IntegerKind.Usize 4 ]
-                [],
+                [ Ty.path "core::escape::AlwaysEscaped" ],
               "next_back",
               [],
               []
@@ -421,7 +373,7 @@ Module ascii.
               Ty.apply
                 (Ty.path "core::escape::EscapeIterInner")
                 [ Value.Integer IntegerKind.Usize 4 ]
-                [],
+                [ Ty.path "core::escape::AlwaysEscaped" ],
               "advance_by",
               [],
               []
@@ -481,7 +433,7 @@ Module ascii.
               Ty.apply
                 (Ty.path "core::escape::EscapeIterInner")
                 [ Value.Integer IntegerKind.Usize 4 ]
-                [],
+                [ Ty.path "core::escape::AlwaysEscaped" ],
               "next_back",
               [],
               []
@@ -525,7 +477,7 @@ Module ascii.
               Ty.apply
                 (Ty.path "core::escape::EscapeIterInner")
                 [ Value.Integer IntegerKind.Usize 4 ]
-                [],
+                [ Ty.path "core::escape::AlwaysEscaped" ],
               "advance_back_by",
               [],
               []
@@ -581,7 +533,7 @@ Module ascii.
               Ty.apply
                 (Ty.path "core::escape::EscapeIterInner")
                 [ Value.Integer IntegerKind.Usize 4 ]
-                [],
+                [ Ty.path "core::escape::AlwaysEscaped" ],
               "len",
               [],
               []
@@ -626,7 +578,7 @@ Module ascii.
     
     (*
         fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-            f.write_str(self.0.as_str())
+            fmt::Display::fmt(&self.0, f)
         }
     *)
     Definition fmt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -645,36 +597,33 @@ Module ascii.
               (Ty.path "core::result::Result")
               []
               [ Ty.tuple []; Ty.path "core::fmt::Error" ],
-            M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_str", [], [] |),
+            M.get_trait_method (|
+              "core::fmt::Display",
+              Ty.apply
+                (Ty.path "core::escape::EscapeIterInner")
+                [ Value.Integer IntegerKind.Usize 4 ]
+                [ Ty.path "core::escape::AlwaysEscaped" ],
+              [],
+              [],
+              "fmt",
+              [],
+              []
+            |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
               M.borrow (|
                 Pointer.Kind.Ref,
                 M.deref (|
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                    M.get_associated_function (|
-                      Ty.apply
-                        (Ty.path "core::escape::EscapeIterInner")
-                        [ Value.Integer IntegerKind.Usize 4 ]
-                        [],
-                      "as_str",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_tuple_field (|
-                          M.deref (| M.read (| self |) |),
-                          "core::ascii::EscapeDefault",
-                          0
-                        |)
-                      |)
-                    ]
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_tuple_field (|
+                      M.deref (| M.read (| self |) |),
+                      "core::ascii::EscapeDefault",
+                      0
+                    |)
                   |)
                 |)
-              |)
+              |);
+              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"

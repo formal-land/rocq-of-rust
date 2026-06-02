@@ -65,6 +65,24 @@ Module char.
   Admitted.
   Global Typeclasses Opaque value_MAX.
   
+  Definition value_MAX_LEN_UTF8 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic
+      (get_associated_constant (| Ty.path "char", "MAX_LEN_UTF8", Ty.path "usize" |))).
+  
+  Global Instance Instance_IsConstant_value_MAX_LEN_UTF8 :
+    M.IsFunction.C "core::char::MAX_LEN_UTF8" value_MAX_LEN_UTF8.
+  Admitted.
+  Global Typeclasses Opaque value_MAX_LEN_UTF8.
+  
+  Definition value_MAX_LEN_UTF16 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+    ltac:(M.monadic
+      (get_associated_constant (| Ty.path "char", "MAX_LEN_UTF16", Ty.path "usize" |))).
+  
+  Global Instance Instance_IsConstant_value_MAX_LEN_UTF16 :
+    M.IsFunction.C "core::char::MAX_LEN_UTF16" value_MAX_LEN_UTF16.
+  Admitted.
+  Global Typeclasses Opaque value_MAX_LEN_UTF16.
+  
   Definition value_REPLACEMENT_CHARACTER
       (ε : list Value.t)
       (τ : list Ty.t)
@@ -198,7 +216,7 @@ Module char.
           Ty.apply
             (Ty.path "core::escape::EscapeIterInner")
             [ Value.Integer IntegerKind.Usize 10 ]
-            []
+            [ Ty.path "core::escape::AlwaysEscaped" ]
         ];
     } *)
   
@@ -221,13 +239,13 @@ Module char.
                 Ty.apply
                   (Ty.path "core::escape::EscapeIterInner")
                   [ Value.Integer IntegerKind.Usize 10 ]
-                  [],
+                  [ Ty.path "core::escape::AlwaysEscaped" ],
                 M.get_trait_method (|
                   "core::clone::Clone",
                   Ty.apply
                     (Ty.path "core::escape::EscapeIterInner")
                     [ Value.Integer IntegerKind.Usize 10 ]
-                    [],
+                    [ Ty.path "core::escape::AlwaysEscaped" ],
                   [],
                   [],
                   "clone",
@@ -304,7 +322,7 @@ Module char.
                           Ty.apply
                             (Ty.path "core::escape::EscapeIterInner")
                             [ Value.Integer IntegerKind.Usize 10 ]
-                            []
+                            [ Ty.path "core::escape::AlwaysEscaped" ]
                         ]
                     ])
                   (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
@@ -322,7 +340,7 @@ Module char.
                               Ty.apply
                                 (Ty.path "core::escape::EscapeIterInner")
                                 [ Value.Integer IntegerKind.Usize 10 ]
-                                []
+                                [ Ty.path "core::escape::AlwaysEscaped" ]
                             ],
                           M.borrow (|
                             Pointer.Kind.Ref,
@@ -357,7 +375,7 @@ Module char.
     
     (*
         const fn new(c: char) -> Self {
-            Self(escape::EscapeIterInner::unicode(c))
+            Self(EscapeIterInner::unicode(c))
         }
     *)
     Definition new (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -374,12 +392,12 @@ Module char.
                 Ty.apply
                   (Ty.path "core::escape::EscapeIterInner")
                   [ Value.Integer IntegerKind.Usize 10 ]
-                  [],
+                  [ Ty.path "core::escape::AlwaysEscaped" ],
                 M.get_associated_function (|
                   Ty.apply
                     (Ty.path "core::escape::EscapeIterInner")
                     [ Value.Integer IntegerKind.Usize 10 ]
-                    [],
+                    [ Ty.path "core::escape::AlwaysEscaped" ],
                   "unicode",
                   [],
                   []
@@ -430,7 +448,7 @@ Module char.
                   Ty.apply
                     (Ty.path "core::escape::EscapeIterInner")
                     [ Value.Integer IntegerKind.Usize 10 ]
-                    [],
+                    [ Ty.path "core::escape::AlwaysEscaped" ],
                   "next",
                   [],
                   []
@@ -480,7 +498,7 @@ Module char.
                   Ty.apply
                     (Ty.path "core::escape::EscapeIterInner")
                     [ Value.Integer IntegerKind.Usize 10 ]
-                    [],
+                    [ Ty.path "core::escape::AlwaysEscaped" ],
                   "len",
                   [],
                   []
@@ -530,7 +548,7 @@ Module char.
               Ty.apply
                 (Ty.path "core::escape::EscapeIterInner")
                 [ Value.Integer IntegerKind.Usize 10 ]
-                [],
+                [ Ty.path "core::escape::AlwaysEscaped" ],
               "len",
               [],
               []
@@ -570,7 +588,7 @@ Module char.
                   Ty.apply
                     (Ty.path "core::escape::EscapeIterInner")
                     [ Value.Integer IntegerKind.Usize 10 ]
-                    [],
+                    [ Ty.path "core::escape::AlwaysEscaped" ],
                   "next_back",
                   [],
                   []
@@ -621,7 +639,7 @@ Module char.
               Ty.apply
                 (Ty.path "core::escape::EscapeIterInner")
                 [ Value.Integer IntegerKind.Usize 10 ]
-                [],
+                [ Ty.path "core::escape::AlwaysEscaped" ],
               "advance_by",
               [],
               []
@@ -678,7 +696,7 @@ Module char.
               Ty.apply
                 (Ty.path "core::escape::EscapeIterInner")
                 [ Value.Integer IntegerKind.Usize 10 ]
-                [],
+                [ Ty.path "core::escape::AlwaysEscaped" ],
               "len",
               [],
               []
@@ -723,7 +741,7 @@ Module char.
     
     (*
         fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-            f.write_str(self.0.as_str())
+            fmt::Display::fmt(&self.0, f)
         }
     *)
     Definition fmt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -739,36 +757,33 @@ Module char.
               (Ty.path "core::result::Result")
               []
               [ Ty.tuple []; Ty.path "core::fmt::Error" ],
-            M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_str", [], [] |),
+            M.get_trait_method (|
+              "core::fmt::Display",
+              Ty.apply
+                (Ty.path "core::escape::EscapeIterInner")
+                [ Value.Integer IntegerKind.Usize 10 ]
+                [ Ty.path "core::escape::AlwaysEscaped" ],
+              [],
+              [],
+              "fmt",
+              [],
+              []
+            |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
               M.borrow (|
                 Pointer.Kind.Ref,
                 M.deref (|
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                    M.get_associated_function (|
-                      Ty.apply
-                        (Ty.path "core::escape::EscapeIterInner")
-                        [ Value.Integer IntegerKind.Usize 10 ]
-                        [],
-                      "as_str",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_tuple_field (|
-                          M.deref (| M.read (| self |) |),
-                          "core::char::EscapeUnicode",
-                          0
-                        |)
-                      |)
-                    ]
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_tuple_field (|
+                      M.deref (| M.read (| self |) |),
+                      "core::char::EscapeUnicode",
+                      0
+                    |)
                   |)
                 |)
-              |)
+              |);
+              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -793,7 +808,7 @@ Module char.
           Ty.apply
             (Ty.path "core::escape::EscapeIterInner")
             [ Value.Integer IntegerKind.Usize 10 ]
-            []
+            [ Ty.path "core::escape::AlwaysEscaped" ]
         ];
     } *)
   
@@ -816,13 +831,13 @@ Module char.
                 Ty.apply
                   (Ty.path "core::escape::EscapeIterInner")
                   [ Value.Integer IntegerKind.Usize 10 ]
-                  [],
+                  [ Ty.path "core::escape::AlwaysEscaped" ],
                 M.get_trait_method (|
                   "core::clone::Clone",
                   Ty.apply
                     (Ty.path "core::escape::EscapeIterInner")
                     [ Value.Integer IntegerKind.Usize 10 ]
-                    [],
+                    [ Ty.path "core::escape::AlwaysEscaped" ],
                   [],
                   [],
                   "clone",
@@ -899,7 +914,7 @@ Module char.
                           Ty.apply
                             (Ty.path "core::escape::EscapeIterInner")
                             [ Value.Integer IntegerKind.Usize 10 ]
-                            []
+                            [ Ty.path "core::escape::AlwaysEscaped" ]
                         ]
                     ])
                   (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
@@ -917,7 +932,7 @@ Module char.
                               Ty.apply
                                 (Ty.path "core::escape::EscapeIterInner")
                                 [ Value.Integer IntegerKind.Usize 10 ]
-                                []
+                                [ Ty.path "core::escape::AlwaysEscaped" ]
                             ],
                           M.borrow (|
                             Pointer.Kind.Ref,
@@ -952,7 +967,7 @@ Module char.
     
     (*
         const fn printable(c: ascii::Char) -> Self {
-            Self(escape::EscapeIterInner::ascii(c.to_u8()))
+            Self(EscapeIterInner::ascii(c.to_u8()))
         }
     *)
     Definition printable (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -969,12 +984,12 @@ Module char.
                 Ty.apply
                   (Ty.path "core::escape::EscapeIterInner")
                   [ Value.Integer IntegerKind.Usize 10 ]
-                  [],
+                  [ Ty.path "core::escape::AlwaysEscaped" ],
                 M.get_associated_function (|
                   Ty.apply
                     (Ty.path "core::escape::EscapeIterInner")
                     [ Value.Integer IntegerKind.Usize 10 ]
-                    [],
+                    [ Ty.path "core::escape::AlwaysEscaped" ],
                   "ascii",
                   [],
                   []
@@ -1003,7 +1018,7 @@ Module char.
     
     (*
         const fn backslash(c: ascii::Char) -> Self {
-            Self(escape::EscapeIterInner::backslash(c))
+            Self(EscapeIterInner::backslash(c))
         }
     *)
     Definition backslash (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -1020,12 +1035,12 @@ Module char.
                 Ty.apply
                   (Ty.path "core::escape::EscapeIterInner")
                   [ Value.Integer IntegerKind.Usize 10 ]
-                  [],
+                  [ Ty.path "core::escape::AlwaysEscaped" ],
                 M.get_associated_function (|
                   Ty.apply
                     (Ty.path "core::escape::EscapeIterInner")
                     [ Value.Integer IntegerKind.Usize 10 ]
-                    [],
+                    [ Ty.path "core::escape::AlwaysEscaped" ],
                   "backslash",
                   [],
                   []
@@ -1043,7 +1058,7 @@ Module char.
     
     (*
         const fn unicode(c: char) -> Self {
-            Self(escape::EscapeIterInner::unicode(c))
+            Self(EscapeIterInner::unicode(c))
         }
     *)
     Definition unicode (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -1060,12 +1075,12 @@ Module char.
                 Ty.apply
                   (Ty.path "core::escape::EscapeIterInner")
                   [ Value.Integer IntegerKind.Usize 10 ]
-                  [],
+                  [ Ty.path "core::escape::AlwaysEscaped" ],
                 M.get_associated_function (|
                   Ty.apply
                     (Ty.path "core::escape::EscapeIterInner")
                     [ Value.Integer IntegerKind.Usize 10 ]
-                    [],
+                    [ Ty.path "core::escape::AlwaysEscaped" ],
                   "unicode",
                   [],
                   []
@@ -1116,7 +1131,7 @@ Module char.
                   Ty.apply
                     (Ty.path "core::escape::EscapeIterInner")
                     [ Value.Integer IntegerKind.Usize 10 ]
-                    [],
+                    [ Ty.path "core::escape::AlwaysEscaped" ],
                   "next",
                   [],
                   []
@@ -1166,7 +1181,7 @@ Module char.
                   Ty.apply
                     (Ty.path "core::escape::EscapeIterInner")
                     [ Value.Integer IntegerKind.Usize 10 ]
-                    [],
+                    [ Ty.path "core::escape::AlwaysEscaped" ],
                   "len",
                   [],
                   []
@@ -1216,7 +1231,7 @@ Module char.
               Ty.apply
                 (Ty.path "core::escape::EscapeIterInner")
                 [ Value.Integer IntegerKind.Usize 10 ]
-                [],
+                [ Ty.path "core::escape::AlwaysEscaped" ],
               "len",
               [],
               []
@@ -1256,7 +1271,7 @@ Module char.
                   Ty.apply
                     (Ty.path "core::escape::EscapeIterInner")
                     [ Value.Integer IntegerKind.Usize 10 ]
-                    [],
+                    [ Ty.path "core::escape::AlwaysEscaped" ],
                   "next_back",
                   [],
                   []
@@ -1307,7 +1322,7 @@ Module char.
               Ty.apply
                 (Ty.path "core::escape::EscapeIterInner")
                 [ Value.Integer IntegerKind.Usize 10 ]
-                [],
+                [ Ty.path "core::escape::AlwaysEscaped" ],
               "advance_by",
               [],
               []
@@ -1364,7 +1379,7 @@ Module char.
               Ty.apply
                 (Ty.path "core::escape::EscapeIterInner")
                 [ Value.Integer IntegerKind.Usize 10 ]
-                [],
+                [ Ty.path "core::escape::AlwaysEscaped" ],
               "len",
               [],
               []
@@ -1409,7 +1424,7 @@ Module char.
     
     (*
         fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-            f.write_str(self.0.as_str())
+            fmt::Display::fmt(&self.0, f)
         }
     *)
     Definition fmt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -1425,36 +1440,33 @@ Module char.
               (Ty.path "core::result::Result")
               []
               [ Ty.tuple []; Ty.path "core::fmt::Error" ],
-            M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_str", [], [] |),
+            M.get_trait_method (|
+              "core::fmt::Display",
+              Ty.apply
+                (Ty.path "core::escape::EscapeIterInner")
+                [ Value.Integer IntegerKind.Usize 10 ]
+                [ Ty.path "core::escape::AlwaysEscaped" ],
+              [],
+              [],
+              "fmt",
+              [],
+              []
+            |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
               M.borrow (|
                 Pointer.Kind.Ref,
                 M.deref (|
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                    M.get_associated_function (|
-                      Ty.apply
-                        (Ty.path "core::escape::EscapeIterInner")
-                        [ Value.Integer IntegerKind.Usize 10 ]
-                        [],
-                      "as_str",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_tuple_field (|
-                          M.deref (| M.read (| self |) |),
-                          "core::char::EscapeDefault",
-                          0
-                        |)
-                      |)
-                    ]
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_tuple_field (|
+                      M.deref (| M.read (| self |) |),
+                      "core::char::EscapeDefault",
+                      0
+                    |)
                   |)
                 |)
-              |)
+              |);
+              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1474,7 +1486,13 @@ Module char.
       name := "EscapeDebug";
       const_params := [];
       ty_params := [];
-      fields := [ Ty.path "core::char::EscapeDebugInner" ];
+      fields :=
+        [
+          Ty.apply
+            (Ty.path "core::escape::EscapeIterInner")
+            [ Value.Integer IntegerKind.Usize 10 ]
+            [ Ty.path "core::escape::MaybeEscaped" ]
+        ];
     } *)
   
   Module Impl_core_clone_Clone_for_core_char_EscapeDebug.
@@ -1493,10 +1511,16 @@ Module char.
             []
             [
               M.call_closure (|
-                Ty.path "core::char::EscapeDebugInner",
+                Ty.apply
+                  (Ty.path "core::escape::EscapeIterInner")
+                  [ Value.Integer IntegerKind.Usize 10 ]
+                  [ Ty.path "core::escape::MaybeEscaped" ],
                 M.get_trait_method (|
                   "core::clone::Clone",
-                  Ty.path "core::char::EscapeDebugInner",
+                  Ty.apply
+                    (Ty.path "core::escape::EscapeIterInner")
+                    [ Value.Integer IntegerKind.Usize 10 ]
+                    [ Ty.path "core::escape::MaybeEscaped" ],
                   [],
                   [],
                   "clone",
@@ -1565,7 +1589,17 @@ Module char.
                   (Ty.apply
                     (Ty.path "&")
                     []
-                    [ Ty.apply (Ty.path "&") [] [ Ty.path "core::char::EscapeDebugInner" ] ])
+                    [
+                      Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "core::escape::EscapeIterInner")
+                            [ Value.Integer IntegerKind.Usize 10 ]
+                            [ Ty.path "core::escape::MaybeEscaped" ]
+                        ]
+                    ])
                   (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
                 [
                   M.borrow (|
@@ -1574,7 +1608,15 @@ Module char.
                       M.borrow (|
                         Pointer.Kind.Ref,
                         M.alloc (|
-                          Ty.apply (Ty.path "&") [] [ Ty.path "core::char::EscapeDebugInner" ],
+                          Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "core::escape::EscapeIterInner")
+                                [ Value.Integer IntegerKind.Usize 10 ]
+                                [ Ty.path "core::escape::MaybeEscaped" ]
+                            ],
                           M.borrow (|
                             Pointer.Kind.Ref,
                             M.SubPointer.get_struct_tuple_field (|
@@ -1603,300 +1645,12 @@ Module char.
         (* Instance *) [ ("fmt", InstanceField.Method fmt) ].
   End Impl_core_fmt_Debug_for_core_char_EscapeDebug.
   
-  (*
-  Enum EscapeDebugInner
-  {
-    const_params := [];
-    ty_params := [];
-    variants :=
-      [
-        {
-          name := "Bytes";
-          item :=
-            StructTuple
-              [
-                Ty.apply
-                  (Ty.path "core::escape::EscapeIterInner")
-                  [ Value.Integer IntegerKind.Usize 10 ]
-                  []
-              ];
-        };
-        {
-          name := "Char";
-          item := StructTuple [ Ty.path "char" ];
-        }
-      ];
-  }
-  *)
-  
-  Axiom IsDiscriminant_EscapeDebugInner_Bytes :
-    M.IsDiscriminant "core::char::EscapeDebugInner::Bytes" 0.
-  Axiom IsDiscriminant_EscapeDebugInner_Char :
-    M.IsDiscriminant "core::char::EscapeDebugInner::Char" 1.
-  
-  Module Impl_core_clone_Clone_for_core_char_EscapeDebugInner.
-    Definition Self : Ty.t := Ty.path "core::char::EscapeDebugInner".
-    
-    (* Clone *)
-    Definition clone (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      match ε, τ, α with
-      | [], [], [ self ] =>
-        ltac:(M.monadic
-          (let self :=
-            M.alloc (|
-              Ty.apply (Ty.path "&") [] [ Ty.path "core::char::EscapeDebugInner" ],
-              self
-            |) in
-          M.match_operator (|
-            Ty.path "core::char::EscapeDebugInner",
-            self,
-            [
-              fun γ =>
-                ltac:(M.monadic
-                  (let γ := M.deref (| M.read (| γ |) |) in
-                  let γ1_0 :=
-                    M.SubPointer.get_struct_tuple_field (|
-                      γ,
-                      "core::char::EscapeDebugInner::Bytes",
-                      0
-                    |) in
-                  let __self_0 :=
-                    M.alloc (|
-                      Ty.apply
-                        (Ty.path "&")
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "core::escape::EscapeIterInner")
-                            [ Value.Integer IntegerKind.Usize 10 ]
-                            []
-                        ],
-                      γ1_0
-                    |) in
-                  Value.StructTuple
-                    "core::char::EscapeDebugInner::Bytes"
-                    []
-                    []
-                    [
-                      M.call_closure (|
-                        Ty.apply
-                          (Ty.path "core::escape::EscapeIterInner")
-                          [ Value.Integer IntegerKind.Usize 10 ]
-                          [],
-                        M.get_trait_method (|
-                          "core::clone::Clone",
-                          Ty.apply
-                            (Ty.path "core::escape::EscapeIterInner")
-                            [ Value.Integer IntegerKind.Usize 10 ]
-                            [],
-                          [],
-                          [],
-                          "clone",
-                          [],
-                          []
-                        |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
-                      |)
-                    ]));
-              fun γ =>
-                ltac:(M.monadic
-                  (let γ := M.deref (| M.read (| γ |) |) in
-                  let γ1_0 :=
-                    M.SubPointer.get_struct_tuple_field (|
-                      γ,
-                      "core::char::EscapeDebugInner::Char",
-                      0
-                    |) in
-                  let __self_0 :=
-                    M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "char" ], γ1_0 |) in
-                  Value.StructTuple
-                    "core::char::EscapeDebugInner::Char"
-                    []
-                    []
-                    [
-                      M.call_closure (|
-                        Ty.path "char",
-                        M.get_trait_method (|
-                          "core::clone::Clone",
-                          Ty.path "char",
-                          [],
-                          [],
-                          "clone",
-                          [],
-                          []
-                        |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
-                      |)
-                    ]))
-            ]
-          |)))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Axiom Implements :
-      M.IsTraitInstance
-        "core::clone::Clone"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        Self
-        (* Instance *) [ ("clone", InstanceField.Method clone) ].
-  End Impl_core_clone_Clone_for_core_char_EscapeDebugInner.
-  
-  Module Impl_core_fmt_Debug_for_core_char_EscapeDebugInner.
-    Definition Self : Ty.t := Ty.path "core::char::EscapeDebugInner".
-    
-    (* Debug *)
-    Definition fmt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      match ε, τ, α with
-      | [], [], [ self; f ] =>
-        ltac:(M.monadic
-          (let self :=
-            M.alloc (|
-              Ty.apply (Ty.path "&") [] [ Ty.path "core::char::EscapeDebugInner" ],
-              self
-            |) in
-          let f :=
-            M.alloc (| Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ], f |) in
-          M.match_operator (|
-            Ty.apply
-              (Ty.path "core::result::Result")
-              []
-              [ Ty.tuple []; Ty.path "core::fmt::Error" ],
-            self,
-            [
-              fun γ =>
-                ltac:(M.monadic
-                  (let γ := M.deref (| M.read (| γ |) |) in
-                  let γ1_0 :=
-                    M.SubPointer.get_struct_tuple_field (|
-                      γ,
-                      "core::char::EscapeDebugInner::Bytes",
-                      0
-                    |) in
-                  let __self_0 :=
-                    M.alloc (|
-                      Ty.apply
-                        (Ty.path "&")
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "core::escape::EscapeIterInner")
-                            [ Value.Integer IntegerKind.Usize 10 ]
-                            []
-                        ],
-                      γ1_0
-                    |) in
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "core::result::Result")
-                      []
-                      [ Ty.tuple []; Ty.path "core::fmt::Error" ],
-                    M.get_associated_function (|
-                      Ty.path "core::fmt::Formatter",
-                      "debug_tuple_field1_finish",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Bytes" |) |) |);
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "&")
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "core::escape::EscapeIterInner")
-                                    [ Value.Integer IntegerKind.Usize 10 ]
-                                    []
-                                ]
-                            ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
-                          |)
-                        ]
-                      |)
-                    ]
-                  |)));
-              fun γ =>
-                ltac:(M.monadic
-                  (let γ := M.deref (| M.read (| γ |) |) in
-                  let γ1_0 :=
-                    M.SubPointer.get_struct_tuple_field (|
-                      γ,
-                      "core::char::EscapeDebugInner::Char",
-                      0
-                    |) in
-                  let __self_0 :=
-                    M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "char" ], γ1_0 |) in
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "core::result::Result")
-                      []
-                      [ Ty.tuple []; Ty.path "core::fmt::Error" ],
-                    M.get_associated_function (|
-                      Ty.path "core::fmt::Formatter",
-                      "debug_tuple_field1_finish",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Char" |) |) |);
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "char" ] ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
-                          |)
-                        ]
-                      |)
-                    ]
-                  |)))
-            ]
-          |)))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Axiom Implements :
-      M.IsTraitInstance
-        "core::fmt::Debug"
-        (* Trait polymorphic consts *) []
-        (* Trait polymorphic types *) []
-        Self
-        (* Instance *) [ ("fmt", InstanceField.Method fmt) ].
-  End Impl_core_fmt_Debug_for_core_char_EscapeDebugInner.
-  
   Module Impl_core_char_EscapeDebug.
     Definition Self : Ty.t := Ty.path "core::char::EscapeDebug".
     
     (*
         const fn printable(chr: char) -> Self {
-            Self(EscapeDebugInner::Char(chr))
+            Self(EscapeIterInner::printable(chr))
         }
     *)
     Definition printable (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -1908,7 +1662,24 @@ Module char.
             "core::char::EscapeDebug"
             []
             []
-            [ Value.StructTuple "core::char::EscapeDebugInner::Char" [] [] [ M.read (| chr |) ] ]))
+            [
+              M.call_closure (|
+                Ty.apply
+                  (Ty.path "core::escape::EscapeIterInner")
+                  [ Value.Integer IntegerKind.Usize 10 ]
+                  [ Ty.path "core::escape::MaybeEscaped" ],
+                M.get_associated_function (|
+                  Ty.apply
+                    (Ty.path "core::escape::EscapeIterInner")
+                    [ Value.Integer IntegerKind.Usize 10 ]
+                    [ Ty.path "core::escape::MaybeEscaped" ],
+                  "printable",
+                  [],
+                  []
+                |),
+                [ M.read (| chr |) ]
+              |)
+            ]))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -1919,7 +1690,7 @@ Module char.
     
     (*
         const fn backslash(c: ascii::Char) -> Self {
-            Self(EscapeDebugInner::Bytes(escape::EscapeIterInner::backslash(c)))
+            Self(EscapeIterInner::backslash(c))
         }
     *)
     Definition backslash (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -1932,28 +1703,22 @@ Module char.
             []
             []
             [
-              Value.StructTuple
-                "core::char::EscapeDebugInner::Bytes"
-                []
-                []
-                [
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "core::escape::EscapeIterInner")
-                      [ Value.Integer IntegerKind.Usize 10 ]
-                      [],
-                    M.get_associated_function (|
-                      Ty.apply
-                        (Ty.path "core::escape::EscapeIterInner")
-                        [ Value.Integer IntegerKind.Usize 10 ]
-                        [],
-                      "backslash",
-                      [],
-                      []
-                    |),
-                    [ M.read (| c |) ]
-                  |)
-                ]
+              M.call_closure (|
+                Ty.apply
+                  (Ty.path "core::escape::EscapeIterInner")
+                  [ Value.Integer IntegerKind.Usize 10 ]
+                  [ Ty.path "core::escape::MaybeEscaped" ],
+                M.get_associated_function (|
+                  Ty.apply
+                    (Ty.path "core::escape::EscapeIterInner")
+                    [ Value.Integer IntegerKind.Usize 10 ]
+                    [ Ty.path "core::escape::MaybeEscaped" ],
+                  "backslash",
+                  [],
+                  []
+                |),
+                [ M.read (| c |) ]
+              |)
             ]))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -1965,7 +1730,7 @@ Module char.
     
     (*
         const fn unicode(c: char) -> Self {
-            Self(EscapeDebugInner::Bytes(escape::EscapeIterInner::unicode(c)))
+            Self(EscapeIterInner::unicode(c))
         }
     *)
     Definition unicode (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -1978,28 +1743,22 @@ Module char.
             []
             []
             [
-              Value.StructTuple
-                "core::char::EscapeDebugInner::Bytes"
-                []
-                []
-                [
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "core::escape::EscapeIterInner")
-                      [ Value.Integer IntegerKind.Usize 10 ]
-                      [],
-                    M.get_associated_function (|
-                      Ty.apply
-                        (Ty.path "core::escape::EscapeIterInner")
-                        [ Value.Integer IntegerKind.Usize 10 ]
-                        [],
-                      "unicode",
-                      [],
-                      []
-                    |),
-                    [ M.read (| c |) ]
-                  |)
-                ]
+              M.call_closure (|
+                Ty.apply
+                  (Ty.path "core::escape::EscapeIterInner")
+                  [ Value.Integer IntegerKind.Usize 10 ]
+                  [ Ty.path "core::escape::MaybeEscaped" ],
+                M.get_associated_function (|
+                  Ty.apply
+                    (Ty.path "core::escape::EscapeIterInner")
+                    [ Value.Integer IntegerKind.Usize 10 ]
+                    [ Ty.path "core::escape::MaybeEscaped" ],
+                  "unicode",
+                  [],
+                  []
+                |),
+                [ M.read (| c |) ]
+              |)
             ]))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -2007,60 +1766,6 @@ Module char.
     Global Instance AssociatedFunction_unicode : M.IsAssociatedFunction.C Self "unicode" unicode.
     Admitted.
     Global Typeclasses Opaque unicode.
-    
-    (*
-        fn clear(&mut self) {
-            self.0 = EscapeDebugInner::Bytes(escape::EscapeIterInner::empty());
-        }
-    *)
-    Definition clear (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      match ε, τ, α with
-      | [], [], [ self ] =>
-        ltac:(M.monadic
-          (let self :=
-            M.alloc (|
-              Ty.apply (Ty.path "&mut") [] [ Ty.path "core::char::EscapeDebug" ],
-              self
-            |) in
-          M.read (|
-            let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.SubPointer.get_struct_tuple_field (|
-                  M.deref (| M.read (| self |) |),
-                  "core::char::EscapeDebug",
-                  0
-                |),
-                Value.StructTuple
-                  "core::char::EscapeDebugInner::Bytes"
-                  []
-                  []
-                  [
-                    M.call_closure (|
-                      Ty.apply
-                        (Ty.path "core::escape::EscapeIterInner")
-                        [ Value.Integer IntegerKind.Usize 10 ]
-                        [],
-                      M.get_associated_function (|
-                        Ty.apply
-                          (Ty.path "core::escape::EscapeIterInner")
-                          [ Value.Integer IntegerKind.Usize 10 ]
-                          [],
-                        "empty",
-                        [],
-                        []
-                      |),
-                      []
-                    |)
-                  ]
-              |) in
-            M.alloc (| Ty.tuple [], Value.Tuple [] |)
-          |)))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Global Instance AssociatedFunction_clear : M.IsAssociatedFunction.C Self "clear" clear.
-    Admitted.
-    Global Typeclasses Opaque clear.
   End Impl_core_char_EscapeDebug.
   
   Module Impl_core_iter_traits_iterator_Iterator_for_core_char_EscapeDebug.
@@ -2071,13 +1776,7 @@ Module char.
     
     (*
         fn next(&mut self) -> Option<char> {
-            match self.0 {
-                EscapeDebugInner::Bytes(ref mut bytes) => bytes.next().map(char::from),
-                EscapeDebugInner::Char(chr) => {
-                    self.clear();
-                    Some(chr)
-                }
-            }
+            self.0.next()
         }
     *)
     Definition next (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -2089,98 +1788,26 @@ Module char.
               Ty.apply (Ty.path "&mut") [] [ Ty.path "core::char::EscapeDebug" ],
               self
             |) in
-          M.match_operator (|
+          M.call_closure (|
             Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "char" ],
-            M.SubPointer.get_struct_tuple_field (|
-              M.deref (| M.read (| self |) |),
-              "core::char::EscapeDebug",
-              0
+            M.get_associated_function (|
+              Ty.apply
+                (Ty.path "core::escape::EscapeIterInner")
+                [ Value.Integer IntegerKind.Usize 10 ]
+                [ Ty.path "core::escape::MaybeEscaped" ],
+              "next",
+              [],
+              []
             |),
             [
-              fun γ =>
-                ltac:(M.monadic
-                  (let γ0_0 :=
-                    M.SubPointer.get_struct_tuple_field (|
-                      γ,
-                      "core::char::EscapeDebugInner::Bytes",
-                      0
-                    |) in
-                  let bytes :=
-                    M.alloc (|
-                      Ty.apply
-                        (Ty.path "&mut")
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "core::escape::EscapeIterInner")
-                            [ Value.Integer IntegerKind.Usize 10 ]
-                            []
-                        ],
-                      γ0_0
-                    |) in
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "char" ],
-                    M.get_associated_function (|
-                      Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u8" ],
-                      "map",
-                      [],
-                      [ Ty.path "char"; Ty.function [ Ty.path "u8" ] (Ty.path "char") ]
-                    |),
-                    [
-                      M.call_closure (|
-                        Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u8" ],
-                        M.get_associated_function (|
-                          Ty.apply
-                            (Ty.path "core::escape::EscapeIterInner")
-                            [ Value.Integer IntegerKind.Usize 10 ]
-                            [],
-                          "next",
-                          [],
-                          []
-                        |),
-                        [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| bytes |) |) |) ]
-                      |);
-                      M.get_trait_method (|
-                        "core::convert::From",
-                        Ty.path "char",
-                        [],
-                        [ Ty.path "u8" ],
-                        "from",
-                        [],
-                        []
-                      |)
-                    ]
-                  |)));
-              fun γ =>
-                ltac:(M.monadic
-                  (let γ0_0 :=
-                    M.SubPointer.get_struct_tuple_field (|
-                      γ,
-                      "core::char::EscapeDebugInner::Char",
-                      0
-                    |) in
-                  let chr := M.copy (| Ty.path "char", γ0_0 |) in
-                  M.read (|
-                    let~ _ : Ty.tuple [] :=
-                      M.call_closure (|
-                        Ty.tuple [],
-                        M.get_associated_function (|
-                          Ty.path "core::char::EscapeDebug",
-                          "clear",
-                          [],
-                          []
-                        |),
-                        [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |) ]
-                      |) in
-                    M.alloc (|
-                      Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "char" ],
-                      Value.StructTuple
-                        "core::option::Option::Some"
-                        []
-                        [ Ty.path "char" ]
-                        [ M.read (| chr |) ]
-                    |)
-                  |)))
+              M.borrow (|
+                Pointer.Kind.MutRef,
+                M.SubPointer.get_struct_tuple_field (|
+                  M.deref (| M.read (| self |) |),
+                  "core::char::EscapeDebug",
+                  0
+                |)
+              |)
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2277,10 +1904,7 @@ Module char.
     
     (*
         fn len(&self) -> usize {
-            match &self.0 {
-                EscapeDebugInner::Bytes(bytes) => bytes.len(),
-                EscapeDebugInner::Char(_) => 1,
-            }
+            self.0.len()
         }
     *)
     Definition len (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -2289,10 +1913,18 @@ Module char.
         ltac:(M.monadic
           (let self :=
             M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "core::char::EscapeDebug" ], self |) in
-          M.match_operator (|
+          M.call_closure (|
             Ty.path "usize",
-            M.alloc (|
-              Ty.apply (Ty.path "&") [] [ Ty.path "core::char::EscapeDebugInner" ],
+            M.get_associated_function (|
+              Ty.apply
+                (Ty.path "core::escape::EscapeIterInner")
+                [ Value.Integer IntegerKind.Usize 10 ]
+                [ Ty.path "core::escape::MaybeEscaped" ],
+              "len",
+              [],
+              []
+            |),
+            [
               M.borrow (|
                 Pointer.Kind.Ref,
                 M.SubPointer.get_struct_tuple_field (|
@@ -2301,53 +1933,6 @@ Module char.
                   0
                 |)
               |)
-            |),
-            [
-              fun γ =>
-                ltac:(M.monadic
-                  (let γ := M.deref (| M.read (| γ |) |) in
-                  let γ1_0 :=
-                    M.SubPointer.get_struct_tuple_field (|
-                      γ,
-                      "core::char::EscapeDebugInner::Bytes",
-                      0
-                    |) in
-                  let bytes :=
-                    M.alloc (|
-                      Ty.apply
-                        (Ty.path "&")
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "core::escape::EscapeIterInner")
-                            [ Value.Integer IntegerKind.Usize 10 ]
-                            []
-                        ],
-                      γ1_0
-                    |) in
-                  M.call_closure (|
-                    Ty.path "usize",
-                    M.get_associated_function (|
-                      Ty.apply
-                        (Ty.path "core::escape::EscapeIterInner")
-                        [ Value.Integer IntegerKind.Usize 10 ]
-                        [],
-                      "len",
-                      [],
-                      []
-                    |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| bytes |) |) |) ]
-                  |)));
-              fun γ =>
-                ltac:(M.monadic
-                  (let γ := M.deref (| M.read (| γ |) |) in
-                  let γ1_0 :=
-                    M.SubPointer.get_struct_tuple_field (|
-                      γ,
-                      "core::char::EscapeDebugInner::Char",
-                      0
-                    |) in
-                  Value.Integer IntegerKind.Usize 1))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2379,10 +1964,7 @@ Module char.
     
     (*
         fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-            match &self.0 {
-                EscapeDebugInner::Bytes(bytes) => f.write_str(bytes.as_str()),
-                EscapeDebugInner::Char(chr) => f.write_char( *chr),
-            }
+            fmt::Display::fmt(&self.0, f)
         }
     *)
     Definition fmt (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -2393,107 +1975,38 @@ Module char.
             M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "core::char::EscapeDebug" ], self |) in
           let f :=
             M.alloc (| Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ], f |) in
-          M.match_operator (|
+          M.call_closure (|
             Ty.apply
               (Ty.path "core::result::Result")
               []
               [ Ty.tuple []; Ty.path "core::fmt::Error" ],
-            M.alloc (|
-              Ty.apply (Ty.path "&") [] [ Ty.path "core::char::EscapeDebugInner" ],
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.SubPointer.get_struct_tuple_field (|
-                  M.deref (| M.read (| self |) |),
-                  "core::char::EscapeDebug",
-                  0
-                |)
-              |)
+            M.get_trait_method (|
+              "core::fmt::Display",
+              Ty.apply
+                (Ty.path "core::escape::EscapeIterInner")
+                [ Value.Integer IntegerKind.Usize 10 ]
+                [ Ty.path "core::escape::MaybeEscaped" ],
+              [],
+              [],
+              "fmt",
+              [],
+              []
             |),
             [
-              fun γ =>
-                ltac:(M.monadic
-                  (let γ := M.deref (| M.read (| γ |) |) in
-                  let γ1_0 :=
+              M.borrow (|
+                Pointer.Kind.Ref,
+                M.deref (|
+                  M.borrow (|
+                    Pointer.Kind.Ref,
                     M.SubPointer.get_struct_tuple_field (|
-                      γ,
-                      "core::char::EscapeDebugInner::Bytes",
+                      M.deref (| M.read (| self |) |),
+                      "core::char::EscapeDebug",
                       0
-                    |) in
-                  let bytes :=
-                    M.alloc (|
-                      Ty.apply
-                        (Ty.path "&")
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "core::escape::EscapeIterInner")
-                            [ Value.Integer IntegerKind.Usize 10 ]
-                            []
-                        ],
-                      γ1_0
-                    |) in
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "core::result::Result")
-                      []
-                      [ Ty.tuple []; Ty.path "core::fmt::Error" ],
-                    M.get_associated_function (|
-                      Ty.path "core::fmt::Formatter",
-                      "write_str",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.call_closure (|
-                            Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                            M.get_associated_function (|
-                              Ty.apply
-                                (Ty.path "core::escape::EscapeIterInner")
-                                [ Value.Integer IntegerKind.Usize 10 ]
-                                [],
-                              "as_str",
-                              [],
-                              []
-                            |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| bytes |) |) |) ]
-                          |)
-                        |)
-                      |)
-                    ]
-                  |)));
-              fun γ =>
-                ltac:(M.monadic
-                  (let γ := M.deref (| M.read (| γ |) |) in
-                  let γ1_0 :=
-                    M.SubPointer.get_struct_tuple_field (|
-                      γ,
-                      "core::char::EscapeDebugInner::Char",
-                      0
-                    |) in
-                  let chr := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "char" ], γ1_0 |) in
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "core::result::Result")
-                      []
-                      [ Ty.tuple []; Ty.path "core::fmt::Error" ],
-                    M.get_trait_method (|
-                      "core::fmt::Write",
-                      Ty.path "core::fmt::Formatter",
-                      [],
-                      [],
-                      "write_char",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.read (| M.deref (| M.read (| chr |) |) |)
-                    ]
-                  |)))
+                    |)
+                  |)
+                |)
+              |);
+              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -4256,23 +3769,22 @@ Module char.
                   fun γ =>
                     ltac:(M.monadic
                       (let γ :=
-                        M.use
-                          (M.alloc (|
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
                             Ty.path "bool",
-                            M.call_closure (|
-                              Ty.path "bool",
-                              BinOp.eq,
-                              [
-                                M.read (|
-                                  M.SubPointer.get_array_field (|
-                                    chars,
-                                    Value.Integer IntegerKind.Usize 2
-                                  |)
-                                |);
-                                Value.UnicodeChar 0
-                              ]
-                            |)
-                          |)) in
+                            BinOp.eq,
+                            [
+                              M.read (|
+                                M.SubPointer.get_array_field (|
+                                  chars,
+                                  Value.Integer IntegerKind.Usize 2
+                                |)
+                              |);
+                              Value.UnicodeChar 0
+                            ]
+                          |)
+                        |) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       M.read (|
                         let~ _ : Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "char" ] :=
@@ -4301,23 +3813,22 @@ Module char.
                               fun γ =>
                                 ltac:(M.monadic
                                   (let γ :=
-                                    M.use
-                                      (M.alloc (|
+                                    M.alloc (|
+                                      Ty.path "bool",
+                                      M.call_closure (|
                                         Ty.path "bool",
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          BinOp.eq,
-                                          [
-                                            M.read (|
-                                              M.SubPointer.get_array_field (|
-                                                chars,
-                                                Value.Integer IntegerKind.Usize 1
-                                              |)
-                                            |);
-                                            Value.UnicodeChar 0
-                                          ]
-                                        |)
-                                      |)) in
+                                        BinOp.eq,
+                                        [
+                                          M.read (|
+                                            M.SubPointer.get_array_field (|
+                                              chars,
+                                              Value.Integer IntegerKind.Usize 1
+                                            |)
+                                          |);
+                                          Value.UnicodeChar 0
+                                        ]
+                                      |)
+                                    |) in
                                   let _ :=
                                     is_constant_or_break_match (|
                                       M.read (| γ |),
@@ -5421,6 +4932,18 @@ Module char.
         Self
         (* Instance *) [].
   End Impl_core_marker_Copy_for_core_char_TryFromCharError.
+  
+  Module Impl_core_clone_TrivialClone_for_core_char_TryFromCharError.
+    Definition Self : Ty.t := Ty.path "core::char::TryFromCharError".
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "core::clone::TrivialClone"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        Self
+        (* Instance *) [].
+  End Impl_core_clone_TrivialClone_for_core_char_TryFromCharError.
   
   Module Impl_core_clone_Clone_for_core_char_TryFromCharError.
     Definition Self : Ty.t := Ty.path "core::char::TryFromCharError".

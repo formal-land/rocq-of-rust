@@ -48,6 +48,18 @@ Module Impl_core_default_Default_for_constructors_return_value_AccountId.
       (* Instance *) [ ("default", InstanceField.Method default) ].
 End Impl_core_default_Default_for_constructors_return_value_AccountId.
 
+Module Impl_core_clone_TrivialClone_for_constructors_return_value_AccountId.
+  Definition Self : Ty.t := Ty.path "constructors_return_value::AccountId".
+  
+  Axiom Implements :
+    M.IsTraitInstance
+      "core::clone::TrivialClone"
+      (* Trait polymorphic consts *) []
+      (* Trait polymorphic types *) []
+      Self
+      (* Instance *) [].
+End Impl_core_clone_TrivialClone_for_constructors_return_value_AccountId.
+
 Module Impl_core_clone_Clone_for_constructors_return_value_AccountId.
   Definition Self : Ty.t := Ty.path "constructors_return_value::AccountId".
   
@@ -318,7 +330,7 @@ Module Impl_constructors_return_value_ConstructorsReturnValue.
           [
             fun γ =>
               ltac:(M.monadic
-                (let γ := M.use succeed in
+                (let γ := succeed in
                 let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                 Value.StructTuple
                   "core::result::Result::Ok"
@@ -510,7 +522,7 @@ Module Impl_constructors_return_value_ConstructorsReturnValue.
               [
                 fun γ =>
                   ltac:(M.monadic
-                    (let γ := M.use init_value in
+                    (let γ := init_value in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     Value.StructTuple
                       "core::result::Result::Ok"

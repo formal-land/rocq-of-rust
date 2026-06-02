@@ -1071,7 +1071,7 @@ Module utilities.
           [
             fun γ =>
               ltac:(M.monadic
-                (let γ := M.use value in
+                (let γ := value in
                 let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                 M.read (|
                   get_constant (|

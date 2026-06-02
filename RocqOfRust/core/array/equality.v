@@ -112,10 +112,9 @@ Module array.
       
       (*
           fn eq(&self, other: &[U]) -> bool {
-              let b: Result<&[U; N], _> = other.try_into();
-              match b {
-                  Ok(b) => *self == *b,
-                  Err(_) => false,
+              match other.as_array::<N>() {
+                  Some(b) => *self == *b,
+                  None => false,
               }
           }
       *)
@@ -140,91 +139,71 @@ Module array.
                 Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ U ] ],
                 other
               |) in
-            M.read (|
-              let~ b :
-                  Ty.apply
-                    (Ty.path "core::result::Result")
-                    []
-                    [
-                      Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "array") [ N ] [ U ] ];
-                      Ty.path "core::array::TryFromSliceError"
-                    ] :=
+            M.match_operator (|
+              Ty.path "bool",
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "core::option::Option")
+                  []
+                  [ Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "array") [ N ] [ U ] ] ],
                 M.call_closure (|
                   Ty.apply
-                    (Ty.path "core::result::Result")
+                    (Ty.path "core::option::Option")
                     []
-                    [
-                      Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "array") [ N ] [ U ] ];
-                      Ty.path "core::array::TryFromSliceError"
-                    ],
-                  M.get_trait_method (|
-                    "core::convert::TryInto",
-                    Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ U ] ],
-                    [],
                     [ Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "array") [ N ] [ U ] ] ],
-                    "try_into",
-                    [],
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "slice") [] [ U ],
+                    "as_array",
+                    [ N ],
                     []
                   |),
                   [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
-                |) in
-              M.alloc (|
-                Ty.path "bool",
-                M.match_operator (|
-                  Ty.path "bool",
-                  b,
-                  [
-                    fun γ =>
-                      ltac:(M.monadic
-                        (let γ0_0 :=
-                          M.SubPointer.get_struct_tuple_field (|
-                            γ,
-                            "core::result::Result::Ok",
-                            0
-                          |) in
-                        let b :=
-                          M.copy (|
-                            Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "array") [ N ] [ U ] ],
-                            γ0_0
-                          |) in
-                        M.call_closure (|
-                          Ty.path "bool",
-                          M.get_trait_method (|
-                            "core::cmp::PartialEq",
-                            Ty.apply (Ty.path "array") [ N ] [ T ],
-                            [],
-                            [ Ty.apply (Ty.path "array") [ N ] [ U ] ],
-                            "eq",
-                            [],
-                            []
-                          |),
-                          [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| b |) |) |)
-                          ]
-                        |)));
-                    fun γ =>
-                      ltac:(M.monadic
-                        (let γ0_0 :=
-                          M.SubPointer.get_struct_tuple_field (|
-                            γ,
-                            "core::result::Result::Err",
-                            0
-                          |) in
-                        Value.Bool false))
-                  ]
                 |)
-              |)
+              |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 :=
+                      M.SubPointer.get_struct_tuple_field (|
+                        γ,
+                        "core::option::Option::Some",
+                        0
+                      |) in
+                    let b :=
+                      M.copy (|
+                        Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "array") [ N ] [ U ] ],
+                        γ0_0
+                      |) in
+                    M.call_closure (|
+                      Ty.path "bool",
+                      M.get_trait_method (|
+                        "core::cmp::PartialEq",
+                        Ty.apply (Ty.path "array") [ N ] [ T ],
+                        [],
+                        [ Ty.apply (Ty.path "array") [ N ] [ U ] ],
+                        "eq",
+                        [],
+                        []
+                      |),
+                      [
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| b |) |) |)
+                      ]
+                    |)));
+                fun γ =>
+                  ltac:(M.monadic
+                    (let _ := M.is_struct_tuple (| γ, "core::option::Option::None" |) in
+                    Value.Bool false))
+              ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
       (*
           fn ne(&self, other: &[U]) -> bool {
-              let b: Result<&[U; N], _> = other.try_into();
-              match b {
-                  Ok(b) => *self != *b,
-                  Err(_) => true,
+              match other.as_array::<N>() {
+                  Some(b) => *self != *b,
+                  None => true,
               }
           }
       *)
@@ -249,81 +228,62 @@ Module array.
                 Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ U ] ],
                 other
               |) in
-            M.read (|
-              let~ b :
-                  Ty.apply
-                    (Ty.path "core::result::Result")
-                    []
-                    [
-                      Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "array") [ N ] [ U ] ];
-                      Ty.path "core::array::TryFromSliceError"
-                    ] :=
+            M.match_operator (|
+              Ty.path "bool",
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "core::option::Option")
+                  []
+                  [ Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "array") [ N ] [ U ] ] ],
                 M.call_closure (|
                   Ty.apply
-                    (Ty.path "core::result::Result")
+                    (Ty.path "core::option::Option")
                     []
-                    [
-                      Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "array") [ N ] [ U ] ];
-                      Ty.path "core::array::TryFromSliceError"
-                    ],
-                  M.get_trait_method (|
-                    "core::convert::TryInto",
-                    Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ U ] ],
-                    [],
                     [ Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "array") [ N ] [ U ] ] ],
-                    "try_into",
-                    [],
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "slice") [] [ U ],
+                    "as_array",
+                    [ N ],
                     []
                   |),
                   [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
-                |) in
-              M.alloc (|
-                Ty.path "bool",
-                M.match_operator (|
-                  Ty.path "bool",
-                  b,
-                  [
-                    fun γ =>
-                      ltac:(M.monadic
-                        (let γ0_0 :=
-                          M.SubPointer.get_struct_tuple_field (|
-                            γ,
-                            "core::result::Result::Ok",
-                            0
-                          |) in
-                        let b :=
-                          M.copy (|
-                            Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "array") [ N ] [ U ] ],
-                            γ0_0
-                          |) in
-                        M.call_closure (|
-                          Ty.path "bool",
-                          M.get_trait_method (|
-                            "core::cmp::PartialEq",
-                            Ty.apply (Ty.path "array") [ N ] [ T ],
-                            [],
-                            [ Ty.apply (Ty.path "array") [ N ] [ U ] ],
-                            "ne",
-                            [],
-                            []
-                          |),
-                          [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| b |) |) |)
-                          ]
-                        |)));
-                    fun γ =>
-                      ltac:(M.monadic
-                        (let γ0_0 :=
-                          M.SubPointer.get_struct_tuple_field (|
-                            γ,
-                            "core::result::Result::Err",
-                            0
-                          |) in
-                        Value.Bool true))
-                  ]
                 |)
-              |)
+              |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 :=
+                      M.SubPointer.get_struct_tuple_field (|
+                        γ,
+                        "core::option::Option::Some",
+                        0
+                      |) in
+                    let b :=
+                      M.copy (|
+                        Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "array") [ N ] [ U ] ],
+                        γ0_0
+                      |) in
+                    M.call_closure (|
+                      Ty.path "bool",
+                      M.get_trait_method (|
+                        "core::cmp::PartialEq",
+                        Ty.apply (Ty.path "array") [ N ] [ T ],
+                        [],
+                        [ Ty.apply (Ty.path "array") [ N ] [ U ] ],
+                        "ne",
+                        [],
+                        []
+                      |),
+                      [
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| b |) |) |)
+                      ]
+                    |)));
+                fun γ =>
+                  ltac:(M.monadic
+                    (let _ := M.is_struct_tuple (| γ, "core::option::Option::None" |) in
+                    Value.Bool true))
+              ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
@@ -344,10 +304,9 @@ Module array.
       
       (*
           fn eq(&self, other: &[U; N]) -> bool {
-              let b: Result<&[T; N], _> = self.try_into();
-              match b {
-                  Ok(b) => *b == *other,
-                  Err(_) => false,
+              match self.as_array::<N>() {
+                  Some(b) => *b == *other,
+                  None => false,
               }
           }
       *)
@@ -372,91 +331,71 @@ Module array.
                 Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "array") [ N ] [ U ] ],
                 other
               |) in
-            M.read (|
-              let~ b :
-                  Ty.apply
-                    (Ty.path "core::result::Result")
-                    []
-                    [
-                      Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "array") [ N ] [ T ] ];
-                      Ty.path "core::array::TryFromSliceError"
-                    ] :=
+            M.match_operator (|
+              Ty.path "bool",
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "core::option::Option")
+                  []
+                  [ Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "array") [ N ] [ T ] ] ],
                 M.call_closure (|
                   Ty.apply
-                    (Ty.path "core::result::Result")
+                    (Ty.path "core::option::Option")
                     []
-                    [
-                      Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "array") [ N ] [ T ] ];
-                      Ty.path "core::array::TryFromSliceError"
-                    ],
-                  M.get_trait_method (|
-                    "core::convert::TryInto",
-                    Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                    [],
                     [ Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "array") [ N ] [ T ] ] ],
-                    "try_into",
-                    [],
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "slice") [] [ T ],
+                    "as_array",
+                    [ N ],
                     []
                   |),
                   [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                |) in
-              M.alloc (|
-                Ty.path "bool",
-                M.match_operator (|
-                  Ty.path "bool",
-                  b,
-                  [
-                    fun γ =>
-                      ltac:(M.monadic
-                        (let γ0_0 :=
-                          M.SubPointer.get_struct_tuple_field (|
-                            γ,
-                            "core::result::Result::Ok",
-                            0
-                          |) in
-                        let b :=
-                          M.copy (|
-                            Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "array") [ N ] [ T ] ],
-                            γ0_0
-                          |) in
-                        M.call_closure (|
-                          Ty.path "bool",
-                          M.get_trait_method (|
-                            "core::cmp::PartialEq",
-                            Ty.apply (Ty.path "array") [ N ] [ T ],
-                            [],
-                            [ Ty.apply (Ty.path "array") [ N ] [ U ] ],
-                            "eq",
-                            [],
-                            []
-                          |),
-                          [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| b |) |) |);
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |)
-                          ]
-                        |)));
-                    fun γ =>
-                      ltac:(M.monadic
-                        (let γ0_0 :=
-                          M.SubPointer.get_struct_tuple_field (|
-                            γ,
-                            "core::result::Result::Err",
-                            0
-                          |) in
-                        Value.Bool false))
-                  ]
                 |)
-              |)
+              |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 :=
+                      M.SubPointer.get_struct_tuple_field (|
+                        γ,
+                        "core::option::Option::Some",
+                        0
+                      |) in
+                    let b :=
+                      M.copy (|
+                        Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "array") [ N ] [ T ] ],
+                        γ0_0
+                      |) in
+                    M.call_closure (|
+                      Ty.path "bool",
+                      M.get_trait_method (|
+                        "core::cmp::PartialEq",
+                        Ty.apply (Ty.path "array") [ N ] [ T ],
+                        [],
+                        [ Ty.apply (Ty.path "array") [ N ] [ U ] ],
+                        "eq",
+                        [],
+                        []
+                      |),
+                      [
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| b |) |) |);
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |)
+                      ]
+                    |)));
+                fun γ =>
+                  ltac:(M.monadic
+                    (let _ := M.is_struct_tuple (| γ, "core::option::Option::None" |) in
+                    Value.Bool false))
+              ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
       (*
           fn ne(&self, other: &[U; N]) -> bool {
-              let b: Result<&[T; N], _> = self.try_into();
-              match b {
-                  Ok(b) => *b != *other,
-                  Err(_) => true,
+              match self.as_array::<N>() {
+                  Some(b) => *b != *other,
+                  None => true,
               }
           }
       *)
@@ -481,81 +420,62 @@ Module array.
                 Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "array") [ N ] [ U ] ],
                 other
               |) in
-            M.read (|
-              let~ b :
-                  Ty.apply
-                    (Ty.path "core::result::Result")
-                    []
-                    [
-                      Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "array") [ N ] [ T ] ];
-                      Ty.path "core::array::TryFromSliceError"
-                    ] :=
+            M.match_operator (|
+              Ty.path "bool",
+              M.alloc (|
+                Ty.apply
+                  (Ty.path "core::option::Option")
+                  []
+                  [ Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "array") [ N ] [ T ] ] ],
                 M.call_closure (|
                   Ty.apply
-                    (Ty.path "core::result::Result")
+                    (Ty.path "core::option::Option")
                     []
-                    [
-                      Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "array") [ N ] [ T ] ];
-                      Ty.path "core::array::TryFromSliceError"
-                    ],
-                  M.get_trait_method (|
-                    "core::convert::TryInto",
-                    Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                    [],
                     [ Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "array") [ N ] [ T ] ] ],
-                    "try_into",
-                    [],
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "slice") [] [ T ],
+                    "as_array",
+                    [ N ],
                     []
                   |),
                   [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                |) in
-              M.alloc (|
-                Ty.path "bool",
-                M.match_operator (|
-                  Ty.path "bool",
-                  b,
-                  [
-                    fun γ =>
-                      ltac:(M.monadic
-                        (let γ0_0 :=
-                          M.SubPointer.get_struct_tuple_field (|
-                            γ,
-                            "core::result::Result::Ok",
-                            0
-                          |) in
-                        let b :=
-                          M.copy (|
-                            Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "array") [ N ] [ T ] ],
-                            γ0_0
-                          |) in
-                        M.call_closure (|
-                          Ty.path "bool",
-                          M.get_trait_method (|
-                            "core::cmp::PartialEq",
-                            Ty.apply (Ty.path "array") [ N ] [ T ],
-                            [],
-                            [ Ty.apply (Ty.path "array") [ N ] [ U ] ],
-                            "ne",
-                            [],
-                            []
-                          |),
-                          [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| b |) |) |);
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |)
-                          ]
-                        |)));
-                    fun γ =>
-                      ltac:(M.monadic
-                        (let γ0_0 :=
-                          M.SubPointer.get_struct_tuple_field (|
-                            γ,
-                            "core::result::Result::Err",
-                            0
-                          |) in
-                        Value.Bool true))
-                  ]
                 |)
-              |)
+              |),
+              [
+                fun γ =>
+                  ltac:(M.monadic
+                    (let γ0_0 :=
+                      M.SubPointer.get_struct_tuple_field (|
+                        γ,
+                        "core::option::Option::Some",
+                        0
+                      |) in
+                    let b :=
+                      M.copy (|
+                        Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "array") [ N ] [ T ] ],
+                        γ0_0
+                      |) in
+                    M.call_closure (|
+                      Ty.path "bool",
+                      M.get_trait_method (|
+                        "core::cmp::PartialEq",
+                        Ty.apply (Ty.path "array") [ N ] [ T ],
+                        [],
+                        [ Ty.apply (Ty.path "array") [ N ] [ U ] ],
+                        "ne",
+                        [],
+                        []
+                      |),
+                      [
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| b |) |) |);
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |)
+                      ]
+                    |)));
+                fun γ =>
+                  ltac:(M.monadic
+                    (let _ := M.is_struct_tuple (| γ, "core::option::Option::None" |) in
+                    Value.Bool true))
+              ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.

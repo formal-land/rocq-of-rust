@@ -2961,6 +2961,32 @@ Module convert.
           (* Instance *) [ ("from", InstanceField.Method from) ].
     End Impl_core_convert_From_i16_for_isize.
     
+    Module Impl_core_convert_From_i8_for_f16.
+      Definition Self : Ty.t := Ty.path "f16".
+      
+      (*
+                  fn from(small: $Small) -> Self {
+                      small as Self
+                  }
+      *)
+      Definition from (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ small ] =>
+          ltac:(M.monadic
+            (let small := M.alloc (| Ty.path "i8", small |) in
+            M.cast (Ty.path "f16") (M.read (| small |))))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::convert::From"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) [ Ty.path "i8" ]
+          Self
+          (* Instance *) [ ("from", InstanceField.Method from) ].
+    End Impl_core_convert_From_i8_for_f16.
+    
     Module Impl_core_convert_From_i8_for_f32.
       Definition Self : Ty.t := Ty.path "f32".
       
@@ -3012,6 +3038,32 @@ Module convert.
           Self
           (* Instance *) [ ("from", InstanceField.Method from) ].
     End Impl_core_convert_From_i8_for_f64.
+    
+    Module Impl_core_convert_From_i8_for_f128.
+      Definition Self : Ty.t := Ty.path "f128".
+      
+      (*
+                  fn from(small: $Small) -> Self {
+                      small as Self
+                  }
+      *)
+      Definition from (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ small ] =>
+          ltac:(M.monadic
+            (let small := M.alloc (| Ty.path "i8", small |) in
+            M.cast (Ty.path "f128") (M.read (| small |))))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::convert::From"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) [ Ty.path "i8" ]
+          Self
+          (* Instance *) [ ("from", InstanceField.Method from) ].
+    End Impl_core_convert_From_i8_for_f128.
     
     Module Impl_core_convert_From_i16_for_f32.
       Definition Self : Ty.t := Ty.path "f32".
@@ -3065,6 +3117,32 @@ Module convert.
           (* Instance *) [ ("from", InstanceField.Method from) ].
     End Impl_core_convert_From_i16_for_f64.
     
+    Module Impl_core_convert_From_i16_for_f128.
+      Definition Self : Ty.t := Ty.path "f128".
+      
+      (*
+                  fn from(small: $Small) -> Self {
+                      small as Self
+                  }
+      *)
+      Definition from (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ small ] =>
+          ltac:(M.monadic
+            (let small := M.alloc (| Ty.path "i16", small |) in
+            M.cast (Ty.path "f128") (M.read (| small |))))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::convert::From"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) [ Ty.path "i16" ]
+          Self
+          (* Instance *) [ ("from", InstanceField.Method from) ].
+    End Impl_core_convert_From_i16_for_f128.
+    
     Module Impl_core_convert_From_i32_for_f64.
       Definition Self : Ty.t := Ty.path "f64".
       
@@ -3090,6 +3168,58 @@ Module convert.
           Self
           (* Instance *) [ ("from", InstanceField.Method from) ].
     End Impl_core_convert_From_i32_for_f64.
+    
+    Module Impl_core_convert_From_i32_for_f128.
+      Definition Self : Ty.t := Ty.path "f128".
+      
+      (*
+                  fn from(small: $Small) -> Self {
+                      small as Self
+                  }
+      *)
+      Definition from (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ small ] =>
+          ltac:(M.monadic
+            (let small := M.alloc (| Ty.path "i32", small |) in
+            M.cast (Ty.path "f128") (M.read (| small |))))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::convert::From"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) [ Ty.path "i32" ]
+          Self
+          (* Instance *) [ ("from", InstanceField.Method from) ].
+    End Impl_core_convert_From_i32_for_f128.
+    
+    Module Impl_core_convert_From_u8_for_f16.
+      Definition Self : Ty.t := Ty.path "f16".
+      
+      (*
+                  fn from(small: $Small) -> Self {
+                      small as Self
+                  }
+      *)
+      Definition from (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ small ] =>
+          ltac:(M.monadic
+            (let small := M.alloc (| Ty.path "u8", small |) in
+            M.cast (Ty.path "f16") (M.read (| small |))))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::convert::From"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) [ Ty.path "u8" ]
+          Self
+          (* Instance *) [ ("from", InstanceField.Method from) ].
+    End Impl_core_convert_From_u8_for_f16.
     
     Module Impl_core_convert_From_u8_for_f32.
       Definition Self : Ty.t := Ty.path "f32".
@@ -3143,6 +3273,32 @@ Module convert.
           (* Instance *) [ ("from", InstanceField.Method from) ].
     End Impl_core_convert_From_u8_for_f64.
     
+    Module Impl_core_convert_From_u8_for_f128.
+      Definition Self : Ty.t := Ty.path "f128".
+      
+      (*
+                  fn from(small: $Small) -> Self {
+                      small as Self
+                  }
+      *)
+      Definition from (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ small ] =>
+          ltac:(M.monadic
+            (let small := M.alloc (| Ty.path "u8", small |) in
+            M.cast (Ty.path "f128") (M.read (| small |))))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::convert::From"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) [ Ty.path "u8" ]
+          Self
+          (* Instance *) [ ("from", InstanceField.Method from) ].
+    End Impl_core_convert_From_u8_for_f128.
+    
     Module Impl_core_convert_From_u16_for_f32.
       Definition Self : Ty.t := Ty.path "f32".
       
@@ -3195,6 +3351,32 @@ Module convert.
           (* Instance *) [ ("from", InstanceField.Method from) ].
     End Impl_core_convert_From_u16_for_f64.
     
+    Module Impl_core_convert_From_u16_for_f128.
+      Definition Self : Ty.t := Ty.path "f128".
+      
+      (*
+                  fn from(small: $Small) -> Self {
+                      small as Self
+                  }
+      *)
+      Definition from (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ small ] =>
+          ltac:(M.monadic
+            (let small := M.alloc (| Ty.path "u16", small |) in
+            M.cast (Ty.path "f128") (M.read (| small |))))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::convert::From"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) [ Ty.path "u16" ]
+          Self
+          (* Instance *) [ ("from", InstanceField.Method from) ].
+    End Impl_core_convert_From_u16_for_f128.
+    
     Module Impl_core_convert_From_u32_for_f64.
       Definition Self : Ty.t := Ty.path "f64".
       
@@ -3220,6 +3402,32 @@ Module convert.
           Self
           (* Instance *) [ ("from", InstanceField.Method from) ].
     End Impl_core_convert_From_u32_for_f64.
+    
+    Module Impl_core_convert_From_u32_for_f128.
+      Definition Self : Ty.t := Ty.path "f128".
+      
+      (*
+                  fn from(small: $Small) -> Self {
+                      small as Self
+                  }
+      *)
+      Definition from (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ small ] =>
+          ltac:(M.monadic
+            (let small := M.alloc (| Ty.path "u32", small |) in
+            M.cast (Ty.path "f128") (M.read (| small |))))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::convert::From"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) [ Ty.path "u32" ]
+          Self
+          (* Instance *) [ ("from", InstanceField.Method from) ].
+    End Impl_core_convert_From_u32_for_f128.
     
     Module Impl_core_convert_From_f16_for_f64.
       Definition Self : Ty.t := Ty.path "f64".
@@ -3351,6 +3559,32 @@ Module convert.
           (* Instance *) [ ("from", InstanceField.Method from) ].
     End Impl_core_convert_From_f64_for_f128.
     
+    Module Impl_core_convert_From_bool_for_f16.
+      Definition Self : Ty.t := Ty.path "f16".
+      
+      (*
+                  fn from(small: bool) -> Self {
+                      small as u8 as Self
+                  }
+      *)
+      Definition from (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ small ] =>
+          ltac:(M.monadic
+            (let small := M.alloc (| Ty.path "bool", small |) in
+            M.cast (Ty.path "f16") (M.cast (Ty.path "u8") (M.read (| small |)))))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::convert::From"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) [ Ty.path "bool" ]
+          Self
+          (* Instance *) [ ("from", InstanceField.Method from) ].
+    End Impl_core_convert_From_bool_for_f16.
+    
     Module Impl_core_convert_From_bool_for_f32.
       Definition Self : Ty.t := Ty.path "f32".
       
@@ -3403,6 +3637,32 @@ Module convert.
           (* Instance *) [ ("from", InstanceField.Method from) ].
     End Impl_core_convert_From_bool_for_f64.
     
+    Module Impl_core_convert_From_bool_for_f128.
+      Definition Self : Ty.t := Ty.path "f128".
+      
+      (*
+                  fn from(small: bool) -> Self {
+                      small as u8 as Self
+                  }
+      *)
+      Definition from (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ small ] =>
+          ltac:(M.monadic
+            (let small := M.alloc (| Ty.path "bool", small |) in
+            M.cast (Ty.path "f128") (M.cast (Ty.path "u8") (M.read (| small |)))))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::convert::From"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) [ Ty.path "bool" ]
+          Self
+          (* Instance *) [ ("from", InstanceField.Method from) ].
+    End Impl_core_convert_From_bool_for_f128.
+    
     Module Impl_core_convert_TryFrom_u16_for_u8.
       Definition Self : Ty.t := Ty.path "u8".
       
@@ -3433,22 +3693,21 @@ Module convert.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            BinOp.gt,
-                            [
-                              M.read (| u |);
-                              M.cast
-                                (Ty.path "u16")
-                                (M.read (|
-                                  get_associated_constant (| Ty.path "u8", "MAX", Ty.path "u8" |)
-                                |))
-                            ]
-                          |)
-                        |)) in
+                          BinOp.gt,
+                          [
+                            M.read (| u |);
+                            M.cast
+                              (Ty.path "u16")
+                              (M.read (|
+                                get_associated_constant (| Ty.path "u8", "MAX", Ty.path "u8" |)
+                              |))
+                          ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     Value.StructTuple
                       "core::result::Result::Err"
@@ -3513,22 +3772,21 @@ Module convert.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            BinOp.gt,
-                            [
-                              M.read (| u |);
-                              M.cast
-                                (Ty.path "u32")
-                                (M.read (|
-                                  get_associated_constant (| Ty.path "u8", "MAX", Ty.path "u8" |)
-                                |))
-                            ]
-                          |)
-                        |)) in
+                          BinOp.gt,
+                          [
+                            M.read (| u |);
+                            M.cast
+                              (Ty.path "u32")
+                              (M.read (|
+                                get_associated_constant (| Ty.path "u8", "MAX", Ty.path "u8" |)
+                              |))
+                          ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     Value.StructTuple
                       "core::result::Result::Err"
@@ -3593,22 +3851,21 @@ Module convert.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            BinOp.gt,
-                            [
-                              M.read (| u |);
-                              M.cast
-                                (Ty.path "u32")
-                                (M.read (|
-                                  get_associated_constant (| Ty.path "u16", "MAX", Ty.path "u16" |)
-                                |))
-                            ]
-                          |)
-                        |)) in
+                          BinOp.gt,
+                          [
+                            M.read (| u |);
+                            M.cast
+                              (Ty.path "u32")
+                              (M.read (|
+                                get_associated_constant (| Ty.path "u16", "MAX", Ty.path "u16" |)
+                              |))
+                          ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     Value.StructTuple
                       "core::result::Result::Err"
@@ -3673,22 +3930,21 @@ Module convert.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            BinOp.gt,
-                            [
-                              M.read (| u |);
-                              M.cast
-                                (Ty.path "u64")
-                                (M.read (|
-                                  get_associated_constant (| Ty.path "u8", "MAX", Ty.path "u8" |)
-                                |))
-                            ]
-                          |)
-                        |)) in
+                          BinOp.gt,
+                          [
+                            M.read (| u |);
+                            M.cast
+                              (Ty.path "u64")
+                              (M.read (|
+                                get_associated_constant (| Ty.path "u8", "MAX", Ty.path "u8" |)
+                              |))
+                          ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     Value.StructTuple
                       "core::result::Result::Err"
@@ -3753,22 +4009,21 @@ Module convert.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            BinOp.gt,
-                            [
-                              M.read (| u |);
-                              M.cast
-                                (Ty.path "u64")
-                                (M.read (|
-                                  get_associated_constant (| Ty.path "u16", "MAX", Ty.path "u16" |)
-                                |))
-                            ]
-                          |)
-                        |)) in
+                          BinOp.gt,
+                          [
+                            M.read (| u |);
+                            M.cast
+                              (Ty.path "u64")
+                              (M.read (|
+                                get_associated_constant (| Ty.path "u16", "MAX", Ty.path "u16" |)
+                              |))
+                          ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     Value.StructTuple
                       "core::result::Result::Err"
@@ -3833,22 +4088,21 @@ Module convert.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            BinOp.gt,
-                            [
-                              M.read (| u |);
-                              M.cast
-                                (Ty.path "u64")
-                                (M.read (|
-                                  get_associated_constant (| Ty.path "u32", "MAX", Ty.path "u32" |)
-                                |))
-                            ]
-                          |)
-                        |)) in
+                          BinOp.gt,
+                          [
+                            M.read (| u |);
+                            M.cast
+                              (Ty.path "u64")
+                              (M.read (|
+                                get_associated_constant (| Ty.path "u32", "MAX", Ty.path "u32" |)
+                              |))
+                          ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     Value.StructTuple
                       "core::result::Result::Err"
@@ -3913,22 +4167,21 @@ Module convert.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            BinOp.gt,
-                            [
-                              M.read (| u |);
-                              M.cast
-                                (Ty.path "u128")
-                                (M.read (|
-                                  get_associated_constant (| Ty.path "u8", "MAX", Ty.path "u8" |)
-                                |))
-                            ]
-                          |)
-                        |)) in
+                          BinOp.gt,
+                          [
+                            M.read (| u |);
+                            M.cast
+                              (Ty.path "u128")
+                              (M.read (|
+                                get_associated_constant (| Ty.path "u8", "MAX", Ty.path "u8" |)
+                              |))
+                          ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     Value.StructTuple
                       "core::result::Result::Err"
@@ -3993,22 +4246,21 @@ Module convert.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            BinOp.gt,
-                            [
-                              M.read (| u |);
-                              M.cast
-                                (Ty.path "u128")
-                                (M.read (|
-                                  get_associated_constant (| Ty.path "u16", "MAX", Ty.path "u16" |)
-                                |))
-                            ]
-                          |)
-                        |)) in
+                          BinOp.gt,
+                          [
+                            M.read (| u |);
+                            M.cast
+                              (Ty.path "u128")
+                              (M.read (|
+                                get_associated_constant (| Ty.path "u16", "MAX", Ty.path "u16" |)
+                              |))
+                          ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     Value.StructTuple
                       "core::result::Result::Err"
@@ -4073,22 +4325,21 @@ Module convert.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            BinOp.gt,
-                            [
-                              M.read (| u |);
-                              M.cast
-                                (Ty.path "u128")
-                                (M.read (|
-                                  get_associated_constant (| Ty.path "u32", "MAX", Ty.path "u32" |)
-                                |))
-                            ]
-                          |)
-                        |)) in
+                          BinOp.gt,
+                          [
+                            M.read (| u |);
+                            M.cast
+                              (Ty.path "u128")
+                              (M.read (|
+                                get_associated_constant (| Ty.path "u32", "MAX", Ty.path "u32" |)
+                              |))
+                          ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     Value.StructTuple
                       "core::result::Result::Err"
@@ -4153,22 +4404,21 @@ Module convert.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            BinOp.gt,
-                            [
-                              M.read (| u |);
-                              M.cast
-                                (Ty.path "u128")
-                                (M.read (|
-                                  get_associated_constant (| Ty.path "u64", "MAX", Ty.path "u64" |)
-                                |))
-                            ]
-                          |)
-                        |)) in
+                          BinOp.gt,
+                          [
+                            M.read (| u |);
+                            M.cast
+                              (Ty.path "u128")
+                              (M.read (|
+                                get_associated_constant (| Ty.path "u64", "MAX", Ty.path "u64" |)
+                              |))
+                          ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     Value.StructTuple
                       "core::result::Result::Err"
@@ -4249,23 +4499,22 @@ Module convert.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
-                              Ty.path "bool",
-                              LogicalOp.or (|
-                                M.call_closure (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            LogicalOp.or (|
+                              M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.lt,
+                                [ M.read (| u |); M.read (| min |) ]
+                              |),
+                              ltac:(M.monadic
+                                (M.call_closure (|
                                   Ty.path "bool",
-                                  BinOp.lt,
-                                  [ M.read (| u |); M.read (| min |) ]
-                                |),
-                                ltac:(M.monadic
-                                  (M.call_closure (|
-                                    Ty.path "bool",
-                                    BinOp.gt,
-                                    [ M.read (| u |); M.read (| max |) ]
-                                  |)))
-                              |)
-                            |)) in
+                                  BinOp.gt,
+                                  [ M.read (| u |); M.read (| max |) ]
+                                |)))
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         Value.StructTuple
                           "core::result::Result::Err"
@@ -4348,23 +4597,22 @@ Module convert.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
-                              Ty.path "bool",
-                              LogicalOp.or (|
-                                M.call_closure (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            LogicalOp.or (|
+                              M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.lt,
+                                [ M.read (| u |); M.read (| min |) ]
+                              |),
+                              ltac:(M.monadic
+                                (M.call_closure (|
                                   Ty.path "bool",
-                                  BinOp.lt,
-                                  [ M.read (| u |); M.read (| min |) ]
-                                |),
-                                ltac:(M.monadic
-                                  (M.call_closure (|
-                                    Ty.path "bool",
-                                    BinOp.gt,
-                                    [ M.read (| u |); M.read (| max |) ]
-                                  |)))
-                              |)
-                            |)) in
+                                  BinOp.gt,
+                                  [ M.read (| u |); M.read (| max |) ]
+                                |)))
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         Value.StructTuple
                           "core::result::Result::Err"
@@ -4451,23 +4699,22 @@ Module convert.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
-                              Ty.path "bool",
-                              LogicalOp.or (|
-                                M.call_closure (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            LogicalOp.or (|
+                              M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.lt,
+                                [ M.read (| u |); M.read (| min |) ]
+                              |),
+                              ltac:(M.monadic
+                                (M.call_closure (|
                                   Ty.path "bool",
-                                  BinOp.lt,
-                                  [ M.read (| u |); M.read (| min |) ]
-                                |),
-                                ltac:(M.monadic
-                                  (M.call_closure (|
-                                    Ty.path "bool",
-                                    BinOp.gt,
-                                    [ M.read (| u |); M.read (| max |) ]
-                                  |)))
-                              |)
-                            |)) in
+                                  BinOp.gt,
+                                  [ M.read (| u |); M.read (| max |) ]
+                                |)))
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         Value.StructTuple
                           "core::result::Result::Err"
@@ -4550,23 +4797,22 @@ Module convert.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
-                              Ty.path "bool",
-                              LogicalOp.or (|
-                                M.call_closure (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            LogicalOp.or (|
+                              M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.lt,
+                                [ M.read (| u |); M.read (| min |) ]
+                              |),
+                              ltac:(M.monadic
+                                (M.call_closure (|
                                   Ty.path "bool",
-                                  BinOp.lt,
-                                  [ M.read (| u |); M.read (| min |) ]
-                                |),
-                                ltac:(M.monadic
-                                  (M.call_closure (|
-                                    Ty.path "bool",
-                                    BinOp.gt,
-                                    [ M.read (| u |); M.read (| max |) ]
-                                  |)))
-                              |)
-                            |)) in
+                                  BinOp.gt,
+                                  [ M.read (| u |); M.read (| max |) ]
+                                |)))
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         Value.StructTuple
                           "core::result::Result::Err"
@@ -4653,23 +4899,22 @@ Module convert.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
-                              Ty.path "bool",
-                              LogicalOp.or (|
-                                M.call_closure (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            LogicalOp.or (|
+                              M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.lt,
+                                [ M.read (| u |); M.read (| min |) ]
+                              |),
+                              ltac:(M.monadic
+                                (M.call_closure (|
                                   Ty.path "bool",
-                                  BinOp.lt,
-                                  [ M.read (| u |); M.read (| min |) ]
-                                |),
-                                ltac:(M.monadic
-                                  (M.call_closure (|
-                                    Ty.path "bool",
-                                    BinOp.gt,
-                                    [ M.read (| u |); M.read (| max |) ]
-                                  |)))
-                              |)
-                            |)) in
+                                  BinOp.gt,
+                                  [ M.read (| u |); M.read (| max |) ]
+                                |)))
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         Value.StructTuple
                           "core::result::Result::Err"
@@ -4756,23 +5001,22 @@ Module convert.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
-                              Ty.path "bool",
-                              LogicalOp.or (|
-                                M.call_closure (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            LogicalOp.or (|
+                              M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.lt,
+                                [ M.read (| u |); M.read (| min |) ]
+                              |),
+                              ltac:(M.monadic
+                                (M.call_closure (|
                                   Ty.path "bool",
-                                  BinOp.lt,
-                                  [ M.read (| u |); M.read (| min |) ]
-                                |),
-                                ltac:(M.monadic
-                                  (M.call_closure (|
-                                    Ty.path "bool",
-                                    BinOp.gt,
-                                    [ M.read (| u |); M.read (| max |) ]
-                                  |)))
-                              |)
-                            |)) in
+                                  BinOp.gt,
+                                  [ M.read (| u |); M.read (| max |) ]
+                                |)))
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         Value.StructTuple
                           "core::result::Result::Err"
@@ -4855,23 +5099,22 @@ Module convert.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
-                              Ty.path "bool",
-                              LogicalOp.or (|
-                                M.call_closure (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            LogicalOp.or (|
+                              M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.lt,
+                                [ M.read (| u |); M.read (| min |) ]
+                              |),
+                              ltac:(M.monadic
+                                (M.call_closure (|
                                   Ty.path "bool",
-                                  BinOp.lt,
-                                  [ M.read (| u |); M.read (| min |) ]
-                                |),
-                                ltac:(M.monadic
-                                  (M.call_closure (|
-                                    Ty.path "bool",
-                                    BinOp.gt,
-                                    [ M.read (| u |); M.read (| max |) ]
-                                  |)))
-                              |)
-                            |)) in
+                                  BinOp.gt,
+                                  [ M.read (| u |); M.read (| max |) ]
+                                |)))
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         Value.StructTuple
                           "core::result::Result::Err"
@@ -4958,23 +5201,22 @@ Module convert.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
-                              Ty.path "bool",
-                              LogicalOp.or (|
-                                M.call_closure (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            LogicalOp.or (|
+                              M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.lt,
+                                [ M.read (| u |); M.read (| min |) ]
+                              |),
+                              ltac:(M.monadic
+                                (M.call_closure (|
                                   Ty.path "bool",
-                                  BinOp.lt,
-                                  [ M.read (| u |); M.read (| min |) ]
-                                |),
-                                ltac:(M.monadic
-                                  (M.call_closure (|
-                                    Ty.path "bool",
-                                    BinOp.gt,
-                                    [ M.read (| u |); M.read (| max |) ]
-                                  |)))
-                              |)
-                            |)) in
+                                  BinOp.gt,
+                                  [ M.read (| u |); M.read (| max |) ]
+                                |)))
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         Value.StructTuple
                           "core::result::Result::Err"
@@ -5061,23 +5303,22 @@ Module convert.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
-                              Ty.path "bool",
-                              LogicalOp.or (|
-                                M.call_closure (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            LogicalOp.or (|
+                              M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.lt,
+                                [ M.read (| u |); M.read (| min |) ]
+                              |),
+                              ltac:(M.monadic
+                                (M.call_closure (|
                                   Ty.path "bool",
-                                  BinOp.lt,
-                                  [ M.read (| u |); M.read (| min |) ]
-                                |),
-                                ltac:(M.monadic
-                                  (M.call_closure (|
-                                    Ty.path "bool",
-                                    BinOp.gt,
-                                    [ M.read (| u |); M.read (| max |) ]
-                                  |)))
-                              |)
-                            |)) in
+                                  BinOp.gt,
+                                  [ M.read (| u |); M.read (| max |) ]
+                                |)))
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         Value.StructTuple
                           "core::result::Result::Err"
@@ -5164,23 +5405,22 @@ Module convert.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
-                              Ty.path "bool",
-                              LogicalOp.or (|
-                                M.call_closure (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            LogicalOp.or (|
+                              M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.lt,
+                                [ M.read (| u |); M.read (| min |) ]
+                              |),
+                              ltac:(M.monadic
+                                (M.call_closure (|
                                   Ty.path "bool",
-                                  BinOp.lt,
-                                  [ M.read (| u |); M.read (| min |) ]
-                                |),
-                                ltac:(M.monadic
-                                  (M.call_closure (|
-                                    Ty.path "bool",
-                                    BinOp.gt,
-                                    [ M.read (| u |); M.read (| max |) ]
-                                  |)))
-                              |)
-                            |)) in
+                                  BinOp.gt,
+                                  [ M.read (| u |); M.read (| max |) ]
+                                |)))
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         Value.StructTuple
                           "core::result::Result::Err"
@@ -5247,22 +5487,21 @@ Module convert.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            BinOp.gt,
-                            [
-                              M.read (| u |);
-                              M.cast
-                                (Ty.path "u8")
-                                (M.read (|
-                                  get_associated_constant (| Ty.path "i8", "MAX", Ty.path "i8" |)
-                                |))
-                            ]
-                          |)
-                        |)) in
+                          BinOp.gt,
+                          [
+                            M.read (| u |);
+                            M.cast
+                              (Ty.path "u8")
+                              (M.read (|
+                                get_associated_constant (| Ty.path "i8", "MAX", Ty.path "i8" |)
+                              |))
+                          ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     Value.StructTuple
                       "core::result::Result::Err"
@@ -5327,22 +5566,21 @@ Module convert.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            BinOp.gt,
-                            [
-                              M.read (| u |);
-                              M.cast
-                                (Ty.path "u16")
-                                (M.read (|
-                                  get_associated_constant (| Ty.path "i8", "MAX", Ty.path "i8" |)
-                                |))
-                            ]
-                          |)
-                        |)) in
+                          BinOp.gt,
+                          [
+                            M.read (| u |);
+                            M.cast
+                              (Ty.path "u16")
+                              (M.read (|
+                                get_associated_constant (| Ty.path "i8", "MAX", Ty.path "i8" |)
+                              |))
+                          ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     Value.StructTuple
                       "core::result::Result::Err"
@@ -5407,22 +5645,21 @@ Module convert.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            BinOp.gt,
-                            [
-                              M.read (| u |);
-                              M.cast
-                                (Ty.path "u16")
-                                (M.read (|
-                                  get_associated_constant (| Ty.path "i16", "MAX", Ty.path "i16" |)
-                                |))
-                            ]
-                          |)
-                        |)) in
+                          BinOp.gt,
+                          [
+                            M.read (| u |);
+                            M.cast
+                              (Ty.path "u16")
+                              (M.read (|
+                                get_associated_constant (| Ty.path "i16", "MAX", Ty.path "i16" |)
+                              |))
+                          ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     Value.StructTuple
                       "core::result::Result::Err"
@@ -5487,22 +5724,21 @@ Module convert.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            BinOp.gt,
-                            [
-                              M.read (| u |);
-                              M.cast
-                                (Ty.path "u32")
-                                (M.read (|
-                                  get_associated_constant (| Ty.path "i8", "MAX", Ty.path "i8" |)
-                                |))
-                            ]
-                          |)
-                        |)) in
+                          BinOp.gt,
+                          [
+                            M.read (| u |);
+                            M.cast
+                              (Ty.path "u32")
+                              (M.read (|
+                                get_associated_constant (| Ty.path "i8", "MAX", Ty.path "i8" |)
+                              |))
+                          ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     Value.StructTuple
                       "core::result::Result::Err"
@@ -5567,22 +5803,21 @@ Module convert.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            BinOp.gt,
-                            [
-                              M.read (| u |);
-                              M.cast
-                                (Ty.path "u32")
-                                (M.read (|
-                                  get_associated_constant (| Ty.path "i16", "MAX", Ty.path "i16" |)
-                                |))
-                            ]
-                          |)
-                        |)) in
+                          BinOp.gt,
+                          [
+                            M.read (| u |);
+                            M.cast
+                              (Ty.path "u32")
+                              (M.read (|
+                                get_associated_constant (| Ty.path "i16", "MAX", Ty.path "i16" |)
+                              |))
+                          ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     Value.StructTuple
                       "core::result::Result::Err"
@@ -5647,22 +5882,21 @@ Module convert.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            BinOp.gt,
-                            [
-                              M.read (| u |);
-                              M.cast
-                                (Ty.path "u32")
-                                (M.read (|
-                                  get_associated_constant (| Ty.path "i32", "MAX", Ty.path "i32" |)
-                                |))
-                            ]
-                          |)
-                        |)) in
+                          BinOp.gt,
+                          [
+                            M.read (| u |);
+                            M.cast
+                              (Ty.path "u32")
+                              (M.read (|
+                                get_associated_constant (| Ty.path "i32", "MAX", Ty.path "i32" |)
+                              |))
+                          ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     Value.StructTuple
                       "core::result::Result::Err"
@@ -5727,22 +5961,21 @@ Module convert.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            BinOp.gt,
-                            [
-                              M.read (| u |);
-                              M.cast
-                                (Ty.path "u64")
-                                (M.read (|
-                                  get_associated_constant (| Ty.path "i8", "MAX", Ty.path "i8" |)
-                                |))
-                            ]
-                          |)
-                        |)) in
+                          BinOp.gt,
+                          [
+                            M.read (| u |);
+                            M.cast
+                              (Ty.path "u64")
+                              (M.read (|
+                                get_associated_constant (| Ty.path "i8", "MAX", Ty.path "i8" |)
+                              |))
+                          ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     Value.StructTuple
                       "core::result::Result::Err"
@@ -5807,22 +6040,21 @@ Module convert.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            BinOp.gt,
-                            [
-                              M.read (| u |);
-                              M.cast
-                                (Ty.path "u64")
-                                (M.read (|
-                                  get_associated_constant (| Ty.path "i16", "MAX", Ty.path "i16" |)
-                                |))
-                            ]
-                          |)
-                        |)) in
+                          BinOp.gt,
+                          [
+                            M.read (| u |);
+                            M.cast
+                              (Ty.path "u64")
+                              (M.read (|
+                                get_associated_constant (| Ty.path "i16", "MAX", Ty.path "i16" |)
+                              |))
+                          ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     Value.StructTuple
                       "core::result::Result::Err"
@@ -5887,22 +6119,21 @@ Module convert.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            BinOp.gt,
-                            [
-                              M.read (| u |);
-                              M.cast
-                                (Ty.path "u64")
-                                (M.read (|
-                                  get_associated_constant (| Ty.path "i32", "MAX", Ty.path "i32" |)
-                                |))
-                            ]
-                          |)
-                        |)) in
+                          BinOp.gt,
+                          [
+                            M.read (| u |);
+                            M.cast
+                              (Ty.path "u64")
+                              (M.read (|
+                                get_associated_constant (| Ty.path "i32", "MAX", Ty.path "i32" |)
+                              |))
+                          ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     Value.StructTuple
                       "core::result::Result::Err"
@@ -5967,22 +6198,21 @@ Module convert.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            BinOp.gt,
-                            [
-                              M.read (| u |);
-                              M.cast
-                                (Ty.path "u64")
-                                (M.read (|
-                                  get_associated_constant (| Ty.path "i64", "MAX", Ty.path "i64" |)
-                                |))
-                            ]
-                          |)
-                        |)) in
+                          BinOp.gt,
+                          [
+                            M.read (| u |);
+                            M.cast
+                              (Ty.path "u64")
+                              (M.read (|
+                                get_associated_constant (| Ty.path "i64", "MAX", Ty.path "i64" |)
+                              |))
+                          ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     Value.StructTuple
                       "core::result::Result::Err"
@@ -6047,22 +6277,21 @@ Module convert.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            BinOp.gt,
-                            [
-                              M.read (| u |);
-                              M.cast
-                                (Ty.path "u128")
-                                (M.read (|
-                                  get_associated_constant (| Ty.path "i8", "MAX", Ty.path "i8" |)
-                                |))
-                            ]
-                          |)
-                        |)) in
+                          BinOp.gt,
+                          [
+                            M.read (| u |);
+                            M.cast
+                              (Ty.path "u128")
+                              (M.read (|
+                                get_associated_constant (| Ty.path "i8", "MAX", Ty.path "i8" |)
+                              |))
+                          ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     Value.StructTuple
                       "core::result::Result::Err"
@@ -6127,22 +6356,21 @@ Module convert.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            BinOp.gt,
-                            [
-                              M.read (| u |);
-                              M.cast
-                                (Ty.path "u128")
-                                (M.read (|
-                                  get_associated_constant (| Ty.path "i16", "MAX", Ty.path "i16" |)
-                                |))
-                            ]
-                          |)
-                        |)) in
+                          BinOp.gt,
+                          [
+                            M.read (| u |);
+                            M.cast
+                              (Ty.path "u128")
+                              (M.read (|
+                                get_associated_constant (| Ty.path "i16", "MAX", Ty.path "i16" |)
+                              |))
+                          ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     Value.StructTuple
                       "core::result::Result::Err"
@@ -6207,22 +6435,21 @@ Module convert.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            BinOp.gt,
-                            [
-                              M.read (| u |);
-                              M.cast
-                                (Ty.path "u128")
-                                (M.read (|
-                                  get_associated_constant (| Ty.path "i32", "MAX", Ty.path "i32" |)
-                                |))
-                            ]
-                          |)
-                        |)) in
+                          BinOp.gt,
+                          [
+                            M.read (| u |);
+                            M.cast
+                              (Ty.path "u128")
+                              (M.read (|
+                                get_associated_constant (| Ty.path "i32", "MAX", Ty.path "i32" |)
+                              |))
+                          ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     Value.StructTuple
                       "core::result::Result::Err"
@@ -6287,22 +6514,21 @@ Module convert.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            BinOp.gt,
-                            [
-                              M.read (| u |);
-                              M.cast
-                                (Ty.path "u128")
-                                (M.read (|
-                                  get_associated_constant (| Ty.path "i64", "MAX", Ty.path "i64" |)
-                                |))
-                            ]
-                          |)
-                        |)) in
+                          BinOp.gt,
+                          [
+                            M.read (| u |);
+                            M.cast
+                              (Ty.path "u128")
+                              (M.read (|
+                                get_associated_constant (| Ty.path "i64", "MAX", Ty.path "i64" |)
+                              |))
+                          ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     Value.StructTuple
                       "core::result::Result::Err"
@@ -6367,26 +6593,21 @@ Module convert.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            BinOp.gt,
-                            [
-                              M.read (| u |);
-                              M.cast
-                                (Ty.path "u128")
-                                (M.read (|
-                                  get_associated_constant (|
-                                    Ty.path "i128",
-                                    "MAX",
-                                    Ty.path "i128"
-                                  |)
-                                |))
-                            ]
-                          |)
-                        |)) in
+                          BinOp.gt,
+                          [
+                            M.read (| u |);
+                            M.cast
+                              (Ty.path "u128")
+                              (M.read (|
+                                get_associated_constant (| Ty.path "i128", "MAX", Ty.path "i128" |)
+                              |))
+                          ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     Value.StructTuple
                       "core::result::Result::Err"
@@ -6451,15 +6672,14 @@ Module convert.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            BinOp.ge,
-                            [ M.read (| u |); Value.Integer IntegerKind.I8 0 ]
-                          |)
-                        |)) in
+                          BinOp.ge,
+                          [ M.read (| u |); Value.Integer IntegerKind.I8 0 ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     Value.StructTuple
                       "core::result::Result::Ok"
@@ -6524,15 +6744,14 @@ Module convert.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            BinOp.ge,
-                            [ M.read (| u |); Value.Integer IntegerKind.I8 0 ]
-                          |)
-                        |)) in
+                          BinOp.ge,
+                          [ M.read (| u |); Value.Integer IntegerKind.I8 0 ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     Value.StructTuple
                       "core::result::Result::Ok"
@@ -6597,15 +6816,14 @@ Module convert.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            BinOp.ge,
-                            [ M.read (| u |); Value.Integer IntegerKind.I8 0 ]
-                          |)
-                        |)) in
+                          BinOp.ge,
+                          [ M.read (| u |); Value.Integer IntegerKind.I8 0 ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     Value.StructTuple
                       "core::result::Result::Ok"
@@ -6670,15 +6888,14 @@ Module convert.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            BinOp.ge,
-                            [ M.read (| u |); Value.Integer IntegerKind.I8 0 ]
-                          |)
-                        |)) in
+                          BinOp.ge,
+                          [ M.read (| u |); Value.Integer IntegerKind.I8 0 ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     Value.StructTuple
                       "core::result::Result::Ok"
@@ -6743,15 +6960,14 @@ Module convert.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            BinOp.ge,
-                            [ M.read (| u |); Value.Integer IntegerKind.I8 0 ]
-                          |)
-                        |)) in
+                          BinOp.ge,
+                          [ M.read (| u |); Value.Integer IntegerKind.I8 0 ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     Value.StructTuple
                       "core::result::Result::Ok"
@@ -6832,23 +7048,22 @@ Module convert.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
-                              Ty.path "bool",
-                              LogicalOp.or (|
-                                M.call_closure (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            LogicalOp.or (|
+                              M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.lt,
+                                [ M.read (| u |); M.read (| min |) ]
+                              |),
+                              ltac:(M.monadic
+                                (M.call_closure (|
                                   Ty.path "bool",
-                                  BinOp.lt,
-                                  [ M.read (| u |); M.read (| min |) ]
-                                |),
-                                ltac:(M.monadic
-                                  (M.call_closure (|
-                                    Ty.path "bool",
-                                    BinOp.gt,
-                                    [ M.read (| u |); M.read (| max |) ]
-                                  |)))
-                              |)
-                            |)) in
+                                  BinOp.gt,
+                                  [ M.read (| u |); M.read (| max |) ]
+                                |)))
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         Value.StructTuple
                           "core::result::Result::Err"
@@ -6915,15 +7130,14 @@ Module convert.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            BinOp.ge,
-                            [ M.read (| u |); Value.Integer IntegerKind.I16 0 ]
-                          |)
-                        |)) in
+                          BinOp.ge,
+                          [ M.read (| u |); Value.Integer IntegerKind.I16 0 ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     Value.StructTuple
                       "core::result::Result::Ok"
@@ -6988,15 +7202,14 @@ Module convert.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            BinOp.ge,
-                            [ M.read (| u |); Value.Integer IntegerKind.I16 0 ]
-                          |)
-                        |)) in
+                          BinOp.ge,
+                          [ M.read (| u |); Value.Integer IntegerKind.I16 0 ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     Value.StructTuple
                       "core::result::Result::Ok"
@@ -7061,15 +7274,14 @@ Module convert.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            BinOp.ge,
-                            [ M.read (| u |); Value.Integer IntegerKind.I16 0 ]
-                          |)
-                        |)) in
+                          BinOp.ge,
+                          [ M.read (| u |); Value.Integer IntegerKind.I16 0 ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     Value.StructTuple
                       "core::result::Result::Ok"
@@ -7134,15 +7346,14 @@ Module convert.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            BinOp.ge,
-                            [ M.read (| u |); Value.Integer IntegerKind.I16 0 ]
-                          |)
-                        |)) in
+                          BinOp.ge,
+                          [ M.read (| u |); Value.Integer IntegerKind.I16 0 ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     Value.StructTuple
                       "core::result::Result::Ok"
@@ -7223,23 +7434,22 @@ Module convert.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
-                              Ty.path "bool",
-                              LogicalOp.or (|
-                                M.call_closure (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            LogicalOp.or (|
+                              M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.lt,
+                                [ M.read (| u |); M.read (| min |) ]
+                              |),
+                              ltac:(M.monadic
+                                (M.call_closure (|
                                   Ty.path "bool",
-                                  BinOp.lt,
-                                  [ M.read (| u |); M.read (| min |) ]
-                                |),
-                                ltac:(M.monadic
-                                  (M.call_closure (|
-                                    Ty.path "bool",
-                                    BinOp.gt,
-                                    [ M.read (| u |); M.read (| max |) ]
-                                  |)))
-                              |)
-                            |)) in
+                                  BinOp.gt,
+                                  [ M.read (| u |); M.read (| max |) ]
+                                |)))
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         Value.StructTuple
                           "core::result::Result::Err"
@@ -7326,23 +7536,22 @@ Module convert.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
-                              Ty.path "bool",
-                              LogicalOp.or (|
-                                M.call_closure (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            LogicalOp.or (|
+                              M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.lt,
+                                [ M.read (| u |); M.read (| min |) ]
+                              |),
+                              ltac:(M.monadic
+                                (M.call_closure (|
                                   Ty.path "bool",
-                                  BinOp.lt,
-                                  [ M.read (| u |); M.read (| min |) ]
-                                |),
-                                ltac:(M.monadic
-                                  (M.call_closure (|
-                                    Ty.path "bool",
-                                    BinOp.gt,
-                                    [ M.read (| u |); M.read (| max |) ]
-                                  |)))
-                              |)
-                            |)) in
+                                  BinOp.gt,
+                                  [ M.read (| u |); M.read (| max |) ]
+                                |)))
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         Value.StructTuple
                           "core::result::Result::Err"
@@ -7409,15 +7618,14 @@ Module convert.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            BinOp.ge,
-                            [ M.read (| u |); Value.Integer IntegerKind.I32 0 ]
-                          |)
-                        |)) in
+                          BinOp.ge,
+                          [ M.read (| u |); Value.Integer IntegerKind.I32 0 ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     Value.StructTuple
                       "core::result::Result::Ok"
@@ -7482,15 +7690,14 @@ Module convert.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            BinOp.ge,
-                            [ M.read (| u |); Value.Integer IntegerKind.I32 0 ]
-                          |)
-                        |)) in
+                          BinOp.ge,
+                          [ M.read (| u |); Value.Integer IntegerKind.I32 0 ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     Value.StructTuple
                       "core::result::Result::Ok"
@@ -7555,15 +7762,14 @@ Module convert.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            BinOp.ge,
-                            [ M.read (| u |); Value.Integer IntegerKind.I32 0 ]
-                          |)
-                        |)) in
+                          BinOp.ge,
+                          [ M.read (| u |); Value.Integer IntegerKind.I32 0 ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     Value.StructTuple
                       "core::result::Result::Ok"
@@ -7644,23 +7850,22 @@ Module convert.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
-                              Ty.path "bool",
-                              LogicalOp.or (|
-                                M.call_closure (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            LogicalOp.or (|
+                              M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.lt,
+                                [ M.read (| u |); M.read (| min |) ]
+                              |),
+                              ltac:(M.monadic
+                                (M.call_closure (|
                                   Ty.path "bool",
-                                  BinOp.lt,
-                                  [ M.read (| u |); M.read (| min |) ]
-                                |),
-                                ltac:(M.monadic
-                                  (M.call_closure (|
-                                    Ty.path "bool",
-                                    BinOp.gt,
-                                    [ M.read (| u |); M.read (| max |) ]
-                                  |)))
-                              |)
-                            |)) in
+                                  BinOp.gt,
+                                  [ M.read (| u |); M.read (| max |) ]
+                                |)))
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         Value.StructTuple
                           "core::result::Result::Err"
@@ -7747,23 +7952,22 @@ Module convert.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
-                              Ty.path "bool",
-                              LogicalOp.or (|
-                                M.call_closure (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            LogicalOp.or (|
+                              M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.lt,
+                                [ M.read (| u |); M.read (| min |) ]
+                              |),
+                              ltac:(M.monadic
+                                (M.call_closure (|
                                   Ty.path "bool",
-                                  BinOp.lt,
-                                  [ M.read (| u |); M.read (| min |) ]
-                                |),
-                                ltac:(M.monadic
-                                  (M.call_closure (|
-                                    Ty.path "bool",
-                                    BinOp.gt,
-                                    [ M.read (| u |); M.read (| max |) ]
-                                  |)))
-                              |)
-                            |)) in
+                                  BinOp.gt,
+                                  [ M.read (| u |); M.read (| max |) ]
+                                |)))
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         Value.StructTuple
                           "core::result::Result::Err"
@@ -7850,23 +8054,22 @@ Module convert.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
-                              Ty.path "bool",
-                              LogicalOp.or (|
-                                M.call_closure (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            LogicalOp.or (|
+                              M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.lt,
+                                [ M.read (| u |); M.read (| min |) ]
+                              |),
+                              ltac:(M.monadic
+                                (M.call_closure (|
                                   Ty.path "bool",
-                                  BinOp.lt,
-                                  [ M.read (| u |); M.read (| min |) ]
-                                |),
-                                ltac:(M.monadic
-                                  (M.call_closure (|
-                                    Ty.path "bool",
-                                    BinOp.gt,
-                                    [ M.read (| u |); M.read (| max |) ]
-                                  |)))
-                              |)
-                            |)) in
+                                  BinOp.gt,
+                                  [ M.read (| u |); M.read (| max |) ]
+                                |)))
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         Value.StructTuple
                           "core::result::Result::Err"
@@ -7933,15 +8136,14 @@ Module convert.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            BinOp.ge,
-                            [ M.read (| u |); Value.Integer IntegerKind.I64 0 ]
-                          |)
-                        |)) in
+                          BinOp.ge,
+                          [ M.read (| u |); Value.Integer IntegerKind.I64 0 ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     Value.StructTuple
                       "core::result::Result::Ok"
@@ -8006,15 +8208,14 @@ Module convert.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            BinOp.ge,
-                            [ M.read (| u |); Value.Integer IntegerKind.I64 0 ]
-                          |)
-                        |)) in
+                          BinOp.ge,
+                          [ M.read (| u |); Value.Integer IntegerKind.I64 0 ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     Value.StructTuple
                       "core::result::Result::Ok"
@@ -8095,23 +8296,22 @@ Module convert.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
-                              Ty.path "bool",
-                              LogicalOp.or (|
-                                M.call_closure (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            LogicalOp.or (|
+                              M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.lt,
+                                [ M.read (| u |); M.read (| min |) ]
+                              |),
+                              ltac:(M.monadic
+                                (M.call_closure (|
                                   Ty.path "bool",
-                                  BinOp.lt,
-                                  [ M.read (| u |); M.read (| min |) ]
-                                |),
-                                ltac:(M.monadic
-                                  (M.call_closure (|
-                                    Ty.path "bool",
-                                    BinOp.gt,
-                                    [ M.read (| u |); M.read (| max |) ]
-                                  |)))
-                              |)
-                            |)) in
+                                  BinOp.gt,
+                                  [ M.read (| u |); M.read (| max |) ]
+                                |)))
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         Value.StructTuple
                           "core::result::Result::Err"
@@ -8198,23 +8398,22 @@ Module convert.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
-                              Ty.path "bool",
-                              LogicalOp.or (|
-                                M.call_closure (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            LogicalOp.or (|
+                              M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.lt,
+                                [ M.read (| u |); M.read (| min |) ]
+                              |),
+                              ltac:(M.monadic
+                                (M.call_closure (|
                                   Ty.path "bool",
-                                  BinOp.lt,
-                                  [ M.read (| u |); M.read (| min |) ]
-                                |),
-                                ltac:(M.monadic
-                                  (M.call_closure (|
-                                    Ty.path "bool",
-                                    BinOp.gt,
-                                    [ M.read (| u |); M.read (| max |) ]
-                                  |)))
-                              |)
-                            |)) in
+                                  BinOp.gt,
+                                  [ M.read (| u |); M.read (| max |) ]
+                                |)))
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         Value.StructTuple
                           "core::result::Result::Err"
@@ -8301,23 +8500,22 @@ Module convert.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
-                              Ty.path "bool",
-                              LogicalOp.or (|
-                                M.call_closure (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            LogicalOp.or (|
+                              M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.lt,
+                                [ M.read (| u |); M.read (| min |) ]
+                              |),
+                              ltac:(M.monadic
+                                (M.call_closure (|
                                   Ty.path "bool",
-                                  BinOp.lt,
-                                  [ M.read (| u |); M.read (| min |) ]
-                                |),
-                                ltac:(M.monadic
-                                  (M.call_closure (|
-                                    Ty.path "bool",
-                                    BinOp.gt,
-                                    [ M.read (| u |); M.read (| max |) ]
-                                  |)))
-                              |)
-                            |)) in
+                                  BinOp.gt,
+                                  [ M.read (| u |); M.read (| max |) ]
+                                |)))
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         Value.StructTuple
                           "core::result::Result::Err"
@@ -8404,23 +8602,22 @@ Module convert.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
-                              Ty.path "bool",
-                              LogicalOp.or (|
-                                M.call_closure (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            LogicalOp.or (|
+                              M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.lt,
+                                [ M.read (| u |); M.read (| min |) ]
+                              |),
+                              ltac:(M.monadic
+                                (M.call_closure (|
                                   Ty.path "bool",
-                                  BinOp.lt,
-                                  [ M.read (| u |); M.read (| min |) ]
-                                |),
-                                ltac:(M.monadic
-                                  (M.call_closure (|
-                                    Ty.path "bool",
-                                    BinOp.gt,
-                                    [ M.read (| u |); M.read (| max |) ]
-                                  |)))
-                              |)
-                            |)) in
+                                  BinOp.gt,
+                                  [ M.read (| u |); M.read (| max |) ]
+                                |)))
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         Value.StructTuple
                           "core::result::Result::Err"
@@ -8487,15 +8684,14 @@ Module convert.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            BinOp.ge,
-                            [ M.read (| u |); Value.Integer IntegerKind.I128 0 ]
-                          |)
-                        |)) in
+                          BinOp.ge,
+                          [ M.read (| u |); Value.Integer IntegerKind.I128 0 ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     Value.StructTuple
                       "core::result::Result::Ok"
@@ -8560,26 +8756,25 @@ Module convert.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            BinOp.gt,
-                            [
-                              M.read (| u |);
-                              M.cast
-                                (Ty.path "usize")
-                                (M.read (|
-                                  get_associated_constant (|
-                                    Ty.path "isize",
-                                    "MAX",
-                                    Ty.path "isize"
-                                  |)
-                                |))
-                            ]
-                          |)
-                        |)) in
+                          BinOp.gt,
+                          [
+                            M.read (| u |);
+                            M.cast
+                              (Ty.path "usize")
+                              (M.read (|
+                                get_associated_constant (|
+                                  Ty.path "isize",
+                                  "MAX",
+                                  Ty.path "isize"
+                                |)
+                              |))
+                          ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     Value.StructTuple
                       "core::result::Result::Err"
@@ -8644,15 +8839,14 @@ Module convert.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            BinOp.ge,
-                            [ M.read (| u |); Value.Integer IntegerKind.Isize 0 ]
-                          |)
-                        |)) in
+                          BinOp.ge,
+                          [ M.read (| u |); Value.Integer IntegerKind.Isize 0 ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     Value.StructTuple
                       "core::result::Result::Ok"
@@ -8718,22 +8912,21 @@ Module convert.
                   fun γ =>
                     ltac:(M.monadic
                       (let γ :=
-                        M.use
-                          (M.alloc (|
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
                             Ty.path "bool",
-                            M.call_closure (|
-                              Ty.path "bool",
-                              BinOp.gt,
-                              [
-                                M.read (| u |);
-                                M.cast
-                                  (Ty.path "usize")
-                                  (M.read (|
-                                    get_associated_constant (| Ty.path "u8", "MAX", Ty.path "u8" |)
-                                  |))
-                              ]
-                            |)
-                          |)) in
+                            BinOp.gt,
+                            [
+                              M.read (| u |);
+                              M.cast
+                                (Ty.path "usize")
+                                (M.read (|
+                                  get_associated_constant (| Ty.path "u8", "MAX", Ty.path "u8" |)
+                                |))
+                            ]
+                          |)
+                        |) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       Value.StructTuple
                         "core::result::Result::Err"
@@ -8798,26 +8991,21 @@ Module convert.
                   fun γ =>
                     ltac:(M.monadic
                       (let γ :=
-                        M.use
-                          (M.alloc (|
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
                             Ty.path "bool",
-                            M.call_closure (|
-                              Ty.path "bool",
-                              BinOp.gt,
-                              [
-                                M.read (| u |);
-                                M.cast
-                                  (Ty.path "usize")
-                                  (M.read (|
-                                    get_associated_constant (|
-                                      Ty.path "u16",
-                                      "MAX",
-                                      Ty.path "u16"
-                                    |)
-                                  |))
-                              ]
-                            |)
-                          |)) in
+                            BinOp.gt,
+                            [
+                              M.read (| u |);
+                              M.cast
+                                (Ty.path "usize")
+                                (M.read (|
+                                  get_associated_constant (| Ty.path "u16", "MAX", Ty.path "u16" |)
+                                |))
+                            ]
+                          |)
+                        |) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       Value.StructTuple
                         "core::result::Result::Err"
@@ -8882,26 +9070,21 @@ Module convert.
                   fun γ =>
                     ltac:(M.monadic
                       (let γ :=
-                        M.use
-                          (M.alloc (|
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
                             Ty.path "bool",
-                            M.call_closure (|
-                              Ty.path "bool",
-                              BinOp.gt,
-                              [
-                                M.read (| u |);
-                                M.cast
-                                  (Ty.path "usize")
-                                  (M.read (|
-                                    get_associated_constant (|
-                                      Ty.path "u32",
-                                      "MAX",
-                                      Ty.path "u32"
-                                    |)
-                                  |))
-                              ]
-                            |)
-                          |)) in
+                            BinOp.gt,
+                            [
+                              M.read (| u |);
+                              M.cast
+                                (Ty.path "usize")
+                                (M.read (|
+                                  get_associated_constant (| Ty.path "u32", "MAX", Ty.path "u32" |)
+                                |))
+                            ]
+                          |)
+                        |) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       Value.StructTuple
                         "core::result::Result::Err"
@@ -9034,22 +9217,21 @@ Module convert.
                   fun γ =>
                     ltac:(M.monadic
                       (let γ :=
-                        M.use
-                          (M.alloc (|
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
                             Ty.path "bool",
-                            M.call_closure (|
-                              Ty.path "bool",
-                              BinOp.gt,
-                              [
-                                M.read (| u |);
-                                M.cast
-                                  (Ty.path "usize")
-                                  (M.read (|
-                                    get_associated_constant (| Ty.path "i8", "MAX", Ty.path "i8" |)
-                                  |))
-                              ]
-                            |)
-                          |)) in
+                            BinOp.gt,
+                            [
+                              M.read (| u |);
+                              M.cast
+                                (Ty.path "usize")
+                                (M.read (|
+                                  get_associated_constant (| Ty.path "i8", "MAX", Ty.path "i8" |)
+                                |))
+                            ]
+                          |)
+                        |) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       Value.StructTuple
                         "core::result::Result::Err"
@@ -9114,26 +9296,21 @@ Module convert.
                   fun γ =>
                     ltac:(M.monadic
                       (let γ :=
-                        M.use
-                          (M.alloc (|
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
                             Ty.path "bool",
-                            M.call_closure (|
-                              Ty.path "bool",
-                              BinOp.gt,
-                              [
-                                M.read (| u |);
-                                M.cast
-                                  (Ty.path "usize")
-                                  (M.read (|
-                                    get_associated_constant (|
-                                      Ty.path "i16",
-                                      "MAX",
-                                      Ty.path "i16"
-                                    |)
-                                  |))
-                              ]
-                            |)
-                          |)) in
+                            BinOp.gt,
+                            [
+                              M.read (| u |);
+                              M.cast
+                                (Ty.path "usize")
+                                (M.read (|
+                                  get_associated_constant (| Ty.path "i16", "MAX", Ty.path "i16" |)
+                                |))
+                            ]
+                          |)
+                        |) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       Value.StructTuple
                         "core::result::Result::Err"
@@ -9198,26 +9375,21 @@ Module convert.
                   fun γ =>
                     ltac:(M.monadic
                       (let γ :=
-                        M.use
-                          (M.alloc (|
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
                             Ty.path "bool",
-                            M.call_closure (|
-                              Ty.path "bool",
-                              BinOp.gt,
-                              [
-                                M.read (| u |);
-                                M.cast
-                                  (Ty.path "usize")
-                                  (M.read (|
-                                    get_associated_constant (|
-                                      Ty.path "i32",
-                                      "MAX",
-                                      Ty.path "i32"
-                                    |)
-                                  |))
-                              ]
-                            |)
-                          |)) in
+                            BinOp.gt,
+                            [
+                              M.read (| u |);
+                              M.cast
+                                (Ty.path "usize")
+                                (M.read (|
+                                  get_associated_constant (| Ty.path "i32", "MAX", Ty.path "i32" |)
+                                |))
+                            ]
+                          |)
+                        |) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       Value.StructTuple
                         "core::result::Result::Err"
@@ -9282,26 +9454,21 @@ Module convert.
                   fun γ =>
                     ltac:(M.monadic
                       (let γ :=
-                        M.use
-                          (M.alloc (|
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
                             Ty.path "bool",
-                            M.call_closure (|
-                              Ty.path "bool",
-                              BinOp.gt,
-                              [
-                                M.read (| u |);
-                                M.cast
-                                  (Ty.path "usize")
-                                  (M.read (|
-                                    get_associated_constant (|
-                                      Ty.path "i64",
-                                      "MAX",
-                                      Ty.path "i64"
-                                    |)
-                                  |))
-                              ]
-                            |)
-                          |)) in
+                            BinOp.gt,
+                            [
+                              M.read (| u |);
+                              M.cast
+                                (Ty.path "usize")
+                                (M.read (|
+                                  get_associated_constant (| Ty.path "i64", "MAX", Ty.path "i64" |)
+                                |))
+                            ]
+                          |)
+                        |) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       Value.StructTuple
                         "core::result::Result::Err"
@@ -9420,23 +9587,22 @@ Module convert.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
-                                Ty.path "bool",
-                                LogicalOp.or (|
-                                  M.call_closure (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              LogicalOp.or (|
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.lt,
+                                  [ M.read (| u |); M.read (| min |) ]
+                                |),
+                                ltac:(M.monadic
+                                  (M.call_closure (|
                                     Ty.path "bool",
-                                    BinOp.lt,
-                                    [ M.read (| u |); M.read (| min |) ]
-                                  |),
-                                  ltac:(M.monadic
-                                    (M.call_closure (|
-                                      Ty.path "bool",
-                                      BinOp.gt,
-                                      [ M.read (| u |); M.read (| max |) ]
-                                    |)))
-                                |)
-                              |)) in
+                                    BinOp.gt,
+                                    [ M.read (| u |); M.read (| max |) ]
+                                  |)))
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           Value.StructTuple
@@ -9524,23 +9690,22 @@ Module convert.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
-                                Ty.path "bool",
-                                LogicalOp.or (|
-                                  M.call_closure (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              LogicalOp.or (|
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.lt,
+                                  [ M.read (| u |); M.read (| min |) ]
+                                |),
+                                ltac:(M.monadic
+                                  (M.call_closure (|
                                     Ty.path "bool",
-                                    BinOp.lt,
-                                    [ M.read (| u |); M.read (| min |) ]
-                                  |),
-                                  ltac:(M.monadic
-                                    (M.call_closure (|
-                                      Ty.path "bool",
-                                      BinOp.gt,
-                                      [ M.read (| u |); M.read (| max |) ]
-                                    |)))
-                                |)
-                              |)) in
+                                    BinOp.gt,
+                                    [ M.read (| u |); M.read (| max |) ]
+                                  |)))
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           Value.StructTuple
@@ -9628,23 +9793,22 @@ Module convert.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
-                                Ty.path "bool",
-                                LogicalOp.or (|
-                                  M.call_closure (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              LogicalOp.or (|
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.lt,
+                                  [ M.read (| u |); M.read (| min |) ]
+                                |),
+                                ltac:(M.monadic
+                                  (M.call_closure (|
                                     Ty.path "bool",
-                                    BinOp.lt,
-                                    [ M.read (| u |); M.read (| min |) ]
-                                  |),
-                                  ltac:(M.monadic
-                                    (M.call_closure (|
-                                      Ty.path "bool",
-                                      BinOp.gt,
-                                      [ M.read (| u |); M.read (| max |) ]
-                                    |)))
-                                |)
-                              |)) in
+                                    BinOp.gt,
+                                    [ M.read (| u |); M.read (| max |) ]
+                                  |)))
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           Value.StructTuple
@@ -9712,15 +9876,14 @@ Module convert.
                   fun γ =>
                     ltac:(M.monadic
                       (let γ :=
-                        M.use
-                          (M.alloc (|
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
                             Ty.path "bool",
-                            M.call_closure (|
-                              Ty.path "bool",
-                              BinOp.ge,
-                              [ M.read (| u |); Value.Integer IntegerKind.Isize 0 ]
-                            |)
-                          |)) in
+                            BinOp.ge,
+                            [ M.read (| u |); Value.Integer IntegerKind.Isize 0 ]
+                          |)
+                        |) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       Value.StructTuple
                         "core::result::Result::Ok"
@@ -9785,15 +9948,14 @@ Module convert.
                   fun γ =>
                     ltac:(M.monadic
                       (let γ :=
-                        M.use
-                          (M.alloc (|
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
                             Ty.path "bool",
-                            M.call_closure (|
-                              Ty.path "bool",
-                              BinOp.ge,
-                              [ M.read (| u |); Value.Integer IntegerKind.Isize 0 ]
-                            |)
-                          |)) in
+                            BinOp.ge,
+                            [ M.read (| u |); Value.Integer IntegerKind.Isize 0 ]
+                          |)
+                        |) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       Value.StructTuple
                         "core::result::Result::Ok"
@@ -9878,23 +10040,22 @@ Module convert.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
-                                Ty.path "bool",
-                                LogicalOp.or (|
-                                  M.call_closure (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              LogicalOp.or (|
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.lt,
+                                  [ M.read (| u |); M.read (| min |) ]
+                                |),
+                                ltac:(M.monadic
+                                  (M.call_closure (|
                                     Ty.path "bool",
-                                    BinOp.lt,
-                                    [ M.read (| u |); M.read (| min |) ]
-                                  |),
-                                  ltac:(M.monadic
-                                    (M.call_closure (|
-                                      Ty.path "bool",
-                                      BinOp.gt,
-                                      [ M.read (| u |); M.read (| max |) ]
-                                    |)))
-                                |)
-                              |)) in
+                                    BinOp.gt,
+                                    [ M.read (| u |); M.read (| max |) ]
+                                  |)))
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           Value.StructTuple
@@ -9982,23 +10143,22 @@ Module convert.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
-                                Ty.path "bool",
-                                LogicalOp.or (|
-                                  M.call_closure (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              LogicalOp.or (|
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.lt,
+                                  [ M.read (| u |); M.read (| min |) ]
+                                |),
+                                ltac:(M.monadic
+                                  (M.call_closure (|
                                     Ty.path "bool",
-                                    BinOp.lt,
-                                    [ M.read (| u |); M.read (| min |) ]
-                                  |),
-                                  ltac:(M.monadic
-                                    (M.call_closure (|
-                                      Ty.path "bool",
-                                      BinOp.gt,
-                                      [ M.read (| u |); M.read (| max |) ]
-                                    |)))
-                                |)
-                              |)) in
+                                    BinOp.gt,
+                                    [ M.read (| u |); M.read (| max |) ]
+                                  |)))
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           Value.StructTuple
@@ -10086,23 +10246,22 @@ Module convert.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
-                                Ty.path "bool",
-                                LogicalOp.or (|
-                                  M.call_closure (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              LogicalOp.or (|
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.lt,
+                                  [ M.read (| u |); M.read (| min |) ]
+                                |),
+                                ltac:(M.monadic
+                                  (M.call_closure (|
                                     Ty.path "bool",
-                                    BinOp.lt,
-                                    [ M.read (| u |); M.read (| min |) ]
-                                  |),
-                                  ltac:(M.monadic
-                                    (M.call_closure (|
-                                      Ty.path "bool",
-                                      BinOp.gt,
-                                      [ M.read (| u |); M.read (| max |) ]
-                                    |)))
-                                |)
-                              |)) in
+                                    BinOp.gt,
+                                    [ M.read (| u |); M.read (| max |) ]
+                                  |)))
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           Value.StructTuple
@@ -10306,26 +10465,25 @@ Module convert.
                   fun γ =>
                     ltac:(M.monadic
                       (let γ :=
-                        M.use
-                          (M.alloc (|
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
                             Ty.path "bool",
-                            M.call_closure (|
-                              Ty.path "bool",
-                              BinOp.gt,
-                              [
-                                M.read (| u |);
-                                M.cast
-                                  (Ty.path "u128")
-                                  (M.read (|
-                                    get_associated_constant (|
-                                      Ty.path "usize",
-                                      "MAX",
-                                      Ty.path "usize"
-                                    |)
-                                  |))
-                              ]
-                            |)
-                          |)) in
+                            BinOp.gt,
+                            [
+                              M.read (| u |);
+                              M.cast
+                                (Ty.path "u128")
+                                (M.read (|
+                                  get_associated_constant (|
+                                    Ty.path "usize",
+                                    "MAX",
+                                    Ty.path "usize"
+                                  |)
+                                |))
+                            ]
+                          |)
+                        |) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       Value.StructTuple
                         "core::result::Result::Err"
@@ -10390,15 +10548,14 @@ Module convert.
                   fun γ =>
                     ltac:(M.monadic
                       (let γ :=
-                        M.use
-                          (M.alloc (|
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
                             Ty.path "bool",
-                            M.call_closure (|
-                              Ty.path "bool",
-                              BinOp.ge,
-                              [ M.read (| u |); Value.Integer IntegerKind.I8 0 ]
-                            |)
-                          |)) in
+                            BinOp.ge,
+                            [ M.read (| u |); Value.Integer IntegerKind.I8 0 ]
+                          |)
+                        |) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       Value.StructTuple
                         "core::result::Result::Ok"
@@ -10463,15 +10620,14 @@ Module convert.
                   fun γ =>
                     ltac:(M.monadic
                       (let γ :=
-                        M.use
-                          (M.alloc (|
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
                             Ty.path "bool",
-                            M.call_closure (|
-                              Ty.path "bool",
-                              BinOp.ge,
-                              [ M.read (| u |); Value.Integer IntegerKind.I16 0 ]
-                            |)
-                          |)) in
+                            BinOp.ge,
+                            [ M.read (| u |); Value.Integer IntegerKind.I16 0 ]
+                          |)
+                        |) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       Value.StructTuple
                         "core::result::Result::Ok"
@@ -10536,15 +10692,14 @@ Module convert.
                   fun γ =>
                     ltac:(M.monadic
                       (let γ :=
-                        M.use
-                          (M.alloc (|
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
                             Ty.path "bool",
-                            M.call_closure (|
-                              Ty.path "bool",
-                              BinOp.ge,
-                              [ M.read (| u |); Value.Integer IntegerKind.I32 0 ]
-                            |)
-                          |)) in
+                            BinOp.ge,
+                            [ M.read (| u |); Value.Integer IntegerKind.I32 0 ]
+                          |)
+                        |) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       Value.StructTuple
                         "core::result::Result::Ok"
@@ -10609,15 +10764,14 @@ Module convert.
                   fun γ =>
                     ltac:(M.monadic
                       (let γ :=
-                        M.use
-                          (M.alloc (|
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
                             Ty.path "bool",
-                            M.call_closure (|
-                              Ty.path "bool",
-                              BinOp.ge,
-                              [ M.read (| u |); Value.Integer IntegerKind.I64 0 ]
-                            |)
-                          |)) in
+                            BinOp.ge,
+                            [ M.read (| u |); Value.Integer IntegerKind.I64 0 ]
+                          |)
+                        |) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       Value.StructTuple
                         "core::result::Result::Ok"
@@ -10702,23 +10856,22 @@ Module convert.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
-                                Ty.path "bool",
-                                LogicalOp.or (|
-                                  M.call_closure (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              LogicalOp.or (|
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.lt,
+                                  [ M.read (| u |); M.read (| min |) ]
+                                |),
+                                ltac:(M.monadic
+                                  (M.call_closure (|
                                     Ty.path "bool",
-                                    BinOp.lt,
-                                    [ M.read (| u |); M.read (| min |) ]
-                                  |),
-                                  ltac:(M.monadic
-                                    (M.call_closure (|
-                                      Ty.path "bool",
-                                      BinOp.gt,
-                                      [ M.read (| u |); M.read (| max |) ]
-                                    |)))
-                                |)
-                              |)) in
+                                    BinOp.gt,
+                                    [ M.read (| u |); M.read (| max |) ]
+                                  |)))
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           Value.StructTuple
@@ -10854,26 +11007,25 @@ Module convert.
                   fun γ =>
                     ltac:(M.monadic
                       (let γ :=
-                        M.use
-                          (M.alloc (|
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
                             Ty.path "bool",
-                            M.call_closure (|
-                              Ty.path "bool",
-                              BinOp.gt,
-                              [
-                                M.read (| u |);
-                                M.cast
-                                  (Ty.path "u64")
-                                  (M.read (|
-                                    get_associated_constant (|
-                                      Ty.path "isize",
-                                      "MAX",
-                                      Ty.path "isize"
-                                    |)
-                                  |))
-                              ]
-                            |)
-                          |)) in
+                            BinOp.gt,
+                            [
+                              M.read (| u |);
+                              M.cast
+                                (Ty.path "u64")
+                                (M.read (|
+                                  get_associated_constant (|
+                                    Ty.path "isize",
+                                    "MAX",
+                                    Ty.path "isize"
+                                  |)
+                                |))
+                            ]
+                          |)
+                        |) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       Value.StructTuple
                         "core::result::Result::Err"
@@ -10938,26 +11090,25 @@ Module convert.
                   fun γ =>
                     ltac:(M.monadic
                       (let γ :=
-                        M.use
-                          (M.alloc (|
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
                             Ty.path "bool",
-                            M.call_closure (|
-                              Ty.path "bool",
-                              BinOp.gt,
-                              [
-                                M.read (| u |);
-                                M.cast
-                                  (Ty.path "u128")
-                                  (M.read (|
-                                    get_associated_constant (|
-                                      Ty.path "isize",
-                                      "MAX",
-                                      Ty.path "isize"
-                                    |)
-                                  |))
-                              ]
-                            |)
-                          |)) in
+                            BinOp.gt,
+                            [
+                              M.read (| u |);
+                              M.cast
+                                (Ty.path "u128")
+                                (M.read (|
+                                  get_associated_constant (|
+                                    Ty.path "isize",
+                                    "MAX",
+                                    Ty.path "isize"
+                                  |)
+                                |))
+                            ]
+                          |)
+                        |) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       Value.StructTuple
                         "core::result::Result::Err"
@@ -11110,23 +11261,22 @@ Module convert.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
-                                Ty.path "bool",
-                                LogicalOp.or (|
-                                  M.call_closure (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              LogicalOp.or (|
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.lt,
+                                  [ M.read (| u |); M.read (| min |) ]
+                                |),
+                                ltac:(M.monadic
+                                  (M.call_closure (|
                                     Ty.path "bool",
-                                    BinOp.lt,
-                                    [ M.read (| u |); M.read (| min |) ]
-                                  |),
-                                  ltac:(M.monadic
-                                    (M.call_closure (|
-                                      Ty.path "bool",
-                                      BinOp.gt,
-                                      [ M.read (| u |); M.read (| max |) ]
-                                    |)))
-                                |)
-                              |)) in
+                                    BinOp.gt,
+                                    [ M.read (| u |); M.read (| max |) ]
+                                  |)))
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           Value.StructTuple

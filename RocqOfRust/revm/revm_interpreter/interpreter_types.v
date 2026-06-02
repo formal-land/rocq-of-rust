@@ -29,7 +29,7 @@ Module interpreter_types.
               []
               []
               Self
-              "{{synthetic}}",
+              "{{anon_assoc}}",
             M.get_trait_method (|
               "revm_interpreter::interpreter_types::MemoryTrait",
               Self,

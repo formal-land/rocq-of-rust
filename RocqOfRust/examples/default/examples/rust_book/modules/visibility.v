@@ -23,28 +23,12 @@ Module my_mod.
                       Ty.path "core::fmt::Arguments",
                       M.get_associated_function (|
                         Ty.path "core::fmt::Arguments",
-                        "new_const",
-                        [ Value.Integer IntegerKind.Usize 1 ],
+                        "from_str",
+                        [],
                         []
                       |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (|
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.alloc (|
-                                Ty.apply
-                                  (Ty.path "array")
-                                  [ Value.Integer IntegerKind.Usize 1 ]
-                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                Value.Array [ mk_str (| "called `my_mod::private_function()`
+                      [ mk_str (| "called `my_mod::private_function()`
 " |) ]
-                              |)
-                            |)
-                          |)
-                        |)
-                      ]
                     |)
                   ]
                 |) in
@@ -81,28 +65,12 @@ Module my_mod.
                       Ty.path "core::fmt::Arguments",
                       M.get_associated_function (|
                         Ty.path "core::fmt::Arguments",
-                        "new_const",
-                        [ Value.Integer IntegerKind.Usize 1 ],
+                        "from_str",
+                        [],
                         []
                       |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (|
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.alloc (|
-                                Ty.apply
-                                  (Ty.path "array")
-                                  [ Value.Integer IntegerKind.Usize 1 ]
-                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                Value.Array [ mk_str (| "called `my_mod::function()`
+                      [ mk_str (| "called `my_mod::function()`
 " |) ]
-                              |)
-                            |)
-                          |)
-                        |)
-                      ]
                     |)
                   ]
                 |) in
@@ -140,29 +108,12 @@ Module my_mod.
                       Ty.path "core::fmt::Arguments",
                       M.get_associated_function (|
                         Ty.path "core::fmt::Arguments",
-                        "new_const",
-                        [ Value.Integer IntegerKind.Usize 1 ],
+                        "from_str",
+                        [],
                         []
                       |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (|
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.alloc (|
-                                Ty.apply
-                                  (Ty.path "array")
-                                  [ Value.Integer IntegerKind.Usize 1 ]
-                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                Value.Array
-                                  [ mk_str (| "called `my_mod::indirect_access()`, that
+                      [ mk_str (| "called `my_mod::indirect_access()`, that
 > " |) ]
-                              |)
-                            |)
-                          |)
-                        |)
-                      ]
                     |)
                   ]
                 |) in
@@ -206,29 +157,12 @@ Module my_mod.
                         Ty.path "core::fmt::Arguments",
                         M.get_associated_function (|
                           Ty.path "core::fmt::Arguments",
-                          "new_const",
-                          [ Value.Integer IntegerKind.Usize 1 ],
+                          "from_str",
+                          [],
                           []
                         |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.alloc (|
-                                  Ty.apply
-                                    (Ty.path "array")
-                                    [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array
-                                    [ mk_str (| "called `my_mod::nested::function()`
+                        [ mk_str (| "called `my_mod::nested::function()`
 " |) ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
                       |)
                     ]
                   |) in
@@ -265,29 +199,12 @@ Module my_mod.
                         Ty.path "core::fmt::Arguments",
                         M.get_associated_function (|
                           Ty.path "core::fmt::Arguments",
-                          "new_const",
-                          [ Value.Integer IntegerKind.Usize 1 ],
+                          "from_str",
+                          [],
                           []
                         |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.alloc (|
-                                  Ty.apply
-                                    (Ty.path "array")
-                                    [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array
-                                    [ mk_str (| "called `my_mod::nested::private_function()`
+                        [ mk_str (| "called `my_mod::nested::private_function()`
 " |) ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
                       |)
                     ]
                   |) in
@@ -329,31 +246,14 @@ Module my_mod.
                         Ty.path "core::fmt::Arguments",
                         M.get_associated_function (|
                           Ty.path "core::fmt::Arguments",
-                          "new_const",
-                          [ Value.Integer IntegerKind.Usize 1 ],
+                          "from_str",
+                          [],
                           []
                         |),
                         [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.alloc (|
-                                  Ty.apply
-                                    (Ty.path "array")
-                                    [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array
-                                    [
-                                      mk_str (|
-                                        "called `my_mod::nested::public_function_in_my_mod()`, that
+                          mk_str (|
+                            "called `my_mod::nested::public_function_in_my_mod()`, that
 > "
-                                      |)
-                                    ]
-                                |)
-                              |)
-                            |)
                           |)
                         ]
                       |)
@@ -408,33 +308,12 @@ Module my_mod.
                         Ty.path "core::fmt::Arguments",
                         M.get_associated_function (|
                           Ty.path "core::fmt::Arguments",
-                          "new_const",
-                          [ Value.Integer IntegerKind.Usize 1 ],
+                          "from_str",
+                          [],
                           []
                         |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.alloc (|
-                                  Ty.apply
-                                    (Ty.path "array")
-                                    [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array
-                                    [
-                                      mk_str (|
-                                        "called `my_mod::nested::public_function_in_nested()`
-"
-                                      |)
-                                    ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
+                        [ mk_str (| "called `my_mod::nested::public_function_in_nested()`
+" |) ]
                       |)
                     ]
                   |) in
@@ -477,33 +356,12 @@ Module my_mod.
                         Ty.path "core::fmt::Arguments",
                         M.get_associated_function (|
                           Ty.path "core::fmt::Arguments",
-                          "new_const",
-                          [ Value.Integer IntegerKind.Usize 1 ],
+                          "from_str",
+                          [],
                           []
                         |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.alloc (|
-                                  Ty.apply
-                                    (Ty.path "array")
-                                    [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array
-                                    [
-                                      mk_str (|
-                                        "called `my_mod::nested::public_function_in_super_mod()`
-"
-                                      |)
-                                    ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
+                        [ mk_str (| "called `my_mod::nested::public_function_in_super_mod()`
+" |) ]
                       |)
                     ]
                   |) in
@@ -550,33 +408,12 @@ Module my_mod.
                       Ty.path "core::fmt::Arguments",
                       M.get_associated_function (|
                         Ty.path "core::fmt::Arguments",
-                        "new_const",
-                        [ Value.Integer IntegerKind.Usize 1 ],
+                        "from_str",
+                        [],
                         []
                       |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (|
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.alloc (|
-                                Ty.apply
-                                  (Ty.path "array")
-                                  [ Value.Integer IntegerKind.Usize 1 ]
-                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                Value.Array
-                                  [
-                                    mk_str (|
-                                      "called `my_mod::call_public_function_in_my_mod()`, that
-> "
-                                    |)
-                                  ]
-                              |)
-                            |)
-                          |)
-                        |)
-                      ]
+                      [ mk_str (| "called `my_mod::call_public_function_in_my_mod()`, that
+> " |) ]
                     |)
                   ]
                 |) in
@@ -599,27 +436,11 @@ Module my_mod.
                       Ty.path "core::fmt::Arguments",
                       M.get_associated_function (|
                         Ty.path "core::fmt::Arguments",
-                        "new_const",
-                        [ Value.Integer IntegerKind.Usize 1 ],
+                        "from_str",
+                        [],
                         []
                       |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (|
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.alloc (|
-                                Ty.apply
-                                  (Ty.path "array")
-                                  [ Value.Integer IntegerKind.Usize 1 ]
-                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                Value.Array [ mk_str (| "> " |) ]
-                              |)
-                            |)
-                          |)
-                        |)
-                      ]
+                      [ mk_str (| "> " |) ]
                     |)
                   ]
                 |) in
@@ -668,29 +489,12 @@ Module my_mod.
                       Ty.path "core::fmt::Arguments",
                       M.get_associated_function (|
                         Ty.path "core::fmt::Arguments",
-                        "new_const",
-                        [ Value.Integer IntegerKind.Usize 1 ],
+                        "from_str",
+                        [],
                         []
                       |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (|
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.alloc (|
-                                Ty.apply
-                                  (Ty.path "array")
-                                  [ Value.Integer IntegerKind.Usize 1 ]
-                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                Value.Array
-                                  [ mk_str (| "called `my_mod::public_function_in_crate()`
+                      [ mk_str (| "called `my_mod::public_function_in_crate()`
 " |) ]
-                              |)
-                            |)
-                          |)
-                        |)
-                      ]
                     |)
                   ]
                 |) in
@@ -728,29 +532,12 @@ Module my_mod.
                         Ty.path "core::fmt::Arguments",
                         M.get_associated_function (|
                           Ty.path "core::fmt::Arguments",
-                          "new_const",
-                          [ Value.Integer IntegerKind.Usize 1 ],
+                          "from_str",
+                          [],
                           []
                         |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.alloc (|
-                                  Ty.apply
-                                    (Ty.path "array")
-                                    [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array
-                                    [ mk_str (| "called `my_mod::private_nested::function()`
+                        [ mk_str (| "called `my_mod::private_nested::function()`
 " |) ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
                       |)
                     ]
                   |) in
@@ -787,33 +574,12 @@ Module my_mod.
                         Ty.path "core::fmt::Arguments",
                         M.get_associated_function (|
                           Ty.path "core::fmt::Arguments",
-                          "new_const",
-                          [ Value.Integer IntegerKind.Usize 1 ],
+                          "from_str",
+                          [],
                           []
                         |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.alloc (|
-                                  Ty.apply
-                                    (Ty.path "array")
-                                    [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array
-                                    [
-                                      mk_str (|
-                                        "called `my_mod::private_nested::restricted_function()`
-"
-                                      |)
-                                    ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
+                        [ mk_str (| "called `my_mod::private_nested::restricted_function()`
+" |) ]
                       |)
                     ]
                   |) in
@@ -852,28 +618,12 @@ Definition function (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M
                     Ty.path "core::fmt::Arguments",
                     M.get_associated_function (|
                       Ty.path "core::fmt::Arguments",
-                      "new_const",
-                      [ Value.Integer IntegerKind.Usize 1 ],
+                      "from_str",
+                      [],
                       []
                     |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.alloc (|
-                              Ty.apply
-                                (Ty.path "array")
-                                [ Value.Integer IntegerKind.Usize 1 ]
-                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                              Value.Array [ mk_str (| "called `function()`
+                    [ mk_str (| "called `function()`
 " |) ]
-                            |)
-                          |)
-                        |)
-                      |)
-                    ]
                   |)
                 ]
               |) in

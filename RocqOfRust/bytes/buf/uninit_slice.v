@@ -393,38 +393,37 @@ Module buf.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                UnOp.not,
-                                [
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    BinOp.lt,
-                                    [
-                                      M.read (| index |);
-                                      M.call_closure (|
-                                        Ty.path "usize",
-                                        M.get_associated_function (|
-                                          Ty.path "bytes::buf::uninit_slice::UninitSlice",
-                                          "len",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| self |) |)
-                                          |)
-                                        ]
-                                      |)
-                                    ]
-                                  |)
-                                ]
-                              |)
-                            |)) in
+                              UnOp.not,
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.lt,
+                                  [
+                                    M.read (| index |);
+                                    M.call_closure (|
+                                      Ty.path "usize",
+                                      M.get_associated_function (|
+                                        Ty.path "bytes::buf::uninit_slice::UninitSlice",
+                                        "len",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| self |) |)
+                                        |)
+                                      ]
+                                    |)
+                                  ]
+                                |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.never_to_any (|
                           M.call_closure (|
@@ -591,24 +590,23 @@ Module buf.
                             fun γ =>
                               ltac:(M.monadic
                                 (let γ :=
-                                  M.use
-                                    (M.alloc (|
+                                  M.alloc (|
+                                    Ty.path "bool",
+                                    M.call_closure (|
                                       Ty.path "bool",
-                                      M.call_closure (|
-                                        Ty.path "bool",
-                                        UnOp.not,
-                                        [
-                                          M.call_closure (|
-                                            Ty.path "bool",
-                                            BinOp.eq,
-                                            [
-                                              M.read (| M.deref (| M.read (| left_val |) |) |);
-                                              M.read (| M.deref (| M.read (| right_val |) |) |)
-                                            ]
-                                          |)
-                                        ]
-                                      |)
-                                    |)) in
+                                      UnOp.not,
+                                      [
+                                        M.call_closure (|
+                                          Ty.path "bool",
+                                          BinOp.eq,
+                                          [
+                                            M.read (| M.deref (| M.read (| left_val |) |) |);
+                                            M.read (| M.deref (| M.read (| right_val |) |) |)
+                                          ]
+                                        |)
+                                      ]
+                                    |)
+                                  |) in
                                 let _ :=
                                   is_constant_or_break_match (|
                                     M.read (| γ |),
@@ -669,11 +667,7 @@ Module buf.
               let~ _ : Ty.tuple [] :=
                 M.call_closure (|
                   Ty.tuple [],
-                  M.get_function (|
-                    "core::intrinsics::copy_nonoverlapping",
-                    [],
-                    [ Ty.path "u8" ]
-                  |),
+                  M.get_function (| "core::ptr::copy_nonoverlapping", [], [ Ty.path "u8" ] |),
                   [
                     M.call_closure (|
                       Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],

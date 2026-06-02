@@ -11462,6 +11462,4094 @@ Module iter.
             (* Instance *) [ ("product", InstanceField.Method product) ].
       End Impl_core_iter_traits_accum_Product_ref__core_num_wrapping_Wrapping_usize_for_core_num_wrapping_Wrapping_usize.
       
+      Module Impl_core_iter_traits_accum_Sum_core_num_saturating_Saturating_u8_for_core_num_saturating_Saturating_u8.
+        Definition Self : Ty.t :=
+          Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ].
+        
+        (*
+                    fn sum<I: Iterator<Item=Self>>(iter: I) -> Self {
+                        iter.fold(
+                            $zero,
+                            |a, b| a + b,
+                        )
+                    }
+        *)
+        Definition sum (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+          match ε, τ, α with
+          | [], [ _ as I ], [ iter ] =>
+            ltac:(M.monadic
+              (let iter := M.alloc (| I, iter |) in
+              M.call_closure (|
+                Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ],
+                M.get_trait_method (|
+                  "core::iter::traits::iterator::Iterator",
+                  I,
+                  [],
+                  [],
+                  "fold",
+                  [],
+                  [
+                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ];
+                    Ty.function
+                      [
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ];
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ]
+                      ]
+                      (Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ])
+                  ]
+                |),
+                [
+                  M.read (| iter |);
+                  Value.StructTuple
+                    "core::num::saturating::Saturating"
+                    []
+                    [ Ty.path "u8" ]
+                    [ Value.Integer IntegerKind.U8 0 ];
+                  M.closure
+                    (fun γ =>
+                      ltac:(M.monadic
+                        match γ with
+                        | [ α0; α1 ] =>
+                          ltac:(M.monadic
+                            (M.match_operator (|
+                              Ty.apply
+                                (Ty.path "core::num::saturating::Saturating")
+                                []
+                                [ Ty.path "u8" ],
+                              M.alloc (|
+                                Ty.apply
+                                  (Ty.path "core::num::saturating::Saturating")
+                                  []
+                                  [ Ty.path "u8" ],
+                                α0
+                              |),
+                              [
+                                fun γ =>
+                                  ltac:(M.monadic
+                                    (let a :=
+                                      M.copy (|
+                                        Ty.apply
+                                          (Ty.path "core::num::saturating::Saturating")
+                                          []
+                                          [ Ty.path "u8" ],
+                                        γ
+                                      |) in
+                                    M.match_operator (|
+                                      Ty.apply
+                                        (Ty.path "core::num::saturating::Saturating")
+                                        []
+                                        [ Ty.path "u8" ],
+                                      M.alloc (|
+                                        Ty.apply
+                                          (Ty.path "core::num::saturating::Saturating")
+                                          []
+                                          [ Ty.path "u8" ],
+                                        α1
+                                      |),
+                                      [
+                                        fun γ =>
+                                          ltac:(M.monadic
+                                            (let b :=
+                                              M.copy (|
+                                                Ty.apply
+                                                  (Ty.path "core::num::saturating::Saturating")
+                                                  []
+                                                  [ Ty.path "u8" ],
+                                                γ
+                                              |) in
+                                            M.call_closure (|
+                                              Ty.apply
+                                                (Ty.path "core::num::saturating::Saturating")
+                                                []
+                                                [ Ty.path "u8" ],
+                                              M.get_trait_method (|
+                                                "core::ops::arith::Add",
+                                                Ty.apply
+                                                  (Ty.path "core::num::saturating::Saturating")
+                                                  []
+                                                  [ Ty.path "u8" ],
+                                                [],
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "core::num::saturating::Saturating")
+                                                    []
+                                                    [ Ty.path "u8" ]
+                                                ],
+                                                "add",
+                                                [],
+                                                []
+                                              |),
+                                              [ M.read (| a |); M.read (| b |) ]
+                                            |)))
+                                      ]
+                                    |)))
+                              ]
+                            |)))
+                        | _ => M.impossible "wrong number of arguments"
+                        end))
+                ]
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        Axiom Implements :
+          M.IsTraitInstance
+            "core::iter::traits::accum::Sum"
+            (* Trait polymorphic consts *) []
+            (* Trait polymorphic types *)
+            [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ] ]
+            Self
+            (* Instance *) [ ("sum", InstanceField.Method sum) ].
+      End Impl_core_iter_traits_accum_Sum_core_num_saturating_Saturating_u8_for_core_num_saturating_Saturating_u8.
+      
+      Module Impl_core_iter_traits_accum_Product_core_num_saturating_Saturating_u8_for_core_num_saturating_Saturating_u8.
+        Definition Self : Ty.t :=
+          Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ].
+        
+        (*
+                    fn product<I: Iterator<Item=Self>>(iter: I) -> Self {
+                        iter.fold(
+                            $one,
+                            |a, b| a * b,
+                        )
+                    }
+        *)
+        Definition product (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+          match ε, τ, α with
+          | [], [ _ as I ], [ iter ] =>
+            ltac:(M.monadic
+              (let iter := M.alloc (| I, iter |) in
+              M.call_closure (|
+                Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ],
+                M.get_trait_method (|
+                  "core::iter::traits::iterator::Iterator",
+                  I,
+                  [],
+                  [],
+                  "fold",
+                  [],
+                  [
+                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ];
+                    Ty.function
+                      [
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ];
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ]
+                      ]
+                      (Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ])
+                  ]
+                |),
+                [
+                  M.read (| iter |);
+                  Value.StructTuple
+                    "core::num::saturating::Saturating"
+                    []
+                    [ Ty.path "u8" ]
+                    [ Value.Integer IntegerKind.U8 1 ];
+                  M.closure
+                    (fun γ =>
+                      ltac:(M.monadic
+                        match γ with
+                        | [ α0; α1 ] =>
+                          ltac:(M.monadic
+                            (M.match_operator (|
+                              Ty.apply
+                                (Ty.path "core::num::saturating::Saturating")
+                                []
+                                [ Ty.path "u8" ],
+                              M.alloc (|
+                                Ty.apply
+                                  (Ty.path "core::num::saturating::Saturating")
+                                  []
+                                  [ Ty.path "u8" ],
+                                α0
+                              |),
+                              [
+                                fun γ =>
+                                  ltac:(M.monadic
+                                    (let a :=
+                                      M.copy (|
+                                        Ty.apply
+                                          (Ty.path "core::num::saturating::Saturating")
+                                          []
+                                          [ Ty.path "u8" ],
+                                        γ
+                                      |) in
+                                    M.match_operator (|
+                                      Ty.apply
+                                        (Ty.path "core::num::saturating::Saturating")
+                                        []
+                                        [ Ty.path "u8" ],
+                                      M.alloc (|
+                                        Ty.apply
+                                          (Ty.path "core::num::saturating::Saturating")
+                                          []
+                                          [ Ty.path "u8" ],
+                                        α1
+                                      |),
+                                      [
+                                        fun γ =>
+                                          ltac:(M.monadic
+                                            (let b :=
+                                              M.copy (|
+                                                Ty.apply
+                                                  (Ty.path "core::num::saturating::Saturating")
+                                                  []
+                                                  [ Ty.path "u8" ],
+                                                γ
+                                              |) in
+                                            M.call_closure (|
+                                              Ty.apply
+                                                (Ty.path "core::num::saturating::Saturating")
+                                                []
+                                                [ Ty.path "u8" ],
+                                              M.get_trait_method (|
+                                                "core::ops::arith::Mul",
+                                                Ty.apply
+                                                  (Ty.path "core::num::saturating::Saturating")
+                                                  []
+                                                  [ Ty.path "u8" ],
+                                                [],
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "core::num::saturating::Saturating")
+                                                    []
+                                                    [ Ty.path "u8" ]
+                                                ],
+                                                "mul",
+                                                [],
+                                                []
+                                              |),
+                                              [ M.read (| a |); M.read (| b |) ]
+                                            |)))
+                                      ]
+                                    |)))
+                              ]
+                            |)))
+                        | _ => M.impossible "wrong number of arguments"
+                        end))
+                ]
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        Axiom Implements :
+          M.IsTraitInstance
+            "core::iter::traits::accum::Product"
+            (* Trait polymorphic consts *) []
+            (* Trait polymorphic types *)
+            [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ] ]
+            Self
+            (* Instance *) [ ("product", InstanceField.Method product) ].
+      End Impl_core_iter_traits_accum_Product_core_num_saturating_Saturating_u8_for_core_num_saturating_Saturating_u8.
+      
+      Module Impl_core_iter_traits_accum_Sum_ref__core_num_saturating_Saturating_u8_for_core_num_saturating_Saturating_u8.
+        Definition Self : Ty.t :=
+          Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ].
+        
+        (*
+                    fn sum<I: Iterator<Item=&'a Self>>(iter: I) -> Self {
+                        iter.fold(
+                            $zero,
+                            |a, b| a + b,
+                        )
+                    }
+        *)
+        Definition sum (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+          match ε, τ, α with
+          | [], [ _ as I ], [ iter ] =>
+            ltac:(M.monadic
+              (let iter := M.alloc (| I, iter |) in
+              M.call_closure (|
+                Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ],
+                M.get_trait_method (|
+                  "core::iter::traits::iterator::Iterator",
+                  I,
+                  [],
+                  [],
+                  "fold",
+                  [],
+                  [
+                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ];
+                    Ty.function
+                      [
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ];
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "core::num::saturating::Saturating")
+                              []
+                              [ Ty.path "u8" ]
+                          ]
+                      ]
+                      (Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ])
+                  ]
+                |),
+                [
+                  M.read (| iter |);
+                  Value.StructTuple
+                    "core::num::saturating::Saturating"
+                    []
+                    [ Ty.path "u8" ]
+                    [ Value.Integer IntegerKind.U8 0 ];
+                  M.closure
+                    (fun γ =>
+                      ltac:(M.monadic
+                        match γ with
+                        | [ α0; α1 ] =>
+                          ltac:(M.monadic
+                            (M.match_operator (|
+                              Ty.apply
+                                (Ty.path "core::num::saturating::Saturating")
+                                []
+                                [ Ty.path "u8" ],
+                              M.alloc (|
+                                Ty.apply
+                                  (Ty.path "core::num::saturating::Saturating")
+                                  []
+                                  [ Ty.path "u8" ],
+                                α0
+                              |),
+                              [
+                                fun γ =>
+                                  ltac:(M.monadic
+                                    (let a :=
+                                      M.copy (|
+                                        Ty.apply
+                                          (Ty.path "core::num::saturating::Saturating")
+                                          []
+                                          [ Ty.path "u8" ],
+                                        γ
+                                      |) in
+                                    M.match_operator (|
+                                      Ty.apply
+                                        (Ty.path "core::num::saturating::Saturating")
+                                        []
+                                        [ Ty.path "u8" ],
+                                      M.alloc (|
+                                        Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "core::num::saturating::Saturating")
+                                              []
+                                              [ Ty.path "u8" ]
+                                          ],
+                                        α1
+                                      |),
+                                      [
+                                        fun γ =>
+                                          ltac:(M.monadic
+                                            (let b :=
+                                              M.copy (|
+                                                Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "core::num::saturating::Saturating")
+                                                      []
+                                                      [ Ty.path "u8" ]
+                                                  ],
+                                                γ
+                                              |) in
+                                            M.call_closure (|
+                                              Ty.apply
+                                                (Ty.path "core::num::saturating::Saturating")
+                                                []
+                                                [ Ty.path "u8" ],
+                                              M.get_trait_method (|
+                                                "core::ops::arith::Add",
+                                                Ty.apply
+                                                  (Ty.path "core::num::saturating::Saturating")
+                                                  []
+                                                  [ Ty.path "u8" ],
+                                                [],
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path
+                                                          "core::num::saturating::Saturating")
+                                                        []
+                                                        [ Ty.path "u8" ]
+                                                    ]
+                                                ],
+                                                "add",
+                                                [],
+                                                []
+                                              |),
+                                              [ M.read (| a |); M.read (| b |) ]
+                                            |)))
+                                      ]
+                                    |)))
+                              ]
+                            |)))
+                        | _ => M.impossible "wrong number of arguments"
+                        end))
+                ]
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        Axiom Implements :
+          M.IsTraitInstance
+            "core::iter::traits::accum::Sum"
+            (* Trait polymorphic consts *) []
+            (* Trait polymorphic types *)
+            [
+              Ty.apply
+                (Ty.path "&")
+                []
+                [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ] ]
+            ]
+            Self
+            (* Instance *) [ ("sum", InstanceField.Method sum) ].
+      End Impl_core_iter_traits_accum_Sum_ref__core_num_saturating_Saturating_u8_for_core_num_saturating_Saturating_u8.
+      
+      Module Impl_core_iter_traits_accum_Product_ref__core_num_saturating_Saturating_u8_for_core_num_saturating_Saturating_u8.
+        Definition Self : Ty.t :=
+          Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ].
+        
+        (*
+                    fn product<I: Iterator<Item=&'a Self>>(iter: I) -> Self {
+                        iter.fold(
+                            $one,
+                            |a, b| a * b,
+                        )
+                    }
+        *)
+        Definition product (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+          match ε, τ, α with
+          | [], [ _ as I ], [ iter ] =>
+            ltac:(M.monadic
+              (let iter := M.alloc (| I, iter |) in
+              M.call_closure (|
+                Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ],
+                M.get_trait_method (|
+                  "core::iter::traits::iterator::Iterator",
+                  I,
+                  [],
+                  [],
+                  "fold",
+                  [],
+                  [
+                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ];
+                    Ty.function
+                      [
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ];
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "core::num::saturating::Saturating")
+                              []
+                              [ Ty.path "u8" ]
+                          ]
+                      ]
+                      (Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ])
+                  ]
+                |),
+                [
+                  M.read (| iter |);
+                  Value.StructTuple
+                    "core::num::saturating::Saturating"
+                    []
+                    [ Ty.path "u8" ]
+                    [ Value.Integer IntegerKind.U8 1 ];
+                  M.closure
+                    (fun γ =>
+                      ltac:(M.monadic
+                        match γ with
+                        | [ α0; α1 ] =>
+                          ltac:(M.monadic
+                            (M.match_operator (|
+                              Ty.apply
+                                (Ty.path "core::num::saturating::Saturating")
+                                []
+                                [ Ty.path "u8" ],
+                              M.alloc (|
+                                Ty.apply
+                                  (Ty.path "core::num::saturating::Saturating")
+                                  []
+                                  [ Ty.path "u8" ],
+                                α0
+                              |),
+                              [
+                                fun γ =>
+                                  ltac:(M.monadic
+                                    (let a :=
+                                      M.copy (|
+                                        Ty.apply
+                                          (Ty.path "core::num::saturating::Saturating")
+                                          []
+                                          [ Ty.path "u8" ],
+                                        γ
+                                      |) in
+                                    M.match_operator (|
+                                      Ty.apply
+                                        (Ty.path "core::num::saturating::Saturating")
+                                        []
+                                        [ Ty.path "u8" ],
+                                      M.alloc (|
+                                        Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "core::num::saturating::Saturating")
+                                              []
+                                              [ Ty.path "u8" ]
+                                          ],
+                                        α1
+                                      |),
+                                      [
+                                        fun γ =>
+                                          ltac:(M.monadic
+                                            (let b :=
+                                              M.copy (|
+                                                Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "core::num::saturating::Saturating")
+                                                      []
+                                                      [ Ty.path "u8" ]
+                                                  ],
+                                                γ
+                                              |) in
+                                            M.call_closure (|
+                                              Ty.apply
+                                                (Ty.path "core::num::saturating::Saturating")
+                                                []
+                                                [ Ty.path "u8" ],
+                                              M.get_trait_method (|
+                                                "core::ops::arith::Mul",
+                                                Ty.apply
+                                                  (Ty.path "core::num::saturating::Saturating")
+                                                  []
+                                                  [ Ty.path "u8" ],
+                                                [],
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path
+                                                          "core::num::saturating::Saturating")
+                                                        []
+                                                        [ Ty.path "u8" ]
+                                                    ]
+                                                ],
+                                                "mul",
+                                                [],
+                                                []
+                                              |),
+                                              [ M.read (| a |); M.read (| b |) ]
+                                            |)))
+                                      ]
+                                    |)))
+                              ]
+                            |)))
+                        | _ => M.impossible "wrong number of arguments"
+                        end))
+                ]
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        Axiom Implements :
+          M.IsTraitInstance
+            "core::iter::traits::accum::Product"
+            (* Trait polymorphic consts *) []
+            (* Trait polymorphic types *)
+            [
+              Ty.apply
+                (Ty.path "&")
+                []
+                [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ] ]
+            ]
+            Self
+            (* Instance *) [ ("product", InstanceField.Method product) ].
+      End Impl_core_iter_traits_accum_Product_ref__core_num_saturating_Saturating_u8_for_core_num_saturating_Saturating_u8.
+      
+      Module Impl_core_iter_traits_accum_Sum_core_num_saturating_Saturating_u16_for_core_num_saturating_Saturating_u16.
+        Definition Self : Ty.t :=
+          Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ].
+        
+        (*
+                    fn sum<I: Iterator<Item=Self>>(iter: I) -> Self {
+                        iter.fold(
+                            $zero,
+                            |a, b| a + b,
+                        )
+                    }
+        *)
+        Definition sum (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+          match ε, τ, α with
+          | [], [ _ as I ], [ iter ] =>
+            ltac:(M.monadic
+              (let iter := M.alloc (| I, iter |) in
+              M.call_closure (|
+                Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ],
+                M.get_trait_method (|
+                  "core::iter::traits::iterator::Iterator",
+                  I,
+                  [],
+                  [],
+                  "fold",
+                  [],
+                  [
+                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ];
+                    Ty.function
+                      [
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ];
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ]
+                      ]
+                      (Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ])
+                  ]
+                |),
+                [
+                  M.read (| iter |);
+                  Value.StructTuple
+                    "core::num::saturating::Saturating"
+                    []
+                    [ Ty.path "u16" ]
+                    [ Value.Integer IntegerKind.U16 0 ];
+                  M.closure
+                    (fun γ =>
+                      ltac:(M.monadic
+                        match γ with
+                        | [ α0; α1 ] =>
+                          ltac:(M.monadic
+                            (M.match_operator (|
+                              Ty.apply
+                                (Ty.path "core::num::saturating::Saturating")
+                                []
+                                [ Ty.path "u16" ],
+                              M.alloc (|
+                                Ty.apply
+                                  (Ty.path "core::num::saturating::Saturating")
+                                  []
+                                  [ Ty.path "u16" ],
+                                α0
+                              |),
+                              [
+                                fun γ =>
+                                  ltac:(M.monadic
+                                    (let a :=
+                                      M.copy (|
+                                        Ty.apply
+                                          (Ty.path "core::num::saturating::Saturating")
+                                          []
+                                          [ Ty.path "u16" ],
+                                        γ
+                                      |) in
+                                    M.match_operator (|
+                                      Ty.apply
+                                        (Ty.path "core::num::saturating::Saturating")
+                                        []
+                                        [ Ty.path "u16" ],
+                                      M.alloc (|
+                                        Ty.apply
+                                          (Ty.path "core::num::saturating::Saturating")
+                                          []
+                                          [ Ty.path "u16" ],
+                                        α1
+                                      |),
+                                      [
+                                        fun γ =>
+                                          ltac:(M.monadic
+                                            (let b :=
+                                              M.copy (|
+                                                Ty.apply
+                                                  (Ty.path "core::num::saturating::Saturating")
+                                                  []
+                                                  [ Ty.path "u16" ],
+                                                γ
+                                              |) in
+                                            M.call_closure (|
+                                              Ty.apply
+                                                (Ty.path "core::num::saturating::Saturating")
+                                                []
+                                                [ Ty.path "u16" ],
+                                              M.get_trait_method (|
+                                                "core::ops::arith::Add",
+                                                Ty.apply
+                                                  (Ty.path "core::num::saturating::Saturating")
+                                                  []
+                                                  [ Ty.path "u16" ],
+                                                [],
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "core::num::saturating::Saturating")
+                                                    []
+                                                    [ Ty.path "u16" ]
+                                                ],
+                                                "add",
+                                                [],
+                                                []
+                                              |),
+                                              [ M.read (| a |); M.read (| b |) ]
+                                            |)))
+                                      ]
+                                    |)))
+                              ]
+                            |)))
+                        | _ => M.impossible "wrong number of arguments"
+                        end))
+                ]
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        Axiom Implements :
+          M.IsTraitInstance
+            "core::iter::traits::accum::Sum"
+            (* Trait polymorphic consts *) []
+            (* Trait polymorphic types *)
+            [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ] ]
+            Self
+            (* Instance *) [ ("sum", InstanceField.Method sum) ].
+      End Impl_core_iter_traits_accum_Sum_core_num_saturating_Saturating_u16_for_core_num_saturating_Saturating_u16.
+      
+      Module Impl_core_iter_traits_accum_Product_core_num_saturating_Saturating_u16_for_core_num_saturating_Saturating_u16.
+        Definition Self : Ty.t :=
+          Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ].
+        
+        (*
+                    fn product<I: Iterator<Item=Self>>(iter: I) -> Self {
+                        iter.fold(
+                            $one,
+                            |a, b| a * b,
+                        )
+                    }
+        *)
+        Definition product (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+          match ε, τ, α with
+          | [], [ _ as I ], [ iter ] =>
+            ltac:(M.monadic
+              (let iter := M.alloc (| I, iter |) in
+              M.call_closure (|
+                Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ],
+                M.get_trait_method (|
+                  "core::iter::traits::iterator::Iterator",
+                  I,
+                  [],
+                  [],
+                  "fold",
+                  [],
+                  [
+                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ];
+                    Ty.function
+                      [
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ];
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ]
+                      ]
+                      (Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ])
+                  ]
+                |),
+                [
+                  M.read (| iter |);
+                  Value.StructTuple
+                    "core::num::saturating::Saturating"
+                    []
+                    [ Ty.path "u16" ]
+                    [ Value.Integer IntegerKind.U16 1 ];
+                  M.closure
+                    (fun γ =>
+                      ltac:(M.monadic
+                        match γ with
+                        | [ α0; α1 ] =>
+                          ltac:(M.monadic
+                            (M.match_operator (|
+                              Ty.apply
+                                (Ty.path "core::num::saturating::Saturating")
+                                []
+                                [ Ty.path "u16" ],
+                              M.alloc (|
+                                Ty.apply
+                                  (Ty.path "core::num::saturating::Saturating")
+                                  []
+                                  [ Ty.path "u16" ],
+                                α0
+                              |),
+                              [
+                                fun γ =>
+                                  ltac:(M.monadic
+                                    (let a :=
+                                      M.copy (|
+                                        Ty.apply
+                                          (Ty.path "core::num::saturating::Saturating")
+                                          []
+                                          [ Ty.path "u16" ],
+                                        γ
+                                      |) in
+                                    M.match_operator (|
+                                      Ty.apply
+                                        (Ty.path "core::num::saturating::Saturating")
+                                        []
+                                        [ Ty.path "u16" ],
+                                      M.alloc (|
+                                        Ty.apply
+                                          (Ty.path "core::num::saturating::Saturating")
+                                          []
+                                          [ Ty.path "u16" ],
+                                        α1
+                                      |),
+                                      [
+                                        fun γ =>
+                                          ltac:(M.monadic
+                                            (let b :=
+                                              M.copy (|
+                                                Ty.apply
+                                                  (Ty.path "core::num::saturating::Saturating")
+                                                  []
+                                                  [ Ty.path "u16" ],
+                                                γ
+                                              |) in
+                                            M.call_closure (|
+                                              Ty.apply
+                                                (Ty.path "core::num::saturating::Saturating")
+                                                []
+                                                [ Ty.path "u16" ],
+                                              M.get_trait_method (|
+                                                "core::ops::arith::Mul",
+                                                Ty.apply
+                                                  (Ty.path "core::num::saturating::Saturating")
+                                                  []
+                                                  [ Ty.path "u16" ],
+                                                [],
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "core::num::saturating::Saturating")
+                                                    []
+                                                    [ Ty.path "u16" ]
+                                                ],
+                                                "mul",
+                                                [],
+                                                []
+                                              |),
+                                              [ M.read (| a |); M.read (| b |) ]
+                                            |)))
+                                      ]
+                                    |)))
+                              ]
+                            |)))
+                        | _ => M.impossible "wrong number of arguments"
+                        end))
+                ]
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        Axiom Implements :
+          M.IsTraitInstance
+            "core::iter::traits::accum::Product"
+            (* Trait polymorphic consts *) []
+            (* Trait polymorphic types *)
+            [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ] ]
+            Self
+            (* Instance *) [ ("product", InstanceField.Method product) ].
+      End Impl_core_iter_traits_accum_Product_core_num_saturating_Saturating_u16_for_core_num_saturating_Saturating_u16.
+      
+      Module Impl_core_iter_traits_accum_Sum_ref__core_num_saturating_Saturating_u16_for_core_num_saturating_Saturating_u16.
+        Definition Self : Ty.t :=
+          Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ].
+        
+        (*
+                    fn sum<I: Iterator<Item=&'a Self>>(iter: I) -> Self {
+                        iter.fold(
+                            $zero,
+                            |a, b| a + b,
+                        )
+                    }
+        *)
+        Definition sum (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+          match ε, τ, α with
+          | [], [ _ as I ], [ iter ] =>
+            ltac:(M.monadic
+              (let iter := M.alloc (| I, iter |) in
+              M.call_closure (|
+                Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ],
+                M.get_trait_method (|
+                  "core::iter::traits::iterator::Iterator",
+                  I,
+                  [],
+                  [],
+                  "fold",
+                  [],
+                  [
+                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ];
+                    Ty.function
+                      [
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ];
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "core::num::saturating::Saturating")
+                              []
+                              [ Ty.path "u16" ]
+                          ]
+                      ]
+                      (Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ])
+                  ]
+                |),
+                [
+                  M.read (| iter |);
+                  Value.StructTuple
+                    "core::num::saturating::Saturating"
+                    []
+                    [ Ty.path "u16" ]
+                    [ Value.Integer IntegerKind.U16 0 ];
+                  M.closure
+                    (fun γ =>
+                      ltac:(M.monadic
+                        match γ with
+                        | [ α0; α1 ] =>
+                          ltac:(M.monadic
+                            (M.match_operator (|
+                              Ty.apply
+                                (Ty.path "core::num::saturating::Saturating")
+                                []
+                                [ Ty.path "u16" ],
+                              M.alloc (|
+                                Ty.apply
+                                  (Ty.path "core::num::saturating::Saturating")
+                                  []
+                                  [ Ty.path "u16" ],
+                                α0
+                              |),
+                              [
+                                fun γ =>
+                                  ltac:(M.monadic
+                                    (let a :=
+                                      M.copy (|
+                                        Ty.apply
+                                          (Ty.path "core::num::saturating::Saturating")
+                                          []
+                                          [ Ty.path "u16" ],
+                                        γ
+                                      |) in
+                                    M.match_operator (|
+                                      Ty.apply
+                                        (Ty.path "core::num::saturating::Saturating")
+                                        []
+                                        [ Ty.path "u16" ],
+                                      M.alloc (|
+                                        Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "core::num::saturating::Saturating")
+                                              []
+                                              [ Ty.path "u16" ]
+                                          ],
+                                        α1
+                                      |),
+                                      [
+                                        fun γ =>
+                                          ltac:(M.monadic
+                                            (let b :=
+                                              M.copy (|
+                                                Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "core::num::saturating::Saturating")
+                                                      []
+                                                      [ Ty.path "u16" ]
+                                                  ],
+                                                γ
+                                              |) in
+                                            M.call_closure (|
+                                              Ty.apply
+                                                (Ty.path "core::num::saturating::Saturating")
+                                                []
+                                                [ Ty.path "u16" ],
+                                              M.get_trait_method (|
+                                                "core::ops::arith::Add",
+                                                Ty.apply
+                                                  (Ty.path "core::num::saturating::Saturating")
+                                                  []
+                                                  [ Ty.path "u16" ],
+                                                [],
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path
+                                                          "core::num::saturating::Saturating")
+                                                        []
+                                                        [ Ty.path "u16" ]
+                                                    ]
+                                                ],
+                                                "add",
+                                                [],
+                                                []
+                                              |),
+                                              [ M.read (| a |); M.read (| b |) ]
+                                            |)))
+                                      ]
+                                    |)))
+                              ]
+                            |)))
+                        | _ => M.impossible "wrong number of arguments"
+                        end))
+                ]
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        Axiom Implements :
+          M.IsTraitInstance
+            "core::iter::traits::accum::Sum"
+            (* Trait polymorphic consts *) []
+            (* Trait polymorphic types *)
+            [
+              Ty.apply
+                (Ty.path "&")
+                []
+                [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ] ]
+            ]
+            Self
+            (* Instance *) [ ("sum", InstanceField.Method sum) ].
+      End Impl_core_iter_traits_accum_Sum_ref__core_num_saturating_Saturating_u16_for_core_num_saturating_Saturating_u16.
+      
+      Module Impl_core_iter_traits_accum_Product_ref__core_num_saturating_Saturating_u16_for_core_num_saturating_Saturating_u16.
+        Definition Self : Ty.t :=
+          Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ].
+        
+        (*
+                    fn product<I: Iterator<Item=&'a Self>>(iter: I) -> Self {
+                        iter.fold(
+                            $one,
+                            |a, b| a * b,
+                        )
+                    }
+        *)
+        Definition product (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+          match ε, τ, α with
+          | [], [ _ as I ], [ iter ] =>
+            ltac:(M.monadic
+              (let iter := M.alloc (| I, iter |) in
+              M.call_closure (|
+                Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ],
+                M.get_trait_method (|
+                  "core::iter::traits::iterator::Iterator",
+                  I,
+                  [],
+                  [],
+                  "fold",
+                  [],
+                  [
+                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ];
+                    Ty.function
+                      [
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ];
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "core::num::saturating::Saturating")
+                              []
+                              [ Ty.path "u16" ]
+                          ]
+                      ]
+                      (Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ])
+                  ]
+                |),
+                [
+                  M.read (| iter |);
+                  Value.StructTuple
+                    "core::num::saturating::Saturating"
+                    []
+                    [ Ty.path "u16" ]
+                    [ Value.Integer IntegerKind.U16 1 ];
+                  M.closure
+                    (fun γ =>
+                      ltac:(M.monadic
+                        match γ with
+                        | [ α0; α1 ] =>
+                          ltac:(M.monadic
+                            (M.match_operator (|
+                              Ty.apply
+                                (Ty.path "core::num::saturating::Saturating")
+                                []
+                                [ Ty.path "u16" ],
+                              M.alloc (|
+                                Ty.apply
+                                  (Ty.path "core::num::saturating::Saturating")
+                                  []
+                                  [ Ty.path "u16" ],
+                                α0
+                              |),
+                              [
+                                fun γ =>
+                                  ltac:(M.monadic
+                                    (let a :=
+                                      M.copy (|
+                                        Ty.apply
+                                          (Ty.path "core::num::saturating::Saturating")
+                                          []
+                                          [ Ty.path "u16" ],
+                                        γ
+                                      |) in
+                                    M.match_operator (|
+                                      Ty.apply
+                                        (Ty.path "core::num::saturating::Saturating")
+                                        []
+                                        [ Ty.path "u16" ],
+                                      M.alloc (|
+                                        Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "core::num::saturating::Saturating")
+                                              []
+                                              [ Ty.path "u16" ]
+                                          ],
+                                        α1
+                                      |),
+                                      [
+                                        fun γ =>
+                                          ltac:(M.monadic
+                                            (let b :=
+                                              M.copy (|
+                                                Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "core::num::saturating::Saturating")
+                                                      []
+                                                      [ Ty.path "u16" ]
+                                                  ],
+                                                γ
+                                              |) in
+                                            M.call_closure (|
+                                              Ty.apply
+                                                (Ty.path "core::num::saturating::Saturating")
+                                                []
+                                                [ Ty.path "u16" ],
+                                              M.get_trait_method (|
+                                                "core::ops::arith::Mul",
+                                                Ty.apply
+                                                  (Ty.path "core::num::saturating::Saturating")
+                                                  []
+                                                  [ Ty.path "u16" ],
+                                                [],
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path
+                                                          "core::num::saturating::Saturating")
+                                                        []
+                                                        [ Ty.path "u16" ]
+                                                    ]
+                                                ],
+                                                "mul",
+                                                [],
+                                                []
+                                              |),
+                                              [ M.read (| a |); M.read (| b |) ]
+                                            |)))
+                                      ]
+                                    |)))
+                              ]
+                            |)))
+                        | _ => M.impossible "wrong number of arguments"
+                        end))
+                ]
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        Axiom Implements :
+          M.IsTraitInstance
+            "core::iter::traits::accum::Product"
+            (* Trait polymorphic consts *) []
+            (* Trait polymorphic types *)
+            [
+              Ty.apply
+                (Ty.path "&")
+                []
+                [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ] ]
+            ]
+            Self
+            (* Instance *) [ ("product", InstanceField.Method product) ].
+      End Impl_core_iter_traits_accum_Product_ref__core_num_saturating_Saturating_u16_for_core_num_saturating_Saturating_u16.
+      
+      Module Impl_core_iter_traits_accum_Sum_core_num_saturating_Saturating_u32_for_core_num_saturating_Saturating_u32.
+        Definition Self : Ty.t :=
+          Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ].
+        
+        (*
+                    fn sum<I: Iterator<Item=Self>>(iter: I) -> Self {
+                        iter.fold(
+                            $zero,
+                            |a, b| a + b,
+                        )
+                    }
+        *)
+        Definition sum (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+          match ε, τ, α with
+          | [], [ _ as I ], [ iter ] =>
+            ltac:(M.monadic
+              (let iter := M.alloc (| I, iter |) in
+              M.call_closure (|
+                Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ],
+                M.get_trait_method (|
+                  "core::iter::traits::iterator::Iterator",
+                  I,
+                  [],
+                  [],
+                  "fold",
+                  [],
+                  [
+                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ];
+                    Ty.function
+                      [
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ];
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ]
+                      ]
+                      (Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ])
+                  ]
+                |),
+                [
+                  M.read (| iter |);
+                  Value.StructTuple
+                    "core::num::saturating::Saturating"
+                    []
+                    [ Ty.path "u32" ]
+                    [ Value.Integer IntegerKind.U32 0 ];
+                  M.closure
+                    (fun γ =>
+                      ltac:(M.monadic
+                        match γ with
+                        | [ α0; α1 ] =>
+                          ltac:(M.monadic
+                            (M.match_operator (|
+                              Ty.apply
+                                (Ty.path "core::num::saturating::Saturating")
+                                []
+                                [ Ty.path "u32" ],
+                              M.alloc (|
+                                Ty.apply
+                                  (Ty.path "core::num::saturating::Saturating")
+                                  []
+                                  [ Ty.path "u32" ],
+                                α0
+                              |),
+                              [
+                                fun γ =>
+                                  ltac:(M.monadic
+                                    (let a :=
+                                      M.copy (|
+                                        Ty.apply
+                                          (Ty.path "core::num::saturating::Saturating")
+                                          []
+                                          [ Ty.path "u32" ],
+                                        γ
+                                      |) in
+                                    M.match_operator (|
+                                      Ty.apply
+                                        (Ty.path "core::num::saturating::Saturating")
+                                        []
+                                        [ Ty.path "u32" ],
+                                      M.alloc (|
+                                        Ty.apply
+                                          (Ty.path "core::num::saturating::Saturating")
+                                          []
+                                          [ Ty.path "u32" ],
+                                        α1
+                                      |),
+                                      [
+                                        fun γ =>
+                                          ltac:(M.monadic
+                                            (let b :=
+                                              M.copy (|
+                                                Ty.apply
+                                                  (Ty.path "core::num::saturating::Saturating")
+                                                  []
+                                                  [ Ty.path "u32" ],
+                                                γ
+                                              |) in
+                                            M.call_closure (|
+                                              Ty.apply
+                                                (Ty.path "core::num::saturating::Saturating")
+                                                []
+                                                [ Ty.path "u32" ],
+                                              M.get_trait_method (|
+                                                "core::ops::arith::Add",
+                                                Ty.apply
+                                                  (Ty.path "core::num::saturating::Saturating")
+                                                  []
+                                                  [ Ty.path "u32" ],
+                                                [],
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "core::num::saturating::Saturating")
+                                                    []
+                                                    [ Ty.path "u32" ]
+                                                ],
+                                                "add",
+                                                [],
+                                                []
+                                              |),
+                                              [ M.read (| a |); M.read (| b |) ]
+                                            |)))
+                                      ]
+                                    |)))
+                              ]
+                            |)))
+                        | _ => M.impossible "wrong number of arguments"
+                        end))
+                ]
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        Axiom Implements :
+          M.IsTraitInstance
+            "core::iter::traits::accum::Sum"
+            (* Trait polymorphic consts *) []
+            (* Trait polymorphic types *)
+            [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ] ]
+            Self
+            (* Instance *) [ ("sum", InstanceField.Method sum) ].
+      End Impl_core_iter_traits_accum_Sum_core_num_saturating_Saturating_u32_for_core_num_saturating_Saturating_u32.
+      
+      Module Impl_core_iter_traits_accum_Product_core_num_saturating_Saturating_u32_for_core_num_saturating_Saturating_u32.
+        Definition Self : Ty.t :=
+          Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ].
+        
+        (*
+                    fn product<I: Iterator<Item=Self>>(iter: I) -> Self {
+                        iter.fold(
+                            $one,
+                            |a, b| a * b,
+                        )
+                    }
+        *)
+        Definition product (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+          match ε, τ, α with
+          | [], [ _ as I ], [ iter ] =>
+            ltac:(M.monadic
+              (let iter := M.alloc (| I, iter |) in
+              M.call_closure (|
+                Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ],
+                M.get_trait_method (|
+                  "core::iter::traits::iterator::Iterator",
+                  I,
+                  [],
+                  [],
+                  "fold",
+                  [],
+                  [
+                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ];
+                    Ty.function
+                      [
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ];
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ]
+                      ]
+                      (Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ])
+                  ]
+                |),
+                [
+                  M.read (| iter |);
+                  Value.StructTuple
+                    "core::num::saturating::Saturating"
+                    []
+                    [ Ty.path "u32" ]
+                    [ Value.Integer IntegerKind.U32 1 ];
+                  M.closure
+                    (fun γ =>
+                      ltac:(M.monadic
+                        match γ with
+                        | [ α0; α1 ] =>
+                          ltac:(M.monadic
+                            (M.match_operator (|
+                              Ty.apply
+                                (Ty.path "core::num::saturating::Saturating")
+                                []
+                                [ Ty.path "u32" ],
+                              M.alloc (|
+                                Ty.apply
+                                  (Ty.path "core::num::saturating::Saturating")
+                                  []
+                                  [ Ty.path "u32" ],
+                                α0
+                              |),
+                              [
+                                fun γ =>
+                                  ltac:(M.monadic
+                                    (let a :=
+                                      M.copy (|
+                                        Ty.apply
+                                          (Ty.path "core::num::saturating::Saturating")
+                                          []
+                                          [ Ty.path "u32" ],
+                                        γ
+                                      |) in
+                                    M.match_operator (|
+                                      Ty.apply
+                                        (Ty.path "core::num::saturating::Saturating")
+                                        []
+                                        [ Ty.path "u32" ],
+                                      M.alloc (|
+                                        Ty.apply
+                                          (Ty.path "core::num::saturating::Saturating")
+                                          []
+                                          [ Ty.path "u32" ],
+                                        α1
+                                      |),
+                                      [
+                                        fun γ =>
+                                          ltac:(M.monadic
+                                            (let b :=
+                                              M.copy (|
+                                                Ty.apply
+                                                  (Ty.path "core::num::saturating::Saturating")
+                                                  []
+                                                  [ Ty.path "u32" ],
+                                                γ
+                                              |) in
+                                            M.call_closure (|
+                                              Ty.apply
+                                                (Ty.path "core::num::saturating::Saturating")
+                                                []
+                                                [ Ty.path "u32" ],
+                                              M.get_trait_method (|
+                                                "core::ops::arith::Mul",
+                                                Ty.apply
+                                                  (Ty.path "core::num::saturating::Saturating")
+                                                  []
+                                                  [ Ty.path "u32" ],
+                                                [],
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "core::num::saturating::Saturating")
+                                                    []
+                                                    [ Ty.path "u32" ]
+                                                ],
+                                                "mul",
+                                                [],
+                                                []
+                                              |),
+                                              [ M.read (| a |); M.read (| b |) ]
+                                            |)))
+                                      ]
+                                    |)))
+                              ]
+                            |)))
+                        | _ => M.impossible "wrong number of arguments"
+                        end))
+                ]
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        Axiom Implements :
+          M.IsTraitInstance
+            "core::iter::traits::accum::Product"
+            (* Trait polymorphic consts *) []
+            (* Trait polymorphic types *)
+            [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ] ]
+            Self
+            (* Instance *) [ ("product", InstanceField.Method product) ].
+      End Impl_core_iter_traits_accum_Product_core_num_saturating_Saturating_u32_for_core_num_saturating_Saturating_u32.
+      
+      Module Impl_core_iter_traits_accum_Sum_ref__core_num_saturating_Saturating_u32_for_core_num_saturating_Saturating_u32.
+        Definition Self : Ty.t :=
+          Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ].
+        
+        (*
+                    fn sum<I: Iterator<Item=&'a Self>>(iter: I) -> Self {
+                        iter.fold(
+                            $zero,
+                            |a, b| a + b,
+                        )
+                    }
+        *)
+        Definition sum (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+          match ε, τ, α with
+          | [], [ _ as I ], [ iter ] =>
+            ltac:(M.monadic
+              (let iter := M.alloc (| I, iter |) in
+              M.call_closure (|
+                Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ],
+                M.get_trait_method (|
+                  "core::iter::traits::iterator::Iterator",
+                  I,
+                  [],
+                  [],
+                  "fold",
+                  [],
+                  [
+                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ];
+                    Ty.function
+                      [
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ];
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "core::num::saturating::Saturating")
+                              []
+                              [ Ty.path "u32" ]
+                          ]
+                      ]
+                      (Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ])
+                  ]
+                |),
+                [
+                  M.read (| iter |);
+                  Value.StructTuple
+                    "core::num::saturating::Saturating"
+                    []
+                    [ Ty.path "u32" ]
+                    [ Value.Integer IntegerKind.U32 0 ];
+                  M.closure
+                    (fun γ =>
+                      ltac:(M.monadic
+                        match γ with
+                        | [ α0; α1 ] =>
+                          ltac:(M.monadic
+                            (M.match_operator (|
+                              Ty.apply
+                                (Ty.path "core::num::saturating::Saturating")
+                                []
+                                [ Ty.path "u32" ],
+                              M.alloc (|
+                                Ty.apply
+                                  (Ty.path "core::num::saturating::Saturating")
+                                  []
+                                  [ Ty.path "u32" ],
+                                α0
+                              |),
+                              [
+                                fun γ =>
+                                  ltac:(M.monadic
+                                    (let a :=
+                                      M.copy (|
+                                        Ty.apply
+                                          (Ty.path "core::num::saturating::Saturating")
+                                          []
+                                          [ Ty.path "u32" ],
+                                        γ
+                                      |) in
+                                    M.match_operator (|
+                                      Ty.apply
+                                        (Ty.path "core::num::saturating::Saturating")
+                                        []
+                                        [ Ty.path "u32" ],
+                                      M.alloc (|
+                                        Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "core::num::saturating::Saturating")
+                                              []
+                                              [ Ty.path "u32" ]
+                                          ],
+                                        α1
+                                      |),
+                                      [
+                                        fun γ =>
+                                          ltac:(M.monadic
+                                            (let b :=
+                                              M.copy (|
+                                                Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "core::num::saturating::Saturating")
+                                                      []
+                                                      [ Ty.path "u32" ]
+                                                  ],
+                                                γ
+                                              |) in
+                                            M.call_closure (|
+                                              Ty.apply
+                                                (Ty.path "core::num::saturating::Saturating")
+                                                []
+                                                [ Ty.path "u32" ],
+                                              M.get_trait_method (|
+                                                "core::ops::arith::Add",
+                                                Ty.apply
+                                                  (Ty.path "core::num::saturating::Saturating")
+                                                  []
+                                                  [ Ty.path "u32" ],
+                                                [],
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path
+                                                          "core::num::saturating::Saturating")
+                                                        []
+                                                        [ Ty.path "u32" ]
+                                                    ]
+                                                ],
+                                                "add",
+                                                [],
+                                                []
+                                              |),
+                                              [ M.read (| a |); M.read (| b |) ]
+                                            |)))
+                                      ]
+                                    |)))
+                              ]
+                            |)))
+                        | _ => M.impossible "wrong number of arguments"
+                        end))
+                ]
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        Axiom Implements :
+          M.IsTraitInstance
+            "core::iter::traits::accum::Sum"
+            (* Trait polymorphic consts *) []
+            (* Trait polymorphic types *)
+            [
+              Ty.apply
+                (Ty.path "&")
+                []
+                [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ] ]
+            ]
+            Self
+            (* Instance *) [ ("sum", InstanceField.Method sum) ].
+      End Impl_core_iter_traits_accum_Sum_ref__core_num_saturating_Saturating_u32_for_core_num_saturating_Saturating_u32.
+      
+      Module Impl_core_iter_traits_accum_Product_ref__core_num_saturating_Saturating_u32_for_core_num_saturating_Saturating_u32.
+        Definition Self : Ty.t :=
+          Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ].
+        
+        (*
+                    fn product<I: Iterator<Item=&'a Self>>(iter: I) -> Self {
+                        iter.fold(
+                            $one,
+                            |a, b| a * b,
+                        )
+                    }
+        *)
+        Definition product (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+          match ε, τ, α with
+          | [], [ _ as I ], [ iter ] =>
+            ltac:(M.monadic
+              (let iter := M.alloc (| I, iter |) in
+              M.call_closure (|
+                Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ],
+                M.get_trait_method (|
+                  "core::iter::traits::iterator::Iterator",
+                  I,
+                  [],
+                  [],
+                  "fold",
+                  [],
+                  [
+                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ];
+                    Ty.function
+                      [
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ];
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "core::num::saturating::Saturating")
+                              []
+                              [ Ty.path "u32" ]
+                          ]
+                      ]
+                      (Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ])
+                  ]
+                |),
+                [
+                  M.read (| iter |);
+                  Value.StructTuple
+                    "core::num::saturating::Saturating"
+                    []
+                    [ Ty.path "u32" ]
+                    [ Value.Integer IntegerKind.U32 1 ];
+                  M.closure
+                    (fun γ =>
+                      ltac:(M.monadic
+                        match γ with
+                        | [ α0; α1 ] =>
+                          ltac:(M.monadic
+                            (M.match_operator (|
+                              Ty.apply
+                                (Ty.path "core::num::saturating::Saturating")
+                                []
+                                [ Ty.path "u32" ],
+                              M.alloc (|
+                                Ty.apply
+                                  (Ty.path "core::num::saturating::Saturating")
+                                  []
+                                  [ Ty.path "u32" ],
+                                α0
+                              |),
+                              [
+                                fun γ =>
+                                  ltac:(M.monadic
+                                    (let a :=
+                                      M.copy (|
+                                        Ty.apply
+                                          (Ty.path "core::num::saturating::Saturating")
+                                          []
+                                          [ Ty.path "u32" ],
+                                        γ
+                                      |) in
+                                    M.match_operator (|
+                                      Ty.apply
+                                        (Ty.path "core::num::saturating::Saturating")
+                                        []
+                                        [ Ty.path "u32" ],
+                                      M.alloc (|
+                                        Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "core::num::saturating::Saturating")
+                                              []
+                                              [ Ty.path "u32" ]
+                                          ],
+                                        α1
+                                      |),
+                                      [
+                                        fun γ =>
+                                          ltac:(M.monadic
+                                            (let b :=
+                                              M.copy (|
+                                                Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "core::num::saturating::Saturating")
+                                                      []
+                                                      [ Ty.path "u32" ]
+                                                  ],
+                                                γ
+                                              |) in
+                                            M.call_closure (|
+                                              Ty.apply
+                                                (Ty.path "core::num::saturating::Saturating")
+                                                []
+                                                [ Ty.path "u32" ],
+                                              M.get_trait_method (|
+                                                "core::ops::arith::Mul",
+                                                Ty.apply
+                                                  (Ty.path "core::num::saturating::Saturating")
+                                                  []
+                                                  [ Ty.path "u32" ],
+                                                [],
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path
+                                                          "core::num::saturating::Saturating")
+                                                        []
+                                                        [ Ty.path "u32" ]
+                                                    ]
+                                                ],
+                                                "mul",
+                                                [],
+                                                []
+                                              |),
+                                              [ M.read (| a |); M.read (| b |) ]
+                                            |)))
+                                      ]
+                                    |)))
+                              ]
+                            |)))
+                        | _ => M.impossible "wrong number of arguments"
+                        end))
+                ]
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        Axiom Implements :
+          M.IsTraitInstance
+            "core::iter::traits::accum::Product"
+            (* Trait polymorphic consts *) []
+            (* Trait polymorphic types *)
+            [
+              Ty.apply
+                (Ty.path "&")
+                []
+                [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ] ]
+            ]
+            Self
+            (* Instance *) [ ("product", InstanceField.Method product) ].
+      End Impl_core_iter_traits_accum_Product_ref__core_num_saturating_Saturating_u32_for_core_num_saturating_Saturating_u32.
+      
+      Module Impl_core_iter_traits_accum_Sum_core_num_saturating_Saturating_u64_for_core_num_saturating_Saturating_u64.
+        Definition Self : Ty.t :=
+          Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ].
+        
+        (*
+                    fn sum<I: Iterator<Item=Self>>(iter: I) -> Self {
+                        iter.fold(
+                            $zero,
+                            |a, b| a + b,
+                        )
+                    }
+        *)
+        Definition sum (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+          match ε, τ, α with
+          | [], [ _ as I ], [ iter ] =>
+            ltac:(M.monadic
+              (let iter := M.alloc (| I, iter |) in
+              M.call_closure (|
+                Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ],
+                M.get_trait_method (|
+                  "core::iter::traits::iterator::Iterator",
+                  I,
+                  [],
+                  [],
+                  "fold",
+                  [],
+                  [
+                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ];
+                    Ty.function
+                      [
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ];
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ]
+                      ]
+                      (Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ])
+                  ]
+                |),
+                [
+                  M.read (| iter |);
+                  Value.StructTuple
+                    "core::num::saturating::Saturating"
+                    []
+                    [ Ty.path "u64" ]
+                    [ Value.Integer IntegerKind.U64 0 ];
+                  M.closure
+                    (fun γ =>
+                      ltac:(M.monadic
+                        match γ with
+                        | [ α0; α1 ] =>
+                          ltac:(M.monadic
+                            (M.match_operator (|
+                              Ty.apply
+                                (Ty.path "core::num::saturating::Saturating")
+                                []
+                                [ Ty.path "u64" ],
+                              M.alloc (|
+                                Ty.apply
+                                  (Ty.path "core::num::saturating::Saturating")
+                                  []
+                                  [ Ty.path "u64" ],
+                                α0
+                              |),
+                              [
+                                fun γ =>
+                                  ltac:(M.monadic
+                                    (let a :=
+                                      M.copy (|
+                                        Ty.apply
+                                          (Ty.path "core::num::saturating::Saturating")
+                                          []
+                                          [ Ty.path "u64" ],
+                                        γ
+                                      |) in
+                                    M.match_operator (|
+                                      Ty.apply
+                                        (Ty.path "core::num::saturating::Saturating")
+                                        []
+                                        [ Ty.path "u64" ],
+                                      M.alloc (|
+                                        Ty.apply
+                                          (Ty.path "core::num::saturating::Saturating")
+                                          []
+                                          [ Ty.path "u64" ],
+                                        α1
+                                      |),
+                                      [
+                                        fun γ =>
+                                          ltac:(M.monadic
+                                            (let b :=
+                                              M.copy (|
+                                                Ty.apply
+                                                  (Ty.path "core::num::saturating::Saturating")
+                                                  []
+                                                  [ Ty.path "u64" ],
+                                                γ
+                                              |) in
+                                            M.call_closure (|
+                                              Ty.apply
+                                                (Ty.path "core::num::saturating::Saturating")
+                                                []
+                                                [ Ty.path "u64" ],
+                                              M.get_trait_method (|
+                                                "core::ops::arith::Add",
+                                                Ty.apply
+                                                  (Ty.path "core::num::saturating::Saturating")
+                                                  []
+                                                  [ Ty.path "u64" ],
+                                                [],
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "core::num::saturating::Saturating")
+                                                    []
+                                                    [ Ty.path "u64" ]
+                                                ],
+                                                "add",
+                                                [],
+                                                []
+                                              |),
+                                              [ M.read (| a |); M.read (| b |) ]
+                                            |)))
+                                      ]
+                                    |)))
+                              ]
+                            |)))
+                        | _ => M.impossible "wrong number of arguments"
+                        end))
+                ]
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        Axiom Implements :
+          M.IsTraitInstance
+            "core::iter::traits::accum::Sum"
+            (* Trait polymorphic consts *) []
+            (* Trait polymorphic types *)
+            [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ] ]
+            Self
+            (* Instance *) [ ("sum", InstanceField.Method sum) ].
+      End Impl_core_iter_traits_accum_Sum_core_num_saturating_Saturating_u64_for_core_num_saturating_Saturating_u64.
+      
+      Module Impl_core_iter_traits_accum_Product_core_num_saturating_Saturating_u64_for_core_num_saturating_Saturating_u64.
+        Definition Self : Ty.t :=
+          Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ].
+        
+        (*
+                    fn product<I: Iterator<Item=Self>>(iter: I) -> Self {
+                        iter.fold(
+                            $one,
+                            |a, b| a * b,
+                        )
+                    }
+        *)
+        Definition product (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+          match ε, τ, α with
+          | [], [ _ as I ], [ iter ] =>
+            ltac:(M.monadic
+              (let iter := M.alloc (| I, iter |) in
+              M.call_closure (|
+                Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ],
+                M.get_trait_method (|
+                  "core::iter::traits::iterator::Iterator",
+                  I,
+                  [],
+                  [],
+                  "fold",
+                  [],
+                  [
+                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ];
+                    Ty.function
+                      [
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ];
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ]
+                      ]
+                      (Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ])
+                  ]
+                |),
+                [
+                  M.read (| iter |);
+                  Value.StructTuple
+                    "core::num::saturating::Saturating"
+                    []
+                    [ Ty.path "u64" ]
+                    [ Value.Integer IntegerKind.U64 1 ];
+                  M.closure
+                    (fun γ =>
+                      ltac:(M.monadic
+                        match γ with
+                        | [ α0; α1 ] =>
+                          ltac:(M.monadic
+                            (M.match_operator (|
+                              Ty.apply
+                                (Ty.path "core::num::saturating::Saturating")
+                                []
+                                [ Ty.path "u64" ],
+                              M.alloc (|
+                                Ty.apply
+                                  (Ty.path "core::num::saturating::Saturating")
+                                  []
+                                  [ Ty.path "u64" ],
+                                α0
+                              |),
+                              [
+                                fun γ =>
+                                  ltac:(M.monadic
+                                    (let a :=
+                                      M.copy (|
+                                        Ty.apply
+                                          (Ty.path "core::num::saturating::Saturating")
+                                          []
+                                          [ Ty.path "u64" ],
+                                        γ
+                                      |) in
+                                    M.match_operator (|
+                                      Ty.apply
+                                        (Ty.path "core::num::saturating::Saturating")
+                                        []
+                                        [ Ty.path "u64" ],
+                                      M.alloc (|
+                                        Ty.apply
+                                          (Ty.path "core::num::saturating::Saturating")
+                                          []
+                                          [ Ty.path "u64" ],
+                                        α1
+                                      |),
+                                      [
+                                        fun γ =>
+                                          ltac:(M.monadic
+                                            (let b :=
+                                              M.copy (|
+                                                Ty.apply
+                                                  (Ty.path "core::num::saturating::Saturating")
+                                                  []
+                                                  [ Ty.path "u64" ],
+                                                γ
+                                              |) in
+                                            M.call_closure (|
+                                              Ty.apply
+                                                (Ty.path "core::num::saturating::Saturating")
+                                                []
+                                                [ Ty.path "u64" ],
+                                              M.get_trait_method (|
+                                                "core::ops::arith::Mul",
+                                                Ty.apply
+                                                  (Ty.path "core::num::saturating::Saturating")
+                                                  []
+                                                  [ Ty.path "u64" ],
+                                                [],
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "core::num::saturating::Saturating")
+                                                    []
+                                                    [ Ty.path "u64" ]
+                                                ],
+                                                "mul",
+                                                [],
+                                                []
+                                              |),
+                                              [ M.read (| a |); M.read (| b |) ]
+                                            |)))
+                                      ]
+                                    |)))
+                              ]
+                            |)))
+                        | _ => M.impossible "wrong number of arguments"
+                        end))
+                ]
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        Axiom Implements :
+          M.IsTraitInstance
+            "core::iter::traits::accum::Product"
+            (* Trait polymorphic consts *) []
+            (* Trait polymorphic types *)
+            [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ] ]
+            Self
+            (* Instance *) [ ("product", InstanceField.Method product) ].
+      End Impl_core_iter_traits_accum_Product_core_num_saturating_Saturating_u64_for_core_num_saturating_Saturating_u64.
+      
+      Module Impl_core_iter_traits_accum_Sum_ref__core_num_saturating_Saturating_u64_for_core_num_saturating_Saturating_u64.
+        Definition Self : Ty.t :=
+          Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ].
+        
+        (*
+                    fn sum<I: Iterator<Item=&'a Self>>(iter: I) -> Self {
+                        iter.fold(
+                            $zero,
+                            |a, b| a + b,
+                        )
+                    }
+        *)
+        Definition sum (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+          match ε, τ, α with
+          | [], [ _ as I ], [ iter ] =>
+            ltac:(M.monadic
+              (let iter := M.alloc (| I, iter |) in
+              M.call_closure (|
+                Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ],
+                M.get_trait_method (|
+                  "core::iter::traits::iterator::Iterator",
+                  I,
+                  [],
+                  [],
+                  "fold",
+                  [],
+                  [
+                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ];
+                    Ty.function
+                      [
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ];
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "core::num::saturating::Saturating")
+                              []
+                              [ Ty.path "u64" ]
+                          ]
+                      ]
+                      (Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ])
+                  ]
+                |),
+                [
+                  M.read (| iter |);
+                  Value.StructTuple
+                    "core::num::saturating::Saturating"
+                    []
+                    [ Ty.path "u64" ]
+                    [ Value.Integer IntegerKind.U64 0 ];
+                  M.closure
+                    (fun γ =>
+                      ltac:(M.monadic
+                        match γ with
+                        | [ α0; α1 ] =>
+                          ltac:(M.monadic
+                            (M.match_operator (|
+                              Ty.apply
+                                (Ty.path "core::num::saturating::Saturating")
+                                []
+                                [ Ty.path "u64" ],
+                              M.alloc (|
+                                Ty.apply
+                                  (Ty.path "core::num::saturating::Saturating")
+                                  []
+                                  [ Ty.path "u64" ],
+                                α0
+                              |),
+                              [
+                                fun γ =>
+                                  ltac:(M.monadic
+                                    (let a :=
+                                      M.copy (|
+                                        Ty.apply
+                                          (Ty.path "core::num::saturating::Saturating")
+                                          []
+                                          [ Ty.path "u64" ],
+                                        γ
+                                      |) in
+                                    M.match_operator (|
+                                      Ty.apply
+                                        (Ty.path "core::num::saturating::Saturating")
+                                        []
+                                        [ Ty.path "u64" ],
+                                      M.alloc (|
+                                        Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "core::num::saturating::Saturating")
+                                              []
+                                              [ Ty.path "u64" ]
+                                          ],
+                                        α1
+                                      |),
+                                      [
+                                        fun γ =>
+                                          ltac:(M.monadic
+                                            (let b :=
+                                              M.copy (|
+                                                Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "core::num::saturating::Saturating")
+                                                      []
+                                                      [ Ty.path "u64" ]
+                                                  ],
+                                                γ
+                                              |) in
+                                            M.call_closure (|
+                                              Ty.apply
+                                                (Ty.path "core::num::saturating::Saturating")
+                                                []
+                                                [ Ty.path "u64" ],
+                                              M.get_trait_method (|
+                                                "core::ops::arith::Add",
+                                                Ty.apply
+                                                  (Ty.path "core::num::saturating::Saturating")
+                                                  []
+                                                  [ Ty.path "u64" ],
+                                                [],
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path
+                                                          "core::num::saturating::Saturating")
+                                                        []
+                                                        [ Ty.path "u64" ]
+                                                    ]
+                                                ],
+                                                "add",
+                                                [],
+                                                []
+                                              |),
+                                              [ M.read (| a |); M.read (| b |) ]
+                                            |)))
+                                      ]
+                                    |)))
+                              ]
+                            |)))
+                        | _ => M.impossible "wrong number of arguments"
+                        end))
+                ]
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        Axiom Implements :
+          M.IsTraitInstance
+            "core::iter::traits::accum::Sum"
+            (* Trait polymorphic consts *) []
+            (* Trait polymorphic types *)
+            [
+              Ty.apply
+                (Ty.path "&")
+                []
+                [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ] ]
+            ]
+            Self
+            (* Instance *) [ ("sum", InstanceField.Method sum) ].
+      End Impl_core_iter_traits_accum_Sum_ref__core_num_saturating_Saturating_u64_for_core_num_saturating_Saturating_u64.
+      
+      Module Impl_core_iter_traits_accum_Product_ref__core_num_saturating_Saturating_u64_for_core_num_saturating_Saturating_u64.
+        Definition Self : Ty.t :=
+          Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ].
+        
+        (*
+                    fn product<I: Iterator<Item=&'a Self>>(iter: I) -> Self {
+                        iter.fold(
+                            $one,
+                            |a, b| a * b,
+                        )
+                    }
+        *)
+        Definition product (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+          match ε, τ, α with
+          | [], [ _ as I ], [ iter ] =>
+            ltac:(M.monadic
+              (let iter := M.alloc (| I, iter |) in
+              M.call_closure (|
+                Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ],
+                M.get_trait_method (|
+                  "core::iter::traits::iterator::Iterator",
+                  I,
+                  [],
+                  [],
+                  "fold",
+                  [],
+                  [
+                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ];
+                    Ty.function
+                      [
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ];
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "core::num::saturating::Saturating")
+                              []
+                              [ Ty.path "u64" ]
+                          ]
+                      ]
+                      (Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ])
+                  ]
+                |),
+                [
+                  M.read (| iter |);
+                  Value.StructTuple
+                    "core::num::saturating::Saturating"
+                    []
+                    [ Ty.path "u64" ]
+                    [ Value.Integer IntegerKind.U64 1 ];
+                  M.closure
+                    (fun γ =>
+                      ltac:(M.monadic
+                        match γ with
+                        | [ α0; α1 ] =>
+                          ltac:(M.monadic
+                            (M.match_operator (|
+                              Ty.apply
+                                (Ty.path "core::num::saturating::Saturating")
+                                []
+                                [ Ty.path "u64" ],
+                              M.alloc (|
+                                Ty.apply
+                                  (Ty.path "core::num::saturating::Saturating")
+                                  []
+                                  [ Ty.path "u64" ],
+                                α0
+                              |),
+                              [
+                                fun γ =>
+                                  ltac:(M.monadic
+                                    (let a :=
+                                      M.copy (|
+                                        Ty.apply
+                                          (Ty.path "core::num::saturating::Saturating")
+                                          []
+                                          [ Ty.path "u64" ],
+                                        γ
+                                      |) in
+                                    M.match_operator (|
+                                      Ty.apply
+                                        (Ty.path "core::num::saturating::Saturating")
+                                        []
+                                        [ Ty.path "u64" ],
+                                      M.alloc (|
+                                        Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "core::num::saturating::Saturating")
+                                              []
+                                              [ Ty.path "u64" ]
+                                          ],
+                                        α1
+                                      |),
+                                      [
+                                        fun γ =>
+                                          ltac:(M.monadic
+                                            (let b :=
+                                              M.copy (|
+                                                Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "core::num::saturating::Saturating")
+                                                      []
+                                                      [ Ty.path "u64" ]
+                                                  ],
+                                                γ
+                                              |) in
+                                            M.call_closure (|
+                                              Ty.apply
+                                                (Ty.path "core::num::saturating::Saturating")
+                                                []
+                                                [ Ty.path "u64" ],
+                                              M.get_trait_method (|
+                                                "core::ops::arith::Mul",
+                                                Ty.apply
+                                                  (Ty.path "core::num::saturating::Saturating")
+                                                  []
+                                                  [ Ty.path "u64" ],
+                                                [],
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path
+                                                          "core::num::saturating::Saturating")
+                                                        []
+                                                        [ Ty.path "u64" ]
+                                                    ]
+                                                ],
+                                                "mul",
+                                                [],
+                                                []
+                                              |),
+                                              [ M.read (| a |); M.read (| b |) ]
+                                            |)))
+                                      ]
+                                    |)))
+                              ]
+                            |)))
+                        | _ => M.impossible "wrong number of arguments"
+                        end))
+                ]
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        Axiom Implements :
+          M.IsTraitInstance
+            "core::iter::traits::accum::Product"
+            (* Trait polymorphic consts *) []
+            (* Trait polymorphic types *)
+            [
+              Ty.apply
+                (Ty.path "&")
+                []
+                [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ] ]
+            ]
+            Self
+            (* Instance *) [ ("product", InstanceField.Method product) ].
+      End Impl_core_iter_traits_accum_Product_ref__core_num_saturating_Saturating_u64_for_core_num_saturating_Saturating_u64.
+      
+      Module Impl_core_iter_traits_accum_Sum_core_num_saturating_Saturating_u128_for_core_num_saturating_Saturating_u128.
+        Definition Self : Ty.t :=
+          Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u128" ].
+        
+        (*
+                    fn sum<I: Iterator<Item=Self>>(iter: I) -> Self {
+                        iter.fold(
+                            $zero,
+                            |a, b| a + b,
+                        )
+                    }
+        *)
+        Definition sum (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+          match ε, τ, α with
+          | [], [ _ as I ], [ iter ] =>
+            ltac:(M.monadic
+              (let iter := M.alloc (| I, iter |) in
+              M.call_closure (|
+                Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u128" ],
+                M.get_trait_method (|
+                  "core::iter::traits::iterator::Iterator",
+                  I,
+                  [],
+                  [],
+                  "fold",
+                  [],
+                  [
+                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u128" ];
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "core::num::saturating::Saturating")
+                          []
+                          [ Ty.path "u128" ];
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u128" ]
+                      ]
+                      (Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u128" ])
+                  ]
+                |),
+                [
+                  M.read (| iter |);
+                  Value.StructTuple
+                    "core::num::saturating::Saturating"
+                    []
+                    [ Ty.path "u128" ]
+                    [ Value.Integer IntegerKind.U128 0 ];
+                  M.closure
+                    (fun γ =>
+                      ltac:(M.monadic
+                        match γ with
+                        | [ α0; α1 ] =>
+                          ltac:(M.monadic
+                            (M.match_operator (|
+                              Ty.apply
+                                (Ty.path "core::num::saturating::Saturating")
+                                []
+                                [ Ty.path "u128" ],
+                              M.alloc (|
+                                Ty.apply
+                                  (Ty.path "core::num::saturating::Saturating")
+                                  []
+                                  [ Ty.path "u128" ],
+                                α0
+                              |),
+                              [
+                                fun γ =>
+                                  ltac:(M.monadic
+                                    (let a :=
+                                      M.copy (|
+                                        Ty.apply
+                                          (Ty.path "core::num::saturating::Saturating")
+                                          []
+                                          [ Ty.path "u128" ],
+                                        γ
+                                      |) in
+                                    M.match_operator (|
+                                      Ty.apply
+                                        (Ty.path "core::num::saturating::Saturating")
+                                        []
+                                        [ Ty.path "u128" ],
+                                      M.alloc (|
+                                        Ty.apply
+                                          (Ty.path "core::num::saturating::Saturating")
+                                          []
+                                          [ Ty.path "u128" ],
+                                        α1
+                                      |),
+                                      [
+                                        fun γ =>
+                                          ltac:(M.monadic
+                                            (let b :=
+                                              M.copy (|
+                                                Ty.apply
+                                                  (Ty.path "core::num::saturating::Saturating")
+                                                  []
+                                                  [ Ty.path "u128" ],
+                                                γ
+                                              |) in
+                                            M.call_closure (|
+                                              Ty.apply
+                                                (Ty.path "core::num::saturating::Saturating")
+                                                []
+                                                [ Ty.path "u128" ],
+                                              M.get_trait_method (|
+                                                "core::ops::arith::Add",
+                                                Ty.apply
+                                                  (Ty.path "core::num::saturating::Saturating")
+                                                  []
+                                                  [ Ty.path "u128" ],
+                                                [],
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "core::num::saturating::Saturating")
+                                                    []
+                                                    [ Ty.path "u128" ]
+                                                ],
+                                                "add",
+                                                [],
+                                                []
+                                              |),
+                                              [ M.read (| a |); M.read (| b |) ]
+                                            |)))
+                                      ]
+                                    |)))
+                              ]
+                            |)))
+                        | _ => M.impossible "wrong number of arguments"
+                        end))
+                ]
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        Axiom Implements :
+          M.IsTraitInstance
+            "core::iter::traits::accum::Sum"
+            (* Trait polymorphic consts *) []
+            (* Trait polymorphic types *)
+            [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u128" ] ]
+            Self
+            (* Instance *) [ ("sum", InstanceField.Method sum) ].
+      End Impl_core_iter_traits_accum_Sum_core_num_saturating_Saturating_u128_for_core_num_saturating_Saturating_u128.
+      
+      Module Impl_core_iter_traits_accum_Product_core_num_saturating_Saturating_u128_for_core_num_saturating_Saturating_u128.
+        Definition Self : Ty.t :=
+          Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u128" ].
+        
+        (*
+                    fn product<I: Iterator<Item=Self>>(iter: I) -> Self {
+                        iter.fold(
+                            $one,
+                            |a, b| a * b,
+                        )
+                    }
+        *)
+        Definition product (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+          match ε, τ, α with
+          | [], [ _ as I ], [ iter ] =>
+            ltac:(M.monadic
+              (let iter := M.alloc (| I, iter |) in
+              M.call_closure (|
+                Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u128" ],
+                M.get_trait_method (|
+                  "core::iter::traits::iterator::Iterator",
+                  I,
+                  [],
+                  [],
+                  "fold",
+                  [],
+                  [
+                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u128" ];
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "core::num::saturating::Saturating")
+                          []
+                          [ Ty.path "u128" ];
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u128" ]
+                      ]
+                      (Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u128" ])
+                  ]
+                |),
+                [
+                  M.read (| iter |);
+                  Value.StructTuple
+                    "core::num::saturating::Saturating"
+                    []
+                    [ Ty.path "u128" ]
+                    [ Value.Integer IntegerKind.U128 1 ];
+                  M.closure
+                    (fun γ =>
+                      ltac:(M.monadic
+                        match γ with
+                        | [ α0; α1 ] =>
+                          ltac:(M.monadic
+                            (M.match_operator (|
+                              Ty.apply
+                                (Ty.path "core::num::saturating::Saturating")
+                                []
+                                [ Ty.path "u128" ],
+                              M.alloc (|
+                                Ty.apply
+                                  (Ty.path "core::num::saturating::Saturating")
+                                  []
+                                  [ Ty.path "u128" ],
+                                α0
+                              |),
+                              [
+                                fun γ =>
+                                  ltac:(M.monadic
+                                    (let a :=
+                                      M.copy (|
+                                        Ty.apply
+                                          (Ty.path "core::num::saturating::Saturating")
+                                          []
+                                          [ Ty.path "u128" ],
+                                        γ
+                                      |) in
+                                    M.match_operator (|
+                                      Ty.apply
+                                        (Ty.path "core::num::saturating::Saturating")
+                                        []
+                                        [ Ty.path "u128" ],
+                                      M.alloc (|
+                                        Ty.apply
+                                          (Ty.path "core::num::saturating::Saturating")
+                                          []
+                                          [ Ty.path "u128" ],
+                                        α1
+                                      |),
+                                      [
+                                        fun γ =>
+                                          ltac:(M.monadic
+                                            (let b :=
+                                              M.copy (|
+                                                Ty.apply
+                                                  (Ty.path "core::num::saturating::Saturating")
+                                                  []
+                                                  [ Ty.path "u128" ],
+                                                γ
+                                              |) in
+                                            M.call_closure (|
+                                              Ty.apply
+                                                (Ty.path "core::num::saturating::Saturating")
+                                                []
+                                                [ Ty.path "u128" ],
+                                              M.get_trait_method (|
+                                                "core::ops::arith::Mul",
+                                                Ty.apply
+                                                  (Ty.path "core::num::saturating::Saturating")
+                                                  []
+                                                  [ Ty.path "u128" ],
+                                                [],
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "core::num::saturating::Saturating")
+                                                    []
+                                                    [ Ty.path "u128" ]
+                                                ],
+                                                "mul",
+                                                [],
+                                                []
+                                              |),
+                                              [ M.read (| a |); M.read (| b |) ]
+                                            |)))
+                                      ]
+                                    |)))
+                              ]
+                            |)))
+                        | _ => M.impossible "wrong number of arguments"
+                        end))
+                ]
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        Axiom Implements :
+          M.IsTraitInstance
+            "core::iter::traits::accum::Product"
+            (* Trait polymorphic consts *) []
+            (* Trait polymorphic types *)
+            [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u128" ] ]
+            Self
+            (* Instance *) [ ("product", InstanceField.Method product) ].
+      End Impl_core_iter_traits_accum_Product_core_num_saturating_Saturating_u128_for_core_num_saturating_Saturating_u128.
+      
+      Module Impl_core_iter_traits_accum_Sum_ref__core_num_saturating_Saturating_u128_for_core_num_saturating_Saturating_u128.
+        Definition Self : Ty.t :=
+          Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u128" ].
+        
+        (*
+                    fn sum<I: Iterator<Item=&'a Self>>(iter: I) -> Self {
+                        iter.fold(
+                            $zero,
+                            |a, b| a + b,
+                        )
+                    }
+        *)
+        Definition sum (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+          match ε, τ, α with
+          | [], [ _ as I ], [ iter ] =>
+            ltac:(M.monadic
+              (let iter := M.alloc (| I, iter |) in
+              M.call_closure (|
+                Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u128" ],
+                M.get_trait_method (|
+                  "core::iter::traits::iterator::Iterator",
+                  I,
+                  [],
+                  [],
+                  "fold",
+                  [],
+                  [
+                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u128" ];
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "core::num::saturating::Saturating")
+                          []
+                          [ Ty.path "u128" ];
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "core::num::saturating::Saturating")
+                              []
+                              [ Ty.path "u128" ]
+                          ]
+                      ]
+                      (Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u128" ])
+                  ]
+                |),
+                [
+                  M.read (| iter |);
+                  Value.StructTuple
+                    "core::num::saturating::Saturating"
+                    []
+                    [ Ty.path "u128" ]
+                    [ Value.Integer IntegerKind.U128 0 ];
+                  M.closure
+                    (fun γ =>
+                      ltac:(M.monadic
+                        match γ with
+                        | [ α0; α1 ] =>
+                          ltac:(M.monadic
+                            (M.match_operator (|
+                              Ty.apply
+                                (Ty.path "core::num::saturating::Saturating")
+                                []
+                                [ Ty.path "u128" ],
+                              M.alloc (|
+                                Ty.apply
+                                  (Ty.path "core::num::saturating::Saturating")
+                                  []
+                                  [ Ty.path "u128" ],
+                                α0
+                              |),
+                              [
+                                fun γ =>
+                                  ltac:(M.monadic
+                                    (let a :=
+                                      M.copy (|
+                                        Ty.apply
+                                          (Ty.path "core::num::saturating::Saturating")
+                                          []
+                                          [ Ty.path "u128" ],
+                                        γ
+                                      |) in
+                                    M.match_operator (|
+                                      Ty.apply
+                                        (Ty.path "core::num::saturating::Saturating")
+                                        []
+                                        [ Ty.path "u128" ],
+                                      M.alloc (|
+                                        Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "core::num::saturating::Saturating")
+                                              []
+                                              [ Ty.path "u128" ]
+                                          ],
+                                        α1
+                                      |),
+                                      [
+                                        fun γ =>
+                                          ltac:(M.monadic
+                                            (let b :=
+                                              M.copy (|
+                                                Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "core::num::saturating::Saturating")
+                                                      []
+                                                      [ Ty.path "u128" ]
+                                                  ],
+                                                γ
+                                              |) in
+                                            M.call_closure (|
+                                              Ty.apply
+                                                (Ty.path "core::num::saturating::Saturating")
+                                                []
+                                                [ Ty.path "u128" ],
+                                              M.get_trait_method (|
+                                                "core::ops::arith::Add",
+                                                Ty.apply
+                                                  (Ty.path "core::num::saturating::Saturating")
+                                                  []
+                                                  [ Ty.path "u128" ],
+                                                [],
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path
+                                                          "core::num::saturating::Saturating")
+                                                        []
+                                                        [ Ty.path "u128" ]
+                                                    ]
+                                                ],
+                                                "add",
+                                                [],
+                                                []
+                                              |),
+                                              [ M.read (| a |); M.read (| b |) ]
+                                            |)))
+                                      ]
+                                    |)))
+                              ]
+                            |)))
+                        | _ => M.impossible "wrong number of arguments"
+                        end))
+                ]
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        Axiom Implements :
+          M.IsTraitInstance
+            "core::iter::traits::accum::Sum"
+            (* Trait polymorphic consts *) []
+            (* Trait polymorphic types *)
+            [
+              Ty.apply
+                (Ty.path "&")
+                []
+                [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u128" ] ]
+            ]
+            Self
+            (* Instance *) [ ("sum", InstanceField.Method sum) ].
+      End Impl_core_iter_traits_accum_Sum_ref__core_num_saturating_Saturating_u128_for_core_num_saturating_Saturating_u128.
+      
+      Module Impl_core_iter_traits_accum_Product_ref__core_num_saturating_Saturating_u128_for_core_num_saturating_Saturating_u128.
+        Definition Self : Ty.t :=
+          Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u128" ].
+        
+        (*
+                    fn product<I: Iterator<Item=&'a Self>>(iter: I) -> Self {
+                        iter.fold(
+                            $one,
+                            |a, b| a * b,
+                        )
+                    }
+        *)
+        Definition product (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+          match ε, τ, α with
+          | [], [ _ as I ], [ iter ] =>
+            ltac:(M.monadic
+              (let iter := M.alloc (| I, iter |) in
+              M.call_closure (|
+                Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u128" ],
+                M.get_trait_method (|
+                  "core::iter::traits::iterator::Iterator",
+                  I,
+                  [],
+                  [],
+                  "fold",
+                  [],
+                  [
+                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u128" ];
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "core::num::saturating::Saturating")
+                          []
+                          [ Ty.path "u128" ];
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "core::num::saturating::Saturating")
+                              []
+                              [ Ty.path "u128" ]
+                          ]
+                      ]
+                      (Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u128" ])
+                  ]
+                |),
+                [
+                  M.read (| iter |);
+                  Value.StructTuple
+                    "core::num::saturating::Saturating"
+                    []
+                    [ Ty.path "u128" ]
+                    [ Value.Integer IntegerKind.U128 1 ];
+                  M.closure
+                    (fun γ =>
+                      ltac:(M.monadic
+                        match γ with
+                        | [ α0; α1 ] =>
+                          ltac:(M.monadic
+                            (M.match_operator (|
+                              Ty.apply
+                                (Ty.path "core::num::saturating::Saturating")
+                                []
+                                [ Ty.path "u128" ],
+                              M.alloc (|
+                                Ty.apply
+                                  (Ty.path "core::num::saturating::Saturating")
+                                  []
+                                  [ Ty.path "u128" ],
+                                α0
+                              |),
+                              [
+                                fun γ =>
+                                  ltac:(M.monadic
+                                    (let a :=
+                                      M.copy (|
+                                        Ty.apply
+                                          (Ty.path "core::num::saturating::Saturating")
+                                          []
+                                          [ Ty.path "u128" ],
+                                        γ
+                                      |) in
+                                    M.match_operator (|
+                                      Ty.apply
+                                        (Ty.path "core::num::saturating::Saturating")
+                                        []
+                                        [ Ty.path "u128" ],
+                                      M.alloc (|
+                                        Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "core::num::saturating::Saturating")
+                                              []
+                                              [ Ty.path "u128" ]
+                                          ],
+                                        α1
+                                      |),
+                                      [
+                                        fun γ =>
+                                          ltac:(M.monadic
+                                            (let b :=
+                                              M.copy (|
+                                                Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "core::num::saturating::Saturating")
+                                                      []
+                                                      [ Ty.path "u128" ]
+                                                  ],
+                                                γ
+                                              |) in
+                                            M.call_closure (|
+                                              Ty.apply
+                                                (Ty.path "core::num::saturating::Saturating")
+                                                []
+                                                [ Ty.path "u128" ],
+                                              M.get_trait_method (|
+                                                "core::ops::arith::Mul",
+                                                Ty.apply
+                                                  (Ty.path "core::num::saturating::Saturating")
+                                                  []
+                                                  [ Ty.path "u128" ],
+                                                [],
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path
+                                                          "core::num::saturating::Saturating")
+                                                        []
+                                                        [ Ty.path "u128" ]
+                                                    ]
+                                                ],
+                                                "mul",
+                                                [],
+                                                []
+                                              |),
+                                              [ M.read (| a |); M.read (| b |) ]
+                                            |)))
+                                      ]
+                                    |)))
+                              ]
+                            |)))
+                        | _ => M.impossible "wrong number of arguments"
+                        end))
+                ]
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        Axiom Implements :
+          M.IsTraitInstance
+            "core::iter::traits::accum::Product"
+            (* Trait polymorphic consts *) []
+            (* Trait polymorphic types *)
+            [
+              Ty.apply
+                (Ty.path "&")
+                []
+                [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u128" ] ]
+            ]
+            Self
+            (* Instance *) [ ("product", InstanceField.Method product) ].
+      End Impl_core_iter_traits_accum_Product_ref__core_num_saturating_Saturating_u128_for_core_num_saturating_Saturating_u128.
+      
+      Module Impl_core_iter_traits_accum_Sum_core_num_saturating_Saturating_usize_for_core_num_saturating_Saturating_usize.
+        Definition Self : Ty.t :=
+          Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "usize" ].
+        
+        (*
+                    fn sum<I: Iterator<Item=Self>>(iter: I) -> Self {
+                        iter.fold(
+                            $zero,
+                            |a, b| a + b,
+                        )
+                    }
+        *)
+        Definition sum (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+          match ε, τ, α with
+          | [], [ _ as I ], [ iter ] =>
+            ltac:(M.monadic
+              (let iter := M.alloc (| I, iter |) in
+              M.call_closure (|
+                Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "usize" ],
+                M.get_trait_method (|
+                  "core::iter::traits::iterator::Iterator",
+                  I,
+                  [],
+                  [],
+                  "fold",
+                  [],
+                  [
+                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "usize" ];
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "core::num::saturating::Saturating")
+                          []
+                          [ Ty.path "usize" ];
+                        Ty.apply
+                          (Ty.path "core::num::saturating::Saturating")
+                          []
+                          [ Ty.path "usize" ]
+                      ]
+                      (Ty.apply
+                        (Ty.path "core::num::saturating::Saturating")
+                        []
+                        [ Ty.path "usize" ])
+                  ]
+                |),
+                [
+                  M.read (| iter |);
+                  Value.StructTuple
+                    "core::num::saturating::Saturating"
+                    []
+                    [ Ty.path "usize" ]
+                    [ Value.Integer IntegerKind.Usize 0 ];
+                  M.closure
+                    (fun γ =>
+                      ltac:(M.monadic
+                        match γ with
+                        | [ α0; α1 ] =>
+                          ltac:(M.monadic
+                            (M.match_operator (|
+                              Ty.apply
+                                (Ty.path "core::num::saturating::Saturating")
+                                []
+                                [ Ty.path "usize" ],
+                              M.alloc (|
+                                Ty.apply
+                                  (Ty.path "core::num::saturating::Saturating")
+                                  []
+                                  [ Ty.path "usize" ],
+                                α0
+                              |),
+                              [
+                                fun γ =>
+                                  ltac:(M.monadic
+                                    (let a :=
+                                      M.copy (|
+                                        Ty.apply
+                                          (Ty.path "core::num::saturating::Saturating")
+                                          []
+                                          [ Ty.path "usize" ],
+                                        γ
+                                      |) in
+                                    M.match_operator (|
+                                      Ty.apply
+                                        (Ty.path "core::num::saturating::Saturating")
+                                        []
+                                        [ Ty.path "usize" ],
+                                      M.alloc (|
+                                        Ty.apply
+                                          (Ty.path "core::num::saturating::Saturating")
+                                          []
+                                          [ Ty.path "usize" ],
+                                        α1
+                                      |),
+                                      [
+                                        fun γ =>
+                                          ltac:(M.monadic
+                                            (let b :=
+                                              M.copy (|
+                                                Ty.apply
+                                                  (Ty.path "core::num::saturating::Saturating")
+                                                  []
+                                                  [ Ty.path "usize" ],
+                                                γ
+                                              |) in
+                                            M.call_closure (|
+                                              Ty.apply
+                                                (Ty.path "core::num::saturating::Saturating")
+                                                []
+                                                [ Ty.path "usize" ],
+                                              M.get_trait_method (|
+                                                "core::ops::arith::Add",
+                                                Ty.apply
+                                                  (Ty.path "core::num::saturating::Saturating")
+                                                  []
+                                                  [ Ty.path "usize" ],
+                                                [],
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "core::num::saturating::Saturating")
+                                                    []
+                                                    [ Ty.path "usize" ]
+                                                ],
+                                                "add",
+                                                [],
+                                                []
+                                              |),
+                                              [ M.read (| a |); M.read (| b |) ]
+                                            |)))
+                                      ]
+                                    |)))
+                              ]
+                            |)))
+                        | _ => M.impossible "wrong number of arguments"
+                        end))
+                ]
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        Axiom Implements :
+          M.IsTraitInstance
+            "core::iter::traits::accum::Sum"
+            (* Trait polymorphic consts *) []
+            (* Trait polymorphic types *)
+            [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "usize" ] ]
+            Self
+            (* Instance *) [ ("sum", InstanceField.Method sum) ].
+      End Impl_core_iter_traits_accum_Sum_core_num_saturating_Saturating_usize_for_core_num_saturating_Saturating_usize.
+      
+      Module Impl_core_iter_traits_accum_Product_core_num_saturating_Saturating_usize_for_core_num_saturating_Saturating_usize.
+        Definition Self : Ty.t :=
+          Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "usize" ].
+        
+        (*
+                    fn product<I: Iterator<Item=Self>>(iter: I) -> Self {
+                        iter.fold(
+                            $one,
+                            |a, b| a * b,
+                        )
+                    }
+        *)
+        Definition product (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+          match ε, τ, α with
+          | [], [ _ as I ], [ iter ] =>
+            ltac:(M.monadic
+              (let iter := M.alloc (| I, iter |) in
+              M.call_closure (|
+                Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "usize" ],
+                M.get_trait_method (|
+                  "core::iter::traits::iterator::Iterator",
+                  I,
+                  [],
+                  [],
+                  "fold",
+                  [],
+                  [
+                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "usize" ];
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "core::num::saturating::Saturating")
+                          []
+                          [ Ty.path "usize" ];
+                        Ty.apply
+                          (Ty.path "core::num::saturating::Saturating")
+                          []
+                          [ Ty.path "usize" ]
+                      ]
+                      (Ty.apply
+                        (Ty.path "core::num::saturating::Saturating")
+                        []
+                        [ Ty.path "usize" ])
+                  ]
+                |),
+                [
+                  M.read (| iter |);
+                  Value.StructTuple
+                    "core::num::saturating::Saturating"
+                    []
+                    [ Ty.path "usize" ]
+                    [ Value.Integer IntegerKind.Usize 1 ];
+                  M.closure
+                    (fun γ =>
+                      ltac:(M.monadic
+                        match γ with
+                        | [ α0; α1 ] =>
+                          ltac:(M.monadic
+                            (M.match_operator (|
+                              Ty.apply
+                                (Ty.path "core::num::saturating::Saturating")
+                                []
+                                [ Ty.path "usize" ],
+                              M.alloc (|
+                                Ty.apply
+                                  (Ty.path "core::num::saturating::Saturating")
+                                  []
+                                  [ Ty.path "usize" ],
+                                α0
+                              |),
+                              [
+                                fun γ =>
+                                  ltac:(M.monadic
+                                    (let a :=
+                                      M.copy (|
+                                        Ty.apply
+                                          (Ty.path "core::num::saturating::Saturating")
+                                          []
+                                          [ Ty.path "usize" ],
+                                        γ
+                                      |) in
+                                    M.match_operator (|
+                                      Ty.apply
+                                        (Ty.path "core::num::saturating::Saturating")
+                                        []
+                                        [ Ty.path "usize" ],
+                                      M.alloc (|
+                                        Ty.apply
+                                          (Ty.path "core::num::saturating::Saturating")
+                                          []
+                                          [ Ty.path "usize" ],
+                                        α1
+                                      |),
+                                      [
+                                        fun γ =>
+                                          ltac:(M.monadic
+                                            (let b :=
+                                              M.copy (|
+                                                Ty.apply
+                                                  (Ty.path "core::num::saturating::Saturating")
+                                                  []
+                                                  [ Ty.path "usize" ],
+                                                γ
+                                              |) in
+                                            M.call_closure (|
+                                              Ty.apply
+                                                (Ty.path "core::num::saturating::Saturating")
+                                                []
+                                                [ Ty.path "usize" ],
+                                              M.get_trait_method (|
+                                                "core::ops::arith::Mul",
+                                                Ty.apply
+                                                  (Ty.path "core::num::saturating::Saturating")
+                                                  []
+                                                  [ Ty.path "usize" ],
+                                                [],
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "core::num::saturating::Saturating")
+                                                    []
+                                                    [ Ty.path "usize" ]
+                                                ],
+                                                "mul",
+                                                [],
+                                                []
+                                              |),
+                                              [ M.read (| a |); M.read (| b |) ]
+                                            |)))
+                                      ]
+                                    |)))
+                              ]
+                            |)))
+                        | _ => M.impossible "wrong number of arguments"
+                        end))
+                ]
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        Axiom Implements :
+          M.IsTraitInstance
+            "core::iter::traits::accum::Product"
+            (* Trait polymorphic consts *) []
+            (* Trait polymorphic types *)
+            [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "usize" ] ]
+            Self
+            (* Instance *) [ ("product", InstanceField.Method product) ].
+      End Impl_core_iter_traits_accum_Product_core_num_saturating_Saturating_usize_for_core_num_saturating_Saturating_usize.
+      
+      Module Impl_core_iter_traits_accum_Sum_ref__core_num_saturating_Saturating_usize_for_core_num_saturating_Saturating_usize.
+        Definition Self : Ty.t :=
+          Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "usize" ].
+        
+        (*
+                    fn sum<I: Iterator<Item=&'a Self>>(iter: I) -> Self {
+                        iter.fold(
+                            $zero,
+                            |a, b| a + b,
+                        )
+                    }
+        *)
+        Definition sum (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+          match ε, τ, α with
+          | [], [ _ as I ], [ iter ] =>
+            ltac:(M.monadic
+              (let iter := M.alloc (| I, iter |) in
+              M.call_closure (|
+                Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "usize" ],
+                M.get_trait_method (|
+                  "core::iter::traits::iterator::Iterator",
+                  I,
+                  [],
+                  [],
+                  "fold",
+                  [],
+                  [
+                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "usize" ];
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "core::num::saturating::Saturating")
+                          []
+                          [ Ty.path "usize" ];
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "core::num::saturating::Saturating")
+                              []
+                              [ Ty.path "usize" ]
+                          ]
+                      ]
+                      (Ty.apply
+                        (Ty.path "core::num::saturating::Saturating")
+                        []
+                        [ Ty.path "usize" ])
+                  ]
+                |),
+                [
+                  M.read (| iter |);
+                  Value.StructTuple
+                    "core::num::saturating::Saturating"
+                    []
+                    [ Ty.path "usize" ]
+                    [ Value.Integer IntegerKind.Usize 0 ];
+                  M.closure
+                    (fun γ =>
+                      ltac:(M.monadic
+                        match γ with
+                        | [ α0; α1 ] =>
+                          ltac:(M.monadic
+                            (M.match_operator (|
+                              Ty.apply
+                                (Ty.path "core::num::saturating::Saturating")
+                                []
+                                [ Ty.path "usize" ],
+                              M.alloc (|
+                                Ty.apply
+                                  (Ty.path "core::num::saturating::Saturating")
+                                  []
+                                  [ Ty.path "usize" ],
+                                α0
+                              |),
+                              [
+                                fun γ =>
+                                  ltac:(M.monadic
+                                    (let a :=
+                                      M.copy (|
+                                        Ty.apply
+                                          (Ty.path "core::num::saturating::Saturating")
+                                          []
+                                          [ Ty.path "usize" ],
+                                        γ
+                                      |) in
+                                    M.match_operator (|
+                                      Ty.apply
+                                        (Ty.path "core::num::saturating::Saturating")
+                                        []
+                                        [ Ty.path "usize" ],
+                                      M.alloc (|
+                                        Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "core::num::saturating::Saturating")
+                                              []
+                                              [ Ty.path "usize" ]
+                                          ],
+                                        α1
+                                      |),
+                                      [
+                                        fun γ =>
+                                          ltac:(M.monadic
+                                            (let b :=
+                                              M.copy (|
+                                                Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "core::num::saturating::Saturating")
+                                                      []
+                                                      [ Ty.path "usize" ]
+                                                  ],
+                                                γ
+                                              |) in
+                                            M.call_closure (|
+                                              Ty.apply
+                                                (Ty.path "core::num::saturating::Saturating")
+                                                []
+                                                [ Ty.path "usize" ],
+                                              M.get_trait_method (|
+                                                "core::ops::arith::Add",
+                                                Ty.apply
+                                                  (Ty.path "core::num::saturating::Saturating")
+                                                  []
+                                                  [ Ty.path "usize" ],
+                                                [],
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path
+                                                          "core::num::saturating::Saturating")
+                                                        []
+                                                        [ Ty.path "usize" ]
+                                                    ]
+                                                ],
+                                                "add",
+                                                [],
+                                                []
+                                              |),
+                                              [ M.read (| a |); M.read (| b |) ]
+                                            |)))
+                                      ]
+                                    |)))
+                              ]
+                            |)))
+                        | _ => M.impossible "wrong number of arguments"
+                        end))
+                ]
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        Axiom Implements :
+          M.IsTraitInstance
+            "core::iter::traits::accum::Sum"
+            (* Trait polymorphic consts *) []
+            (* Trait polymorphic types *)
+            [
+              Ty.apply
+                (Ty.path "&")
+                []
+                [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "usize" ] ]
+            ]
+            Self
+            (* Instance *) [ ("sum", InstanceField.Method sum) ].
+      End Impl_core_iter_traits_accum_Sum_ref__core_num_saturating_Saturating_usize_for_core_num_saturating_Saturating_usize.
+      
+      Module Impl_core_iter_traits_accum_Product_ref__core_num_saturating_Saturating_usize_for_core_num_saturating_Saturating_usize.
+        Definition Self : Ty.t :=
+          Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "usize" ].
+        
+        (*
+                    fn product<I: Iterator<Item=&'a Self>>(iter: I) -> Self {
+                        iter.fold(
+                            $one,
+                            |a, b| a * b,
+                        )
+                    }
+        *)
+        Definition product (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+          match ε, τ, α with
+          | [], [ _ as I ], [ iter ] =>
+            ltac:(M.monadic
+              (let iter := M.alloc (| I, iter |) in
+              M.call_closure (|
+                Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "usize" ],
+                M.get_trait_method (|
+                  "core::iter::traits::iterator::Iterator",
+                  I,
+                  [],
+                  [],
+                  "fold",
+                  [],
+                  [
+                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "usize" ];
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "core::num::saturating::Saturating")
+                          []
+                          [ Ty.path "usize" ];
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "core::num::saturating::Saturating")
+                              []
+                              [ Ty.path "usize" ]
+                          ]
+                      ]
+                      (Ty.apply
+                        (Ty.path "core::num::saturating::Saturating")
+                        []
+                        [ Ty.path "usize" ])
+                  ]
+                |),
+                [
+                  M.read (| iter |);
+                  Value.StructTuple
+                    "core::num::saturating::Saturating"
+                    []
+                    [ Ty.path "usize" ]
+                    [ Value.Integer IntegerKind.Usize 1 ];
+                  M.closure
+                    (fun γ =>
+                      ltac:(M.monadic
+                        match γ with
+                        | [ α0; α1 ] =>
+                          ltac:(M.monadic
+                            (M.match_operator (|
+                              Ty.apply
+                                (Ty.path "core::num::saturating::Saturating")
+                                []
+                                [ Ty.path "usize" ],
+                              M.alloc (|
+                                Ty.apply
+                                  (Ty.path "core::num::saturating::Saturating")
+                                  []
+                                  [ Ty.path "usize" ],
+                                α0
+                              |),
+                              [
+                                fun γ =>
+                                  ltac:(M.monadic
+                                    (let a :=
+                                      M.copy (|
+                                        Ty.apply
+                                          (Ty.path "core::num::saturating::Saturating")
+                                          []
+                                          [ Ty.path "usize" ],
+                                        γ
+                                      |) in
+                                    M.match_operator (|
+                                      Ty.apply
+                                        (Ty.path "core::num::saturating::Saturating")
+                                        []
+                                        [ Ty.path "usize" ],
+                                      M.alloc (|
+                                        Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "core::num::saturating::Saturating")
+                                              []
+                                              [ Ty.path "usize" ]
+                                          ],
+                                        α1
+                                      |),
+                                      [
+                                        fun γ =>
+                                          ltac:(M.monadic
+                                            (let b :=
+                                              M.copy (|
+                                                Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "core::num::saturating::Saturating")
+                                                      []
+                                                      [ Ty.path "usize" ]
+                                                  ],
+                                                γ
+                                              |) in
+                                            M.call_closure (|
+                                              Ty.apply
+                                                (Ty.path "core::num::saturating::Saturating")
+                                                []
+                                                [ Ty.path "usize" ],
+                                              M.get_trait_method (|
+                                                "core::ops::arith::Mul",
+                                                Ty.apply
+                                                  (Ty.path "core::num::saturating::Saturating")
+                                                  []
+                                                  [ Ty.path "usize" ],
+                                                [],
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path
+                                                          "core::num::saturating::Saturating")
+                                                        []
+                                                        [ Ty.path "usize" ]
+                                                    ]
+                                                ],
+                                                "mul",
+                                                [],
+                                                []
+                                              |),
+                                              [ M.read (| a |); M.read (| b |) ]
+                                            |)))
+                                      ]
+                                    |)))
+                              ]
+                            |)))
+                        | _ => M.impossible "wrong number of arguments"
+                        end))
+                ]
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        Axiom Implements :
+          M.IsTraitInstance
+            "core::iter::traits::accum::Product"
+            (* Trait polymorphic consts *) []
+            (* Trait polymorphic types *)
+            [
+              Ty.apply
+                (Ty.path "&")
+                []
+                [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "usize" ] ]
+            ]
+            Self
+            (* Instance *) [ ("product", InstanceField.Method product) ].
+      End Impl_core_iter_traits_accum_Product_ref__core_num_saturating_Saturating_usize_for_core_num_saturating_Saturating_usize.
+      
+      Module Impl_core_iter_traits_accum_Sum_f16_for_f16.
+        Definition Self : Ty.t := Ty.path "f16".
+        
+        (*
+                    fn sum<I: Iterator<Item=Self>>(iter: I) -> Self {
+                        iter.fold(
+                            -0.0,
+                            #[rustc_inherit_overflow_checks]
+                            |a, b| a + b,
+                        )
+                    }
+        *)
+        Definition sum (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+          match ε, τ, α with
+          | [], [ _ as I ], [ iter ] =>
+            ltac:(M.monadic
+              (let iter := M.alloc (| I, iter |) in
+              M.call_closure (|
+                Ty.path "f16",
+                M.get_trait_method (|
+                  "core::iter::traits::iterator::Iterator",
+                  I,
+                  [],
+                  [],
+                  "fold",
+                  [],
+                  [ Ty.path "f16"; Ty.function [ Ty.path "f16"; Ty.path "f16" ] (Ty.path "f16") ]
+                |),
+                [
+                  M.read (| iter |);
+                  M.read (| UnsupportedLiteral |);
+                  M.closure
+                    (fun γ =>
+                      ltac:(M.monadic
+                        match γ with
+                        | [ α0; α1 ] =>
+                          ltac:(M.monadic
+                            (M.match_operator (|
+                              Ty.path "f16",
+                              M.alloc (| Ty.path "f16", α0 |),
+                              [
+                                fun γ =>
+                                  ltac:(M.monadic
+                                    (let a := M.copy (| Ty.path "f16", γ |) in
+                                    M.match_operator (|
+                                      Ty.path "f16",
+                                      M.alloc (| Ty.path "f16", α1 |),
+                                      [
+                                        fun γ =>
+                                          ltac:(M.monadic
+                                            (let b := M.copy (| Ty.path "f16", γ |) in
+                                            M.call_closure (|
+                                              Ty.path "f16",
+                                              BinOp.Wrap.add,
+                                              [ M.read (| a |); M.read (| b |) ]
+                                            |)))
+                                      ]
+                                    |)))
+                              ]
+                            |)))
+                        | _ => M.impossible "wrong number of arguments"
+                        end))
+                ]
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        Axiom Implements :
+          M.IsTraitInstance
+            "core::iter::traits::accum::Sum"
+            (* Trait polymorphic consts *) []
+            (* Trait polymorphic types *) [ Ty.path "f16" ]
+            Self
+            (* Instance *) [ ("sum", InstanceField.Method sum) ].
+      End Impl_core_iter_traits_accum_Sum_f16_for_f16.
+      
+      Module Impl_core_iter_traits_accum_Product_f16_for_f16.
+        Definition Self : Ty.t := Ty.path "f16".
+        
+        (*
+                    fn product<I: Iterator<Item=Self>>(iter: I) -> Self {
+                        iter.fold(
+                            1.0,
+                            #[rustc_inherit_overflow_checks]
+                            |a, b| a * b,
+                        )
+                    }
+        *)
+        Definition product (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+          match ε, τ, α with
+          | [], [ _ as I ], [ iter ] =>
+            ltac:(M.monadic
+              (let iter := M.alloc (| I, iter |) in
+              M.call_closure (|
+                Ty.path "f16",
+                M.get_trait_method (|
+                  "core::iter::traits::iterator::Iterator",
+                  I,
+                  [],
+                  [],
+                  "fold",
+                  [],
+                  [ Ty.path "f16"; Ty.function [ Ty.path "f16"; Ty.path "f16" ] (Ty.path "f16") ]
+                |),
+                [
+                  M.read (| iter |);
+                  M.read (| UnsupportedLiteral |);
+                  M.closure
+                    (fun γ =>
+                      ltac:(M.monadic
+                        match γ with
+                        | [ α0; α1 ] =>
+                          ltac:(M.monadic
+                            (M.match_operator (|
+                              Ty.path "f16",
+                              M.alloc (| Ty.path "f16", α0 |),
+                              [
+                                fun γ =>
+                                  ltac:(M.monadic
+                                    (let a := M.copy (| Ty.path "f16", γ |) in
+                                    M.match_operator (|
+                                      Ty.path "f16",
+                                      M.alloc (| Ty.path "f16", α1 |),
+                                      [
+                                        fun γ =>
+                                          ltac:(M.monadic
+                                            (let b := M.copy (| Ty.path "f16", γ |) in
+                                            M.call_closure (|
+                                              Ty.path "f16",
+                                              BinOp.Wrap.mul,
+                                              [ M.read (| a |); M.read (| b |) ]
+                                            |)))
+                                      ]
+                                    |)))
+                              ]
+                            |)))
+                        | _ => M.impossible "wrong number of arguments"
+                        end))
+                ]
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        Axiom Implements :
+          M.IsTraitInstance
+            "core::iter::traits::accum::Product"
+            (* Trait polymorphic consts *) []
+            (* Trait polymorphic types *) [ Ty.path "f16" ]
+            Self
+            (* Instance *) [ ("product", InstanceField.Method product) ].
+      End Impl_core_iter_traits_accum_Product_f16_for_f16.
+      
+      Module Impl_core_iter_traits_accum_Sum_ref__f16_for_f16.
+        Definition Self : Ty.t := Ty.path "f16".
+        
+        (*
+                    fn sum<I: Iterator<Item=&'a Self>>(iter: I) -> Self {
+                        iter.fold(
+                            -0.0,
+                            #[rustc_inherit_overflow_checks]
+                            |a, b| a + b,
+                        )
+                    }
+        *)
+        Definition sum (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+          match ε, τ, α with
+          | [], [ _ as I ], [ iter ] =>
+            ltac:(M.monadic
+              (let iter := M.alloc (| I, iter |) in
+              M.call_closure (|
+                Ty.path "f16",
+                M.get_trait_method (|
+                  "core::iter::traits::iterator::Iterator",
+                  I,
+                  [],
+                  [],
+                  "fold",
+                  [],
+                  [
+                    Ty.path "f16";
+                    Ty.function
+                      [ Ty.path "f16"; Ty.apply (Ty.path "&") [] [ Ty.path "f16" ] ]
+                      (Ty.path "f16")
+                  ]
+                |),
+                [
+                  M.read (| iter |);
+                  M.read (| UnsupportedLiteral |);
+                  M.closure
+                    (fun γ =>
+                      ltac:(M.monadic
+                        match γ with
+                        | [ α0; α1 ] =>
+                          ltac:(M.monadic
+                            (M.match_operator (|
+                              Ty.path "f16",
+                              M.alloc (| Ty.path "f16", α0 |),
+                              [
+                                fun γ =>
+                                  ltac:(M.monadic
+                                    (let a := M.copy (| Ty.path "f16", γ |) in
+                                    M.match_operator (|
+                                      Ty.path "f16",
+                                      M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "f16" ], α1 |),
+                                      [
+                                        fun γ =>
+                                          ltac:(M.monadic
+                                            (let b :=
+                                              M.copy (|
+                                                Ty.apply (Ty.path "&") [] [ Ty.path "f16" ],
+                                                γ
+                                              |) in
+                                            M.call_closure (|
+                                              Ty.path "f16",
+                                              M.get_trait_method (|
+                                                "core::ops::arith::Add",
+                                                Ty.path "f16",
+                                                [],
+                                                [ Ty.apply (Ty.path "&") [] [ Ty.path "f16" ] ],
+                                                "add",
+                                                [],
+                                                []
+                                              |),
+                                              [ M.read (| a |); M.read (| b |) ]
+                                            |)))
+                                      ]
+                                    |)))
+                              ]
+                            |)))
+                        | _ => M.impossible "wrong number of arguments"
+                        end))
+                ]
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        Axiom Implements :
+          M.IsTraitInstance
+            "core::iter::traits::accum::Sum"
+            (* Trait polymorphic consts *) []
+            (* Trait polymorphic types *) [ Ty.apply (Ty.path "&") [] [ Ty.path "f16" ] ]
+            Self
+            (* Instance *) [ ("sum", InstanceField.Method sum) ].
+      End Impl_core_iter_traits_accum_Sum_ref__f16_for_f16.
+      
+      Module Impl_core_iter_traits_accum_Product_ref__f16_for_f16.
+        Definition Self : Ty.t := Ty.path "f16".
+        
+        (*
+                    fn product<I: Iterator<Item=&'a Self>>(iter: I) -> Self {
+                        iter.fold(
+                            1.0,
+                            #[rustc_inherit_overflow_checks]
+                            |a, b| a * b,
+                        )
+                    }
+        *)
+        Definition product (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+          match ε, τ, α with
+          | [], [ _ as I ], [ iter ] =>
+            ltac:(M.monadic
+              (let iter := M.alloc (| I, iter |) in
+              M.call_closure (|
+                Ty.path "f16",
+                M.get_trait_method (|
+                  "core::iter::traits::iterator::Iterator",
+                  I,
+                  [],
+                  [],
+                  "fold",
+                  [],
+                  [
+                    Ty.path "f16";
+                    Ty.function
+                      [ Ty.path "f16"; Ty.apply (Ty.path "&") [] [ Ty.path "f16" ] ]
+                      (Ty.path "f16")
+                  ]
+                |),
+                [
+                  M.read (| iter |);
+                  M.read (| UnsupportedLiteral |);
+                  M.closure
+                    (fun γ =>
+                      ltac:(M.monadic
+                        match γ with
+                        | [ α0; α1 ] =>
+                          ltac:(M.monadic
+                            (M.match_operator (|
+                              Ty.path "f16",
+                              M.alloc (| Ty.path "f16", α0 |),
+                              [
+                                fun γ =>
+                                  ltac:(M.monadic
+                                    (let a := M.copy (| Ty.path "f16", γ |) in
+                                    M.match_operator (|
+                                      Ty.path "f16",
+                                      M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "f16" ], α1 |),
+                                      [
+                                        fun γ =>
+                                          ltac:(M.monadic
+                                            (let b :=
+                                              M.copy (|
+                                                Ty.apply (Ty.path "&") [] [ Ty.path "f16" ],
+                                                γ
+                                              |) in
+                                            M.call_closure (|
+                                              Ty.path "f16",
+                                              M.get_trait_method (|
+                                                "core::ops::arith::Mul",
+                                                Ty.path "f16",
+                                                [],
+                                                [ Ty.apply (Ty.path "&") [] [ Ty.path "f16" ] ],
+                                                "mul",
+                                                [],
+                                                []
+                                              |),
+                                              [ M.read (| a |); M.read (| b |) ]
+                                            |)))
+                                      ]
+                                    |)))
+                              ]
+                            |)))
+                        | _ => M.impossible "wrong number of arguments"
+                        end))
+                ]
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        Axiom Implements :
+          M.IsTraitInstance
+            "core::iter::traits::accum::Product"
+            (* Trait polymorphic consts *) []
+            (* Trait polymorphic types *) [ Ty.apply (Ty.path "&") [] [ Ty.path "f16" ] ]
+            Self
+            (* Instance *) [ ("product", InstanceField.Method product) ].
+      End Impl_core_iter_traits_accum_Product_ref__f16_for_f16.
+      
       Module Impl_core_iter_traits_accum_Sum_f32_for_f32.
         Definition Self : Ty.t := Ty.path "f32".
         
@@ -12137,6 +16225,352 @@ Module iter.
             Self
             (* Instance *) [ ("product", InstanceField.Method product) ].
       End Impl_core_iter_traits_accum_Product_ref__f64_for_f64.
+      
+      Module Impl_core_iter_traits_accum_Sum_f128_for_f128.
+        Definition Self : Ty.t := Ty.path "f128".
+        
+        (*
+                    fn sum<I: Iterator<Item=Self>>(iter: I) -> Self {
+                        iter.fold(
+                            -0.0,
+                            #[rustc_inherit_overflow_checks]
+                            |a, b| a + b,
+                        )
+                    }
+        *)
+        Definition sum (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+          match ε, τ, α with
+          | [], [ _ as I ], [ iter ] =>
+            ltac:(M.monadic
+              (let iter := M.alloc (| I, iter |) in
+              M.call_closure (|
+                Ty.path "f128",
+                M.get_trait_method (|
+                  "core::iter::traits::iterator::Iterator",
+                  I,
+                  [],
+                  [],
+                  "fold",
+                  [],
+                  [ Ty.path "f128"; Ty.function [ Ty.path "f128"; Ty.path "f128" ] (Ty.path "f128")
+                  ]
+                |),
+                [
+                  M.read (| iter |);
+                  M.read (| UnsupportedLiteral |);
+                  M.closure
+                    (fun γ =>
+                      ltac:(M.monadic
+                        match γ with
+                        | [ α0; α1 ] =>
+                          ltac:(M.monadic
+                            (M.match_operator (|
+                              Ty.path "f128",
+                              M.alloc (| Ty.path "f128", α0 |),
+                              [
+                                fun γ =>
+                                  ltac:(M.monadic
+                                    (let a := M.copy (| Ty.path "f128", γ |) in
+                                    M.match_operator (|
+                                      Ty.path "f128",
+                                      M.alloc (| Ty.path "f128", α1 |),
+                                      [
+                                        fun γ =>
+                                          ltac:(M.monadic
+                                            (let b := M.copy (| Ty.path "f128", γ |) in
+                                            M.call_closure (|
+                                              Ty.path "f128",
+                                              BinOp.Wrap.add,
+                                              [ M.read (| a |); M.read (| b |) ]
+                                            |)))
+                                      ]
+                                    |)))
+                              ]
+                            |)))
+                        | _ => M.impossible "wrong number of arguments"
+                        end))
+                ]
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        Axiom Implements :
+          M.IsTraitInstance
+            "core::iter::traits::accum::Sum"
+            (* Trait polymorphic consts *) []
+            (* Trait polymorphic types *) [ Ty.path "f128" ]
+            Self
+            (* Instance *) [ ("sum", InstanceField.Method sum) ].
+      End Impl_core_iter_traits_accum_Sum_f128_for_f128.
+      
+      Module Impl_core_iter_traits_accum_Product_f128_for_f128.
+        Definition Self : Ty.t := Ty.path "f128".
+        
+        (*
+                    fn product<I: Iterator<Item=Self>>(iter: I) -> Self {
+                        iter.fold(
+                            1.0,
+                            #[rustc_inherit_overflow_checks]
+                            |a, b| a * b,
+                        )
+                    }
+        *)
+        Definition product (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+          match ε, τ, α with
+          | [], [ _ as I ], [ iter ] =>
+            ltac:(M.monadic
+              (let iter := M.alloc (| I, iter |) in
+              M.call_closure (|
+                Ty.path "f128",
+                M.get_trait_method (|
+                  "core::iter::traits::iterator::Iterator",
+                  I,
+                  [],
+                  [],
+                  "fold",
+                  [],
+                  [ Ty.path "f128"; Ty.function [ Ty.path "f128"; Ty.path "f128" ] (Ty.path "f128")
+                  ]
+                |),
+                [
+                  M.read (| iter |);
+                  M.read (| UnsupportedLiteral |);
+                  M.closure
+                    (fun γ =>
+                      ltac:(M.monadic
+                        match γ with
+                        | [ α0; α1 ] =>
+                          ltac:(M.monadic
+                            (M.match_operator (|
+                              Ty.path "f128",
+                              M.alloc (| Ty.path "f128", α0 |),
+                              [
+                                fun γ =>
+                                  ltac:(M.monadic
+                                    (let a := M.copy (| Ty.path "f128", γ |) in
+                                    M.match_operator (|
+                                      Ty.path "f128",
+                                      M.alloc (| Ty.path "f128", α1 |),
+                                      [
+                                        fun γ =>
+                                          ltac:(M.monadic
+                                            (let b := M.copy (| Ty.path "f128", γ |) in
+                                            M.call_closure (|
+                                              Ty.path "f128",
+                                              BinOp.Wrap.mul,
+                                              [ M.read (| a |); M.read (| b |) ]
+                                            |)))
+                                      ]
+                                    |)))
+                              ]
+                            |)))
+                        | _ => M.impossible "wrong number of arguments"
+                        end))
+                ]
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        Axiom Implements :
+          M.IsTraitInstance
+            "core::iter::traits::accum::Product"
+            (* Trait polymorphic consts *) []
+            (* Trait polymorphic types *) [ Ty.path "f128" ]
+            Self
+            (* Instance *) [ ("product", InstanceField.Method product) ].
+      End Impl_core_iter_traits_accum_Product_f128_for_f128.
+      
+      Module Impl_core_iter_traits_accum_Sum_ref__f128_for_f128.
+        Definition Self : Ty.t := Ty.path "f128".
+        
+        (*
+                    fn sum<I: Iterator<Item=&'a Self>>(iter: I) -> Self {
+                        iter.fold(
+                            -0.0,
+                            #[rustc_inherit_overflow_checks]
+                            |a, b| a + b,
+                        )
+                    }
+        *)
+        Definition sum (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+          match ε, τ, α with
+          | [], [ _ as I ], [ iter ] =>
+            ltac:(M.monadic
+              (let iter := M.alloc (| I, iter |) in
+              M.call_closure (|
+                Ty.path "f128",
+                M.get_trait_method (|
+                  "core::iter::traits::iterator::Iterator",
+                  I,
+                  [],
+                  [],
+                  "fold",
+                  [],
+                  [
+                    Ty.path "f128";
+                    Ty.function
+                      [ Ty.path "f128"; Ty.apply (Ty.path "&") [] [ Ty.path "f128" ] ]
+                      (Ty.path "f128")
+                  ]
+                |),
+                [
+                  M.read (| iter |);
+                  M.read (| UnsupportedLiteral |);
+                  M.closure
+                    (fun γ =>
+                      ltac:(M.monadic
+                        match γ with
+                        | [ α0; α1 ] =>
+                          ltac:(M.monadic
+                            (M.match_operator (|
+                              Ty.path "f128",
+                              M.alloc (| Ty.path "f128", α0 |),
+                              [
+                                fun γ =>
+                                  ltac:(M.monadic
+                                    (let a := M.copy (| Ty.path "f128", γ |) in
+                                    M.match_operator (|
+                                      Ty.path "f128",
+                                      M.alloc (|
+                                        Ty.apply (Ty.path "&") [] [ Ty.path "f128" ],
+                                        α1
+                                      |),
+                                      [
+                                        fun γ =>
+                                          ltac:(M.monadic
+                                            (let b :=
+                                              M.copy (|
+                                                Ty.apply (Ty.path "&") [] [ Ty.path "f128" ],
+                                                γ
+                                              |) in
+                                            M.call_closure (|
+                                              Ty.path "f128",
+                                              M.get_trait_method (|
+                                                "core::ops::arith::Add",
+                                                Ty.path "f128",
+                                                [],
+                                                [ Ty.apply (Ty.path "&") [] [ Ty.path "f128" ] ],
+                                                "add",
+                                                [],
+                                                []
+                                              |),
+                                              [ M.read (| a |); M.read (| b |) ]
+                                            |)))
+                                      ]
+                                    |)))
+                              ]
+                            |)))
+                        | _ => M.impossible "wrong number of arguments"
+                        end))
+                ]
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        Axiom Implements :
+          M.IsTraitInstance
+            "core::iter::traits::accum::Sum"
+            (* Trait polymorphic consts *) []
+            (* Trait polymorphic types *) [ Ty.apply (Ty.path "&") [] [ Ty.path "f128" ] ]
+            Self
+            (* Instance *) [ ("sum", InstanceField.Method sum) ].
+      End Impl_core_iter_traits_accum_Sum_ref__f128_for_f128.
+      
+      Module Impl_core_iter_traits_accum_Product_ref__f128_for_f128.
+        Definition Self : Ty.t := Ty.path "f128".
+        
+        (*
+                    fn product<I: Iterator<Item=&'a Self>>(iter: I) -> Self {
+                        iter.fold(
+                            1.0,
+                            #[rustc_inherit_overflow_checks]
+                            |a, b| a * b,
+                        )
+                    }
+        *)
+        Definition product (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+          match ε, τ, α with
+          | [], [ _ as I ], [ iter ] =>
+            ltac:(M.monadic
+              (let iter := M.alloc (| I, iter |) in
+              M.call_closure (|
+                Ty.path "f128",
+                M.get_trait_method (|
+                  "core::iter::traits::iterator::Iterator",
+                  I,
+                  [],
+                  [],
+                  "fold",
+                  [],
+                  [
+                    Ty.path "f128";
+                    Ty.function
+                      [ Ty.path "f128"; Ty.apply (Ty.path "&") [] [ Ty.path "f128" ] ]
+                      (Ty.path "f128")
+                  ]
+                |),
+                [
+                  M.read (| iter |);
+                  M.read (| UnsupportedLiteral |);
+                  M.closure
+                    (fun γ =>
+                      ltac:(M.monadic
+                        match γ with
+                        | [ α0; α1 ] =>
+                          ltac:(M.monadic
+                            (M.match_operator (|
+                              Ty.path "f128",
+                              M.alloc (| Ty.path "f128", α0 |),
+                              [
+                                fun γ =>
+                                  ltac:(M.monadic
+                                    (let a := M.copy (| Ty.path "f128", γ |) in
+                                    M.match_operator (|
+                                      Ty.path "f128",
+                                      M.alloc (|
+                                        Ty.apply (Ty.path "&") [] [ Ty.path "f128" ],
+                                        α1
+                                      |),
+                                      [
+                                        fun γ =>
+                                          ltac:(M.monadic
+                                            (let b :=
+                                              M.copy (|
+                                                Ty.apply (Ty.path "&") [] [ Ty.path "f128" ],
+                                                γ
+                                              |) in
+                                            M.call_closure (|
+                                              Ty.path "f128",
+                                              M.get_trait_method (|
+                                                "core::ops::arith::Mul",
+                                                Ty.path "f128",
+                                                [],
+                                                [ Ty.apply (Ty.path "&") [] [ Ty.path "f128" ] ],
+                                                "mul",
+                                                [],
+                                                []
+                                              |),
+                                              [ M.read (| a |); M.read (| b |) ]
+                                            |)))
+                                      ]
+                                    |)))
+                              ]
+                            |)))
+                        | _ => M.impossible "wrong number of arguments"
+                        end))
+                ]
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        Axiom Implements :
+          M.IsTraitInstance
+            "core::iter::traits::accum::Product"
+            (* Trait polymorphic consts *) []
+            (* Trait polymorphic types *) [ Ty.apply (Ty.path "&") [] [ Ty.path "f128" ] ]
+            Self
+            (* Instance *) [ ("product", InstanceField.Method product) ].
+      End Impl_core_iter_traits_accum_Product_ref__f128_for_f128.
       
       Module Impl_core_iter_traits_accum_Sum_where_core_iter_traits_accum_Sum_T_U_core_result_Result_U_E_for_core_result_Result_T_E.
         Definition Self (T U E : Ty.t) : Ty.t :=

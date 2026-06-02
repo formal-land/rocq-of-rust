@@ -36,7 +36,7 @@ Proof.
   destruct run_StackTrait_for_Stack.
   destruct run_RuntimeFlag_for_RuntimeFlag.
   destruct run_MemoryTrait_for_Memory.
-  destruct run_Deref_for_Synthetic1.
+  destruct run_Deref_for_Synthetic.
   destruct (Impl_AsRef_for_Slice.run u8).
   run_symbolic.
 Defined.

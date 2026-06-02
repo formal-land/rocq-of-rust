@@ -158,15 +158,14 @@ Module identity.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                BinOp.gt,
-                                [ M.read (| gas_used |); M.read (| gas_limit |) ]
-                              |)
-                            |)) in
+                              BinOp.gt,
+                              [ M.read (| gas_used |); M.read (| gas_limit |) ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.never_to_any (|
                           M.read (|

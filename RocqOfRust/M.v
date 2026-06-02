@@ -344,6 +344,24 @@ Module Value.
     end.
 End Value.
 
+Fixpoint byte_string_to_values (length : nat) (bytes : list Z) : list Value.t :=
+  match length, bytes with
+  | Datatypes.O, _ => []
+  | Datatypes.S length, [] =>
+      Value.Integer IntegerKind.U8 0 :: byte_string_to_values length []
+  | Datatypes.S length, byte :: bytes =>
+      Value.Integer IntegerKind.U8 byte :: byte_string_to_values length bytes
+  end.
+
+(** For translator-generated calls, [length] must be [Z.of_nat (List.length bytes)]. *)
+Definition mk_byte_str_ref (length : Z) (bytes : list Z) : Value.t :=
+  Value.Pointer {|
+    Pointer.kind := Pointer.Kind.Ref;
+    Pointer.core := Pointer.Core.Immediate (Some (
+      Value.Array (byte_string_to_values (Z.to_nat length) bytes)
+    ));
+  |}.
+
 Module Primitive.
   Inductive t : Set :=
   | StateAlloc

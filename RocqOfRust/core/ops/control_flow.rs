@@ -1,3 +1,4 @@
+use crate::marker::Destruct;
 use crate::{convert, ops};
 
 /// Used to tell an operation whether it should exit early or go on as usual.
@@ -79,10 +80,12 @@ use crate::{convert, ops};
 /// [`Break`]: ControlFlow::Break
 /// [`Continue`]: ControlFlow::Continue
 #[stable(feature = "control_flow_enum_type", since = "1.55.0")]
-#[cfg_attr(not(test), rustc_diagnostic_item = "ControlFlow")]
+#[rustc_diagnostic_item = "ControlFlow"]
+#[must_use]
 // ControlFlow should not implement PartialOrd or Ord, per RFC 3058:
 // https://rust-lang.github.io/rfcs/3058-try-trait-v2.html#traits-for-controlflow
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+#[derive(Copy, Debug, Hash)]
+#[derive_const(Clone, PartialEq, Eq)]
 pub enum ControlFlow<B, C = ()> {
     /// Move on to the next phase of the operation as normal.
     #[stable(feature = "control_flow_enum_type", since = "1.55.0")]
@@ -97,8 +100,9 @@ pub enum ControlFlow<B, C = ()> {
     // is a no-op conversion in the `Try` implementation.
 }
 
-#[unstable(feature = "try_trait_v2", issue = "84277")]
-impl<B, C> ops::Try for ControlFlow<B, C> {
+#[unstable(feature = "try_trait_v2", issue = "84277", old_name = "try_trait")]
+#[rustc_const_unstable(feature = "const_try", issue = "74935")]
+impl<B, C> const ops::Try for ControlFlow<B, C> {
     type Output = C;
     type Residual = ControlFlow<B, convert::Infallible>;
 
@@ -116,10 +120,11 @@ impl<B, C> ops::Try for ControlFlow<B, C> {
     }
 }
 
-#[unstable(feature = "try_trait_v2", issue = "84277")]
+#[unstable(feature = "try_trait_v2", issue = "84277", old_name = "try_trait")]
+#[rustc_const_unstable(feature = "const_try", issue = "74935")]
 // Note: manually specifying the residual type instead of using the default to work around
 // https://github.com/rust-lang/rust/issues/99940
-impl<B, C> ops::FromResidual<ControlFlow<B, convert::Infallible>> for ControlFlow<B, C> {
+impl<B, C> const ops::FromResidual<ControlFlow<B, convert::Infallible>> for ControlFlow<B, C> {
     #[inline]
     fn from_residual(residual: ControlFlow<B, convert::Infallible>) -> Self {
         match residual {
@@ -141,12 +146,13 @@ impl<B, C> ControlFlow<B, C> {
     /// ```
     /// use std::ops::ControlFlow;
     ///
-    /// assert!(ControlFlow::<i32, String>::Break(3).is_break());
-    /// assert!(!ControlFlow::<String, i32>::Continue(3).is_break());
+    /// assert!(ControlFlow::<&str, i32>::Break("Stop right there!").is_break());
+    /// assert!(!ControlFlow::<&str, i32>::Continue(3).is_break());
     /// ```
     #[inline]
     #[stable(feature = "control_flow_enum_is", since = "1.59.0")]
-    pub fn is_break(&self) -> bool {
+    #[rustc_const_unstable(feature = "min_const_control_flow", issue = "148738")]
+    pub const fn is_break(&self) -> bool {
         matches!(*self, ControlFlow::Break(_))
     }
 
@@ -157,12 +163,13 @@ impl<B, C> ControlFlow<B, C> {
     /// ```
     /// use std::ops::ControlFlow;
     ///
-    /// assert!(!ControlFlow::<i32, String>::Break(3).is_continue());
-    /// assert!(ControlFlow::<String, i32>::Continue(3).is_continue());
+    /// assert!(!ControlFlow::<&str, i32>::Break("Stop right there!").is_continue());
+    /// assert!(ControlFlow::<&str, i32>::Continue(3).is_continue());
     /// ```
     #[inline]
     #[stable(feature = "control_flow_enum_is", since = "1.59.0")]
-    pub fn is_continue(&self) -> bool {
+    #[rustc_const_unstable(feature = "min_const_control_flow", issue = "148738")]
+    pub const fn is_continue(&self) -> bool {
         matches!(*self, ControlFlow::Continue(_))
     }
 
@@ -174,15 +181,94 @@ impl<B, C> ControlFlow<B, C> {
     /// ```
     /// use std::ops::ControlFlow;
     ///
-    /// assert_eq!(ControlFlow::<i32, String>::Break(3).break_value(), Some(3));
-    /// assert_eq!(ControlFlow::<String, i32>::Continue(3).break_value(), None);
+    /// assert_eq!(ControlFlow::<&str, i32>::Break("Stop right there!").break_value(), Some("Stop right there!"));
+    /// assert_eq!(ControlFlow::<&str, i32>::Continue(3).break_value(), None);
     /// ```
     #[inline]
     #[stable(feature = "control_flow_enum", since = "1.83.0")]
-    pub fn break_value(self) -> Option<B> {
+    #[rustc_const_unstable(feature = "const_control_flow", issue = "148739")]
+    pub const fn break_value(self) -> Option<B>
+    where
+        Self: [const] Destruct,
+    {
         match self {
             ControlFlow::Continue(..) => None,
             ControlFlow::Break(x) => Some(x),
+        }
+    }
+
+    /// Converts the `ControlFlow` into an `Result` which is `Ok` if the
+    /// `ControlFlow` was `Break` and `Err` if otherwise.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// #![feature(control_flow_ok)]
+    ///
+    /// use std::ops::ControlFlow;
+    ///
+    /// struct TreeNode<T> {
+    ///     value: T,
+    ///     left: Option<Box<TreeNode<T>>>,
+    ///     right: Option<Box<TreeNode<T>>>,
+    /// }
+    ///
+    /// impl<T> TreeNode<T> {
+    ///     fn find<'a>(&'a self, mut predicate: impl FnMut(&T) -> bool) -> Result<&'a T, ()> {
+    ///         let mut f = |t: &'a T| -> ControlFlow<&'a T> {
+    ///             if predicate(t) {
+    ///                 ControlFlow::Break(t)
+    ///             } else {
+    ///                 ControlFlow::Continue(())
+    ///             }
+    ///         };
+    ///
+    ///         self.traverse_inorder(&mut f).break_ok()
+    ///     }
+    ///
+    ///     fn traverse_inorder<'a, B>(
+    ///         &'a self,
+    ///         f: &mut impl FnMut(&'a T) -> ControlFlow<B>,
+    ///     ) -> ControlFlow<B> {
+    ///         if let Some(left) = &self.left {
+    ///             left.traverse_inorder(f)?;
+    ///         }
+    ///         f(&self.value)?;
+    ///         if let Some(right) = &self.right {
+    ///             right.traverse_inorder(f)?;
+    ///         }
+    ///         ControlFlow::Continue(())
+    ///     }
+    ///
+    ///     fn leaf(value: T) -> Option<Box<TreeNode<T>>> {
+    ///         Some(Box::new(Self {
+    ///             value,
+    ///             left: None,
+    ///             right: None,
+    ///         }))
+    ///     }
+    /// }
+    ///
+    /// let node = TreeNode {
+    ///     value: 0,
+    ///     left: TreeNode::leaf(1),
+    ///     right: Some(Box::new(TreeNode {
+    ///         value: -1,
+    ///         left: TreeNode::leaf(5),
+    ///         right: TreeNode::leaf(2),
+    ///     })),
+    /// };
+    ///
+    /// let res = node.find(|val: &i32| *val > 3);
+    /// assert_eq!(res, Ok(&5));
+    /// ```
+    #[inline]
+    #[unstable(feature = "control_flow_ok", issue = "140266")]
+    #[rustc_const_unstable(feature = "min_const_control_flow", issue = "148738")]
+    pub const fn break_ok(self) -> Result<B, C> {
+        match self {
+            ControlFlow::Continue(c) => Err(c),
+            ControlFlow::Break(b) => Ok(b),
         }
     }
 
@@ -190,7 +276,11 @@ impl<B, C> ControlFlow<B, C> {
     /// to the break value in case it exists.
     #[inline]
     #[stable(feature = "control_flow_enum", since = "1.83.0")]
-    pub fn map_break<T>(self, f: impl FnOnce(B) -> T) -> ControlFlow<T, C> {
+    #[rustc_const_unstable(feature = "const_control_flow", issue = "148739")]
+    pub const fn map_break<T, F>(self, f: F) -> ControlFlow<T, C>
+    where
+        F: [const] FnOnce(B) -> T + [const] Destruct,
+    {
         match self {
             ControlFlow::Continue(x) => ControlFlow::Continue(x),
             ControlFlow::Break(x) => ControlFlow::Break(f(x)),
@@ -205,15 +295,93 @@ impl<B, C> ControlFlow<B, C> {
     /// ```
     /// use std::ops::ControlFlow;
     ///
-    /// assert_eq!(ControlFlow::<i32, String>::Break(3).continue_value(), None);
-    /// assert_eq!(ControlFlow::<String, i32>::Continue(3).continue_value(), Some(3));
+    /// assert_eq!(ControlFlow::<&str, i32>::Break("Stop right there!").continue_value(), None);
+    /// assert_eq!(ControlFlow::<&str, i32>::Continue(3).continue_value(), Some(3));
     /// ```
     #[inline]
     #[stable(feature = "control_flow_enum", since = "1.83.0")]
-    pub fn continue_value(self) -> Option<C> {
+    #[rustc_const_unstable(feature = "const_control_flow", issue = "148739")]
+    pub const fn continue_value(self) -> Option<C>
+    where
+        Self: [const] Destruct,
+    {
         match self {
             ControlFlow::Continue(x) => Some(x),
             ControlFlow::Break(..) => None,
+        }
+    }
+
+    /// Converts the `ControlFlow` into an `Result` which is `Ok` if the
+    /// `ControlFlow` was `Continue` and `Err` if otherwise.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// #![feature(control_flow_ok)]
+    ///
+    /// use std::ops::ControlFlow;
+    ///
+    /// struct TreeNode<T> {
+    ///     value: T,
+    ///     left: Option<Box<TreeNode<T>>>,
+    ///     right: Option<Box<TreeNode<T>>>,
+    /// }
+    ///
+    /// impl<T> TreeNode<T> {
+    ///     fn validate<B>(&self, f: &mut impl FnMut(&T) -> ControlFlow<B>) -> Result<(), B> {
+    ///         self.traverse_inorder(f).continue_ok()
+    ///     }
+    ///
+    ///     fn traverse_inorder<B>(&self, f: &mut impl FnMut(&T) -> ControlFlow<B>) -> ControlFlow<B> {
+    ///         if let Some(left) = &self.left {
+    ///             left.traverse_inorder(f)?;
+    ///         }
+    ///         f(&self.value)?;
+    ///         if let Some(right) = &self.right {
+    ///             right.traverse_inorder(f)?;
+    ///         }
+    ///         ControlFlow::Continue(())
+    ///     }
+    ///
+    ///     fn leaf(value: T) -> Option<Box<TreeNode<T>>> {
+    ///         Some(Box::new(Self {
+    ///             value,
+    ///             left: None,
+    ///             right: None,
+    ///         }))
+    ///     }
+    /// }
+    ///
+    /// let node = TreeNode {
+    ///     value: 0,
+    ///     left: TreeNode::leaf(1),
+    ///     right: Some(Box::new(TreeNode {
+    ///         value: -1,
+    ///         left: TreeNode::leaf(5),
+    ///         right: TreeNode::leaf(2),
+    ///     })),
+    /// };
+    ///
+    /// let res = node.validate(&mut |val| {
+    ///     if *val < 0 {
+    ///         return ControlFlow::Break("negative value detected");
+    ///     }
+    ///
+    ///     if *val > 4 {
+    ///         return ControlFlow::Break("too big value detected");
+    ///     }
+    ///
+    ///     ControlFlow::Continue(())
+    /// });
+    /// assert_eq!(res, Err("too big value detected"));
+    /// ```
+    #[inline]
+    #[unstable(feature = "control_flow_ok", issue = "140266")]
+    #[rustc_const_unstable(feature = "min_const_control_flow", issue = "148738")]
+    pub const fn continue_ok(self) -> Result<C, B> {
+        match self {
+            ControlFlow::Continue(c) => Ok(c),
+            ControlFlow::Break(b) => Err(b),
         }
     }
 
@@ -221,10 +389,35 @@ impl<B, C> ControlFlow<B, C> {
     /// to the continue value in case it exists.
     #[inline]
     #[stable(feature = "control_flow_enum", since = "1.83.0")]
-    pub fn map_continue<T>(self, f: impl FnOnce(C) -> T) -> ControlFlow<B, T> {
+    #[rustc_const_unstable(feature = "const_control_flow", issue = "148739")]
+    pub const fn map_continue<T, F>(self, f: F) -> ControlFlow<B, T>
+    where
+        F: [const] FnOnce(C) -> T + [const] Destruct,
+    {
         match self {
             ControlFlow::Continue(x) => ControlFlow::Continue(f(x)),
             ControlFlow::Break(x) => ControlFlow::Break(x),
+        }
+    }
+}
+
+impl<T> ControlFlow<T, T> {
+    /// Extracts the value `T` that is wrapped by `ControlFlow<T, T>`.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// #![feature(control_flow_into_value)]
+    /// use std::ops::ControlFlow;
+    ///
+    /// assert_eq!(ControlFlow::<i32, i32>::Break(1024).into_value(), 1024);
+    /// assert_eq!(ControlFlow::<i32, i32>::Continue(512).into_value(), 512);
+    /// ```
+    #[unstable(feature = "control_flow_into_value", issue = "137461")]
+    #[rustc_allow_const_fn_unstable(const_precise_live_drops)]
+    pub const fn into_value(self) -> T {
+        match self {
+            ControlFlow::Continue(x) | ControlFlow::Break(x) => x,
         }
     }
 }

@@ -279,165 +279,170 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                 Ty.tuple [],
                 M.get_function (| "std::io::stdio::_print", [], [] |),
                 [
-                  M.call_closure (|
-                    Ty.path "core::fmt::Arguments",
-                    M.get_associated_function (|
-                      Ty.path "core::fmt::Arguments",
-                      "new_v1",
-                      [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 1 ],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
+                  M.read (|
+                    let~ args :
+                        Ty.tuple
+                          [
+                            Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "core::option::Option")
+                                  []
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "i32" ] ]
+                              ]
+                          ] :=
+                      Value.Tuple
+                        [
                           M.borrow (|
                             Pointer.Kind.Ref,
                             M.alloc (|
                               Ty.apply
-                                (Ty.path "array")
-                                [ Value.Integer IntegerKind.Usize 2 ]
-                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                              Value.Array [ mk_str (| "Find 2 in vec1: " |); mk_str (| "
-" |) ]
-                            |)
-                          |)
-                        |)
-                      |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.alloc (|
-                              Ty.apply
-                                (Ty.path "array")
-                                [ Value.Integer IntegerKind.Usize 1 ]
-                                [ Ty.path "core::fmt::rt::Argument" ],
-                              Value.Array
-                                [
-                                  M.call_closure (|
-                                    Ty.path "core::fmt::rt::Argument",
-                                    M.get_associated_function (|
-                                      Ty.path "core::fmt::rt::Argument",
-                                      "new_debug",
-                                      [],
+                                (Ty.path "core::option::Option")
+                                []
+                                [ Ty.apply (Ty.path "&") [] [ Ty.path "i32" ] ],
+                              M.call_closure (|
+                                Ty.apply
+                                  (Ty.path "core::option::Option")
+                                  []
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "i32" ] ],
+                                M.get_trait_method (|
+                                  "core::iter::traits::iterator::Iterator",
+                                  Ty.apply (Ty.path "core::slice::iter::Iter") [] [ Ty.path "i32" ],
+                                  [],
+                                  [],
+                                  "find",
+                                  [],
+                                  [
+                                    Ty.function
                                       [
                                         Ty.apply
-                                          (Ty.path "core::option::Option")
+                                          (Ty.path "&")
                                           []
                                           [ Ty.apply (Ty.path "&") [] [ Ty.path "i32" ] ]
                                       ]
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.alloc (|
-                                              Ty.apply
-                                                (Ty.path "core::option::Option")
-                                                []
-                                                [ Ty.apply (Ty.path "&") [] [ Ty.path "i32" ] ],
-                                              M.call_closure (|
+                                      (Ty.path "bool")
+                                  ]
+                                |),
+                                [
+                                  M.borrow (| Pointer.Kind.MutRef, iter |);
+                                  M.closure
+                                    (fun γ =>
+                                      ltac:(M.monadic
+                                        match γ with
+                                        | [ α0 ] =>
+                                          ltac:(M.monadic
+                                            (M.match_operator (|
+                                              Ty.path "bool",
+                                              M.alloc (|
                                                 Ty.apply
-                                                  (Ty.path "core::option::Option")
+                                                  (Ty.path "&")
                                                   []
                                                   [ Ty.apply (Ty.path "&") [] [ Ty.path "i32" ] ],
-                                                M.get_trait_method (|
-                                                  "core::iter::traits::iterator::Iterator",
-                                                  Ty.apply
-                                                    (Ty.path "core::slice::iter::Iter")
-                                                    []
-                                                    [ Ty.path "i32" ],
-                                                  [],
-                                                  [],
-                                                  "find",
-                                                  [],
-                                                  [
-                                                    Ty.function
+                                                α0
+                                              |),
+                                              [
+                                                fun γ =>
+                                                  ltac:(M.monadic
+                                                    (let γ := M.deref (| M.read (| γ |) |) in
+                                                    let γ := M.deref (| M.read (| γ |) |) in
+                                                    let x := M.copy (| Ty.path "i32", γ |) in
+                                                    M.call_closure (|
+                                                      Ty.path "bool",
+                                                      BinOp.eq,
                                                       [
-                                                        Ty.apply
-                                                          (Ty.path "&")
-                                                          []
-                                                          [
-                                                            Ty.apply
-                                                              (Ty.path "&")
-                                                              []
-                                                              [ Ty.path "i32" ]
-                                                          ]
+                                                        M.read (| x |);
+                                                        Value.Integer IntegerKind.I32 2
                                                       ]
-                                                      (Ty.path "bool")
-                                                  ]
-                                                |),
-                                                [
-                                                  M.borrow (| Pointer.Kind.MutRef, iter |);
-                                                  M.closure
-                                                    (fun γ =>
-                                                      ltac:(M.monadic
-                                                        match γ with
-                                                        | [ α0 ] =>
-                                                          ltac:(M.monadic
-                                                            (M.match_operator (|
-                                                              Ty.path "bool",
-                                                              M.alloc (|
-                                                                Ty.apply
-                                                                  (Ty.path "&")
-                                                                  []
-                                                                  [
-                                                                    Ty.apply
-                                                                      (Ty.path "&")
-                                                                      []
-                                                                      [ Ty.path "i32" ]
-                                                                  ],
-                                                                α0
-                                                              |),
-                                                              [
-                                                                fun γ =>
-                                                                  ltac:(M.monadic
-                                                                    (let γ :=
-                                                                      M.deref (|
-                                                                        M.read (| γ |)
-                                                                      |) in
-                                                                    let γ :=
-                                                                      M.deref (|
-                                                                        M.read (| γ |)
-                                                                      |) in
-                                                                    let x :=
-                                                                      M.copy (|
-                                                                        Ty.path "i32",
-                                                                        γ
-                                                                      |) in
-                                                                    M.call_closure (|
-                                                                      Ty.path "bool",
-                                                                      BinOp.eq,
-                                                                      [
-                                                                        M.read (| x |);
-                                                                        Value.Integer
-                                                                          IntegerKind.I32
-                                                                          2
-                                                                      ]
-                                                                    |)))
-                                                              ]
-                                                            |)))
-                                                        | _ =>
-                                                          M.impossible "wrong number of arguments"
-                                                        end))
-                                                ]
-                                              |)
-                                            |)
-                                          |)
-                                        |)
-                                      |)
-                                    ]
-                                  |)
+                                                    |)))
+                                              ]
+                                            |)))
+                                        | _ => M.impossible "wrong number of arguments"
+                                        end))
                                 ]
+                              |)
                             |)
                           |)
-                        |)
+                        ] in
+                    let~ args :
+                        Ty.apply
+                          (Ty.path "array")
+                          [ Value.Integer IntegerKind.Usize 1 ]
+                          [ Ty.path "core::fmt::rt::Argument" ] :=
+                      Value.Array
+                        [
+                          M.call_closure (|
+                            Ty.path "core::fmt::rt::Argument",
+                            M.get_associated_function (|
+                              Ty.path "core::fmt::rt::Argument",
+                              "new_debug",
+                              [],
+                              [
+                                Ty.apply
+                                  (Ty.path "core::option::Option")
+                                  []
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "i32" ] ]
+                              ]
+                            |),
+                            [
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (|
+                                  M.read (| M.SubPointer.get_tuple_field (| args, 0 |) |)
+                                |)
+                              |)
+                            ]
+                          |)
+                        ] in
+                    M.alloc (|
+                      Ty.path "core::fmt::Arguments",
+                      M.call_closure (|
+                        Ty.path "core::fmt::Arguments",
+                        M.get_associated_function (|
+                          Ty.path "core::fmt::Arguments",
+                          "new",
+                          [ Value.Integer IntegerKind.Usize 21; Value.Integer IntegerKind.Usize 1 ],
+                          []
+                        |),
+                        [
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (|
+                              M.mk_byte_str_ref
+                                21
+                                [
+                                  16;
+                                  70;
+                                  105;
+                                  110;
+                                  100;
+                                  32;
+                                  50;
+                                  32;
+                                  105;
+                                  110;
+                                  32;
+                                  118;
+                                  101;
+                                  99;
+                                  49;
+                                  58;
+                                  32;
+                                  192;
+                                  1;
+                                  10;
+                                  0
+                                ]
+                            |)
+                          |);
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
+                          |)
+                        ]
                       |)
-                    ]
+                    |)
                   |)
                 ]
               |) in
@@ -450,148 +455,148 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                 Ty.tuple [],
                 M.get_function (| "std::io::stdio::_print", [], [] |),
                 [
-                  M.call_closure (|
-                    Ty.path "core::fmt::Arguments",
-                    M.get_associated_function (|
-                      Ty.path "core::fmt::Arguments",
-                      "new_v1",
-                      [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 1 ],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
+                  M.read (|
+                    let~ args :
+                        Ty.tuple
+                          [
+                            Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "i32" ] ]
+                          ] :=
+                      Value.Tuple
+                        [
                           M.borrow (|
                             Pointer.Kind.Ref,
                             M.alloc (|
-                              Ty.apply
-                                (Ty.path "array")
-                                [ Value.Integer IntegerKind.Usize 2 ]
-                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                              Value.Array [ mk_str (| "Find 2 in vec2: " |); mk_str (| "
-" |) ]
+                              Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "i32" ],
+                              M.call_closure (|
+                                Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "i32" ],
+                                M.get_trait_method (|
+                                  "core::iter::traits::iterator::Iterator",
+                                  Ty.apply
+                                    (Ty.path "alloc::vec::into_iter::IntoIter")
+                                    []
+                                    [ Ty.path "i32"; Ty.path "alloc::alloc::Global" ],
+                                  [],
+                                  [],
+                                  "find",
+                                  [],
+                                  [
+                                    Ty.function
+                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "i32" ] ]
+                                      (Ty.path "bool")
+                                  ]
+                                |),
+                                [
+                                  M.borrow (| Pointer.Kind.MutRef, into_iter |);
+                                  M.closure
+                                    (fun γ =>
+                                      ltac:(M.monadic
+                                        match γ with
+                                        | [ α0 ] =>
+                                          ltac:(M.monadic
+                                            (M.match_operator (|
+                                              Ty.path "bool",
+                                              M.alloc (|
+                                                Ty.apply (Ty.path "&") [] [ Ty.path "i32" ],
+                                                α0
+                                              |),
+                                              [
+                                                fun γ =>
+                                                  ltac:(M.monadic
+                                                    (let γ := M.deref (| M.read (| γ |) |) in
+                                                    let x := M.copy (| Ty.path "i32", γ |) in
+                                                    M.call_closure (|
+                                                      Ty.path "bool",
+                                                      BinOp.eq,
+                                                      [
+                                                        M.read (| x |);
+                                                        Value.Integer IntegerKind.I32 2
+                                                      ]
+                                                    |)))
+                                              ]
+                                            |)))
+                                        | _ => M.impossible "wrong number of arguments"
+                                        end))
+                                ]
+                              |)
                             |)
                           |)
-                        |)
-                      |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
+                        ] in
+                    let~ args :
+                        Ty.apply
+                          (Ty.path "array")
+                          [ Value.Integer IntegerKind.Usize 1 ]
+                          [ Ty.path "core::fmt::rt::Argument" ] :=
+                      Value.Array
+                        [
+                          M.call_closure (|
+                            Ty.path "core::fmt::rt::Argument",
+                            M.get_associated_function (|
+                              Ty.path "core::fmt::rt::Argument",
+                              "new_debug",
+                              [],
+                              [ Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "i32" ] ]
+                            |),
+                            [
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (|
+                                  M.read (| M.SubPointer.get_tuple_field (| args, 0 |) |)
+                                |)
+                              |)
+                            ]
+                          |)
+                        ] in
+                    M.alloc (|
+                      Ty.path "core::fmt::Arguments",
+                      M.call_closure (|
+                        Ty.path "core::fmt::Arguments",
+                        M.get_associated_function (|
+                          Ty.path "core::fmt::Arguments",
+                          "new",
+                          [ Value.Integer IntegerKind.Usize 21; Value.Integer IntegerKind.Usize 1 ],
+                          []
+                        |),
+                        [
                           M.borrow (|
                             Pointer.Kind.Ref,
-                            M.alloc (|
-                              Ty.apply
-                                (Ty.path "array")
-                                [ Value.Integer IntegerKind.Usize 1 ]
-                                [ Ty.path "core::fmt::rt::Argument" ],
-                              Value.Array
+                            M.deref (|
+                              M.mk_byte_str_ref
+                                21
                                 [
-                                  M.call_closure (|
-                                    Ty.path "core::fmt::rt::Argument",
-                                    M.get_associated_function (|
-                                      Ty.path "core::fmt::rt::Argument",
-                                      "new_debug",
-                                      [],
-                                      [
-                                        Ty.apply
-                                          (Ty.path "core::option::Option")
-                                          []
-                                          [ Ty.path "i32" ]
-                                      ]
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.alloc (|
-                                              Ty.apply
-                                                (Ty.path "core::option::Option")
-                                                []
-                                                [ Ty.path "i32" ],
-                                              M.call_closure (|
-                                                Ty.apply
-                                                  (Ty.path "core::option::Option")
-                                                  []
-                                                  [ Ty.path "i32" ],
-                                                M.get_trait_method (|
-                                                  "core::iter::traits::iterator::Iterator",
-                                                  Ty.apply
-                                                    (Ty.path "alloc::vec::into_iter::IntoIter")
-                                                    []
-                                                    [ Ty.path "i32"; Ty.path "alloc::alloc::Global"
-                                                    ],
-                                                  [],
-                                                  [],
-                                                  "find",
-                                                  [],
-                                                  [
-                                                    Ty.function
-                                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "i32" ]
-                                                      ]
-                                                      (Ty.path "bool")
-                                                  ]
-                                                |),
-                                                [
-                                                  M.borrow (| Pointer.Kind.MutRef, into_iter |);
-                                                  M.closure
-                                                    (fun γ =>
-                                                      ltac:(M.monadic
-                                                        match γ with
-                                                        | [ α0 ] =>
-                                                          ltac:(M.monadic
-                                                            (M.match_operator (|
-                                                              Ty.path "bool",
-                                                              M.alloc (|
-                                                                Ty.apply
-                                                                  (Ty.path "&")
-                                                                  []
-                                                                  [ Ty.path "i32" ],
-                                                                α0
-                                                              |),
-                                                              [
-                                                                fun γ =>
-                                                                  ltac:(M.monadic
-                                                                    (let γ :=
-                                                                      M.deref (|
-                                                                        M.read (| γ |)
-                                                                      |) in
-                                                                    let x :=
-                                                                      M.copy (|
-                                                                        Ty.path "i32",
-                                                                        γ
-                                                                      |) in
-                                                                    M.call_closure (|
-                                                                      Ty.path "bool",
-                                                                      BinOp.eq,
-                                                                      [
-                                                                        M.read (| x |);
-                                                                        Value.Integer
-                                                                          IntegerKind.I32
-                                                                          2
-                                                                      ]
-                                                                    |)))
-                                                              ]
-                                                            |)))
-                                                        | _ =>
-                                                          M.impossible "wrong number of arguments"
-                                                        end))
-                                                ]
-                                              |)
-                                            |)
-                                          |)
-                                        |)
-                                      |)
-                                    ]
-                                  |)
+                                  16;
+                                  70;
+                                  105;
+                                  110;
+                                  100;
+                                  32;
+                                  50;
+                                  32;
+                                  105;
+                                  110;
+                                  32;
+                                  118;
+                                  101;
+                                  99;
+                                  50;
+                                  58;
+                                  32;
+                                  192;
+                                  1;
+                                  10;
+                                  0
                                 ]
                             |)
+                          |);
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
                           |)
-                        |)
+                        ]
                       |)
-                    ]
+                    |)
                   |)
                 ]
               |) in
@@ -620,231 +625,217 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                 Ty.tuple [],
                 M.get_function (| "std::io::stdio::_print", [], [] |),
                 [
-                  M.call_closure (|
-                    Ty.path "core::fmt::Arguments",
-                    M.get_associated_function (|
-                      Ty.path "core::fmt::Arguments",
-                      "new_v1",
-                      [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 1 ],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
+                  M.read (|
+                    let~ args :
+                        Ty.tuple
+                          [
+                            Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "core::option::Option")
+                                  []
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "i32" ] ]
+                              ]
+                          ] :=
+                      Value.Tuple
+                        [
                           M.borrow (|
                             Pointer.Kind.Ref,
                             M.alloc (|
                               Ty.apply
-                                (Ty.path "array")
-                                [ Value.Integer IntegerKind.Usize 2 ]
-                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                              Value.Array [ mk_str (| "Find 2 in array1: " |); mk_str (| "
-" |) ]
-                            |)
-                          |)
-                        |)
-                      |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.alloc (|
-                              Ty.apply
-                                (Ty.path "array")
-                                [ Value.Integer IntegerKind.Usize 1 ]
-                                [ Ty.path "core::fmt::rt::Argument" ],
-                              Value.Array
-                                [
-                                  M.call_closure (|
-                                    Ty.path "core::fmt::rt::Argument",
-                                    M.get_associated_function (|
-                                      Ty.path "core::fmt::rt::Argument",
-                                      "new_debug",
-                                      [],
+                                (Ty.path "core::option::Option")
+                                []
+                                [ Ty.apply (Ty.path "&") [] [ Ty.path "i32" ] ],
+                              M.call_closure (|
+                                Ty.apply
+                                  (Ty.path "core::option::Option")
+                                  []
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "i32" ] ],
+                                M.get_trait_method (|
+                                  "core::iter::traits::iterator::Iterator",
+                                  Ty.apply (Ty.path "core::slice::iter::Iter") [] [ Ty.path "i32" ],
+                                  [],
+                                  [],
+                                  "find",
+                                  [],
+                                  [
+                                    Ty.function
                                       [
                                         Ty.apply
-                                          (Ty.path "core::option::Option")
+                                          (Ty.path "&")
                                           []
                                           [ Ty.apply (Ty.path "&") [] [ Ty.path "i32" ] ]
                                       ]
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.alloc (|
-                                              Ty.apply
-                                                (Ty.path "core::option::Option")
+                                      (Ty.path "bool")
+                                  ]
+                                |),
+                                [
+                                  M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "core::slice::iter::Iter")
+                                        []
+                                        [ Ty.path "i32" ],
+                                      M.call_closure (|
+                                        Ty.apply
+                                          (Ty.path "core::slice::iter::Iter")
+                                          []
+                                          [ Ty.path "i32" ],
+                                        M.get_associated_function (|
+                                          Ty.apply (Ty.path "slice") [] [ Ty.path "i32" ],
+                                          "iter",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "i32" ] ],
+                                            M.pointer_coercion
+                                              M.PointerCoercion.Unsize
+                                              (Ty.apply
+                                                (Ty.path "&")
                                                 []
-                                                [ Ty.apply (Ty.path "&") [] [ Ty.path "i32" ] ],
-                                              M.call_closure (|
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "array")
+                                                    [ Value.Integer IntegerKind.Usize 3 ]
+                                                    [ Ty.path "i32" ]
+                                                ])
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "i32" ]
+                                                ]),
+                                            [ M.borrow (| Pointer.Kind.Ref, array1 |) ]
+                                          |)
+                                        ]
+                                      |)
+                                    |)
+                                  |);
+                                  M.closure
+                                    (fun γ =>
+                                      ltac:(M.monadic
+                                        match γ with
+                                        | [ α0 ] =>
+                                          ltac:(M.monadic
+                                            (M.match_operator (|
+                                              Ty.path "bool",
+                                              M.alloc (|
                                                 Ty.apply
-                                                  (Ty.path "core::option::Option")
+                                                  (Ty.path "&")
                                                   []
                                                   [ Ty.apply (Ty.path "&") [] [ Ty.path "i32" ] ],
-                                                M.get_trait_method (|
-                                                  "core::iter::traits::iterator::Iterator",
-                                                  Ty.apply
-                                                    (Ty.path "core::slice::iter::Iter")
-                                                    []
-                                                    [ Ty.path "i32" ],
-                                                  [],
-                                                  [],
-                                                  "find",
-                                                  [],
-                                                  [
-                                                    Ty.function
+                                                α0
+                                              |),
+                                              [
+                                                fun γ =>
+                                                  ltac:(M.monadic
+                                                    (let γ := M.deref (| M.read (| γ |) |) in
+                                                    let γ := M.deref (| M.read (| γ |) |) in
+                                                    let x := M.copy (| Ty.path "i32", γ |) in
+                                                    M.call_closure (|
+                                                      Ty.path "bool",
+                                                      BinOp.eq,
                                                       [
-                                                        Ty.apply
-                                                          (Ty.path "&")
-                                                          []
-                                                          [
-                                                            Ty.apply
-                                                              (Ty.path "&")
-                                                              []
-                                                              [ Ty.path "i32" ]
-                                                          ]
+                                                        M.read (| x |);
+                                                        Value.Integer IntegerKind.I32 2
                                                       ]
-                                                      (Ty.path "bool")
-                                                  ]
-                                                |),
-                                                [
-                                                  M.borrow (|
-                                                    Pointer.Kind.MutRef,
-                                                    M.alloc (|
-                                                      Ty.apply
-                                                        (Ty.path "core::slice::iter::Iter")
-                                                        []
-                                                        [ Ty.path "i32" ],
-                                                      M.call_closure (|
-                                                        Ty.apply
-                                                          (Ty.path "core::slice::iter::Iter")
-                                                          []
-                                                          [ Ty.path "i32" ],
-                                                        M.get_associated_function (|
-                                                          Ty.apply
-                                                            (Ty.path "slice")
-                                                            []
-                                                            [ Ty.path "i32" ],
-                                                          "iter",
-                                                          [],
-                                                          []
-                                                        |),
-                                                        [
-                                                          M.call_closure (|
-                                                            Ty.apply
-                                                              (Ty.path "&")
-                                                              []
-                                                              [
-                                                                Ty.apply
-                                                                  (Ty.path "slice")
-                                                                  []
-                                                                  [ Ty.path "i32" ]
-                                                              ],
-                                                            M.pointer_coercion
-                                                              M.PointerCoercion.Unsize
-                                                              (Ty.apply
-                                                                (Ty.path "&")
-                                                                []
-                                                                [
-                                                                  Ty.apply
-                                                                    (Ty.path "array")
-                                                                    [
-                                                                      Value.Integer
-                                                                        IntegerKind.Usize
-                                                                        3
-                                                                    ]
-                                                                    [ Ty.path "i32" ]
-                                                                ])
-                                                              (Ty.apply
-                                                                (Ty.path "&")
-                                                                []
-                                                                [
-                                                                  Ty.apply
-                                                                    (Ty.path "slice")
-                                                                    []
-                                                                    [ Ty.path "i32" ]
-                                                                ]),
-                                                            [
-                                                              M.borrow (|
-                                                                Pointer.Kind.Ref,
-                                                                array1
-                                                              |)
-                                                            ]
-                                                          |)
-                                                        ]
-                                                      |)
-                                                    |)
-                                                  |);
-                                                  M.closure
-                                                    (fun γ =>
-                                                      ltac:(M.monadic
-                                                        match γ with
-                                                        | [ α0 ] =>
-                                                          ltac:(M.monadic
-                                                            (M.match_operator (|
-                                                              Ty.path "bool",
-                                                              M.alloc (|
-                                                                Ty.apply
-                                                                  (Ty.path "&")
-                                                                  []
-                                                                  [
-                                                                    Ty.apply
-                                                                      (Ty.path "&")
-                                                                      []
-                                                                      [ Ty.path "i32" ]
-                                                                  ],
-                                                                α0
-                                                              |),
-                                                              [
-                                                                fun γ =>
-                                                                  ltac:(M.monadic
-                                                                    (let γ :=
-                                                                      M.deref (|
-                                                                        M.read (| γ |)
-                                                                      |) in
-                                                                    let γ :=
-                                                                      M.deref (|
-                                                                        M.read (| γ |)
-                                                                      |) in
-                                                                    let x :=
-                                                                      M.copy (|
-                                                                        Ty.path "i32",
-                                                                        γ
-                                                                      |) in
-                                                                    M.call_closure (|
-                                                                      Ty.path "bool",
-                                                                      BinOp.eq,
-                                                                      [
-                                                                        M.read (| x |);
-                                                                        Value.Integer
-                                                                          IntegerKind.I32
-                                                                          2
-                                                                      ]
-                                                                    |)))
-                                                              ]
-                                                            |)))
-                                                        | _ =>
-                                                          M.impossible "wrong number of arguments"
-                                                        end))
-                                                ]
-                                              |)
-                                            |)
-                                          |)
-                                        |)
-                                      |)
-                                    ]
-                                  |)
+                                                    |)))
+                                              ]
+                                            |)))
+                                        | _ => M.impossible "wrong number of arguments"
+                                        end))
                                 ]
+                              |)
                             |)
                           |)
-                        |)
+                        ] in
+                    let~ args :
+                        Ty.apply
+                          (Ty.path "array")
+                          [ Value.Integer IntegerKind.Usize 1 ]
+                          [ Ty.path "core::fmt::rt::Argument" ] :=
+                      Value.Array
+                        [
+                          M.call_closure (|
+                            Ty.path "core::fmt::rt::Argument",
+                            M.get_associated_function (|
+                              Ty.path "core::fmt::rt::Argument",
+                              "new_debug",
+                              [],
+                              [
+                                Ty.apply
+                                  (Ty.path "core::option::Option")
+                                  []
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "i32" ] ]
+                              ]
+                            |),
+                            [
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (|
+                                  M.read (| M.SubPointer.get_tuple_field (| args, 0 |) |)
+                                |)
+                              |)
+                            ]
+                          |)
+                        ] in
+                    M.alloc (|
+                      Ty.path "core::fmt::Arguments",
+                      M.call_closure (|
+                        Ty.path "core::fmt::Arguments",
+                        M.get_associated_function (|
+                          Ty.path "core::fmt::Arguments",
+                          "new",
+                          [ Value.Integer IntegerKind.Usize 23; Value.Integer IntegerKind.Usize 1 ],
+                          []
+                        |),
+                        [
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (|
+                              M.mk_byte_str_ref
+                                23
+                                [
+                                  18;
+                                  70;
+                                  105;
+                                  110;
+                                  100;
+                                  32;
+                                  50;
+                                  32;
+                                  105;
+                                  110;
+                                  32;
+                                  97;
+                                  114;
+                                  114;
+                                  97;
+                                  121;
+                                  49;
+                                  58;
+                                  32;
+                                  192;
+                                  1;
+                                  10;
+                                  0
+                                ]
+                            |)
+                          |);
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
+                          |)
+                        ]
                       |)
-                    ]
+                    |)
                   |)
                 ]
               |) in
@@ -857,201 +848,207 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                 Ty.tuple [],
                 M.get_function (| "std::io::stdio::_print", [], [] |),
                 [
-                  M.call_closure (|
-                    Ty.path "core::fmt::Arguments",
-                    M.get_associated_function (|
-                      Ty.path "core::fmt::Arguments",
-                      "new_v1",
-                      [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 1 ],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
+                  M.read (|
+                    let~ args :
+                        Ty.tuple
+                          [
+                            Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "core::option::Option")
+                                  []
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "i32" ] ]
+                              ]
+                          ] :=
+                      Value.Tuple
+                        [
                           M.borrow (|
                             Pointer.Kind.Ref,
                             M.alloc (|
                               Ty.apply
-                                (Ty.path "array")
-                                [ Value.Integer IntegerKind.Usize 2 ]
-                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                              Value.Array [ mk_str (| "Find 2 in array2: " |); mk_str (| "
-" |) ]
-                            |)
-                          |)
-                        |)
-                      |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.alloc (|
-                              Ty.apply
-                                (Ty.path "array")
-                                [ Value.Integer IntegerKind.Usize 1 ]
-                                [ Ty.path "core::fmt::rt::Argument" ],
-                              Value.Array
-                                [
-                                  M.call_closure (|
-                                    Ty.path "core::fmt::rt::Argument",
-                                    M.get_associated_function (|
-                                      Ty.path "core::fmt::rt::Argument",
-                                      "new_debug",
-                                      [],
+                                (Ty.path "core::option::Option")
+                                []
+                                [ Ty.apply (Ty.path "&") [] [ Ty.path "i32" ] ],
+                              M.call_closure (|
+                                Ty.apply
+                                  (Ty.path "core::option::Option")
+                                  []
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "i32" ] ],
+                                M.get_trait_method (|
+                                  "core::iter::traits::iterator::Iterator",
+                                  Ty.apply (Ty.path "core::slice::iter::Iter") [] [ Ty.path "i32" ],
+                                  [],
+                                  [],
+                                  "find",
+                                  [],
+                                  [
+                                    Ty.function
                                       [
                                         Ty.apply
-                                          (Ty.path "core::option::Option")
+                                          (Ty.path "&")
                                           []
                                           [ Ty.apply (Ty.path "&") [] [ Ty.path "i32" ] ]
                                       ]
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.alloc (|
+                                      (Ty.path "bool")
+                                  ]
+                                |),
+                                [
+                                  M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "core::slice::iter::Iter")
+                                        []
+                                        [ Ty.path "i32" ],
+                                      M.call_closure (|
+                                        Ty.apply
+                                          (Ty.path "core::slice::iter::Iter")
+                                          []
+                                          [ Ty.path "i32" ],
+                                        M.get_trait_method (|
+                                          "core::iter::traits::collect::IntoIterator",
+                                          Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [
                                               Ty.apply
-                                                (Ty.path "core::option::Option")
-                                                []
-                                                [ Ty.apply (Ty.path "&") [] [ Ty.path "i32" ] ],
-                                              M.call_closure (|
+                                                (Ty.path "array")
+                                                [ Value.Integer IntegerKind.Usize 3 ]
+                                                [ Ty.path "i32" ]
+                                            ],
+                                          [],
+                                          [],
+                                          "into_iter",
+                                          [],
+                                          []
+                                        |),
+                                        [ M.borrow (| Pointer.Kind.Ref, array2 |) ]
+                                      |)
+                                    |)
+                                  |);
+                                  M.closure
+                                    (fun γ =>
+                                      ltac:(M.monadic
+                                        match γ with
+                                        | [ α0 ] =>
+                                          ltac:(M.monadic
+                                            (M.match_operator (|
+                                              Ty.path "bool",
+                                              M.alloc (|
                                                 Ty.apply
-                                                  (Ty.path "core::option::Option")
+                                                  (Ty.path "&")
                                                   []
                                                   [ Ty.apply (Ty.path "&") [] [ Ty.path "i32" ] ],
-                                                M.get_trait_method (|
-                                                  "core::iter::traits::iterator::Iterator",
-                                                  Ty.apply
-                                                    (Ty.path "core::slice::iter::Iter")
-                                                    []
-                                                    [ Ty.path "i32" ],
-                                                  [],
-                                                  [],
-                                                  "find",
-                                                  [],
-                                                  [
-                                                    Ty.function
+                                                α0
+                                              |),
+                                              [
+                                                fun γ =>
+                                                  ltac:(M.monadic
+                                                    (let γ := M.deref (| M.read (| γ |) |) in
+                                                    let x :=
+                                                      M.copy (|
+                                                        Ty.apply (Ty.path "&") [] [ Ty.path "i32" ],
+                                                        γ
+                                                      |) in
+                                                    M.call_closure (|
+                                                      Ty.path "bool",
+                                                      BinOp.eq,
                                                       [
-                                                        Ty.apply
-                                                          (Ty.path "&")
-                                                          []
-                                                          [
-                                                            Ty.apply
-                                                              (Ty.path "&")
-                                                              []
-                                                              [ Ty.path "i32" ]
-                                                          ]
+                                                        M.read (| M.deref (| M.read (| x |) |) |);
+                                                        Value.Integer IntegerKind.I32 2
                                                       ]
-                                                      (Ty.path "bool")
-                                                  ]
-                                                |),
-                                                [
-                                                  M.borrow (|
-                                                    Pointer.Kind.MutRef,
-                                                    M.alloc (|
-                                                      Ty.apply
-                                                        (Ty.path "core::slice::iter::Iter")
-                                                        []
-                                                        [ Ty.path "i32" ],
-                                                      M.call_closure (|
-                                                        Ty.apply
-                                                          (Ty.path "core::slice::iter::Iter")
-                                                          []
-                                                          [ Ty.path "i32" ],
-                                                        M.get_trait_method (|
-                                                          "core::iter::traits::collect::IntoIterator",
-                                                          Ty.apply
-                                                            (Ty.path "&")
-                                                            []
-                                                            [
-                                                              Ty.apply
-                                                                (Ty.path "array")
-                                                                [ Value.Integer IntegerKind.Usize 3
-                                                                ]
-                                                                [ Ty.path "i32" ]
-                                                            ],
-                                                          [],
-                                                          [],
-                                                          "into_iter",
-                                                          [],
-                                                          []
-                                                        |),
-                                                        [ M.borrow (| Pointer.Kind.Ref, array2 |) ]
-                                                      |)
-                                                    |)
-                                                  |);
-                                                  M.closure
-                                                    (fun γ =>
-                                                      ltac:(M.monadic
-                                                        match γ with
-                                                        | [ α0 ] =>
-                                                          ltac:(M.monadic
-                                                            (M.match_operator (|
-                                                              Ty.path "bool",
-                                                              M.alloc (|
-                                                                Ty.apply
-                                                                  (Ty.path "&")
-                                                                  []
-                                                                  [
-                                                                    Ty.apply
-                                                                      (Ty.path "&")
-                                                                      []
-                                                                      [ Ty.path "i32" ]
-                                                                  ],
-                                                                α0
-                                                              |),
-                                                              [
-                                                                fun γ =>
-                                                                  ltac:(M.monadic
-                                                                    (let γ :=
-                                                                      M.deref (|
-                                                                        M.read (| γ |)
-                                                                      |) in
-                                                                    let x :=
-                                                                      M.copy (|
-                                                                        Ty.apply
-                                                                          (Ty.path "&")
-                                                                          []
-                                                                          [ Ty.path "i32" ],
-                                                                        γ
-                                                                      |) in
-                                                                    M.call_closure (|
-                                                                      Ty.path "bool",
-                                                                      BinOp.eq,
-                                                                      [
-                                                                        M.read (|
-                                                                          M.deref (|
-                                                                            M.read (| x |)
-                                                                          |)
-                                                                        |);
-                                                                        Value.Integer
-                                                                          IntegerKind.I32
-                                                                          2
-                                                                      ]
-                                                                    |)))
-                                                              ]
-                                                            |)))
-                                                        | _ =>
-                                                          M.impossible "wrong number of arguments"
-                                                        end))
-                                                ]
-                                              |)
-                                            |)
-                                          |)
-                                        |)
-                                      |)
-                                    ]
-                                  |)
+                                                    |)))
+                                              ]
+                                            |)))
+                                        | _ => M.impossible "wrong number of arguments"
+                                        end))
                                 ]
+                              |)
                             |)
                           |)
-                        |)
+                        ] in
+                    let~ args :
+                        Ty.apply
+                          (Ty.path "array")
+                          [ Value.Integer IntegerKind.Usize 1 ]
+                          [ Ty.path "core::fmt::rt::Argument" ] :=
+                      Value.Array
+                        [
+                          M.call_closure (|
+                            Ty.path "core::fmt::rt::Argument",
+                            M.get_associated_function (|
+                              Ty.path "core::fmt::rt::Argument",
+                              "new_debug",
+                              [],
+                              [
+                                Ty.apply
+                                  (Ty.path "core::option::Option")
+                                  []
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "i32" ] ]
+                              ]
+                            |),
+                            [
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (|
+                                  M.read (| M.SubPointer.get_tuple_field (| args, 0 |) |)
+                                |)
+                              |)
+                            ]
+                          |)
+                        ] in
+                    M.alloc (|
+                      Ty.path "core::fmt::Arguments",
+                      M.call_closure (|
+                        Ty.path "core::fmt::Arguments",
+                        M.get_associated_function (|
+                          Ty.path "core::fmt::Arguments",
+                          "new",
+                          [ Value.Integer IntegerKind.Usize 23; Value.Integer IntegerKind.Usize 1 ],
+                          []
+                        |),
+                        [
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (|
+                              M.mk_byte_str_ref
+                                23
+                                [
+                                  18;
+                                  70;
+                                  105;
+                                  110;
+                                  100;
+                                  32;
+                                  50;
+                                  32;
+                                  105;
+                                  110;
+                                  32;
+                                  97;
+                                  114;
+                                  114;
+                                  97;
+                                  121;
+                                  50;
+                                  58;
+                                  32;
+                                  192;
+                                  1;
+                                  10;
+                                  0
+                                ]
+                            |)
+                          |);
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
+                          |)
+                        ]
                       |)
-                    ]
+                    |)
                   |)
                 ]
               |) in

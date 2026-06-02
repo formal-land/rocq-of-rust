@@ -1,9 +1,9 @@
 warning: formatting may not be suitable for sub-register argument
   --> examples/rust_book/unsafe_operations/inline_assembly_labels.rs:8:18
    |
-8  |             "mov {0}, 10",
+ 8 |             "mov {0}, 10",
    |                  ^^^
-9  |             "2:",
+ 9 |             "2:",
 10 |             "sub {0}, 1",
    |                  ^^^
 11 |             "cmp {0}, 3",

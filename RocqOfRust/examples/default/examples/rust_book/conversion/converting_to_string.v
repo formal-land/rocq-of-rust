@@ -32,72 +32,89 @@ Module Impl_core_fmt_Display_for_converting_to_string_Circle.
           M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_fmt", [], [] |),
           [
             M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-            M.call_closure (|
-              Ty.path "core::fmt::Arguments",
-              M.get_associated_function (|
-                Ty.path "core::fmt::Arguments",
-                "new_v1",
-                [ Value.Integer IntegerKind.Usize 1; Value.Integer IntegerKind.Usize 1 ],
-                []
-              |),
-              [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
+            M.read (|
+              let~ args : Ty.tuple [ Ty.apply (Ty.path "&") [] [ Ty.path "i32" ] ] :=
+                Value.Tuple
+                  [
                     M.borrow (|
                       Pointer.Kind.Ref,
-                      M.alloc (|
-                        Ty.apply
-                          (Ty.path "array")
-                          [ Value.Integer IntegerKind.Usize 1 ]
-                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                        Value.Array [ mk_str (| "Circle of radius " |) ]
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "converting_to_string::Circle",
+                        "radius"
                       |)
                     |)
-                  |)
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
+                  ] in
+              let~ args :
+                  Ty.apply
+                    (Ty.path "array")
+                    [ Value.Integer IntegerKind.Usize 1 ]
+                    [ Ty.path "core::fmt::rt::Argument" ] :=
+                Value.Array
+                  [
+                    M.call_closure (|
+                      Ty.path "core::fmt::rt::Argument",
+                      M.get_associated_function (|
+                        Ty.path "core::fmt::rt::Argument",
+                        "new_display",
+                        [],
+                        [ Ty.path "i32" ]
+                      |),
+                      [
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| M.read (| M.SubPointer.get_tuple_field (| args, 0 |) |) |)
+                        |)
+                      ]
+                    |)
+                  ] in
+              M.alloc (|
+                Ty.path "core::fmt::Arguments",
+                M.call_closure (|
+                  Ty.path "core::fmt::Arguments",
+                  M.get_associated_function (|
+                    Ty.path "core::fmt::Arguments",
+                    "new",
+                    [ Value.Integer IntegerKind.Usize 20; Value.Integer IntegerKind.Usize 1 ],
+                    []
+                  |),
+                  [
                     M.borrow (|
                       Pointer.Kind.Ref,
-                      M.alloc (|
-                        Ty.apply
-                          (Ty.path "array")
-                          [ Value.Integer IntegerKind.Usize 1 ]
-                          [ Ty.path "core::fmt::rt::Argument" ],
-                        Value.Array
+                      M.deref (|
+                        M.mk_byte_str_ref
+                          20
                           [
-                            M.call_closure (|
-                              Ty.path "core::fmt::rt::Argument",
-                              M.get_associated_function (|
-                                Ty.path "core::fmt::rt::Argument",
-                                "new_display",
-                                [],
-                                [ Ty.path "i32" ]
-                              |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.SubPointer.get_struct_record_field (|
-                                        M.deref (| M.read (| self |) |),
-                                        "converting_to_string::Circle",
-                                        "radius"
-                                      |)
-                                    |)
-                                  |)
-                                |)
-                              ]
-                            |)
+                            17;
+                            67;
+                            105;
+                            114;
+                            99;
+                            108;
+                            101;
+                            32;
+                            111;
+                            102;
+                            32;
+                            114;
+                            97;
+                            100;
+                            105;
+                            117;
+                            115;
+                            32;
+                            192;
+                            0
                           ]
                       |)
+                    |);
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
                     |)
-                  |)
+                  ]
                 |)
-              ]
+              |)
             |)
           ]
         |)))

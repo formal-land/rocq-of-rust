@@ -140,32 +140,44 @@ Module iter.
                                                         fun γ =>
                                                           ltac:(M.monadic
                                                             (let γ :=
-                                                              M.use
-                                                                (M.alloc (|
+                                                              M.alloc (|
+                                                                Ty.path "bool",
+                                                                M.call_closure (|
                                                                   Ty.path "bool",
-                                                                  M.call_closure (|
-                                                                    Ty.path "bool",
-                                                                    M.get_associated_function (|
-                                                                      Ty.apply
-                                                                        (Ty.path
-                                                                          "core::option::Option")
-                                                                        []
-                                                                        [
-                                                                          Ty.associated_in_trait
-                                                                            "core::iter::traits::iterator::Iterator"
-                                                                            []
-                                                                            []
-                                                                            Self
-                                                                            "Item"
-                                                                        ],
-                                                                      "is_none",
-                                                                      [],
+                                                                  M.get_associated_function (|
+                                                                    Ty.apply
+                                                                      (Ty.path
+                                                                        "core::option::Option")
                                                                       []
-                                                                    |),
-                                                                    [
-                                                                      M.borrow (|
-                                                                        Pointer.Kind.Ref,
-                                                                        M.alloc (|
+                                                                      [
+                                                                        Ty.associated_in_trait
+                                                                          "core::iter::traits::iterator::Iterator"
+                                                                          []
+                                                                          []
+                                                                          Self
+                                                                          "Item"
+                                                                      ],
+                                                                    "is_none",
+                                                                    [],
+                                                                    []
+                                                                  |),
+                                                                  [
+                                                                    M.borrow (|
+                                                                      Pointer.Kind.Ref,
+                                                                      M.alloc (|
+                                                                        Ty.apply
+                                                                          (Ty.path
+                                                                            "core::option::Option")
+                                                                          []
+                                                                          [
+                                                                            Ty.associated_in_trait
+                                                                              "core::iter::traits::iterator::Iterator"
+                                                                              []
+                                                                              []
+                                                                              Self
+                                                                              "Item"
+                                                                          ],
+                                                                        M.call_closure (|
                                                                           Ty.apply
                                                                             (Ty.path
                                                                               "core::option::Option")
@@ -178,42 +190,29 @@ Module iter.
                                                                                 Self
                                                                                 "Item"
                                                                             ],
-                                                                          M.call_closure (|
-                                                                            Ty.apply
-                                                                              (Ty.path
-                                                                                "core::option::Option")
-                                                                              []
-                                                                              [
-                                                                                Ty.associated_in_trait
-                                                                                  "core::iter::traits::iterator::Iterator"
-                                                                                  []
-                                                                                  []
-                                                                                  Self
-                                                                                  "Item"
-                                                                              ],
-                                                                            M.get_trait_method (|
-                                                                              "core::iter::traits::double_ended::DoubleEndedIterator",
-                                                                              Self,
-                                                                              [],
-                                                                              [],
-                                                                              "next_back",
-                                                                              [],
-                                                                              []
-                                                                            |),
-                                                                            [
-                                                                              M.borrow (|
-                                                                                Pointer.Kind.MutRef,
-                                                                                M.deref (|
-                                                                                  M.read (| self |)
-                                                                                |)
+                                                                          M.get_trait_method (|
+                                                                            "core::iter::traits::double_ended::DoubleEndedIterator",
+                                                                            Self,
+                                                                            [],
+                                                                            [],
+                                                                            "next_back",
+                                                                            [],
+                                                                            []
+                                                                          |),
+                                                                          [
+                                                                            M.borrow (|
+                                                                              Pointer.Kind.MutRef,
+                                                                              M.deref (|
+                                                                                M.read (| self |)
                                                                               |)
-                                                                            ]
-                                                                          |)
+                                                                            |)
+                                                                          ]
                                                                         |)
                                                                       |)
-                                                                    ]
-                                                                  |)
-                                                                |)) in
+                                                                    |)
+                                                                  ]
+                                                                |)
+                                                              |) in
                                                             let _ :=
                                                               is_constant_or_break_match (|
                                                                 M.read (| γ |),
@@ -337,30 +336,40 @@ Module iter.
                           fun γ =>
                             ltac:(M.monadic
                               (let γ :=
-                                M.use
-                                  (M.alloc (|
+                                M.alloc (|
+                                  Ty.path "bool",
+                                  M.call_closure (|
                                     Ty.path "bool",
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      M.get_associated_function (|
-                                        Ty.apply
-                                          (Ty.path "core::result::Result")
-                                          []
-                                          [
-                                            Ty.tuple [];
-                                            Ty.apply
-                                              (Ty.path "core::num::nonzero::NonZero")
-                                              []
-                                              [ Ty.path "usize" ]
-                                          ],
-                                        "is_err",
-                                        [],
+                                    M.get_associated_function (|
+                                      Ty.apply
+                                        (Ty.path "core::result::Result")
                                         []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.alloc (|
+                                        [
+                                          Ty.tuple [];
+                                          Ty.apply
+                                            (Ty.path "core::num::nonzero::NonZero")
+                                            []
+                                            [ Ty.path "usize" ]
+                                        ],
+                                      "is_err",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "core::result::Result")
+                                            []
+                                            [
+                                              Ty.tuple [];
+                                              Ty.apply
+                                                (Ty.path "core::num::nonzero::NonZero")
+                                                []
+                                                [ Ty.path "usize" ]
+                                            ],
+                                          M.call_closure (|
                                             Ty.apply
                                               (Ty.path "core::result::Result")
                                               []
@@ -371,39 +380,28 @@ Module iter.
                                                   []
                                                   [ Ty.path "usize" ]
                                               ],
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "core::result::Result")
-                                                []
-                                                [
-                                                  Ty.tuple [];
-                                                  Ty.apply
-                                                    (Ty.path "core::num::nonzero::NonZero")
-                                                    []
-                                                    [ Ty.path "usize" ]
-                                                ],
-                                              M.get_trait_method (|
-                                                "core::iter::traits::double_ended::DoubleEndedIterator",
-                                                Self,
-                                                [],
-                                                [],
-                                                "advance_back_by",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.MutRef,
-                                                  M.deref (| M.read (| self |) |)
-                                                |);
-                                                M.read (| n |)
-                                              ]
-                                            |)
+                                            M.get_trait_method (|
+                                              "core::iter::traits::double_ended::DoubleEndedIterator",
+                                              Self,
+                                              [],
+                                              [],
+                                              "advance_back_by",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.borrow (|
+                                                Pointer.Kind.MutRef,
+                                                M.deref (| M.read (| self |) |)
+                                              |);
+                                              M.read (| n |)
+                                            ]
                                           |)
                                         |)
-                                      ]
-                                    |)
-                                  |)) in
+                                      |)
+                                    ]
+                                  |)
+                                |) in
                               let _ :=
                                 is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                               M.never_to_any (|

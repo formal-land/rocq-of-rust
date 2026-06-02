@@ -70,27 +70,26 @@ Module gas.
               fun γ =>
                 ltac:(M.monadic
                   (let γ :=
-                    M.use
-                      (M.alloc (|
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
                         Ty.path "bool",
-                        M.call_closure (|
-                          Ty.path "bool",
-                          M.get_associated_function (|
-                            Ty.path "revm_specification::hardfork::SpecId",
-                            "is_enabled_in",
-                            [],
+                        M.get_associated_function (|
+                          Ty.path "revm_specification::hardfork::SpecId",
+                          "is_enabled_in",
+                          [],
+                          []
+                        |),
+                        [
+                          M.read (| spec_id |);
+                          Value.StructTuple
+                            "revm_specification::hardfork::SpecId::ISTANBUL"
                             []
-                          |),
-                          [
-                            M.read (| spec_id |);
-                            Value.StructTuple
-                              "revm_specification::hardfork::SpecId::ISTANBUL"
-                              []
-                              []
-                              []
-                          ]
-                        |)
-                      |)) in
+                            []
+                            []
+                        ]
+                      |)
+                    |) in
                   let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                   M.read (|
                     let~ sstore_clears_schedule : Ty.path "i64" :=
@@ -101,27 +100,26 @@ Module gas.
                           fun γ =>
                             ltac:(M.monadic
                               (let γ :=
-                                M.use
-                                  (M.alloc (|
+                                M.alloc (|
+                                  Ty.path "bool",
+                                  M.call_closure (|
                                     Ty.path "bool",
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      M.get_associated_function (|
-                                        Ty.path "revm_specification::hardfork::SpecId",
-                                        "is_enabled_in",
-                                        [],
+                                    M.get_associated_function (|
+                                      Ty.path "revm_specification::hardfork::SpecId",
+                                      "is_enabled_in",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.read (| spec_id |);
+                                      Value.StructTuple
+                                        "revm_specification::hardfork::SpecId::LONDON"
                                         []
-                                      |),
-                                      [
-                                        M.read (| spec_id |);
-                                        Value.StructTuple
-                                          "revm_specification::hardfork::SpecId::LONDON"
-                                          []
-                                          []
-                                          []
-                                      ]
-                                    |)
-                                  |)) in
+                                        []
+                                        []
+                                    ]
+                                  |)
+                                |) in
                               let _ :=
                                 is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                               M.cast
@@ -175,25 +173,24 @@ Module gas.
                           fun γ =>
                             ltac:(M.monadic
                               (let γ :=
-                                M.use
-                                  (M.alloc (|
+                                M.alloc (|
+                                  Ty.path "bool",
+                                  M.call_closure (|
                                     Ty.path "bool",
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      M.get_associated_function (|
-                                        Ty.path "revm_context_interface::host::SStoreResult",
-                                        "is_new_eq_present",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| vals |) |)
-                                        |)
-                                      ]
-                                    |)
-                                  |)) in
+                                    M.get_associated_function (|
+                                      Ty.path "revm_context_interface::host::SStoreResult",
+                                      "is_new_eq_present",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| vals |) |)
+                                      |)
+                                    ]
+                                  |)
+                                |) in
                               let _ :=
                                 is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                               Value.Integer IntegerKind.I64 0));
@@ -206,45 +203,48 @@ Module gas.
                                   fun γ =>
                                     ltac:(M.monadic
                                       (let γ :=
-                                        M.use
-                                          (M.alloc (|
+                                        M.alloc (|
+                                          Ty.path "bool",
+                                          M.call_closure (|
                                             Ty.path "bool",
-                                            LogicalOp.and (|
-                                              M.call_closure (|
-                                                Ty.path "bool",
-                                                M.get_associated_function (|
-                                                  Ty.path
-                                                    "revm_context_interface::host::SStoreResult",
-                                                  "is_original_eq_present",
-                                                  [],
-                                                  []
-                                                |),
-                                                [
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.deref (| M.read (| vals |) |)
-                                                  |)
-                                                ]
-                                              |),
-                                              ltac:(M.monadic
-                                                (M.call_closure (|
-                                                  Ty.path "bool",
-                                                  M.get_associated_function (|
-                                                    Ty.path
-                                                      "revm_context_interface::host::SStoreResult",
-                                                    "is_new_zero",
-                                                    [],
-                                                    []
-                                                  |),
-                                                  [
-                                                    M.borrow (|
-                                                      Pointer.Kind.Ref,
-                                                      M.deref (| M.read (| vals |) |)
-                                                    |)
-                                                  ]
-                                                |)))
-                                            |)
-                                          |)) in
+                                            M.get_associated_function (|
+                                              Ty.path "revm_context_interface::host::SStoreResult",
+                                              "is_original_eq_present",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| vals |) |)
+                                              |)
+                                            ]
+                                          |)
+                                        |) in
+                                      let _ :=
+                                        is_constant_or_break_match (|
+                                          M.read (| γ |),
+                                          Value.Bool true
+                                        |) in
+                                      let γ :=
+                                        M.alloc (|
+                                          Ty.path "bool",
+                                          M.call_closure (|
+                                            Ty.path "bool",
+                                            M.get_associated_function (|
+                                              Ty.path "revm_context_interface::host::SStoreResult",
+                                              "is_new_zero",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| vals |) |)
+                                              |)
+                                            ]
+                                          |)
+                                        |) in
                                       let _ :=
                                         is_constant_or_break_match (|
                                           M.read (| γ |),
@@ -264,32 +264,31 @@ Module gas.
                                               fun γ =>
                                                 ltac:(M.monadic
                                                   (let γ :=
-                                                    M.use
-                                                      (M.alloc (|
+                                                    M.alloc (|
+                                                      Ty.path "bool",
+                                                      M.call_closure (|
                                                         Ty.path "bool",
-                                                        M.call_closure (|
-                                                          Ty.path "bool",
-                                                          UnOp.not,
-                                                          [
-                                                            M.call_closure (|
-                                                              Ty.path "bool",
-                                                              M.get_associated_function (|
-                                                                Ty.path
-                                                                  "revm_context_interface::host::SStoreResult",
-                                                                "is_original_zero",
-                                                                [],
-                                                                []
-                                                              |),
-                                                              [
-                                                                M.borrow (|
-                                                                  Pointer.Kind.Ref,
-                                                                  M.deref (| M.read (| vals |) |)
-                                                                |)
-                                                              ]
-                                                            |)
-                                                          ]
-                                                        |)
-                                                      |)) in
+                                                        UnOp.not,
+                                                        [
+                                                          M.call_closure (|
+                                                            Ty.path "bool",
+                                                            M.get_associated_function (|
+                                                              Ty.path
+                                                                "revm_context_interface::host::SStoreResult",
+                                                              "is_original_zero",
+                                                              [],
+                                                              []
+                                                            |),
+                                                            [
+                                                              M.borrow (|
+                                                                Pointer.Kind.Ref,
+                                                                M.deref (| M.read (| vals |) |)
+                                                              |)
+                                                            ]
+                                                          |)
+                                                        ]
+                                                      |)
+                                                    |) in
                                                   let _ :=
                                                     is_constant_or_break_match (|
                                                       M.read (| γ |),
@@ -302,28 +301,25 @@ Module gas.
                                                       fun γ =>
                                                         ltac:(M.monadic
                                                           (let γ :=
-                                                            M.use
-                                                              (M.alloc (|
+                                                            M.alloc (|
+                                                              Ty.path "bool",
+                                                              M.call_closure (|
                                                                 Ty.path "bool",
-                                                                M.call_closure (|
-                                                                  Ty.path "bool",
-                                                                  M.get_associated_function (|
-                                                                    Ty.path
-                                                                      "revm_context_interface::host::SStoreResult",
-                                                                    "is_present_zero",
-                                                                    [],
-                                                                    []
-                                                                  |),
-                                                                  [
-                                                                    M.borrow (|
-                                                                      Pointer.Kind.Ref,
-                                                                      M.deref (|
-                                                                        M.read (| vals |)
-                                                                      |)
-                                                                    |)
-                                                                  ]
-                                                                |)
-                                                              |)) in
+                                                                M.get_associated_function (|
+                                                                  Ty.path
+                                                                    "revm_context_interface::host::SStoreResult",
+                                                                  "is_present_zero",
+                                                                  [],
+                                                                  []
+                                                                |),
+                                                                [
+                                                                  M.borrow (|
+                                                                    Pointer.Kind.Ref,
+                                                                    M.deref (| M.read (| vals |) |)
+                                                                  |)
+                                                                ]
+                                                              |)
+                                                            |) in
                                                           let _ :=
                                                             is_constant_or_break_match (|
                                                               M.read (| γ |),
@@ -362,28 +358,27 @@ Module gas.
                                                               fun γ =>
                                                                 ltac:(M.monadic
                                                                   (let γ :=
-                                                                    M.use
-                                                                      (M.alloc (|
+                                                                    M.alloc (|
+                                                                      Ty.path "bool",
+                                                                      M.call_closure (|
                                                                         Ty.path "bool",
-                                                                        M.call_closure (|
-                                                                          Ty.path "bool",
-                                                                          M.get_associated_function (|
-                                                                            Ty.path
-                                                                              "revm_context_interface::host::SStoreResult",
-                                                                            "is_new_zero",
-                                                                            [],
-                                                                            []
-                                                                          |),
-                                                                          [
-                                                                            M.borrow (|
-                                                                              Pointer.Kind.Ref,
-                                                                              M.deref (|
-                                                                                M.read (| vals |)
-                                                                              |)
+                                                                        M.get_associated_function (|
+                                                                          Ty.path
+                                                                            "revm_context_interface::host::SStoreResult",
+                                                                          "is_new_zero",
+                                                                          [],
+                                                                          []
+                                                                        |),
+                                                                        [
+                                                                          M.borrow (|
+                                                                            Pointer.Kind.Ref,
+                                                                            M.deref (|
+                                                                              M.read (| vals |)
                                                                             |)
-                                                                          ]
-                                                                        |)
-                                                                      |)) in
+                                                                          |)
+                                                                        ]
+                                                                      |)
+                                                                    |) in
                                                                   let _ :=
                                                                     is_constant_or_break_match (|
                                                                       M.read (| γ |),
@@ -427,26 +422,25 @@ Module gas.
                                               fun γ =>
                                                 ltac:(M.monadic
                                                   (let γ :=
-                                                    M.use
-                                                      (M.alloc (|
+                                                    M.alloc (|
+                                                      Ty.path "bool",
+                                                      M.call_closure (|
                                                         Ty.path "bool",
-                                                        M.call_closure (|
-                                                          Ty.path "bool",
-                                                          M.get_associated_function (|
-                                                            Ty.path
-                                                              "revm_context_interface::host::SStoreResult",
-                                                            "is_original_eq_new",
-                                                            [],
-                                                            []
-                                                          |),
-                                                          [
-                                                            M.borrow (|
-                                                              Pointer.Kind.Ref,
-                                                              M.deref (| M.read (| vals |) |)
-                                                            |)
-                                                          ]
-                                                        |)
-                                                      |)) in
+                                                        M.get_associated_function (|
+                                                          Ty.path
+                                                            "revm_context_interface::host::SStoreResult",
+                                                          "is_original_eq_new",
+                                                          [],
+                                                          []
+                                                        |),
+                                                        [
+                                                          M.borrow (|
+                                                            Pointer.Kind.Ref,
+                                                            M.deref (| M.read (| vals |) |)
+                                                          |)
+                                                        ]
+                                                      |)
+                                                    |) in
                                                   let _ :=
                                                     is_constant_or_break_match (|
                                                       M.read (| γ |),
@@ -463,28 +457,27 @@ Module gas.
                                                           fun γ =>
                                                             ltac:(M.monadic
                                                               (let γ :=
-                                                                M.use
-                                                                  (M.alloc (|
+                                                                M.alloc (|
+                                                                  Ty.path "bool",
+                                                                  M.call_closure (|
                                                                     Ty.path "bool",
-                                                                    M.call_closure (|
-                                                                      Ty.path "bool",
-                                                                      M.get_associated_function (|
-                                                                        Ty.path
-                                                                          "revm_specification::hardfork::SpecId",
-                                                                        "is_enabled_in",
-                                                                        [],
+                                                                    M.get_associated_function (|
+                                                                      Ty.path
+                                                                        "revm_specification::hardfork::SpecId",
+                                                                      "is_enabled_in",
+                                                                      [],
+                                                                      []
+                                                                    |),
+                                                                    [
+                                                                      M.read (| spec_id |);
+                                                                      Value.StructTuple
+                                                                        "revm_specification::hardfork::SpecId::BERLIN"
                                                                         []
-                                                                      |),
-                                                                      [
-                                                                        M.read (| spec_id |);
-                                                                        Value.StructTuple
-                                                                          "revm_specification::hardfork::SpecId::BERLIN"
-                                                                          []
-                                                                          []
-                                                                          []
-                                                                      ]
-                                                                    |)
-                                                                  |)) in
+                                                                        []
+                                                                        []
+                                                                    ]
+                                                                  |)
+                                                                |) in
                                                               let _ :=
                                                                 is_constant_or_break_match (|
                                                                   M.read (| γ |),
@@ -570,28 +563,27 @@ Module gas.
                                                               fun γ =>
                                                                 ltac:(M.monadic
                                                                   (let γ :=
-                                                                    M.use
-                                                                      (M.alloc (|
+                                                                    M.alloc (|
+                                                                      Ty.path "bool",
+                                                                      M.call_closure (|
                                                                         Ty.path "bool",
-                                                                        M.call_closure (|
-                                                                          Ty.path "bool",
-                                                                          M.get_associated_function (|
-                                                                            Ty.path
-                                                                              "revm_context_interface::host::SStoreResult",
-                                                                            "is_original_zero",
-                                                                            [],
-                                                                            []
-                                                                          |),
-                                                                          [
-                                                                            M.borrow (|
-                                                                              Pointer.Kind.Ref,
-                                                                              M.deref (|
-                                                                                M.read (| vals |)
-                                                                              |)
+                                                                        M.get_associated_function (|
+                                                                          Ty.path
+                                                                            "revm_context_interface::host::SStoreResult",
+                                                                          "is_original_zero",
+                                                                          [],
+                                                                          []
+                                                                        |),
+                                                                        [
+                                                                          M.borrow (|
+                                                                            Pointer.Kind.Ref,
+                                                                            M.deref (|
+                                                                              M.read (| vals |)
                                                                             |)
-                                                                          ]
-                                                                        |)
-                                                                      |)) in
+                                                                          |)
+                                                                        ]
+                                                                      |)
+                                                                    |) in
                                                                   let _ :=
                                                                     is_constant_or_break_match (|
                                                                       M.read (| γ |),
@@ -690,49 +682,46 @@ Module gas.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                LogicalOp.and (|
+                                UnOp.not,
+                                [
                                   M.call_closure (|
                                     Ty.path "bool",
-                                    UnOp.not,
+                                    M.get_associated_function (|
+                                      Ty.path "revm_context_interface::host::SStoreResult",
+                                      "is_present_zero",
+                                      [],
+                                      []
+                                    |),
                                     [
-                                      M.call_closure (|
-                                        Ty.path "bool",
-                                        M.get_associated_function (|
-                                          Ty.path "revm_context_interface::host::SStoreResult",
-                                          "is_present_zero",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| vals |) |)
-                                          |)
-                                        ]
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| vals |) |)
                                       |)
                                     ]
-                                  |),
-                                  ltac:(M.monadic
-                                    (M.call_closure (|
-                                      Ty.path "bool",
-                                      M.get_associated_function (|
-                                        Ty.path "revm_context_interface::host::SStoreResult",
-                                        "is_new_zero",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| vals |) |)
-                                        |)
-                                      ]
-                                    |)))
-                                |)
-                              |)) in
+                                  |)
+                                ]
+                              |)
+                            |) in
+                          let _ :=
+                            is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                          let γ :=
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
+                                Ty.path "bool",
+                                M.get_associated_function (|
+                                  Ty.path "revm_context_interface::host::SStoreResult",
+                                  "is_new_zero",
+                                  [],
+                                  []
+                                |),
+                                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| vals |) |) |) ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.read (|
@@ -882,48 +871,47 @@ Module gas.
                               fun γ =>
                                 ltac:(M.monadic
                                   (let γ :=
-                                    M.use
-                                      (M.alloc (|
+                                    M.alloc (|
+                                      Ty.path "bool",
+                                      M.call_closure (|
                                         Ty.path "bool",
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          BinOp.eq,
-                                          [
-                                            M.read (|
-                                              M.SubPointer.get_array_field (|
-                                                M.deref (|
-                                                  M.call_closure (|
-                                                    Ty.apply
-                                                      (Ty.path "&")
-                                                      []
-                                                      [
-                                                        Ty.apply
-                                                          (Ty.path "array")
-                                                          [ Value.Integer IntegerKind.Usize 4 ]
-                                                          [ Ty.path "u64" ]
-                                                      ],
-                                                    M.get_associated_function (|
+                                        BinOp.eq,
+                                        [
+                                          M.read (|
+                                            M.SubPointer.get_array_field (|
+                                              M.deref (|
+                                                M.call_closure (|
+                                                  Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [
                                                       Ty.apply
-                                                        (Ty.path "ruint::Uint")
-                                                        [
-                                                          Value.Integer IntegerKind.Usize 256;
-                                                          Value.Integer IntegerKind.Usize 4
-                                                        ]
-                                                        [],
-                                                      "as_limbs",
+                                                        (Ty.path "array")
+                                                        [ Value.Integer IntegerKind.Usize 4 ]
+                                                        [ Ty.path "u64" ]
+                                                    ],
+                                                  M.get_associated_function (|
+                                                    Ty.apply
+                                                      (Ty.path "ruint::Uint")
+                                                      [
+                                                        Value.Integer IntegerKind.Usize 256;
+                                                        Value.Integer IntegerKind.Usize 4
+                                                      ]
                                                       [],
-                                                      []
-                                                    |),
-                                                    [ M.borrow (| Pointer.Kind.Ref, value |) ]
-                                                  |)
-                                                |),
-                                                M.read (| i |)
-                                              |)
-                                            |);
-                                            Value.Integer IntegerKind.U64 0
-                                          ]
-                                        |)
-                                      |)) in
+                                                    "as_limbs",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [ M.borrow (| Pointer.Kind.Ref, value |) ]
+                                                |)
+                                              |),
+                                              M.read (| i |)
+                                            |)
+                                          |);
+                                          Value.Integer IntegerKind.U64 0
+                                        ]
+                                      |)
+                                    |) in
                                   let _ :=
                                     is_constant_or_break_match (|
                                       M.read (| γ |),
@@ -1011,18 +999,17 @@ Module gas.
                                           fun γ =>
                                             ltac:(M.monadic
                                               (let γ :=
-                                                M.use
-                                                  (M.alloc (|
+                                                M.alloc (|
+                                                  Ty.path "bool",
+                                                  M.call_closure (|
                                                     Ty.path "bool",
-                                                    M.call_closure (|
-                                                      Ty.path "bool",
-                                                      BinOp.eq,
-                                                      [
-                                                        M.read (| l |);
-                                                        Value.Integer IntegerKind.U64 0
-                                                      ]
-                                                    |)
-                                                  |)) in
+                                                    BinOp.eq,
+                                                    [
+                                                      M.read (| l |);
+                                                      Value.Integer IntegerKind.U64 0
+                                                    ]
+                                                  |)
+                                                |) in
                                               let _ :=
                                                 is_constant_or_break_match (|
                                                   M.read (| γ |),
@@ -1061,15 +1048,14 @@ Module gas.
                               fun γ =>
                                 ltac:(M.monadic
                                   (let γ :=
-                                    M.use
-                                      (M.alloc (|
+                                    M.alloc (|
+                                      Ty.path "bool",
+                                      M.call_closure (|
                                         Ty.path "bool",
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          BinOp.eq,
-                                          [ M.read (| i |); Value.Integer IntegerKind.Usize 0 ]
-                                        |)
-                                      |)) in
+                                        BinOp.eq,
+                                        [ M.read (| i |); Value.Integer IntegerKind.Usize 0 ]
+                                      |)
+                                    |) in
                                   let _ :=
                                     is_constant_or_break_match (|
                                       M.read (| γ |),
@@ -1143,26 +1129,25 @@ Module gas.
                   fun γ =>
                     ltac:(M.monadic
                       (let γ :=
-                        M.use
-                          (M.alloc (|
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
                             Ty.path "bool",
-                            M.call_closure (|
-                              Ty.path "bool",
-                              M.get_associated_function (|
-                                Ty.apply
-                                  (Ty.path "ruint::Uint")
-                                  [
-                                    Value.Integer IntegerKind.Usize 256;
-                                    Value.Integer IntegerKind.Usize 4
-                                  ]
-                                  [],
-                                "is_zero",
+                            M.get_associated_function (|
+                              Ty.apply
+                                (Ty.path "ruint::Uint")
+                                [
+                                  Value.Integer IntegerKind.Usize 256;
+                                  Value.Integer IntegerKind.Usize 4
+                                ]
                                 [],
-                                []
-                              |),
-                              [ M.borrow (| Pointer.Kind.Ref, power |) ]
-                            |)
-                          |)) in
+                              "is_zero",
+                              [],
+                              []
+                            |),
+                            [ M.borrow (| Pointer.Kind.Ref, power |) ]
+                          |)
+                        |) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       Value.StructTuple
                         "core::option::Option::Some"
@@ -1215,27 +1200,26 @@ Module gas.
                                   fun γ =>
                                     ltac:(M.monadic
                                       (let γ :=
-                                        M.use
-                                          (M.alloc (|
+                                        M.alloc (|
+                                          Ty.path "bool",
+                                          M.call_closure (|
                                             Ty.path "bool",
-                                            M.call_closure (|
-                                              Ty.path "bool",
-                                              M.get_associated_function (|
-                                                Ty.path "revm_specification::hardfork::SpecId",
-                                                "is_enabled_in",
-                                                [],
+                                            M.get_associated_function (|
+                                              Ty.path "revm_specification::hardfork::SpecId",
+                                              "is_enabled_in",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.read (| spec_id |);
+                                              Value.StructTuple
+                                                "revm_specification::hardfork::SpecId::SPURIOUS_DRAGON"
                                                 []
-                                              |),
-                                              [
-                                                M.read (| spec_id |);
-                                                Value.StructTuple
-                                                  "revm_specification::hardfork::SpecId::SPURIOUS_DRAGON"
-                                                  []
-                                                  []
-                                                  []
-                                              ]
-                                            |)
-                                          |)) in
+                                                []
+                                                []
+                                            ]
+                                          |)
+                                        |) in
                                       let _ :=
                                         is_constant_or_break_match (|
                                           M.read (| γ |),
@@ -1789,27 +1773,26 @@ Module gas.
                   fun γ =>
                     ltac:(M.monadic
                       (let γ :=
-                        M.use
-                          (M.alloc (|
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
                             Ty.path "bool",
-                            M.call_closure (|
-                              Ty.path "bool",
-                              M.get_associated_function (|
-                                Ty.path "revm_specification::hardfork::SpecId",
-                                "is_enabled_in",
-                                [],
+                            M.get_associated_function (|
+                              Ty.path "revm_specification::hardfork::SpecId",
+                              "is_enabled_in",
+                              [],
+                              []
+                            |),
+                            [
+                              M.read (| spec_id |);
+                              Value.StructTuple
+                                "revm_specification::hardfork::SpecId::BERLIN"
                                 []
-                              |),
-                              [
-                                M.read (| spec_id |);
-                                Value.StructTuple
-                                  "revm_specification::hardfork::SpecId::BERLIN"
-                                  []
-                                  []
-                                  []
-                              ]
-                            |)
-                          |)) in
+                                []
+                                []
+                            ]
+                          |)
+                        |) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       M.call_closure (|
                         Ty.path "u64",
@@ -1829,27 +1812,26 @@ Module gas.
                           fun γ =>
                             ltac:(M.monadic
                               (let γ :=
-                                M.use
-                                  (M.alloc (|
+                                M.alloc (|
+                                  Ty.path "bool",
+                                  M.call_closure (|
                                     Ty.path "bool",
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      M.get_associated_function (|
-                                        Ty.path "revm_specification::hardfork::SpecId",
-                                        "is_enabled_in",
-                                        [],
+                                    M.get_associated_function (|
+                                      Ty.path "revm_specification::hardfork::SpecId",
+                                      "is_enabled_in",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.read (| spec_id |);
+                                      Value.StructTuple
+                                        "revm_specification::hardfork::SpecId::TANGERINE"
                                         []
-                                      |),
-                                      [
-                                        M.read (| spec_id |);
-                                        Value.StructTuple
-                                          "revm_specification::hardfork::SpecId::TANGERINE"
-                                          []
-                                          []
-                                          []
-                                      ]
-                                    |)
-                                  |)) in
+                                        []
+                                        []
+                                    ]
+                                  |)
+                                |) in
                               let _ :=
                                 is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                               Value.Integer IntegerKind.U64 700));
@@ -2245,27 +2227,11 @@ Module gas.
                         Ty.path "core::fmt::Arguments",
                         M.get_associated_function (|
                           Ty.path "core::fmt::Arguments",
-                          "new_const",
-                          [ Value.Integer IntegerKind.Usize 1 ],
+                          "from_str",
+                          [],
                           []
                         |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.alloc (|
-                                  Ty.apply
-                                    (Ty.path "array")
-                                    [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array [ mk_str (| "initcode cost overflow" |) ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
+                        [ mk_str (| "initcode cost overflow" |) ]
                       |)
                     ]
                   |)))
@@ -2311,27 +2277,22 @@ Module gas.
               fun γ =>
                 ltac:(M.monadic
                   (let γ :=
-                    M.use
-                      (M.alloc (|
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
                         Ty.path "bool",
-                        M.call_closure (|
-                          Ty.path "bool",
-                          M.get_associated_function (|
-                            Ty.path "revm_specification::hardfork::SpecId",
-                            "is_enabled_in",
-                            [],
-                            []
-                          |),
-                          [
-                            M.read (| spec_id |);
-                            Value.StructTuple
-                              "revm_specification::hardfork::SpecId::BERLIN"
-                              []
-                              []
-                              []
-                          ]
-                        |)
-                      |)) in
+                        M.get_associated_function (|
+                          Ty.path "revm_specification::hardfork::SpecId",
+                          "is_enabled_in",
+                          [],
+                          []
+                        |),
+                        [
+                          M.read (| spec_id |);
+                          Value.StructTuple "revm_specification::hardfork::SpecId::BERLIN" [] [] []
+                        ]
+                      |)
+                    |) in
                   let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                   M.match_operator (|
                     Ty.path "u64",
@@ -2339,7 +2300,7 @@ Module gas.
                     [
                       fun γ =>
                         ltac:(M.monadic
-                          (let γ := M.use is_cold in
+                          (let γ := is_cold in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.read (|
@@ -2367,27 +2328,26 @@ Module gas.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  M.get_associated_function (|
-                                    Ty.path "revm_specification::hardfork::SpecId",
-                                    "is_enabled_in",
-                                    [],
+                                M.get_associated_function (|
+                                  Ty.path "revm_specification::hardfork::SpecId",
+                                  "is_enabled_in",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.read (| spec_id |);
+                                  Value.StructTuple
+                                    "revm_specification::hardfork::SpecId::ISTANBUL"
                                     []
-                                  |),
-                                  [
-                                    M.read (| spec_id |);
-                                    Value.StructTuple
-                                      "revm_specification::hardfork::SpecId::ISTANBUL"
-                                      []
-                                      []
-                                      []
-                                  ]
-                                |)
-                              |)) in
+                                    []
+                                    []
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.read (|
@@ -2405,27 +2365,26 @@ Module gas.
                               fun γ =>
                                 ltac:(M.monadic
                                   (let γ :=
-                                    M.use
-                                      (M.alloc (|
+                                    M.alloc (|
+                                      Ty.path "bool",
+                                      M.call_closure (|
                                         Ty.path "bool",
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          M.get_associated_function (|
-                                            Ty.path "revm_specification::hardfork::SpecId",
-                                            "is_enabled_in",
-                                            [],
+                                        M.get_associated_function (|
+                                          Ty.path "revm_specification::hardfork::SpecId",
+                                          "is_enabled_in",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.read (| spec_id |);
+                                          Value.StructTuple
+                                            "revm_specification::hardfork::SpecId::TANGERINE"
                                             []
-                                          |),
-                                          [
-                                            M.read (| spec_id |);
-                                            Value.StructTuple
-                                              "revm_specification::hardfork::SpecId::TANGERINE"
-                                              []
-                                              []
-                                              []
-                                          ]
-                                        |)
-                                      |)) in
+                                            []
+                                            []
+                                        ]
+                                      |)
+                                    |) in
                                   let _ :=
                                     is_constant_or_break_match (|
                                       M.read (| γ |),
@@ -2484,27 +2443,22 @@ Module gas.
               fun γ =>
                 ltac:(M.monadic
                   (let γ :=
-                    M.use
-                      (M.alloc (|
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
                         Ty.path "bool",
-                        M.call_closure (|
-                          Ty.path "bool",
-                          M.get_associated_function (|
-                            Ty.path "revm_specification::hardfork::SpecId",
-                            "is_enabled_in",
-                            [],
-                            []
-                          |),
-                          [
-                            M.read (| spec_id |);
-                            Value.StructTuple
-                              "revm_specification::hardfork::SpecId::BERLIN"
-                              []
-                              []
-                              []
-                          ]
-                        |)
-                      |)) in
+                        M.get_associated_function (|
+                          Ty.path "revm_specification::hardfork::SpecId",
+                          "is_enabled_in",
+                          [],
+                          []
+                        |),
+                        [
+                          M.read (| spec_id |);
+                          Value.StructTuple "revm_specification::hardfork::SpecId::BERLIN" [] [] []
+                        ]
+                      |)
+                    |) in
                   let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                   M.read (|
                     let~ gas_cost : Ty.path "u64" :=
@@ -2524,7 +2478,7 @@ Module gas.
                         [
                           fun γ =>
                             ltac:(M.monadic
-                              (let γ := M.use is_cold in
+                              (let γ := is_cold in
                               let _ :=
                                 is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                               M.read (|
@@ -2562,27 +2516,26 @@ Module gas.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  M.get_associated_function (|
-                                    Ty.path "revm_specification::hardfork::SpecId",
-                                    "is_enabled_in",
-                                    [],
+                                M.get_associated_function (|
+                                  Ty.path "revm_specification::hardfork::SpecId",
+                                  "is_enabled_in",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.read (| spec_id |);
+                                  Value.StructTuple
+                                    "revm_specification::hardfork::SpecId::ISTANBUL"
                                     []
-                                  |),
-                                  [
-                                    M.read (| spec_id |);
-                                    Value.StructTuple
-                                      "revm_specification::hardfork::SpecId::ISTANBUL"
-                                      []
-                                      []
-                                      []
-                                  ]
-                                |)
-                              |)) in
+                                    []
+                                    []
+                                ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.call_closure (|
@@ -2651,20 +2604,19 @@ Module gas.
               fun γ =>
                 ltac:(M.monadic
                   (let γ :=
-                    M.use
-                      (M.alloc (|
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
                         Ty.path "bool",
-                        M.call_closure (|
-                          Ty.path "bool",
-                          M.get_associated_function (|
-                            Ty.path "revm_context_interface::host::SStoreResult",
-                            "is_new_eq_present",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| vals |) |) |) ]
-                        |)
-                      |)) in
+                        M.get_associated_function (|
+                          Ty.path "revm_context_interface::host::SStoreResult",
+                          "is_new_eq_present",
+                          [],
+                          []
+                        |),
+                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| vals |) |) |) ]
+                      |)
+                    |) in
                   let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                   SLOAD_GAS));
               fun γ =>
@@ -2676,43 +2628,35 @@ Module gas.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            M.use
-                              (M.alloc (|
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
                                 Ty.path "bool",
-                                LogicalOp.and (|
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    M.get_associated_function (|
-                                      Ty.path "revm_context_interface::host::SStoreResult",
-                                      "is_original_eq_present",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| vals |) |)
-                                      |)
-                                    ]
-                                  |),
-                                  ltac:(M.monadic
-                                    (M.call_closure (|
-                                      Ty.path "bool",
-                                      M.get_associated_function (|
-                                        Ty.path "revm_context_interface::host::SStoreResult",
-                                        "is_original_zero",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| vals |) |)
-                                        |)
-                                      ]
-                                    |)))
-                                |)
-                              |)) in
+                                M.get_associated_function (|
+                                  Ty.path "revm_context_interface::host::SStoreResult",
+                                  "is_original_eq_present",
+                                  [],
+                                  []
+                                |),
+                                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| vals |) |) |) ]
+                              |)
+                            |) in
+                          let _ :=
+                            is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                          let γ :=
+                            M.alloc (|
+                              Ty.path "bool",
+                              M.call_closure (|
+                                Ty.path "bool",
+                                M.get_associated_function (|
+                                  Ty.path "revm_context_interface::host::SStoreResult",
+                                  "is_original_zero",
+                                  [],
+                                  []
+                                |),
+                                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| vals |) |) |) ]
+                              |)
+                            |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.read (|
@@ -2730,25 +2674,24 @@ Module gas.
                               fun γ =>
                                 ltac:(M.monadic
                                   (let γ :=
-                                    M.use
-                                      (M.alloc (|
+                                    M.alloc (|
+                                      Ty.path "bool",
+                                      M.call_closure (|
                                         Ty.path "bool",
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          M.get_associated_function (|
-                                            Ty.path "revm_context_interface::host::SStoreResult",
-                                            "is_original_eq_present",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| vals |) |)
-                                            |)
-                                          ]
-                                        |)
-                                      |)) in
+                                        M.get_associated_function (|
+                                          Ty.path "revm_context_interface::host::SStoreResult",
+                                          "is_original_eq_present",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| vals |) |)
+                                          |)
+                                        ]
+                                      |)
+                                    |) in
                                   let _ :=
                                     is_constant_or_break_match (|
                                       M.read (| γ |),
@@ -2795,40 +2738,40 @@ Module gas.
               fun γ =>
                 ltac:(M.monadic
                   (let γ :=
-                    M.use
-                      (M.alloc (|
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
                         Ty.path "bool",
-                        LogicalOp.and (|
+                        M.get_associated_function (|
+                          Ty.path "revm_context_interface::host::SStoreResult",
+                          "is_present_zero",
+                          [],
+                          []
+                        |),
+                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| vals |) |) |) ]
+                      |)
+                    |) in
+                  let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                  let γ :=
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        UnOp.not,
+                        [
                           M.call_closure (|
                             Ty.path "bool",
                             M.get_associated_function (|
                               Ty.path "revm_context_interface::host::SStoreResult",
-                              "is_present_zero",
+                              "is_new_zero",
                               [],
                               []
                             |),
                             [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| vals |) |) |) ]
-                          |),
-                          ltac:(M.monadic
-                            (M.call_closure (|
-                              Ty.path "bool",
-                              UnOp.not,
-                              [
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  M.get_associated_function (|
-                                    Ty.path "revm_context_interface::host::SStoreResult",
-                                    "is_new_zero",
-                                    [],
-                                    []
-                                  |),
-                                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| vals |) |) |)
-                                  ]
-                                |)
-                              ]
-                            |)))
-                        |)
-                      |)) in
+                          |)
+                        ]
+                      |)
+                    |) in
                   let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                   M.read (|
                     get_constant (| "revm_interpreter::gas::constants::SSTORE_SET", Ty.path "u64" |)
@@ -2904,27 +2847,26 @@ Module gas.
                   fun γ =>
                     ltac:(M.monadic
                       (let γ :=
-                        M.use
-                          (M.alloc (|
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
                             Ty.path "bool",
-                            M.call_closure (|
-                              Ty.path "bool",
-                              M.get_associated_function (|
-                                Ty.path "revm_specification::hardfork::SpecId",
-                                "is_enabled_in",
-                                [],
+                            M.get_associated_function (|
+                              Ty.path "revm_specification::hardfork::SpecId",
+                              "is_enabled_in",
+                              [],
+                              []
+                            |),
+                            [
+                              M.read (| spec_id |);
+                              Value.StructTuple
+                                "revm_specification::hardfork::SpecId::SPURIOUS_DRAGON"
                                 []
-                              |),
-                              [
-                                M.read (| spec_id |);
-                                Value.StructTuple
-                                  "revm_specification::hardfork::SpecId::SPURIOUS_DRAGON"
-                                  []
-                                  []
-                                  []
-                              ]
-                            |)
-                          |)) in
+                                []
+                                []
+                            ]
+                          |)
+                        |) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       LogicalOp.and (|
                         M.read (|
@@ -2986,30 +2928,28 @@ Module gas.
                   fun γ =>
                     ltac:(M.monadic
                       (let γ :=
-                        M.use
-                          (M.alloc (|
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
                             Ty.path "bool",
-                            LogicalOp.and (|
-                              M.call_closure (|
-                                Ty.path "bool",
-                                M.get_associated_function (|
-                                  Ty.path "revm_specification::hardfork::SpecId",
-                                  "is_enabled_in",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.read (| spec_id |);
-                                  Value.StructTuple
-                                    "revm_specification::hardfork::SpecId::TANGERINE"
-                                    []
-                                    []
-                                    []
-                                ]
-                              |),
-                              ltac:(M.monadic (M.read (| should_charge_topup |)))
-                            |)
-                          |)) in
+                            M.get_associated_function (|
+                              Ty.path "revm_specification::hardfork::SpecId",
+                              "is_enabled_in",
+                              [],
+                              []
+                            |),
+                            [
+                              M.read (| spec_id |);
+                              Value.StructTuple
+                                "revm_specification::hardfork::SpecId::TANGERINE"
+                                []
+                                []
+                                []
+                            ]
+                          |)
+                        |) in
+                      let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                      let γ := should_charge_topup in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       Value.Integer IntegerKind.U64 25000));
                   fun γ => ltac:(M.monadic (Value.Integer IntegerKind.U64 0))
@@ -3023,27 +2963,26 @@ Module gas.
                   fun γ =>
                     ltac:(M.monadic
                       (let γ :=
-                        M.use
-                          (M.alloc (|
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
                             Ty.path "bool",
-                            M.call_closure (|
-                              Ty.path "bool",
-                              M.get_associated_function (|
-                                Ty.path "revm_specification::hardfork::SpecId",
-                                "is_enabled_in",
-                                [],
+                            M.get_associated_function (|
+                              Ty.path "revm_specification::hardfork::SpecId",
+                              "is_enabled_in",
+                              [],
+                              []
+                            |),
+                            [
+                              M.read (| spec_id |);
+                              Value.StructTuple
+                                "revm_specification::hardfork::SpecId::TANGERINE"
                                 []
-                              |),
-                              [
-                                M.read (| spec_id |);
-                                Value.StructTuple
-                                  "revm_specification::hardfork::SpecId::TANGERINE"
-                                  []
-                                  []
-                                  []
-                              ]
-                            |)
-                          |)) in
+                                []
+                                []
+                            ]
+                          |)
+                        |) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       Value.Integer IntegerKind.U64 5000));
                   fun γ => ltac:(M.monadic (Value.Integer IntegerKind.U64 0))
@@ -3063,37 +3002,33 @@ Module gas.
                   fun γ =>
                     ltac:(M.monadic
                       (let γ :=
-                        M.use
-                          (M.alloc (|
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
                             Ty.path "bool",
-                            LogicalOp.and (|
-                              M.call_closure (|
-                                Ty.path "bool",
-                                M.get_associated_function (|
-                                  Ty.path "revm_specification::hardfork::SpecId",
-                                  "is_enabled_in",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.read (| spec_id |);
-                                  Value.StructTuple
-                                    "revm_specification::hardfork::SpecId::BERLIN"
-                                    []
-                                    []
-                                    []
-                                ]
-                              |),
-                              ltac:(M.monadic
-                                (M.read (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    res,
-                                    "revm_context_interface::journaled_state::StateLoad",
-                                    "is_cold"
-                                  |)
-                                |)))
-                            |)
-                          |)) in
+                            M.get_associated_function (|
+                              Ty.path "revm_specification::hardfork::SpecId",
+                              "is_enabled_in",
+                              [],
+                              []
+                            |),
+                            [
+                              M.read (| spec_id |);
+                              Value.StructTuple
+                                "revm_specification::hardfork::SpecId::BERLIN"
+                                []
+                                []
+                                []
+                            ]
+                          |)
+                        |) in
+                      let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                      let γ :=
+                        M.SubPointer.get_struct_record_field (|
+                          res,
+                          "revm_context_interface::journaled_state::StateLoad",
+                          "is_cold"
+                        |) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       let β := gas in
                       M.write (|
@@ -3178,27 +3113,26 @@ Module gas.
                   fun γ =>
                     ltac:(M.monadic
                       (let γ :=
-                        M.use
-                          (M.alloc (|
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
                             Ty.path "bool",
-                            M.call_closure (|
-                              Ty.path "bool",
-                              M.get_associated_function (|
-                                Ty.path "revm_specification::hardfork::SpecId",
-                                "is_enabled_in",
-                                [],
+                            M.get_associated_function (|
+                              Ty.path "revm_specification::hardfork::SpecId",
+                              "is_enabled_in",
+                              [],
+                              []
+                            |),
+                            [
+                              M.read (| spec_id |);
+                              Value.StructTuple
+                                "revm_specification::hardfork::SpecId::BERLIN"
                                 []
-                              |),
-                              [
-                                M.read (| spec_id |);
-                                Value.StructTuple
-                                  "revm_specification::hardfork::SpecId::BERLIN"
-                                  []
-                                  []
-                                  []
-                              ]
-                            |)
-                          |)) in
+                                []
+                                []
+                            ]
+                          |)
+                        |) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       M.call_closure (|
                         Ty.path "u64",
@@ -3226,27 +3160,26 @@ Module gas.
                           fun γ =>
                             ltac:(M.monadic
                               (let γ :=
-                                M.use
-                                  (M.alloc (|
+                                M.alloc (|
+                                  Ty.path "bool",
+                                  M.call_closure (|
                                     Ty.path "bool",
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      M.get_associated_function (|
-                                        Ty.path "revm_specification::hardfork::SpecId",
-                                        "is_enabled_in",
-                                        [],
+                                    M.get_associated_function (|
+                                      Ty.path "revm_specification::hardfork::SpecId",
+                                      "is_enabled_in",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.read (| spec_id |);
+                                      Value.StructTuple
+                                        "revm_specification::hardfork::SpecId::TANGERINE"
                                         []
-                                      |),
-                                      [
-                                        M.read (| spec_id |);
-                                        Value.StructTuple
-                                          "revm_specification::hardfork::SpecId::TANGERINE"
-                                          []
-                                          []
-                                          []
-                                      ]
-                                    |)
-                                  |)) in
+                                        []
+                                        []
+                                    ]
+                                  |)
+                                |) in
                               let _ :=
                                 is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                               Value.Integer IntegerKind.U64 700));
@@ -3262,7 +3195,7 @@ Module gas.
                 [
                   fun γ =>
                     ltac:(M.monadic
-                      (let γ := M.use transfers_value in
+                      (let γ := transfers_value in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       M.read (|
                         let~ _ : Ty.tuple [] :=
@@ -3296,12 +3229,11 @@ Module gas.
                   fun γ =>
                     ltac:(M.monadic
                       (let γ :=
-                        M.use
-                          (M.SubPointer.get_struct_record_field (|
-                            account_load,
-                            "revm_context_interface::journaled_state::AccountLoad",
-                            "is_empty"
-                          |)) in
+                        M.SubPointer.get_struct_record_field (|
+                          account_load,
+                          "revm_context_interface::journaled_state::AccountLoad",
+                          "is_empty"
+                        |) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       M.match_operator (|
                         Ty.tuple [],
@@ -3310,27 +3242,26 @@ Module gas.
                           fun γ =>
                             ltac:(M.monadic
                               (let γ :=
-                                M.use
-                                  (M.alloc (|
+                                M.alloc (|
+                                  Ty.path "bool",
+                                  M.call_closure (|
                                     Ty.path "bool",
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      M.get_associated_function (|
-                                        Ty.path "revm_specification::hardfork::SpecId",
-                                        "is_enabled_in",
-                                        [],
+                                    M.get_associated_function (|
+                                      Ty.path "revm_specification::hardfork::SpecId",
+                                      "is_enabled_in",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.read (| spec_id |);
+                                      Value.StructTuple
+                                        "revm_specification::hardfork::SpecId::SPURIOUS_DRAGON"
                                         []
-                                      |),
-                                      [
-                                        M.read (| spec_id |);
-                                        Value.StructTuple
-                                          "revm_specification::hardfork::SpecId::SPURIOUS_DRAGON"
-                                          []
-                                          []
-                                          []
-                                      ]
-                                    |)
-                                  |)) in
+                                        []
+                                        []
+                                    ]
+                                  |)
+                                |) in
                               let _ :=
                                 is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                               M.match_operator (|
@@ -3339,7 +3270,7 @@ Module gas.
                                 [
                                   fun γ =>
                                     ltac:(M.monadic
-                                      (let γ := M.use transfers_value in
+                                      (let γ := transfers_value in
                                       let _ :=
                                         is_constant_or_break_match (|
                                           M.read (| γ |),
@@ -3427,7 +3358,7 @@ Module gas.
             [
               fun γ =>
                 ltac:(M.monadic
-                  (let γ := M.use is_cold in
+                  (let γ := is_cold in
                   let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                   M.read (|
                     get_constant (|
@@ -3868,27 +3799,26 @@ Module gas.
                             fun γ =>
                               ltac:(M.monadic
                                 (let γ :=
-                                  M.use
-                                    (M.alloc (|
+                                  M.alloc (|
+                                    Ty.path "bool",
+                                    M.call_closure (|
                                       Ty.path "bool",
-                                      M.call_closure (|
-                                        Ty.path "bool",
-                                        M.get_associated_function (|
-                                          Ty.path "revm_specification::hardfork::SpecId",
-                                          "is_enabled_in",
-                                          [],
+                                      M.get_associated_function (|
+                                        Ty.path "revm_specification::hardfork::SpecId",
+                                        "is_enabled_in",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.read (| spec_id |);
+                                        Value.StructTuple
+                                          "revm_specification::hardfork::SpecId::ISTANBUL"
                                           []
-                                        |),
-                                        [
-                                          M.read (| spec_id |);
-                                          Value.StructTuple
-                                            "revm_specification::hardfork::SpecId::ISTANBUL"
-                                            []
-                                            []
-                                            []
-                                        ]
-                                      |)
-                                    |)) in
+                                          []
+                                          []
+                                      ]
+                                    |)
+                                  |) in
                                 let _ :=
                                   is_constant_or_break_match (|
                                     M.read (| γ |),
@@ -4022,7 +3952,7 @@ Module gas.
                       [
                         fun γ =>
                           ltac:(M.monadic
-                            (let γ := M.use is_create in
+                            (let γ := is_create in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.match_operator (|
@@ -4032,27 +3962,26 @@ Module gas.
                                 fun γ =>
                                   ltac:(M.monadic
                                     (let γ :=
-                                      M.use
-                                        (M.alloc (|
+                                      M.alloc (|
+                                        Ty.path "bool",
+                                        M.call_closure (|
                                           Ty.path "bool",
-                                          M.call_closure (|
-                                            Ty.path "bool",
-                                            M.get_associated_function (|
-                                              Ty.path "revm_specification::hardfork::SpecId",
-                                              "is_enabled_in",
-                                              [],
+                                          M.get_associated_function (|
+                                            Ty.path "revm_specification::hardfork::SpecId",
+                                            "is_enabled_in",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.read (| spec_id |);
+                                            Value.StructTuple
+                                              "revm_specification::hardfork::SpecId::HOMESTEAD"
                                               []
-                                            |),
-                                            [
-                                              M.read (| spec_id |);
-                                              Value.StructTuple
-                                                "revm_specification::hardfork::SpecId::HOMESTEAD"
-                                                []
-                                                []
-                                                []
-                                            ]
-                                          |)
-                                        |)) in
+                                              []
+                                              []
+                                          ]
+                                        |)
+                                      |) in
                                     let _ :=
                                       is_constant_or_break_match (|
                                         M.read (| γ |),
@@ -4076,30 +4005,28 @@ Module gas.
                   fun γ =>
                     ltac:(M.monadic
                       (let γ :=
-                        M.use
-                          (M.alloc (|
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
                             Ty.path "bool",
-                            LogicalOp.and (|
-                              M.call_closure (|
-                                Ty.path "bool",
-                                M.get_associated_function (|
-                                  Ty.path "revm_specification::hardfork::SpecId",
-                                  "is_enabled_in",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.read (| spec_id |);
-                                  Value.StructTuple
-                                    "revm_specification::hardfork::SpecId::SHANGHAI"
-                                    []
-                                    []
-                                    []
-                                ]
-                              |),
-                              ltac:(M.monadic (M.read (| is_create |)))
-                            |)
-                          |)) in
+                            M.get_associated_function (|
+                              Ty.path "revm_specification::hardfork::SpecId",
+                              "is_enabled_in",
+                              [],
+                              []
+                            |),
+                            [
+                              M.read (| spec_id |);
+                              Value.StructTuple
+                                "revm_specification::hardfork::SpecId::SHANGHAI"
+                                []
+                                []
+                                []
+                            ]
+                          |)
+                        |) in
+                      let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                      let γ := is_create in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       let β := initial_gas in
                       M.write (|
@@ -4148,27 +4075,26 @@ Module gas.
                   fun γ =>
                     ltac:(M.monadic
                       (let γ :=
-                        M.use
-                          (M.alloc (|
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
                             Ty.path "bool",
-                            M.call_closure (|
-                              Ty.path "bool",
-                              M.get_associated_function (|
-                                Ty.path "revm_specification::hardfork::SpecId",
-                                "is_enabled_in",
-                                [],
+                            M.get_associated_function (|
+                              Ty.path "revm_specification::hardfork::SpecId",
+                              "is_enabled_in",
+                              [],
+                              []
+                            |),
+                            [
+                              M.read (| spec_id |);
+                              Value.StructTuple
+                                "revm_specification::hardfork::SpecId::PRAGUE"
                                 []
-                              |),
-                              [
-                                M.read (| spec_id |);
-                                Value.StructTuple
-                                  "revm_specification::hardfork::SpecId::PRAGUE"
-                                  []
-                                  []
-                                  []
-                              ]
-                            |)
-                          |)) in
+                                []
+                                []
+                            ]
+                          |)
+                        |) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       M.read (|
                         let~ _ : Ty.tuple [] :=

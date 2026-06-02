@@ -3,36 +3,6 @@ Require Import RocqOfRust.RocqOfRust.
 
 Module alloc.
   Module layout.
-    (*
-    const fn size_align<T>() -> (usize, usize) {
-        (mem::size_of::<T>(), mem::align_of::<T>())
-    }
-    *)
-    Definition size_align (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      match ε, τ, α with
-      | [], [ T ], [] =>
-        ltac:(M.monadic
-          (Value.Tuple
-            [
-              M.call_closure (|
-                Ty.path "usize",
-                M.get_function (| "core::mem::size_of", [], [ T ] |),
-                []
-              |);
-              M.call_closure (|
-                Ty.path "usize",
-                M.get_function (| "core::mem::align_of", [], [ T ] |),
-                []
-              |)
-            ]))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
-    Global Instance Instance_IsFunction_size_align :
-      M.IsFunction.C "core::alloc::layout::size_align" size_align.
-    Admitted.
-    Global Typeclasses Opaque size_align.
-    
     (* StructRecord
       {
         name := "Layout";
@@ -53,6 +23,18 @@ Module alloc.
           Self
           (* Instance *) [].
     End Impl_core_marker_Copy_for_core_alloc_layout_Layout.
+    
+    Module Impl_core_clone_TrivialClone_for_core_alloc_layout_Layout.
+      Definition Self : Ty.t := Ty.path "core::alloc::layout::Layout".
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::clone::TrivialClone"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [].
+    End Impl_core_clone_TrivialClone_for_core_alloc_layout_Layout.
     
     Module Impl_core_clone_Clone_for_core_alloc_layout_Layout.
       Definition Self : Ty.t := Ty.path "core::alloc::layout::Layout".
@@ -446,20 +428,19 @@ Module alloc.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      M.use
-                        (M.alloc (|
+                      M.alloc (|
+                        Ty.path "bool",
+                        M.call_closure (|
                           Ty.path "bool",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            M.get_associated_function (|
-                              Ty.path "core::alloc::layout::Layout",
-                              "is_size_align_valid",
-                              [],
-                              []
-                            |),
-                            [ M.read (| size |); M.read (| align |) ]
-                          |)
-                        |)) in
+                          M.get_associated_function (|
+                            Ty.path "core::alloc::layout::Layout",
+                            "is_size_align_valid",
+                            [],
+                            []
+                          |),
+                          [ M.read (| size |); M.read (| align |) ]
+                        |)
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     Value.StructTuple
                       "core::result::Result::Ok"
@@ -564,27 +545,26 @@ Module alloc.
                                 fun γ =>
                                   ltac:(M.monadic
                                     (let γ :=
-                                      M.use
-                                        (M.alloc (|
+                                      M.alloc (|
+                                        Ty.path "bool",
+                                        M.call_closure (|
                                           Ty.path "bool",
-                                          M.call_closure (|
-                                            Ty.path "bool",
-                                            BinOp.gt,
-                                            [
-                                              M.read (| size |);
-                                              M.call_closure (|
-                                                Ty.path "usize",
-                                                M.get_associated_function (|
-                                                  Ty.path "core::alloc::layout::Layout",
-                                                  "max_size_for_align",
-                                                  [],
-                                                  []
-                                                |),
-                                                [ M.read (| align |) ]
-                                              |)
-                                            ]
-                                          |)
-                                        |)) in
+                                          BinOp.gt,
+                                          [
+                                            M.read (| size |);
+                                            M.call_closure (|
+                                              Ty.path "usize",
+                                              M.get_associated_function (|
+                                                Ty.path "core::alloc::layout::Layout",
+                                                "max_size_for_align",
+                                                [],
+                                                []
+                                              |),
+                                              [ M.read (| align |) ]
+                                            |)
+                                          ]
+                                        |)
+                                      |) in
                                     let _ :=
                                       is_constant_or_break_match (|
                                         M.read (| γ |),
@@ -705,27 +685,26 @@ Module alloc.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              M.use
-                                (M.alloc (|
+                              M.alloc (|
+                                Ty.path "bool",
+                                M.call_closure (|
                                   Ty.path "bool",
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    BinOp.gt,
-                                    [
-                                      M.read (| size |);
-                                      M.call_closure (|
-                                        Ty.path "usize",
-                                        M.get_associated_function (|
-                                          Ty.path "core::alloc::layout::Layout",
-                                          "max_size_for_align",
-                                          [],
-                                          []
-                                        |),
-                                        [ M.read (| align |) ]
-                                      |)
-                                    ]
-                                  |)
-                                |)) in
+                                  BinOp.gt,
+                                  [
+                                    M.read (| size |);
+                                    M.call_closure (|
+                                      Ty.path "usize",
+                                      M.get_associated_function (|
+                                        Ty.path "core::alloc::layout::Layout",
+                                        "max_size_for_align",
+                                        [],
+                                        []
+                                      |),
+                                      [ M.read (| align |) ]
+                                    |)
+                                  ]
+                                |)
+                              |) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.never_to_any (|
@@ -813,15 +792,14 @@ Module alloc.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              M.call_closure (|
-                                Ty.path "bool",
-                                M.get_function (| "core::intrinsics::ub_checks", [], [] |),
-                                []
-                              |)
-                            |)) in
+                              M.get_function (| "core::intrinsics::ub_checks", [], [] |),
+                              []
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
@@ -938,45 +916,18 @@ Module alloc.
       
       (*
           pub const fn new<T>() -> Self {
-              let (size, align) = size_align::<T>();
-              // SAFETY: if the type is instantiated, rustc already ensures that its
-              // layout is valid. Use the unchecked constructor to avoid inserting a
-              // panicking codepath that needs to be optimized out.
-              unsafe { Layout::from_size_align_unchecked(size, align) }
+              <T as SizedTypeProperties>::LAYOUT
           }
       *)
       Definition new (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
         | [], [ T ], [] =>
           ltac:(M.monadic
-            (M.match_operator (|
-              Ty.path "core::alloc::layout::Layout",
-              M.alloc (|
-                Ty.tuple [ Ty.path "usize"; Ty.path "usize" ],
-                M.call_closure (|
-                  Ty.tuple [ Ty.path "usize"; Ty.path "usize" ],
-                  M.get_function (| "core::alloc::layout::size_align", [], [ T ] |),
-                  []
-                |)
-              |),
-              [
-                fun γ =>
-                  ltac:(M.monadic
-                    (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
-                    let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
-                    let size := M.copy (| Ty.path "usize", γ0_0 |) in
-                    let align := M.copy (| Ty.path "usize", γ0_1 |) in
-                    M.call_closure (|
-                      Ty.path "core::alloc::layout::Layout",
-                      M.get_associated_function (|
-                        Ty.path "core::alloc::layout::Layout",
-                        "from_size_align_unchecked",
-                        [],
-                        []
-                      |),
-                      [ M.read (| size |); M.read (| align |) ]
-                    |)))
-              ]
+            (M.read (|
+              get_constant (|
+                "core::mem::SizedTypeProperties::LAYOUT",
+                Ty.path "core::alloc::layout::Layout"
+              |)
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
@@ -987,7 +938,7 @@ Module alloc.
       
       (*
           pub const fn for_value<T: ?Sized>(t: &T) -> Self {
-              let (size, align) = (mem::size_of_val(t), mem::align_of_val(t));
+              let (size, align) = (size_of_val(t), align_of_val(t));
               // SAFETY: see rationale in `new` for why this is using the unsafe variant
               unsafe { Layout::from_size_align_unchecked(size, align) }
           }
@@ -1102,8 +1053,7 @@ Module alloc.
       
       (*
           pub const fn dangling(&self) -> NonNull<u8> {
-              // SAFETY: align is guaranteed to be non-zero
-              unsafe { NonNull::new_unchecked(crate::ptr::without_provenance_mut::<u8>(self.align())) }
+              NonNull::without_provenance(self.align.as_nonzero())
           }
       *)
       Definition dangling (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -1119,24 +1069,26 @@ Module alloc.
               Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ Ty.path "u8" ],
               M.get_associated_function (|
                 Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ Ty.path "u8" ],
-                "new_unchecked",
+                "without_provenance",
                 [],
                 []
               |),
               [
                 M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                  M.get_function (| "core::ptr::without_provenance_mut", [], [ Ty.path "u8" ] |),
+                  Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ],
+                  M.get_associated_function (|
+                    Ty.path "core::ptr::alignment::Alignment",
+                    "as_nonzero",
+                    [],
+                    []
+                  |),
                   [
-                    M.call_closure (|
-                      Ty.path "usize",
-                      M.get_associated_function (|
-                        Ty.path "core::alloc::layout::Layout",
-                        "align",
-                        [],
-                        []
-                      |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                    M.read (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "core::alloc::layout::Layout",
+                        "align"
+                      |)
                     |)
                   ]
                 |)
@@ -1400,8 +1352,7 @@ Module alloc.
               // Size 1 Align MAX or Size isize::MAX Align 2 round up to `isize::MAX + 1`.)
               unsafe {
                   let align_m1 = unchecked_sub(align.as_usize(), 1);
-                  let size_rounded_up = unchecked_add(self.size, align_m1) & !align_m1;
-                  size_rounded_up
+                  unchecked_add(self.size, align_m1) & !align_m1
               }
           }
       *)
@@ -1438,7 +1389,8 @@ Module alloc.
                     Value.Integer IntegerKind.Usize 1
                   ]
                 |) in
-              let~ size_rounded_up : Ty.path "usize" :=
+              M.alloc (|
+                Ty.path "usize",
                 M.call_closure (|
                   Ty.path "usize",
                   BinOp.Wrap.bit_and,
@@ -1463,8 +1415,8 @@ Module alloc.
                     |);
                     M.call_closure (| Ty.path "usize", UnOp.not, [ M.read (| align_m1 |) ] |)
                   ]
-                |) in
-              size_rounded_up
+                |)
+              |)
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
@@ -2114,6 +2066,35 @@ Module alloc.
       Global Instance AssociatedFunction_array : M.IsAssociatedFunction.C Self "array" array.
       Admitted.
       Global Typeclasses Opaque array.
+      
+      (*
+          pub const fn alignment(&self) -> Alignment {
+              self.align
+          }
+      *)
+      Definition alignment (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+        match ε, τ, α with
+        | [], [], [ self ] =>
+          ltac:(M.monadic
+            (let self :=
+              M.alloc (|
+                Ty.apply (Ty.path "&") [] [ Ty.path "core::alloc::layout::Layout" ],
+                self
+              |) in
+            M.read (|
+              M.SubPointer.get_struct_record_field (|
+                M.deref (| M.read (| self |) |),
+                "core::alloc::layout::Layout",
+                "align"
+              |)
+            |)))
+        | _, _, _ => M.impossible "wrong number of arguments"
+        end.
+      
+      Global Instance AssociatedFunction_alignment :
+        M.IsAssociatedFunction.C Self "alignment" alignment.
+      Admitted.
+      Global Typeclasses Opaque alignment.
     End Impl_core_alloc_layout_Layout.
     
     Axiom LayoutErr :

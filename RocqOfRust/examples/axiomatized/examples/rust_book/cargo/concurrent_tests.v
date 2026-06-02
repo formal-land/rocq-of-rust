@@ -7,15 +7,15 @@ Global Instance Instance_IsFunction_foo : M.IsFunction.C "concurrent_tests::foo"
 Admitted.
 
 Module tests.
-  Parameter test_file : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
+  Parameter test_file_1 : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
-  Global Instance Instance_IsFunction_test_file :
-    M.IsFunction.C "concurrent_tests::tests::test_file'1" test_file.
+  Global Instance Instance_IsFunction_test_file_1 :
+    M.IsFunction.C "concurrent_tests::tests::test_file'1" test_file_1.
   Admitted.
   
-  Parameter test_file_also : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
+  Parameter test_file_also_1 : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
   
-  Global Instance Instance_IsFunction_test_file_also :
-    M.IsFunction.C "concurrent_tests::tests::test_file_also'1" test_file_also.
+  Global Instance Instance_IsFunction_test_file_also_1 :
+    M.IsFunction.C "concurrent_tests::tests::test_file_also'1" test_file_also_1.
   Admitted.
 End tests.

@@ -1734,20 +1734,19 @@ Module bytecode.
               fun γ =>
                 ltac:(M.monadic
                   (let γ :=
-                    M.use
-                      (M.alloc (|
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
                         Ty.path "bool",
-                        M.call_closure (|
-                          Ty.path "bool",
-                          M.get_associated_function (|
-                            Ty.path "revm_bytecode::bytecode::Bytecode",
-                            "is_empty",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                        |)
-                      |)) in
+                        M.get_associated_function (|
+                          Ty.path "revm_bytecode::bytecode::Bytecode",
+                          "is_empty",
+                          [],
+                          []
+                        |),
+                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                      |)
+                    |) in
                   let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                   M.read (|
                     get_constant (|

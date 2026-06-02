@@ -14,6 +14,7 @@ pub(crate) fn compile_pattern<'a>(
 ) -> Rc<Pattern> {
     match &pat.kind {
         PatKind::Wild => Rc::new(Pattern::Wild),
+        PatKind::Missing => Rc::new(Pattern::Wild),
         PatKind::AscribeUserType { subpattern, .. } => compile_pattern(env, generics, subpattern),
         PatKind::Binding {
             name,
@@ -22,11 +23,12 @@ pub(crate) fn compile_pattern<'a>(
             ty,
             subpattern,
             is_primary: _,
+            ..
         } => {
             let name = to_valid_rocq_name(IsValue::Yes, name.as_str());
             let ty = crate::thir_ty::compile_type(env, &pat.span, generics, ty);
             let rustc_ast::ast::BindingMode(by_ref, mutability) = mode;
-            let is_with_ref = matches!(by_ref, rustc_ast::ast::ByRef::Yes(_));
+            let is_with_ref = matches!(by_ref, rustc_ast::ast::ByRef::Yes(..));
             let is_with_mutability = matches!(mutability, rustc_ast::ast::Mutability::Mut);
             let pattern = subpattern
                 .as_ref()
@@ -109,13 +111,14 @@ pub(crate) fn compile_pattern<'a>(
             Rc::new(Pattern::Deref(compile_pattern(env, generics, subpattern)))
         }
         PatKind::Constant { value } => {
-            if let rustc_middle::mir::Const::Ty(ty, constant) = value {
+            {
+                let ty = value.ty;
                 // Brutal way to handle the case of rustc_middle::ty::TyKind::Str
                 // Since the type would be erased when it comes down to THIR level
                 // TODO: have a translation that works for all strings
                 let kind_name = format!("{:?}", ty.kind());
                 if kind_name == "&'{erased} str" {
-                    let string_value = constant.to_string();
+                    let string_value = value.to_string();
                     // The generated string comes with extra "" so we trim the 1st and last character out
                     let mut chars = string_value.chars();
                     chars.next();
@@ -128,7 +131,7 @@ pub(crate) fn compile_pattern<'a>(
                 // And for the rest...
                 match &ty.kind() {
                     rustc_middle::ty::TyKind::Int(int_ty) => {
-                        let uint_value = constant.try_to_scalar().unwrap().0.assert_scalar_int();
+                        let uint_value = value.valtree.try_to_scalar_int().unwrap();
                         let int_value = uint_value.to_int(uint_value.size());
 
                         return Rc::new(Pattern::Literal(Rc::new(Literal::Integer(
@@ -142,7 +145,7 @@ pub(crate) fn compile_pattern<'a>(
                         ))));
                     }
                     rustc_middle::ty::TyKind::Uint(uint_ty) => {
-                        let uint_value = constant.try_to_scalar().unwrap().0.assert_scalar_int();
+                        let uint_value = value.valtree.try_to_scalar_int().unwrap();
 
                         return Rc::new(Pattern::Literal(Rc::new(Literal::Integer(
                             LiteralInteger {
@@ -153,12 +156,14 @@ pub(crate) fn compile_pattern<'a>(
                         ))));
                     }
                     rustc_middle::ty::TyKind::Bool => {
-                        let bool_value = constant.try_to_scalar().unwrap().0.to_bool().unwrap();
+                        let bool_value = value.try_to_bool().unwrap();
 
                         return Rc::new(Pattern::Literal(Rc::new(Literal::Bool(bool_value))));
                     }
                     rustc_middle::ty::TyKind::Char => {
-                        let char_value = constant.try_to_scalar().unwrap().0.to_char().unwrap();
+                        let char_value =
+                            char::from_u32(value.valtree.try_to_scalar_int().unwrap().to_u32())
+                                .unwrap();
 
                         return Rc::new(Pattern::Literal(Rc::new(Literal::Char(char_value))));
                     }

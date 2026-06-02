@@ -252,6 +252,18 @@ Module mem.
           [ ("assert_receiver_is_total_eq", InstanceField.Method assert_receiver_is_total_eq) ].
     End Impl_core_cmp_Eq_for_core_mem_transmutability_Assume.
     
+    Module Impl_core_clone_TrivialClone_for_core_mem_transmutability_Assume.
+      Definition Self : Ty.t := Ty.path "core::mem::transmutability::Assume".
+      
+      Axiom Implements :
+        M.IsTraitInstance
+          "core::clone::TrivialClone"
+          (* Trait polymorphic consts *) []
+          (* Trait polymorphic types *) []
+          Self
+          (* Instance *) [].
+    End Impl_core_clone_TrivialClone_for_core_mem_transmutability_Assume.
+    
     Module Impl_core_clone_Clone_for_core_mem_transmutability_Assume.
       Definition Self : Ty.t := Ty.path "core::mem::transmutability::Assume".
       
@@ -446,18 +458,6 @@ Module mem.
           Self
           (* Instance *) [].
     End Impl_core_marker_ConstParamTy__for_core_mem_transmutability_Assume.
-    
-    Module Impl_core_marker_UnsizedConstParamTy_for_core_mem_transmutability_Assume.
-      Definition Self : Ty.t := Ty.path "core::mem::transmutability::Assume".
-      
-      Axiom Implements :
-        M.IsTraitInstance
-          "core::marker::UnsizedConstParamTy"
-          (* Trait polymorphic consts *) []
-          (* Trait polymorphic types *) []
-          Self
-          (* Instance *) [].
-    End Impl_core_marker_UnsizedConstParamTy_for_core_mem_transmutability_Assume.
     
     Module Impl_core_mem_transmutability_Assume.
       Definition Self : Ty.t := Ty.path "core::mem::transmutability::Assume".

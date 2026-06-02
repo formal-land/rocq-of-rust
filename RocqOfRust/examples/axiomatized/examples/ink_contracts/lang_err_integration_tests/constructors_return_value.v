@@ -23,6 +23,18 @@ Module Impl_core_default_Default_for_constructors_return_value_AccountId.
       (* Instance *) [ ("default", InstanceField.Method default) ].
 End Impl_core_default_Default_for_constructors_return_value_AccountId.
 
+Module Impl_core_clone_TrivialClone_for_constructors_return_value_AccountId.
+  Definition Self : Ty.t := Ty.path "constructors_return_value::AccountId".
+  
+  Axiom Implements :
+    M.IsTraitInstance
+      "core::clone::TrivialClone"
+      (* Trait polymorphic consts *) []
+      (* Trait polymorphic types *) []
+      Self
+      (* Instance *) [].
+End Impl_core_clone_TrivialClone_for_constructors_return_value_AccountId.
+
 Module Impl_core_clone_Clone_for_constructors_return_value_AccountId.
   Definition Self : Ty.t := Ty.path "constructors_return_value::AccountId".
   

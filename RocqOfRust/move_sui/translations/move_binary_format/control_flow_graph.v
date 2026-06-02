@@ -114,28 +114,12 @@ Module control_flow_graph.
                         Ty.path "core::fmt::Arguments",
                         M.get_associated_function (|
                           Ty.path "core::fmt::Arguments",
-                          "new_const",
-                          [ Value.Integer IntegerKind.Usize 1 ],
+                          "from_str",
+                          [],
                           []
                         |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.alloc (|
-                                  Ty.apply
-                                    (Ty.path "array")
-                                    [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array [ mk_str (| "+=======================+
+                        [ mk_str (| "+=======================+
 " |) ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
                       |)
                     ]
                   |) in
@@ -148,65 +132,92 @@ Module control_flow_graph.
                     Ty.tuple [],
                     M.get_function (| "std::io::stdio::_print", [], [] |),
                     [
-                      M.call_closure (|
-                        Ty.path "core::fmt::Arguments",
-                        M.get_associated_function (|
-                          Ty.path "core::fmt::Arguments",
-                          "new_v1",
-                          [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 1 ],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.alloc (|
-                                  Ty.apply
-                                    (Ty.path "array")
-                                    [ Value.Integer IntegerKind.Usize 2 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array
-                                    [ mk_str (| "| Enter:  " |); mk_str (| "            |
-" |) ]
-                                |)
+                      M.read (|
+                        let~ args : Ty.tuple [ Ty.apply (Ty.path "&") [] [ Ty.path "u16" ] ] :=
+                          Value.Tuple [ M.borrow (| Pointer.Kind.Ref, entry |) ] in
+                        let~ args :
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 1 ]
+                              [ Ty.path "core::fmt::rt::Argument" ] :=
+                          Value.Array
+                            [
+                              M.call_closure (|
+                                Ty.path "core::fmt::rt::Argument",
+                                M.get_associated_function (|
+                                  Ty.path "core::fmt::rt::Argument",
+                                  "new_display",
+                                  [],
+                                  [ Ty.path "u16" ]
+                                |),
+                                [
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (|
+                                      M.read (| M.SubPointer.get_tuple_field (| args, 0 |) |)
+                                    |)
+                                  |)
+                                ]
                               |)
-                            |)
-                          |);
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
+                            ] in
+                        M.alloc (|
+                          Ty.path "core::fmt::Arguments",
+                          M.call_closure (|
+                            Ty.path "core::fmt::Arguments",
+                            M.get_associated_function (|
+                              Ty.path "core::fmt::Arguments",
+                              "new",
+                              [
+                                Value.Integer IntegerKind.Usize 28;
+                                Value.Integer IntegerKind.Usize 1
+                              ],
+                              []
+                            |),
+                            [
                               M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
-                                  Ty.apply
-                                    (Ty.path "array")
-                                    [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.path "core::fmt::rt::Argument" ],
-                                  Value.Array
+                                M.deref (|
+                                  M.mk_byte_str_ref
+                                    28
                                     [
-                                      M.call_closure (|
-                                        Ty.path "core::fmt::rt::Argument",
-                                        M.get_associated_function (|
-                                          Ty.path "core::fmt::rt::Argument",
-                                          "new_display",
-                                          [],
-                                          [ Ty.path "u16" ]
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.borrow (| Pointer.Kind.Ref, entry |) |)
-                                          |)
-                                        ]
-                                      |)
+                                      10;
+                                      124;
+                                      32;
+                                      69;
+                                      110;
+                                      116;
+                                      101;
+                                      114;
+                                      58;
+                                      32;
+                                      32;
+                                      192;
+                                      14;
+                                      32;
+                                      32;
+                                      32;
+                                      32;
+                                      32;
+                                      32;
+                                      32;
+                                      32;
+                                      32;
+                                      32;
+                                      32;
+                                      32;
+                                      124;
+                                      10;
+                                      0
                                     ]
                                 |)
+                              |);
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
                               |)
-                            |)
+                            ]
                           |)
-                        ]
+                        |)
                       |)
                     ]
                   |) in
@@ -223,28 +234,12 @@ Module control_flow_graph.
                         Ty.path "core::fmt::Arguments",
                         M.get_associated_function (|
                           Ty.path "core::fmt::Arguments",
-                          "new_const",
-                          [ Value.Integer IntegerKind.Usize 1 ],
+                          "from_str",
+                          [],
                           []
                         |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.alloc (|
-                                  Ty.apply
-                                    (Ty.path "array")
-                                    [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array [ mk_str (| "+-----------------------+
+                        [ mk_str (| "+-----------------------+
 " |) ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
                       |)
                     ]
                   |) in
@@ -257,78 +252,110 @@ Module control_flow_graph.
                     Ty.tuple [],
                     M.get_function (| "std::io::stdio::_print", [], [] |),
                     [
-                      M.call_closure (|
-                        Ty.path "core::fmt::Arguments",
-                        M.get_associated_function (|
-                          Ty.path "core::fmt::Arguments",
-                          "new_v1",
-                          [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 1 ],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
+                      M.read (|
+                        let~ args :
+                            Ty.tuple
+                              [
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "alloc::vec::Vec")
+                                      []
+                                      [ Ty.path "u16"; Ty.path "alloc::alloc::Global" ]
+                                  ]
+                              ] :=
+                          Value.Tuple
+                            [
                               M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
-                                  Ty.apply
-                                    (Ty.path "array")
-                                    [ Value.Integer IntegerKind.Usize 2 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array [ mk_str (| "==> Children: " |); mk_str (| "
-" |) ]
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "move_binary_format::control_flow_graph::BasicBlock",
+                                  "successors"
                                 |)
                               |)
-                            |)
-                          |);
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
+                            ] in
+                        let~ args :
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 1 ]
+                              [ Ty.path "core::fmt::rt::Argument" ] :=
+                          Value.Array
+                            [
+                              M.call_closure (|
+                                Ty.path "core::fmt::rt::Argument",
+                                M.get_associated_function (|
+                                  Ty.path "core::fmt::rt::Argument",
+                                  "new_debug",
+                                  [],
+                                  [
+                                    Ty.apply
+                                      (Ty.path "alloc::vec::Vec")
+                                      []
+                                      [ Ty.path "u16"; Ty.path "alloc::alloc::Global" ]
+                                  ]
+                                |),
+                                [
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (|
+                                      M.read (| M.SubPointer.get_tuple_field (| args, 0 |) |)
+                                    |)
+                                  |)
+                                ]
+                              |)
+                            ] in
+                        M.alloc (|
+                          Ty.path "core::fmt::Arguments",
+                          M.call_closure (|
+                            Ty.path "core::fmt::Arguments",
+                            M.get_associated_function (|
+                              Ty.path "core::fmt::Arguments",
+                              "new",
+                              [
+                                Value.Integer IntegerKind.Usize 19;
+                                Value.Integer IntegerKind.Usize 1
+                              ],
+                              []
+                            |),
+                            [
                               M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
-                                  Ty.apply
-                                    (Ty.path "array")
-                                    [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.path "core::fmt::rt::Argument" ],
-                                  Value.Array
+                                M.deref (|
+                                  M.mk_byte_str_ref
+                                    19
                                     [
-                                      M.call_closure (|
-                                        Ty.path "core::fmt::rt::Argument",
-                                        M.get_associated_function (|
-                                          Ty.path "core::fmt::rt::Argument",
-                                          "new_debug",
-                                          [],
-                                          [
-                                            Ty.apply
-                                              (Ty.path "alloc::vec::Vec")
-                                              []
-                                              [ Ty.path "u16"; Ty.path "alloc::alloc::Global" ]
-                                          ]
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (|
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| self |) |),
-                                                  "move_binary_format::control_flow_graph::BasicBlock",
-                                                  "successors"
-                                                |)
-                                              |)
-                                            |)
-                                          |)
-                                        ]
-                                      |)
+                                      14;
+                                      61;
+                                      61;
+                                      62;
+                                      32;
+                                      67;
+                                      104;
+                                      105;
+                                      108;
+                                      100;
+                                      114;
+                                      101;
+                                      110;
+                                      58;
+                                      32;
+                                      192;
+                                      1;
+                                      10;
+                                      0
                                     ]
                                 |)
+                              |);
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
                               |)
-                            |)
+                            ]
                           |)
-                        ]
+                        |)
                       |)
                     ]
                   |) in
@@ -345,28 +372,12 @@ Module control_flow_graph.
                         Ty.path "core::fmt::Arguments",
                         M.get_associated_function (|
                           Ty.path "core::fmt::Arguments",
-                          "new_const",
-                          [ Value.Integer IntegerKind.Usize 1 ],
+                          "from_str",
+                          [],
                           []
                         |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.alloc (|
-                                  Ty.apply
-                                    (Ty.path "array")
-                                    [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array [ mk_str (| "+-----------------------+
+                        [ mk_str (| "+-----------------------+
 " |) ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
                       |)
                     ]
                   |) in
@@ -379,74 +390,102 @@ Module control_flow_graph.
                     Ty.tuple [],
                     M.get_function (| "std::io::stdio::_print", [], [] |),
                     [
-                      M.call_closure (|
-                        Ty.path "core::fmt::Arguments",
-                        M.get_associated_function (|
-                          Ty.path "core::fmt::Arguments",
-                          "new_v1",
-                          [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 1 ],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
+                      M.read (|
+                        let~ args : Ty.tuple [ Ty.apply (Ty.path "&") [] [ Ty.path "u16" ] ] :=
+                          Value.Tuple
+                            [
                               M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
-                                  Ty.apply
-                                    (Ty.path "array")
-                                    [ Value.Integer IntegerKind.Usize 2 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array
-                                    [ mk_str (| "| Exit:   " |); mk_str (| "            |
-" |) ]
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "move_binary_format::control_flow_graph::BasicBlock",
+                                  "exit"
                                 |)
                               |)
-                            |)
-                          |);
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
+                            ] in
+                        let~ args :
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 1 ]
+                              [ Ty.path "core::fmt::rt::Argument" ] :=
+                          Value.Array
+                            [
+                              M.call_closure (|
+                                Ty.path "core::fmt::rt::Argument",
+                                M.get_associated_function (|
+                                  Ty.path "core::fmt::rt::Argument",
+                                  "new_display",
+                                  [],
+                                  [ Ty.path "u16" ]
+                                |),
+                                [
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (|
+                                      M.read (| M.SubPointer.get_tuple_field (| args, 0 |) |)
+                                    |)
+                                  |)
+                                ]
+                              |)
+                            ] in
+                        M.alloc (|
+                          Ty.path "core::fmt::Arguments",
+                          M.call_closure (|
+                            Ty.path "core::fmt::Arguments",
+                            M.get_associated_function (|
+                              Ty.path "core::fmt::Arguments",
+                              "new",
+                              [
+                                Value.Integer IntegerKind.Usize 28;
+                                Value.Integer IntegerKind.Usize 1
+                              ],
+                              []
+                            |),
+                            [
                               M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
-                                  Ty.apply
-                                    (Ty.path "array")
-                                    [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.path "core::fmt::rt::Argument" ],
-                                  Value.Array
+                                M.deref (|
+                                  M.mk_byte_str_ref
+                                    28
                                     [
-                                      M.call_closure (|
-                                        Ty.path "core::fmt::rt::Argument",
-                                        M.get_associated_function (|
-                                          Ty.path "core::fmt::rt::Argument",
-                                          "new_display",
-                                          [],
-                                          [ Ty.path "u16" ]
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (|
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| self |) |),
-                                                  "move_binary_format::control_flow_graph::BasicBlock",
-                                                  "exit"
-                                                |)
-                                              |)
-                                            |)
-                                          |)
-                                        ]
-                                      |)
+                                      10;
+                                      124;
+                                      32;
+                                      69;
+                                      120;
+                                      105;
+                                      116;
+                                      58;
+                                      32;
+                                      32;
+                                      32;
+                                      192;
+                                      14;
+                                      32;
+                                      32;
+                                      32;
+                                      32;
+                                      32;
+                                      32;
+                                      32;
+                                      32;
+                                      32;
+                                      32;
+                                      32;
+                                      32;
+                                      124;
+                                      10;
+                                      0
                                     ]
                                 |)
+                              |);
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
                               |)
-                            |)
+                            ]
                           |)
-                        ]
+                        |)
                       |)
                     ]
                   |) in
@@ -463,28 +502,12 @@ Module control_flow_graph.
                         Ty.path "core::fmt::Arguments",
                         M.get_associated_function (|
                           Ty.path "core::fmt::Arguments",
-                          "new_const",
-                          [ Value.Integer IntegerKind.Usize 1 ],
+                          "from_str",
+                          [],
                           []
                         |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.alloc (|
-                                  Ty.apply
-                                    (Ty.path "array")
-                                    [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array [ mk_str (| "+=======================+
+                        [ mk_str (| "+=======================+
 " |) ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
                       |)
                     ]
                   |) in
@@ -1066,36 +1089,35 @@ Module control_flow_graph.
                                                     fun γ =>
                                                       ltac:(M.monadic
                                                         (let γ :=
-                                                          M.use
-                                                            (M.alloc (|
+                                                          M.alloc (|
+                                                            Ty.path "bool",
+                                                            M.call_closure (|
                                                               Ty.path "bool",
-                                                              M.call_closure (|
-                                                                Ty.path "bool",
-                                                                M.get_associated_function (|
-                                                                  Ty.path
-                                                                    "move_binary_format::control_flow_graph::VMControlFlowGraph",
-                                                                  "is_end_of_block",
-                                                                  [],
-                                                                  []
-                                                                |),
-                                                                [
-                                                                  M.read (| co_pc |);
-                                                                  M.borrow (|
-                                                                    Pointer.Kind.Ref,
-                                                                    M.deref (| M.read (| code |) |)
-                                                                  |);
-                                                                  M.borrow (|
-                                                                    Pointer.Kind.Ref,
-                                                                    M.deref (|
-                                                                      M.borrow (|
-                                                                        Pointer.Kind.Ref,
-                                                                        block_ids
-                                                                      |)
+                                                              M.get_associated_function (|
+                                                                Ty.path
+                                                                  "move_binary_format::control_flow_graph::VMControlFlowGraph",
+                                                                "is_end_of_block",
+                                                                [],
+                                                                []
+                                                              |),
+                                                              [
+                                                                M.read (| co_pc |);
+                                                                M.borrow (|
+                                                                  Pointer.Kind.Ref,
+                                                                  M.deref (| M.read (| code |) |)
+                                                                |);
+                                                                M.borrow (|
+                                                                  Pointer.Kind.Ref,
+                                                                  M.deref (|
+                                                                    M.borrow (|
+                                                                      Pointer.Kind.Ref,
+                                                                      block_ids
                                                                     |)
                                                                   |)
-                                                                ]
-                                                              |)
-                                                            |)) in
+                                                                |)
+                                                              ]
+                                                            |)
+                                                          |) in
                                                         let _ :=
                                                           is_constant_or_break_match (|
                                                             M.read (| γ |),
@@ -1289,24 +1311,23 @@ Module control_flow_graph.
                           fun γ =>
                             ltac:(M.monadic
                               (let γ :=
-                                M.use
-                                  (M.alloc (|
+                                M.alloc (|
+                                  Ty.path "bool",
+                                  M.call_closure (|
                                     Ty.path "bool",
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      UnOp.not,
-                                      [
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          BinOp.eq,
-                                          [
-                                            M.read (| M.deref (| M.read (| left_val |) |) |);
-                                            M.read (| M.deref (| M.read (| right_val |) |) |)
-                                          ]
-                                        |)
-                                      ]
-                                    |)
-                                  |)) in
+                                    UnOp.not,
+                                    [
+                                      M.call_closure (|
+                                        Ty.path "bool",
+                                        BinOp.eq,
+                                        [
+                                          M.read (| M.deref (| M.read (| left_val |) |) |);
+                                          M.read (| M.deref (| M.read (| right_val |) |) |)
+                                        ]
+                                      |)
+                                    ]
+                                  |)
+                                |) in
                               let _ :=
                                 is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                               M.never_to_any (|
@@ -2550,11 +2571,10 @@ Module control_flow_graph.
                                                 fun γ =>
                                                   ltac:(M.monadic
                                                     (let γ :=
-                                                      M.use
-                                                        (M.alloc (|
-                                                          Ty.path "bool",
-                                                          Value.Bool true
-                                                        |)) in
+                                                      M.alloc (|
+                                                        Ty.path "bool",
+                                                        Value.Bool true
+                                                      |) in
                                                     let _ :=
                                                       is_constant_or_break_match (|
                                                         M.read (| γ |),
@@ -2569,49 +2589,46 @@ Module control_flow_graph.
                                                             fun γ =>
                                                               ltac:(M.monadic
                                                                 (let γ :=
-                                                                  M.use
-                                                                    (M.alloc (|
+                                                                  M.alloc (|
+                                                                    Ty.path "bool",
+                                                                    M.call_closure (|
                                                                       Ty.path "bool",
-                                                                      M.call_closure (|
-                                                                        Ty.path "bool",
-                                                                        UnOp.not,
-                                                                        [
-                                                                          M.call_closure (|
-                                                                            Ty.path "bool",
-                                                                            BinOp.eq,
-                                                                            [
-                                                                              M.call_closure (|
-                                                                                Ty.path "usize",
-                                                                                M.get_associated_function (|
-                                                                                  Ty.apply
-                                                                                    (Ty.path
-                                                                                      "slice")
-                                                                                    []
-                                                                                    [ Ty.path "u16"
-                                                                                    ],
-                                                                                  "len",
-                                                                                  [],
+                                                                      UnOp.not,
+                                                                      [
+                                                                        M.call_closure (|
+                                                                          Ty.path "bool",
+                                                                          BinOp.eq,
+                                                                          [
+                                                                            M.call_closure (|
+                                                                              Ty.path "usize",
+                                                                              M.get_associated_function (|
+                                                                                Ty.apply
+                                                                                  (Ty.path "slice")
                                                                                   []
-                                                                                |),
-                                                                                [
-                                                                                  M.borrow (|
-                                                                                    Pointer.Kind.Ref,
-                                                                                    M.deref (|
-                                                                                      M.read (|
-                                                                                        window
-                                                                                      |)
+                                                                                  [ Ty.path "u16" ],
+                                                                                "len",
+                                                                                [],
+                                                                                []
+                                                                              |),
+                                                                              [
+                                                                                M.borrow (|
+                                                                                  Pointer.Kind.Ref,
+                                                                                  M.deref (|
+                                                                                    M.read (|
+                                                                                      window
                                                                                     |)
                                                                                   |)
-                                                                                ]
-                                                                              |);
-                                                                              Value.Integer
-                                                                                IntegerKind.Usize
-                                                                                2
-                                                                            ]
-                                                                          |)
-                                                                        ]
-                                                                      |)
-                                                                    |)) in
+                                                                                |)
+                                                                              ]
+                                                                            |);
+                                                                            Value.Integer
+                                                                              IntegerKind.Usize
+                                                                              2
+                                                                          ]
+                                                                        |)
+                                                                      ]
+                                                                    |)
+                                                                  |) in
                                                                 let _ :=
                                                                   is_constant_or_break_match (|
                                                                     M.read (| γ |),
@@ -2916,234 +2933,113 @@ Module control_flow_graph.
                     Ty.tuple [],
                     M.get_function (| "std::io::stdio::_print", [], [] |),
                     [
-                      M.call_closure (|
-                        Ty.path "core::fmt::Arguments",
-                        M.get_associated_function (|
+                      M.read (|
+                        let~ args :
+                            Ty.tuple
+                              [
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "alloc::collections::btree::map::BTreeMap")
+                                      []
+                                      [ Ty.path "u16"; Ty.path "u16"; Ty.path "alloc::alloc::Global"
+                                      ]
+                                  ]
+                              ] :=
+                          Value.Tuple
+                            [
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "move_binary_format::control_flow_graph::VMControlFlowGraph",
+                                  "traversal_successors"
+                                |)
+                              |)
+                            ] in
+                        let~ args :
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 1 ]
+                              [ Ty.path "core::fmt::rt::Argument" ] :=
+                          Value.Array
+                            [
+                              M.call_closure (|
+                                Ty.path "core::fmt::rt::Argument",
+                                M.get_associated_function (|
+                                  Ty.path "core::fmt::rt::Argument",
+                                  "new_debug",
+                                  [],
+                                  [
+                                    Ty.apply
+                                      (Ty.path "alloc::collections::btree::map::BTreeMap")
+                                      []
+                                      [ Ty.path "u16"; Ty.path "u16"; Ty.path "alloc::alloc::Global"
+                                      ]
+                                  ]
+                                |),
+                                [
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (|
+                                      M.read (| M.SubPointer.get_tuple_field (| args, 0 |) |)
+                                    |)
+                                  |)
+                                ]
+                              |)
+                            ] in
+                        M.alloc (|
                           Ty.path "core::fmt::Arguments",
-                          "new_v1_formatted",
-                          [],
-                          []
-                        |),
-                        [
                           M.call_closure (|
-                            Ty.apply
-                              (Ty.path "&")
-                              []
-                              [
-                                Ty.apply
-                                  (Ty.path "slice")
-                                  []
-                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                              ],
-                            M.pointer_coercion
-                              M.PointerCoercion.Unsize
-                              (Ty.apply
-                                (Ty.path "&")
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "array")
-                                    [ Value.Integer IntegerKind.Usize 2 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                                ])
-                              (Ty.apply
-                                (Ty.path "&")
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "slice")
-                                    []
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                                ]),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.alloc (|
-                                      Ty.apply
-                                        (Ty.path "array")
-                                        [ Value.Integer IntegerKind.Usize 2 ]
-                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                      Value.Array [ mk_str (| "Traversal: " |); mk_str (| "
-" |) ]
-                                    |)
-                                  |)
-                                |)
-                              |)
-                            ]
-                          |);
-                          M.call_closure (|
-                            Ty.apply
-                              (Ty.path "&")
-                              []
-                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "core::fmt::rt::Argument" ]
-                              ],
-                            M.pointer_coercion
-                              M.PointerCoercion.Unsize
-                              (Ty.apply
-                                (Ty.path "&")
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "array")
-                                    [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.path "core::fmt::rt::Argument" ]
-                                ])
-                              (Ty.apply
-                                (Ty.path "&")
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "slice")
-                                    []
-                                    [ Ty.path "core::fmt::rt::Argument" ]
-                                ]),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.alloc (|
-                                      Ty.apply
-                                        (Ty.path "array")
-                                        [ Value.Integer IntegerKind.Usize 1 ]
-                                        [ Ty.path "core::fmt::rt::Argument" ],
-                                      Value.Array
-                                        [
-                                          M.call_closure (|
-                                            Ty.path "core::fmt::rt::Argument",
-                                            M.get_associated_function (|
-                                              Ty.path "core::fmt::rt::Argument",
-                                              "new_debug",
-                                              [],
-                                              [
-                                                Ty.apply
-                                                  (Ty.path
-                                                    "alloc::collections::btree::map::BTreeMap")
-                                                  []
-                                                  [
-                                                    Ty.path "u16";
-                                                    Ty.path "u16";
-                                                    Ty.path "alloc::alloc::Global"
-                                                  ]
-                                              ]
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (|
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.SubPointer.get_struct_record_field (|
-                                                      M.deref (| M.read (| self |) |),
-                                                      "move_binary_format::control_flow_graph::VMControlFlowGraph",
-                                                      "traversal_successors"
-                                                    |)
-                                                  |)
-                                                |)
-                                              |)
-                                            ]
-                                          |)
-                                        ]
-                                    |)
-                                  |)
-                                |)
-                              |)
-                            ]
-                          |);
-                          M.call_closure (|
-                            Ty.apply
-                              (Ty.path "&")
-                              []
-                              [
-                                Ty.apply
-                                  (Ty.path "slice")
-                                  []
-                                  [ Ty.path "core::fmt::rt::Placeholder" ]
-                              ],
-                            M.pointer_coercion
-                              M.PointerCoercion.Unsize
-                              (Ty.apply
-                                (Ty.path "&")
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "array")
-                                    [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.path "core::fmt::rt::Placeholder" ]
-                                ])
-                              (Ty.apply
-                                (Ty.path "&")
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "slice")
-                                    []
-                                    [ Ty.path "core::fmt::rt::Placeholder" ]
-                                ]),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.alloc (|
-                                      Ty.apply
-                                        (Ty.path "array")
-                                        [ Value.Integer IntegerKind.Usize 1 ]
-                                        [ Ty.path "core::fmt::rt::Placeholder" ],
-                                      Value.Array
-                                        [
-                                          M.call_closure (|
-                                            Ty.path "core::fmt::rt::Placeholder",
-                                            M.get_associated_function (|
-                                              Ty.path "core::fmt::rt::Placeholder",
-                                              "new",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              Value.Integer IntegerKind.Usize 0;
-                                              Value.UnicodeChar 32;
-                                              Value.StructTuple
-                                                "core::fmt::rt::Alignment::Unknown"
-                                                []
-                                                []
-                                                [];
-                                              Value.Integer IntegerKind.U32 4;
-                                              Value.StructTuple
-                                                "core::fmt::rt::Count::Implied"
-                                                []
-                                                []
-                                                [];
-                                              Value.StructTuple
-                                                "core::fmt::rt::Count::Implied"
-                                                []
-                                                []
-                                                []
-                                            ]
-                                          |)
-                                        ]
-                                    |)
-                                  |)
-                                |)
-                              |)
-                            ]
-                          |);
-                          M.call_closure (|
-                            Ty.path "core::fmt::rt::UnsafeArg",
+                            Ty.path "core::fmt::Arguments",
                             M.get_associated_function (|
-                              Ty.path "core::fmt::rt::UnsafeArg",
+                              Ty.path "core::fmt::Arguments",
                               "new",
-                              [],
+                              [
+                                Value.Integer IntegerKind.Usize 20;
+                                Value.Integer IntegerKind.Usize 1
+                              ],
                               []
                             |),
-                            []
+                            [
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (|
+                                  M.mk_byte_str_ref
+                                    20
+                                    [
+                                      11;
+                                      84;
+                                      114;
+                                      97;
+                                      118;
+                                      101;
+                                      114;
+                                      115;
+                                      97;
+                                      108;
+                                      58;
+                                      32;
+                                      193;
+                                      32;
+                                      0;
+                                      128;
+                                      96;
+                                      1;
+                                      10;
+                                      0
+                                    ]
+                                |)
+                              |);
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
+                              |)
+                            ]
                           |)
-                        ]
+                        |)
                       |)
                     ]
                   |) in
@@ -3386,59 +3282,51 @@ Module control_flow_graph.
                   fun γ =>
                     ltac:(M.monadic
                       (let γ :=
-                        M.use
-                          (M.alloc (|
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
                             Ty.path "bool",
-                            LogicalOp.and (|
+                            M.get_associated_function (|
+                              Ty.path "move_binary_format::file_format::Bytecode",
+                              "is_branch",
+                              [],
+                              []
+                            |),
+                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| bytecode |) |) |) ]
+                          |)
+                        |) in
+                      let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                      let γ :=
+                        M.alloc (|
+                          Ty.path "bool",
+                          M.call_closure (|
+                            Ty.path "bool",
+                            BinOp.lt,
+                            [
                               M.call_closure (|
-                                Ty.path "bool",
-                                M.get_associated_function (|
-                                  Ty.path "move_binary_format::file_format::Bytecode",
-                                  "is_branch",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (| M.read (| bytecode |) |)
-                                  |)
-                                ]
-                              |),
-                              ltac:(M.monadic
+                                Ty.path "u16",
+                                BinOp.Wrap.add,
+                                [ M.read (| pc |); Value.Integer IntegerKind.U16 1 ]
+                              |);
+                              M.cast
+                                (Ty.path "u16")
                                 (M.call_closure (|
-                                  Ty.path "bool",
-                                  BinOp.lt,
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "u16",
-                                      BinOp.Wrap.add,
-                                      [ M.read (| pc |); Value.Integer IntegerKind.U16 1 ]
-                                    |);
-                                    M.cast
-                                      (Ty.path "u16")
-                                      (M.call_closure (|
-                                        Ty.path "usize",
-                                        M.get_associated_function (|
-                                          Ty.apply
-                                            (Ty.path "slice")
-                                            []
-                                            [ Ty.path "move_binary_format::file_format::Bytecode" ],
-                                          "len",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| code |) |)
-                                          |)
-                                        ]
-                                      |))
+                                  Ty.path "usize",
+                                  M.get_associated_function (|
+                                    Ty.apply
+                                      (Ty.path "slice")
+                                      []
+                                      [ Ty.path "move_binary_format::file_format::Bytecode" ],
+                                    "len",
+                                    [],
+                                    []
+                                  |),
+                                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| code |) |) |)
                                   ]
-                                |)))
-                            |)
-                          |)) in
+                                |))
+                            ]
+                          |)
+                        |) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       M.read (|
                         let~ _ : Ty.path "bool" :=
@@ -3608,30 +3496,29 @@ Module control_flow_graph.
                           fun γ =>
                             ltac:(M.monadic
                               (let γ :=
-                                M.use
-                                  (M.alloc (|
+                                M.alloc (|
+                                  Ty.path "bool",
+                                  M.call_closure (|
                                     Ty.path "bool",
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      BinOp.lt,
-                                      [
-                                        M.read (| index |);
-                                        M.call_closure (|
-                                          Ty.path "usize",
-                                          M.get_associated_function (|
-                                            Ty.apply
-                                              (Ty.path "alloc::vec::Vec")
-                                              []
-                                              [ Ty.path "u16"; Ty.path "alloc::alloc::Global" ],
-                                            "len",
-                                            [],
+                                    BinOp.lt,
+                                    [
+                                      M.read (| index |);
+                                      M.call_closure (|
+                                        Ty.path "usize",
+                                        M.get_associated_function (|
+                                          Ty.apply
+                                            (Ty.path "alloc::vec::Vec")
                                             []
-                                          |),
-                                          [ M.borrow (| Pointer.Kind.Ref, ret |) ]
-                                        |)
-                                      ]
-                                    |)
-                                  |)) in
+                                            [ Ty.path "u16"; Ty.path "alloc::alloc::Global" ],
+                                          "len",
+                                          [],
+                                          []
+                                        |),
+                                        [ M.borrow (| Pointer.Kind.Ref, ret |) ]
+                                      |)
+                                    ]
+                                  |)
+                                |) in
                               let _ :=
                                 is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                               M.read (|
@@ -3884,34 +3771,19 @@ Module control_flow_graph.
                                                                 fun γ =>
                                                                   ltac:(M.monadic
                                                                     (let γ :=
-                                                                      M.use
-                                                                        (M.alloc (|
+                                                                      M.alloc (|
+                                                                        Ty.path "bool",
+                                                                        M.call_closure (|
                                                                           Ty.path "bool",
-                                                                          M.call_closure (|
-                                                                            Ty.path "bool",
-                                                                            UnOp.not,
-                                                                            [
-                                                                              M.call_closure (|
-                                                                                Ty.path "bool",
-                                                                                M.get_associated_function (|
-                                                                                  Ty.apply
-                                                                                    (Ty.path
-                                                                                      "alloc::collections::btree::set::BTreeSet")
-                                                                                    []
-                                                                                    [
-                                                                                      Ty.apply
-                                                                                        (Ty.path
-                                                                                          "&")
-                                                                                        []
-                                                                                        [
-                                                                                          Ty.path
-                                                                                            "u16"
-                                                                                        ];
-                                                                                      Ty.path
-                                                                                        "alloc::alloc::Global"
-                                                                                    ],
-                                                                                  "contains",
-                                                                                  [],
+                                                                          UnOp.not,
+                                                                          [
+                                                                            M.call_closure (|
+                                                                              Ty.path "bool",
+                                                                              M.get_associated_function (|
+                                                                                Ty.apply
+                                                                                  (Ty.path
+                                                                                    "alloc::collections::btree::set::BTreeSet")
+                                                                                  []
                                                                                   [
                                                                                     Ty.apply
                                                                                       (Ty.path "&")
@@ -3919,28 +3791,39 @@ Module control_flow_graph.
                                                                                       [
                                                                                         Ty.path
                                                                                           "u16"
-                                                                                      ]
-                                                                                  ]
-                                                                                |),
+                                                                                      ];
+                                                                                    Ty.path
+                                                                                      "alloc::alloc::Global"
+                                                                                  ],
+                                                                                "contains",
+                                                                                [],
                                                                                 [
-                                                                                  M.borrow (|
-                                                                                    Pointer.Kind.Ref,
-                                                                                    seen
-                                                                                  |);
-                                                                                  M.borrow (|
-                                                                                    Pointer.Kind.Ref,
-                                                                                    M.deref (|
-                                                                                      M.borrow (|
-                                                                                        Pointer.Kind.Ref,
-                                                                                        block_id
-                                                                                      |)
+                                                                                  Ty.apply
+                                                                                    (Ty.path "&")
+                                                                                    []
+                                                                                    [ Ty.path "u16"
+                                                                                    ]
+                                                                                ]
+                                                                              |),
+                                                                              [
+                                                                                M.borrow (|
+                                                                                  Pointer.Kind.Ref,
+                                                                                  seen
+                                                                                |);
+                                                                                M.borrow (|
+                                                                                  Pointer.Kind.Ref,
+                                                                                  M.deref (|
+                                                                                    M.borrow (|
+                                                                                      Pointer.Kind.Ref,
+                                                                                      block_id
                                                                                     |)
                                                                                   |)
-                                                                                ]
-                                                                              |)
-                                                                            ]
-                                                                          |)
-                                                                        |)) in
+                                                                                |)
+                                                                              ]
+                                                                            |)
+                                                                          ]
+                                                                        |)
+                                                                      |) in
                                                                     let _ :=
                                                                       is_constant_or_break_match (|
                                                                         M.read (| γ |),
@@ -4286,7 +4169,7 @@ Module control_flow_graph.
                 [
                   fun γ =>
                     ltac:(M.monadic
-                      (let γ := M.use (M.alloc (| Ty.path "bool", Value.Bool true |)) in
+                      (let γ := M.alloc (| Ty.path "bool", Value.Bool true |) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       M.read (|
                         let~ _ : Ty.tuple [] :=
@@ -4297,50 +4180,48 @@ Module control_flow_graph.
                               fun γ =>
                                 ltac:(M.monadic
                                   (let γ :=
-                                    M.use
-                                      (M.alloc (|
+                                    M.alloc (|
+                                      Ty.path "bool",
+                                      M.call_closure (|
                                         Ty.path "bool",
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          UnOp.not,
-                                          [
-                                            M.call_closure (|
-                                              Ty.path "bool",
-                                              M.get_associated_function (|
-                                                Ty.apply
-                                                  (Ty.path
-                                                    "alloc::collections::btree::map::BTreeMap")
-                                                  []
-                                                  [
-                                                    Ty.path "u16";
-                                                    Ty.path
-                                                      "move_binary_format::control_flow_graph::BasicBlock";
-                                                    Ty.path "alloc::alloc::Global"
-                                                  ],
-                                                "contains_key",
-                                                [],
-                                                [ Ty.path "u16" ]
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.SubPointer.get_struct_record_field (|
-                                                    M.deref (| M.read (| self |) |),
-                                                    "move_binary_format::control_flow_graph::VMControlFlowGraph",
-                                                    "blocks"
-                                                  |)
-                                                |);
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (|
-                                                    M.borrow (| Pointer.Kind.Ref, block_id |)
-                                                  |)
+                                        UnOp.not,
+                                        [
+                                          M.call_closure (|
+                                            Ty.path "bool",
+                                            M.get_associated_function (|
+                                              Ty.apply
+                                                (Ty.path "alloc::collections::btree::map::BTreeMap")
+                                                []
+                                                [
+                                                  Ty.path "u16";
+                                                  Ty.path
+                                                    "move_binary_format::control_flow_graph::BasicBlock";
+                                                  Ty.path "alloc::alloc::Global"
+                                                ],
+                                              "contains_key",
+                                              [],
+                                              [ Ty.path "u16" ]
+                                            |),
+                                            [
+                                              M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.SubPointer.get_struct_record_field (|
+                                                  M.deref (| M.read (| self |) |),
+                                                  "move_binary_format::control_flow_graph::VMControlFlowGraph",
+                                                  "blocks"
                                                 |)
-                                              ]
-                                            |)
-                                          ]
-                                        |)
-                                      |)) in
+                                              |);
+                                              M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (|
+                                                  M.borrow (| Pointer.Kind.Ref, block_id |)
+                                                |)
+                                              |)
+                                            ]
+                                          |)
+                                        ]
+                                      |)
+                                    |) in
                                   let _ :=
                                     is_constant_or_break_match (|
                                       M.read (| γ |),

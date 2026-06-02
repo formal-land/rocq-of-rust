@@ -21,8 +21,9 @@ use crate::intrinsics::{self, const_eval_select};
 /// slow down const-eval/Miri and we'll get the panic message instead of the interpreter's nice
 /// diagnostic, but our ability to detect UB is unchanged.
 /// But if `check_language_ub` is used when the check is actually for library UB, the check is
-/// omitted in const-eval/Miri and thus if we eventually execute language UB which relies on the
-/// library UB, the backtrace Miri reports may be far removed from original cause.
+/// omitted in const-eval/Miri and thus UB might occur undetected. Even if we eventually execute
+/// language UB which relies on the library UB, the backtrace Miri reports may be far removed from
+/// original cause.
 ///
 /// These checks are behind a condition which is evaluated at codegen time, not expansion time like
 /// [`debug_assert`]. This means that a standard library built with optimizations and debug
@@ -63,11 +64,13 @@ macro_rules! assert_unsafe_precondition {
             #[rustc_no_mir_inline]
             #[inline]
             #[rustc_nounwind]
+            #[track_caller]
             const fn precondition_check($($name:$ty),*) {
                 if !$e {
-                    ::core::panicking::panic_nounwind(
-                        concat!("unsafe precondition(s) violated: ", $message)
-                    );
+                    let msg = concat!("unsafe precondition(s) violated: ", $message,
+                        "\n\nThis indicates a bug in the program. \
+                        This Undefined Behavior check is optional, and cannot be relied on for safety.");
+                    ::core::panicking::panic_nounwind_fmt(::core::fmt::Arguments::from_str(msg), false);
                 }
             }
 
@@ -119,12 +122,24 @@ pub(crate) const fn maybe_is_aligned_and_not_null(
     is_zst: bool,
 ) -> bool {
     // This is just for safety checks so we can const_eval_select.
+    maybe_is_aligned(ptr, align) && (is_zst || !ptr.is_null())
+}
+
+/// Checks whether `ptr` is properly aligned with respect to the given alignment.
+///
+/// In `const` this is approximate and can fail spuriously. It is primarily intended
+/// for `assert_unsafe_precondition!` with `check_language_ub`, in which case the
+/// check is anyway not executed in `const`.
+#[inline]
+#[rustc_allow_const_fn_unstable(const_eval_select)]
+pub(crate) const fn maybe_is_aligned(ptr: *const (), align: usize) -> bool {
+    // This is just for safety checks so we can const_eval_select.
     const_eval_select!(
-        @capture { ptr: *const (), align: usize, is_zst: bool } -> bool:
+        @capture { ptr: *const (), align: usize } -> bool:
         if const {
-            is_zst || !ptr.is_null()
+            true
         } else {
-            ptr.is_aligned_to(align) && (is_zst || !ptr.is_null())
+            ptr.is_aligned_to(align)
         }
     )
 }

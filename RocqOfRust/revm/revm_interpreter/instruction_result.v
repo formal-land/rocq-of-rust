@@ -294,6 +294,18 @@ Module instruction_result.
       "revm_interpreter::instruction_result::InstructionResult::InvalidEXTCALLTarget"
       108.
   
+  Module Impl_core_clone_TrivialClone_for_revm_interpreter_instruction_result_InstructionResult.
+    Definition Self : Ty.t := Ty.path "revm_interpreter::instruction_result::InstructionResult".
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "core::clone::TrivialClone"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        Self
+        (* Instance *) [].
+  End Impl_core_clone_TrivialClone_for_revm_interpreter_instruction_result_InstructionResult.
+  
   Module Impl_core_clone_Clone_for_revm_interpreter_instruction_result_InstructionResult.
     Definition Self : Ty.t := Ty.path "revm_interpreter::instruction_result::InstructionResult".
     
@@ -2369,6 +2381,18 @@ Module instruction_result.
         Self
         (* Instance *) [].
   End Impl_core_marker_Copy_for_revm_interpreter_instruction_result_InternalResult.
+  
+  Module Impl_core_clone_TrivialClone_for_revm_interpreter_instruction_result_InternalResult.
+    Definition Self : Ty.t := Ty.path "revm_interpreter::instruction_result::InternalResult".
+    
+    Axiom Implements :
+      M.IsTraitInstance
+        "core::clone::TrivialClone"
+        (* Trait polymorphic consts *) []
+        (* Trait polymorphic types *) []
+        Self
+        (* Instance *) [].
+  End Impl_core_clone_TrivialClone_for_revm_interpreter_instruction_result_InternalResult.
   
   Module Impl_core_clone_Clone_for_revm_interpreter_instruction_result_InternalResult.
     Definition Self : Ty.t := Ty.path "revm_interpreter::instruction_result::InternalResult".

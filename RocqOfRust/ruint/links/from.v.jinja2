@@ -4,6 +4,7 @@ Require Import links.RocqOfRust.
 Require Import core.convert.links.mod.
 Require Import core.fmt.links.mod.
 Require Import core.fmt.links.rt.
+Require Import core.links.array.
 Require Import core.links.panicking.
 Require Import core.links.result.
 Require Import core.num.links.error.
@@ -286,6 +287,9 @@ Module Impl_Uint.
     constructor.
     destruct run_UintTryFrom_for_Self.
     run_symbolic.
+    apply (Impl_Arguments.run_new_byte_str
+      {| Integer.value := 26 |}
+      {| Integer.value := 1 |}).
   Defined.
   Global Opaque run_from.
 End Impl_Uint.

@@ -211,294 +211,290 @@ Module entrypoint.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          M.use
-                            (M.alloc (|
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
                               Ty.path "bool",
-                              LogicalOp.and (|
-                                LogicalOp.and (|
-                                  LogicalOp.and (|
-                                    LogicalOp.and (|
-                                      LogicalOp.and (|
-                                        LogicalOp.and (|
-                                          M.call_closure (|
-                                            Ty.path "bool",
-                                            BinOp.eq,
-                                            [
-                                              M.read (| M.deref (| M.read (| input |) |) |);
-                                              Value.Integer IntegerKind.U8 4
-                                            ]
-                                          |),
-                                          ltac:(M.monadic
-                                            (M.call_closure (|
-                                              Ty.path "bool",
-                                              BinOp.eq,
-                                              [
-                                                M.read (|
-                                                  M.deref (|
-                                                    M.call_closure (|
-                                                      Ty.apply
-                                                        (Ty.path "*mut")
-                                                        []
-                                                        [ Ty.path "u64" ],
-                                                      M.get_associated_function (|
-                                                        Ty.apply
-                                                          (Ty.path "*mut")
-                                                          []
-                                                          [ Ty.path "u8" ],
-                                                        "cast",
-                                                        [],
-                                                        [ Ty.path "u64" ]
-                                                      |),
-                                                      [
-                                                        M.call_closure (|
-                                                          Ty.apply
-                                                            (Ty.path "*mut")
-                                                            []
-                                                            [ Ty.path "u8" ],
-                                                          M.get_associated_function (|
-                                                            Ty.apply
-                                                              (Ty.path "*mut")
-                                                              []
-                                                              [ Ty.path "u8" ],
-                                                            "add",
-                                                            [],
-                                                            []
-                                                          |),
-                                                          [
-                                                            M.read (| input |);
-                                                            M.read (|
-                                                              get_constant (|
-                                                                "pinocchio_token_program::entrypoint::entrypoint::ACCOUNT1_DATA_LEN",
-                                                                Ty.path "usize"
-                                                              |)
-                                                            |)
-                                                          ]
-                                                        |)
-                                                      ]
-                                                    |)
-                                                  |)
-                                                |);
-                                                M.cast
-                                                  (Ty.path "u64")
-                                                  (M.read (|
-                                                    get_constant (|
-                                                      "pinocchio_token_interface::state::Transmutable::LEN",
-                                                      Ty.path "usize"
-                                                    |)
-                                                  |))
-                                              ]
-                                            |)))
-                                        |),
-                                        ltac:(M.monadic
-                                          (M.call_closure (|
-                                            Ty.path "bool",
-                                            BinOp.eq,
-                                            [
-                                              M.read (|
-                                                M.deref (|
-                                                  M.call_closure (|
-                                                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                                    M.get_associated_function (|
-                                                      Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                                      "add",
-                                                      [],
-                                                      []
-                                                    |),
-                                                    [
-                                                      M.read (| input |);
-                                                      M.read (|
-                                                        get_constant (|
-                                                          "pinocchio_token_program::entrypoint::entrypoint::ACCOUNT2_HEADER_OFFSET",
-                                                          Ty.path "usize"
-                                                        |)
-                                                      |)
-                                                    ]
-                                                  |)
-                                                |)
-                                              |);
-                                              M.read (|
-                                                get_constant (|
-                                                  "pinocchio::entrypoint::NON_DUP_MARKER",
-                                                  Ty.path "u8"
-                                                |)
-                                              |)
-                                            ]
-                                          |)))
+                              BinOp.eq,
+                              [
+                                M.read (| M.deref (| M.read (| input |) |) |);
+                                Value.Integer IntegerKind.U8 4
+                              ]
+                            |)
+                          |) in
+                        let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                        let γ :=
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [
+                                M.read (|
+                                  M.deref (|
+                                    M.call_closure (|
+                                      Ty.apply (Ty.path "*mut") [] [ Ty.path "u64" ],
+                                      M.get_associated_function (|
+                                        Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                        "cast",
+                                        [],
+                                        [ Ty.path "u64" ]
                                       |),
-                                      ltac:(M.monadic
-                                        (M.call_closure (|
-                                          Ty.path "bool",
-                                          BinOp.eq,
-                                          [
-                                            M.read (|
-                                              M.deref (|
-                                                M.call_closure (|
-                                                  Ty.apply (Ty.path "*mut") [] [ Ty.path "u64" ],
-                                                  M.get_associated_function (|
-                                                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                                    "cast",
-                                                    [],
-                                                    [ Ty.path "u64" ]
-                                                  |),
-                                                  [
-                                                    M.call_closure (|
-                                                      Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                                      M.get_associated_function (|
-                                                        Ty.apply
-                                                          (Ty.path "*mut")
-                                                          []
-                                                          [ Ty.path "u8" ],
-                                                        "add",
-                                                        [],
-                                                        []
-                                                      |),
-                                                      [
-                                                        M.read (| input |);
-                                                        M.read (|
-                                                          get_constant (|
-                                                            "pinocchio_token_program::entrypoint::entrypoint::ACCOUNT2_DATA_LEN",
-                                                            Ty.path "usize"
-                                                          |)
-                                                        |)
-                                                      ]
-                                                    |)
-                                                  ]
-                                                |)
-                                              |)
-                                            |);
-                                            M.cast
-                                              (Ty.path "u64")
-                                              (M.read (|
-                                                get_constant (|
-                                                  "pinocchio_token_interface::state::Transmutable::LEN",
-                                                  Ty.path "usize"
-                                                |)
-                                              |))
-                                          ]
-                                        |)))
-                                    |),
-                                    ltac:(M.monadic
-                                      (M.call_closure (|
-                                        Ty.path "bool",
-                                        BinOp.eq,
-                                        [
-                                          M.read (|
-                                            M.deref (|
-                                              M.call_closure (|
-                                                Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                                M.get_associated_function (|
-                                                  Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                                  "add",
-                                                  [],
-                                                  []
-                                                |),
-                                                [
-                                                  M.read (| input |);
-                                                  M.read (|
-                                                    get_constant (|
-                                                      "pinocchio_token_program::entrypoint::entrypoint::IX12_ACCOUNT3_HEADER_OFFSET",
-                                                      Ty.path "usize"
-                                                    |)
-                                                  |)
-                                                ]
-                                              |)
-                                            |)
-                                          |);
-                                          M.read (|
-                                            get_constant (|
-                                              "pinocchio::entrypoint::NON_DUP_MARKER",
-                                              Ty.path "u8"
-                                            |)
-                                          |)
-                                        ]
-                                      |)))
-                                  |),
-                                  ltac:(M.monadic
-                                    (M.call_closure (|
-                                      Ty.path "bool",
-                                      BinOp.eq,
                                       [
-                                        M.read (|
-                                          M.deref (|
-                                            M.call_closure (|
-                                              Ty.apply (Ty.path "*mut") [] [ Ty.path "u64" ],
-                                              M.get_associated_function (|
-                                                Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                                "cast",
-                                                [],
-                                                [ Ty.path "u64" ]
-                                              |),
-                                              [
-                                                M.call_closure (|
-                                                  Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                                  M.get_associated_function (|
-                                                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                                    "add",
-                                                    [],
-                                                    []
-                                                  |),
-                                                  [
-                                                    M.read (| input |);
-                                                    M.read (|
-                                                      get_constant (|
-                                                        "pinocchio_token_program::entrypoint::entrypoint::IX12_ACCOUNT3_DATA_LEN",
-                                                        Ty.path "usize"
-                                                      |)
-                                                    |)
-                                                  ]
-                                                |)
-                                              ]
-                                            |)
-                                          |)
-                                        |);
-                                        M.cast
-                                          (Ty.path "u64")
-                                          (M.read (|
-                                            get_constant (|
-                                              "pinocchio_token_interface::state::Transmutable::LEN",
-                                              Ty.path "usize"
-                                            |)
-                                          |))
-                                      ]
-                                    |)))
-                                |),
-                                ltac:(M.monadic
-                                  (M.call_closure (|
-                                    Ty.path "bool",
-                                    BinOp.eq,
-                                    [
-                                      M.read (|
-                                        M.deref (|
-                                          M.call_closure (|
+                                        M.call_closure (|
+                                          Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                          M.get_associated_function (|
                                             Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                            M.get_associated_function (|
-                                              Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                              "add",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.read (| input |);
-                                              M.read (|
-                                                get_constant (|
-                                                  "pinocchio_token_program::entrypoint::entrypoint::IX12_ACCOUNT4_HEADER_OFFSET",
-                                                  Ty.path "usize"
-                                                |)
+                                            "add",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.read (| input |);
+                                            M.read (|
+                                              get_constant (|
+                                                "pinocchio_token_program::entrypoint::entrypoint::ACCOUNT1_DATA_LEN",
+                                                Ty.path "usize"
                                               |)
-                                            ]
+                                            |)
+                                          ]
+                                        |)
+                                      ]
+                                    |)
+                                  |)
+                                |);
+                                M.cast
+                                  (Ty.path "u64")
+                                  (M.read (|
+                                    get_constant (|
+                                      "pinocchio_token_interface::state::Transmutable::LEN",
+                                      Ty.path "usize"
+                                    |)
+                                  |))
+                              ]
+                            |)
+                          |) in
+                        let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                        let γ :=
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [
+                                M.read (|
+                                  M.deref (|
+                                    M.call_closure (|
+                                      Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                      M.get_associated_function (|
+                                        Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                        "add",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.read (| input |);
+                                        M.read (|
+                                          get_constant (|
+                                            "pinocchio_token_program::entrypoint::entrypoint::ACCOUNT2_HEADER_OFFSET",
+                                            Ty.path "usize"
                                           |)
                                         |)
-                                      |);
-                                      M.read (|
-                                        get_constant (|
-                                          "pinocchio::entrypoint::NON_DUP_MARKER",
-                                          Ty.path "u8"
+                                      ]
+                                    |)
+                                  |)
+                                |);
+                                M.read (|
+                                  get_constant (|
+                                    "pinocchio::entrypoint::NON_DUP_MARKER",
+                                    Ty.path "u8"
+                                  |)
+                                |)
+                              ]
+                            |)
+                          |) in
+                        let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                        let γ :=
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [
+                                M.read (|
+                                  M.deref (|
+                                    M.call_closure (|
+                                      Ty.apply (Ty.path "*mut") [] [ Ty.path "u64" ],
+                                      M.get_associated_function (|
+                                        Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                        "cast",
+                                        [],
+                                        [ Ty.path "u64" ]
+                                      |),
+                                      [
+                                        M.call_closure (|
+                                          Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                          M.get_associated_function (|
+                                            Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                            "add",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.read (| input |);
+                                            M.read (|
+                                              get_constant (|
+                                                "pinocchio_token_program::entrypoint::entrypoint::ACCOUNT2_DATA_LEN",
+                                                Ty.path "usize"
+                                              |)
+                                            |)
+                                          ]
                                         |)
-                                      |)
-                                    ]
-                                  |)))
-                              |)
-                            |)) in
+                                      ]
+                                    |)
+                                  |)
+                                |);
+                                M.cast
+                                  (Ty.path "u64")
+                                  (M.read (|
+                                    get_constant (|
+                                      "pinocchio_token_interface::state::Transmutable::LEN",
+                                      Ty.path "usize"
+                                    |)
+                                  |))
+                              ]
+                            |)
+                          |) in
+                        let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                        let γ :=
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [
+                                M.read (|
+                                  M.deref (|
+                                    M.call_closure (|
+                                      Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                      M.get_associated_function (|
+                                        Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                        "add",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.read (| input |);
+                                        M.read (|
+                                          get_constant (|
+                                            "pinocchio_token_program::entrypoint::entrypoint::IX12_ACCOUNT3_HEADER_OFFSET",
+                                            Ty.path "usize"
+                                          |)
+                                        |)
+                                      ]
+                                    |)
+                                  |)
+                                |);
+                                M.read (|
+                                  get_constant (|
+                                    "pinocchio::entrypoint::NON_DUP_MARKER",
+                                    Ty.path "u8"
+                                  |)
+                                |)
+                              ]
+                            |)
+                          |) in
+                        let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                        let γ :=
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [
+                                M.read (|
+                                  M.deref (|
+                                    M.call_closure (|
+                                      Ty.apply (Ty.path "*mut") [] [ Ty.path "u64" ],
+                                      M.get_associated_function (|
+                                        Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                        "cast",
+                                        [],
+                                        [ Ty.path "u64" ]
+                                      |),
+                                      [
+                                        M.call_closure (|
+                                          Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                          M.get_associated_function (|
+                                            Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                            "add",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.read (| input |);
+                                            M.read (|
+                                              get_constant (|
+                                                "pinocchio_token_program::entrypoint::entrypoint::IX12_ACCOUNT3_DATA_LEN",
+                                                Ty.path "usize"
+                                              |)
+                                            |)
+                                          ]
+                                        |)
+                                      ]
+                                    |)
+                                  |)
+                                |);
+                                M.cast
+                                  (Ty.path "u64")
+                                  (M.read (|
+                                    get_constant (|
+                                      "pinocchio_token_interface::state::Transmutable::LEN",
+                                      Ty.path "usize"
+                                    |)
+                                  |))
+                              ]
+                            |)
+                          |) in
+                        let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                        let γ :=
+                          M.alloc (|
+                            Ty.path "bool",
+                            M.call_closure (|
+                              Ty.path "bool",
+                              BinOp.eq,
+                              [
+                                M.read (|
+                                  M.deref (|
+                                    M.call_closure (|
+                                      Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                      M.get_associated_function (|
+                                        Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                        "add",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.read (| input |);
+                                        M.read (|
+                                          get_constant (|
+                                            "pinocchio_token_program::entrypoint::entrypoint::IX12_ACCOUNT4_HEADER_OFFSET",
+                                            Ty.path "usize"
+                                          |)
+                                        |)
+                                      ]
+                                    |)
+                                  |)
+                                |);
+                                M.read (|
+                                  get_constant (|
+                                    "pinocchio::entrypoint::NON_DUP_MARKER",
+                                    Ty.path "u8"
+                                  |)
+                                |)
+                              ]
+                            |)
+                          |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.read (|
                           let~ account_4_data_len_aligned : Ty.path "usize" :=
@@ -570,55 +566,51 @@ Module entrypoint.
                                 fun γ =>
                                   ltac:(M.monadic
                                     (let γ :=
-                                      M.use
-                                        (M.alloc (|
+                                      M.alloc (|
+                                        Ty.path "bool",
+                                        M.call_closure (|
                                           Ty.path "bool",
-                                          M.call_closure (|
-                                            Ty.path "bool",
-                                            BinOp.ge,
-                                            [
-                                              M.call_closure (|
-                                                Ty.path "u64",
-                                                M.get_associated_function (|
+                                          BinOp.ge,
+                                          [
+                                            M.call_closure (|
+                                              Ty.path "u64",
+                                              M.get_associated_function (|
+                                                Ty.apply (Ty.path "*mut") [] [ Ty.path "u64" ],
+                                                "read",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.call_closure (|
                                                   Ty.apply (Ty.path "*mut") [] [ Ty.path "u64" ],
-                                                  "read",
-                                                  [],
-                                                  []
-                                                |),
-                                                [
-                                                  M.call_closure (|
-                                                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u64" ],
-                                                    M.get_associated_function (|
+                                                  M.get_associated_function (|
+                                                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                                    "cast",
+                                                    [],
+                                                    [ Ty.path "u64" ]
+                                                  |),
+                                                  [
+                                                    M.call_closure (|
                                                       Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                                      "cast",
-                                                      [],
-                                                      [ Ty.path "u64" ]
-                                                    |),
-                                                    [
-                                                      M.call_closure (|
+                                                      M.get_associated_function (|
                                                         Ty.apply
                                                           (Ty.path "*mut")
                                                           []
                                                           [ Ty.path "u8" ],
-                                                        M.get_associated_function (|
-                                                          Ty.apply
-                                                            (Ty.path "*mut")
-                                                            []
-                                                            [ Ty.path "u8" ],
-                                                          "add",
-                                                          [],
-                                                          []
-                                                        |),
-                                                        [ M.read (| input |); M.read (| offset |) ]
-                                                      |)
-                                                    ]
-                                                  |)
-                                                ]
-                                              |);
-                                              Value.Integer IntegerKind.U64 10
-                                            ]
-                                          |)
-                                        |)) in
+                                                        "add",
+                                                        [],
+                                                        []
+                                                      |),
+                                                      [ M.read (| input |); M.read (| offset |) ]
+                                                    |)
+                                                  ]
+                                                |)
+                                              ]
+                                            |);
+                                            Value.Integer IntegerKind.U64 10
+                                          ]
+                                        |)
+                                      |) in
                                     let _ :=
                                       is_constant_or_break_match (|
                                         M.read (| γ |),
@@ -685,30 +677,29 @@ Module entrypoint.
                                             fun γ =>
                                               ltac:(M.monadic
                                                 (let γ :=
-                                                  M.use
-                                                    (M.alloc (|
+                                                  M.alloc (|
+                                                    Ty.path "bool",
+                                                    M.call_closure (|
                                                       Ty.path "bool",
-                                                      M.call_closure (|
-                                                        Ty.path "bool",
-                                                        M.get_function (|
-                                                          "pinocchio::hint::likely",
-                                                          [],
-                                                          []
-                                                        |),
-                                                        [
-                                                          M.call_closure (|
-                                                            Ty.path "bool",
-                                                            BinOp.eq,
-                                                            [
-                                                              M.read (| discriminator |);
-                                                              M.cast
-                                                                (Ty.path "u8")
-                                                                (Value.Integer IntegerKind.U8 12)
-                                                            ]
-                                                          |)
-                                                        ]
-                                                      |)
-                                                    |)) in
+                                                      M.get_function (|
+                                                        "pinocchio::hint::likely",
+                                                        [],
+                                                        []
+                                                      |),
+                                                      [
+                                                        M.call_closure (|
+                                                          Ty.path "bool",
+                                                          BinOp.eq,
+                                                          [
+                                                            M.read (| discriminator |);
+                                                            M.cast
+                                                              (Ty.path "u8")
+                                                              (Value.Integer IntegerKind.U8 12)
+                                                          ]
+                                                        |)
+                                                      ]
+                                                    |)
+                                                  |) in
                                                 let _ :=
                                                   is_constant_or_break_match (|
                                                     M.read (| γ |),
@@ -1153,222 +1144,215 @@ Module entrypoint.
                             fun γ =>
                               ltac:(M.monadic
                                 (let γ :=
-                                  M.use
-                                    (M.alloc (|
+                                  M.alloc (|
+                                    Ty.path "bool",
+                                    M.call_closure (|
                                       Ty.path "bool",
-                                      LogicalOp.and (|
-                                        LogicalOp.and (|
-                                          LogicalOp.and (|
-                                            LogicalOp.and (|
-                                              M.call_closure (|
-                                                Ty.path "bool",
-                                                BinOp.eq,
-                                                [
-                                                  M.read (| M.deref (| M.read (| input |) |) |);
-                                                  Value.Integer IntegerKind.U8 3
-                                                ]
+                                      BinOp.eq,
+                                      [
+                                        M.read (| M.deref (| M.read (| input |) |) |);
+                                        Value.Integer IntegerKind.U8 3
+                                      ]
+                                    |)
+                                  |) in
+                                let _ :=
+                                  is_constant_or_break_match (|
+                                    M.read (| γ |),
+                                    Value.Bool true
+                                  |) in
+                                let γ :=
+                                  M.alloc (|
+                                    Ty.path "bool",
+                                    M.call_closure (|
+                                      Ty.path "bool",
+                                      BinOp.eq,
+                                      [
+                                        M.read (|
+                                          M.deref (|
+                                            M.call_closure (|
+                                              Ty.apply (Ty.path "*mut") [] [ Ty.path "u64" ],
+                                              M.get_associated_function (|
+                                                Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                                "cast",
+                                                [],
+                                                [ Ty.path "u64" ]
                                               |),
-                                              ltac:(M.monadic
-                                                (M.call_closure (|
-                                                  Ty.path "bool",
-                                                  BinOp.eq,
-                                                  [
-                                                    M.read (|
-                                                      M.deref (|
-                                                        M.call_closure (|
-                                                          Ty.apply
-                                                            (Ty.path "*mut")
-                                                            []
-                                                            [ Ty.path "u64" ],
-                                                          M.get_associated_function (|
-                                                            Ty.apply
-                                                              (Ty.path "*mut")
-                                                              []
-                                                              [ Ty.path "u8" ],
-                                                            "cast",
-                                                            [],
-                                                            [ Ty.path "u64" ]
-                                                          |),
-                                                          [
-                                                            M.call_closure (|
-                                                              Ty.apply
-                                                                (Ty.path "*mut")
-                                                                []
-                                                                [ Ty.path "u8" ],
-                                                              M.get_associated_function (|
-                                                                Ty.apply
-                                                                  (Ty.path "*mut")
-                                                                  []
-                                                                  [ Ty.path "u8" ],
-                                                                "add",
-                                                                [],
-                                                                []
-                                                              |),
-                                                              [
-                                                                M.read (| input |);
-                                                                M.read (|
-                                                                  get_constant (|
-                                                                    "pinocchio_token_program::entrypoint::entrypoint::ACCOUNT1_DATA_LEN",
-                                                                    Ty.path "usize"
-                                                                  |)
-                                                                |)
-                                                              ]
-                                                            |)
-                                                          ]
-                                                        |)
-                                                      |)
-                                                    |);
-                                                    M.cast
-                                                      (Ty.path "u64")
-                                                      (M.read (|
-                                                        get_constant (|
-                                                          "pinocchio_token_interface::state::Transmutable::LEN",
-                                                          Ty.path "usize"
-                                                        |)
-                                                      |))
-                                                  ]
-                                                |)))
-                                            |),
-                                            ltac:(M.monadic
-                                              (M.call_closure (|
-                                                Ty.path "bool",
-                                                BinOp.eq,
-                                                [
-                                                  M.read (|
-                                                    M.deref (|
-                                                      M.call_closure (|
-                                                        Ty.apply
-                                                          (Ty.path "*mut")
-                                                          []
-                                                          [ Ty.path "u8" ],
-                                                        M.get_associated_function (|
-                                                          Ty.apply
-                                                            (Ty.path "*mut")
-                                                            []
-                                                            [ Ty.path "u8" ],
-                                                          "add",
-                                                          [],
-                                                          []
-                                                        |),
-                                                        [
-                                                          M.read (| input |);
-                                                          M.read (|
-                                                            get_constant (|
-                                                              "pinocchio_token_program::entrypoint::entrypoint::ACCOUNT2_HEADER_OFFSET",
-                                                              Ty.path "usize"
-                                                            |)
-                                                          |)
-                                                        ]
-                                                      |)
-                                                    |)
-                                                  |);
-                                                  M.read (|
-                                                    get_constant (|
-                                                      "pinocchio::entrypoint::NON_DUP_MARKER",
-                                                      Ty.path "u8"
-                                                    |)
-                                                  |)
-                                                ]
-                                              |)))
-                                          |),
-                                          ltac:(M.monadic
-                                            (M.call_closure (|
-                                              Ty.path "bool",
-                                              BinOp.eq,
                                               [
-                                                M.read (|
-                                                  M.deref (|
-                                                    M.call_closure (|
-                                                      Ty.apply
-                                                        (Ty.path "*mut")
-                                                        []
-                                                        [ Ty.path "u64" ],
-                                                      M.get_associated_function (|
-                                                        Ty.apply
-                                                          (Ty.path "*mut")
-                                                          []
-                                                          [ Ty.path "u8" ],
-                                                        "cast",
-                                                        [],
-                                                        [ Ty.path "u64" ]
-                                                      |),
-                                                      [
-                                                        M.call_closure (|
-                                                          Ty.apply
-                                                            (Ty.path "*mut")
-                                                            []
-                                                            [ Ty.path "u8" ],
-                                                          M.get_associated_function (|
-                                                            Ty.apply
-                                                              (Ty.path "*mut")
-                                                              []
-                                                              [ Ty.path "u8" ],
-                                                            "add",
-                                                            [],
-                                                            []
-                                                          |),
-                                                          [
-                                                            M.read (| input |);
-                                                            M.read (|
-                                                              get_constant (|
-                                                                "pinocchio_token_program::entrypoint::entrypoint::ACCOUNT2_DATA_LEN",
-                                                                Ty.path "usize"
-                                                              |)
-                                                            |)
-                                                          ]
-                                                        |)
-                                                      ]
-                                                    |)
-                                                  |)
-                                                |);
-                                                M.cast
-                                                  (Ty.path "u64")
-                                                  (M.read (|
-                                                    get_constant (|
-                                                      "pinocchio_token_interface::state::Transmutable::LEN",
-                                                      Ty.path "usize"
-                                                    |)
-                                                  |))
-                                              ]
-                                            |)))
-                                        |),
-                                        ltac:(M.monadic
-                                          (M.call_closure (|
-                                            Ty.path "bool",
-                                            BinOp.eq,
-                                            [
-                                              M.read (|
-                                                M.deref (|
-                                                  M.call_closure (|
+                                                M.call_closure (|
+                                                  Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                                  M.get_associated_function (|
                                                     Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                                    M.get_associated_function (|
-                                                      Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                                      "add",
-                                                      [],
-                                                      []
-                                                    |),
-                                                    [
-                                                      M.read (| input |);
-                                                      M.read (|
-                                                        get_constant (|
-                                                          "pinocchio_token_program::entrypoint::entrypoint::IX3_ACCOUNT3_HEADER_OFFSET",
-                                                          Ty.path "usize"
-                                                        |)
+                                                    "add",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [
+                                                    M.read (| input |);
+                                                    M.read (|
+                                                      get_constant (|
+                                                        "pinocchio_token_program::entrypoint::entrypoint::ACCOUNT1_DATA_LEN",
+                                                        Ty.path "usize"
                                                       |)
-                                                    ]
+                                                    |)
+                                                  ]
+                                                |)
+                                              ]
+                                            |)
+                                          |)
+                                        |);
+                                        M.cast
+                                          (Ty.path "u64")
+                                          (M.read (|
+                                            get_constant (|
+                                              "pinocchio_token_interface::state::Transmutable::LEN",
+                                              Ty.path "usize"
+                                            |)
+                                          |))
+                                      ]
+                                    |)
+                                  |) in
+                                let _ :=
+                                  is_constant_or_break_match (|
+                                    M.read (| γ |),
+                                    Value.Bool true
+                                  |) in
+                                let γ :=
+                                  M.alloc (|
+                                    Ty.path "bool",
+                                    M.call_closure (|
+                                      Ty.path "bool",
+                                      BinOp.eq,
+                                      [
+                                        M.read (|
+                                          M.deref (|
+                                            M.call_closure (|
+                                              Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                              M.get_associated_function (|
+                                                Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                                "add",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.read (| input |);
+                                                M.read (|
+                                                  get_constant (|
+                                                    "pinocchio_token_program::entrypoint::entrypoint::ACCOUNT2_HEADER_OFFSET",
+                                                    Ty.path "usize"
                                                   |)
                                                 |)
-                                              |);
-                                              M.read (|
-                                                get_constant (|
-                                                  "pinocchio::entrypoint::NON_DUP_MARKER",
-                                                  Ty.path "u8"
+                                              ]
+                                            |)
+                                          |)
+                                        |);
+                                        M.read (|
+                                          get_constant (|
+                                            "pinocchio::entrypoint::NON_DUP_MARKER",
+                                            Ty.path "u8"
+                                          |)
+                                        |)
+                                      ]
+                                    |)
+                                  |) in
+                                let _ :=
+                                  is_constant_or_break_match (|
+                                    M.read (| γ |),
+                                    Value.Bool true
+                                  |) in
+                                let γ :=
+                                  M.alloc (|
+                                    Ty.path "bool",
+                                    M.call_closure (|
+                                      Ty.path "bool",
+                                      BinOp.eq,
+                                      [
+                                        M.read (|
+                                          M.deref (|
+                                            M.call_closure (|
+                                              Ty.apply (Ty.path "*mut") [] [ Ty.path "u64" ],
+                                              M.get_associated_function (|
+                                                Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                                "cast",
+                                                [],
+                                                [ Ty.path "u64" ]
+                                              |),
+                                              [
+                                                M.call_closure (|
+                                                  Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                                  M.get_associated_function (|
+                                                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                                    "add",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [
+                                                    M.read (| input |);
+                                                    M.read (|
+                                                      get_constant (|
+                                                        "pinocchio_token_program::entrypoint::entrypoint::ACCOUNT2_DATA_LEN",
+                                                        Ty.path "usize"
+                                                      |)
+                                                    |)
+                                                  ]
                                                 |)
-                                              |)
-                                            ]
-                                          |)))
-                                      |)
-                                    |)) in
+                                              ]
+                                            |)
+                                          |)
+                                        |);
+                                        M.cast
+                                          (Ty.path "u64")
+                                          (M.read (|
+                                            get_constant (|
+                                              "pinocchio_token_interface::state::Transmutable::LEN",
+                                              Ty.path "usize"
+                                            |)
+                                          |))
+                                      ]
+                                    |)
+                                  |) in
+                                let _ :=
+                                  is_constant_or_break_match (|
+                                    M.read (| γ |),
+                                    Value.Bool true
+                                  |) in
+                                let γ :=
+                                  M.alloc (|
+                                    Ty.path "bool",
+                                    M.call_closure (|
+                                      Ty.path "bool",
+                                      BinOp.eq,
+                                      [
+                                        M.read (|
+                                          M.deref (|
+                                            M.call_closure (|
+                                              Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                              M.get_associated_function (|
+                                                Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                                "add",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.read (| input |);
+                                                M.read (|
+                                                  get_constant (|
+                                                    "pinocchio_token_program::entrypoint::entrypoint::IX3_ACCOUNT3_HEADER_OFFSET",
+                                                    Ty.path "usize"
+                                                  |)
+                                                |)
+                                              ]
+                                            |)
+                                          |)
+                                        |);
+                                        M.read (|
+                                          get_constant (|
+                                            "pinocchio::entrypoint::NON_DUP_MARKER",
+                                            Ty.path "u8"
+                                          |)
+                                        |)
+                                      ]
+                                    |)
+                                  |) in
                                 let _ :=
                                   is_constant_or_break_match (|
                                     M.read (| γ |),
@@ -1444,77 +1428,76 @@ Module entrypoint.
                                         fun γ =>
                                           ltac:(M.monadic
                                             (let γ :=
-                                              M.use
-                                                (M.alloc (|
+                                              M.alloc (|
+                                                Ty.path "bool",
+                                                M.call_closure (|
                                                   Ty.path "bool",
-                                                  M.call_closure (|
-                                                    Ty.path "bool",
-                                                    M.get_function (|
-                                                      "pinocchio::hint::likely",
-                                                      [],
-                                                      []
-                                                    |),
-                                                    [
-                                                      M.call_closure (|
-                                                        Ty.path "bool",
-                                                        BinOp.ge,
-                                                        [
-                                                          M.call_closure (|
-                                                            Ty.path "u64",
-                                                            M.get_associated_function (|
+                                                  M.get_function (|
+                                                    "pinocchio::hint::likely",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [
+                                                    M.call_closure (|
+                                                      Ty.path "bool",
+                                                      BinOp.ge,
+                                                      [
+                                                        M.call_closure (|
+                                                          Ty.path "u64",
+                                                          M.get_associated_function (|
+                                                            Ty.apply
+                                                              (Ty.path "*mut")
+                                                              []
+                                                              [ Ty.path "u64" ],
+                                                            "read",
+                                                            [],
+                                                            []
+                                                          |),
+                                                          [
+                                                            M.call_closure (|
                                                               Ty.apply
                                                                 (Ty.path "*mut")
                                                                 []
                                                                 [ Ty.path "u64" ],
-                                                              "read",
-                                                              [],
-                                                              []
-                                                            |),
-                                                            [
-                                                              M.call_closure (|
+                                                              M.get_associated_function (|
                                                                 Ty.apply
                                                                   (Ty.path "*mut")
                                                                   []
-                                                                  [ Ty.path "u64" ],
-                                                                M.get_associated_function (|
+                                                                  [ Ty.path "u8" ],
+                                                                "cast",
+                                                                [],
+                                                                [ Ty.path "u64" ]
+                                                              |),
+                                                              [
+                                                                M.call_closure (|
                                                                   Ty.apply
                                                                     (Ty.path "*mut")
                                                                     []
                                                                     [ Ty.path "u8" ],
-                                                                  "cast",
-                                                                  [],
-                                                                  [ Ty.path "u64" ]
-                                                                |),
-                                                                [
-                                                                  M.call_closure (|
+                                                                  M.get_associated_function (|
                                                                     Ty.apply
                                                                       (Ty.path "*mut")
                                                                       []
                                                                       [ Ty.path "u8" ],
-                                                                    M.get_associated_function (|
-                                                                      Ty.apply
-                                                                        (Ty.path "*mut")
-                                                                        []
-                                                                        [ Ty.path "u8" ],
-                                                                      "add",
-                                                                      [],
-                                                                      []
-                                                                    |),
-                                                                    [
-                                                                      M.read (| input |);
-                                                                      M.read (| offset |)
-                                                                    ]
-                                                                  |)
-                                                                ]
-                                                              |)
-                                                            ]
-                                                          |);
-                                                          Value.Integer IntegerKind.U64 9
-                                                        ]
-                                                      |)
-                                                    ]
-                                                  |)
-                                                |)) in
+                                                                    "add",
+                                                                    [],
+                                                                    []
+                                                                  |),
+                                                                  [
+                                                                    M.read (| input |);
+                                                                    M.read (| offset |)
+                                                                  ]
+                                                                |)
+                                                              ]
+                                                            |)
+                                                          ]
+                                                        |);
+                                                        Value.Integer IntegerKind.U64 9
+                                                      ]
+                                                    |)
+                                                  ]
+                                                |)
+                                              |) in
                                             let _ :=
                                               is_constant_or_break_match (|
                                                 M.read (| γ |),
@@ -1590,32 +1573,31 @@ Module entrypoint.
                                                     fun γ =>
                                                       ltac:(M.monadic
                                                         (let γ :=
-                                                          M.use
-                                                            (M.alloc (|
+                                                          M.alloc (|
+                                                            Ty.path "bool",
+                                                            M.call_closure (|
                                                               Ty.path "bool",
-                                                              M.call_closure (|
-                                                                Ty.path "bool",
-                                                                M.get_function (|
-                                                                  "pinocchio::hint::likely",
-                                                                  [],
-                                                                  []
-                                                                |),
-                                                                [
-                                                                  M.call_closure (|
-                                                                    Ty.path "bool",
-                                                                    BinOp.eq,
-                                                                    [
-                                                                      M.read (| discriminator |);
-                                                                      M.cast
-                                                                        (Ty.path "u8")
-                                                                        (Value.Integer
-                                                                          IntegerKind.U8
-                                                                          3)
-                                                                    ]
-                                                                  |)
-                                                                ]
-                                                              |)
-                                                            |)) in
+                                                              M.get_function (|
+                                                                "pinocchio::hint::likely",
+                                                                [],
+                                                                []
+                                                              |),
+                                                              [
+                                                                M.call_closure (|
+                                                                  Ty.path "bool",
+                                                                  BinOp.eq,
+                                                                  [
+                                                                    M.read (| discriminator |);
+                                                                    M.cast
+                                                                      (Ty.path "u8")
+                                                                      (Value.Integer
+                                                                        IntegerKind.U8
+                                                                        3)
+                                                                  ]
+                                                                |)
+                                                              ]
+                                                            |)
+                                                          |) in
                                                         let _ :=
                                                           is_constant_or_break_match (|
                                                             M.read (| γ |),
@@ -2663,18 +2645,17 @@ Module entrypoint.
                             fun γ =>
                               ltac:(M.monadic
                                 (let γ :=
-                                  M.use
-                                    (M.alloc (|
+                                  M.alloc (|
+                                    Ty.path "bool",
+                                    M.call_closure (|
                                       Ty.path "bool",
-                                      M.call_closure (|
-                                        Ty.path "bool",
-                                        BinOp.eq,
-                                        [
-                                          M.read (| M.deref (| M.read (| discriminator |) |) |);
-                                          Value.Integer IntegerKind.U8 255
-                                        ]
-                                      |)
-                                    |)) in
+                                      BinOp.eq,
+                                      [
+                                        M.read (| M.deref (| M.read (| discriminator |) |) |);
+                                        Value.Integer IntegerKind.U8 255
+                                      ]
+                                    |)
+                                  |) in
                                 let _ :=
                                   is_constant_or_break_match (|
                                     M.read (| γ |),

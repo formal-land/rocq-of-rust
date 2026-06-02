@@ -531,15 +531,14 @@ Module iter.
                                                 fun γ =>
                                                   ltac:(M.monadic
                                                     (let γ :=
-                                                      M.use
-                                                        (M.alloc (|
+                                                      M.alloc (|
+                                                        Ty.path "bool",
+                                                        M.call_closure (|
                                                           Ty.path "bool",
-                                                          M.call_closure (|
-                                                            Ty.path "bool",
-                                                            BinOp.lt,
-                                                            [ M.read (| initialized |); N ]
-                                                          |)
-                                                        |)) in
+                                                          BinOp.lt,
+                                                          [ M.read (| initialized |); N ]
+                                                        |)
+                                                      |) in
                                                     let _ :=
                                                       is_constant_or_break_match (|
                                                         M.read (| γ |),
@@ -945,43 +944,34 @@ Module iter.
                                           fun γ =>
                                             ltac:(M.monadic
                                               (let γ :=
-                                                M.use
-                                                  (M.alloc (|
+                                                M.alloc (|
+                                                  Ty.path "bool",
+                                                  M.call_closure (|
                                                     Ty.path "bool",
-                                                    M.call_closure (|
-                                                      Ty.path "bool",
-                                                      M.get_trait_method (|
-                                                        "core::ops::function::FnMut",
-                                                        impl_FnMut__T__arrow_bool,
-                                                        [],
+                                                    M.get_trait_method (|
+                                                      "core::ops::function::FnMut",
+                                                      impl_FnMut__T__arrow_bool,
+                                                      [],
+                                                      [ Ty.tuple [ Ty.apply (Ty.path "&") [] [ T ] ]
+                                                      ],
+                                                      "call_mut",
+                                                      [],
+                                                      []
+                                                    |),
+                                                    [
+                                                      M.borrow (| Pointer.Kind.MutRef, predicate |);
+                                                      Value.Tuple
                                                         [
-                                                          Ty.tuple
-                                                            [ Ty.apply (Ty.path "&") [] [ T ] ]
-                                                        ],
-                                                        "call_mut",
-                                                        [],
-                                                        []
-                                                      |),
-                                                      [
-                                                        M.borrow (|
-                                                          Pointer.Kind.MutRef,
-                                                          predicate
-                                                        |);
-                                                        Value.Tuple
-                                                          [
-                                                            M.borrow (|
-                                                              Pointer.Kind.Ref,
-                                                              M.deref (|
-                                                                M.borrow (|
-                                                                  Pointer.Kind.Ref,
-                                                                  item
-                                                                |)
-                                                              |)
+                                                          M.borrow (|
+                                                            Pointer.Kind.Ref,
+                                                            M.deref (|
+                                                              M.borrow (| Pointer.Kind.Ref, item |)
                                                             |)
-                                                          ]
-                                                      ]
-                                                    |)
-                                                  |)) in
+                                                          |)
+                                                        ]
+                                                    ]
+                                                  |)
+                                                |) in
                                               let _ :=
                                                 is_constant_or_break_match (|
                                                   M.read (| γ |),
@@ -1065,43 +1055,37 @@ Module iter.
                                           fun γ =>
                                             ltac:(M.monadic
                                               (let γ :=
-                                                M.use
-                                                  (M.alloc (|
+                                                M.alloc (|
+                                                  Ty.path "bool",
+                                                  M.call_closure (|
                                                     Ty.path "bool",
-                                                    M.call_closure (|
-                                                      Ty.path "bool",
-                                                      M.get_trait_method (|
-                                                        "core::ops::function::FnMut",
-                                                        impl_FnMut__T__arrow_bool,
-                                                        [],
+                                                    M.get_trait_method (|
+                                                      "core::ops::function::FnMut",
+                                                      impl_FnMut__T__arrow_bool,
+                                                      [],
+                                                      [ Ty.tuple [ Ty.apply (Ty.path "&") [] [ T ] ]
+                                                      ],
+                                                      "call_mut",
+                                                      [],
+                                                      []
+                                                    |),
+                                                    [
+                                                      M.borrow (|
+                                                        Pointer.Kind.MutRef,
+                                                        M.deref (| M.read (| predicate |) |)
+                                                      |);
+                                                      Value.Tuple
                                                         [
-                                                          Ty.tuple
-                                                            [ Ty.apply (Ty.path "&") [] [ T ] ]
-                                                        ],
-                                                        "call_mut",
-                                                        [],
-                                                        []
-                                                      |),
-                                                      [
-                                                        M.borrow (|
-                                                          Pointer.Kind.MutRef,
-                                                          M.deref (| M.read (| predicate |) |)
-                                                        |);
-                                                        Value.Tuple
-                                                          [
-                                                            M.borrow (|
-                                                              Pointer.Kind.Ref,
-                                                              M.deref (|
-                                                                M.borrow (|
-                                                                  Pointer.Kind.Ref,
-                                                                  item
-                                                                |)
-                                                              |)
+                                                          M.borrow (|
+                                                            Pointer.Kind.Ref,
+                                                            M.deref (|
+                                                              M.borrow (| Pointer.Kind.Ref, item |)
                                                             |)
-                                                          ]
-                                                      ]
-                                                    |)
-                                                  |)) in
+                                                          |)
+                                                        ]
+                                                    ]
+                                                  |)
+                                                |) in
                                               let _ :=
                                                 is_constant_or_break_match (|
                                                   M.read (| γ |),
@@ -1478,7 +1462,13 @@ Module iter.
                     move |x| predicate(&x) as usize
                 }
         
-                self.iter.map(to_usize(self.predicate)).sum()
+                let before = self.iter.size_hint().1.unwrap_or(usize::MAX);
+                let total = self.iter.map(to_usize(self.predicate)).sum();
+                // SAFETY: `total` and `before` came from the same iterator of type `I`
+                unsafe {
+                    <I as SpecAssumeCount>::assume_count_le_upper_bound(total, before);
+                }
+                total
             }
         *)
         Definition count (I P : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
@@ -1491,59 +1481,134 @@ Module iter.
                   Ty.apply (Ty.path "core::iter::adapters::filter::Filter") [] [ I; P ],
                   self
                 |) in
-              M.call_closure (|
-                Ty.path "usize",
-                M.get_trait_method (|
-                  "core::iter::traits::iterator::Iterator",
-                  Ty.apply
-                    (Ty.path "core::iter::adapters::map::Map")
-                    []
-                    [ I; Ty.associated_unknown ],
-                  [],
-                  [],
-                  "sum",
-                  [],
-                  [ Ty.path "usize" ]
-                |),
-                [
+              M.read (|
+                let~ before : Ty.path "usize" :=
                   M.call_closure (|
-                    Ty.apply
-                      (Ty.path "core::iter::adapters::map::Map")
+                    Ty.path "usize",
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ],
+                      "unwrap_or",
+                      [],
                       []
-                      [ I; Ty.associated_unknown ],
-                    M.get_trait_method (|
-                      "core::iter::traits::iterator::Iterator",
-                      I,
-                      [],
-                      [],
-                      "map",
-                      [],
-                      [ Ty.path "usize"; Ty.associated_unknown ]
                     |),
                     [
                       M.read (|
-                        M.SubPointer.get_struct_record_field (|
-                          self,
-                          "core::iter::adapters::filter::Filter",
-                          "iter"
+                        M.SubPointer.get_tuple_field (|
+                          M.alloc (|
+                            Ty.tuple
+                              [
+                                Ty.path "usize";
+                                Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ]
+                              ],
+                            M.call_closure (|
+                              Ty.tuple
+                                [
+                                  Ty.path "usize";
+                                  Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ]
+                                ],
+                              M.get_trait_method (|
+                                "core::iter::traits::iterator::Iterator",
+                                I,
+                                [],
+                                [],
+                                "size_hint",
+                                [],
+                                []
+                              |),
+                              [
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.SubPointer.get_struct_record_field (|
+                                    self,
+                                    "core::iter::adapters::filter::Filter",
+                                    "iter"
+                                  |)
+                                |)
+                              ]
+                            |)
+                          |),
+                          1
                         |)
                       |);
+                      M.read (|
+                        get_associated_constant (| Ty.path "usize", "MAX", Ty.path "usize" |)
+                      |)
+                    ]
+                  |) in
+                let~ total : Ty.path "usize" :=
+                  M.call_closure (|
+                    Ty.path "usize",
+                    M.get_trait_method (|
+                      "core::iter::traits::iterator::Iterator",
+                      Ty.apply
+                        (Ty.path "core::iter::adapters::map::Map")
+                        []
+                        [ I; Ty.associated_unknown ],
+                      [],
+                      [],
+                      "sum",
+                      [],
+                      [ Ty.path "usize" ]
+                    |),
+                    [
                       M.call_closure (|
-                        Ty.associated_unknown,
-                        M.get_associated_function (| Self, "to_usize.count", [], [] |),
+                        Ty.apply
+                          (Ty.path "core::iter::adapters::map::Map")
+                          []
+                          [ I; Ty.associated_unknown ],
+                        M.get_trait_method (|
+                          "core::iter::traits::iterator::Iterator",
+                          I,
+                          [],
+                          [],
+                          "map",
+                          [],
+                          [ Ty.path "usize"; Ty.associated_unknown ]
+                        |),
                         [
                           M.read (|
                             M.SubPointer.get_struct_record_field (|
                               self,
                               "core::iter::adapters::filter::Filter",
-                              "predicate"
+                              "iter"
                             |)
+                          |);
+                          M.call_closure (|
+                            Ty.associated_unknown,
+                            M.get_associated_function (| Self, "to_usize.count", [], [] |),
+                            [
+                              M.read (|
+                                M.SubPointer.get_struct_record_field (|
+                                  self,
+                                  "core::iter::adapters::filter::Filter",
+                                  "predicate"
+                                |)
+                              |)
+                            ]
                           |)
                         ]
                       |)
                     ]
-                  |)
-                ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.read (|
+                    let~ _ : Ty.tuple [] :=
+                      M.call_closure (|
+                        Ty.tuple [],
+                        M.get_trait_method (|
+                          "core::iter::adapters::filter::SpecAssumeCount",
+                          I,
+                          [],
+                          [],
+                          "assume_count_le_upper_bound",
+                          [],
+                          []
+                        |),
+                        [ M.read (| total |); M.read (| before |) ]
+                      |) in
+                    M.alloc (| Ty.tuple [], Value.Tuple [] |)
+                  |) in
+                total
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
           end.
@@ -2162,6 +2227,107 @@ Module iter.
               ("value_MERGE_BY", InstanceField.Method (value_MERGE_BY I P))
             ].
       End Impl_core_iter_traits_marker_InPlaceIterable_where_core_iter_traits_marker_InPlaceIterable_I_for_core_iter_adapters_filter_Filter_I_P.
+      
+      (* Trait *)
+      (* Empty module 'SpecAssumeCount' *)
+      
+      Module Impl_core_iter_adapters_filter_SpecAssumeCount_where_core_iter_traits_iterator_Iterator_I_for_I.
+        Definition Self (I : Ty.t) : Ty.t := I.
+        
+        (*
+            default unsafe fn assume_count_le_upper_bound(count: usize, upper: usize) {
+                // In the default we can't trust the `upper` for soundness
+                // because it came from an untrusted `size_hint`.
+        
+                // In debug mode we might as well check that the size_hint wasn't too small
+                let _ = upper - count;
+            }
+        *)
+        Definition assume_count_le_upper_bound
+            (I : Ty.t)
+            (ε : list Value.t)
+            (τ : list Ty.t)
+            (α : list Value.t)
+            : M :=
+          let Self : Ty.t := Self I in
+          match ε, τ, α with
+          | [], [], [ count; upper ] =>
+            ltac:(M.monadic
+              (let count := M.alloc (| Ty.path "usize", count |) in
+              let upper := M.alloc (| Ty.path "usize", upper |) in
+              M.match_operator (|
+                Ty.tuple [],
+                M.alloc (|
+                  Ty.path "usize",
+                  M.call_closure (|
+                    Ty.path "usize",
+                    BinOp.Wrap.sub,
+                    [ M.read (| upper |); M.read (| count |) ]
+                  |)
+                |),
+                [ fun γ => ltac:(M.monadic (Value.Tuple [])) ]
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        Axiom Implements :
+          forall (I : Ty.t),
+          M.IsTraitInstance
+            "core::iter::adapters::filter::SpecAssumeCount"
+            (* Trait polymorphic consts *) []
+            (* Trait polymorphic types *) []
+            (Self I)
+            (* Instance *)
+            [ ("assume_count_le_upper_bound", InstanceField.Method (assume_count_le_upper_bound I))
+            ].
+      End Impl_core_iter_adapters_filter_SpecAssumeCount_where_core_iter_traits_iterator_Iterator_I_for_I.
+      
+      Module Impl_core_iter_adapters_filter_SpecAssumeCount_where_core_iter_traits_marker_TrustedLen_I_for_I.
+        Definition Self (I : Ty.t) : Ty.t := I.
+        
+        (*
+            unsafe fn assume_count_le_upper_bound(count: usize, upper: usize) {
+                // SAFETY: The `upper` is trusted because it came from a `TrustedLen` iterator.
+                unsafe { crate::hint::assert_unchecked(count <= upper) }
+            }
+        *)
+        Definition assume_count_le_upper_bound
+            (I : Ty.t)
+            (ε : list Value.t)
+            (τ : list Ty.t)
+            (α : list Value.t)
+            : M :=
+          let Self : Ty.t := Self I in
+          match ε, τ, α with
+          | [], [], [ count; upper ] =>
+            ltac:(M.monadic
+              (let count := M.alloc (| Ty.path "usize", count |) in
+              let upper := M.alloc (| Ty.path "usize", upper |) in
+              M.call_closure (|
+                Ty.tuple [],
+                M.get_function (| "core::hint::assert_unchecked", [], [] |),
+                [
+                  M.call_closure (|
+                    Ty.path "bool",
+                    BinOp.le,
+                    [ M.read (| count |); M.read (| upper |) ]
+                  |)
+                ]
+              |)))
+          | _, _, _ => M.impossible "wrong number of arguments"
+          end.
+        
+        Axiom Implements :
+          forall (I : Ty.t),
+          M.IsTraitInstance
+            "core::iter::adapters::filter::SpecAssumeCount"
+            (* Trait polymorphic consts *) []
+            (* Trait polymorphic types *) []
+            (Self I)
+            (* Instance *)
+            [ ("assume_count_le_upper_bound", InstanceField.Method (assume_count_le_upper_bound I))
+            ].
+      End Impl_core_iter_adapters_filter_SpecAssumeCount_where_core_iter_traits_marker_TrustedLen_I_for_I.
     End filter.
   End adapters.
 End iter.

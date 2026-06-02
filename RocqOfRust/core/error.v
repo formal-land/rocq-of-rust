@@ -252,20 +252,19 @@ Module error.
               fun γ =>
                 ltac:(M.monadic
                   (let γ :=
-                    M.use
-                      (M.alloc (|
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
                         Ty.path "bool",
-                        M.call_closure (|
-                          Ty.path "bool",
-                          M.get_associated_function (|
-                            Ty.dyn [ ("core::error::Error::Trait", []) ],
-                            "is",
-                            [],
-                            [ T ]
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                        |)
-                      |)) in
+                        M.get_associated_function (|
+                          Ty.dyn [ ("core::error::Error::Trait", []) ],
+                          "is",
+                          [],
+                          [ T ]
+                        |),
+                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                      |)
+                    |) in
                   let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                   Value.StructTuple
                     "core::option::Option::Some"
@@ -359,20 +358,19 @@ Module error.
               fun γ =>
                 ltac:(M.monadic
                   (let γ :=
-                    M.use
-                      (M.alloc (|
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
                         Ty.path "bool",
-                        M.call_closure (|
-                          Ty.path "bool",
-                          M.get_associated_function (|
-                            Ty.dyn [ ("core::error::Error::Trait", []) ],
-                            "is",
-                            [],
-                            [ T ]
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                        |)
-                      |)) in
+                        M.get_associated_function (|
+                          Ty.dyn [ ("core::error::Error::Trait", []) ],
+                          "is",
+                          [],
+                          [ T ]
+                        |),
+                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                      |)
+                    |) in
                   let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                   Value.StructTuple
                     "core::option::Option::Some"
@@ -1678,7 +1676,7 @@ Module error.
     Definition Self : Ty.t := Ty.path "core::error::Request".
     
     (*
-        fn fmt(&self, f: &mut Formatter<'_>) -> Result {
+        fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
             f.debug_struct("Request").finish_non_exhaustive()
         }
     *)
@@ -2360,48 +2358,47 @@ Module error.
               fun γ =>
                 ltac:(M.monadic
                   (let γ :=
-                    M.use
-                      (M.alloc (|
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
                         Ty.path "bool",
-                        M.call_closure (|
-                          Ty.path "bool",
-                          M.get_trait_method (|
-                            "core::cmp::PartialEq",
-                            Ty.path "core::any::TypeId",
-                            [],
-                            [ Ty.path "core::any::TypeId" ],
-                            "eq",
-                            [],
-                            []
-                          |),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "core::error::Tagged",
-                                "tag_id"
-                              |)
-                            |);
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.alloc (|
+                        M.get_trait_method (|
+                          "core::cmp::PartialEq",
+                          Ty.path "core::any::TypeId",
+                          [],
+                          [ Ty.path "core::any::TypeId" ],
+                          "eq",
+                          [],
+                          []
+                        |),
+                        [
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "core::error::Tagged",
+                              "tag_id"
+                            |)
+                          |);
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.alloc (|
+                              Ty.path "core::any::TypeId",
+                              M.call_closure (|
                                 Ty.path "core::any::TypeId",
-                                M.call_closure (|
+                                M.get_associated_function (|
                                   Ty.path "core::any::TypeId",
-                                  M.get_associated_function (|
-                                    Ty.path "core::any::TypeId",
-                                    "of",
-                                    [],
-                                    [ I ]
-                                  |),
-                                  []
-                                |)
+                                  "of",
+                                  [],
+                                  [ I ]
+                                |),
+                                []
                               |)
                             |)
-                          ]
-                        |)
-                      |)) in
+                          |)
+                        ]
+                      |)
+                    |) in
                   let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                   Value.StructTuple
                     "core::option::Option::Some"
@@ -2605,48 +2602,47 @@ Module error.
               fun γ =>
                 ltac:(M.monadic
                   (let γ :=
-                    M.use
-                      (M.alloc (|
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
                         Ty.path "bool",
-                        M.call_closure (|
-                          Ty.path "bool",
-                          M.get_trait_method (|
-                            "core::cmp::PartialEq",
-                            Ty.path "core::any::TypeId",
-                            [],
-                            [ Ty.path "core::any::TypeId" ],
-                            "eq",
-                            [],
-                            []
-                          |),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "core::error::Tagged",
-                                "tag_id"
-                              |)
-                            |);
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.alloc (|
+                        M.get_trait_method (|
+                          "core::cmp::PartialEq",
+                          Ty.path "core::any::TypeId",
+                          [],
+                          [ Ty.path "core::any::TypeId" ],
+                          "eq",
+                          [],
+                          []
+                        |),
+                        [
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "core::error::Tagged",
+                              "tag_id"
+                            |)
+                          |);
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.alloc (|
+                              Ty.path "core::any::TypeId",
+                              M.call_closure (|
                                 Ty.path "core::any::TypeId",
-                                M.call_closure (|
+                                M.get_associated_function (|
                                   Ty.path "core::any::TypeId",
-                                  M.get_associated_function (|
-                                    Ty.path "core::any::TypeId",
-                                    "of",
-                                    [],
-                                    [ I ]
-                                  |),
-                                  []
-                                |)
+                                  "of",
+                                  [],
+                                  [ I ]
+                                |),
+                                []
                               |)
                             |)
-                          ]
-                        |)
-                      |)) in
+                          |)
+                        ]
+                      |)
+                    |) in
                   let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                   Value.StructTuple
                     "core::option::Option::Some"
@@ -3095,37 +3091,36 @@ Module error.
               fun γ =>
                 ltac:(M.monadic
                   (let γ :=
-                    M.use
-                      (M.alloc (|
+                    M.alloc (|
+                      Ty.path "bool",
+                      M.call_closure (|
                         Ty.path "bool",
-                        M.call_closure (|
-                          Ty.path "bool",
-                          M.get_associated_function (|
-                            Ty.apply
-                              (Ty.path "core::option::Option")
-                              []
-                              [
-                                Ty.apply
-                                  (Ty.path "&")
-                                  []
-                                  [ Ty.dyn [ ("core::error::Error::Trait", []) ] ]
-                              ],
-                            "is_some",
-                            [],
+                        M.get_associated_function (|
+                          Ty.apply
+                            (Ty.path "core::option::Option")
                             []
-                          |),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "core::error::Source",
-                                "current"
-                              |)
+                            [
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.dyn [ ("core::error::Error::Trait", []) ] ]
+                            ],
+                          "is_some",
+                          [],
+                          []
+                        |),
+                        [
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "core::error::Source",
+                              "current"
                             |)
-                          ]
-                        |)
-                      |)) in
+                          |)
+                        ]
+                      |)
+                    |) in
                   let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                   Value.Tuple
                     [
@@ -3176,41 +3171,6 @@ Module error.
   
   Module Impl_core_error_Error_where_core_error_Error_T_where_core_marker_Sized_T_for_ref__T.
     Definition Self (T : Ty.t) : Ty.t := Ty.apply (Ty.path "&") [] [ T ].
-    
-    (*
-        fn description(&self) -> &str {
-            Error::description(&**self)
-        }
-    *)
-    Definition description (T : Ty.t) (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      let Self : Ty.t := Self T in
-      match ε, τ, α with
-      | [], [], [ self ] =>
-        ltac:(M.monadic
-          (let self :=
-            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ T ] ], self |) in
-          M.borrow (|
-            Pointer.Kind.Ref,
-            M.deref (|
-              M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                M.get_trait_method (| "core::error::Error", T, [], [], "description", [], [] |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                      |)
-                    |)
-                  |)
-                ]
-              |)
-            |)
-          |)))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
     
     (*
         fn cause(&self) -> Option<&dyn Error> {
@@ -3327,7 +3287,6 @@ Module error.
         (Self T)
         (* Instance *)
         [
-          ("description", InstanceField.Method (description T));
           ("cause", InstanceField.Method (cause T));
           ("source", InstanceField.Method (source T));
           ("provide", InstanceField.Method (provide T))
@@ -3337,121 +3296,49 @@ Module error.
   Module Impl_core_error_Error_for_core_fmt_Error.
     Definition Self : Ty.t := Ty.path "core::fmt::Error".
     
-    (*
-        fn description(&self) -> &str {
-            "an error occurred when formatting an argument"
-        }
-    *)
-    Definition description (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      match ε, τ, α with
-      | [], [], [ self ] =>
-        ltac:(M.monadic
-          (let self :=
-            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::Error" ], self |) in
-          M.borrow (|
-            Pointer.Kind.Ref,
-            M.deref (| mk_str (| "an error occurred when formatting an argument" |) |)
-          |)))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
     Axiom Implements :
       M.IsTraitInstance
         "core::error::Error"
         (* Trait polymorphic consts *) []
         (* Trait polymorphic types *) []
         Self
-        (* Instance *) [ ("description", InstanceField.Method description) ].
+        (* Instance *) [].
   End Impl_core_error_Error_for_core_fmt_Error.
   
   Module Impl_core_error_Error_for_core_cell_BorrowError.
     Definition Self : Ty.t := Ty.path "core::cell::BorrowError".
     
-    (*
-        fn description(&self) -> &str {
-            "already mutably borrowed"
-        }
-    *)
-    Definition description (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      match ε, τ, α with
-      | [], [], [ self ] =>
-        ltac:(M.monadic
-          (let self :=
-            M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "core::cell::BorrowError" ], self |) in
-          M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "already mutably borrowed" |) |) |)))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
     Axiom Implements :
       M.IsTraitInstance
         "core::error::Error"
         (* Trait polymorphic consts *) []
         (* Trait polymorphic types *) []
         Self
-        (* Instance *) [ ("description", InstanceField.Method description) ].
+        (* Instance *) [].
   End Impl_core_error_Error_for_core_cell_BorrowError.
   
   Module Impl_core_error_Error_for_core_cell_BorrowMutError.
     Definition Self : Ty.t := Ty.path "core::cell::BorrowMutError".
     
-    (*
-        fn description(&self) -> &str {
-            "already borrowed"
-        }
-    *)
-    Definition description (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      match ε, τ, α with
-      | [], [], [ self ] =>
-        ltac:(M.monadic
-          (let self :=
-            M.alloc (|
-              Ty.apply (Ty.path "&") [] [ Ty.path "core::cell::BorrowMutError" ],
-              self
-            |) in
-          M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "already borrowed" |) |) |)))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
     Axiom Implements :
       M.IsTraitInstance
         "core::error::Error"
         (* Trait polymorphic consts *) []
         (* Trait polymorphic types *) []
         Self
-        (* Instance *) [ ("description", InstanceField.Method description) ].
+        (* Instance *) [].
   End Impl_core_error_Error_for_core_cell_BorrowMutError.
   
   Module Impl_core_error_Error_for_core_char_convert_CharTryFromError.
     Definition Self : Ty.t := Ty.path "core::char::convert::CharTryFromError".
     
-    (*
-        fn description(&self) -> &str {
-            "converted integer out of range for `char`"
-        }
-    *)
-    Definition description (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
-      match ε, τ, α with
-      | [], [], [ self ] =>
-        ltac:(M.monadic
-          (let self :=
-            M.alloc (|
-              Ty.apply (Ty.path "&") [] [ Ty.path "core::char::convert::CharTryFromError" ],
-              self
-            |) in
-          M.borrow (|
-            Pointer.Kind.Ref,
-            M.deref (| mk_str (| "converted integer out of range for `char`" |) |)
-          |)))
-      | _, _, _ => M.impossible "wrong number of arguments"
-      end.
-    
     Axiom Implements :
       M.IsTraitInstance
         "core::error::Error"
         (* Trait polymorphic consts *) []
         (* Trait polymorphic types *) []
         Self
-        (* Instance *) [ ("description", InstanceField.Method description) ].
+        (* Instance *) [].
   End Impl_core_error_Error_for_core_char_convert_CharTryFromError.
   
   Module Impl_core_error_Error_for_core_time_TryFromFloatSecsError.
@@ -3478,17 +3365,15 @@ Module error.
         (* Instance *) [].
   End Impl_core_error_Error_for_core_ffi_c_str_FromBytesUntilNulError.
   
-  Module Impl_core_error_Error_for_core_slice_GetManyMutError_N.
-    Definition Self (N : Value.t) : Ty.t :=
-      Ty.apply (Ty.path "core::slice::GetManyMutError") [ N ] [].
+  Module Impl_core_error_Error_for_core_slice_GetDisjointMutError.
+    Definition Self : Ty.t := Ty.path "core::slice::GetDisjointMutError".
     
     Axiom Implements :
-      forall (N : Value.t),
       M.IsTraitInstance
         "core::error::Error"
         (* Trait polymorphic consts *) []
         (* Trait polymorphic types *) []
-        (Self N)
+        Self
         (* Instance *) [].
-  End Impl_core_error_Error_for_core_slice_GetManyMutError_N.
+  End Impl_core_error_Error_for_core_slice_GetDisjointMutError.
 End error.

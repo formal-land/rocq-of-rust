@@ -65,7 +65,7 @@ Definition return_inner
     let deref_stub :=
       IInterpreterTypes
         .(InterpreterTypes.MemoryTrait_for_Memory)
-        .(MemoryTrait.Deref_for_Synthetic1)
+        .(MemoryTrait.Deref_for_Synthetic)
         .(deref.Deref.deref) in
     let output := deref_stub.(RefStub.projection) output in
     let output := Into.into (Impl_Slice.to_vec output) in
